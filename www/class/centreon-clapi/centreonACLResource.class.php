@@ -93,6 +93,17 @@ class CentreonACLResource extends CentreonObject
      */
     protected $resourceTypeObjectRelation;
 
+    public static $aDepends = array(
+        'HOST',
+        'SERVICE',
+        'HOSTGROUP',
+        'SERVICEGROUP',
+        'METASERVICE',
+        'INSTANCE',
+        'HOSTCATEGORY',
+        'SERVICECATEGORY'
+    );
+
     /**
      * Constructor
      *
@@ -105,14 +116,16 @@ class CentreonACLResource extends CentreonObject
         $this->aclGroupObj = new \Centreon_Object_Acl_Group();
         $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource();
 
-        $this->params = array(  'all_hosts'           => '0',
-                                'all_hostgroups'      => '0',
-                                'all_servicegroups'   => '0',
-                                'acl_res_activate'      => '1',
-                                'changed'              => '1'
-                             );
+        $this->params = array(
+            'all_hosts' => '0',
+            'all_hostgroups' => '0',
+            'all_servicegroups' => '0',
+            'acl_res_activate' => '1',
+            'changed' => '1'
+        );
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_res_activate";
+        $this->action = "ACLRESOURCE";
     }
 
     /**
@@ -409,5 +422,302 @@ class CentreonACLResource extends CentreonObject
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
+    }
+
+    /**
+     * @param null $filters
+     */
+    public function export($filters = null)
+    {
+        $aclResourceList = $this->object->getList('*', -1, 0, null, null, $filters);
+
+        $exportLine = '';
+        foreach ($aclResourceList as $aclResource) {
+
+            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
+                . $aclResource['acl_res_name'] . $this->delim
+                . $aclResource['acl_res_alias'] . $this->delim . "\n";
+
+            $exportLine .= $this->action . $this->delim . "SETPARAM" . $this->delim
+                . $aclResource['acl_res_name'] . $this->delim;
+
+            if (!empty($aclResource['acl_res_comment'])) {
+                $exportLine .= 'comment' . $this->delim . $aclResource['acl_res_comment'] . $this->delim . "\n";
+            }
+
+            $exportLine .= 'activate' . $this->delim . $aclResource['acl_res_activate'] . $this->delim . "\n";
+
+            $exportLine .= $this->exportGrantResources($aclResource);
+
+            echo $exportLine;
+            $exportLine = '';
+        }
+    }
+
+    /**
+     * @param $aclResourceParams
+     * @return string
+     */
+    private function exportGrantResources($aclResourceParams)
+    {
+        $grantResources = '';
+
+        $grantResources .= $this->exportGrantHostResources(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name'],
+            $aclResourceParams['all_hosts']
+        );
+        $grantResources .= $this->exportGrantHostgroupResources(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name'],
+            $aclResourceParams['all_hostgroups']
+        );
+        $grantResources .= $this->exportGrantServicegroupResources(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name'],
+            $aclResourceParams['all_servicegroups']
+        );
+        $grantResources .= $this->exportGrantMetaserviceResources(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name']
+        );
+        $grantResources .= $this->exportFilterInstance(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name']
+        );
+        $grantResources .= $this->exportFilterHostCategory(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name']
+        );
+        $grantResources .= $this->exportFilterServiceCategory(
+            $aclResourceParams['acl_res_id'],
+            $aclResourceParams['acl_res_name']
+        );
+
+
+        return $grantResources;
+    }
+
+    /**
+     * @param int $aclResId
+     * @param string $aclResName
+     * @param int $allHosts
+     * @param bool $withExclusion
+     * @return string
+     */
+    private function exportGrantHostResources($aclResId, $aclResName, $allHosts = 1, $withExclusion = true)
+    {
+        $grantHostResources = '';
+
+        if ($allHosts == 1) {
+            $grantHostResources .= $this->exportGrantObject('*', 'GRANT_HOST', $aclResName);
+        } else {
+            $queryHostGranted = 'SELECT h.host_name AS "object_name" ' .
+                'FROM host h, acl_resources_host_relations arhr ' .
+                'WHERE arhr.host_host_id = h.host_id ' .
+                'AND arhr.acl_res_id = ?';
+
+            $grantedHostList = $this->db->fetchAll($queryHostGranted, array($aclResId));
+            $grantHostResources .= $this->exportGrantObject($grantedHostList, 'GRANT_HOST', $aclResName);
+        }
+
+        if ($withExclusion) {
+            $queryHostExcluded = 'SELECT h.host_name AS "object_name" ' .
+                'FROM host h, acl_resources_hostex_relations arher ' .
+                'WHERE arher.host_host_id = h.host_id ' .
+                'AND arher.acl_res_id = ?';
+
+            $excludedHostList = $this->db->fetchAll($queryHostExcluded, array($aclResId));
+            $grantHostResources .= $this->exportGrantObject(
+                $excludedHostList,
+                'ADDHOSTEXCLUSION',
+                $aclResName
+            );
+        }
+
+        return $grantHostResources;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @param int $allHostgroups
+     * @return string
+     */
+    private function exportGrantHostgroupResources($aclResId, $aclResName, $allHostgroups = 1)
+    {
+        $grantHostgroupResources = '';
+
+        if ($allHostgroups == 1) {
+            $grantHostgroupResources .= $this->exportGrantObject('*', 'GRANT_HOSTGROUP', $aclResName);
+        } else {
+            $queryHostgroupGranted = 'SELECT hg.hg_name AS "object_name" ' .
+                'FROM hostgroup hg, acl_resources_hg_relations arhgr ' .
+                'WHERE arhgr.hg_hg_id = hg.hg_id ' .
+                'AND arhgr.acl_res_id = ?';
+
+            $grantedHostgroupList = $this->db->fetchAll($queryHostgroupGranted, array($aclResId));
+            $grantHostgroupResources .= $this->exportGrantObject(
+                $grantedHostgroupList,
+                'GRANT_HOSTGROUP',
+                $aclResName
+            );
+        }
+
+        return $grantHostgroupResources;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @param int $allServicegroups
+     * @return string
+     */
+    private function exportGrantServicegroupResources($aclResId, $aclResName, $allServicegroups = 1)
+    {
+        $grantServicegroupResources = '';
+
+        if ($allServicegroups == 1) {
+            $grantServicegroupResources .= $this->exportGrantObject('*', 'GRANT_SERVICEGROUP', $aclResName);
+        } else {
+            $queryServicegroupGranted = 'SELECT sg.sg_name AS "object_name" ' .
+                'FROM servicegroup sg, acl_resources_sg_relations arsgr ' .
+                'WHERE arsgr.sg_id = sg.sg_id ' .
+                'AND arsgr.acl_res_id = ?';
+
+            $grantedServicegroupList = $this->db->fetchAll($queryServicegroupGranted, array($aclResId));
+            $grantServicegroupResources .= $this->exportGrantObject(
+                $grantedServicegroupList,
+                'GRANT_SERVICEGROUP',
+                $aclResName
+            );
+        }
+
+        return $grantServicegroupResources;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @return string
+     */
+    private function exportGrantMetaserviceResources($aclResId, $aclResName)
+    {
+        $grantMetaserviceResources = '';
+
+        $queryMetaserviceGranted = 'SELECT m.meta_name AS "object_name" ' .
+            'FROM meta_service m, acl_resources_meta_relations armr ' .
+            'WHERE armr.meta_id = m.meta_id ' .
+            'AND armr.acl_res_id = ?';
+
+        $grantedMetaserviceList = $this->db->fetchAll($queryMetaserviceGranted, array($aclResId));
+        $grantMetaserviceResources .= $this->exportGrantObject(
+            $grantedMetaserviceList,
+            'GRANT_METASERVICE',
+            $aclResName
+        );
+
+        return $grantMetaserviceResources;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @return string
+     */
+    private function exportFilterInstance($aclResId, $aclResName)
+    {
+        $filterInstances = '';
+
+        $queryFilteredInstances = 'SELECT n.name AS "object_name" ' .
+            'FROM nagios_server n, acl_resources_poller_relations arpr ' .
+            'WHERE arpr.poller_id = n.id ' .
+            'AND arpr.acl_res_id = ?';
+
+        $filteredInstanceList = $this->db->fetchAll($queryFilteredInstances, array($aclResId));
+        $filterInstances .= $this->exportGrantObject($filteredInstanceList, 'ADDFILTER_INSTANCE', $aclResName);
+
+        return $filterInstances;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @return string
+     */
+    private function exportFilterHostCategory($aclResId, $aclResName)
+    {
+        $filterHostCategories = '';
+
+        $queryFilteredHostCategories = 'SELECT hc.hc_name AS "object_name" ' .
+            'FROM hostcategories hc, acl_resources_hc_relations arhcr ' .
+            'WHERE arhcr.hc_id = hc.hc_id ' .
+            'AND arhcr.acl_res_id = ?';
+
+        $filteredHostCategoryList = $this->db->fetchAll($queryFilteredHostCategories, array($aclResId));
+        $filterHostCategories .= $this->exportGrantObject(
+            $filteredHostCategoryList,
+            'ADDFILTER_HOSTCATEGORY',
+            $aclResName
+        );
+
+        return $filterHostCategories;
+    }
+
+    /**
+     * @param $aclResId
+     * @param $aclResName
+     * @return string
+     */
+    private function exportFilterServiceCategory($aclResId, $aclResName)
+    {
+        $filterServiceCategories = '';
+
+        $queryFilteredServiceCategories = 'SELECT sc.sc_name AS "object_name" ' .
+            'FROM service_categories sc, acl_resources_sc_relations arscr ' .
+            'WHERE arscr.sc_id = sc.sc_id ' .
+            'AND arscr.acl_res_id = ?';
+
+        $filteredServiceCategoryList = $this->db->fetchAll($queryFilteredServiceCategories, array($aclResId));
+        $filterServiceCategories .= $this->exportGrantObject(
+            $filteredServiceCategoryList,
+            'ADDFILTER_SERVICECATEGORY',
+            $aclResName
+        );
+
+        return $filterServiceCategories;
+    }
+
+    /**
+     * @param $grantedResourceItems
+     * @param $grantCommand
+     * @param $aclResName
+     * @return string
+     */
+    private function exportGrantObject($grantedResourceItems, $grantCommand, $aclResName)
+    {
+        $grantObject = '';
+
+        // Template for object export command
+        $grantedCommandTpl = $this->action . $this->delim . $grantCommand . $this->delim .
+            $aclResName . $this->delim .
+            '%s' . $this->delim . "\n";
+
+        $grantedObjectList = '';
+        if (is_array($grantedResourceItems)) { // Non wildcard mode
+            foreach ($grantedResourceItems as $grantedObject) {
+                $grantedObjectList .= $grantedObject['object_name'] . '|';
+            }
+        } elseif (is_string($grantedResourceItems)) { // Wildcard mode ('*')
+            $grantedObjectList .= $grantedResourceItems;
+        } else { // Unknown mode
+            throw new \CentreonClapiException('Unsupported resource');
+        }
+
+        if (!empty($grantedObjectList)) { // Check if list is useful
+            $grantObject .= sprintf($grantedCommandTpl, trim($grantedObjectList, '|'));
+        }
+
+        return $grantObject;
     }
 }

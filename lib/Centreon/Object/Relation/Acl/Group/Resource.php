@@ -40,4 +40,11 @@ class Centreon_Object_Relation_Acl_Group_Resource extends Centreon_Object_Relati
     protected $relationTable = "acl_res_group_relations";
     protected $firstKey = "acl_group_id";
     protected $secondKey = "acl_res_id";
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->firstObject = new Centreon_Object_Acl_Group();
+        $this->secondObject = new Centreon_Object_Acl_Resource();
+    }
 }

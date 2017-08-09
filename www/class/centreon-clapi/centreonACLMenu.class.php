@@ -39,6 +39,8 @@ require_once "centreonObject.class.php";
 require_once "Centreon/Object/Acl/Group.php";
 require_once "Centreon/Object/Acl/Menu.php";
 require_once "Centreon/Object/Relation/Acl/Group/Menu.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . '/www/class/centreonTopology.class.php';
 
 /**
  * Class for managing ACL Menu rules
@@ -56,6 +58,7 @@ class CentreonACLMenu extends CentreonObject
     const PARENT_MENU_NOT_DEFINED = "Parent menu must be defined";
     protected $relObject;
     protected $aclGroupObj;
+    protected $topologyObj;
 
     /**
      * Constructor
@@ -71,6 +74,8 @@ class CentreonACLMenu extends CentreonObject
         $this->params = array('acl_topo_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_topo_activate";
+        $this->action = "ACLMENU";
+        $this->topologyObj = new \CentreonTopology(new \CentreonDB());
     }
 
     /**
@@ -373,5 +378,78 @@ class CentreonACLMenu extends CentreonObject
                 $this->processChildrenOf("revoke", $aclMenuId, $topologies[$level]);
             }
         }
+    }
+
+    /**
+     * @param array $filters
+     */
+    public function export($filters = null)
+    {
+        $aclMenuList = $this->object->getList('*', -1, 0, null, null, $filters);
+
+        $exportLine = '';
+        foreach ($aclMenuList as $aclMenu) {
+            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
+                . $aclMenu['acl_topo_name'] . $this->delim
+                . $aclMenu['acl_topo_alias'] . $this->delim . "\n";
+
+            $exportLine .= $this->action . $this->delim .
+                "SETPARAM" . $this->delim .
+                $aclMenu['acl_topo_name'] . $this->delim;
+
+                if (!empty($aclMenu['acl_comments'])) {
+                    $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim . "\n";
+                }
+
+
+            $exportLine .= 'activate' . $this->delim . $aclMenu['acl_topo_activate'] . $this->delim . "\n";
+            $exportLine .= $this->GrantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
+
+            echo $exportLine;
+            $exportLine = '';
+        }
+    }
+
+    /**
+     * @param int $aclTopoId
+     * @param string $aclTopoName
+     * @return string
+     */
+    private function GrantMenu($aclTopoId, $aclTopoName)
+    {
+
+        $grantedMenu = '';
+
+        $grantedMenuTpl = $this->action . $this->delim . '%s' . $this->delim .
+            $aclTopoName . $this->delim .
+            '%s' . $this->delim . "\n";
+
+        $grantedPossibilities = array(
+            '1' => 'GRANTRW',
+            '2' => 'GRANTRO'
+        );
+
+        $queryAclMenuRelations = 'SELECT t.topology_page, t.topology_id, t.topology_name, atr.access_right ' .
+            'FROM acl_topology_relations atr, topology t ' .
+            'WHERE atr.topology_topology_id = t.topology_id ' .
+            "AND atr.access_right <> '0'" .
+            'AND atr.acl_topo_id = ?';
+
+        $grantedTopologyList = $this->db->fetchAll($queryAclMenuRelations, array($aclTopoId));
+
+        foreach ($grantedTopologyList as $grantedTopology) {
+            $grantedTopologyBreadCrumb = $this->topologyObj->getBreadCrumbFromTopology(
+                $grantedTopology['topology_page'],
+                $grantedTopology['topology_name'],
+                ';'
+            );
+            $grantedMenu .= sprintf(
+                $grantedMenuTpl,
+                $grantedPossibilities[$grantedTopology['access_right']],
+                $grantedTopologyBreadCrumb
+            );
+        }
+
+        return $grantedMenu;
     }
 }
