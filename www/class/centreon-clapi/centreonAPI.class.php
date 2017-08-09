@@ -273,22 +273,22 @@ class CentreonAPI
         $this->relationObject["ACLGROUP"] = array(
             'module' => 'core',
             'class' => 'ACLGroup',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLACTION"] = array(
             'module' => 'core',
             'class' => 'ACLAction',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLMENU"] = array(
             'module' => 'core',
             'class' => 'ACLMenu',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLRESOURCE"] = array(
             'module' => 'core',
             'class' => 'ACLResource',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["SETTINGS"] = array(
             'module' => 'core',

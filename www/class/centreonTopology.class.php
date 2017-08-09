@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,54 +33,60 @@
  *
  */
 
-class CentreonMenu
+class CentreonTopology
 {
-    /**
-     * @var CentreonLang
-     */
-    protected $centreonLang;
-
     /**
      * @var
      */
     protected $db;
 
     /**
-     * Constructor
-     *
-     * @param CentreonLang $centreonLang
-     * @return void
+     * CentreonTopology constructor.
+     * @param $db
      */
-    public function __construct($centreonLang)
+    public function __construct($db)
     {
-        $this->centreonLang = $centreonLang;
+        $this->db = $db;
     }
 
     /**
-     * translates
-     *
-     * @param int $isModule
-     * @param string $url
-     * @param string $menuName
-     * @return string
+     * @param $key
+     * @param $value
+     * @return mixed
+     * @throws Exception
      */
-    public function translate($isModule, $url, $menuName)
+    public function getTopology($key, $value)
     {
-        $moduleName = "";
-        if ($isModule && $url) {
-            if (preg_match("/\.\/modules\/([a-zA-Z-_]+)/", $url, $matches)) {
-                if (isset($matches[1])) {
-                    $moduleName = $matches[1];
-                }
-            }
+        $queryTopologyPage = 'SELECT * FROM topology WHERE topology_' . $key . ' = ?';
+        $stmt = $this->db->prepare($queryTopologyPage);
+        $dbresult = $this->db->execute($stmt, array($value));
+        if (PEAR::isError($dbresult)) {
+            throw new \Exception("Error during request");
         }
-        $name = _($menuName);
-        if ($moduleName) {
-            $this->centreonLang->bindLang('messages', 'www/modules/'.$moduleName.'/locale/');
-            $name = _($menuName);
-            $this->centreonLang->bindLang();
-        }
-        return $name;
+
+        $row = $dbresult->fetchRow();
+
+        return $row;
+
     }
 
+    /**
+     * @param $topologyPage
+     * @param $topologyName
+     * @param string $breadCrumbDelimiter
+     * @return string
+     */
+    public function getBreadCrumbFromTopology($topologyPage, $topologyName, $breadCrumbDelimiter = ' > ')
+    {
+        $breadCrumb = $topologyName;
+        $currentTopology = $this->getTopology('page', $topologyPage);
+
+        while (!empty($currentTopology['topology_parent'])) {
+            $parentTopology = $this->getTopology('page', $currentTopology['topology_parent']);
+            $breadCrumb = $parentTopology['topology_name'] . $breadCrumbDelimiter . $breadCrumb;
+            $currentTopology = $parentTopology;
+        }
+
+        return $breadCrumb;
+    }
 }

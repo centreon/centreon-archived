@@ -40,4 +40,11 @@ class Centreon_Object_Relation_Acl_Group_Contact extends Centreon_Object_Relatio
     protected $relationTable = "acl_group_contacts_relations";
     protected $firstKey = "acl_group_id";
     protected $secondKey = "contact_contact_id";
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->firstObject = new Centreon_Object_Acl_Group();
+        $this->secondObject = new Centreon_Object_Contact();
+    }
 }
