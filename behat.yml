@@ -309,7 +309,6 @@ default:
       contexts:
       - MetaServiceConfigurationContext
 
-
     host_group_dependency_configuration:
       paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
       contexts:
@@ -319,7 +318,7 @@ default:
       paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
       contexts:
       - ServiceSubmitResultContext
-      
+
     host_dependency_configuration:
       paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
       contexts:
@@ -329,3 +328,8 @@ default:
       paths: [ %paths.base%/features/ServiceGroupDependencyConfiguration.feature ]
       contexts:
       - ServiceGroupDependencyConfigurationContext
+
+    connector_configuration:
+      paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
+      contexts:
+      - ConnectorConfigurationContext
