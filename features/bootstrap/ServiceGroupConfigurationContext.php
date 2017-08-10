@@ -26,38 +26,10 @@ class ServiceGroupConfigurationContext extends CentreonContext
         'description' => 'serviceGroupDescription',
         'hosts' => 'Centreon-Server - Memory',
         'host_groups' => 'Windows-Servers - hostGroupServiceDescription1',
-        'service_templates' => array(
-            'Ping-LAN',
-            'generic-host - Ping-LAN'
-        ),
-        'geo_coordinates' => '1.2.3.4',
-        'enabled' => 1,
-        'comments' => 'serviceGroupComments'
-    );
-
-    protected $duplicatedProperties = array(
-        'name' => 'serviceGroupName_1',
-        'description' => 'serviceGroupDescription',
-        'hosts' => 'Centreon-Server - Memory',
-        'host_groups' => 'Windows-Servers - hostGroupServiceDescription1',
         'service_templates' => 'generic-host - Ping-LAN',
         'geo_coordinates' => '1.2.3.4',
         'enabled' => 1,
         'comments' => 'serviceGroupComments'
-    );
-
-    protected $update = array(
-        'name' => 'serviceGroupNameChanged',
-        'description' => 'serviceGroupDescriptionChanged',
-        'hosts' => 'Centreon-Server - Load',
-        'host_groups' => 'Firewall - hostGroupServiceDescription2',
-        'service_templates' => array(
-            'SNMP-Linux-Swap',
-            'Servers-Linux - SNMP-Linux-Swap'
-        ),
-        'geo_coordinates' => 'Paris',
-        'enabled' => 1,
-        'comments' => 'serviceGroupCommentsChanged'
     );
 
     protected $updatedProperties = array(
@@ -94,7 +66,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ServiceGroupConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
-        $this->currentPage->setProperties($this->update);
+        $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
     }
 
@@ -148,10 +120,10 @@ class ServiceGroupConfigurationContext extends CentreonContext
             $this->spin(
                 function ($context) {
                     $this->currentPage = new ServiceGroupConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->duplicatedProperties['name']);
+                    $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
                     $object = $this->currentPage->getProperties();
-                    foreach ($this->duplicatedProperties as $key => $value) {
-                        if ($value != $object[$key]) {
+                    foreach ($this->initialProperties as $key => $value) {
+                        if ($key != 'name' && $value != $object[$key]) {
                             $this->tableau[] = $key;
                         }
                     }
