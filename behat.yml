@@ -299,7 +299,6 @@ default:
       contexts:
       - MetaServiceConfigurationContext
 
-
     host_group_dependency_configuration:
       paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
       contexts:
@@ -314,3 +313,8 @@ default:
       paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
       contexts:
       - HostDependencyConfigurationContext
+
+    meta_service_dependency_configuration:
+      paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
+      contexts:
+      - MetaServiceDependencyConfigurationContext
