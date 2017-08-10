@@ -68,7 +68,6 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         $queryValues[] = '%' . (string)$q . '%';
-        $queryValues[] = '%' . (string)$q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';

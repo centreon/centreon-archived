@@ -299,10 +299,16 @@ default:
       contexts:
       - MetaServiceConfigurationContext
 
+    host_group_dependency_configuration:
+      paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
+      contexts:
+      - HostGroupDependencyConfigurationContext
+
     service_submit_result:
       paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
       contexts:
       - ServiceSubmitResultContext
+
     host_dependency_configuration:
       paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
       contexts:
