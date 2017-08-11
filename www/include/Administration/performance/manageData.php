@@ -64,9 +64,9 @@ $pearDBO = new CentreonDB("centstorage");
 
 switch ($o) {
     case "msvc":
-        require_once($path."viewMetrics.php");
+        require_once($path . "viewMetrics.php");
         break;
     default:
-        require_once($path."viewData.php");
+        require_once($path . "viewData.php");
         break;
 }
