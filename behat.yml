@@ -333,3 +333,8 @@ default:
       paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
       contexts:
       - ConnectorConfigurationContext
+
+    vendor_configuration:
+      paths: [ %paths.base%/features/VendorConfiguration.feature ]
+      contexts:
+      - VendorConfigurationContext
