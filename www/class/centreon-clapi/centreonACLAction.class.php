@@ -303,7 +303,10 @@ class CentreonACLAction extends CentreonObject
 
             $exportLine .= 'activate' . $this->delim . $aclActionRule['acl_action_activate'] . $this->delim . "\n";
 
-            $exportLine .= $this->exportGrantActions($aclActionRule['acl_action_id'], $aclActionRule['acl_action_name']);
+            $exportLine .= $this->exportGrantActions(
+                $aclActionRule['acl_action_id'],
+                $aclActionRule['acl_action_name']
+            );
 
             echo $exportLine;
             $exportLine = '';
