@@ -34,7 +34,7 @@
  */
 
 if (!isset($centreon)) {
-        exit();
+    exit();
 }
 
 isset($_GET["vmetric_id"]) ? $cG = $_GET["vmetric_id"] : $cG = null;
@@ -64,36 +64,36 @@ $path = "./include/views/virtualMetrics/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
     case "a":
-        require_once $path."formVirtualMetrics.php";
+        require_once $path . "formVirtualMetrics.php";
         break; #Add a Virtual Metrics
     case "w":
-        require_once $path."formVirtualMetrics.php";
+        require_once $path . "formVirtualMetrics.php";
         break; #Watch a Virtual Metrics
     case "c":
-        require_once $path."formVirtualMetrics.php" ;
+        require_once $path . "formVirtualMetrics.php";
         break; #Modify a Virtual Metrics
     case "s":
         enableVirtualMetricInDB($vmetric_id);
-        require_once $path."listVirtualMetrics.php";
+        require_once $path . "listVirtualMetrics.php";
         break; #Activate a Virtual Metrics
     case "u":
         disableVirtualMetricInDB($vmetric_id);
-        require_once $path."listVirtualMetrics.php";
+        require_once $path . "listVirtualMetrics.php";
         break; #Desactivate a Virtual Metrics...
     case "m":
         multipleVirtualMetricInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once $path."listVirtualMetrics.php";
+        require_once $path . "listVirtualMetrics.php";
         break; #Duplicate n Virtual Metrics
     case "d":
         deleteVirtualMetricInDB(isset($select) ? $select : array());
-        require_once $path."listVirtualMetrics.php";
+        require_once $path . "listVirtualMetrics.php";
         break; #Delete n Virtual Metrics
     default:
-        require_once $path."listVirtualMetrics.php";
+        require_once $path . "listVirtualMetrics.php";
         break;
 }
