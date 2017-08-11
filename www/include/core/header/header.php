@@ -60,15 +60,15 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
-require_once SMARTY_DIR."Smarty.class.php";
+require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Create DB Connection
  *  - centreon
  *  - centstorage
  */
-$pearDB     = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 ini_set("session.gc_maxlifetime", "31536000");
 
@@ -84,7 +84,7 @@ if (!isset($session_expire["value"]) || !$session_expire["value"]) {
 }
 $time_limit = time() - ($session_expire["value"] * 60);
 
-$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
+$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
 
 
 $args = "&redirect='";
@@ -94,16 +94,16 @@ foreach ($_GET as $key => $value) {
         $args .= '&';
     }
     $args .= "$key=$value";
-     $a++;
+    $a++;
 }
 $args .= "'";
 
 /*
  * Get session and Check if session is not expired
  */
-$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
+$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '" . session_id() . "'");
 if (!$DBRESULT->fetchColumn()) {
-    header("Location: index.php?disconnect=2".$args);
+    header("Location: index.php?disconnect=2" . $args);
 }
 
 /*
@@ -121,13 +121,13 @@ if (!isset($_SESSION["centreon"])) {
             $a++;
         }
         $args .= "'";
-        header("Location: index.php?disconnect=1".$args);
+        header("Location: index.php?disconnect=1" . $args);
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {
-            $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            $args ? $args .= "&" . $key . "=" . $value : $args = $key . "=" . $value;
         }
-        header("Location: index.php?".$args."");
+        header("Location: index.php?" . $args . "");
     }
 }
 
@@ -174,7 +174,7 @@ $level3 = null;
 $level4 = null;
 switch (strlen($p)) {
     case 1:
-        $level1= $p;
+        $level1 = $p;
         break;
     case 3:
         $level1 = substr($p, 0, 1);
@@ -198,7 +198,7 @@ switch (strlen($p)) {
         $level4 = substr($p, 5, 2);
         break;
     default:
-        $level1= $p;
+        $level1 = $p;
         break;
 }
 
@@ -208,29 +208,33 @@ switch (strlen($p)) {
 
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir("./Themes/Centreon-2/Color")) {
+if ($handle = @opendir("./Themes/Centreon-2/Color")) {
     while ($file = @readdir($handle)) {
-        if (is_file("./Themes/Centreon-2/Color"."/$file")) {
+        if (is_file("./Themes/Centreon-2/Color" . "/$file")) {
             $tab_file_css[$i++] = $file;
         }
     }
     @closedir($handle);
 }
 
-$colorfile = "Color/". $tab_file_css[0];
+$colorfile = "Color/" . $tab_file_css[0];
 
 /*
  * Get CSS Order and color
  */
-$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
+$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
 if ($DBRESULT->fetchColumn() && ($elem = $DBRESULT->fetch())) {
-    $colorfile = "Color/".$elem["css_name"];
+    $colorfile = "Color/" . $elem["css_name"];
 }
 
 /*
  * Update Session Table For last_reload and current_page row
  */
-$DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."'");
+$query = "UPDATE `session` SET `current_page` = '" . $level1 . $level2 . $level3 . $level4 .
+    "', `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
+    "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
+    $centreon->user->user_id . "'";
+$DBRESULT = $pearDB->query($query);
 
 /*
  * Init Language
