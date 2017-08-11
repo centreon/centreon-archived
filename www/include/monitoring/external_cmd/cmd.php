@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  */
- 
+
 if (!isset($centreon)) {
     exit();
 }
@@ -84,7 +84,7 @@ if (isset($param["select"])) {
                 case 7:
                     svc_check($key, $en);
                     break;
-                
+
                 /*
                  * Notifications
                  */
@@ -97,7 +97,7 @@ if (isset($param["select"])) {
                 case 10:
                     svc_notifications($key, $en);
                     break;
-                
+
                 /* Auto Notification */
                 case 80:
                     autoNotificationServiceStart($key);
@@ -111,7 +111,7 @@ if (isset($param["select"])) {
                 case 83:
                     autoNotificationHostStop($key);
                     break;
-                
+
                 /* Auto Check */
                 case 90:
                     autoCheckServiceStart($key);
@@ -133,7 +133,7 @@ if (isset($param["select"])) {
                 case 95:
                     schedule_host_checks($key, 1);
                     break;
-                    
+
                 /*
                  * Acknowledge status
                  */
@@ -143,7 +143,7 @@ if (isset($param["select"])) {
                 case 15:
                     acknowledgeService($param);
                     break;
-                
+
                 /*
                  * Configure nagios Core
                  */
@@ -216,7 +216,7 @@ if (isset($param["select"])) {
                 case 42:
                     send_cmd("DISABLE_PERFORMANCE_DATA", "");
                     break;
-                
+
                 /*
                  * End Configuration Nagios Core
                  */
@@ -232,7 +232,7 @@ if (isset($param["select"])) {
                 case 46:
                     svc_event_handler($key, $en);
                     break;
-                
+
                 case 49:
                     host_flap_detection($key, 1);
                     break;
@@ -245,7 +245,7 @@ if (isset($param["select"])) {
                 case 52:
                     host_event_handler($key, 0);
                     break;
-                
+
                 case 59:
                     add_hostgroup_downtime($param["dtm"]);
                     break;
@@ -273,7 +273,7 @@ if (isset($param["select"])) {
                 case 67:
                     schedule_svc_check($key, 1, 1);
                     break;
-                
+
                 /* Auto Aknowledge */
                 case 70:
                     autoAcknowledgeServiceStart($key);
@@ -287,7 +287,7 @@ if (isset($param["select"])) {
                 case 73:
                     autoAcknowledgeHostStop($key);
                     break;
-            
+
                 /* Auto Notification */
                 case 80:
                     autoNotificationServiceStart($key);
@@ -301,7 +301,7 @@ if (isset($param["select"])) {
                 case 83:
                     autoNotificationHostStop($key);
                     break;
-                
+
                 /* Auto Check */
                 case 90:
                     autoCheckServiceStart($key);

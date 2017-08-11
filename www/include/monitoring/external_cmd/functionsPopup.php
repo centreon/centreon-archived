@@ -68,7 +68,7 @@ function massiveHostAck($key)
     $processedHosts[$hostName] = true;
 
     $persistent = isset($_GET['persistent']) && $_GET['persistent'] == "true" ? "1" : "0";
-    $notify = isset($_GET['notify']) && $_GET['notify'] == "true" ? "1" :"0";
+    $notify = isset($_GET['notify']) && $_GET['notify'] == "true" ? "1" : "0";
     $sticky = isset($_GET['sticky']) && $_GET['sticky'] == "true" ? "2" : "1";
     $force_check = isset($_GET['force_check']) && $_GET['force_check'] == "true" ? "1" : "0";
 
@@ -95,7 +95,7 @@ function massiveHostAck($key)
 
     $actions = $centreon->user->access->checkAction("service_acknowledgement");
     if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
-        $DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$hostName."' LIMIT 1");
+        $DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '" . $hostName . "' LIMIT 1");
         $row = $DBRES->fetchRow();
         $svc_tab = getMyHostServices($row['host_id']);
         if (count($svc_tab)) {
@@ -216,7 +216,7 @@ function massiveHostDowntime($key)
         if (!isset($tmp[0])) {
             throw new Exception('No host found');
         }
-        
+
         $host_name = $tmp[0];
         if (isset($processedHosts[$host_name])) {
             return null;
@@ -227,10 +227,14 @@ function massiveHostDowntime($key)
         $end = isset($_GET['end']) && $_GET['end'] ? $_GET['end'] : time();
         $comment = isset($_GET['comment']) && $_GET['comment'] ? sanitizeShellString($_GET["comment"]) : "";
         $fixed = isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
-        $duration = isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
-        $duration_scale = isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
+        $duration = isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration'])
+            ? $duration = $_GET['duration']
+            : $duration = 0;
+        $duration_scale = isset($_GET['duration_scale']) && $_GET['duration_scale']
+            ? $duration_scale = $_GET['duration_scale']
+            : $duration_scale = "s";
         $hostTime = isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" ? "1" : "0";
-        
+
         if ($duration > 0) {
             switch ($duration_scale) {
                 default:
@@ -248,19 +252,19 @@ function massiveHostDowntime($key)
                     break;
             }
         }
-        
+
         $host = getMyHostID($host_name);
-        
+
         $with_services = false;
         if (($centreon->user->access->checkAction("service_schedule_downtime") == true)
             && isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
             $with_services = true;
         }
-        
+
         $extCmdObj = new CentreonExternalCommand($centreon);
         $extCmdObj->addHostDowntime($host, $comment, $start, $end, $fixed, $duration, $with_services, $hostTime);
     }
-    
+
     return null;
 }
 
@@ -296,7 +300,7 @@ function massiveServiceDowntime($key)
             $_GET['duration'] : 0;
         $duration_scale = isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $_GET['duration_scale'] : "s";
         $hostTime = isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" ? "1" : "0";
-        
+
         if ($duration > 0) {
             switch ($duration_scale) {
                 default:
@@ -317,10 +321,10 @@ function massiveServiceDowntime($key)
                     break;
             }
         }
-        
+
         $host = getMyHostID($host_name);
         $service = getMyServiceID($svc_description, $host);
-        
+
         $extCmdObj = new CentreonExternalCommand($centreon);
         $extCmdObj->addSvcDowntime($host, $service, $comment, $start, $end, $fixed, $duration, $hostTime);
     }

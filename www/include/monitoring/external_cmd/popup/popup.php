@@ -56,7 +56,7 @@ if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_
 }
 $sid = session_id();
 if (isset($sid)) {
-    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
     if (!$session = $res->fetchRow()) {
         exit();
     }
