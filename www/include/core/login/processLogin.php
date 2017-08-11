@@ -32,10 +32,17 @@
  * For more information : contact@centreon.com
  *
  */
-        
+
 if (isset($_POST["centreon_token"])
-    || (isset($_GET["autologin"]) && $_GET["autologin"]  && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
+    || (isset($_GET["autologin"]) &&
+        $_GET["autologin"] &&
+        $_GET["autologin"] &&
+        isset($generalOptions["enable_autologin"]) &&
+        $generalOptions["enable_autologin"])
+    || (isset($_POST["autologin"]) &&
+        $_POST["autologin"] &&
+        isset($generalOptions["enable_autologin"]) &&
+        $generalOptions["enable_autologin"])
     || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
     /*
      * Init log class
@@ -52,7 +59,7 @@ if (isset($_POST["centreon_token"])
     isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
     isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = null;
     isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = null;
-    
+
     $useraliasP = null;
     $passwordP = null;
     if ($loginValidate) {
@@ -72,18 +79,32 @@ if (isset($_POST["centreon_token"])
         $encryptType = 1;
     }
 
-    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
+    $centreonAuth = new CentreonAuthSSO(
+        $useralias,
+        $password,
+        $autologin,
+        $pearDB,
+        $CentreonLog,
+        $encryptType,
+        $token,
+        $generalOptions
+    );
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
         $_SESSION["centreon"] = $centreon;
 
-        $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?, ?)");
-        $pearDB->execute($DBRESULT, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
+        $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
+            "VALUES (?, ?, ?, ?, ?)";
+        $DBRESULT = $pearDB->prepare($query);
+        $pearDB->execute(
+            $DBRESULT,
+            array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
+        );
         if (!isset($_POST["submit"])) {
-            if (isset ($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: main.php?p='.$_GET["p"]);
-            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: main.php?p='.$centreon->user->default_page);
+            if (isset($_GET["p"]) && $_GET["p"] != '') {
+                header('Location: main.php?p=' . $_GET["p"]);
+            } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                header('Location: main.php?p=' . $centreon->user->default_page);
             } else {
                 header('Location: main.php');
             }
