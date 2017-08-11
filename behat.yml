@@ -328,3 +328,9 @@ default:
       paths: [ %paths.base%/features/VendorConfiguration.feature ]
       contexts:
       - VendorConfigurationContext
+
+    first_notification_delay:
+      paths: [ %paths.base%/features/FirstNotificationDelay.feature ]
+      contexts:
+        - FirstNotificationDelayContext
+
