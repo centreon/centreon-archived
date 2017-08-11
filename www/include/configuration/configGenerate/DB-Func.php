@@ -33,22 +33,22 @@
  *
  */
 
-  /**
-   * Get The resolved criticality for a specific host
-   *
-   * @param CentreonDB $DB
-   * @param int $pollerId
-   * @return array
-   */
+/**
+ * Get The resolved criticality for a specific host
+ *
+ * @param CentreonDB $DB
+ * @param int $pollerId
+ * @return array
+ */
 function getMyHostTemplateCriticality($host_id)
 {
     global $pearDB, $critHTpl;
-    
+
     if (!$host_id) {
         return null;
     }
-    
-    $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order`";
+
+    $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . $host_id . "' ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
         if (isset($critHTpl[$row['host_tpl_id']]) && $critHTpl[$row['host_tpl_id']]) {
@@ -72,45 +72,60 @@ function getMyHostTemplateCriticality($host_id)
 function intCmdParam($DB, $pollerId)
 {
     $cache = array('tpl' => array(), 'svc' => array());
-    
+
     $commands = array();
     $DBRESULT = $DB->query("SELECT command_id, command_name FROM command");
     while ($data = $DBRESULT->fetchRow()) {
         $commands[$data["command_id"]] = $data["command_name"];
     }
     $DBRESULT->closeCursor();
-    
+
     $i = 0;
-    $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
+    $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id,
+                                command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr
                                  WHERE s.service_id = hsr.service_service_id
                                  AND hsr.host_host_id = nhr.host_host_id
-                                 AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
+                                 AND nhr.nagios_server_id = " . $DB->escape($pollerId) . "
                                  UNION
-                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
+                                 SELECT service_id, service_register, service_template_model_stm_id,
+                                  command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr, hostgroup_relation hgr
                                  WHERE s.service_id = hsr.service_service_id
                                  AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
                                  AND hgr.host_host_id = nhr.host_host_id
-                                 AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
+                                 AND nhr.nagios_server_id = " . $DB->escape($pollerId) . "
                                  UNION
-                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
+                                 SELECT service_id, service_register, service_template_model_stm_id,
+                                  command_command_id, command_command_id_arg
                                  FROM service s
                                  WHERE service_register = '0'
                                  ORDER BY service_register, service_template_model_stm_id");
     while ($data = $DBRESULT->fetchRow()) {
         if ($data["service_register"] == 1) {
             if ($data["command_command_id_arg"] && !$data["command_command_id"]) {
-                $cache["svc"][$data["service_id"]] = db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "cmd", $cache)).db2str($data["command_command_id_arg"]);
+                $cache["svc"][$data["service_id"]] =
+                    db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "cmd", $cache)) .
+                    db2str($data["command_command_id_arg"]);
             } elseif ($data["command_command_id"] && !$data["command_command_id_arg"]) {
-                $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "arg", $cache));
+                $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]] .
+                    db2str(getInfoInSvcTpl(
+                        $data["service_template_model_stm_id"],
+                        "arg",
+                        $cache
+                    ));
             } elseif ($data["command_command_id"] && $data["command_command_id_arg"]) {
-                $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str($data["command_command_id_arg"]);
+                $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]] .
+                    db2str($data["command_command_id_arg"]);
             } else {
                 $cache["svc"][$data["service_id"]] = null;
             }
         } else {
-            $cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $data["command_command_id"] != null ? $commands[$data["command_command_id"]] : null, 'tpl' => $data["service_template_model_stm_id"]);
+            $cache["tpl"][$data["service_id"]] = array(
+                'arg' => $data["command_command_id_arg"],
+                'cmd' => $data["command_command_id"] != null ? $commands[$data["command_command_id"]] : null,
+                'tpl' => $data["service_template_model_stm_id"]
+            );
         }
         $i++;
     }
@@ -160,7 +175,7 @@ function getMyServiceTPInCache($service_id = null, $cache)
     if (!$service_id) {
         return;
     }
-    
+
     $tab = array();
     while (1) {
         if (isset($cache[$service_id]["tp"])) {
@@ -206,7 +221,7 @@ function myHour($hour)
         return "00";
     }
     if ($hour < 10) {
-        return "0".$hour;
+        return "0" . $hour;
     }
     return $hour;
 }
@@ -217,7 +232,7 @@ function myMinute($min)
         return "00";
     }
     if ($min < 10 && $min > 0) {
-        return "0".$min;
+        return "0" . $min;
     }
     return $min;
 }
@@ -245,34 +260,41 @@ function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf)
                 if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
                 }
-                $PeriodBefore[$daybefore] .= $value.":".$tabValue[2]."-".(24 + $tabValue[3]).":".myMinute($tabValue[4]);
+                $PeriodBefore[$daybefore] .= $value . ":" . $tabValue[2] . "-" . (24 + $tabValue[3]) .
+                    ":" . myMinute($tabValue[4]);
             } elseif ($tabValue[1] < 0 && $tabValue[3] > 0) {
                 $value = ((24 + $tabValue[3]) % 24);
                 if ($Period[$day] != "") {
                     $Period[$day] .= ",";
                 }
-                $Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
+                $Period[$day] .= "00:00-" . myHour($value) . ":" . (($tabValue[4] < 10 && $tabValue[4] > 0)
+                        ? "0" . $tabValue[4]
+                        : $tabValue[4]);
                 if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
                 }
-                $PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
+                $PeriodBefore[$daybefore] .= (24 + $tabValue[1]) . ":" . myMinute($tabValue[2]) . "-24:00";
             } elseif ($tabValue[1] < 0 && $tabValue[3] == 0) {
                 $value = ((24 + $tabValue[3]) % 24);
                 if ($Period[$day] != "") {
                     $Period[$day] .= ",";
                 }
-                $Period[$day] .= "00:00-".myHour($value).":".(($tabValue[4] < 10 && $tabValue[4] > 0) ? "0".$tabValue[4] : $tabValue[4]);
+                $Period[$day] .= "00:00-" . myHour($value) . ":" . (($tabValue[4] < 10 && $tabValue[4] > 0)
+                        ? "0" . $tabValue[4]
+                        : $tabValue[4]);
                 if ($PeriodBefore[$daybefore] != "") {
                     $PeriodBefore[$daybefore] .= ",";
                 }
-                $PeriodBefore[$daybefore] .= (24 + $tabValue[1]).":".myMinute($tabValue[2])."-24:00";
+                $PeriodBefore[$daybefore] .= (24 + $tabValue[1]) . ":" . myMinute($tabValue[2]) . "-24:00";
             } else {
                 $value = ($tabValue[1] < 0 ? 24 + $tabValue[1] : $tabValue[1]);
                 if ($Period[$day] != "") {
                     $Period[$day] .= ",";
                 }
                 $tabValue[3] = ($tabValue[3] < 0 ? 24 + $tabValue[3] : $tabValue[3]);
-                $Period[$day] .= myHour($value).":".myMinute($tabValue[2])."-".(($tabValue[3] < 10 && $tabValue[3] > 0) ? "0".$tabValue[3] : $tabValue[3]).":".myMinute($tabValue[4]);
+                $Period[$day] .= myHour($value) . ":" . myMinute($tabValue[2]) . "-" .
+                    (($tabValue[3] < 10 && $tabValue[3] > 0) ? "0" . $tabValue[3] : $tabValue[3]) .
+                    ":" . myMinute($tabValue[4]);
             }
         } elseif ($gmt > 0) {
             $tabValue[1] += $gmt;
@@ -281,40 +303,42 @@ function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf)
                 if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
                 }
-                $PeriodAfter[$dayafter] .= ($tabValue[1] % 24).":".myMinute($tabValue[2])."-".($tabValue[3] % 24).":".myMinute($tabValue[4])."";
+                $PeriodAfter[$dayafter] .= ($tabValue[1] % 24) . ":" . myMinute($tabValue[2]) . "-" .
+                    ($tabValue[3] % 24) . ":" . myMinute($tabValue[4]) . "";
             } elseif ($tabValue[1] < 24 && $tabValue[3] > 24) {
                 if ($Period[$day] != "") {
                     $Period[$day] .= ",";
                 }
-                $Period[$day] .= myMinute($tabValue[1]).":".$tabValue[2]."-"."24:00";
+                $Period[$day] .= myMinute($tabValue[1]) . ":" . $tabValue[2] . "-" . "24:00";
                 $tabValue[3] = $tabValue[3] % 24;
                 if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
                 }
-                $PeriodAfter[$dayafter] .= "00:00-".myHour($tabValue[3]) .":".myMinute($tabValue[4])."";
+                $PeriodAfter[$dayafter] .= "00:00-" . myHour($tabValue[3]) . ":" . myMinute($tabValue[4]) . "";
             } elseif ($tabValue[1] == 24 && $tabValue[3] == 24) {
                 if ($PeriodAfter[$dayafter] != "") {
                     $PeriodAfter[$dayafter] .= ",";
                 }
-                $PeriodAfter[$dayafter] .= "00:".myMinute($tabValue[2])."-00:".myMinute($tabValue[4]);
+                $PeriodAfter[$dayafter] .= "00:" . myMinute($tabValue[2]) . "-00:" . myMinute($tabValue[4]);
             } else {
                 if (($tabValue[3] == 24 && $tabValue[4] > 0)) {
                     if ($PeriodAfter[$dayafter] != "") {
                         $PeriodAfter[$dayafter] .= ",";
                     }
-                    $PeriodAfter[$dayafter] .= "00:00-00:".myMinute($tabValue[4]);
+                    $PeriodAfter[$dayafter] .= "00:00-00:" . myMinute($tabValue[4]);
                     $tabValue[4] = "00";
                 }
                 if ($Period[$day] != "") {
                     $Period[$day] .= ",";
                 }
-                $Period[$day] .= myMinute($tabValue[1]).":".myMinute($tabValue[2])."-".myMinute($tabValue[3]).":".myMinute($tabValue[4]);
+                $Period[$day] .= myMinute($tabValue[1]) . ":" . myMinute($tabValue[2]) .
+                    "-" . myMinute($tabValue[3]) . ":" . myMinute($tabValue[4]);
             }
         } elseif ($gmt == 0) {
             if ($Period[$day] != "") {
                 $Period[$day] .= ",";
             }
-            $Period[$day] .= $tabValue[1].":".$tabValue[2]."-".$tabValue[3].":".$tabValue[4];
+            $Period[$day] .= $tabValue[1] . ":" . $tabValue[2] . "-" . $tabValue[3] . ":" . $tabValue[4];
         }
     }
 }
@@ -323,8 +347,9 @@ function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf)
 function isHostOnThisInstance($host_id, $instance_id)
 {
     global $pearDB;
-
-    $DBRESULT_relation = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host_id."' AND nagios_server_id = '".$instance_id."'");
+    $query = "SELECT * FROM ns_host_relation WHERE host_host_id = '" . $host_id .
+        "' AND nagios_server_id = '" . $instance_id . "'";
+    $DBRESULT_relation = $pearDB->query($query);
     if ($DBRESULT_relation->rowCount()) {
         return 1;
     } else {
@@ -335,8 +360,8 @@ function isHostOnThisInstance($host_id, $instance_id)
 function isLocalInstance($instance_id)
 {
     global $pearDB;
-    
-    $DBRESULT_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '".$instance_id."'");
+
+    $DBRESULT_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '" . $instance_id . "'");
     $data = $DBRESULT_relation->fetchRow();
     return $data["localhost"];
 }
@@ -344,19 +369,19 @@ function isLocalInstance($instance_id)
 function manageDependencies($ret = array())
 {
     global $pearDB, $form;
-    
+
     /*
      * Init Dependancies table
      */
     $gbArr = array();
     $gbArr = checkDependenciesStrong();
-    
+
     return ($gbArr);
 }
 
 function checkDependenciesStrong()
 {
-    global $pearDB,  $oreon;
+    global $pearDB, $oreon;
     $cctEnb = array();
     $cgEnb = array();
     $hostEnb = array();
@@ -364,7 +389,15 @@ function checkDependenciesStrong()
     $svEnb = array();
     $sgEnb = array();
     $omsEnb = array();
-    $gbEnb = array(0 => &$cctEnb, 1 => &$cgEnb, 2 => &$hostEnb, 3 => &$hgEnb, 4 => &$svEnb, 5 => &$sgEnb, 7 => &$omsEnb);
+    $gbEnb = array(
+        0 => &$cctEnb,
+        1 => &$cgEnb,
+        2 => &$hostEnb,
+        3 => &$hgEnb,
+        4 => &$svEnb,
+        5 => &$sgEnb,
+        7 => &$omsEnb
+    );
 
     /*
      * Contact
@@ -408,8 +441,8 @@ function checkDependenciesStrong()
     /*
      * Host Template Model
      */
-    $host = array();
-    $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host.host_register = '0' AND host.host_activate = '1'");
+    $query = "SELECT host_id, host_name FROM host WHERE host.host_register = '0' AND host.host_activate = '1'";
+    $DBRESULT = $pearDB->query($query);
     while ($host = $DBRESULT->fetchRow()) {
         $hostEnb[$host["host_id"]] = $host["host_name"];
     }
@@ -423,14 +456,17 @@ function checkDependenciesStrong()
      * Create template buffer
      */
     $hostTemplate = array();
-    $DBRESULT = $pearDB->query("SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host WHERE host.host_id = htr.host_host_id");
+    $query = "SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host " .
+        "WHERE host.host_id = htr.host_host_id";
+    $DBRESULT = $pearDB->query($query);
     while ($htpl = $DBRESULT->fetchRow()) {
-        $hostTemplate[$htpl["host_id"]]     = $htpl["host_tpl_id"];
+        $hostTemplate[$htpl["host_id"]] = $htpl["host_tpl_id"];
     }
 
-    $host = array();
-    $DBRESULT = $pearDB->query("SELECT host.host_id, host.host_name FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");
-    while ($host = $DBRESULT->fetchRow()) {
+    $query = "SELECT host.host_id, host.host_name FROM host " .
+        "WHERE host.host_register = '1' AND host.host_activate = '1'";
+    $DBRESULT = $pearDB->query();
+    while ($host = $DBRESULT->fetchRow($query)) {
         /*
          * If the Host is link to a Template, we think that the dependencies are manage in the template
          */
@@ -441,8 +477,9 @@ function checkDependenciesStrong()
             /*
              * Contactgroup dependancy
              */
-
-            $DBRESULT2 = $pearDB->query("SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr WHERE cghr.host_host_id = '".$host["host_id"]."'");
+            $query = "SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr " .
+                "WHERE cghr.host_host_id = '" . $host["host_id"] . "'";
+            $DBRESULT2 = $pearDB->query($query);
             while ($valid = $DBRESULT2->fetchRow()) {
                 isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
@@ -452,8 +489,9 @@ function checkDependenciesStrong()
             /*
              * Contact dependancy
              */
-
-            $DBRESULT2 = $pearDB->query("SELECT DISTINCT chr.contact_id FROM contact_host_relation chr WHERE chr.host_host_id = '".$host["host_id"]."'");
+            $query = "SELECT DISTINCT chr.contact_id FROM contact_host_relation chr " .
+                "WHERE chr.host_host_id = '" . $host["host_id"] . "'";
+            $DBRESULT2 = $pearDB->query($query);
             while ($valid = $DBRESULT2->fetchRow()) {
                 isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
@@ -470,7 +508,9 @@ function checkDependenciesStrong()
     $hostGroup = array();
     $DBRESULT = $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
     while ($hostGroup = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."'");
+        $query = "SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr " .
+            "WHERE hgr.hostgroup_hg_id = '" . $hostGroup["hg_id"] . "'";
+        $DBRESULT2 = $pearDB->query($query);
         while ($hostGroup = $DBRESULT2->fetchRow()) {
             if (isset($hostEnb[$hostGroup["host_host_id"]])) {
                 $hgEnb[$hostGroup["hostgroup_hg_id"]] = 1;
@@ -485,8 +525,8 @@ function checkDependenciesStrong()
     /*
      * Service Template Model
      */
-    $service = array();
-    $DBRESULT = $pearDB->query("SELECT DISTINCT sv.service_id FROM service sv WHERE sv.service_activate = '1' AND service_register = '0'");
+    $query = "SELECT DISTINCT sv.service_id FROM service sv WHERE sv.service_activate = '1' AND service_register = '0'";
+    $DBRESULT = $pearDB->query($query);
     while ($service = $DBRESULT->fetchRow()) {
         $svEnb[$service["service_id"]] = 1;
     }
@@ -498,9 +538,9 @@ function checkDependenciesStrong()
 
     $service = array();
     $DBRESULT = $pearDB->query("SELECT DISTINCT service_id, service_description, service_template_model_stm_id " .
-                               "FROM service " .
-                               "WHERE service_activate = '1' " .
-                               "AND service_register = '1'");
+        "FROM service " .
+        "WHERE service_activate = '1' " .
+        "AND service_register = '1'");
     while ($service = $DBRESULT->fetchRow()) {
         /*
          * If the Service is link to a Template, we think that
@@ -511,8 +551,9 @@ function checkDependenciesStrong()
         } else {
             $h = false;
             $hg = false;
-
-            $DBRESULT2 = $pearDB->query("SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$pearDB->escape($service["service_id"])."'");
+            $query = "SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr " .
+                "WHERE hsr.service_service_id = '" . $pearDB->escape($service["service_id"]) . "'";
+            $DBRESULT2 = $pearDB->query($query);
             while ($valid = $DBRESULT2->fetchRow()) {
                 isset($hostEnb[$valid["host_host_id"]]) ? $h = true : null;
                 isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : null;
@@ -535,7 +576,9 @@ function checkDependenciesStrong()
     $serviceGroup = array();
     $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup sg WHERE sg.sg_activate = '1'");
     while ($serviceGroup = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$serviceGroup["sg_id"]."'");
+        $query = "SELECT sgr.service_service_id FROM servicegroup_relation sgr " .
+            "WHERE sgr.servicegroup_sg_id = '" . $serviceGroup["sg_id"] . "'";
+        $DBRESULT2 = $pearDB->query($query);
         while ($valid = $DBRESULT2->fetchRow()) {
             if (isset($svEnb[$valid["service_service_id"]])) {
                 $sgEnb[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
@@ -564,7 +607,7 @@ function print_header($handle, $name)
 {
     $time = date("F j, Y, g:i a");
     $by = $name;
-    $str  = "###################################################################\n";
+    $str = "###################################################################\n";
     $len = strlen($str); // Get line lenght
     $str .= "#                                                                 #\n";
     $str .= "#                       GENERATED BY CENTREON                     #\n";
@@ -584,7 +627,7 @@ function print_header($handle, $name)
 
     // Add space to put text on center
     for ($i = 0; $i != $DBRESULT; $i++) {
-        $str  .= " ";
+        $str .= " ";
     }
 
     $str .= "#\n";
@@ -594,7 +637,7 @@ function print_header($handle, $name)
 
     // Add space to put text on center
     for ($i = 0; $i != $DBRESULT; $i++) {
-        $str  .= " ";
+        $str .= " ";
     }
     $str .= "#\n";
     $str .= "#                                                                 #\n";
@@ -711,7 +754,7 @@ function readINIfile($filename, $commentchar)
     foreach ($array1 as $filedata) {
         $dataline = trim($filedata);
         $firstchar = substr($dataline, 0, 1);
-        if ($firstchar!=$commentchar && $dataline!='') {
+        if ($firstchar != $commentchar && $dataline != '') {
             //It's an entry (not a comment and not a blank line)
             if ($firstchar == '[' && substr($dataline, -1, 1) == ']') {
                 //It's a section
@@ -729,7 +772,7 @@ function readINIfile($filename, $commentchar)
                     $array2[$section][$key] = stripcslashes($value);
                 } else {
                     //...without a value
-                    $array2[$section][strtoupper(trim($dataline))]='';
+                    $array2[$section][strtoupper(trim($dataline))] = '';
                 }
             }
         } else {
@@ -742,11 +785,11 @@ function readINIfile($filename, $commentchar)
 function writeINIfile($filename, $array1, $commentchar, $commenttext)
 {
     $handle = fopen($filename, 'wb');
-    if ($commenttext!='') {
-        $comtext = $commentchar.
+    if ($commenttext != '') {
+        $comtext = $commentchar .
             str_replace(
                 $commentchar,
-                "\r\n".$commentchar,
+                "\r\n" . $commentchar,
                 str_replace(
                     "\r",
                     $commentchar,
@@ -761,10 +804,10 @@ function writeINIfile($filename, $array1, $commentchar, $commenttext)
                     )
                 )
             );
-        if (substr($comtext, -1, 1)==$commentchar && substr($comtext, -1, 1)!=$commentchar) {
+        if (substr($comtext, -1, 1) == $commentchar && substr($comtext, -1, 1) != $commentchar) {
             $comtext = substr($comtext, 0, -1);
         }
-        fwrite($handle, $comtext."\r\n");
+        fwrite($handle, $comtext . "\r\n");
     }
     foreach ($array1 as $sections => $items) {
         //Write the section
@@ -773,16 +816,16 @@ function writeINIfile($filename, $array1, $commentchar, $commenttext)
         }
         //$section = ucfirst(preg_replace('/[\0-\37]|[\177-\377]/', "-", $sections));
         $section = strtoupper(preg_replace('/[\0-\37]|\177/', "-", $sections));
-        fwrite($handle, "[".$section."]\r\n");
+        fwrite($handle, "[" . $section . "]\r\n");
         foreach ($items as $keys => $values) {
             //Write the key/value pairs
             $key = strtoupper(preg_replace('/[\0-\37]|=|\177/', "-", $keys));
-            if (substr($key, 0, 1)==$commentchar) {
-                $key = '-'.substr($key, 1);
+            if (substr($key, 0, 1) == $commentchar) {
+                $key = '-' . substr($key, 1);
             }
             //  if (substr($values, 0, 1) == '"' && substr($values, -1, 1) == '"') { $values = substr($values, 1, -1); }
             $value = ucfirst(addcslashes($values, ''));
-            fwrite($handle, '    '.$key.'='.$value."\r\n");
+            fwrite($handle, '    ' . $key . '=' . $value . "\r\n");
         }
     }
     fclose($handle);
@@ -850,7 +893,7 @@ function getListIndexData()
     }
     $listRelation = array();
     while ($row = $res->fetchRow()) {
-        $id = $row['host_id'].';'.$row['service_id'];
+        $id = $row['host_id'] . ';' . $row['service_id'];
         $listRelation[$id] = true;
     }
     return $listRelation;
@@ -900,10 +943,10 @@ function getChildren($infos)
     while ($row = $res->fetchRow()) {
         if (!isset($children[$row['config_key']])) {
             $children[$row['config_key']] = array(
-                                                  'key' => $row['config_key'],
-                                                  'children' => getChildren($row),
-                                                  'values' => $row['config_value']
-                                                  );
+                'key' => $row['config_key'],
+                'children' => getChildren($row),
+                'values' => $row['config_value']
+            );
         } else {
             if (!is_array($children[$row['config_key']]['values'])) {
                 $children[$row['config_key']]['values'] = array($children[$row['config_key']]['values']);

@@ -41,10 +41,12 @@ if (!isset($centreon)) {
  *  Get Poller List
  */
 $acl = $centreon->user->access;
-$tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
-                                                  'order'      => array('name'),
-                                                  'keys'       => array('id'),
-                                                  'conditions' => array('ns_activate' => 1)));
+$tab_nagios_server = $acl->getPollerAclConf(array(
+    'get_row' => 'name',
+    'order' => array('name'),
+    'keys' => array('id'),
+    'conditions' => array('ns_activate' => 1)
+));
 /* Sort the list of poller server */
 $pollersId = explode(',', $_GET['poller']);
 $selectedPollers = array();
@@ -67,14 +69,21 @@ $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, ar
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
-$form->addElement('select', 'restart_mode', _("Method"), array(2 => _("Restart"), 1 => _("Reload")), array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
+$form->addElement(
+    'select',
+    'restart_mode',
+    _("Method"),
+    array(2 => _("Restart"), 1 => _("Reload")),
+    array('id' => 'nrestart_mode', 'style' => 'width: 220px;')
+);
 $form->setDefaults(array('debug' => '1', 'gen' => '1', 'restart_mode' => '1'));
 
 /* Add multiselect for pollers */
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list';
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => true,
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => true
 );
 $form->addElement('select2', 'nhost', _("Pollers"), array("class" => "required"), $attrPoller);
@@ -89,14 +98,24 @@ $redirect->setValue($o);
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success'));
+$sub = $form->addElement(
+    'button',
+    'submit',
+    _("Export"),
+    array('id' => 'exportBtn', 'onClick' => 'generationProcess();', 'class' => 'btc bt_success')
+);
 $msg = null;
 $stdout = null;
 
 $tpl->assign("noPollerSelectedLabel", _("Compulsory Poller"));
 $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
-$tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, ' .
+    '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], ' .
+    'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 
 include_once("help.php");
 
@@ -118,7 +137,8 @@ $tpl->assign('o', $o);
 
 $tpl->display("formGenerateFiles.ihtml");
 
-?><script type='text/javascript'>
+?>
+<script type='text/javascript'>
     var initPollers = '<?php echo json_encode($selectedPollers); ?>';
     var selectedPoller;
     var debugOption;
@@ -136,7 +156,7 @@ $tpl->display("formGenerateFiles.ihtml");
     var session_id = "<?php echo session_id(); ?>";
     tooltip.render();
     var msgTab = new Array();
-    
+
     msgTab['start'] = "<?php echo addslashes(_("Preparing environment")); ?>";
     msgTab['gen'] = "<?php echo addslashes(_("Generating files")); ?>";
     msgTab['debug'] = "<?php echo addslashes(_("Running debug mode")); ?>";
@@ -146,7 +166,7 @@ $tpl->display("formGenerateFiles.ihtml");
     msgTab['noPoller'] = "<?php echo addslashes(_("No poller selected")); ?>";
     msgTab['postcmd'] = "<?php echo addslashes(_("Executing command")); ?>";
 
-    jQuery(function() {
+    jQuery(function () {
 
         $('#progress_bar').progressbar({
             value: 0
@@ -163,7 +183,7 @@ $tpl->display("formGenerateFiles.ihtml");
 
     /**
      * Next step
-     * 
+     *
      * @returns void
      */
     function nextStep() {
@@ -201,8 +221,7 @@ $tpl->display("formGenerateFiles.ihtml");
      *
      * @return void
      */
-    function generationProcess()
-    {
+    function generationProcess() {
         if (!checkSelectedPoller()) {
             return null;
         }
@@ -222,8 +241,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Initializes generation options
      */
-    function initEnvironment()
-    {
+    function initEnvironment() {
         selectedPoller = jQuery('#nhost').val().join(',');
         debugOption = document.getElementById('ndebug').checked;
         generateOption = document.getElementById('ngen').checked;
@@ -251,18 +269,17 @@ $tpl->display("formGenerateFiles.ihtml");
         exportBtn = document.getElementById('exportBtn');
         exportBtn.disabled = true;
         if (selectedPoller == "-1") {
-            $('#consoleContent').append("<b><font color='red'>NOK</font></b> ("+ msgTab['noPoller'] +")<br/>");
+            $('#consoleContent').append("<b><font color='red'>NOK</font></b> (" + msgTab['noPoller'] + ")<br/>");
             abortProgress();
             return null;
         }
-       $('#consoleContent').append("<b><font color='green'>OK</font></b><br/>");
+        $('#consoleContent').append("<b><font color='green'>OK</font></b><br/>");
     }
 
     /**
      * Generate files
      */
-    function generateFiles()
-    {
+    function generateFiles() {
         if (debugOption && !generateOption) {
             $('#consoleContent').append(msgTab['debug'] + '... ');
         } else {
@@ -277,7 +294,7 @@ $tpl->display("formGenerateFiles.ihtml");
                 debug: debugOption,
                 generate: generateOption
             },
-            success: function(data) {
+            success: function (data) {
                 data = $(data);
                 displayStatusMessage(data);
                 displayDetails(data);
@@ -295,8 +312,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Move files
      */
-    function moveFiles()
-    {
+    function moveFiles() {
         $('#consoleContent').append(msgTab['move'] + "... ");
         jQuery.ajax({
             url: './include/configuration/configGenerate/xml/moveFiles.php',
@@ -305,7 +321,7 @@ $tpl->display("formGenerateFiles.ihtml");
             data: {
                 poller: selectedPoller
             },
-            success: function(data) {
+            success: function (data) {
                 data = $(data);
                 displayStatusMessage(data);
                 displayDetails(data);
@@ -323,8 +339,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Restart Pollers
      */
-    function restartPollers()
-    {
+    function restartPollers() {
         $('#consoleContent').append(msgTab['restart'] + "... ");
         jQuery.ajax({
             url: './include/configuration/configGenerate/xml/restartPollers.php',
@@ -334,7 +349,7 @@ $tpl->display("formGenerateFiles.ihtml");
                 poller: selectedPoller,
                 mode: restartMode
             },
-            success: function(data) {
+            success: function (data) {
                 data = $(data);
                 displayStatusMessage(data);
                 displayDetails(data);
@@ -361,7 +376,7 @@ $tpl->display("formGenerateFiles.ihtml");
             data: {
                 poller: selectedPoller
             },
-            success: function(data) {
+            success: function (data) {
                 data = $(data);
                 displayPostExecutionCommand(data);
                 if (isError(data) == "1") {
@@ -377,8 +392,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Display status message
      */
-    function displayStatusMessage(responseXML)
-    {
+    function displayStatusMessage(responseXML) {
         var status = responseXML.find("status");
         var error = responseXML.find("error");
         var str;
@@ -394,8 +408,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Display details
      */
-    function displayDetails(responseXML)
-    {
+    function displayDetails(responseXML) {
         var debug = responseXML.find("debug");
         var str;
 
@@ -427,8 +440,7 @@ $tpl->display("formGenerateFiles.ihtml");
      * Returns 1 if is error
      * Returns 0 otherwise
      */
-    function isError(responseXML)
-    {
+    function isError(responseXML) {
         var statuscode = responseXML.find("statuscode");
         if (statuscode.length) {
             return statuscode.text();
@@ -440,8 +452,8 @@ $tpl->display("formGenerateFiles.ihtml");
      * Action (generate, move, restart)
      */
     var errorClass = 'list_two';
-    function displayPhpErrorMsg(action, responseXML)
-    {
+
+    function displayPhpErrorMsg(action, responseXML) {
         var errors = responseXML.find('errorPhp');
         var titleError;
         if (errorClass == 'list_one') {
@@ -474,7 +486,8 @@ $tpl->display("formGenerateFiles.ihtml");
         trEl.appendChild(tdEl1);
         var tdEl2 = document.createElement('td');
         tdEl2.setAttribute('class', 'FormRowValue');
-        tdEl2.innerHTML = '<span style="position: relative; float: left; margin-right: 5px;"><a href="javascript:toggleErrorPhp(\'' + action + '\');" id="expend_' + action + '">[ + ]</a></span>';
+        tdEl2.innerHTML = '<span style="position: relative; float: left; margin-right: 5px;">'.
+        '<a href="javascript:toggleErrorPhp(\'' + action + '\');" id="expend_' + action + '">[ + ]</a></span>';
         trEl.appendChild(tdEl2);
         var divErrors = document.createElement('div');
         divErrors.setAttribute('id', 'errors_' + action);
@@ -482,12 +495,11 @@ $tpl->display("formGenerateFiles.ihtml");
         divErrors.style.visibility = 'hidden';
         tdEl2.appendChild(divErrors);
         for (var i = 0; i < errors.length; i++) {
-            divErrors.innerHTML +=  errors.item(i).firstChild.data;
+            divErrors.innerHTML += errors.item(i).firstChild.data;
         }
     }
 
-    function toggleErrorPhp(action) 
-    {
+    function toggleErrorPhp(action) {
         var linkEl = document.getElementById('expend_' + action);
         var divErrors = document.getElementById('errors_' + action);
         if (linkEl.innerHTML == '[ + ]') {
@@ -499,8 +511,7 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function cleanErrorPhp() 
-    {
+    function cleanErrorPhp() {
         var bodyErrors = document.getElementById('error_log');
         while (bodyErrors.hasChildNodes()) {
             bodyErrors.removeChild(bodyErrors.firstChild);
@@ -510,8 +521,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Updates progress
      */
-    function updateProgress()
-    {
+    function updateProgress() {
         var pct = 0;
         if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
             pct = curProgress + stepProgress;
@@ -527,8 +537,7 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Toggle debug
      */
-    function toggleDebug(pollerId)
-    {
+    function toggleDebug(pollerId) {
         if (pollerId) {
             if ($('#debug_' + pollerId).is(':visible')) {
                 $('#togglerp_' + pollerId).show();
@@ -542,8 +551,7 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function abortProgress()
-    {
+    function abortProgress() {
         $('#consoleContent').append(msgTab['abort']);
         exportBtn.disabled = false;
         steps = new Array();

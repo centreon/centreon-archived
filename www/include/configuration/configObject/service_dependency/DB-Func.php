@@ -125,12 +125,12 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
 
-                    $query = "SELECT * FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$key."'";
+                    $query = "SELECT * FROM dependency_hostChild_relation WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["dep_hostPar"] = "";
                     while ($host = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO dependency_hostChild_relation VALUES ('', '".$maxId["MAX(dep_id)"].
-                            "', '".$host["host_host_id"]."')";
+                        $query = "INSERT INTO dependency_hostChild_relation VALUES ('', '" . $maxId["MAX(dep_id)"] .
+                            "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostPar"] .= $host["host_host_id"] . ",";
                     }
