@@ -303,7 +303,7 @@ class CentreonACLGroup extends CentreonObject
 
         $linkedObjectsStr = '';
 
-        foreach($objectList as $currentObject) {
+        foreach ($objectList as $currentObject) {
             $linkedObjects = $this->getLinkedObject(
                 $aclGroupId,
                 $currentObject['relClass'],
