@@ -802,7 +802,7 @@ class CentreonServiceTemplate extends CentreonObject
      * @param array $tree
      * @param Centreon_Object_Service_Extended $extendedObj
      */
-    protected function parseTemplateTree($tree, $filter_id=null)
+    protected function parseTemplateTree($tree, $filter_id = null)
     {
         $commandObj = new \Centreon_Object_Command();
         $tpObj = new \Centreon_Object_Timeperiod();
@@ -903,7 +903,7 @@ class CentreonServiceTemplate extends CentreonObject
      *
      * @return void
      */
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $filters["service_register"] = $this->register;
         $elements = $this->object->getList(

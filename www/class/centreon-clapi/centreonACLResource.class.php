@@ -432,7 +432,6 @@ class CentreonACLResource extends CentreonObject
 
         $exportLine = '';
         foreach ($aclResourceList as $aclResource) {
-
             $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
                 . $aclResource['acl_res_name'] . $this->delim
                 . $aclResource['acl_res_alias'] . $this->delim . "\n";

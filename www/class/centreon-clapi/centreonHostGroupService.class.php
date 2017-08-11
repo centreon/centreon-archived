@@ -914,7 +914,7 @@ class CentreonHostGroupService extends CentreonObject
      *
      * @return void
      */
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $filters["service_register"] = $this->register;
 

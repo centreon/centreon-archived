@@ -141,8 +141,8 @@ class CentreonContact extends CentreonObject
             'contact_auth_type'
         );
         $this->exportExcludedParams = array_merge(
-                $this->insertParams,
-                array(
+            $this->insertParams,
+            array(
                     $this->object->getPrimaryKey(),
                     "contact_register"
                 )
@@ -448,7 +448,7 @@ class CentreonContact extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $filters["contact_register"] = $this->register;
         $elements = $this->object->getList(

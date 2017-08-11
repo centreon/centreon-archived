@@ -273,7 +273,7 @@ class CentreonACLMenu extends CentreonObject
      * @param int $parentTopologyId
      * @return void
      */
-    protected function processChildrenOf($action = "grant", $aclMenuId, $parentTopologyId)
+    protected function processChildrenOf($action = "grant", $aclMenuId = null, $parentTopologyId = null)
     {
         $sql = "SELECT topology_id, topology_page FROM topology WHERE topology_parent = ?";
         $res = $this->db->query($sql, array($parentTopologyId));
@@ -397,13 +397,13 @@ class CentreonACLMenu extends CentreonObject
                 "SETPARAM" . $this->delim .
                 $aclMenu['acl_topo_name'] . $this->delim;
 
-                if (!empty($aclMenu['acl_comments'])) {
-                    $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim . "\n";
-                }
+            if (!empty($aclMenu['acl_comments'])) {
+                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim . "\n";
+            }
 
 
             $exportLine .= 'activate' . $this->delim . $aclMenu['acl_topo_activate'] . $this->delim . "\n";
-            $exportLine .= $this->GrantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
+            $exportLine .= $this->grantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
 
             echo $exportLine;
             $exportLine = '';
@@ -415,7 +415,7 @@ class CentreonACLMenu extends CentreonObject
      * @param string $aclTopoName
      * @return string
      */
-    private function GrantMenu($aclTopoId, $aclTopoName)
+    private function grantMenu($aclTopoId, $aclTopoName)
     {
 
         $grantedMenu = '';

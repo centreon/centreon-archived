@@ -1077,12 +1077,12 @@ class CentreonHost extends CentreonObject
             # service templates linked
             $hostRel = new \Centreon_Object_Relation_Host_Service();
             $helements = $hostRel->getMergedParameters(
-                array("host_name"), 
-                array('service_description', 'service_id'), 
-                -1, 
-                0, 
-                null, 
-                null, 
+                array("host_name"),
+                array('service_description', 'service_id'),
+                -1,
+                0,
+                null,
+                null,
                 array("service_register" => 0, "host_id" => $filters['host_id']),
                 "AND"
             );
@@ -1093,12 +1093,12 @@ class CentreonHost extends CentreonObject
             # service linked
             $hostRel = new \Centreon_Object_Relation_Host_Service();
             $helements = $hostRel->getMergedParameters(
-                array("host_name"), 
-                array('service_description', 'service_id'), 
-                -1, 
-                0, 
-                null, 
-                null, 
+                array("host_name"),
+                array('service_description', 'service_id'),
+                -1,
+                0,
+                null,
+                null,
                 array("service_register" => 1, "host_id" => $filters['host_id']),
                 "AND"
             );
@@ -1109,15 +1109,15 @@ class CentreonHost extends CentreonObject
             # service hg linked and hostgroups
             $hostRel = new \Centreon_Object_Relation_Host_Group_Host();
             $helements = $hostRel->getMergedParameters(
-                array("hg_name", "hg_id"), 
-                array('*'), 
-                -1, 
-                0, 
-                null, 
-                null, 
+                array("hg_name", "hg_id"),
+                array('*'),
+                -1,
+                0,
+                null,
+                null,
                 array("host_id" => $filters['host_id']),
                 "AND"
-             );
+            );
             foreach ($helements as $helement) {
                 $this->api->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
                 $this->api->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
@@ -1148,8 +1148,13 @@ class CentreonHost extends CentreonObject
      * @param int $depth The depth to search
      * @return array
      */
-    public function getTemplateChain($hostId, $alreadyProcessed = array(), $depth = -1, $allFields = false, $fields = array())
-    {
+    public function getTemplateChain(
+        $hostId,
+        $alreadyProcessed = array(),
+        $depth = -1,
+        $allFields = false,
+        $fields = array()
+    ) {
         $templates = array();
 
         if (($depth == -1) || ($depth > 0)) {

@@ -307,8 +307,8 @@ class CentreonAPI
                     $finalNamespace = implode(
                         '',
                         array_map(
-                            function($n) {
-                            return ucfirst($n);
+                            function ($n) {
+                                return ucfirst($n);
                             },
                             explode('-', $finalNamespace)
                         )
@@ -329,9 +329,6 @@ class CentreonAPI
         $this->optGen = $this->getOptGen();
         $version = $this->optGen["version"];
         $this->delim = ";";
-
-
-
     }
 
     /**
@@ -339,8 +336,14 @@ class CentreonAPI
      * @param void
      * @return CentreonApi
      */
-    public static function getInstance($user=null, $password=null, $action=null, $centreon_path=null, $options=null) {
-        if(is_null(self::$_instance)) {
+    public static function getInstance(
+        $user = null,
+        $password = null,
+        $action = null,
+        $centreon_path = null,
+        $options = null
+    ) {
+        if (is_null(self::$_instance)) {
             self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
         }
 
@@ -386,7 +389,6 @@ class CentreonAPI
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
-
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
                     && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])) {
@@ -632,11 +634,11 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-
                 if ($this->relationObject[$this->object]['module'] === 'core') {
                     $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
                 } else {
-                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
+                    $objName = $this->relationObject[$this->object]['namespace'] .
+                        "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
                 }
             } else {
                 $objName = "";
@@ -811,9 +813,9 @@ class CentreonAPI
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                 }
+                }
                 $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
-              }
+            }
             # Don't want return \n
             exit($this->return_code);
         } else {
@@ -1051,7 +1053,6 @@ class CentreonAPI
                             $this->aExport[] = $key;
                             array_pop($aObject);
                         } else {
-
                             $aObject = array_merge($oObjet, $aObject);
                         }
                     } else {
@@ -1062,7 +1063,6 @@ class CentreonAPI
                     array_pop($aObject);
                 }
             }
-
         }
     }
 }
