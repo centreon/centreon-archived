@@ -365,7 +365,13 @@ sub databasesBackup() {
 
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            if($mysql_host == "127.0.0.1") {
+                `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            }
+            else
+            {
+            	`ssh centreon@$mysql_host sudo /usr/share/centreon/centreon-backup-mysql.sh -b $BACKUP_DIR -d $today`;
+            }
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -374,7 +380,13 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            if($mysql_host == "127.0.0.1") {
+                `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            }
+            else
+            {
+            	`ssh centreon@$mysql_host sudo /usr/share/centreon/centreon-backup-mysql.sh -b $BACKUP_DIR -d $today -p`;
+            }
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -419,49 +431,49 @@ sub databasesBackup() {
         $dbh->disconnect;
     }
     # End of Db dump
+    	if ($mysql_host != "127.0.0.1" && $BACKUP_DATABASE_TYPE != '1')
+		# Copy archives to local dir
+		mkpath($BACKUP_DIR, {mode => 0755, error => \my $err_list});
+		if (@$err_list) {
+			for my $diag (@$err_list) {
+				my ($file, $message) = %$diag;
+				if ($file eq '') {
+					print STDERR "Unable to create backup directory because: " . $message . "\n";
+				} else {
+					print STDERR "Problem with " . $file . ": " . $message . "\n";
+				}
+			}
+		}
 
-	# Copy archives to local dir
-	mkpath($BACKUP_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create backup directory because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with " . $file . ": " . $message . "\n";
+		# Export archives
+		exportBackup();
+	    if (-r $TEMP_DB_DIR."/".$today."-mysql-full.tar.gz") {
+		move($TEMP_DB_DIR."/".$today."-mysql-full.tar.gz", $BACKUP_DIR."/".$today."-mysql-full.tar.gz");
+	    }
+	    if (-r $TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz") {
+		move($TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz", $BACKUP_DIR."/".$today."-mysql-partial.tar.gz");
+	    }
+	    if (-r $TEMP_DB_DIR."/".$today."-centreon.sql.gz") {
+		move($TEMP_DB_DIR."/".$today."-centreon.sql.gz", $BACKUP_DIR."/".$today."-centreon.sql.gz");
+	    }
+	    if (-r $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz") {
+		move($TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz", $BACKUP_DIR."/".$today."-centreon_storage.sql.gz");
+	    }
+
+		# Delete temporary directoriess
+		chdir;
+		rmtree($TEMP_DB_DIR, {mode => 0755, error => \my $err_list});
+		if (@$err_list) {
+			for my $diag (@$err_list) {
+				my ($file, $message) = %$diag;
+				if ($file eq '') {
+				    print STDERR "Unable to remove temporary directories because: ".$message . "\n";
+				} else {
+				    print STDERR "Problem unlinking ".$file.": ".$message, . "\n";
+				}
 			}
 		}
 	}
-
-	# Export archives
-	exportBackup();
-    if (-r $TEMP_DB_DIR."/".$today."-mysql-full.tar.gz") {
-        move($TEMP_DB_DIR."/".$today."-mysql-full.tar.gz", $BACKUP_DIR."/".$today."-mysql-full.tar.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz") {
-        move($TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz", $BACKUP_DIR."/".$today."-mysql-partial.tar.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-centreon.sql.gz") {
-    	move($TEMP_DB_DIR."/".$today."-centreon.sql.gz", $BACKUP_DIR."/".$today."-centreon.sql.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz") {
-    	move($TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz", $BACKUP_DIR."/".$today."-centreon_storage.sql.gz");
-    }
-
-	# Delete temporary directoriess
-	chdir;
-	rmtree($TEMP_DB_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-			    print STDERR "Unable to remove temporary directories because: ".$message . "\n";
-			} else {
-			    print STDERR "Problem unlinking ".$file.": ".$message, . "\n";
-			}
-		}
-	}
-
 	my ($tsec,$tmin,$thour,$tmday,$tmon,$tyear,$twday,$tyday,$tisdst) = localtime(time);
 	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$tyear), ($tmon+1), $tmday, $thour, $tmin, $tsec) . "] Finish database backup processus\n";
 }
