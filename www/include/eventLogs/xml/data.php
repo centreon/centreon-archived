@@ -510,8 +510,8 @@ $req = "SELECT SQL_CALC_FOUND_ROWS ".(!$is_admin ? "DISTINCT" : "")."
         logs.instance_name
         FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ?
-    " inner join centreon_acl acl on ((logs.host_id = acl.host_id AND logs.service_id IS NULL) OR "
-    . " (logs.host_id = acl.host_id AND acl.service_id = logs.service_id)) "
+    " inner join centreon_acl acl on (logs.host_id = acl.host_id AND (acl.service_id IS NULL OR "
+    . " acl.service_id = logs.service_id)) "
     . " WHERE acl.group_id IN (".$access->getAccessGroupsString().") AND " : "WHERE ")
     . " logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
 
