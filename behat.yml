@@ -324,6 +324,11 @@ default:
       contexts:
       - HostDependencyConfigurationContext
 
+    service_dependency_configuration:
+      paths: [ %paths.base%/features/ServiceDependencyConfiguration.feature ]
+      contexts:
+      - ServiceDependencyConfigurationContext
+
     service_group_dependency_configuration:
       paths: [ %paths.base%/features/ServiceGroupDependencyConfiguration.feature ]
       contexts:
