@@ -135,12 +135,14 @@ class Service extends AbstractService {
             }
 
             if (isset($services_tpl[$service_tpl_id]['contacts']) &&
-                $services_tpl[$service_tpl_id]['contacts'] != '') {
+                $services_tpl[$service_tpl_id]['contacts'] != ''
+            ) {
                 $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] = 1;
             }
 
             if (isset($services_tpl[$service_tpl_id]['contact_groups']) &&
-                $services_tpl[$service_tpl_id]['contact_groups'] != '') {
+                $services_tpl[$service_tpl_id]['contact_groups'] != ''
+            ) {
                 $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = 1;
             }
 
