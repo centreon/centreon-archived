@@ -240,16 +240,20 @@ class WikiApi
 
         $token = $this->getMethodToken('delete', $title);
 
-        $postfields = array(
-            'action' => 'delete',
-            'title' => $title,
-            'token' => $token
-        );
+        if($token){
+            $postfields = array(
+                'action' => 'delete',
+                'title' => $title,
+                'token' => $token
+            );
 
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
-        curl_exec($this->curl);
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+            curl_exec($this->curl);
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getAllPages()

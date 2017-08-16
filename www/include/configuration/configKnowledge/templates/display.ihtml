@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<div id="errorMsg" class="inactive"></div>
 <form name='form' method="POST">
     <table class="ajaxOption table">
         <tr>
@@ -241,7 +242,15 @@
                 title: title
             }),
             success: function (data) {
-                location.reload()
+                if(data.result){
+                    location.reload()
+                } else {
+                    var msg = "Deletion failed, please check your wiki configuration and your wiki user rights.";
+                    var $popin = jQuery("#errorMsg");
+                    $popin.html(msg);
+                    jQuery($popin).css('display', 'block');
+                    $popin.centreonPopin("open");
+                }
             }
         });
     }
