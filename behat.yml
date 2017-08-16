@@ -274,7 +274,77 @@ default:
       contexts:
       - CommandConfigurationContext
 
+    service_group_configuration:
+      paths: [ %paths.base%/features/ServiceGroupConfiguration.feature ]
+      contexts:
+      - ServiceGroupConfigurationContext
+
+    service_configuration:
+      paths: [ %paths.base%/features/ServiceConfiguration.feature ]
+      contexts:
+      - ServiceConfigurationContext
+
     host_group_service_configuration:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
       contexts:
       - HostGroupServiceConfigurationContext
+
+    service_template_configuration:
+      paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
+      contexts:
+      - ContactTemplateConfigurationContext
+
+    service_category_configuration:
+      paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
+      contexts:
+      - ServiceCategoryConfigurationContext
+
+    escalation_configuration:
+      paths: [ %paths.base%/features/EscalationConfiguration.feature ]
+      contexts:
+      - EscalationConfigurationContext
+
+    meta_service_configuration:
+      paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
+      contexts:
+      - MetaServiceConfigurationContext
+
+    host_group_dependency_configuration:
+      paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
+      contexts:
+      - HostGroupDependencyConfigurationContext
+
+    service_submit_result:
+      paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
+      contexts:
+      - ServiceSubmitResultContext
+
+    host_dependency_configuration:
+      paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
+      contexts:
+      - HostDependencyConfigurationContext
+
+    service_group_dependency_configuration:
+      paths: [ %paths.base%/features/ServiceGroupDependencyConfiguration.feature ]
+      contexts:
+      - ServiceGroupDependencyConfigurationContext
+
+    connector_configuration:
+      paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
+      contexts:
+      - ConnectorConfigurationContext
+
+    vendor_configuration:
+      paths: [ %paths.base%/features/VendorConfiguration.feature ]
+      contexts:
+      - VendorConfigurationContext
+
+    first_notification_delay:
+      paths: [ %paths.base%/features/FirstNotificationDelay.feature ]
+      contexts:
+        - FirstNotificationDelayContext
+
+    meta_service_dependency_configuration:
+      paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
+      contexts:
+      - MetaServiceDependencyConfigurationContext

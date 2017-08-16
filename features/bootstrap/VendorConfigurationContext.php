@@ -1,76 +1,66 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\Configuration\ContactGroupsConfigurationPage;
-use Centreon\Test\Behat\Configuration\ContactGroupConfigurationListingPage;
-use Centreon\Test\Behat\Administration\ACLGroupConfigurationPage;
+use Centreon\Test\Behat\Configuration\VendorConfigurationPage;
+use Centreon\Test\Behat\Configuration\VendorConfigurationListingPage;
 
-class ContactGroupConfigurationContext extends CentreonContext
+class VendorConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
     protected $initialProperties = array(
-        'name' => 'contactGroupName',
-        'alias' => 'contactGroupAlias',
-        'contacts' => 'Guest',
-        'acl' => 'ALL',
-        'status' => 1,
-        'comments' => 'contactGroupComment'
+        'name' => 'vendorName',
+        'alias' => 'vendorAlias',
+        'description' => 'vendorDescription'
     );
 
     protected $updatedProperties = array(
-        'name' => 'contactGroupNameChanged',
-        'alias' => 'contactGroupAliasChanged',
-        'contacts' => 'User',
-        'acl' => 'aclGroupName',
-        'status' => 1,
-        'comments' => 'contactGroupCommentChanged'
-    );
-
-    protected $aclGroup = array(
-        'group_name' => 'aclGroupName',
-        'group_alias' => 'aclGroupAlias'
+        'name' => 'vendorNameChanged',
+        'alias' => 'vendorAliasChanged',
+        'description' => 'vendorDescriptionChanged'
     );
 
     /**
-     * @Given a contact group is configured
+     * @Given a vendor is configured
      */
-    public function aContactGroupIsConfigured()
+    public function aVendorIsConfigured()
     {
-        $this->currentPage = new ContactGroupsConfigurationPage($this);
+        $this->currentPage = new VendorConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @When I update the contact group properties
+     * @When I change the properties of a vendor
      */
-    public function iConfigureTheContactGroupProperties()
+    public function iChangeThePropertiesOfAVendor()
     {
-        $this->currentPage = new ACLGroupConfigurationPage($this);
-        $this->currentPage->setProperties($this->aclGroup);
-        $this->currentPage->save();
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @Then the contact group properties are updated
+     * @Then the properties are updated
      */
-    public function theContactGroupPropertiesAreUpdated()
+    public function thePropertiesAreUpdated()
     {
         $this->tableau = array();
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                    $this->currentPage = new VendorConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
                         if ($value != $object[$key]) {
-                            $this->tableau[] = $key;
+                            if (is_array($value)) {
+                                $value = implode(' ', $value);
+                            }
+                            if ($value != $object[$key]) {
+                                $this->tableau[] = $key;
+                            }
                         }
                     }
                     return count($this->tableau) == 0;
@@ -79,16 +69,17 @@ class ContactGroupConfigurationContext extends CentreonContext
                 5
             );
         } catch (\Exception $e) {
+            $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
     }
 
     /**
-     * @When I duplicate a contact group
+     * @When I duplicate a vendor
      */
-    public function iDuplicateAContactGroup()
+    public function iDuplicateAVendor()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
@@ -96,15 +87,15 @@ class ContactGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @Then the new contact group has the same properties
+     * @Then the new vendor has the same properties
      */
-    public function theNewContactGroupHasTheSameProperties()
+    public function theNewVendorHasTheSameProperties()
     {
         $this->tableau = array();
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                    $this->currentPage = new VendorConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
                     $object = $this->currentPage->getProperties();
                     foreach ($this->initialProperties as $key => $value) {
@@ -129,11 +120,11 @@ class ContactGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @When I delete a contact group
+     * @When I delete a vendor
      */
-    public function iDeleteAContactGroup()
+    public function iDeleteAVendor()
     {
-        $this->currentPage = new ContactGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
@@ -141,13 +132,13 @@ class ContactGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @Then the deleted contact group is not displayed in the list
+     * @Then the deleted object is not displayed in the list
      */
-    public function theDeletedContactGroupIsNotDisplayedInTheList()
+    public function theDeletedObjectIsNotDisplayedInTheList()
     {
         $this->spin(
             function ($context) {
-                $this->currentPage = new ContactGroupConfigurationListingPage($this);
+                $this->currentPage = new VendorConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
                 foreach ($object as $value) {
