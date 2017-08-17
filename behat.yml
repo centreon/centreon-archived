@@ -199,6 +199,11 @@ default:
       contexts:
       - ContactGroupConfigurationContext
 
+    host_template_basics_operations:
+      paths: [ %paths.base%/features/HostTemplateBasicsOperations.feature ]
+      contexts:
+      - HostTemplateBasicsOperationsContext
+
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts:
@@ -263,7 +268,7 @@ default:
       paths: [ %paths.base%/features/MassiveChangeServices.feature ]
       contexts:
       - MassiveChangeServicesContext
-      
+
     virtual_metric_handle:
       paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
       contexts:

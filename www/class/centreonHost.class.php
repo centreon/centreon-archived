@@ -1727,11 +1727,11 @@ class CentreonHost
                 break;
             case 'host_hcs':
                 $parameters['type'] = 'relation';
-                $parameters['externalObject']['object'] = 'centreonHostcategories';
                 $parameters['externalObject']['table'] = 'hostcategories';
                 $parameters['externalObject']['id'] = 'hc_id';
                 $parameters['externalObject']['name'] = 'hc_name';
                 $parameters['externalObject']['comparator'] = 'hc_id';
+                $parameters['externalObject']['additionalComparator'] = array('level' => null);
                 $parameters['relationObject']['table'] = 'hostcategories_relation';
                 $parameters['relationObject']['field'] = 'hostcategories_hc_id';
                 $parameters['relationObject']['comparator'] = 'host_host_id';
