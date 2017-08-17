@@ -515,7 +515,7 @@ if (!$sqlError) {
         $obj->XML->writeElement(
             "ca",
             $data["current_attempt"] . "/" . $data["max_check_attempts"]
-                . " (" . $obj->stateType[$data["state_type"]] . ")"
+            . " (" . $obj->stateType[$data["state_type"]] . ")"
         );
         if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
             $obj->XML->writeElement("hci", 1); // has criticality
@@ -535,13 +535,13 @@ if (!$sqlError) {
         $obj->XML->writeElement(
             "dtmXml",
             "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid="
-                . $data['host_id'] . "&svc_id=" . $data['service_id']
+            . $data['host_id'] . "&svc_id=" . $data['service_id']
         );
         $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
         $obj->XML->writeElement(
             "ackXml",
             "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid="
-                . $data['host_id'] . "&svc_id=" . $data['service_id']
+            . $data['host_id'] . "&svc_id=" . $data['service_id']
         );
         $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
@@ -590,7 +590,15 @@ if (!$sqlError) {
                     $data["notes_url"]
                 );
             }
-            $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"])));
+            $obj->XML->writeElement(
+                "snu",
+                CentreonUtils::escapeSecure(
+                    $obj->serviceObj->replaceMacroInString(
+                        $data["service_id"],
+                        $data["notes_url"]
+                    )
+                )
+            );
         } else {
             $obj->XML->writeElement("snu", 'none');
         }
@@ -598,7 +606,11 @@ if (!$sqlError) {
         if ($data["action_url"] != "") {
             $data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
             $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
-            $data["action_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["action_url"]);
+            $data["action_url"] = str_replace(
+                "\$SERVICESTATE\$",
+                $obj->statusService[$data["state"]],
+                $data["action_url"]
+            );
             $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
             if (isset($data["alias"]) && $data["alias"]) {
                 $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);

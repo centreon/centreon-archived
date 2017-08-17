@@ -65,16 +65,16 @@ $obj->getDefaultFilters();
 /* **************************************************
  * Check Arguments From GET tab
  */
-$o          = $obj->checkArgument("o", $_GET, "h");
-$p          = $obj->checkArgument("p", $_GET, "2");
-$nc         = $obj->checkArgument("nc", $_GET, "0");
-$num        = $obj->checkArgument("num", $_GET, 0);
-$limit      = $obj->checkArgument("limit", $_GET, 20);
-$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o = $obj->checkArgument("o", $_GET, "h");
+$p = $obj->checkArgument("p", $_GET, "2");
+$nc = $obj->checkArgument("nc", $_GET, "0");
+$num = $obj->checkArgument("num", $_GET, 0);
+$limit = $obj->checkArgument("limit", $_GET, 20);
+$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search     = $obj->checkArgument("search", $_GET, "");
-$sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order      = $obj->checkArgument("order", $_GET, "ASC");
+$search = $obj->checkArgument("search", $_GET, "");
+$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 /*
  * Backup poller selection
@@ -107,12 +107,18 @@ $rq1 .= "WHERE hosts.name NOT LIKE '_Module_%' "
     . $obj->access->queryBuilder("AND", "hosts.host_id", "centreon_acl.host_id") . " "
     . $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr) . " ";
 
-if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcSum_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0" || $o == "svcSum_ack_0") {
+if ($o == "svcgrid_pb" ||
+    $o == "svcOV_pb" ||
+    $o == "svcSum_pb" ||
+    $o == "svcgrid_ack_0" ||
+    $o == "svcOV_ack_0" ||
+    $o == "svcSum_ack_0"
+) {
     $rq1 .= "AND hosts.host_id IN ( "
-    . "SELECT s.host_id FROM services s "
-    . "WHERE s.state != 0 "
-    . "AND s.state != 4 "
-    . "AND s.enabled = 1) ";
+        . "SELECT s.host_id FROM services s "
+        . "WHERE s.state != 0 "
+        . "AND s.state != 4 "
+        . "AND s.enabled = 1) ";
 }
 
 if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1" || $o == "svcSum_ack_1") {
@@ -132,7 +138,7 @@ if ($instance != -1) {
 
 if ($hostgroups) {
     $rq1 .= " AND hosts.host_id = hg.host_id "
-        . "AND hg.hostgroup_id IN (".$hostgroups.") "
+        . "AND hg.hostgroup_id IN (" . $hostgroups . ") "
         . "AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 
@@ -146,7 +152,7 @@ switch ($sort_type) {
         break;
 }
 
-    # LIMIT
+# LIMIT
 $rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
 
 
@@ -173,7 +179,7 @@ $DBRESULT_NDO1 = $obj->DBC->query($rq1);
 while ($ndo = $DBRESULT_NDO1->fetchRow()) {
     $tab_final[$ndo["name"]]["nb_service_k"] = 0;
     $tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
-    if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
+    if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
         $tab_final[$ndo["name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 0, $obj);
     }
     $tab_final[$ndo["name"]]["nb_service_w"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 1, $obj);

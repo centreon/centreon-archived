@@ -78,10 +78,10 @@ $centreonlang->bindLang();
 /** **************************************************
  * Check Arguments From GET tab
  */
-$svc_id         = $obj->checkArgument("svc_id", $_GET, 0);
-$enable         = $obj->checkArgument("enable", $_GET, "");
-$disable        = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$svc_id = $obj->checkArgument("svc_id", $_GET, 0);
+$enable = $obj->checkArgument("enable", $_GET, "");
+$disable = $obj->checkArgument("disable", $_GET, "disable");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 $tab = preg_split('/\_/', $svc_id);
 $host_id = $tab[0];
@@ -91,34 +91,34 @@ $service_id = $tab[1];
  * Get Service status
  */
 $rq1 = "SELECT s.state," .
-        " h.name, " .
-        " s.description," .
-        " s.last_check," .
-        " s.next_check," .
-        " s.last_state_change," .
-        " s.last_notification," .
-        " s.last_hard_state_change," .
-        " s.last_hard_state," .
-        " s.latency," .
-        " s.last_time_ok," .
-        " s.last_time_critical," .
-        " s.last_time_unknown," .
-        " s.last_time_warning," .
-        " s.notification_number," .
-        " s.scheduled_downtime_depth," .
-        " s.output," .
-        " s.notes," .
-        " ROUND(s.percent_state_change) as percent_state_change," .
-        " s.notify," .
-        " s.perfdata," .
-        " s.state_type," .
-        " s.execution_time," .
-        " s.event_handler_enabled, " .
-        " s.icon_image, " .
-        " s.display_name " .
-        " FROM hosts h, services s " .
-        " WHERE s.host_id = h.host_id " .
-        " AND s.host_id = $host_id AND service_id = $service_id LIMIT 1";
+    " h.name, " .
+    " s.description," .
+    " s.last_check," .
+    " s.next_check," .
+    " s.last_state_change," .
+    " s.last_notification," .
+    " s.last_hard_state_change," .
+    " s.last_hard_state," .
+    " s.latency," .
+    " s.last_time_ok," .
+    " s.last_time_critical," .
+    " s.last_time_unknown," .
+    " s.last_time_warning," .
+    " s.notification_number," .
+    " s.scheduled_downtime_depth," .
+    " s.output," .
+    " s.notes," .
+    " ROUND(s.percent_state_change) as percent_state_change," .
+    " s.notify," .
+    " s.perfdata," .
+    " s.state_type," .
+    " s.execution_time," .
+    " s.event_handler_enabled, " .
+    " s.icon_image, " .
+    " s.display_name " .
+    " FROM hosts h, services s " .
+    " WHERE s.host_id = h.host_id " .
+    " AND s.host_id = $host_id AND service_id = $service_id LIMIT 1";
 
 /*
  * Init Buffer
@@ -133,7 +133,7 @@ if ($data = $DBRESULT->fetchRow()) {
     /* Split the plugin_output */
     $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
     if (strlen($outputLines[0]) > 100) {
-        $pluginShortOuput = sprintf("%.100s", $outputLines[0])."...";
+        $pluginShortOuput = sprintf("%.100s", $outputLines[0]) . "...";
     } else {
         $pluginShortOuput = $outputLines[0];
     }
@@ -205,8 +205,8 @@ if ($data = $DBRESULT->fetchRow()) {
     }
 
     $tab_perf = preg_split("/\ /", $data["perfdata"]);
-    $perf_data = array_slice($tab_perf,0,4);
-    if(count($tab_perf) > 5) {
+    $perf_data = array_slice($tab_perf, 0, 4);
+    if (count($tab_perf) > 5) {
         $perf_data[5] = "...";
     }
 

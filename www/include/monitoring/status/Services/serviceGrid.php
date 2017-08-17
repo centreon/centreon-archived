@@ -57,7 +57,7 @@ if (isset($_GET["host_search"])) {
 $tab_class = array(
     "0" => "list_one",
     "1" => "list_two"
-    );
+);
 $rows = 10;
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -102,47 +102,60 @@ $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 $tpl->assign("tab_order", $tab_order);
 ?>
-<script type="text/javascript">
-    _sid = '<?php echo $sid ?>';
-    _tm = <?php echo $tM ?>;
-    p = <?php echo $p ?>;
-    
-    function setO(_i) {
-        document.forms['form'].elements['cmd'].value = _i;
-        document.forms['form'].elements['o1'].selectedIndex = 0;
-        document.forms['form'].elements['o2'].selectedIndex = 0;
-    }
-    function displayingLevel1(val)
-    {
-       _o = val;
-       if (_o == 'svcOV') { 
-            _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
-            _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
-        } else {
-            _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
-            _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
-        }
-        monitoring_refresh();
-    }
-    function displayingLevel2(val)
-    {
-        var sel1 = document.getElementById("typeDisplay").value;
-        _o = sel1;
-        if (val != '') {
-            _o = _o + "_" + val;
+    <script type="text/javascript">
+        _sid = '<?php echo $sid ?>';
+        _tm = <?php echo $tM ?>;
+        p = <?php echo $p ?>;
+
+        function setO(_i) {
+            document.forms['form'].elements['cmd'].value = _i;
+            document.forms['form'].elements['o1'].selectedIndex = 0;
+            document.forms['form'].elements['o2'].selectedIndex = 0;
         }
 
-        monitoring_refresh();
-    }
-</script>
+        function displayingLevel1(val) {
+            _o = val;
+            if (_o == 'svcOV') {
+                _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
+                _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
+            } else {
+                _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
+                _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
+            }
+            monitoring_refresh();
+        }
+
+        function displayingLevel2(val) {
+            var sel1 = document.getElementById("typeDisplay").value;
+            _o = sel1;
+            if (val != '') {
+                _o = _o + "_" + val;
+            }
+
+            monitoring_refresh();
+        }
+    </script>
 <?php
-$form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
-$form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
+$form->addElement(
+    'select',
+    'typeDisplay',
+    _('Display'),
+    $aTypeAffichageLevel1,
+    array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);")
+);
+$form->addElement(
+    'select',
+    'typeDisplay2',
+    _('Display '),
+    $aTypeAffichageLevel2,
+    array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);")
+);
 $form->setDefaults(array('typeDisplay2' => 'pb'));
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array('onchange' => "javascript: setO(this.form.elements['$option'].value); submit();");
-    $form->addElement('select', $option, null, array(null => _("More actions..."),
+    $form->addElement('select', $option, null, array(
+        null => _("More actions..."),
         "3" => _("Verification Check"),
         "4" => _("Verification Check (Forced)"),
         "70" => _("Services : Acknowledge"),
@@ -156,7 +169,8 @@ foreach (array('o1', 'o2') as $option) {
         "82" => _("Hosts : Enable Notification"),
         "83" => _("Hosts : Disable Notification"),
         "92" => _("Hosts : Enable Check"),
-        "93" => _("Hosts : Disable Check")), $attrs);
+        "93" => _("Hosts : Disable Check")
+    ), $attrs);
 
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
