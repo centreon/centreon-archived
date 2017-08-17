@@ -486,7 +486,7 @@ $tpl->display("formGenerateFiles.ihtml");
         trEl.appendChild(tdEl1);
         var tdEl2 = document.createElement('td');
         tdEl2.setAttribute('class', 'FormRowValue');
-        tdEl2.innerHTML = '<span style="position: relative; float: left; margin-right: 5px;">'.
+        tdEl2.innerHTML = '<span style="position: relative; float: left; margin-right: 5px;">' +
         '<a href="javascript:toggleErrorPhp(\'' + action + '\');" id="expend_' + action + '">[ + ]</a></span>';
         trEl.appendChild(tdEl2);
         var divErrors = document.createElement('div');
