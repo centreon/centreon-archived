@@ -23,7 +23,6 @@ class LdapConfigurationContext extends CentreonContext
             'enable_authentication' => 1,
             'template' => 'Posix'
         ));
-
     }
 
 
@@ -46,7 +45,6 @@ class LdapConfigurationContext extends CentreonContext
         $this->page = $this->page->inspect($this->configuration_name);
         $this->page->setProperties(array('configuration_name' => $this->newConfigurationName));
         $this->page->save();
-
     }
 
     /**
@@ -54,15 +52,12 @@ class LdapConfigurationContext extends CentreonContext
      */
     public function allChangesAreSaved()
     {
-
         $this->page = new LdapConfigurationListingPage($this);
         $object = $this->page->getEntry($this->newConfigurationName);
 
         if ($object['configuration_name'] != $this->newConfigurationName) {
-
             throw new \Exception('the Configuration has not changed.');
         }
-
     }
 
     /**
@@ -77,7 +72,6 @@ class LdapConfigurationContext extends CentreonContext
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
-
     }
 
     /**
@@ -89,7 +83,6 @@ class LdapConfigurationContext extends CentreonContext
         $object = $this->page->getEntries();
 
         if (isset($object[$this->configuration_name])) {
-
             throw new \Exception('the Configuration is not deleted.');
         }
     }

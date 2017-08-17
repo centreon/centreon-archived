@@ -17,7 +17,7 @@ class MetaServiceConfigurationContext extends CentreonContext
         'data_source_type' => 'ABSOLUTE',
         'selection_mode' => 2,
         'sql_like_clause_expression' => 'metaServiceExpression',
-        'metric' => '', 
+        'metric' => '',
         'check_period' => 'workhours',
         'max_check_attempts' => 10,
         'normal_check_interval' => 15,
@@ -154,8 +154,8 @@ class MetaServiceConfigurationContext extends CentreonContext
                             if ($value != $object[$key]) {
                                 $this->tableau[] = $key;
                             }
-                        } 
-                        if ($key == 'name'&& $value . '_1' != $object[$key]) {
+                        }
+                        if ($key == 'name' && $value . '_1' != $object[$key]) {
                             $this->tableau[] = $key;
                         }
                     }

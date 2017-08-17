@@ -40,7 +40,6 @@ class MetaServicesApiContext extends CentreonContext
     {
         $param = 'all';
         $this->jsonreturn = $this->callToApiConfigurationServices($param);
-
     }
 
 
@@ -51,7 +50,6 @@ class MetaServicesApiContext extends CentreonContext
     {
         $param = 's';
         $this->jsonreturn = $this->callToApiConfigurationServices($param);
-
     }
 
 
@@ -62,7 +60,6 @@ class MetaServicesApiContext extends CentreonContext
     {
         $param = 'm';
         $this->jsonreturn = $this->callToApiConfigurationServices($param);
-
     }
 
 
