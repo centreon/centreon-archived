@@ -738,7 +738,7 @@ class CentreonServiceTemplate extends CentreonObject
                     $relationTable = array();
                     foreach ($relations as $rel) {
                         if ($matches[2] == "contact") {
-                            $tab = $obj->getIdByParameter("contact_name", array($rel));
+                            $tab = $obj->getIdByParameter("contact_alias", array($rel));
                         } else {
                             $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         }
@@ -956,7 +956,7 @@ class CentreonServiceTemplate extends CentreonObject
             $filters_contactRel['service_id'] = $filters['service_id'];
         }
         $elements = $contactRel->getMergedParameters(
-            array("contact_name", "contact_id"),
+            array("contact_alias", "contact_id"),
             array('service_description'),
             -1,
             0,
@@ -970,7 +970,7 @@ class CentreonServiceTemplate extends CentreonObject
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim
-                . $element['contact_name'] . "\n";
+                . $element['contact_alias'] . "\n";
         }
 
         // macros
