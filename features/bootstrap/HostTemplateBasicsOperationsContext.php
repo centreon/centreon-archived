@@ -25,6 +25,16 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'severity_icon' => '       centreon (png)'
     );
 
+    protected $hostCategory3 = array(
+        'name' => 'hostCategory3Name',
+        'alias' => 'hostCategory3Alias'
+    );
+
+    protected $hostCategory4 = array(
+        'name' => 'hostCategory4Name',
+        'alias' => 'hostCategory4Alias'
+    );
+
     protected $initialProperties = array(
         'name' => 'hostTemplateName',
         'alias' => 'hostTemplateAlias',
@@ -62,7 +72,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
         'service_templates' => 'generic-service',
-        'parent_host_categories' => 'hostCategory2Name',
+        'parent_host_categories' => 'hostCategory3Name',
         'obsess_over_host' => 2,
         'acknowledgement_timeout' => 2,
         'check_freshness' => 0,
@@ -128,10 +138,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
         'service_templates' => 'generic-service',
-        'parent_host_categories' => array(
-            'hostCategory1Name',
-            'hostCategory2Name'
-        ),
+        'parent_host_categories' => 'hostCategory3Name',
         'obsess_over_host' => 2,
         'acknowledgement_timeout' => 2,
         'check_freshness' => 0,
@@ -197,7 +204,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'first_notification_delay' => 7,
         'recovery_notification_delay' => 8,
         'service_templates' => 'Ping-LAN',
-        'parent_host_categories' => 'hostCategory1Name',
+        'parent_host_categories' => 'hostCategory4Name',
         'obsess_over_host' => 1,
         'acknowledgement_timeout' => 0,
         'check_freshness' => 1,
@@ -264,10 +271,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'first_notification_delay' => 7,
         'recovery_notification_delay' => 8,
         'service_templates' => 'Ping-LAN',
-        'parent_host_categories' => array(
-            'hostCategory1Name',
-            'hostCategory2Name'
-        ),
+        'parent_host_categories' => 'hostCategory4Name',
         'obsess_over_host' => 1,
         'acknowledgement_timeout' => 0,
         'check_freshness' => 1,
@@ -306,6 +310,12 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         $this->currentPage->save();
         $this->currentPage = new HostCategoryConfigurationPage($this);
         $this->currentPage->setProperties($this->hostCategory2);
+        $this->currentPage->save();
+        $this->currentPage = new HostCategoryConfigurationPage($this);
+        $this->currentPage->setProperties($this->hostCategory3);
+        $this->currentPage->save();
+        $this->currentPage = new HostCategoryConfigurationPage($this);
+        $this->currentPage->setProperties($this->hostCategory4);
         $this->currentPage->save();
         $this->currentPage = new HostTemplateConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
