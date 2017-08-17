@@ -299,12 +299,47 @@ default:
       contexts:
       - MetaServiceConfigurationContext
 
+    host_group_dependency_configuration:
+      paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
+      contexts:
+      - HostGroupDependencyConfigurationContext
 
     service_submit_result:
       paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
       contexts:
       - ServiceSubmitResultContext
+
     host_dependency_configuration:
       paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
       contexts:
       - HostDependencyConfigurationContext
+
+    service_dependency_configuration:
+      paths: [ %paths.base%/features/ServiceDependencyConfiguration.feature ]
+      contexts:
+      - ServiceDependencyConfigurationContext
+
+    service_group_dependency_configuration:
+      paths: [ %paths.base%/features/ServiceGroupDependencyConfiguration.feature ]
+      contexts:
+      - ServiceGroupDependencyConfigurationContext
+
+    connector_configuration:
+      paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
+      contexts:
+      - ConnectorConfigurationContext
+
+    vendor_configuration:
+      paths: [ %paths.base%/features/VendorConfiguration.feature ]
+      contexts:
+      - VendorConfigurationContext
+
+    first_notification_delay:
+      paths: [ %paths.base%/features/FirstNotificationDelay.feature ]
+      contexts:
+        - FirstNotificationDelayContext
+
+    meta_service_dependency_configuration:
+      paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
+      contexts:
+      - MetaServiceDependencyConfigurationContext

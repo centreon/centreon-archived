@@ -115,10 +115,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'update_mode_sgs' => 0,
         'service_groups' => 'serviceGroupName',
         'update_mode_traps' => 1,
-        'trap_relations' => array(
-            'Generic',
-            'Generic - trapName'
-        ),
+        'trap_relations' => 'Generic - trapName',
         'obsess_over_service' => 2,
         'acknowledgement_timeout' => 7,
         'check_freshness' => 1,

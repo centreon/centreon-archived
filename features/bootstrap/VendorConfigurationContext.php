@@ -1,70 +1,41 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\Configuration\ServiceGroupConfigurationPage;
-use Centreon\Test\Behat\Configuration\ServiceGroupConfigurationListingPage;
-use Centreon\Test\Behat\Configuration\HostGroupServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\VendorConfigurationPage;
+use Centreon\Test\Behat\Configuration\VendorConfigurationListingPage;
 
-class ServiceGroupConfigurationContext extends CentreonContext
+class VendorConfigurationContext extends CentreonContext
 {
     protected $currentPage;
 
-    protected $hostGroupService1 = array(
-        'description' => 'hostGroupServiceDescription1',
-        'hosts' => 'Windows-Servers',
-        'check_command' => 'check_http'
-    );
-
-    protected $hostGroupService2 = array(
-        'description' => 'hostGroupServiceDescription2',
-        'hosts' => 'Firewall',
-        'check_command' => 'check_https'
-    );
-
     protected $initialProperties = array(
-        'name' => 'serviceGroupName',
-        'description' => 'serviceGroupDescription',
-        'hosts' => 'Centreon-Server - Memory',
-        'host_groups' => 'Windows-Servers - hostGroupServiceDescription1',
-        'service_templates' => 'generic-host - Ping-LAN',
-        'geo_coordinates' => '1.2.3.4',
-        'enabled' => 1,
-        'comments' => 'serviceGroupComments'
+        'name' => 'vendorName',
+        'alias' => 'vendorAlias',
+        'description' => 'vendorDescription'
     );
 
     protected $updatedProperties = array(
-        'name' => 'serviceGroupNameChanged',
-        'description' => 'serviceGroupDescriptionChanged',
-        'hosts' => 'Centreon-Server - Load',
-        'host_groups' => 'Firewall - hostGroupServiceDescription2',
-        'service_templates' => 'Servers-Linux - SNMP-Linux-Swap',
-        'geo_coordinates' => 'Paris',
-        'enabled' => 1,
-        'comments' => 'serviceGroupCommentsChanged'
+        'name' => 'vendorNameChanged',
+        'alias' => 'vendorAliasChanged',
+        'description' => 'vendorDescriptionChanged'
     );
 
     /**
-     * @Given a service group is configured
+     * @Given a vendor is configured
      */
-    public function aServiceGroupIsConfigured()
+    public function aVendorIsConfigured()
     {
-        $this->currentPage = new HostGroupServiceConfigurationPage($this);
-        $this->currentPage->setProperties($this->hostGroupService1);
-        $this->currentPage->save();
-        $this->currentPage = new HostGroupServiceConfigurationPage($this);
-        $this->currentPage->setProperties($this->hostGroupService2);
-        $this->currentPage->save();
-        $this->currentPage = new ServiceGroupConfigurationPage($this);
+        $this->currentPage = new VendorConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->currentPage->save();
     }
 
     /**
-     * @When I change the properties of a service group
+     * @When I change the properties of a vendor
      */
-    public function iChangeThePropertiesOfAServiceGroup()
+    public function iChangeThePropertiesOfAVendor()
     {
-        $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $this->currentPage = $this->currentPage->inspect($this->initialProperties['name']);
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();
@@ -79,12 +50,17 @@ class ServiceGroupConfigurationContext extends CentreonContext
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+                    $this->currentPage = new VendorConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
                         if ($value != $object[$key]) {
-                            $this->tableau[] = $key;
+                            if (is_array($value)) {
+                                $value = implode(' ', $value);
+                            }
+                            if ($value != $object[$key]) {
+                                $this->tableau[] = $key;
+                            }
                         }
                     }
                     return count($this->tableau) == 0;
@@ -99,11 +75,11 @@ class ServiceGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @When I duplicate a service group
+     * @When I duplicate a vendor
      */
-    public function iDuplicateAServiceGroup()
+    public function iDuplicateAVendor()
     {
-        $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
@@ -111,20 +87,25 @@ class ServiceGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @Then the new service group has the same properties
+     * @Then the new vendor has the same properties
      */
-    public function theNewServiceGroupHasTheSameProperties()
+    public function theNewVendorHasTheSameProperties()
     {
         $this->tableau = array();
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+                    $this->currentPage = new VendorConfigurationListingPage($this);
                     $this->currentPage = $this->currentPage->inspect($this->initialProperties['name'] . '_1');
                     $object = $this->currentPage->getProperties();
                     foreach ($this->initialProperties as $key => $value) {
                         if ($key != 'name' && $value != $object[$key]) {
-                            $this->tableau[] = $key;
+                            if (is_array($value)) {
+                                $value = implode(' ', $value);
+                            }
+                            if ($value != $object[$key]) {
+                                $this->tableau[] = $key;
+                            }
                         }
                     }
                     return count($this->tableau) == 0;
@@ -139,11 +120,11 @@ class ServiceGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @When I delete a service group
+     * @When I delete a vendor
      */
-    public function iDeleteAServiceGroup()
+    public function iDeleteAVendor()
     {
-        $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+        $this->currentPage = new VendorConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
         $this->setConfirmBox(true);
@@ -151,13 +132,13 @@ class ServiceGroupConfigurationContext extends CentreonContext
     }
 
     /**
-     * @Then the deleted service group is not displayed in the service group list
+     * @Then the deleted object is not displayed in the list
      */
-    public function theDeletedServiceGroupIsNotDisplayedInTheServiceGroupList()
+    public function theDeletedObjectIsNotDisplayedInTheList()
     {
         $this->spin(
             function ($context) {
-                $this->currentPage = new ServiceGroupConfigurationListingPage($this);
+                $this->currentPage = new VendorConfigurationListingPage($this);
                 $object = $this->currentPage->getEntries();
                 $bool = true;
                 foreach ($object as $value) {
@@ -165,7 +146,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
                 }
                 return $bool;
             },
-            "The host category is not being deleted.",
+            "The service is not being deleted.",
             5
         );
     }
