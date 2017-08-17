@@ -96,7 +96,10 @@ $tpl->assign("Help", _("Help"));
 $tpl->assign("Documentation", _("Documentation"));
 $tpl->assign("p", $p);
 $tpl->assign("sound_status", isset($_SESSION['disable_sound']) ? 'off' : 'on');
-$tpl->assign("sound_action", isset($_SESSION['disable_sound']) ? 'jQuery().centreon_notify_start();' : 'jQuery().centreon_notify_stop();');
+$tpl->assign(
+    "sound_action",
+    isset($_SESSION['disable_sound']) ? 'jQuery().centreon_notify_start();' : 'jQuery().centreon_notify_stop();'
+);
 $tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
 /*
@@ -109,7 +112,7 @@ $tpl->assign("user_login", $centreon->user->get_alias());
  */
 $lcaSTR = "";
 if (!$is_admin) {
-    $lcaSTR = "AND topology_page IN (".$centreon->user->access->getTopologyString().")";
+    $lcaSTR = "AND topology_page IN (" . $centreon->user->access->getTopologyString() . ")";
 }
 
 /*
@@ -120,13 +123,19 @@ $DBRESULT = $pearDB->query($rq);
 for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
-        $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
-                            "Menu1Page" => $elem["topology_page"] ,
-                            "Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
-                            "Menu1UrlPopup" => $elem["topology_popup"],
-                            "Menu1UrlPopupOpen" => $elem["topology_url"],
-                            "Menu1Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
-                            "Menu1Popup" => $elem["topology_popup"] ? true : false);
+        $elemArr[1][$i] = array(
+            "Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_" . $elem["topology_id"],
+            "Menu1Page" => $elem["topology_page"],
+            "Menu1Url" => "main.php?p=" . $elem["topology_page"] . $elem["topology_url_opt"],
+            "Menu1UrlPopup" => $elem["topology_popup"],
+            "Menu1UrlPopupOpen" => $elem["topology_url"],
+            "Menu1Name" => $centreonMenu->translate(
+                $elem['topology_modules'],
+                $elem['topology_url'],
+                $elem["topology_name"]
+            ),
+            "Menu1Popup" => $elem["topology_popup"] ? true : false
+        );
     }
 }
 $DBRESULT->closeCursor();
@@ -150,20 +159,20 @@ if (isset($centreon->optGen["display_autologin_shortcut"])) {
         $autoLoginUrl = "";
         if (!strstr($_SERVER['REQUEST_URI'], '?')) {
             $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-            $autoLoginUrl .= "?p=".$root_menu["topology_page"];
+            $autoLoginUrl .= "?p=" . $root_menu["topology_page"];
         }
-        $autoLoginUrl .= "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
-        
+        $autoLoginUrl .= "&autologin=1&useralias=$userAlias&token=" . $centreon->user->getToken();
+
         $prefix = '';
         if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
             $prefix .= "http://";
         } else {
             $prefix .= "https://";
         }
-        $prefix .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $prefix .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $prefix = str_replace("main.php", "index.php", $prefix);
         $msg = _("Right Click here to add an autologin link directly to your bookmarks");
-        $tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
+        $tpl->assign("autoLoginUrl", $prefix . $autoLoginUrl);
     } else {
         $msg = _("Please define autologin authentication key in your profile.");
         $tpl->assign("autoLoginUrl", '#');
@@ -174,21 +183,29 @@ if (isset($centreon->optGen["display_autologin_shortcut"])) {
 /*
  * Grab elements for level 2
  */
-$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name, topology_modules FROM topology WHERE topology_parent = '".$level1."' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
+$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name, topology_modules " .
+    "FROM topology WHERE topology_parent = '" . $level1 .
+    "' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
 $DBRESULT = $pearDB->query($rq);
 $firstP = null;
 $sep = "&nbsp;";
 for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
     $firstP ? null : $firstP = $elem["topology_page"];
-    
+
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
-        $elemArr[2][$i] = array("Menu2Sep" => $sep,
-                            "Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
-                            "Menu2UrlPopup" => $elem["topology_popup"],
-                            "Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
-                            "Menu2Name" =>  $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
-                            "Menu2Popup" => $elem["topology_popup"] ? true : false);
+        $elemArr[2][$i] = array(
+            "Menu2Sep" => $sep,
+            "Menu2Url" => "main.php?p=" . $elem["topology_page"] . $elem["topology_url_opt"],
+            "Menu2UrlPopup" => $elem["topology_popup"],
+            "Menu2UrlPopupOpen" => $elem["topology_url"] . $auth,
+            "Menu2Name" => $centreonMenu->translate(
+                $elem['topology_modules'],
+                $elem['topology_url'],
+                $elem["topology_name"]
+            ),
+            "Menu2Popup" => $elem["topology_popup"] ? true : false
+        );
     }
     $sep = "&nbsp;|&nbsp;";
 }
@@ -196,11 +213,15 @@ for ($i = 0; $DBRESULT->rowCount() && ($elem = $DBRESULT->fetchRow()); $i++) {
 /*
  * Grab elements for level 3
  */
-$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
+$request = "SELECT * FROM topology WHERE topology_parent = '" . ($level2 ? $level1 . $level2 : $firstP) .
+    "' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
 $DBRESULT = $pearDB->query($request);
 for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
     # grab menu title for each group
-    $DBRESULT_title = $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
+    $query = "SELECT topology_name FROM topology WHERE topology_parent = '" . $elem["topology_parent"] .
+        "' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '" .
+        $elem["topology_group"] . "' LIMIT 1";
+    $DBRESULT_title = $pearDB->query($query);
     $title = "";
     $topoName = $DBRESULT_title->fetchRow();
     if ($DBRESULT_title->rowCount()) {
@@ -211,17 +232,23 @@ for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
 
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
-        $Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+        $Menu3Url = "main.php?p=" . $elem["topology_page"] . $elem["topology_url_opt"];
         $elemArr[3][$elem["topology_group"]]["title"] = $title;
-        $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Url" => $Menu3Url,
-                            "Menu3ID" => $elem["topology_page"],
-                            "MenuStyleClass" => $elem["topology_style_class"],
-                            "MenuStyleID" => $elem["topology_style_id"],
-                            "MenuOnClick" => $elem["topology_OnClick"],
-                            "MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-                            "Menu3UrlPopup" => $elem["topology_url"],
-                            "Menu3Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
-                            "Menu3Popup" => $elem["topology_popup"] ? true : false);
+        $elemArr[3][$elem["topology_group"]]["tab"][$i] = array(
+            "Menu3Url" => $Menu3Url,
+            "Menu3ID" => $elem["topology_page"],
+            "MenuStyleClass" => $elem["topology_style_class"],
+            "MenuStyleID" => $elem["topology_style_id"],
+            "MenuOnClick" => $elem["topology_OnClick"],
+            "MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
+            "Menu3UrlPopup" => $elem["topology_url"],
+            "Menu3Name" => $centreonMenu->translate(
+                $elem['topology_modules'],
+                $elem['topology_url'],
+                $elem["topology_name"]
+            ),
+            "Menu3Popup" => $elem["topology_popup"] ? true : false
+        );
     }
 }
 unset($elem);
@@ -230,17 +257,25 @@ unset($elem);
  * Grab elements for level 4
  */
 if ($level1 && $level2 && $level3) {
-    $request = "SELECT topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup, topology_modules FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
+    $request = "SELECT topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, " .
+        "topology_popup, topology_modules FROM topology WHERE topology_parent = '" . $level1 . $level2 . $level3 .
+        "' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
     $DBRESULT = $pearDB->query($request);
     for ($i = 0; $elem = $DBRESULT->fetchRow(); $i++) {
         $pageAccess = $centreon->user->access->page($elem["topology_page"]);
         if (($pageAccess == "1") || ($pageAccess == "2")) {
-            $elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
-                                                             "Menu4UrlPopup" => $elem["topology_url"],
-                                                             "MenuOnClick" => $elem["topology_OnClick"],
-                                                             "MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-                                                             "Menu4Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
-                                                             "Menu4Popup" => $elem["topology_popup"] ? true : false);
+            $elemArr[4][$level1 . $level2 . $level3][$i] = array(
+                "Menu4Url" => "main.php?p=" . $elem["topology_page"] . $elem["topology_url_opt"],
+                "Menu4UrlPopup" => $elem["topology_url"],
+                "MenuOnClick" => $elem["topology_OnClick"],
+                "MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
+                "Menu4Name" => $centreonMenu->translate(
+                    $elem['topology_modules'],
+                    $elem['topology_url'],
+                    $elem["topology_name"]
+                ),
+                "Menu4Popup" => $elem["topology_popup"] ? true : false
+            );
         }
         $centreonLang->bindLang();
     }
@@ -277,7 +312,7 @@ $tpl->assign("elemArr1", $elemArr[1]);
 count($elemArr[2]) ? $tpl->assign("elemArr2", $elemArr[2]) : null;
 count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : null;
 count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : null;
-$tpl->assign("idParent", $level1.$level2.$level3);
+$tpl->assign("idParent", $level1 . $level2 . $level3);
 
 /*
  * User Online
@@ -286,16 +321,28 @@ if ($is_admin) {
     $tab_user = array();
     $tab_user_admin = array();
     $tab_user_non_admin = array();
-    $DBRESULT = $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id
-        ORDER BY contact.contact_alias");
+    $query = "SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, " .
+        "session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id " .
+        "ORDER BY contact.contact_alias";
+    $DBRESULT = $pearDB->query($query);
     while ($session = $DBRESULT->fetchRow()) {
         if ($session["contact_admin"] == 1) {
-            $tab_user_admin[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
+            $tab_user_admin[$session["user_id"]] = array(
+                "ip" => $session["ip_address"],
+                "id" => $session["user_id"],
+                "alias" => $session["contact_alias"],
+                "admin" => $session["contact_admin"]
+            );
         } else {
-            $tab_user_non_admin[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
+            $tab_user_non_admin[$session["user_id"]] = array(
+                "ip" => $session["ip_address"],
+                "id" => $session["user_id"],
+                "alias" => $session["contact_alias"],
+                "admin" => $session["contact_admin"]
+            );
         }
     }
-    
+
     $tab_user = array_merge($tab_user_admin, $tab_user_non_admin);
     unset($tab_user_admin);
     unset($tab_user_non_admin);
