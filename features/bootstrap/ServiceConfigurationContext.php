@@ -103,7 +103,7 @@ class ServiceConfigurationContext extends CentreonContext
         'severity' => 'serviceCategory2Name (2)',
         'geo_coordinates' => 'Paris',
         'status' => 1,
-        'comments' => 'serviceComments' 
+        'comments' => 'serviceComments'
     );
 
     protected $duplicatedProperties = array(
@@ -111,7 +111,7 @@ class ServiceConfigurationContext extends CentreonContext
         'description' => 'serviceDescription_1',
         'templates' => 'generic-service',
         'check_command' => 'check_http',
-        'macros' => array( 
+        'macros' => array(
             'MACRONAME' => 22
         ),
         'check_period' => 'workhours',
@@ -121,21 +121,21 @@ class ServiceConfigurationContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 1,
         'is_volatile' => 0,
-        'notifications_enabled' => 2, 
+        'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
         'contacts' => 'Guest',
         'contact_additive_inheritance' => 1,
         'contact_groups' => 'Supervisors',
         'contact_group_additive_inheritance' => 1,
         'notification_interval' => 23,
-        'notify_on_none' => 1, 
+        'notify_on_none' => 1,
         'notify_on_warning' => 0,
         'notify_on_unknown' => 0,
         'notify_on_critical' => 0,
         'notify_on_recovery' => 0,
         'notify_on_flapping' => 0,
         'notify_on_downtime_scheduled' => 0,
-        'first_notification_delay' => 4, 
+        'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
         'service_groups' => 'serviceGroup1Name',
         'trap_relations' => 'coldStart',
@@ -173,7 +173,7 @@ class ServiceConfigurationContext extends CentreonContext
         'description' => 'serviceDescriptionChanged',
         'templates' => 'Ping-WAN',
         'check_command' => 'check_https',
-        'macros' => array( 
+        'macros' => array(
             'MACRONAMECHANGED' => 11
         ),
         'check_period' => 'none',
