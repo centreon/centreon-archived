@@ -366,12 +366,10 @@ class CentreonAPI
      */
     protected function requireLibs($object)
     {
-
-
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
-                && !class_exists("Centreon" . $this->relationObject[$object])) {
+                && !class_exists("Centreon" . $this->relationObject[$object]['class'])) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
