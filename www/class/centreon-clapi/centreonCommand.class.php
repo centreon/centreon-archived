@@ -214,7 +214,7 @@ class CentreonCommand extends CentreonObject
      * @return void
      */
 
-    public function export($filters=null)
+    public function export($filters = null)
     {
         $elements = $this->object->getList("*", -1, 0, null, null, $filters);
         foreach ($elements as $element) {

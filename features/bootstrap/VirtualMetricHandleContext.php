@@ -9,7 +9,7 @@ class VirtualMetricHandleContext extends CentreonContext
     protected $page;
     protected $vmName = 'vmtestname';
     protected $host = 'MetricTestHostname';
-    protected $functionRPN ='test10';
+    protected $functionRPN = 'test10';
     protected $hostService = 'MetricTestService';
     protected $duplicatedVmName = 'vmtestname_1';
 
@@ -27,7 +27,7 @@ class VirtualMetricHandleContext extends CentreonContext
             'linked-host_services' => $this->host . ' - ' . $this->hostService
         ));
         $this->page->setProperties(array('function' => $this->functionRPN));
-        $this->page->save();     
+        $this->page->save();
     }
 
     /**
@@ -35,11 +35,11 @@ class VirtualMetricHandleContext extends CentreonContext
      */
     public function allPropertiesAreSaved()
     {
-       $this->page = new MetricsConfigurationListingPage($this);
-       $data = $this->page->getEntry($this->vmName);
-       if ($data['name'] != $this->vmName || $data['function'] != $this->functionRPN) {
-           throw new \Exception('Some properties have not been saved');
-       }
+        $this->page = new MetricsConfigurationListingPage($this);
+        $data = $this->page->getEntry($this->vmName);
+        if ($data['name'] != $this->vmName || $data['function'] != $this->functionRPN) {
+            throw new \Exception('Some properties have not been saved');
+        }
     }
 
     /**
@@ -69,8 +69,8 @@ class VirtualMetricHandleContext extends CentreonContext
         if (key_exists($this->duplicatedVmName, $objects)) {
             if ($objects[$this->duplicatedVmName]['function'] != $objects[$this->vmName]['function']
                 || $objects[$this->duplicatedVmName]['def_type'] != $objects[$this->vmName]['def_type']) {
-                
-                throw new \Exception( 'Some properties of ' . $this->duplicatedVmName . ' virtual Metric have not '
+
+                throw new \Exception('Some properties of ' . $this->duplicatedVmName . ' virtual Metric have not '
                     . 'been duplicated');
             }
         } else {

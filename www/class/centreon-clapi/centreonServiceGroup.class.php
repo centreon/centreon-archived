@@ -323,7 +323,14 @@ class CentreonServiceGroup extends CentreonObject
     public function export($filters = null)
     {
 
-        $sgs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()), -1, 0, null, null, $filters);
+        $sgs = $this->object->getList(
+            array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()),
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service();
         $objSvc = new \Centreon_Object_Relation_Host_Service();
         $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();
