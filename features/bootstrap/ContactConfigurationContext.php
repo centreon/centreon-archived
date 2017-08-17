@@ -1,4 +1,5 @@
 <?php
+
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\ContactConfigurationPage;
 use Centreon\Test\Behat\Configuration\ContactConfigurationListingPage;
@@ -176,11 +177,11 @@ class ContactConfigurationContext extends CentreonContext
                         if ($key != 'password' && $key != 'password2') {
                             if ($key != 'name' && $key != 'alias' && $value != $object[$key]) {
                                 if (is_array($value)) {
-                                        $value = implode(' ', $value);
-                                    }
+                                    $value = implode(' ', $value);
+                                }
                                 if ($value != $object[$key]) {
                                     $this->tableau[] = $key;
-                                    
+
                                 }
                             }
                             if (($key == 'name' || $key == 'alias') && $value . '_1' != $object[$key]) {

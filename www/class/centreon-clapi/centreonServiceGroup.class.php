@@ -50,8 +50,8 @@ require_once "Centreon/Object/Relation/Service/Group/Host/Group/Service.php";
  */
 class CentreonServiceGroup extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
 
     public static $aDepends = array(
         'HOST',
@@ -84,7 +84,7 @@ class CentreonServiceGroup extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array('sg_id', 'sg_name', 'sg_alias');
         $paramString = str_replace("sg_", "", implode($this->delim, $params));
@@ -131,12 +131,12 @@ class CentreonServiceGroup extends CentreonObject
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             if (!preg_match("/^sg_/", $params[1])) {
-                $params[1] = "sg_".$params[1];
+                $params[1] = "sg_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -160,7 +160,7 @@ class CentreonServiceGroup extends CentreonObject
             $args = explode($this->delim, $arg[0]);
             $sgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($sgIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $sgId = $sgIds[0];
 
@@ -198,7 +198,7 @@ class CentreonServiceGroup extends CentreonObject
                             "ASC",
                             array(
                                 "service_id" => $val['service_id'],
-                                "host_id"    => $val['host_id']
+                                "host_id" => $val['host_id']
                             ),
                             "AND"
                         );
@@ -218,7 +218,7 @@ class CentreonServiceGroup extends CentreonObject
                             "ASC",
                             array(
                                 "service_id" => $val['service_id'],
-                                "hg_id"    => $val['hostgroup_id']
+                                "hg_id" => $val['hostgroup_id']
                             ),
                             "AND"
                         );
@@ -258,7 +258,7 @@ class CentreonServiceGroup extends CentreonObject
                             "AND"
                         );
                         if (!count($elements)) {
-                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":". $tmp[0]."/".$tmp[1]);
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $tmp[0] . "/" . $tmp[1]);
                         }
                         $relationTable[$i]['host_id'] = $elements[0]['host_id'];
                         $relationTable[$i]['service_id'] = $elements[0]['service_id'];
@@ -277,7 +277,7 @@ class CentreonServiceGroup extends CentreonObject
                             "AND"
                         );
                         if (!count($elements)) {
-                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":". $tmp[0]."/".$tmp[1]);
+                            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $tmp[0] . "/" . $tmp[1]);
                         }
                         $relationTable[$i]['hostgroup_id'] = $elements[0]['hg_id'];
                         $relationTable[$i]['service_id'] = $elements[0]['service_id'];
@@ -297,7 +297,7 @@ class CentreonServiceGroup extends CentreonObject
                         $insert = true;
                         foreach ($existingRelationIds as $existrel) {
                             if (($existrel[$hstring] == $relation[$hstring]) &&
-                                 $existrel['service_id'] == $relation['service_id']) {
+                                $existrel['service_id'] == $relation['service_id']) {
                                 $insert = false;
                                 break;
                             }
@@ -322,8 +322,14 @@ class CentreonServiceGroup extends CentreonObject
      */
     public function export($filters = null)
     {
-
-        $sgs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()), -1, 0, null, null, $filters);
+        $sgs = $this->object->getList(
+            array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()),
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service();
         $objSvc = new \Centreon_Object_Relation_Host_Service();
         $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();

@@ -146,8 +146,8 @@ class FirstNotificationDelayContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-              $retval = $context->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
-              return ($retval['exit_code'] == 0);
+                $retval = $context->execute('ls /tmp/acceptance_notification.tmp 2>/dev/null', 'web', false);
+                return ($retval['exit_code'] == 0);
             },
             'error: No notification was sent out.',
             10
