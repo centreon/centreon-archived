@@ -35,21 +35,21 @@
  */
 
 if (isset($pearDB)) {
-    $query = "SELECT n.interval_length FROM cfg_nagios n, nagios_server ns WHERE ns.id = n.nagios_server_id AND n.interval_length IS NOT NULL ORDER BY localhost DESC LIMIT 1";
+    $query = "SELECT n.interval_length FROM cfg_nagios n, nagios_server ns 
+WHERE ns.id = n.nagios_server_id AND n.interval_length IS NOT NULL ORDER BY localhost DESC LIMIT 1";
     $res = $pearDB->query($query);
     $row = $res->fetchRow();
-    
+
     /*
      * Check configured value 
      */
     if (!isset($row['interval_length'])) {
-    	$row['interval_length'] = 60;
+        $row['interval_length'] = 60;
     }
-    
+
     /*
      * Update
      */
     $str = "INSERT INTO options (`key`, `value`) VALUES ('interval_length', '" . $row['interval_length'] . "')";
     $pearDB->query($str);
 }
-?>

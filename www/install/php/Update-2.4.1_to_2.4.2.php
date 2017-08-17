@@ -38,8 +38,9 @@ if (isset($pearDBndo) && isset($pearDB)) {
     if ($res->rowCount()) {
         $row = $res->fetchRow();
         $prefix = $row['db_prefix'];
-        $pearDBndo->query("ALTER TABLE `{$prefix}acknowledgements` ADD INDEX idx_reporting_ack (object_id, acknowledgement_id, entry_time)");
-        $pearDBndo->query("ALTER TABLE `{$prefix}downtimehistory` ADD INDEX idx_reporting_donwtime (was_started, actual_start_time, actual_end_time)");
-    }    
+        $pearDBndo->query("ALTER TABLE `{$prefix}acknowledgements` 
+ADD INDEX idx_reporting_ack (object_id, acknowledgement_id, entry_time)");
+        $pearDBndo->query("ALTER TABLE `{$prefix}downtimehistory` 
+ADD INDEX idx_reporting_donwtime (was_started, actual_start_time, actual_end_time)");
+    }
 }
-?>

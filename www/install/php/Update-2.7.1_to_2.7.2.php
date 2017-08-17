@@ -39,13 +39,12 @@ if (isset($pearDB)) {
     $querySelect = "SELECT meta_id, meta_name FROM meta_service ";
     $res = $pearDB->query($querySelect);
     while ($row = $res->fetchRow()) {
-        $queryUpdate = "UPDATE IGNORE service s, host h, host_service_relation hsr SET s.service_description = 'meta_" . $row['meta_id'] . "' "
+        $queryUpdate = "UPDATE IGNORE service s, host h, host_service_relation hsr SET s.service_description = 'meta_"
+            . $row['meta_id'] . "' "
             . "WHERE h.host_name = '_Module_Meta' "
             . "AND s.service_description = '" . $row['meta_name'] . "' "
             . "AND h.host_id = hsr.host_host_id "
             . "AND s.service_id = hsr.service_service_id;";
         $pearDB->query($queryUpdate);
-    } 
+    }
 }
-
-?>

@@ -42,10 +42,9 @@ if (isset($pearDB)) {
         if ($str != "") {
             $str .= ",";
         }
-        $str .= "(".$row['nagios_id'] . ", '" .$row['broker_module']. "')";
+        $str .= "(" . $row['nagios_id'] . ", '" . $row['broker_module'] . "')";
     }
     if ($str) {
         $pearDB->query("INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES " . $str);
     }
 }
-?>

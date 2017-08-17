@@ -37,7 +37,10 @@ if (isset($pearDB)) {
     $res = $pearDB->query(
         "SELECT IF (
             EXISTS(
-                SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'centreon' AND TABLE_NAME = 'nagios_server' AND COLUMN_NAME = 'init_script_centreontrapd'
+                SELECT * FROM information_schema.COLUMNS 
+                WHERE TABLE_SCHEMA = 'centreon' 
+                AND TABLE_NAME = 'nagios_server' 
+                AND COLUMN_NAME = 'init_script_centreontrapd'
             ),
             'yes',
             'no'        
@@ -46,8 +49,8 @@ if (isset($pearDB)) {
     if ($res->rowCount()) {
         $row = $res->fetchRow();
         if ($row['init_trap'] == 'no') {
-            $pearDB->query("ALTER TABLE `nagios_server` CHANGE `init_script_snmptt` `init_script_centreontrapd` VARCHAR(255)");
+            $query = "ALTER TABLE `nagios_server` CHANGE `init_script_snmptt` `init_script_centreontrapd` VARCHAR(255)";
+            $pearDB->query($query);
         }
-    }    
+    }
 }
-?>

@@ -39,8 +39,11 @@ if (isset($pearDBndo) && isset($pearDB)) {
     if ($res->rowCount()) {
         $row = $res->fetchRow();
         $prefix = $row['db_prefix'];
-        $pearDBndo->query("ALTER TABLE `{$prefix}hoststatus` CHANGE `hoststatus_id` `hoststatus_id` BIGINT NOT NULL AUTO_INCREMENT");
-        $pearDBndo->query("ALTER TABLE `{$prefix}servicestatus` CHANGE `servicestatus_id` `servicestatus_id` BIGINT NOT NULL AUTO_INCREMENT");
-    }    
+        $query = "ALTER TABLE `{$prefix}hoststatus` CHANGE `hoststatus_id` `hoststatus_id` BIGINT " .
+            "NOT NULL AUTO_INCREMENT";
+        $pearDBndo->query($query);
+        $query = "ALTER TABLE `{$prefix}servicestatus` CHANGE `servicestatus_id` `servicestatus_id` BIGINT " .
+            "NOT NULL AUTO_INCREMENT";
+        $pearDBndo->query($query);
+    }
 }
-?>

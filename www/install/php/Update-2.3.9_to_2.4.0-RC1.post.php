@@ -60,4 +60,3 @@ if (isset($pearDB)) {
         $pearDB->query($str . $str2);
     }
 }*/
-?>

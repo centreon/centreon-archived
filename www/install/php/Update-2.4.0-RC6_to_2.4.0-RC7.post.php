@@ -35,7 +35,8 @@
  */
 
 if (isset($pearDB)) {
-    $pearDB->query("DELETE FROM `auth_ressource` WHERE `ar_id` NOT IN (SELECT DISTINCT ar_id FROM auth_ressource_info)");
+    $pearDB->query("DELETE FROM `auth_ressource` 
+WHERE `ar_id` NOT IN (SELECT DISTINCT ar_id FROM auth_ressource_info)");
     $res = $pearDB->query("SELECT `value` FROM  `options` WHERE `key` = 'ldap_auth_enable'");
     $row = $res->fetchRow();
     // LDAP is enabled, we can proceed with the migration
@@ -66,27 +67,31 @@ if (isset($pearDB)) {
         foreach ($hostData as $arId => $hData) {
             if (isset($hData['host'])) {
                 $i++;
-                $sql = "INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
-                            VALUES (".$arId.", '".$hData['host']."', '".$hData['port']."', '".$hData['use_ssl']."', '".$hData['use_tls']."', $i)";
+                $sql = "INSERT INTO auth_ressource_host (auth_ressource_id,
+ host_address, host_port, use_ssl, use_tls, host_order)
+                            VALUES (" . $arId . ", '" . $hData['host'] . "', '" . $hData['port'] .
+                    "', '" . $hData['use_ssl'] . "', '" . $hData['use_tls'] . "', $i)";
                 $pearDB->query($sql);
-                $pearDB->query("DELETE FROM auth_ressource_info WHERE `ari_name` IN ('host', 'port', 'use_ssl', 'use_tls') AND ar_id = $arId");
+                $pearDB->query("DELETE FROM auth_ressource_info 
+WHERE `ari_name` IN ('host', 'port', 'use_ssl', 'use_tls') AND ar_id = $arId");
                 foreach ($data as $k => $v) {
                     $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
-                                    VALUES (".$arId.", '".$k."', '".$v."')");
+                                    VALUES (" . $arId . ", '" . $k . "', '" . $v . "')");
                 }
                 foreach ($templateData as $k => $v) {
                     $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
-                                    VALUES (".$arId.", '".$k."', '".$v."')");
+                                    VALUES (" . $arId . ", '" . $k . "', '" . $v . "')");
                 }
             }
         }
         $pearDB->query("UPDATE auth_ressource 
                         SET ar_name = 'Default configuration', ar_description = 'Default configuration'
                         WHERE ar_enable = '1'");
-        $pearDB->query("DELETE FROM `options` WHERE `key` LIKE 'ldap\_%' AND `key` <> 'ldap_auth_enable' AND `key` <> 'ldap_last_acl_update'");
+        $pearDB->query("DELETE FROM `options` WHERE `key` LIKE 'ldap\_%' 
+AND `key` <> 'ldap_auth_enable' AND `key` <> 'ldap_last_acl_update'");
         $pearDB->query("DELETE FROM `auth_ressource` WHERE `ar_enable` = '0'");
     }
-    
+
     /*
      * Checks if enable_perfdata_sync exists
      */
@@ -95,7 +100,7 @@ if (isset($pearDB)) {
         $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '1')");
     }
     unset($res);
-    
+
     /*
      * Checks if enable_logs_sync exists
      */
@@ -105,4 +110,3 @@ if (isset($pearDB)) {
     }
     unset($res);
 }
-?>
