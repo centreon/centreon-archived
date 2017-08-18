@@ -11,148 +11,123 @@ default:
   suites:
     configuration_warnings:
       paths: [ %paths.base%/features/ConfigurationWarnings.feature ]
-      contexts:
-        - ConfigurationWarningsContext
+      contexts: [ ConfigurationWarningsContext ]
+
     generate_poller_features:
       paths: [ %paths.base%/features/GeneratePoller.feature ]
-      contexts:
-        - GeneratePollerContext
+      contexts: [ GeneratePollerContext ]
+
     pagination_select2:
       paths: [ %paths.base%/features/PaginationSelect2.feature ]
-      contexts:
-        - PaginationSelect2Context
+      contexts: [ PaginationSelect2Context ]
+
     save_search_select2:
       paths: [ %paths.base%/features/SaveSearchSelect2.feature ]
-      contexts:
-        - SaveSearchSelect2Context
+      contexts: [ SaveSearchSelect2Context ]
+
     select_all_select2:
       paths: [ %paths.base%/features/SelectAllSelect2.feature ]
-      contexts:
-        - SelectAllSelect2Context
+      contexts: [ SelectAllSelect2Context ]
 
     empty_default_configuration:
       paths: [ %paths.base%/features/EmptyDefaultConfiguration.feature ]
-      contexts:
-        - EmptyDefaultConfigurationContext
+      contexts: [ EmptyDefaultConfigurationContext ]
 
     generate_service_contact_configuration:
       paths: [ %paths.base%/features/GenerateServiceContact.feature ]
-      contexts:
-        - GenerateServiceContactContext
+      contexts: [ GenerateServiceContactContext ]
+
     centreon_engine_restart:
       paths: [ %paths.base%/features/RestartCentreonEngine.feature ]
-      contexts:
-        - RestartCentreonEngineContext
+      contexts: [ RestartCentreonEngineContext ]
 
     acknowledgement:
       paths: [ %paths.base%/features/Acknowledgement.feature ]
-      contexts:
-        - AcknowledgementContext
+      contexts: [ AcknowledgementContext ]
+
     acknowledgement_timeout:
       paths: [ %paths.base%/features/AcknowledgementTimeout.feature ]
-      contexts:
-        - AcknowledgementTimeoutContext
+      contexts: [ AcknowledgementTimeoutContext ]
 
     recovery_notification_delay:
       paths: [ %paths.base%/features/RecoveryNotificationDelay.feature ]
-      contexts:
-        - RecoveryNotificationDelayContext
+      contexts: [ RecoveryNotificationDelayContext ]
 
     partitioning:
       paths: [ %paths.base%/features/Partitioning.feature ]
-      contexts:
-        - PartitioningContext
+      contexts: [ PartitioningContext ]
 
     knowledge_base:
       paths: [ %paths.base%/features/KnowledgeBase.feature ]
-      contexts:
-        - KnowledgeBaseContext
+      contexts: [ KnowledgeBaseContext ]
 
     disable_fields_on_blocked_objects:
       paths: [ %paths.base%/features/DisableFieldsOnBlockedObjects.feature ]
-      contexts:
-        - DisableFieldsOnBlockedObjectsContext
+      contexts: [ DisableFieldsOnBlockedObjectsContext ]
 
     backup:
-          paths: [ %paths.base%/features/Backup.feature ]
-          contexts:
-            - BackupContext
+      paths: [ %paths.base%/features/Backup.feature ]
+      contexts: [ BackupContext ]
 
     meta_services_api:
-          paths: [ %paths.base%/features/MetaServicesApi.feature ]
-          contexts:
-            - MetaServicesApiContext
+      paths: [ %paths.base%/features/MetaServicesApi.feature ]
+      contexts: [ MetaServicesApiContext ]
 
     influxdb:
       paths: [ %paths.base%/features/Influxdb.feature ]
-      contexts:
-        - InfluxdbContext
+      contexts: [ InfluxdbContext ]
 
     meta_services_downtime:
       paths: [ %paths.base%/features/DowntimeService.feature ]
-      contexts:
-        - DowntimeServiceContext
+      contexts: [ DowntimeServiceContext ]
 
     limit_metric_in_chart:
       paths: [ %paths.base%/features/LimitMetricInChart.feature ]
-      contexts:
-        - LimitMetricInChartContext
-
+      contexts: [ LimitMetricInChartContext ]
 
     show_disabled_hosts_services:
       paths: [ %paths.base%/features/ShowDisabledHostsServices.feature ]
-      contexts:
-        - ShowDisabledHostsServicesContext
+      contexts: [ ShowDisabledHostsServicesContext ]
 
     save_search_filter:
       paths: [ %paths.base%/features/SaveSearchFilter.feature ]
-      contexts:
-        - SaveSearchFilterContext
+      contexts: [ SaveSearchFilterContext ]
 
     timezone_display_host_monitoring:
       paths: [ %paths.base%/features/TimezoneInMonitoring.feature ]
-      contexts:
-        - TimezoneInMonitoringContext
+      contexts: [ TimezoneInMonitoringContext ]
 
     downtime_start_and_stop:
       paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
-      contexts:
-       - DowntimeStartAndStopContext
+      contexts: [ DowntimeStartAndStopContext ]
 
     command_arguments:
       paths: [ %paths.base%/features/CommandArguments.feature ]
-      contexts:
-       - CommandArgumentsContext
+      contexts: [ CommandArgumentsContext ]
 
     autologin:
       paths: [ %paths.base%/features/Autologin.feature ]
-      contexts:
-       - AutologinContext
+      contexts: [ AutologinContext ]
 
     autologin_options:
       paths: [ %paths.base%/features/AutologinOptions.feature ]
-      contexts:
-      - AutologinOptionsContext
+      contexts: [ AutologinOptionsContext ]
 
     broker:
       paths: [ %paths.base%/features/Broker.feature ]
-      contexts:
-       - BrokerContext
+      contexts: [ BrokerContext ]
 
     ldap:
       paths: [ %paths.base%/features/Ldap.feature ]
-      contexts:
-      - LdapContext
+      contexts: [ LdapContext ]
 
     custom_views:
       paths: [ %paths.base%/features/CustomViews.feature ]
-      contexts:
-      - CustomViewsContext
+      contexts: [ CustomViewsContext ]
 
     host_template_configuration:
       paths: [ %paths.base%/features/HostTemplateConfiguration.feature ]
-      contexts:
-      - HostTemplateConfigurationContext
+      contexts: [ HostTemplateConfigurationContext ]
 
     module:
       paths: [ %paths.base%/features/Module.feature ]
@@ -166,195 +141,156 @@ default:
 
     rest_api:
       paths: [ %paths.base%/features/RestApi.feature ]
-      contexts:
-      - RestApiContext
-      
+      contexts: [ RestApiContext ]
+
     special_characters_in_contact:
       paths: [ %paths.base%/features/SpecialCharactersInContact.feature ]
-      contexts:
-      - SpecialCharactersInContactContext
+      contexts: [ SpecialCharactersInContactContext ]
 
     contact_configuration:
       paths: [ %paths.base%/features/ContactConfiguration.feature ]
-      contexts:
-      - ContactConfigurationContext
+      contexts: [ ContactConfigurationContext ]
 
     host_configuration:
       paths: [ %paths.base%/features/HostConfiguration.feature ]
-      contexts:
-      - HostConfigurationContext
+      contexts: [ HostConfigurationContext ]
 
     host_category_configuration:
       paths: [ %paths.base%/features/HostCategoryConfiguration.feature ]
-      contexts:
-      - HostCategoryConfigurationContext
+      contexts: [ HostCategoryConfigurationContext ]
 
     host_group_configuration:
       paths: [ %paths.base%/features/HostGroupConfiguration.feature ]
-      contexts:
-      - HostGroupConfigurationContext
+      contexts: [ HostGroupConfigurationContext ]
 
     contact_group_configuration:
       paths: [ %paths.base%/features/ContactGroupConfiguration.feature ]
-      contexts:
-      - ContactGroupConfigurationContext
+      contexts: [ ContactGroupConfigurationContext ]
 
     host_template_basics_operations:
       paths: [ %paths.base%/features/HostTemplateBasicsOperations.feature ]
-      contexts:
-      - HostTemplateBasicsOperationsContext
+      contexts: [ HostTemplateBasicsOperationsContext ]
 
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
-      contexts:
-      - LdapConfigurationContext
+      contexts: [ LdapConfigurationContext ]
 
     traps_snmp_configuration:
       paths: [ %paths.base%/features/TrapsSNMPConfiguration.feature ]
-      contexts:
-      - TrapsSNMPConfigurationContext
+      contexts: [ TrapsSNMPConfigurationContext ]
 
     ldap_manual_import:
       paths: [ %paths.base%/features/LdapManualImport.feature ]
-      contexts:
-      - LdapManualImportContext
+      contexts: [ LdapManualImportContext ]
 
     modify_default_page_connexion:
       paths: [ %paths.base%/features/ModifyDefaultPageConnection.feature ]
-      contexts:
-      - ModifyDefaultPageConnectionContext
+      contexts: [ ModifyDefaultPageConnectionContext ]
 
     control_login:
       paths: [ %paths.base%/features/ControlLogin.feature ]
-      contexts:
-      - ControlLoginContext
+      contexts: [ ControlLoginContext ]
 
     acl_access_groups:
       paths: [ %paths.base%/features/AclAccessGroups.feature ]
-      contexts:
-      - AclAccessGroupsContext
+      contexts: [ AclAccessGroupsContext ]
 
     acl_menus_access:
       paths: [ %paths.base%/features/ACLMenusAccess.feature ]
-      contexts:
-      - ACLMenusAccessContext
+      contexts: [ ACLMenusAccessContext ]
 
     acl_resources_access:
       paths: [ %paths.base%/features/ACLResourcesAccess.feature ]
-      contexts:
-      - ACLResourcesAccessContext
+      contexts: [ ACLResourcesAccessContext ]
 
     non_admin_contact_creation:
       paths: [ %paths.base%/features/NonAdminContactCreation.feature ]
-      contexts:
-      - NonAdminContactCreationContext
+      contexts: [ NonAdminContactCreationContext ]
 
     acl_actions_access:
       paths: [ %paths.base%/features/ACLActionsAccess.feature ]
-      contexts:
-      - ACLActionsAccessContext
+      contexts: [ ACLActionsAccessContext ]
 
     time_period_configuration:
       paths: [ %paths.base%/features/TimePeriodConfiguration.feature ]
-      contexts:
-      - TimePeriodConfigurationContext
+      contexts: [ TimePeriodConfigurationContext ]
 
     massive_change_hosts:
       paths: [ %paths.base%/features/MassiveChangeHosts.feature ]
-      contexts:
-      - MassiveChangeHostsContext
+      contexts: [ MassiveChangeHostsContext ]
 
     massive_change_services:
       paths: [ %paths.base%/features/MassiveChangeServices.feature ]
-      contexts:
-      - MassiveChangeServicesContext
+      contexts: [ MassiveChangeServicesContext ]
 
     virtual_metric_handle:
       paths: [ %paths.base%/features/VirtualMetricHandle.feature ]
-      contexts:
-      - VirtualMetricHandleContext
+      contexts: [ VirtualMetricHandleContext ]
 
     command_configuration:
       paths: [ %paths.base%/features/CommandConfiguration.feature ]
-      contexts:
-      - CommandConfigurationContext
+      contexts: [ CommandConfigurationContext ]
 
     service_group_configuration:
       paths: [ %paths.base%/features/ServiceGroupConfiguration.feature ]
-      contexts:
-      - ServiceGroupConfigurationContext
+      contexts: [ ServiceGroupConfigurationContext ]
 
     service_configuration:
       paths: [ %paths.base%/features/ServiceConfiguration.feature ]
-      contexts:
-      - ServiceConfigurationContext
+      contexts: [ ServiceConfigurationContext ]
 
     host_group_service_configuration:
       paths: [ %paths.base%/features/HostGroupServiceConfiguration.feature ]
-      contexts:
-      - HostGroupServiceConfigurationContext
+      contexts: [ HostGroupServiceConfigurationContext ]
 
     service_template_configuration:
       paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
-      contexts:
-      - ContactTemplateConfigurationContext
+      contexts: [ ContactTemplateConfigurationContext ]
 
     service_category_configuration:
       paths: [ %paths.base%/features/ServiceCategoryConfiguration.feature ]
-      contexts:
-      - ServiceCategoryConfigurationContext
+      contexts: [ ServiceCategoryConfigurationContext ]
 
     escalation_configuration:
       paths: [ %paths.base%/features/EscalationConfiguration.feature ]
-      contexts:
-      - EscalationConfigurationContext
+      contexts: [ EscalationConfigurationContext ]
 
     meta_service_configuration:
       paths: [ %paths.base%/features/MetaServiceConfiguration.feature ]
-      contexts:
-      - MetaServiceConfigurationContext
+      contexts: [ MetaServiceConfigurationContext ]
 
     host_group_dependency_configuration:
       paths: [ %paths.base%/features/HostGroupDependencyConfiguration.feature ]
-      contexts:
-      - HostGroupDependencyConfigurationContext
+      contexts: [ HostGroupDependencyConfigurationContext ]
 
     service_submit_result:
       paths: [ %paths.base%/features/ServiceSubmitResult.feature ]
-      contexts:
-      - ServiceSubmitResultContext
+      contexts: [ ServiceSubmitResultContext ]
 
     host_dependency_configuration:
       paths: [ %paths.base%/features/HostDependencyConfiguration.feature ]
-      contexts:
-      - HostDependencyConfigurationContext
+      contexts: [ HostDependencyConfigurationContext ]
 
     service_dependency_configuration:
       paths: [ %paths.base%/features/ServiceDependencyConfiguration.feature ]
-      contexts:
-      - ServiceDependencyConfigurationContext
+      contexts: [ ServiceDependencyConfigurationContext ]
 
     service_group_dependency_configuration:
       paths: [ %paths.base%/features/ServiceGroupDependencyConfiguration.feature ]
-      contexts:
-      - ServiceGroupDependencyConfigurationContext
+      contexts: [ ServiceGroupDependencyConfigurationContext ]
 
     connector_configuration:
       paths: [ %paths.base%/features/ConnectorConfiguration.feature ]
-      contexts:
-      - ConnectorConfigurationContext
+      contexts: [ ConnectorConfigurationContext ]
 
     vendor_configuration:
       paths: [ %paths.base%/features/VendorConfiguration.feature ]
-      contexts:
-      - VendorConfigurationContext
+      contexts: [ VendorConfigurationContext ]
 
     first_notification_delay:
       paths: [ %paths.base%/features/FirstNotificationDelay.feature ]
-      contexts:
-        - FirstNotificationDelayContext
+      contexts: [ FirstNotificationDelayContext ]
 
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
-      contexts:
-      - MetaServiceDependencyConfigurationContext
+      contexts: [ MetaServiceDependencyConfigurationContext ]
