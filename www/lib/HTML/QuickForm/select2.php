@@ -50,90 +50,90 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      *
      * @var string
      */
-    var $_elementHtmlName;
+    public $_elementHtmlName;
 
     /**
      *
      * @var string
      */
-    var $_elementTemplate;
+    public $_elementTemplate;
 
     /**
      *
      * @var string
      */
-    var $_elementCSS;
+    public $_elementCSS;
 
     /**
      *
      * @var string
      */
-    var $_availableDatasetRoute;
+    public $_availableDatasetRoute;
 
     /**
      *
      * @var string
      */
-    var $_defaultDatasetRoute;
+    public $_defaultDatasetRoute;
 
     /**
      *
      * @var string
      */
-    var $_defaultDataset;
+    public $_defaultDataset;
 
     /**
      *
      * @var boolean
      */
-    var $_ajaxSource;
+    public $_ajaxSource;
 
     /**
      *
      * @var boolean
      */
-    var $_multiple;
+    public $_multiple;
 
     /**
      *
      * @var string
      */
-    var $_multipleHtml;
+    public $_multipleHtml;
 
     /**
      *
      * @var string
      */
-    var $_defaultSelectedOptions;
+    public $_defaultSelectedOptions;
 
     /**
      *
      * @var string
      */
-    var $_jsCallback;
+    public $_jsCallback;
 
     /**
      *
      * @var boolean
      */
-    var $_allowClear;
+    public $_allowClear;
 
     /**
      *
      * @var string
      */
-    var $_linkedObject;
+    public $_linkedObject;
 
     /**
      *
      * @var type
      */
-    var $_defaultDatasetOptions;
+    public $_defaultDatasetOptions;
 
     /**
      * @var int The number of element in the pagination
      */
-    var $_pagination;
+    public $_pagination;
 
     /**
      *
@@ -143,7 +143,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param array $attributes
      * @param string $sort
      */
-    function HTML_QuickForm_select2(
+    public function HTML_QuickForm_select2(
         $elementName = null,
         $elementLabel = null,
         $options = null,
@@ -169,7 +169,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      *
      * @param array $attributes
      */
-    function parseCustomAttributes(&$attributes)
+    public function parseCustomAttributes(&$attributes)
     {
         // Check for
         if (isset($attributes['datasourceOrigin']) && ($attributes['datasourceOrigin'] == 'ajax')) {
@@ -218,7 +218,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param boolean $min
      * @return string
      */
-    function getElementJs($raw = true, $min = false)
+    public function getElementJs($raw = true, $min = false)
     {
         $jsFile = './include/common/javascript/jquery/plugins/select2/js/';
         $jsFile2 = './include/common/javascript/centreon/centreon-select2.js';
@@ -232,7 +232,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $js = '<script type="text/javascript" '
             . 'src="' . $jsFile . '">'
             . '</script>'
-            .'<script type="text/javascript" '
+            . '<script type="text/javascript" '
             . 'src="' . $jsFile2 . '">'
             . '</script>';
 
@@ -243,7 +243,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      *
      * @return type
      */
-    function getElementHtmlName()
+    public function getElementHtmlName()
     {
         return $this->_elementHtmlName;
     }
@@ -254,7 +254,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param boolean $min
      * @return string
      */
-    function getElementCss($raw = true, $min = false)
+    public function getElementCss($raw = true, $min = false)
     {
         $cssFile = './include/common/javascript/jquery/plugins/select2/css/';
 
@@ -273,7 +273,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      *
      * @return string
      */
-    function toHtml()
+    public function toHtml()
     {
         $strHtml = '';
         $readonly = '';
@@ -291,12 +291,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     }
 
 
-
     /**
      *
      * @return string
      */
-    function getJsInit()
+    public function getJsInit()
     {
         $allowClear = 'true';
         if (false === $this->_allowClear || $this->_flagFrozen) {
@@ -324,13 +323,14 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $defaultData = $this->setFixedDatas() . ',';
             $this->setDefaultFixedDatas();
         }
-        
+
         $additionnalJs .= ' ' . $this->_jsCallback;
 
         $javascriptString = '<script>
             jQuery(function () {
-                var $currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
-                    allowClear: ' . $allowClear .',
+                var $currentSelect2Object' . $this->getName() .
+            ' = jQuery("#' . $this->getName() . '").centreonSelect2({
+                    allowClear: ' . $allowClear . ',
                     pageLimit: ' . $this->_pagination . ',
                     select2: {
                         ' . $ajaxOption . '
@@ -356,7 +356,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $datas = 'data: [';
 
         // Set default values
-        $strValues = is_array($this->_values)? array_map('strval', $this->_values): array();
+        $strValues = is_array($this->_values) ? array_map('strval', $this->_values) : array();
 
         foreach ($this->_options as $option) {
             if (empty($option["attr"]["value"])) {
@@ -364,7 +364,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             }
 
             if (!is_numeric($option["attr"]["value"])) {
-                $option["attr"]["value"] = '"' . $option["attr"]["value"] .'"';
+                $option["attr"]["value"] = '"' . $option["attr"]["value"] . '"';
             }
 
             $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
@@ -379,11 +379,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         return $datas;
     }
 
-    var $_memOptions = array();
+    public $_memOptions = array();
+
     /**
      *
      */
-    function setDefaultFixedDatas()
+    public function setDefaultFixedDatas()
     {
         global $pearDB;
 
@@ -408,7 +409,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                     $this->_defaultSelectedOptions .= $currentOption;
                 }
             }
-        } else if (!is_null($this->_defaultDataset)) {
+        } elseif (!is_null($this->_defaultDataset)) {
             foreach ($this->_defaultDataset as $elementName => $elementValue) {
 
                 $currentOption = '<option selected="selected" value="'
@@ -442,7 +443,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     public function setDefaultAjaxDatas()
     {
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
-            url: "'. $this->_defaultDatasetRoute .'",
+            url: "' . $this->_defaultDatasetRoute . '",
         });
         
         $request' . $this->getName() . '.success(function (data) {
@@ -457,11 +458,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 option += ">" + item.text + "</option>";
               
                 // Append it to the select
-                $currentSelect2Object'.$this->getName().'.append(option);
+                $currentSelect2Object' . $this->getName() . '.append(option);
             }
  
             // Update the selected options that are displayed
-            $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
+            $currentSelect2Object' . $this->getName() . '.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
 
         $request' . $this->getName() . '.error(function(data) {
@@ -476,7 +477,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      *
      * @return string
      */
-    function getFrozenHtml()
+    public function getFrozenHtml()
     {
         $strFrozenHtml = '';
         return $strFrozenHtml;
@@ -489,7 +490,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param type $caller
      * @return boolean
      */
-    function onQuickFormEvent($event, $arg, &$caller)
+    public function onQuickFormEvent($event, $arg, &$caller)
     {
         if ('updateValue' == $event) {
             $value = $this->_findValue($caller->_constantValues);
