@@ -398,7 +398,7 @@ class CentreonAPI
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
-                && !class_exists("Centreon" . $this->relationObject[$object]['class'])
+                && !class_exists("\CentreonClapi\Centreon" . $this->relationObject[$object]['class'])
             ) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
@@ -673,7 +673,6 @@ class CentreonAPI
             } else {
                 $objName = "";
             }
-
 
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
