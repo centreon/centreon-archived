@@ -62,9 +62,11 @@ Perform the command:
  ::
 
   $ yum install centreon-base-config-centreon-engine centreon
+  $ service centcore start
+  $ service httpd start
 
 
-:ref:`After this step you should connect to Centreon to finalise the installation process <installation_web_ces>`.
+:ref:`After this step you should look at the Post-package steps and connect to Centreon to finalise the installation process <installation_web_ces>`.
 
 Installing a poller
 -------------------
