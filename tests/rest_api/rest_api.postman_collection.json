@@ -33918,7 +33918,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}\"\n}"
+              "raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
             },
             "description": ""
           },
@@ -33980,7 +33980,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"delcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}\"\n}"
+              "raw": "{\n  \"action\": \"delcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
             },
             "description": ""
           },
@@ -34042,7 +34042,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}|{{contact_name2}}\"\n}"
+              "raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}|{{contact_alias2}}\"\n}"
             },
             "description": ""
           },

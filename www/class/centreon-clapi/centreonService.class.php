@@ -1042,12 +1042,10 @@ class CentreonService extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filters = null)
     {
-        $filters = array("service_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters['service_id'] = $filter_id;
-        }
+        $filters["service_register"] = $this->register;
+
         $hostRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostRel->getMergedParameters(
             array("host_name", "host_id"),
@@ -1104,13 +1102,13 @@ class CentreonService extends CentreonObject
                     $value = CentreonUtils::convertLineBreak($value);
                     # Host Filter
                     $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
-                    if($this->getClapiActionName($parameter) != "host_id") {
+                    if ($this->getClapiActionName($parameter) != "host_id") {
                         echo $this->action . $this->delim . "setparam" . $this->delim
                             . $element['host_name'] . $this->delim
                             . $element['service_description'] . $this->delim
                             . $this->getClapiActionName($parameter) . $this->delim
                             . $value . "\n";
-                    } 
+                    }
                 }
             }
             $params = $extendedObj->getParameters(

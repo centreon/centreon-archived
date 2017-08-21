@@ -1121,6 +1121,9 @@ class CentreonConfigCentreonBroker
          */
         $configs = explode(':', $string);
         foreach ($configs as $config) {
+            if (strpos($config, '=') == false) {
+                continue;
+            }
             list($key, $value) = explode('=', $config);
             switch ($key) {
                 case 'D':

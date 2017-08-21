@@ -68,7 +68,6 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
         $queryValues[] = '%' . (string)$q . '%';
-        $queryValues[] = '%' . (string)$q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
@@ -81,7 +80,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $queryTraps = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name ' .
             'FROM traps t, traps_vendor m ' .
             'WHERE t.manufacturer_id = m.id ' .
-            'AND (t.traps_name LIKE ? OR m.name LIKE ?) ' .
+            'AND CONCAT(m.name, " - ", t.traps_name) LIKE ? ' .
             'ORDER BY m.name, t.traps_name ' . $range;
 
         $stmt = $this->pearDB->prepare($queryTraps);

@@ -194,7 +194,7 @@ class HostConfigurationContext extends CentreonContext
         'address' => 'hostChanged@localhost',
         'snmp_community' => 'hostSnmpCommunitychanged',
         'snmp_version' => '3',
-        'macros' => array( 
+        'macros' => array(
             'HOSTMACROCHANGED' => 5
         ),
         'location' => 'Europe/Paris',
@@ -222,7 +222,7 @@ class HostConfigurationContext extends CentreonContext
         'notify_on_downtime_scheduled' => 0,
         'notification_interval' => 34,
         'notification_period' => 'workhours',
-        'first_notification_delay' => 7, 
+        'first_notification_delay' => 7,
         'recovery_notification_delay' => 4,
         'parent_host_groups' => 'hostGroupName2',
         'parent_host_categories' => 'hostCategoryName3',

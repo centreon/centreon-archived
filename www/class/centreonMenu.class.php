@@ -35,7 +35,15 @@
 
 class CentreonMenu
 {
+    /**
+     * @var CentreonLang
+     */
     protected $centreonLang;
+
+    /**
+     * @var
+     */
+    protected $db;
 
     /**
      * Constructor
@@ -74,4 +82,5 @@ class CentreonMenu
         }
         return $name;
     }
+
 }

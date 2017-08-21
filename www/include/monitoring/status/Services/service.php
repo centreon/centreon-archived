@@ -168,11 +168,6 @@ if (!empty($centreon->optGen["global_sort_order"])) {
     $global_sort_order = $centreon->optGen["global_sort_order"];
 }
 
-include_once("./include/monitoring/status/Common/default_poller.php");
-include_once("./include/monitoring/status/Common/default_hostgroups.php");
-include_once("./include/monitoring/status/Common/default_servicegroups.php");
-include_once($svc_path . "/serviceJS.php");
-
 if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
     if (!empty($filters["sort_type"])) {
         $sort_type = $filters["sort_type"];
@@ -203,6 +198,10 @@ if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
     }
 }
 
+include_once("./include/monitoring/status/Common/default_poller.php");
+include_once("./include/monitoring/status/Common/default_hostgroups.php");
+include_once("./include/monitoring/status/Common/default_servicegroups.php");
+include_once($svc_path . "/serviceJS.php");
 
 /*
  * Smarty template Init

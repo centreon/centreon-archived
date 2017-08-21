@@ -195,6 +195,11 @@ class CentreonAPI
             ),
             'export' => true
         );
+        $this->relationObject["LDAP"] = array(
+            'module' => 'core',
+            'class' => 'LDAP',
+            'export' => true
+        );
         $this->relationObject["CONTACTTPL"] = array(
             'module' => 'core',
             'class' => 'ContactTemplate',
@@ -261,27 +266,22 @@ class CentreonAPI
         $this->relationObject["ACLGROUP"] = array(
             'module' => 'core',
             'class' => 'ACLGroup',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLACTION"] = array(
             'module' => 'core',
             'class' => 'ACLAction',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLMENU"] = array(
             'module' => 'core',
             'class' => 'ACLMenu',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["ACLRESOURCE"] = array(
             'module' => 'core',
             'class' => 'ACLResource',
-            'export' => false
-        );
-        $this->relationObject["LDAP"] = array(
-            'module' => 'core',
-            'class' => 'LDAP',
-            'export' => false
+            'export' => true
         );
         $this->relationObject["SETTINGS"] = array(
             'module' => 'core',
@@ -307,8 +307,8 @@ class CentreonAPI
                     $finalNamespace = implode(
                         '',
                         array_map(
-                            function($n) {
-                            return ucfirst($n);
+                            function ($n) {
+                                return ucfirst($n);
                             },
                             explode('-', $finalNamespace)
                         )
@@ -336,8 +336,14 @@ class CentreonAPI
      * @param void
      * @return CentreonApi
      */
-    public static function getInstance($user=null, $password=null, $action=null, $centreon_path=null, $options=null) {
-        if(is_null(self::$_instance)) {
+    public static function getInstance(
+        $user = null,
+        $password = null,
+        $action = null,
+        $centreon_path = null,
+        $options = null
+    ) {
+        if (is_null(self::$_instance)) {
             self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
         }
 
@@ -363,7 +369,8 @@ class CentreonAPI
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
-                && !class_exists("Centreon" . $this->relationObject[$object])) {
+                && !class_exists("\CentreonClapi\Centreon" . $this->relationObject[$object]['class'])
+            ) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
@@ -383,7 +390,8 @@ class CentreonAPI
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
-                    && !class_exists("Centreon" . $oObjet['class'])) {
+                    && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])
+                ) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_
                             . "www/class/centreon-clapi/centreon"
@@ -404,6 +412,7 @@ class CentreonAPI
         /**
          * Default class needed
          */
+
         require_once _CLAPI_CLASS_."/centreonTimePeriod.class.php";
         require_once _CLAPI_CLASS_."/centreonACLResources.class.php";
     }
@@ -625,16 +634,15 @@ class CentreonAPI
              * Check class declaration
              */
             if (isset($this->relationObject[$this->object]['class'])) {
-
                 if ($this->relationObject[$this->object]['module'] === 'core') {
                     $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
                 } else {
-                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
+                    $objName = $this->relationObject[$this->object]['namespace'] .
+                        "\CentreonClapi\Centreon" . $this->relationObject[$this->object]['class'];
                 }
             } else {
                 $objName = "";
             }
-
 
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
@@ -804,14 +812,13 @@ class CentreonAPI
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                 }
+                }
                 $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
-              }
+            }
             # Don't want return \n
             exit($this->return_code);
         } else {
             // header
-            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
@@ -1016,6 +1023,7 @@ class CentreonAPI
      */
     public function sortClassExport()
     {
+
         if (isset($this->relationObject) && is_array(($this->relationObject))) {
             $aObject = $this->relationObject;
             while ($oObjet = array_slice($aObject, -1, 1, true)) {
@@ -1023,11 +1031,11 @@ class CentreonAPI
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-
                     $objName = '';
                     if (isset($oObjet[$key]['namespace'])) {
                         $objName = '\\' . $oObjet[$key]['namespace'];
                     }
+
                     $objName .= '\CentreonClapi\Centreon' . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 

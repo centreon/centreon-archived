@@ -284,15 +284,9 @@ class CentreonEngineCfg extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters = null)
     {
         $filters = null;
-        if (!is_null($filter_id)) {
-            $filters = array(
-                $this->object->getPrimaryKey() => $filter_id
-            );
-        }
-
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $tpObj = new \Centreon_Object_Timeperiod();
         foreach ($elements as $element) {
@@ -310,13 +304,13 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler' 
+                    if ($parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command' 
+                        || $parameter == 'host_perfdata_command'
                         || $parameter == 'service_perfdata_command'
                         || $parameter == 'host_perfdata_file_processing_command'
                         || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command' 
+                        || $parameter == 'ochp_command'
                         || $parameter == 'ocsp_command') {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
