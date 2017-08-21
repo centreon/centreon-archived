@@ -280,6 +280,12 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         }
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
+    $aclCondition = '';
+    if (!$centreon->user->admin) {
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+            'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
+            'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
+    }
     $rq = "SELECT DISTINCT las.service_id, " .
         "sum(OKTimeScheduled) as OK_T, " .
         "sum(OKnbEvent) as OK_A, " .
@@ -291,11 +297,9 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         "sum(CRITICALnbEvent) as CRITICAL_A, " .
         "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, " .
         "sum(MaintenanceTime) as MAINTENANCE_T " .
-        "FROM log_archive_service " . (!$centreon->user->admin ? "las, centreon_acl acl " : "las ") .
+        "FROM log_archive_service las " .
         "WHERE las.host_id = " . $host_id . " " .
-        (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "") .
-        (!$centreon->user->admin ?
-            " AND acl.group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")" : "") .
+        $aclCondition . " " .
         "AND date_start >= " . $start_date . " AND date_end <= " . $end_date . " " .
         "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") " .
         "GROUP BY las.service_id ";
@@ -414,17 +418,21 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         $serviceStats[$name] = 0;
     }
     $days_of_week = getReportDaysStr($reportTimePeriod);
+    $aclCondition = '';
+    if (!$centreon->user->admin) {
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+            'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
+            'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
+    }
     $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
         . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
         . "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, sum(UNKNOWNnbEvent) as UNKNOWN_A, "
         . "sum(CRITICALTimeScheduled) as CRITICAL_T, sum(CRITICALnbEvent) as CRITICAL_A, "
         . "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, "
         . "sum(MaintenanceTime) as MAINTENANCE_T "
-        . "FROM log_archive_service las " . (!$centreon->user->admin ? ", centreon_acl acl " : " ")
-        . "WHERE las.host_id = " . $host_id .
-        (!$centreon->user->admin ? " AND las.host_id = acl.host_id AND las.service_id = acl.service_id " : "") .
-        (!$centreon->user->admin ?
-            " AND acl.group_id IN (" . $centreon->user->access->getAccessGroupsString() . ")" : "") .
+        . "FROM log_archive_service las "
+        . "WHERE las.host_id = " . $host_id . " "
+        . $aclCondition . 
         " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
         " AND date_end <= " . $end_date . " "
         . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "
