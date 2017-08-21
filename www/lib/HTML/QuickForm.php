@@ -263,8 +263,7 @@ class HTML_QuickForm extends HTML_Common
      * @since     1.0
      * @access    private
      */
-    public $_requiredNote = '<span style="font-size:80%; color:#ff0000;">*</span>' .
-    '<span style="font-size:80%;"> denotes required field</span>';
+    public $_requiredNote = '<span style="font-size:80%; color:#ff0000;">*</span><span style="font-size:80%;"> denotes required field</span>';
 
     /**
      * Whether the form was submitted
