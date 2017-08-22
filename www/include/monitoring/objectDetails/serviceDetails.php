@@ -433,7 +433,7 @@ if (!is_null($host_id)) {
 
         $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
 
-        $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '" . $pearDBO->escape($host_name) . "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
+        $DBRES = $pearDBO->query("SELECT id FROM `index_data` WHERE host_name = '" . $pearDBO->escape($host_name) . "' AND service_description = '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
         $index_data = 0;
         if ($DBRES->numRows()) {
             $row = $DBRES->fetchRow();
