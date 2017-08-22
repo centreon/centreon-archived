@@ -33,16 +33,47 @@
  *
  */
 
-require_once "Centreon/Object/Object.php";
+namespace CentreonClapi;
 
-/**
- * Used for interacting with downtime objects
- *
- * @author sylvestre
- */
-class Centreon_Object_Downtime extends Centreon_Object
+require_once "centreonObject.class.php";
+require_once "centreonHost.class.php";
+require_once "centreonService.class.php";
+require_once "Centreon/Object/Downtime/RtDowntime.php";
+require_once "Centreon/Object/Host/Host.php";
+require_once "Centreon/Object/Host/Group.php";
+require_once "Centreon/Object/Service/Group.php";
+require_once "Centreon/Object/Relation/Downtime/Host.php";
+require_once "Centreon/Object/Relation/Downtime/Hostgroup.php";
+require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
+
+class CentreonRtDowntime extends CentreonObject
 {
-    protected $table = "downtime";
-    protected $primaryKey = "dt_id";
-    protected $uniqueLabelField = "dt_name";
+    public function __construct()
+    {
+        parent::__construct();
+        $this->object = new \Centreon_Object_RtDowntime();
+        $this->action = "RTDOWNTIME";
+    }
+
+    /**
+     * Display downtimes
+     *
+     * @param null $parameters
+     */
+    public function show($params = null)
+    {
+        $params = array(
+            'author',
+            'actual_start_time',
+            'end_time',
+            'comment_data',
+            'duration',
+            'fixed'
+        );
+        echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
+        $elements = $this->object->getRunningDowntimes();
+        foreach ($elements as $tab) {
+            echo implode($this->delim, array_values($tab)) . "\n";
+        }
+    }
 }
