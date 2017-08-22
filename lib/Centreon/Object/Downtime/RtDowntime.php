@@ -38,11 +38,30 @@ require_once "Centreon/Object/Object.php";
 /**
  * Used for interacting with downtime objects
  *
- * @author sylvestre
+ * @author Baldo Guillaume
  */
-class Centreon_Object_Downtime extends Centreon_Object
+class Centreon_Object_RtDowntime extends Centreon_Object
 {
-    protected $table = "downtime";
-    protected $primaryKey = "dt_id";
-    protected $uniqueLabelField = "dt_name";
+    protected $table = "downtimes";
+    protected $primaryKey = "downtime_id";
+    protected $uniqueLabelField = "comment_data";
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->db = Centreon_Db_Manager::factory('storage');
+    }
+
+    public function getRunningDowntimes()
+    {
+        $query =  "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
+            "FROM downtimes " .
+            "WHERE service_id IS NULL " .
+            "AND cancelled = 0 " .
+            "AND started = 1 " .
+            "AND actual_end_time IS NULL " .
+            "ORDER BY actual_start_time";
+        return $this->getResult($query, array(), "fetchAll");
+    }
+
 }

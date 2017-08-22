@@ -226,6 +226,12 @@ class CentreonAPI
             'class' => 'Downtime',
             'export' => true
         );
+        /* RtDowntimes */
+        $this->relationObject["RTDOWNTIME"] = array(
+            'module' => 'core',
+            'class' => 'RtDowntime',
+            'export' => true
+        );
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
@@ -655,7 +661,6 @@ class CentreonAPI
             } else {
                 $objName = "";
             }
-
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
