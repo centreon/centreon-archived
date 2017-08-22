@@ -81,9 +81,35 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker = null;
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
+    protected $cacheExternalValue = null;
+    protected $centreonConfigCentreonBroker = null;
+
+    private function getExternalValues()
+    {
+        global $pearDB;
+
+        if (!is_null($this->cacheExternalValue)) {
+            return ;
+        }
+        
+        $this->centreonConfigCentreonBroker = new CentreonConfigCentreonBroker($pearDB);
+        $this->cacheExternalValue = array();
+        $stmt = $this->backend_instance->db->prepare("SELECT 
+            CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
+                WHERE cf.external IS NOT NULL 
+                   AND cf.cb_field_id = ctfr.cb_field_id
+                   AND ctfr.cb_type_id = cttr.cb_type_id
+        ");
+        $stmt->execute();
+        while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+            $this->cacheExternalValue[$row['name']] = $row['external'];
+        }
+    }
 
     private function generate($poller_id, $localhost)
     {
+        $this->getExternalValues();
+        
         if (is_null($this->stmt_broker)) {
             $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
@@ -146,8 +172,19 @@ class Broker extends AbstractObjectXML
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
+            $fp = fopen('/tmp/debug.txt', 'a+');
+            fwrite($fp, print_r($resultParameters, true));
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
+                // We search the BlockId
+                $blockId = 0;
+                for ($i = count($value); $i > 0; $i--) {
+                    if ($value[$i]['config_key'] == 'blockId') {
+                        $blockId = $value[$i]['config_value'];
+                        break;
+                    }
+                }
+                
                 foreach ($value as $subvalue) {
                     if (!isset($subvalue['fieldIndex']) ||
                         $subvalue['fieldIndex'] == "" ||
@@ -168,6 +205,13 @@ class Broker extends AbstractObjectXML
                         } else {
                             $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
                                 $subvalue['config_value'];
+                            
+                            // We override with external values
+                            if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
+                                $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                    $this->centreonConfigCentreonBroker->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
+                            }
+                            
                             // Let broker insert in index data in pollers
                             if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
                                 && !$localhost) {

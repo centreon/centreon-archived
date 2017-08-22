@@ -63,6 +63,7 @@ require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
+require_once dirname(__FILE__) . '/../centreonConfigCentreonBroker.php';
 
 class Generate {
     private $poller_cache = array();
