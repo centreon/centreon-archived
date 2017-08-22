@@ -172,8 +172,6 @@ class Broker extends AbstractObjectXML
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
-            $fp = fopen('/tmp/debug.txt', 'a+');
-            fwrite($fp, print_r($resultParameters, true));
             # Flow parameters
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
