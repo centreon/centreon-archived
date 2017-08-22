@@ -112,7 +112,6 @@ class CentreonGraphService extends CentreonGraph
                 $vname[$metric['metric']] = 'v' . $i;
                 $info = array(
                     "data" => array(),
-                    "legend" => $metric["metric_legend"],
                     "graph_type" => "line",
                     "unit" => $metric["unit"],
                     "color" => $metric["ds_color_line"],
@@ -121,6 +120,7 @@ class CentreonGraphService extends CentreonGraph
                     "crit" => null,
                     "warn" => null
                 );
+                $info['legend'] = str_replace('\\\\', '\\', $metric['metric_legend']);
 
                 /* Add legend getting data */
                 foreach ($legendDataInfo as $name => $key) {
@@ -135,7 +135,7 @@ class CentreonGraphService extends CentreonGraph
                             $displayformat = "%7.2lf";
                         }
                         $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
-                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' . $metric["metric_legend"] .
+                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' . str_replace(':', '\:', $metric['metric_legend']) .
                             '|' . ucfirst($name) . '|' . $displayformat . '"';
                     }
                 }
