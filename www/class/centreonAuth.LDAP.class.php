@@ -272,8 +272,8 @@ class CentreonAuthLDAP
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " .
                     html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
-					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
-					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
+					contact_ldap_dn = '" . $this->pearDB->escape($userDn) . "',
+					contact_name = '" . $this->pearDB->escape($userDisplay) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
                     ar_id = ".$this->arId."
@@ -313,7 +313,7 @@ class CentreonAuthLDAP
                     contact_enable_notifications)
 		        	VALUES (" . $tmplId . ", '" .
                     $this->contactInfos['contact_alias'] . "', '" .
-                    $userDisplay . "', 'ldap', '" . $userDn . "', " . $this->arId .
+                    $userDisplay . "', 'ldap', '" . $this->pearDB->escape($userDn) . "', " . $this->arId .
                     ", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
                 try {
                     $this->pearDB->query($query);
@@ -321,7 +321,7 @@ class CentreonAuthLDAP
                      * Get the contact_id
                      */
                     $query = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "'";
+                        WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn) . "'";
                     $res = $this->pearDB->query($query);
                     $row = $res->fetchRow();
                     $contact_id = $row['contact_id'];
