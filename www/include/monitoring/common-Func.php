@@ -109,10 +109,10 @@ function get_notified_infos_for_host($hostId)
         $contacts = getContactsForHost($hostId);
         
         if ($stopReading['contacts'] == 0) {
-            $results['contacts'] = array_merge($results['contacts'], $contacts);
+            $results['contacts'] = $results['contacts'] + $contacts;
         }
         if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = array_merge($results['contactGroups'], $contactGroups);
+            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
         
         if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
@@ -142,6 +142,8 @@ function get_notified_infos_for_host($hostId)
         $stack = array_merge($hostsTpl, $stack);
     }
 
+    asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
+    asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     return $results;
 }
 
@@ -209,10 +211,10 @@ function get_notified_infos_for_service($serviceId, $hostId)
         $contacts = getContactsForService($serviceId);
         
         if ($stopReading['contacts'] == 0) {
-            $results['contacts'] = array_merge($results['contacts'], $contacts);
+            $results['contacts'] = $results['contacts'] + $contacts;
         }
         if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = array_merge($results['contactGroups'], $contactGroups);
+            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
         
         if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
@@ -235,6 +237,8 @@ function get_notified_infos_for_service($serviceId, $hostId)
         return get_notified_infos_for_host($hostId);
     }
 
+    asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
+    asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     return $results;
 }
 
