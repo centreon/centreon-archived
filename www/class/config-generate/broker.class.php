@@ -82,7 +82,6 @@ class Broker extends AbstractObjectXML
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
     protected $cacheExternalValue = null;
-    protected $centreonConfigCentreonBroker = null;
 
     private function getExternalValues()
     {
@@ -92,7 +91,6 @@ class Broker extends AbstractObjectXML
             return ;
         }
         
-        $this->centreonConfigCentreonBroker = new CentreonConfigCentreonBroker($pearDB);
         $this->cacheExternalValue = array();
         $stmt = $this->backend_instance->db->prepare("SELECT 
             CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
@@ -207,7 +205,7 @@ class Broker extends AbstractObjectXML
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
                                 $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
-                                    $this->centreonConfigCentreonBroker->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
+                                    $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
                             }
                             
                             // Let broker insert in index data in pollers
@@ -271,5 +269,125 @@ class Broker extends AbstractObjectXML
     public function generateFromPoller($poller)
     {
         $this->generate($poller['id'], $poller['localhost']);
+    }
+    
+    /*
+     * Duplicate code from CentreonConfigCentreonBroker class.
+     * Need to remove it when we are going to have pdo system with a class
+     */ 
+    private function getInfoDb($string)
+    {
+        /*
+         * Default values
+         */
+        $s_db = "centreon";
+        $s_rpn = null;
+        /*
+         * Parse string
+         */
+        $configs = explode(':', $string);
+        foreach ($configs as $config) {
+            if (strpos($config, '=') == false) {
+                continue;
+            }
+            list($key, $value) = explode('=', $config);
+            switch ($key) {
+                case 'D':
+                    $s_db = $value;
+                    break;
+                case 'T':
+                    $s_table = $value;
+                    break;
+                case 'C':
+                    $s_column = $value;
+                    break;
+                case 'F':
+                    $s_filter = $value;
+                    break;
+                case 'K':
+                    $s_key = $value;
+                    break;
+                case 'CK':
+                    $s_column_key = $value;
+                    break;
+                case 'RPN':
+                    $s_rpn = $value;
+                    break;
+            }
+        }
+        /*
+         * Construct query
+         */
+        if (!isset($s_table) || !isset($s_column)) {
+            return false;
+        }
+        $query = "SELECT `" . $s_column . "` FROM `" . $s_table . "`";
+        if (isset($s_column_key) && isset($s_key)) {
+            $query .= " WHERE `" . $s_column_key . "` = '" . $s_key . "'";
+        }
+
+        /*
+         * Execute the query
+         */
+        switch ($s_db) {
+            case 'centreon':
+                $db = $this->backend_instance->db;
+                break;
+            case 'centreon_storage':
+                $db = $this->backend_instance->db_cs;
+                break;
+        }
+        
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        
+        $infos = array();
+        while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+            $val = $row[$s_column];
+            if (!is_null($s_rpn)) {
+                $val = $this->rpnCalc($s_rpn, $val);
+            }
+            $infos[] = $val;
+        }
+        if (count($infos) == 0) {
+            return "";
+        } elseif (count($infos) == 1) {
+            return $infos[0];
+        }
+        return $infos;
+    }
+    
+    private function rpnCalc($rpn, $val)
+    {
+        if (!is_numeric($val)) {
+            return $val;
+        }
+        try {
+            $val = array_reduce(
+                preg_split('/\s+/', $val . ' ' . $rpn),
+                array($this, 'rpnOperation')
+            );
+            return $val[0];
+        } catch (InvalidArgumentException $e) {
+            return $val;
+        }
+    }
+    
+    private function rpnOperation($result, $item)
+    {
+        if (in_array($item, array('+', '-', '*', '/'))) {
+            if (count($result) < 2) {
+                throw new InvalidArgumentException('Not enough arguments to apply operator');
+            }
+            $a = $result[0];
+            $b = $result[1];
+            $result = array();
+            $result[0] = eval("return $a $item $b;");
+        } elseif (is_numeric($item)) {
+            $result[] = $item;
+        } else {
+            throw new InvalidArgumentException('Unrecognized symbol ' . $item);
+        }
+        return $result;
     }
 }
