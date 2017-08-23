@@ -471,7 +471,6 @@ class CentreonLDAP
         if (trim($this->groupSearchInfo['member']) == '') {
             return array();
         }
-        $groupdn = str_replace('\\', '\\\\', $groupdn);
         $group = $this->getEntry($groupdn, $this->groupSearchInfo['member']);
         $list = array();
         if (!isset($group[$this->groupSearchInfo['member']])) {
