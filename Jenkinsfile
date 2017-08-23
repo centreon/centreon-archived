@@ -176,4 +176,6 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
+
+  currentBuild.result = 'FAILURE'
 }
