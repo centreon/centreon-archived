@@ -83,6 +83,13 @@ if (($o == "c" || $o == "w") && $meta_id) {
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
+$metrics = array( null => null);
+$DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
+while ($metric = $DBRESULT->fetchRow()) {
+    $metrics[$metric["metric_name"]] = $metric["metric_name"];
+}
+$DBRESULT->closeCursor();
+
 /*
  * Calc Type
  */
