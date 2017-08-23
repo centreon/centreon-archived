@@ -298,16 +298,16 @@
                                             <tr class='list_one' >
                                                 <td class="ListColLeft ColPopup">{$contactgroups_label}:</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach item=cg from=$contactgroups}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+                                                    {foreach from=$contactgroups item=cg key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
                                             <tr class='list_two'>
                                                 <td class="ListColLeft ColPopup">{$contacts_label}:</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach item=c from=$contacts}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+                                                    {foreach from=$contacts item=c key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
