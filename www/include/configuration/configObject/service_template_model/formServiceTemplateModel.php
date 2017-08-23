@@ -373,6 +373,10 @@ $attrHosttemplates = array(
     'linkedObject' => 'centreonHosttemplates'
 );
 
+/*
+ * For a shitty reason, Quickform set checkbox with stal[o] name
+ */ 
+unset($_POST['o']);
 #
 ## Form begin
 #
