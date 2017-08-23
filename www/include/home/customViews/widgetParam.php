@@ -194,7 +194,7 @@ function submitData()
                             var error = response.getElementsByTagName('error');
                             if (typeof(view) != 'undefined') {
                                 var viewId = view.item(0).firstChild.data;
-                                parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId);
+                                parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId + '&customViewId=' + viewId);
                                 parent.jQuery.colorbox.close();
                             } else if (typeof(error) != 'undefined') {
                                 var errorMsg = error.item(0).firstChild.data;
