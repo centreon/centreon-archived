@@ -719,7 +719,7 @@ class CentreonAPI
             while ($string = fgets($handle)) {
                 $i++;
                 $tab = preg_split('/;/', $string);
-                if (strlen(trim($string)) != 0) {
+                if (strlen(trim($string)) != 0 && !preg_match('/^\{OBJECT_TYPE\}/', $string)) {
                     $this->object = trim($tab[0]);
                     $this->action = trim($tab[1]);
                     $this->variables = trim(substr($string, strlen($tab[0] . ";" . $tab[1] . ";")));
@@ -849,6 +849,7 @@ class CentreonAPI
             exit($this->return_code);
         } else {
             // header
+            echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
