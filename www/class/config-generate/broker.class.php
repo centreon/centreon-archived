@@ -386,4 +386,3 @@ class Broker extends AbstractObjectXML
         return $result;
     }
 }
-}
