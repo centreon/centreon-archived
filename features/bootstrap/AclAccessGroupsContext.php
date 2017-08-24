@@ -50,28 +50,9 @@ class AclAccessGroupsContext extends CentreonContext
         $this->page = new ContactGroupsConfigurationPage($this);
         $this->page->setProperties(array(
             'name' => $this->contactGroupName,
-            'alias' => $this->contactGroupAlias
+            'alias' => $this->contactGroupAlias,
+            'contacts' => array($this->firstContactName, $this->secondContactName)
         ));
-        $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'
-                    . $this->firstContactName . '"]');
-            },
-            'The user: ' . $this->firstContactName . ' does not exist or has not been found',
-            5
-        );
-        $this->assertFind('css', 'span ul li div[title="' . $this->firstContactName . '"]')->click();
-        $this->assertFind('css', 'span[class="select2-selection select2-selection--multiple"]')->click();
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', 'span ul li div[title="'
-                    . $this->secondContactName . '"]');
-            },
-            'The user: ' . $this->secondContactName . ' does not exist or has not been found',
-            5
-        );
-        $this->assertFind('css', 'span ul li div[title="' . $this->secondContactName . '"]')->click();
         $this->page->save();
     }
 
