@@ -7,7 +7,6 @@ Feature: Testing A Configuration Proxy
         Given I am logged in a Centreon server with a configured proxy
 
     Scenario: Proxy settings with a correct connexion
-        Given a Centreon user on the Centreon UI page with a proxy url and port correctly configured
         When I click on the test configuration button
         Then a popin displays a successful connexion 
 

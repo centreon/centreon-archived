@@ -6,23 +6,10 @@ use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 class TestConfigurationProxyContext extends CentreonContext 
 {
     private $page;
-    private $proxyAddress = 'squid';
-    private $proxyPort = '3128';
+    private $wrongAddress = 'squad';
     private $wrongProxyPort = '9999';
     
     
-    
-    /**
-     * @Given a Centreon user on the Centreon UI page with a proxy url and port correctly configured
-     */
-    public function aCentreonUserOnTheCentreonUIpageWithAproxyUrlAndPortCorrectlyConfigured()
-    {   
-        $this->page = new ParametersCentreonUiPage($this);
-        $this->page->setProperties(array(
-            'proxy_url'=> $this->proxyAddress,
-            'proxy_port'=> $this->proxyPort
-            ));
-    }
 
     /**
      * @When I click on the test configuration button
@@ -59,9 +46,9 @@ class TestConfigurationProxyContext extends CentreonContext
     {   
         $this->page = new ParametersCentreonUiPage($this);
         $this->page->setProperties(array(
-            'proxy_url'=> $this->proxyAddress,
+            'proxy_url'=> $this->wrongAddress,
             'proxy_port'=> $this->wrongProxyPort
-            ));
+        ));
     }
     
     /**
