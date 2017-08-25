@@ -226,7 +226,9 @@ class CentreonInstance extends CentreonObject
 
         echo "id;name;address\n";
         foreach ($elems as $elem) {
-            echo $elem['host_id'] . $this->delim . $elem['host_name'] . $this->delim . $elem['host_address'] . "\n";
+            if (!preg_match('/^_Module_/', $elem['host_name'])) {
+                echo $elem['host_id'] . $this->delim . $elem['host_name'] . $this->delim . $elem['host_address'] . "\n";
+            }
         }
     }
 }
