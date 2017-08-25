@@ -223,6 +223,8 @@ class CentreonInstance extends CentreonObject
             array('name' => $instanceName),
             'AND'
         );
+
+        echo "id;name;address\n";
         foreach ($elems as $elem) {
             echo $elem['host_id'] . $this->delim . $elem['host_name'] . $this->delim . $elem['host_address'] . "\n";
         }
