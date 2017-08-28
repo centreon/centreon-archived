@@ -12,10 +12,16 @@ class TestConfigurationProxyContext extends CentreonContext
     
 
     /**
-     * @When I click on the test configuration button
+     * @When The configuration is saved I click on the test configuration button
      */
-    public function IclickOnTheTestConfigurationButton()
+    public function theConfigurationIsSavedIclickOnTheTestConfigurationButton()
     {
+        $proxyUrl = $this->assertFind('css', 'input[name="proxy_url"]')->getValue();
+        $proxyPort = $this->assertFind('css', 'input[name="proxy_port"]')->getValue();
+        if ($proxyUrl !== 'squid' && $proxyPort !== '3128') {
+            throw new \Exception('The proxy URL and/or port has not been saved properly');
+        }
+        $this->visit('main.php?p=50110&o=general');
         $this->assertFind('css', 'input[name="test_proxy"]')->click();
     }
 
@@ -50,6 +56,15 @@ class TestConfigurationProxyContext extends CentreonContext
             'proxy_port'=> $this->wrongProxyPort
         ));
     }
+    
+    /**
+     * @When I click on the test configuration button
+     */
+    public function IclickOnTheTestConfigurationButton()
+    {
+        $this->assertFind('css', 'input[name="test_proxy"]')->click();
+    }
+    
     
     /**
      * @Then a popin displays an error message

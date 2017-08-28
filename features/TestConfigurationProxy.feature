@@ -7,7 +7,7 @@ Feature: Testing A Configuration Proxy
         Given I am logged in a Centreon server with a configured proxy
 
     Scenario: Proxy settings with a correct connexion
-        When I click on the test configuration button
+        When The configuration is saved I click on the test configuration button
         Then a popin displays a successful connexion 
 
     Scenario: Proxy settings with a wrong connexion
