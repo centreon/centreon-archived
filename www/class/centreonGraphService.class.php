@@ -135,7 +135,8 @@ class CentreonGraphService extends CentreonGraph
                             $displayformat = "%7.2lf";
                         }
                         $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
-                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' . str_replace(':', '\:', $metric['metric_legend']) .
+                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' .
+                            str_replace(':', '\:', $metric['metric_legend']) .
                             '|' . ucfirst($name) . '|' . $displayformat . '"';
                     }
                 }
