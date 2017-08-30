@@ -22,7 +22,7 @@ Once the installation is completed, it is necessary to integrate this remote ser
 *	In the **Data** tab - **Multiple broker module** field change the name of the of Centreon Broker configuration file **central-module.xml** to for example: poller1-module.xml.
 
 .. image:: /images/user/configuration/10advanced_configuration/07mainconffilebrokerconf.png
-   :align: center 
+   :align: center
 
 Centreon Broker configuration
 =============================
@@ -37,6 +37,61 @@ It is necessary to generate a configuration file for Centreon Broker:
 
 .. image:: /images/user/configuration/10advanced_configuration/07brokerconfwizzard.png
    :align: center
+
+
+Optional authentication with Centreon Broker
+============================================
+
+If you wish to authenticate pollers that are sending data to your
+monitoring system then you can optionaly use Centreon Broker
+authentication mechanism, which is based on X.509 certificates.
+
+First generate a Certificate Authority certificate with OpenSSL. *ca.key*
+will be the private key (to store securely), while *ca.crt* will be the
+public certificate with which we will authenticate incoming connections.
+
+::
+
+	$> openssl req -x509 -newkey rsa:2048 -nodes -keyout ca.key -out ca.crt -days 365
+
+
+Now we can generate certificates using the CA key.
+
+::
+
+	$> openssl req -new -newkey rsa:2048 -nodes -keyout central.key -out central.csr -days 365
+	$> openssl req -new -newkey rsa:2048 -nodes -keyout poller.key -out poller.csr -days 365
+	$> openssl x509 -req -in central.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out central.crt -days 365 -sha256
+	$> openssl x509 -req -in poller.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out poller.crt -days 365 -sha256
+
+
+Place *central.key*, *central.crt* and *ca.crt* on the Centreon central server
+(in **/etc/centreon-broker** for example) and *poller.key*, *poller.crt* and
+*ca.crt* on your poller.
+
+Now we need to configure Centreon Broker to use these files. Go to
+**Configuration ==> Pollers ==> Broker configuration**. For
+*central-broker-master*, in the *Input* tab, you need to set the following
+parameters for *central-broker-master-input*.
+
+- Enable TLS encryption = Yes
+- Private key file = /etc/centreon-broker/central.key
+- Public certificate = /etc/centreon-broker/central.crt
+- Trusted CA's certificate = /etc/centreon-broker/ca.crt
+
+.. image:: /_static/images/configuration/broker_certificates.png
+   :align: center
+
+Similarly for your poller, you will need to modify it's TCP output in the Output
+tab with the following parameters.
+
+- Enable TLS encryption = Yes
+- Private key file = /etc/centreon-broker/poller.key
+- Public certificate = /etc/centreon-broker/poller.crt
+- Trusted CA's certificate = /etc/centreon-broker/ca.crt
+
+Regenerate the configuration of the affected pollers
+(**Configuration ==> Pollers**) and you're good.
 
 
 Centreontrapd Configuration
