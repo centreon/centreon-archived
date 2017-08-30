@@ -107,7 +107,7 @@ Système de gestion de base de données
 
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
 
-Pour les système CentOS / RHEL en verison 7, il est nécessaire de modifidier la limitation **LimitNOFILE**.
+Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier la limitation **LimitNOFILE**.
 Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
 
 ::
@@ -137,7 +137,7 @@ La communication entre le serveur central et un collecteur se fait via SSH.
 
 Vous devez échanger les clés SSH entre les serveurs.
 
-Si vous n'avez pas de clé SSH privés sur le serveur central pour l'utilisateur 'centreon' :
+Si vous n'avez pas de clé SSH privées sur le serveur central pour l'utilisateur 'centreon' :
 
 ::
 
