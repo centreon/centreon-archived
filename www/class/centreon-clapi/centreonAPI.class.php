@@ -502,6 +502,7 @@ class CentreonAPI
                     }
                 }
                 if ($row['contact_passwd'] == $pass) {
+                    \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
                     $CentreonLog = new CentreonUserLog(-1, $this->DB);
@@ -514,6 +515,7 @@ class CentreonAPI
                         $row['ar_id']
                     );
                     if ($centreonAuth->checkPassword() == 1) {
+                        \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                         return 1;
                     }
                 }
