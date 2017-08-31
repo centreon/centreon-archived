@@ -45,14 +45,47 @@ require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Downtime/Host.php";
 require_once "Centreon/Object/Relation/Downtime/Hostgroup.php";
 require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
+require_once realpath(dirname(__FILE__) . '/../centreonExternalCommand.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonHostgroups.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonServicegroups.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonInstance.class.php');
 
 class CentreonRtDowntime extends CentreonObject
 {
+    /**
+     * @var array
+     */
+    protected $downtimeType = array(
+        'HOST',
+        'SVC',
+        'HG',
+        'SG',
+        'INSTANCE'
+    );
+
+    /**
+     * @var
+     */
+    protected $pearDBMonitoring;
+
+    /**
+     * CentreonRtDowntime constructor.
+     */
     public function __construct()
     {
         parent::__construct();
         $this->object = new \Centreon_Object_RtDowntime();
+        $db = new \CentreonDB('centreon');
+        $this->hgObject = new \CentreonHostgroups($db);
+        $this->sgObject = new \CentreonServiceGroups($db);
+        $this->instanceObject = new \CentreonInstance($db);
+        $this->externalCmdObj = new \CentreonExternalCommand();
         $this->action = "RTDOWNTIME";
+        $this->externalCmdObj->setUserAlias(CentreonUtils::getUserName());
+        $this->externalCmdObj->setUserId(CentreonUtils::getUserId());
     }
 
     /**
@@ -60,7 +93,7 @@ class CentreonRtDowntime extends CentreonObject
      *
      * @param null $parameters
      */
-    public function show($params = null)
+    public function show($parameters = null)
     {
         $params = array(
             'author',
@@ -74,6 +107,275 @@ class CentreonRtDowntime extends CentreonObject
         $elements = $this->object->getRunningDowntimes();
         foreach ($elements as $tab) {
             echo implode($this->delim, array_values($tab)) . "\n";
+        }
+    }
+
+    /**
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
+     */
+    private function parseParameters($action, $parameters)
+    {
+        // Permet de sécuriser les inputs pour chaque paramètre
+        list($type, $resource, $start, $end, $fixed, $duration, $withServices, $comment) = explode(';', $parameters);
+
+        // Check if object type is supported
+        if (!in_array(strtoupper($type), $this->downtimeType)) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
+        // Check date format
+        $checkStart = \DateTime::createFromFormat('Y/m/d H:i',$start);
+        $checkEnd = \DateTime::createFromFormat('Y/m/d H:i', $end);
+        if (!$checkStart || !$checkEnd) {
+            throw new CentreonClapiException('Wrong date format, expected : YYYY/MM/DD HH:mm');
+        }
+
+        // Check if fixed is 0 or 1
+        if (!preg_match('/^(0|1)$/', $fixed)) {
+            throw new CentreonClapiException('Bad fixed parameter (0 or 1)');
+        }
+
+        // Check duration parameters
+        if (($fixed == 0 && (!preg_match('/^\d+$/', $duration) || $duration <= 0)) ||
+            $fixed == 1 && !preg_match('/(^$)||(^\d+$)/', $duration)
+        ) {
+            throw new CentreonClapiException('Bad duration parameter');
+        }
+
+        // Check if host with services
+        if (strtoupper($type) === 'HOST') {
+            if (!preg_match('/^(0|1)$/', $withServices)) {
+                throw new CentreonClapiException('Bad "apply to services" parameter (0 or 1)');
+            }
+        }
+
+        // Sécurise le commentaire pour qu'il est forcément des guillemets
+        $comment = escapeshellarg($comment);
+
+        return array(
+            'type' => $type,
+            'resource' => $resource,
+            'start' => $start,
+            'end' => $end,
+            'fixed' => $fixed,
+            'duration' => $duration,
+            'withServices' => $withServices,
+            'comment' => $comment
+        );
+    }
+
+    /**
+     * @param null $parameters
+     */
+    public function add($parameters = null)
+    {
+        $parsedParameters = $this->parseParameters($this->action, $parameters);
+
+        // Permet que $method prenne le bon nom de methode (addHostDowntime, addSvcDowntime etc.)
+        $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
+        $this->$method(
+            $parsedParameters['resource'],
+            $parsedParameters['start'],
+            $parsedParameters['end'],
+            $parsedParameters['fixed'],
+            $parsedParameters['duration'],
+            $parsedParameters['withServices'],
+            $parsedParameters['comment']
+        );
+    }
+
+    /**
+     * @param $resource
+     * @param $start
+     * @param $end
+     * @param $fixed
+     * @param $duration
+     * @param $comment
+     * @param $withServices
+     */
+    private function addHostDowntime(
+        $resource,
+        $start,
+        $end,
+        $fixed,
+        $duration,
+        $comment,
+        $withServices
+    ) {
+        // Vérification de l'ajout des services avec les hosts
+        if ($withServices === true) {
+            $this->externalCmdObj->addHostDowntime(
+                $resource,
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                true
+            );
+        } else {
+            $this->externalCmdObj->addHostDowntime(
+                $resource,
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                $withServices
+            );
+        }
+    }
+
+    /**
+     * @param $resource
+     * @param $start
+     * @param $end
+     * @param $fixed
+     * @param $duration
+     * @param $comment
+     * @param $withServices
+     * @throws CentreonClapiException
+     */
+    private function addSvcDowntime(
+        $resource,
+        $start,
+        $end,
+        $fixed,
+        $duration,
+        $comment,
+        $withServices
+    ) {
+        // Check if a backslash is present
+        if (preg_match('/^(.+)\|(.+)$/', $resource, $matches)) {
+            $this->externalCmdObj->addSvcDowntime(
+                $matches[1],
+                $matches[2],
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                $withServices
+            );
+        } else {
+            throw new CentreonClapiException('Bad resource parameter');
+        }
+    }
+
+    /**
+     * @param $resource
+     * @param $start
+     * @param $end
+     * @param $fixed
+     * @param $duration
+     * @param $comment
+     * @param $withServices
+     */
+    private function addHgDowntime(
+        $resource,
+        $start,
+        $end,
+        $fixed,
+        $duration,
+        $comment,
+        $withServices
+    ) {
+        $hostList = $this->hgObject->getHostsByHostgroupName($resource);
+
+        // Vérification de l'ajout des services avec les hosts
+        if ($withServices === true) {
+            foreach ($hostList as $host) {
+                $this->externalCmdObj->addHostDowntime(
+                    $host['host'],
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration,
+                    true
+                );
+            }
+        } else {
+            foreach ($hostList as $host) {
+                $this->externalCmdObj->addHostDowntime(
+                    $host['host'],
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration,
+                    $withServices
+                );
+            }
+        }
+    }
+
+    /**
+     * @param $resource
+     * @param $start
+     * @param $end
+     * @param $fixed
+     * @param $duration
+     * @param $comment
+     * @param $withServices
+     */
+    private function addSgDowntime(
+        $resource,
+        $start,
+        $end,
+        $fixed,
+        $duration,
+        $comment,
+        $withServices
+    ) {
+        $serviceList = $this->sgObject->getServicesByServicegroupName($resource);
+        foreach ($serviceList as $service) {
+            $this->externalCmdObj->addSvcDowntime(
+                $service['host'],
+                $service['service'],
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                $withServices
+            );
+        }
+    }
+
+    /**
+     * @param $resource
+     * @param $start
+     * @param $end
+     * @param $fixed
+     * @param $duration
+     * @param $comment
+     * @param $withServices
+     */
+    private function addInstanceDowntime(
+        $resource,
+        $start,
+        $end,
+        $fixed,
+        $duration,
+        $comment,
+        $withServices
+    ) {
+        $hostList = $this->instanceObject->getHostsByInstance($resource);
+
+        // Ajout des services avec les hosts forcé avec le true en dernier param
+        foreach ($hostList as $host) {
+            $this->externalCmdObj->addHostDowntime(
+                $host['host'],
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                true
+            );
         }
     }
 }

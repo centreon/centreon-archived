@@ -47,6 +47,10 @@ class CentreonUtils
      */
     private static $clapiUserName;
 
+    /**
+     * @var int
+     */
+    private static $clapiUserId;
 
     /**
      * Get centreon application path
@@ -149,6 +153,16 @@ class CentreonUtils
     public static function getUserName()
     {
         return self::$clapiUserName;
+    }
+
+    public static function getuserId()
+    {
+        return self::$clapiUserId;
+    }
+
+    public static function setUserId($userId)
+    {
+        self::$clapiUserId = $userId;
     }
 
     /**
