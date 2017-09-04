@@ -63,5 +63,4 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             "ORDER BY actual_start_time";
         return $this->getResult($query, array(), "fetchAll");
     }
-
 }

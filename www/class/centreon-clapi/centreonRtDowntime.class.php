@@ -247,7 +247,7 @@ class CentreonRtDowntime extends CentreonObject
         $comment,
         $withServices
     ) {
-        // Check if a backslash is present
+        // Check if a pipe is present
         if (preg_match('/^(.+)\|(.+)$/', $resource, $matches)) {
             $this->externalCmdObj->addSvcDowntime(
                 $matches[1],
