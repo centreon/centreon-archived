@@ -294,3 +294,7 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
+    
+    test_proxy_configuration:
+      paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
+      contexts: [ TestProxyConfigurationContext ]
