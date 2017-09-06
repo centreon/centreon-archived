@@ -175,6 +175,22 @@ class CentreonRestHttp
         /* Return the content */
         return $decodedContent;
     }
+    
+    /** 
+     * 
+     * @param type $url
+     * @param type $port
+     */
+    public function setProxy($url, $port) 
+    {
+        if (isset($url) && !empty($url)) {
+            $this->proxy = 'tcp://' . $url;
+            
+            if ($port) {
+                $this->proxy .= ':' . $port;
+            }
+        }  
+    }
 
     /**
      * get proxy data
