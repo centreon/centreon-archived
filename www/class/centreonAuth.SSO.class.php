@@ -51,18 +51,20 @@ class CentreonAuthSSO extends CentreonAuth
         $token = "",
         $generalOptions = array()
     ) {
-    
+
         $this->options_sso = $generalOptions;
-        
+
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
             isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '' &&
-            isset($_SERVER[$this->options_sso['sso_header_username']])) {
+            isset($_SERVER[$this->options_sso['sso_header_username']])
+        ) {
             $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
             if ($this->checkSsoClient()) {
                 $this->sso_mandatory = 1;
                 $username = $this->sso_username;
                 if (isset($this->options_sso['sso_username_pattern']) &&
-                    $this->options_sso['sso_username_pattern'] != '') {
+                    $this->options_sso['sso_username_pattern'] != ''
+                ) {
                     $username = preg_replace(
                         $this->options_sso['sso_username_pattern'],
                         $this->options_sso['sso_username_replace'],
@@ -78,7 +80,7 @@ class CentreonAuthSSO extends CentreonAuth
             global $msg_error;
             $msg_error = "Invalid User. SSO Protection (user=" . $this->sso_username . ")";
         }
-        
+
     }
 
     protected function checkSsoClient()
@@ -111,14 +113,14 @@ class CentreonAuthSSO extends CentreonAuth
     protected function checkPassword($password, $token, $autoimport = false)
     {
         if ($this->sso_mandatory == 1) {
-           # Mode LDAP autoimport. Need to call it
+            # Mode LDAP autoimport. Need to call it
             if ($autoimport) {
                 # Password is only because it needs one...
                 parent::checkPassword('test', $token, $autoimport);
             }
-           # We delete old sessions with same SID
+            # We delete old sessions with same SID
             global $pearDB;
-            $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+            $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
             $this->passwdOk = 1;
         } else {
             # local connect (when sso not enabled and 'sso_mode' == 1

@@ -39,14 +39,28 @@ if (!isset($centreon)) {
 
 $tp = array();
 if (($o == "c" || $o == "w") && $tp_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $tp_id . "' LIMIT 1");
+    $dbResult = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $tp_id . "' LIMIT 1");
 
     /*
 	 * Set base value
 	 */
-    $tp = array_map("myDecode", $DBRESULT->fetchRow());
+    $tp = array_map("myDecode", $dbResult->fetchRow());
     $tp["contact_exclude"] = array();
 }
+
+$j = 0;
+$query = "SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions " .
+    "WHERE timeperiod_id = '" . $tp_id . "' ORDER BY `days`";
+$dbResult = $pearDB->query($query);
+while ($exceptionTab = $dbResult->fetchRow()) {
+    $exception_id[$j] = $exceptionTab["exception_id"];
+    $exception_days[$j] = $exceptionTab["days"];
+    $exception_timerange[$j] = $exceptionTab["timerange"];
+    $exception_timeperiod_id[$j] = $exceptionTab["timeperiod_id"];
+    $j++;
+}
+$dbResult->closeCursor();
+
 
 /*
  * Var information to format the element
@@ -118,6 +132,9 @@ while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["exception_id"];
     $k++;
 }
+
+var_dump($k);
+
 $DBRESULT->closeCursor();
 
 /*

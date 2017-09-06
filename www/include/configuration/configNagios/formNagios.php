@@ -34,7 +34,8 @@
  */
 
 if (!$centreon->user->admin && isset($nagios_id)
-        && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])) {
+    && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -51,7 +52,7 @@ $objMain = new CentreonMainCfg();
 $nagios = array();
 $nagios_d = array();
 if (($o == "c" || $o == "w") && $nagios_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
     # Set base value
     $nagios = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->closeCursor();
@@ -104,8 +105,10 @@ $DBRESULT->closeCursor();
  * Get all nagios servers
  */
 $nagios_server = array(null => "");
-$result = $oreon->user->access->getPollerAclConf(array('fields' => array('name', 'id'),
-                                               'keys'   => array('id')));
+$result = $oreon->user->access->getPollerAclConf(array(
+    'fields' => array('name', 'id'),
+    'keys' => array('id')
+));
 foreach ($result as $ns) {
     $nagios_server[$ns["id"]] = $ns["name"];
 }
@@ -115,7 +118,7 @@ foreach ($result as $ns) {
  */
 $nBk = 0;
 $aBk = array();
-$DBRESULT= $pearDB->query(
+$DBRESULT = $pearDB->query(
     "SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '"
     . $nagios_id . "'"
 );
@@ -126,15 +129,15 @@ while ($lineBk = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 unset($lineBk);
 
-$attrsText        = array("size"=>"30");
-$attrsText2    = array("size"=>"50");
-$attrsText3    = array("size"=>"10");
-$attrsTextarea    = array("rows"=>"5", "cols"=>"40");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "50");
+$attrsText3 = array("size" => "10");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Monitoring Engine Configuration File"));
 } elseif ($o == "c") {
@@ -579,10 +582,12 @@ $form->addElement('text', 'additional_freshness_latency', _("Additional freshnes
 /* *****************************************************
  * General Informations
  */
-$dateFormats = array("euro"=>"euro (30/06/2002 03:15:00)",
-"us"=>"us (06/30/2002 03:15:00)",
-"iso8601"=>"iso8601 (2002-06-30 03:15:00)",
-"strict-iso8601"=>"strict-iso8601 (2002-06-30 03:15:00)");
+$dateFormats = array(
+    "euro" => "euro (30/06/2002 03:15:00)",
+    "us" => "us (06/30/2002 03:15:00)",
+    "iso8601" => "iso8601 (2002-06-30 03:15:00)",
+    "strict-iso8601" => "strict-iso8601 (2002-06-30 03:15:00)"
+);
 $form->addElement('select', 'date_format', _("Date Format"), $dateFormats);
 $form->addElement('text', 'admin_email', _("Administrator Email Address"), $attrsText);
 $form->addElement('text', 'admin_pager', _("Administrator Pager"), $attrsText);
@@ -692,26 +697,28 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _(
 $nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _("No"), '0');
 $form->addGroup($nagTab, 'daemon_dumps_core', _('Daemon core dumps'), '&nbsp;');
 
-$verboseOptions = array('0'=>_("Basic information"),
-    '1'=>_("More detailed information"),
-    '2'=>_("Highly detailed information") );
+$verboseOptions = array(
+    '0' => _("Basic information"),
+    '1' => _("More detailed information"),
+    '2' => _("Highly detailed information")
+);
 $form->addElement('select', 'debug_verbosity', _("Debug Verbosity"), $verboseOptions);
 
 $debugLevel = array();
-$debugLevel["-1"]= _("Log everything");
-$debugLevel["0"]= _("Log nothing (default)");
-$debugLevel["1"]= _("Function enter/exit information");
-$debugLevel["2"]= _("Config information");
-$debugLevel["4"]= _("Process information");
-$debugLevel["8"]= _("Scheduled event information");
-$debugLevel["16"]= _("Host/service check information");
-$debugLevel["32"]= _("Notification information");
-$debugLevel["64"]= _("Event broker information");
-$debugLevel["128"]= _("External Commands");
-$debugLevel["256"]= _("Commands");
-$debugLevel["512"]= _("Downtimes");
-$debugLevel["1024"]= _("Comments");
-$debugLevel["2048"]= _("Macros");
+$debugLevel["-1"] = _("Log everything");
+$debugLevel["0"] = _("Log nothing (default)");
+$debugLevel["1"] = _("Function enter/exit information");
+$debugLevel["2"] = _("Config information");
+$debugLevel["4"] = _("Process information");
+$debugLevel["8"] = _("Scheduled event information");
+$debugLevel["16"] = _("Host/service check information");
+$debugLevel["32"] = _("Notification information");
+$debugLevel["64"] = _("Event broker information");
+$debugLevel["128"] = _("External Commands");
+$debugLevel["256"] = _("Commands");
+$debugLevel["512"] = _("Downtimes");
+$debugLevel["1024"] = _("Comments");
+$debugLevel["2048"] = _("Macros");
 foreach ($debugLevel as $key => $val) {
     if ($key == "-1" || $key == "0") {
         $debugCheck[] = HTML_QuickForm::createElement(
@@ -719,7 +726,7 @@ foreach ($debugLevel as $key => $val) {
             $key,
             '&nbsp;',
             $val,
-            array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);")
+            array("id" => "debug" . $key, "onClick" => "unCheckOthers(this.id);")
         );
     } else {
         $debugCheck[] = HTML_QuickForm::createElement(
@@ -727,7 +734,7 @@ foreach ($debugLevel as $key => $val) {
             $key,
             '&nbsp;',
             $val,
-            array("id"=>"debug".$key, "onClick"=>"unCheckAllAndNaught();")
+            array("id" => "debug" . $key, "onClick" => "unCheckAllAndNaught();")
         );
     }
 }
@@ -775,7 +782,7 @@ if ($brokerOptValidate) {
 }
 $form->addRule('event_broker_options', _("This value must be a numerical value."), 'isNum');
 
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;"._("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
@@ -790,7 +797,7 @@ if ($o == "w") {
             "button",
             "change",
             _("Modify"),
-            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagios_id."'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&nagios_id=" . $nagios_id . "'")
         );
     }
     $form->setDefaults($nagios);
@@ -802,7 +809,7 @@ if ($o == "w") {
         'reset',
         'reset',
         _("Reset"),
-        array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default")
+        array("onClick" => "javascript:resetBroker('" . $o . "')", "class" => "btc bt_default")
     );
 
     $form->setDefaults($nagios);
@@ -813,10 +820,10 @@ if ($o == "w") {
         'reset',
         'reset',
         _("Reset"),
-        array("onClick"=>"javascript:resetBroker('".$o."')", "class" => "btc bt_default")
+        array("onClick" => "javascript:resetBroker('" . $o . "')", "class" => "btc bt_default")
     );
 }
-$tpl->assign('msg', array("nagios"=>$oreon->user->get_version()));
+$tpl->assign('msg', array("nagios" => $oreon->user->get_version()));
 
 $tpl->assign(
     "helpattr",
@@ -830,7 +837,7 @@ $tpl->assign(
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -849,14 +856,17 @@ if ($form->validate()) {
             "button",
             "change",
             _("Modify"),
-            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'")
+            array(
+                "onClick" => "javascript:window.location.href='?p=" . $p .
+                    "&o=c&nagios_id=" . $nagiosObj->getValue() . "'"
+            )
         );
     }
     $valid = true;
 }
 
 if ($valid) {
-    require_once($path."listNagios.php");
+    require_once($path . "listNagios.php");
 } else {
     /*
      * Apply a template definition
@@ -920,30 +930,30 @@ if ($valid) {
 
 <script type="text/javascript">
 
-function unCheckOthers(id) {
-    if (id == "debug-1") {
-        document.getElementById("debug0").checked = false;
-    } else if (id == "debug0") {
-        document.getElementById("debug-1").checked = false;
+    function unCheckOthers(id) {
+        if (id == "debug-1") {
+            document.getElementById("debug0").checked = false;
+        } else if (id == "debug0") {
+            document.getElementById("debug-1").checked = false;
+        }
+
+        document.getElementById("debug1").checked = false;
+        document.getElementById("debug2").checked = false;
+        document.getElementById("debug4").checked = false;
+        document.getElementById("debug8").checked = false;
+        document.getElementById("debug16").checked = false;
+        document.getElementById("debug32").checked = false;
+        document.getElementById("debug64").checked = false;
+        document.getElementById("debug128").checked = false;
+        document.getElementById("debug256").checked = false;
+        document.getElementById("debug512").checked = false;
+        document.getElementById("debug1024").checked = false;
+        document.getElementById("debug2048").checked = false;
     }
 
-    document.getElementById("debug1").checked = false;
-    document.getElementById("debug2").checked = false;
-    document.getElementById("debug4").checked = false;
-    document.getElementById("debug8").checked = false;
-    document.getElementById("debug16").checked = false;
-    document.getElementById("debug32").checked = false;
-    document.getElementById("debug64").checked = false;
-    document.getElementById("debug128").checked = false;
-    document.getElementById("debug256").checked = false;
-    document.getElementById("debug512").checked = false;
-    document.getElementById("debug1024").checked = false;
-    document.getElementById("debug2048").checked = false;
-}
-
-function unCheckAllAndNaught() {
-    document.getElementById("debug-1").checked = false;
-    document.getElementById("debug0").checked = false;
-}
+    function unCheckAllAndNaught() {
+        document.getElementById("debug-1").checked = false;
+        document.getElementById("debug0").checked = false;
+    }
 
 </script>

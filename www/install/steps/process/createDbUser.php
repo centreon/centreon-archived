@@ -65,8 +65,8 @@ $host = "localhost";
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
     $host = $_SERVER['SERVER_ADDR'];
 }
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host .
-    "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
+$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `" . $dbUser . "`@`" . $host .
+    "` IDENTIFIED BY '" . $dbPass . "' WITH GRANT OPTION";
 try {
     $link->exec(sprintf($query, $parameters['db_configuration']));
     $link->exec(sprintf($query, $parameters['db_storage']));

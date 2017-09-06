@@ -129,6 +129,11 @@ abstract class CentreonObject
         $this->api = CentreonAPI::getInstance();
     }
 
+    public function getObject()
+    {
+        return $this->object;
+    }
+
     /**
      * Get Centreon Version
      *

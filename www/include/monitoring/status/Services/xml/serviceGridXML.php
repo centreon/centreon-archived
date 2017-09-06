@@ -66,16 +66,16 @@ $obj->getDefaultFilters();
 /* **************************************************
  * Check Arguments From GET tab
  */
-$o          = $obj->checkArgument("o", $_GET, "h");
-$p          = $obj->checkArgument("p", $_GET, "2");
-$nc         = $obj->checkArgument("nc", $_GET, "0");
-$num        = $obj->checkArgument("num", $_GET, 0);
-$limit      = $obj->checkArgument("limit", $_GET, 20);
-$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o = $obj->checkArgument("o", $_GET, "h");
+$p = $obj->checkArgument("p", $_GET, "2");
+$nc = $obj->checkArgument("nc", $_GET, "0");
+$num = $obj->checkArgument("num", $_GET, 0);
+$limit = $obj->checkArgument("limit", $_GET, 20);
+$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search     = $obj->checkArgument("search", $_GET, "");
-$sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order      = $obj->checkArgument("order", $_GET, "ASC");
+$search = $obj->checkArgument("search", $_GET, "");
+$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 /*
@@ -86,51 +86,51 @@ $obj->setInstanceHistory($instance);
 /** *********************************************
  * Get Host status
  */
-$rq1 =      " SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
-            " FROM hosts ";
+$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
+    " FROM hosts ";
 if ($hostgroups) {
     $rq1 .= ", hosts_hostgroups hg, hostgroups hg2 ";
 }
 if (!$obj->is_admin) {
-    $rq1    .= ", centreon_acl ";
+    $rq1 .= ", centreon_acl ";
 }
-$rq1 .=         " WHERE hosts.name NOT LIKE '_Module_%' ";
+$rq1 .= " WHERE hosts.name NOT LIKE '_Module_%' ";
 if (!$obj->is_admin) {
-    $rq1 .=         " AND hosts.host_id = centreon_acl.host_id ";
+    $rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
     $rq1 .= $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
 }
 if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
     $rq1 .= " AND hosts.host_id IN (" .
-            " SELECT s.host_id FROM services s " .
-            " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
     $rq1 .= " AND hosts.host_id IN (" .
-            " SELECT s.host_id FROM services s " .
-            " WHERE s.acknowledged = '1' AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.acknowledged = '1' AND s.enabled = 1)";
 }
 if ($search != "") {
     $rq1 .= " AND hosts.name like '%" . $search . "%' ";
 }
 if ($instance != -1) {
-    $rq1 .= " AND hosts.instance_id = ".$instance."";
+    $rq1 .= " AND hosts.instance_id = " . $instance . "";
 }
 if ($hostgroups) {
     $rq1 .= " AND hosts.host_id = hg.host_id ";
-    $rq1 .= " AND hg.hostgroup_id IN (".$hostgroups.") ";
+    $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ") ";
     $rq1 .= " AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 $rq1 .= " AND hosts.enabled = 1 ";
 
 switch ($sort_type) {
     case 'current_state':
-        $rq1 .= " ORDER BY hosts.state ". $order.",hosts.name ";
+        $rq1 .= " ORDER BY hosts.state " . $order . ",hosts.name ";
         break;
     default:
-        $rq1 .= " ORDER BY hosts.name ". $order;
+        $rq1 .= " ORDER BY hosts.name " . $order;
         break;
 }
-$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+$rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
 
 /*
  * Execute request
@@ -154,7 +154,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     if ($str != "") {
         $str .= ",";
     }
-    $str .= "'".$ndo["name"]."'";
+    $str .= "'" . $ndo["name"] . "'";
     $tab_final[$ndo["name"]] = array("cs" => $ndo["state"], "hid" => $ndo["host_id"]);
     if ($ndo["icon_image"] != "") {
         $tabIcone[$ndo["name"]] = $ndo["icon_image"];

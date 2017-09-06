@@ -39,8 +39,8 @@ if (!isset($centreon)) {
 
 ?>
 <script>
-    var _p='<?php echo $p?>';
-    var _o='<?php echo $o?>';
+    var _p = '<?php echo $p?>';
+    var _o = '<?php echo $o?>';
 
     var _timeoutID = 0;
     var _on = 1;
@@ -48,21 +48,26 @@ if (!isset($centreon)) {
     var _lock_menu = 0;
     var _previous_click = 0;
 
-    function loadAjax(p){
+    function loadAjax(p) {
         if (_previous_click != p) {
             _lock_menu = 1;
             var proc = new Transformation();
-            proc.setXml("./include/core/menu/xml/menuXML.php?menu="+p)
+            proc.setXml("./include/core/menu/xml/menuXML.php?menu=" + p)
             proc.setXslt("./include/core/menu/xsl/menu.xsl")
             proc.transform("forMenuAjax");
             _lock_menu = 0;
             _previous_click = p;
         } else {
-            window.location.replace("./main.php?p="+p);
+            window.location.replace("./main.php?p=" + p);
         }
     }
 
-    function mk_paginationFF() {};
-    function mk_pagination() {};
-    function set_header_title() {};
+    function mk_paginationFF() {
+    };
+
+    function mk_pagination() {
+    };
+
+    function set_header_title() {
+    };
 </script>

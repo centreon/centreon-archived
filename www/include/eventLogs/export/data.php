@@ -50,8 +50,8 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 /** *****************************************
  * Connect MySQL DB
  */
-$pearDB     = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 /**
  * Security check
@@ -79,7 +79,7 @@ textdomain("messages");
  */
 $csv_flag = 1; //setting the csv_flag variable to change limit in SQL request of getODSXmlLog.php when CSV exporting
 ob_start();
-require_once _CENTREON_PATH_."www/include/eventLogs/xml/data.php";
+require_once _CENTREON_PATH_ . "www/include/eventLogs/xml/data.php";
 $flow = ob_get_contents();
 ob_end_clean();
 
@@ -96,57 +96,59 @@ header("Pragma: public");
  */
 $xml = new SimpleXMLElement($flow);
 if ($engine == "false") {
-    echo _("Begin date")."; "._("End date").";\n";
+    echo _("Begin date") . "; " . _("End date") . ";\n";
     echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start))
-        .";".date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
+        . ";" . date(_('m/d/Y (H:i:s)'), intval($xml->infos->end)) . "\n";
     echo "\n";
 
-    echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
-    echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
+    echo _("Type") . ";" . _("Notification") . ";" . _("Alert") . ";" . _("error") . "\n";
+    echo ";" . $xml->infos->notification . ";" . $xml->infos->alert . ";" . $xml->infos->error . "\n";
     echo "\n";
 
-    echo _("Host").";"._("Up").";"._("Down").";"._("Unreachable")."\n";
-    echo ";".$xml->infos->up.";".$xml->infos->down.";".$xml->infos->unreachable."\n";
+    echo _("Host") . ";" . _("Up") . ";" . _("Down") . ";" . _("Unreachable") . "\n";
+    echo ";" . $xml->infos->up . ";" . $xml->infos->down . ";" . $xml->infos->unreachable . "\n";
     echo "\n";
 
-    echo _("Service").";"._("Ok").";"._("Warning").";"._("Critical").";"._("Unknown")."\n";
-    echo ";".$xml->infos->ok.";".$xml->infos->warning.";".$xml->infos->critical.";".$xml->infos->unknown."\n";
+    echo _("Service") . ";" . _("Ok") . ";" . _("Warning") . ";" . _("Critical") . ";" . _("Unknown") . "\n";
+    echo ";" . $xml->infos->ok . ";" . $xml->infos->warning . ";" .
+        $xml->infos->critical . ";" . $xml->infos->unknown . "\n";
     echo "\n";
 
-    echo _("Day").";".
-            _("Time").";".
-            _("Host").";".
-            _("Address").";".
-            _("Service").";".
-            _("Status").";".
-            _("Type").";".
-            _("Retry").";".
-            _("Output").";".
-            _("Contact").";".
-            _("Cmd")."\n";
+    echo _("Day") . ";" .
+        _("Time") . ";" .
+        _("Host") . ";" .
+        _("Address") . ";" .
+        _("Service") . ";" .
+        _("Status") . ";" .
+        _("Type") . ";" .
+        _("Retry") . ";" .
+        _("Output") . ";" .
+        _("Contact") . ";" .
+        _("Cmd") . "\n";
     foreach ($xml->line as $line) {
-        echo $line->date.";".
-            $line->time.";".
-            $line->host_name.";".
-            $line->address.";".
-            $line->service_description.";".
-            $line->status.";".
-            $line->type.";".
-            $line->retry.";".
-            $line->output.";".
-            $line->contact.";".
-            $line->contact_cmd."\n";
+        echo $line->date . ";" .
+            $line->time . ";" .
+            $line->host_name . ";" .
+            $line->address . ";" .
+            $line->service_description . ";" .
+            $line->status . ";" .
+            $line->type . ";" .
+            $line->retry . ";" .
+            $line->output . ";" .
+            $line->contact . ";" .
+            $line->contact_cmd . "\n";
     }
 } else {
-    echo _("Begin date")."; "._("End date").";\n";
-    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)).";".
-            date(_('m/d/Y (H:i:s)'), intval($xml->infos->end))."\n";
+    echo _("Begin date") . "; " . _("End date") . ";\n";
+    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)) . ";" .
+        date(_('m/d/Y (H:i:s)'), intval($xml->infos->end)) . "\n";
     echo "\n";
-    echo _("Type").";"._("Notification").";"._("Alert").";"._("error")."\n";
-    echo ";".$xml->infos->notification.";".$xml->infos->alert.";".$xml->infos->error."\n";
+    echo _("Type") . ";" . _("Notification") . ";" . _("Alert") . ";" . _("error") . "\n";
+    echo ";" . $xml->infos->notification . ";" . $xml->infos->alert . ";" . $xml->infos->error . "\n";
     echo "\n";
-    echo _("Day").";"._("Time").";"._("Poller").";"._("Output").";"."\n";
+    echo _("Day") . ";" . _("Time") . ";" . _("Poller") . ";" . _("Output") . ";" . "\n";
     foreach ($xml->line as $line) {
-        echo "\"".$line->date."\";\"".$line->time."\";\"".$line->poller."\";\"".$line->output."\";"."\n";
+        echo "\"" . $line->date . "\";\"" . $line->time . "\";\"" . $line->poller .
+            "\";\"" . $line->output . "\";" . "\n";
     }
 }

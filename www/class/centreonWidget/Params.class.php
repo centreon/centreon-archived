@@ -35,7 +35,9 @@
 
 require_once __DIR__ . "/Params/Interface.class.php";
 
-class CentreonWidgetParamsException extends Exception {}
+class CentreonWidgetParamsException extends Exception
+{
+}
 
 abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
 {
@@ -88,17 +90,17 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     {
         $query = "SELECT preference_value
                   FROM widget_preferences wp, widget_views wv, custom_view_user_relation cvur
-                  WHERE wp.parameter_id = " .$this->db->escape($params['parameter_id']) . "
+                  WHERE wp.parameter_id = " . $this->db->escape($params['parameter_id']) . "
                   AND wp.widget_view_id = wv.widget_view_id
-                  AND wv.widget_id = ".$this->db->escape($params['widget_id'])."
+                  AND wv.widget_id = " . $this->db->escape($params['widget_id']) . "
                   AND wv.custom_view_id = cvur.custom_view_id
-                  AND wp.user_id = ".$this->db->escape($this->userId) . "
+                  AND wp.user_id = " . $this->db->escape($this->userId) . "
                   AND (cvur.user_id = wp.user_id";
         if (count($this->userGroups)) {
             $cglist = implode(",", $this->userGroups);
             $query .= " OR cvur.usergroup_id IN ($cglist) ";
         }
-        $query .= ") AND cvur.custom_view_id = ". $this->db->escape($params['custom_view_id']) . "
+        $query .= ") AND cvur.custom_view_id = " . $this->db->escape($params['custom_view_id']) . "
                                   LIMIT 1";
         $res = $this->db->query($query);
         if ($res->rowCount()) {
@@ -158,13 +160,13 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     }
 
     /**
-    * Get Element
-    *
-    * @return HTML_Quickform
-    */
+     * Get Element
+     *
+     * @return HTML_Quickform
+     */
     public function getElement()
     {
-	    return $this->element;
+        return $this->element;
     }
 
     /**

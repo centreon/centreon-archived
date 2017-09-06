@@ -194,6 +194,11 @@ class CentreonAPI
             'class' => 'ServiceCategory',
             'export' => true
         );
+        $this->relationObject["LDAP"] = array(
+            'module' => 'core',
+            'class' => 'LDAP',
+            'export' => true
+        );
         $this->relationObject["CONTACT"] = array(
             'module' => 'core',
             'class' => 'Contact',
@@ -283,11 +288,6 @@ class CentreonAPI
         $this->relationObject["ACLRESOURCE"] = array(
             'module' => 'core',
             'class' => 'ACLResource',
-            'export' => false
-        );
-        $this->relationObject["LDAP"] = array(
-            'module' => 'core',
-            'class' => 'LDAP',
             'export' => false
         );
         $this->relationObject["SETTINGS"] = array(
@@ -398,7 +398,7 @@ class CentreonAPI
         if ($object != "") {
             if (isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
-                && !class_exists("Centreon" . $this->relationObject[$object])
+                && !class_exists("\CentreonClapi\Centreon" . $this->relationObject[$object]['class'])
             ) {
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
@@ -420,7 +420,7 @@ class CentreonAPI
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
                 if (isset($oObjet['class'])
                     && isset($oObjet['module'])
-                    && !class_exists("Centreon" . $oObjet['class'])
+                    && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])
                 ) {
                     if ($oObjet['module'] == 'core') {
                         require_once _CENTREON_PATH_
@@ -674,7 +674,6 @@ class CentreonAPI
                 $objName = "";
             }
 
-
             if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
@@ -720,7 +719,7 @@ class CentreonAPI
             while ($string = fgets($handle)) {
                 $i++;
                 $tab = preg_split('/;/', $string);
-                if (strlen(trim($string)) != 0) {
+                if (strlen(trim($string)) != 0 && !preg_match('/^\{OBJECT_TYPE\}/', $string)) {
                     $this->object = trim($tab[0]);
                     $this->action = trim($tab[1]);
                     $this->variables = trim(substr($string, strlen($tab[0] . ";" . $tab[1] . ";")));
@@ -760,27 +759,14 @@ class CentreonAPI
          * Check method availability before using it.
          */
         if ($this->object) {
-            /**
-             * Require needed class
-             */
-            $this->requireLibs($this->object);
+            $this->iniObject($this->object);
 
             /**
              * Check class declaration
              */
-            if (isset($this->relationObject[$this->object]['class'])) {
-                $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
-            } else {
-                $objName = "";
-            }
-            if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
-                print "Object $this->object not found in Centreon API.\n";
-                return 1;
-            }
-            $obj = new $objName($this->DB, $this->object);
+            $obj = $this->objectTable[$this->object];
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
-                //print "TEST : ".$this->return_code."\n";
             } else {
                 print "Method not implemented into Centreon API.\n";
                 return 1;
@@ -818,7 +804,17 @@ class CentreonAPI
             return 0;
         }
 
-        $this->objectTable[$action]->export($filter_id, $filter_name);
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
+            $primaryKey = $this->objectTable[$action]->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filter_id;
+        }
+        if (!is_null($filter_name)) {
+            $labelField = $this->objectTable[$action]->getObject()->getUniqueLabelField();
+            $filters[$labelField] = $filter_name;
+        }
+
+        $this->objectTable[$action]->export($filters);
         $exported->ariane_pop();
     }
 
@@ -1065,9 +1061,13 @@ class CentreonAPI
                 $key = key($oObjet);
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
-                    && !in_array($key, $this->aExport)
-                ) {
-                    $objName = "CentreonClapi\Centreon" . $oObjet[$key]['class'];
+                    && !in_array($key, $this->aExport)) {
+
+                    $objName = '';
+                    if (isset($oObjet[$key]['namespace'])) {
+                        $objName = '\\' . $oObjet[$key]['namespace'];
+                    }
+                    $objName .= '\CentreonClapi\Centreon' . $oObjet[$key]['class'];
                     $objVars = get_class_vars($objName);
 
                     if (isset($objVars['aDepends'])) {

@@ -32,11 +32,11 @@
  * For more information : contact@centreon.com
  * 
  */
- 
+
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."/www/class/centreon.class.php";
-require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 
 session_start();
 session_write_close();
@@ -46,13 +46,15 @@ if (!isset($_SESSION['centreon']) || !isset($_GET['div']) || !isset($_GET['uid']
 }
 
 $oreon = $_SESSION['centreon'];
- 
+
 $pearDB = new CentreonDB();
 
 /*
  * Check session id
  */
-$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".$pearDB->escape(session_id())."' AND user_id = '".$pearDB->escape($_GET['uid'])."'");
+$query = "SELECT user_id FROM `session` WHERE session_id = '" .
+    $pearDB->escape(session_id()) . "' AND user_id = '" . $pearDB->escape($_GET['uid']) . "'";
+$session = $pearDB->query($query);
 if (!$session->rowCount()) {
     exit;
 }
@@ -60,7 +62,7 @@ if (!$session->rowCount()) {
 if (isset($_GET['div']) && isset($_GET['uid'])) {
     $my_div = htmlentities($_GET['div'], ENT_QUOTES, "UTF-8");
     $my_uid = htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8");
-    
+
     if (!isset($_SESSION['_Div_' . $my_div]) || $_SESSION['_Div_' . $my_div] == 1) {
         $_SESSION['_Div_' . $my_div] = 0;
     } else {

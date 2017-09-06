@@ -174,7 +174,7 @@ class CentreonMeta
                 $parameters['relationObject']['field'] = 'contact_id';
                 $parameters['relationObject']['comparator'] = 'meta_id';
                 break;
-            case 'ms_cs':
+            case 'ms_cgs':
                 $parameters['type'] = 'relation';
                 $parameters['externalObject']['table'] = 'contactgroup';
                 $parameters['externalObject']['id'] = 'cg_id';

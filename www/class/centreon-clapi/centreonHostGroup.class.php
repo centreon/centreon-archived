@@ -141,26 +141,56 @@ class CentreonHostGroup extends CentreonObject
     /**
      * Set params
      *
-     * @param string $parameters
-     * @return void
-     * @throws CenrtreonClapiException
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function setparam($parameters = null)
     {
         $params = explode($this->delim, $parameters);
+
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            if (!preg_match("/^hg_/", $params[1])) {
+            if (($params[1] == "icon_image" || $params[1] == "map_icon_image")) {
+                $params[2] = $this->getIdIcon($params[2]);
+            }
+            if (!preg_match("/^hg_/", $params[1]) && $params[1] != "geo_coords") {
                 $params[1] = "hg_" . $params[1];
             }
+
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
+
+    /**
+     * @param $path
+     * @return mixed
+     */
+    public function getIdIcon($path)
+    {
+        $iconData = explode('/', $path);
+        $query = 'SELECT dir_id FROM view_img_dir WHERE dir_name = "' . $iconData[0] . '"';
+        $res = $this->db->query($query);
+        $row = $res->fetch();
+        $dirId = $row['dir_id'];
+
+        $query = 'SELECT img_id FROM view_img WHERE img_path = "' . $iconData[1] .'"';
+        $res = $this->db->query($query);
+        $row = $res->fetch();
+        $iconId = $row['img_id'];
+
+        $query = 'SELECT vidr_id FROM view_img_dir_relation ' .
+            'WHERE dir_dir_parent_id = ' . $dirId . ' AND img_img_id = ' . $iconId;
+        $res = $this->db->query($query);
+        $row = $res->fetch();
+        return $row['vidr_id'];
+    }
+
 
     /**
      * Magic method
@@ -248,12 +278,8 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id = null, $filter_name = null)
+    public function export($filters = null)
     {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters = array('hg_id' => $filter_id);
-        }
         parent::export($filters);
 
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
@@ -267,7 +293,9 @@ class CentreonHostGroup extends CentreonObject
             -1,
             0,
             $hgFieldName,
-            null
+            'ASC',
+            $filters,
+            'AND'
         );
         foreach ($elements as $element) {
             $this->api->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
@@ -275,7 +303,6 @@ class CentreonHostGroup extends CentreonObject
                 . "addhost" . $this->delim
                 . $element[$hgFieldName] . $this->delim
                 . $element[$hFieldName] . "\n";
-
         }
     }
 }

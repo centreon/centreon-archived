@@ -36,9 +36,9 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 if (!$centreon->user->admin) {
-    if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
+    if ($sg_id && false === strpos($sgString, "'" . $sg_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
@@ -55,33 +55,37 @@ $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 $sg = array();
 $hServices = array();
 if (($o == "c" || $o == "w") && $sg_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $sg_id . "' LIMIT 1");
 
     // Set base value
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
 }
 
-$attrsText      = array("size"=>"30");
+$attrsText = array("size" => "30");
 $attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "5", "cols" => "40");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br />' .
+    '<br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonService'
 );
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1';
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list&l=1',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonServicetemplates',
     'defaultDatasetOptions' => array('withHosttemplate' => true)
 );
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&t=hostgroup';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&t=hostgroup',
+    'availableDatasetRoute' => $route,
     'multiple' => true,
     'linkedObject' => 'centreonHostgroups'
 );
@@ -89,7 +93,7 @@ $attrHostgroups = array(
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Group"));
 } elseif ($o == "c") {
@@ -108,23 +112,27 @@ $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 $form->addElement('header', 'relation', _("Relations"));
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service' .
+    '&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id;
 $attrService1 = array_merge(
     $attrServices,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'sg_hServices', _("Linked Host Services"), array(), $attrService1);
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_service' .
+    '&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id;
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
-    array(
-        'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hgServices&id=' . $sg_id
-    )
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
 
+$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate' .
+    '&action=defaultValues&target=servicegroups&field=sg_tServices&id=' . $sg_id;
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
-    array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues&target=servicegroups&field=sg_tServices&id=' . $sg_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'sg_tServices', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
@@ -155,13 +163,14 @@ function myReplace()
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["sg_name"]));
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('sg_name', 'myReplace');
 $form->addRule('sg_name', _("Compulsory Name"), 'required');
 $form->addRule('sg_alias', _("Compulsory Description"), 'required');
 $form->registerRule('exist', 'callback', 'testServiceGroupExistence');
 $form->addRule('sg_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 # Smarty template Init
 $tpl = new Smarty();
@@ -170,7 +179,12 @@ $tpl = initSmartyTpl($path, $tpl);
 # Just watch a Service Group information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&sg_id=" . $sg_id . "'")
+        );
     }
     $form->setDefaults($sg);
     $form->freeze();
@@ -186,13 +200,18 @@ elseif ($o == "a") {
 }
 
 $tpl->assign('nagios', $oreon->user->get_version());
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
+    'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, ' .
+    'SHADOW, true, TEXTALIGN, "justify"'
+);
 
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -210,7 +229,7 @@ if ($form->validate()) {
 $action = $form->getSubmitValue("action");
 
 if ($valid) {
-    require_once($path."listServiceGroup.php");
+    require_once($path . "listServiceGroup.php");
 } else {
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
@@ -223,69 +242,67 @@ if ($valid) {
 }
 ?>
 <script type='text/javascript'>
-function hostFilterSelect(elem)
-{
-    var arg = 'host_id='+elem.value;
+    function hostFilterSelect(elem) {
+        var arg = 'host_id=' + elem.value;
 
-    if (window.XMLHttpRequest) {
-        var xhr = new XMLHttpRequest();
-    } else if(window.ActiveXObject){
-        try {
-            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        if (window.XMLHttpRequest) {
+            var xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            try {
+                var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+        } else {
+            var xhr = false;
         }
-    } else {
-        var xhr = false;
-    }
 
-    xhr.open("POST","./include/configuration/configObject/servicegroup/getServiceXml.php", true);
-    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    xhr.send(arg);
+        xhr.open("POST", "./include/configuration/configObject/servicegroup/getServiceXml.php", true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(arg);
 
-    xhr.onreadystatechange = function()
-    {
-        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
-            var response = xhr.responseXML.documentElement;
-            var _services = response.getElementsByTagName("services");
-            var _selbox;
+        xhr.onreadystatechange = function () {
+            if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML) {
+                var response = xhr.responseXML.documentElement;
+                var _services = response.getElementsByTagName("services");
+                var _selbox;
 
-            if (document.getElementById("sg_hServices-f")) {
-                _selbox = document.getElementById("sg_hServices-f");
-                _selected = document.getElementById("sg_hServices-t");
-            } else if (document.getElementById("__sg_hServices")) {
-                _selbox = document.getElementById("__sg_hServices");
-                _selected = document.getElementById("_sg_hServices");
-            }
+                if (document.getElementById("sg_hServices-f")) {
+                    _selbox = document.getElementById("sg_hServices-f");
+                    _selected = document.getElementById("sg_hServices-t");
+                } else if (document.getElementById("__sg_hServices")) {
+                    _selbox = document.getElementById("__sg_hServices");
+                    _selected = document.getElementById("_sg_hServices");
+                }
 
-            while ( _selbox.options.length > 0 ){
-                _selbox.options[0] = null;
-            }
+                while (_selbox.options.length > 0) {
+                    _selbox.options[0] = null;
+                }
 
-            if (_services.length == 0) {
-                _selbox.setAttribute('disabled', 'disabled');
-            } else {
-                _selbox.removeAttribute('disabled');
-            }
+                if (_services.length == 0) {
+                    _selbox.setAttribute('disabled', 'disabled');
+                } else {
+                    _selbox.removeAttribute('disabled');
+                }
 
-            for (var i = 0 ; i < _services.length ; i++) {
-                var _svc         = _services[i];
-                var _id          = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-                var validFlag = true;
+                for (var i = 0; i < _services.length; i++) {
+                    var _svc = _services[i];
+                    var _id = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                    var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+                    var validFlag = true;
 
-                for (var j = 0; j < _selected.length; j++) {
-                    if (_id == _selected.options[j].value) {
-                        validFlag = false;
+                    for (var j = 0; j < _selected.length; j++) {
+                        if (_id == _selected.options[j].value) {
+                            validFlag = false;
+                        }
+                    }
+
+                    if (validFlag == true) {
+                        new_elem = new Option(_description, _id);
+                        _selbox.options[_selbox.length] = new_elem;
                     }
                 }
-
-                if (validFlag == true) {
-                    new_elem = new Option(_description,_id);
-                    _selbox.options[_selbox.length] = new_elem;
-                }
             }
         }
     }
-}
 </script>

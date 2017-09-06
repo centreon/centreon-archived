@@ -40,7 +40,7 @@ isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = null;
 isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = null;
 $tpG ? $tp_id = $tpG : $tp_id = $tpP;
 $path = "./include/configuration/configObject/timeperiod/";
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "www/class/centreonTimeperiodRenderer.class.php";
 $imgpath = "./include/common/javascript/scriptaculous/images/bramus/";
@@ -56,8 +56,8 @@ $tplist[0] = _("Select Timeperiod...");
 while ($row = $DBRESULT->fetchRow()) {
     $tplist[$row['tp_id']] = $row['tp_name'];
 }
-$form = new HTML_QuickForm('form', 'POST', "?p=".$p."&o=s");
-$attrs1 = array('onchange'=>"javascript: setTP(this.form.elements['tp_id'].value); submit();");
+$form = new HTML_QuickForm('form', 'POST', "?p=" . $p . "&o=s");
+$attrs1 = array('onchange' => "javascript: setTP(this.form.elements['tp_id'].value); submit();");
 $form->addElement('select', 'tp_id', null, $tplist, $attrs1);
 $form->setDefaults(array('tp_id' => null));
 $tpel = $form->getElement('tp_id');
@@ -66,7 +66,7 @@ if ($tp_id) {
     $tpel->setSelected($tp_id);
 }
 
-$attrsTextLong  = array("size"=>"55");
+$attrsTextLong = array("size" => "55");
 $form->addElement('header', 'title', _("Resulting Time Period with inclusions"));
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('header', 'notification', _("Time Range"));
@@ -85,13 +85,13 @@ $tpl = initSmartyTpl($path, $tpl);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $labels = array(
-                    'unset_timerange'    => _('Unset Timerange'),
-                    'included_timerange' => _('Included Timerange'),
-                    'excluded_timerange' => _('Excluded Timerange'),
-                    'timerange_overlaps' => _('Timerange Overlaps'),
-                    'hover_for_info'     => _('Hover on timeline to see more information'),
-                    'no_tp_selected'     => _('No time period selected')
-                );
+    'unset_timerange' => _('Unset Timerange'),
+    'included_timerange' => _('Included Timerange'),
+    'excluded_timerange' => _('Excluded Timerange'),
+    'timerange_overlaps' => _('Timerange Overlaps'),
+    'hover_for_info' => _('Hover on timeline to see more information'),
+    'no_tp_selected' => _('No time period selected')
+);
 $tpl->assign('labels', $labels);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('tpId', $tp_id);
@@ -100,66 +100,66 @@ $tpl->assign('path', $path);
 $tpl->display("renderTimeperiod.ihtml");
 ?>
 <script type="text/javascript">
-var tipDiv;
+    var tipDiv;
 
-jQuery(function() {
-    genToolTip();
-});
- 
-/**
- * Set Time period
- */
-function setTP(_i) {
-    document.forms['form'].elements['tp_id'].value = _i;
-}
+    jQuery(function () {
+        genToolTip();
+    });
 
-/**
- * The tool tip is created and referenced as a global object
- */
-function genToolTip() {
-    if (document.createElement) {
-        tipDiv = document.createElement('div');
-        document.body.appendChild(tipDiv);
-        tipDiv.appendChild(document.createTextNode('initial text'));
-        tipDiv.className = 'toolTip';
-        tipDiv.style.display = 'none';
+    /**
+     * Set Time period
+     */
+    function setTP(_i) {
+        document.forms['form'].elements['tp_id'].value = _i;
     }
-}
 
-/**
- * Show tooltip
- */
-function showTip(e, txt) {
-    if ( tipDiv ) {
-        var e = e || window.event;
-        var xy = cursorPos(e);
-        tipDiv.firstChild.data = txt;
-        tipDiv.style.left = (xy[0] + 5) + 'px';
-        tipDiv.style.top = (xy[1] + 15) + 'px';
-        tipDiv.style.display = '';
+    /**
+     * The tool tip is created and referenced as a global object
+     */
+    function genToolTip() {
+        if (document.createElement) {
+            tipDiv = document.createElement('div');
+            document.body.appendChild(tipDiv);
+            tipDiv.appendChild(document.createTextNode('initial text'));
+            tipDiv.className = 'toolTip';
+            tipDiv.style.display = 'none';
+        }
     }
-}
 
-/**
- * Hide tooltip
- */
-function hideTip() {
-    if ( tipDiv ) {
-        tipDiv.style.display = 'none';
+    /**
+     * Show tooltip
+     */
+    function showTip(e, txt) {
+        if (tipDiv) {
+            var e = e || window.event;
+            var xy = cursorPos(e);
+            tipDiv.firstChild.data = txt;
+            tipDiv.style.left = (xy[0] + 5) + 'px';
+            tipDiv.style.top = (xy[1] + 15) + 'px';
+            tipDiv.style.display = '';
+        }
     }
-}
 
-/**
- * Based on quirskmode 'get cursor position' script
- */
-function cursorPos(e){
-    if (e.pageX || e.pageY) {
-        return [ e.pageX, e.pageY ];
-    } else if (e.clientX || e.clientY) {
-        return [
+    /**
+     * Hide tooltip
+     */
+    function hideTip() {
+        if (tipDiv) {
+            tipDiv.style.display = 'none';
+        }
+    }
+
+    /**
+     * Based on quirskmode 'get cursor position' script
+     */
+    function cursorPos(e) {
+        if (e.pageX || e.pageY) {
+            return [e.pageX, e.pageY];
+        } else if (e.clientX || e.clientY) {
+            return [
                 e.clientX + document.body.scrollLeft,
                 e.clientY + document.body.scrollTop
-               ];
+            ];
+        }
     }
-}
 </script>

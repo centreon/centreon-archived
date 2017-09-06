@@ -73,19 +73,19 @@ if (isset($msg_error) && $msg_error != '') {
 } elseif (isset($_POST["centreon_token"])) {
     $loginMessages[] = _('Your credentials are incorrect.');
 }
-    
+
 if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
     $loginMessages[] = _('Your session is expired.');
 }
-    
+
 if ($file_install_acces) {
     $loginMessages[] = $error_msg;
 }
-    
+
 if (isset($msg) && $msg) {
     $loginMessages[] = $msg;
 }
-    
+
 /**
  * Adding hidden value
  */
@@ -93,7 +93,7 @@ if (isset($_GET['p'])) {
     $pageElement = $form->addElement('hidden', 'p');
     $pageElement->setValue($_GET['p']);
 }
-    
+
 /**
  * Adding validation rule
  */
@@ -109,16 +109,16 @@ if (isset($freeze) && $freeze) {
 if ($file_install_acces) {
     $submitLogin->freeze();
 }
-    
+
 /*
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path.'/include/core/login/template/', $tpl);
+$tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
 
 // Initializing variables
 $tpl->assign('loginMessages', $loginMessages);
-$tpl->assign('centreonVersion', 'v. '.$release['value']);
+$tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
 
 // Redirect User
@@ -126,7 +126,7 @@ $redirect = filter_input(
     INPUT_GET,
     'redirect',
     FILTER_SANITIZE_STRING,
-    array('options' => array('default'=> ''))
+    array('options' => array('default' => ''))
 );
 $tpl->assign('redirect', $redirect);
 

@@ -49,11 +49,11 @@ function write_command($cmd, $poller)
      * Destination is centcore pipe path
      */
     if (defined("_CENTREON_VARLIB_")) {
-        $destination = _CENTREON_VARLIB_."/centcore.cmd";
+        $destination = _CENTREON_VARLIB_ . "/centcore.cmd";
     } else {
         $destination = "/var/lib/centreon/centcore.cmd";
     }
-    
+
     $cmd = str_replace("`", "&#96;", $cmd);
     $cmd = str_replace("\n", "<br>", $cmd);
     $informations = preg_split("/\;/", $key);
@@ -63,7 +63,7 @@ function write_command($cmd, $poller)
     }
     setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-    $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
+    $str = "echo " . escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
     return passthru($str);
 }
 
@@ -88,7 +88,10 @@ function schedule_host_svc_checks($arg, $forced)
 
     if ($actions == true || $is_admin) {
         $tab_forced = array("0" => "", "1" => "_FORCED");
-        $flg = send_cmd(" SCHEDULE" . $tab_forced[$forced] . "_HOST_SVC_CHECKS;" . $arg . ";" . time(), GetMyHostPoller($pearDB, $arg));
+        $flg = send_cmd(
+            " SCHEDULE" . $tab_forced[$forced] . "_HOST_SVC_CHECKS;" . $arg . ";" . time(),
+            GetMyHostPoller($pearDB, $arg)
+        );
         return $flg;
     }
     return null;
@@ -106,11 +109,15 @@ function schedule_svc_checks($arg, $forced)
     if ($forced == "1") {
         $actions = $centreon->user->access->checkAction("service_schedule_forced_check");
     }
-    
+
     if ($actions == true || $is_admin) {
         $tab_forced = array("0" => "", "1" => "_FORCED");
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" SCHEDULE" . $tab_forced[$forced] . "_SVC_CHECK;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+        $flg = send_cmd(
+            " SCHEDULE" . $tab_forced[$forced] . "_SVC_CHECK;" . urldecode($tab_data[0]) .
+            ";" . urldecode($tab_data[1]) . ";" . time(),
+            GetMyHostPoller($pearDB, urldecode($tab_data[0]))
+        );
         return $flg;
     }
     return null;
@@ -131,7 +138,10 @@ function schedule_host_checks($arg, $forced)
     if ($actions == true || $is_admin) {
         $tab_forced = array("0" => "", "1" => "_FORCED");
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" SCHEDULE" . $tab_forced[$forced] . "_HOST_CHECK;" . urldecode($tab_data[0]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+        $flg = send_cmd(
+            " SCHEDULE" . $tab_forced[$forced] . "_HOST_CHECK;" . urldecode($tab_data[0]) . ";" . time(),
+            GetMyHostPoller($pearDB, urldecode($tab_data[0]))
+        );
         return $flg;
     }
     return null;
@@ -148,7 +158,10 @@ function host_check($arg, $type)
     $actions = $centreon->user->access->checkAction("host_checks");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_CHECK;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_CHECK;" . urldecode($arg),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
 
@@ -166,7 +179,10 @@ function host_notification($arg, $type)
     $actions = $centreon->user->access->checkAction("host_notifications");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_NOTIFICATIONS;" . urldecode($arg),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
     return null;
@@ -183,7 +199,10 @@ function host_svc_notifications($arg, $type)
     $actions = $centreon->user->access->checkAction("host_notifications_for_services");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;" . urldecode($arg),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
     return null;
@@ -200,7 +219,10 @@ function host_svc_checks($arg, $type)
     $actions = $centreon->user->access->checkAction("host_checks_for_services");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_CHECKS;" . urldecode($arg) . ";" . time(), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_SVC_CHECKS;" . urldecode($arg) . ";" . time(),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
     return null;
@@ -218,7 +240,10 @@ function svc_check($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_SVC_CHECK;" . urldecode($tab_data["0"]) . ";" . urldecode($tab_data["1"]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_SVC_CHECK;" . urldecode($tab_data["0"]) . ";" . urldecode($tab_data["1"]),
+            GetMyHostPoller($pearDB, urldecode($tab_data["0"]))
+        );
         return $flg;
     }
     return null;
@@ -236,7 +261,10 @@ function passive_svc_check($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_PASSIVE_SVC_CHECKS;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]),
+            GetMyHostPoller($pearDB, urldecode($tab_data["0"]))
+        );
         return $flg;
     }
     return null;
@@ -254,7 +282,10 @@ function svc_notifications($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_SVC_NOTIFICATIONS;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_SVC_NOTIFICATIONS;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]),
+            GetMyHostPoller($pearDB, urldecode($tab_data["0"]))
+        );
         return $flg;
     }
     return null;
@@ -272,7 +303,10 @@ function svc_event_handler($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_SVC_EVENT_HANDLER;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_SVC_EVENT_HANDLER;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]),
+            GetMyHostPoller($pearDB, urldecode($tab_data["0"]))
+        );
         return $flg;
     }
     return null;
@@ -290,7 +324,10 @@ function host_event_handler($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_EVENT_HANDLER;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_EVENT_HANDLER;" . urldecode($arg),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
     return null;
@@ -308,7 +345,10 @@ function svc_flapping_enable($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_SVC_FLAP_DETECTION;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_SVC_FLAP_DETECTION;" . urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]),
+            GetMyHostPoller($pearDB, urldecode($tab_data[0]))
+        );
         return $flg;
     }
     return null;
@@ -326,7 +366,10 @@ function host_flapping_enable($arg, $type)
 
     if ($actions == true || $is_admin) {
         $tab_data = preg_split("/\;/", $arg);
-        $flg = send_cmd(" " . $tab[$type] . "_HOST_FLAP_DETECTION;" . urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
+        $flg = send_cmd(
+            " " . $tab[$type] . "_HOST_FLAP_DETECTION;" . urldecode($arg),
+            GetMyHostPoller($pearDB, urldecode($arg))
+        );
         return $flg;
     }
     return null;
@@ -340,7 +383,10 @@ function notifi_host_hostgroup($arg, $type)
 {
     global $pearDB, $tab, $is_admin;
     $tab_data = preg_split("/\;/", $arg);
-    $flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;" . urldecode($tab_data[0]), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
+    $flg = send_cmd(
+        " " . $tab[$type] . "_HOST_NOTIFICATIONS;" . urldecode($tab_data[0]),
+        GetMyHostPoller($pearDB, urldecode($tab_data[0]))
+    );
     return $flg;
 }
 
@@ -359,13 +405,28 @@ function acknowledgeHost($param)
         $key = $param["host_name"];
         isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
         $host_poller = GetMyHostPoller($pearDB, htmlentities($param["host_name"], ENT_QUOTES, "UTF-8"));
-        $flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($param["host_name"]) . ";$sticky;" . htmlentities($param["notify"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["persistent"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["author"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["comment"], ENT_QUOTES, "UTF-8"), urldecode($host_poller));
+        $flg = write_command(
+            " ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($param["host_name"]) .
+            ";$sticky;" . htmlentities($param["notify"], ENT_QUOTES, "UTF-8") . ";" .
+            htmlentities($param["persistent"], ENT_QUOTES, "UTF-8") . ";" .
+            htmlentities($param["author"], ENT_QUOTES, "UTF-8") . ";" .
+            htmlentities($param["comment"], ENT_QUOTES, "UTF-8"),
+            urldecode($host_poller)
+        );
 
         if (isset($param['ackhostservice']) && $param['ackhostservice'] == 1) {
             $svc_tab = getMyHostServices(getMyHostID(htmlentities($param["host_name"], ENT_QUOTES, "UTF-8")));
             if (count($svc_tab)) {
                 foreach ($svc_tab as $key2 => $value) {
-                    write_command(" ACKNOWLEDGE_SVC_PROBLEM;" . htmlentities(urldecode($param["host_name"]), ENT_QUOTES, "UTF-8") . ";" . $value . ";" . $sticky . ";" . htmlentities($param["notify"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["persistent"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["author"], ENT_QUOTES, "UTF-8") . ";" . htmlentities($param["comment"], ENT_QUOTES, "UTF-8"), urldecode($host_poller));
+                    write_command(
+                        " ACKNOWLEDGE_SVC_PROBLEM;" .
+                        htmlentities(urldecode($param["host_name"]), ENT_QUOTES, "UTF-8") .
+                        ";" . $value . ";" . $sticky . ";" . htmlentities($param["notify"], ENT_QUOTES, "UTF-8") . ";" .
+                        htmlentities($param["persistent"], ENT_QUOTES, "UTF-8") . ";" .
+                        htmlentities($param["author"], ENT_QUOTES, "UTF-8") . ";" .
+                        htmlentities($param["comment"], ENT_QUOTES, "UTF-8"),
+                        urldecode($host_poller)
+                    );
                 }
             }
         }
@@ -389,7 +450,10 @@ function acknowledgeHostDisable()
     $actions = $centreon->user->access->checkAction("host_disacknowledgement");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
+        $flg = send_cmd(
+            " REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]),
+            GetMyHostPoller($pearDB, urldecode($_GET["host_name"]))
+        );
         return $flg;
     }
 
@@ -407,7 +471,11 @@ function acknowledgeServiceDisable()
     $actions = $centreon->user->access->checkAction("service_disacknowledgement");
 
     if ($actions == true || $is_admin) {
-        $flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]) . ";" . urldecode($_GET["service_description"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
+        $flg = send_cmd(
+            " REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($_GET["host_name"]) . ";" .
+            urldecode($_GET["service_description"]),
+            GetMyHostPoller($pearDB, urldecode($_GET["host_name"]))
+        );
         return $flg;
     }
     return null;
@@ -428,10 +496,19 @@ function acknowledgeService($param)
         $param["comment"] = $param["comment"];
         $param["comment"] = str_replace('\'', ' ', $param["comment"]);
         isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
-        $flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($param["host_name"]) . ";" . urldecode($param["service_description"]) . ";" . $sticky . ";" . $param["notify"] . ";" . $param["persistent"] . ";" . $param["author"] . ";" . $param["comment"], GetMyHostPoller($pearDB, urldecode($param["host_name"])));
+        $flg = send_cmd(
+            " ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($param["host_name"]) . ";" .
+            urldecode($param["service_description"]) . ";" . $sticky . ";" . $param["notify"] .
+            ";" . $param["persistent"] . ";" . $param["author"] . ";" . $param["comment"],
+            GetMyHostPoller($pearDB, urldecode($param["host_name"]))
+        );
         isset($param['force_check']) && $param['force_check'] ? $force_check = 1 : $force_check = 0;
         if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
-            send_cmd(" SCHEDULE_FORCED_SVC_CHECK;" . urldecode($param["host_name"]) . ";" . urldecode($param["service_description"]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($param["host_name"])));
+            send_cmd(
+                " SCHEDULE_FORCED_SVC_CHECK;" . urldecode($param["host_name"]) . ";" .
+                urldecode($param["service_description"]) . ";" . time(),
+                GetMyHostPoller($pearDB, urldecode($param["host_name"]))
+            );
         }
         set_user_param($centreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
         set_user_param($centreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
@@ -450,7 +527,12 @@ function submitPassiveCheck()
 
     if ($actions == true || $is_admin) {
         $key = $_GET["host_name"];
-        $flg = send_cmd(" PROCESS_SERVICE_CHECK_RESULT;" . urldecode($_GET["host_name"]) . ";" . urldecode($_GET["service_description"]) . ";" . $_GET["return_code"] . ";" . $_GET["output"] . "|" . $_GET["dataPerform"], GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
+        $flg = send_cmd(
+            " PROCESS_SERVICE_CHECK_RESULT;" . urldecode($_GET["host_name"]) . ";" .
+            urldecode($_GET["service_description"]) . ";" . $_GET["return_code"] . ";" . $_GET["output"] . "|" .
+            $_GET["dataPerform"],
+            GetMyHostPoller($pearDB, urldecode($_GET["host_name"]))
+        );
         return $flg;
     }
     return null;
@@ -464,7 +546,11 @@ function submitHostPassiveCheck()
 
     if ($actions == true || $is_admin) {
         $key = $_GET["host_name"];
-        $flg = send_cmd(" PROCESS_HOST_CHECK_RESULT;" . urldecode($_GET["host_name"]) . ";" . $_GET["return_code"] . ";" . $_GET["output"] . "|" . $_GET["dataPerform"], GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
+        $flg = send_cmd(
+            " PROCESS_HOST_CHECK_RESULT;" . urldecode($_GET["host_name"]) . ";" .
+            $_GET["return_code"] . ";" . $_GET["output"] . "|" . $_GET["dataPerform"],
+            GetMyHostPoller($pearDB, urldecode($_GET["host_name"]))
+        );
         return $flg;
     }
     return null;
@@ -510,7 +596,11 @@ function autoAcknowledgeServiceStart($key)
     if ($actions == true || $is_admin) {
         $comment = "Service Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]) . ";1;1;1;" . $centreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ACKNOWLEDGE_SVC_PROBLEM;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]) .
+            ";1;1;1;" . $centreon->user->alias . ";" . $comment,
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -524,7 +614,10 @@ function autoAcknowledgeServiceStop($key)
     if ($actions == true || $is_admin) {
         $comment = "Service Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " REMOVE_SVC_ACKNOWLEDGEMENT;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -542,7 +635,11 @@ function autoAcknowledgeHostStart($key)
     if ($actions == true || $is_admin) {
         $comment = "Host Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($ressource[0]) . ";1;1;1;" . $centreon->user->alias . ";" . $comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ACKNOWLEDGE_HOST_PROBLEM;" . urldecode($ressource[0]) .
+            ";1;1;1;" . $centreon->user->alias . ";" . $comment,
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -556,7 +653,10 @@ function autoAcknowledgeHostStop($key)
     if ($actions == true || $is_admin) {
         $comment = "Host Auto Acknowledge by " . $centreon->user->alias . "\n";
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " REMOVE_HOST_ACKNOWLEDGEMENT;" . urldecode($ressource[0]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -573,7 +673,10 @@ function autoNotificationServiceStart($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ENABLE_SVC_NOTIFICATIONS;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ENABLE_SVC_NOTIFICATIONS;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -586,7 +689,10 @@ function autoNotificationServiceStop($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" DISABLE_SVC_NOTIFICATIONS;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " DISABLE_SVC_NOTIFICATIONS;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -603,7 +709,10 @@ function autoNotificationHostStart($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ENABLE_HOST_NOTIFICATIONS;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ENABLE_HOST_NOTIFICATIONS;" . urldecode($ressource[0]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -616,7 +725,10 @@ function autoNotificationHostStop($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" DISABLE_HOST_NOTIFICATIONS;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " DISABLE_HOST_NOTIFICATIONS;" . urldecode($ressource[0]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -633,7 +745,10 @@ function autoCheckServiceStart($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ENABLE_SVC_CHECK;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ENABLE_SVC_CHECK;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -646,7 +761,10 @@ function autoCheckServiceStop($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" DISABLE_SVC_CHECK;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " DISABLE_SVC_CHECK;" . urldecode($ressource[0]) . ";" . urldecode($ressource[1]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -663,7 +781,10 @@ function autoCheckHostStart($key)
 
     if ($actions == true || $is_admin) {
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" ENABLE_HOST_CHECK;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " ENABLE_HOST_CHECK;" . urldecode($ressource[0]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }
@@ -678,7 +799,10 @@ function autoCheckHostStop($key)
     if ($actions == true || $is_admin) {
         global $pearDB, $tab, $is_admin;
         $ressource = preg_split("/\;/", $key);
-        $flg = send_cmd(" DISABLE_HOST_CHECK;" . urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
+        $flg = send_cmd(
+            " DISABLE_HOST_CHECK;" . urldecode($ressource[0]),
+            GetMyHostPoller($pearDB, urldecode($ressource[0]))
+        );
         return $flg;
     }
 }

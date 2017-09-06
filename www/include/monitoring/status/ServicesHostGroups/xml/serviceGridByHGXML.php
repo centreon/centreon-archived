@@ -179,7 +179,7 @@ if ($instance != -1) {
     $rq1 .= " AND h.instance_id = ".$instance;
 }
 //$rq1 .= " ORDER BY s.description";
-    $rq1 .= " order by tri asc";
+    $rq1 .= " order by tri asc, s.description asc";
 
 $tabService = array();
 $tabHost = array();

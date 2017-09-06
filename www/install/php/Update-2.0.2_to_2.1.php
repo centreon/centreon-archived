@@ -37,6 +37,7 @@
 $update_query = "SHOW COLUMNS FROM `service` WHERE Field LIKE 'service_first_notification_delay'";
 $RES = $pearDB->query($update_query);
 if (!$RES->rowCount()) {
-	$pearDB->query("ALTER TABLE `service` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled`");	
+    $query = "ALTER TABLE `service` ADD `service_first_notification_delay` " .
+        "INT NULL AFTER `service_notifications_enabled`";
+    $pearDB->query($query);
 }
-?>

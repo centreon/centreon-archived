@@ -34,18 +34,20 @@
  */
 
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."/www/class/centreon.class.php";
-require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 
 session_start();
 if (!isset($_SESSION['centreon']) || !isset($_POST['timestamp']) || !is_numeric($_POST['timestamp'])) {
     exit();
 }
-    
+
 if (isset($_SESSION['fullScreen'])) {
     if (isset($_SESSION['fullScreen']['timestamp']) && isset($_SESSION['fullScreen']['value'])) {
-        if (is_numeric($_SESSION['fullScreen']['timestamp']) && $_SESSION['fullScreen']['timestamp'] <= $_POST['timestamp']) {
+        if (is_numeric($_SESSION['fullScreen']['timestamp']) &&
+            $_SESSION['fullScreen']['timestamp'] <= $_POST['timestamp']
+        ) {
             $_SESSION['fullScreen']['value'] = !$_SESSION['fullScreen']['value'];
             $_SESSION['fullScreen']['timestamp'] = $_POST['timestamp'];
         }

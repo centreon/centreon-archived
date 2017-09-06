@@ -65,7 +65,7 @@ $path = "./include/configuration/configObject/hostgroup/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -80,46 +80,47 @@ $hgs = $acl->getHostGroupAclConf(null, 'broker');
 
 function mywrap($el)
 {
-    return "'".$el."'";
+    return "'" . $el . "'";
 }
+
 $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
 $hoststring = $acl->getHostsString('ID', $dbmon);
 
 switch ($o) {
     case "a":
-        require_once($path."formHostGroup.php");
+        require_once($path . "formHostGroup.php");
         break; #Add a Hostgroup
     case "w":
-        require_once($path."formHostGroup.php");
+        require_once($path . "formHostGroup.php");
         break; #Watch a Hostgroup
     case "c":
-        require_once($path."formHostGroup.php");
+        require_once($path . "formHostGroup.php");
         break; #Modify a Hostgroup
     case "s":
         enableHostGroupInDB($hg_id);
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break; #Activate a Hostgroup
     case "ms":
         enableHostGroupInDB(null, isset($select) ? $select : array());
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break;
     case "u":
         disableHostGroupInDB($hg_id);
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break; #Desactivate a Hostgroup
     case "mu":
         disableHostGroupInDB(null, isset($select) ? $select : array());
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break;
     case "m":
         multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break; #Duplicate n Host grou
     case "d":
         deleteHostGroupInDB(isset($select) ? $select : array());
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break; #Delete n Host group
     default:
-        require_once($path."listHostGroup.php");
+        require_once($path . "listHostGroup.php");
         break;
 }

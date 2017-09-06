@@ -51,7 +51,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'notify_on_recovery' => 1,
             'notify_on_critical' => 1,
             'recovery_notification_delay' => 1,
-            'cs' => 'centreon_centreon'
+            'cs' => 'admin_admin'
         ));
         $page->save();
 

@@ -51,7 +51,8 @@ $DBRESULT->closeCursor();
  * Get user list
  */
 $contact = array("" => null);
-$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_alias");
+$query = "SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_alias";
+$DBRESULT = $pearDB->query($query);
 while ($ct = $DBRESULT->fetchRow()) {
     $contact[$ct["contact_id"]] = $ct["contact_alias"];
 }
@@ -60,8 +61,8 @@ $DBRESULT->closeCursor();
 /*
  * Object init
  */
-$mediaObj       = new CentreonMedia($pearDB);
-$host_method    = new CentreonHost($pearDB);
+$mediaObj = new CentreonMedia($pearDB);
+$host_method = new CentreonHost($pearDB);
 
 /*
  * Smarty template Init
@@ -90,7 +91,7 @@ if (isset($_POST["contact"])) {
             if ($groups != "") {
                 $groups .= ",";
             }
-            $groups .= "'".$key."'";
+            $groups .= "'" . $key . "'";
         }
     }
 } else {
@@ -104,9 +105,15 @@ $formData = array('contact' => $contact_id);
 /*
  * Create select form
  */
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
-$form->addElement('select', 'contact', _("Centreon Users"), $contact, array('id'=>'contact', 'onChange'=>'submit();'));
+$form->addElement(
+    'select',
+    'contact',
+    _("Centreon Users"),
+    $contact,
+    array('id' => 'contact', 'onChange' => 'submit();')
+);
 $form->setDefaults($formData);
 
 /*
@@ -114,26 +121,31 @@ $form->setDefaults($formData);
  */
 $elemArr = array();
 $query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
-        . "FROM centreon_acl acl "
-        . "LEFT JOIN hosts h on acl.host_id = h.host_id "
-        . "LEFT JOIN services s on s.service_id = acl.service_id "
-        . "WHERE acl.group_id IN ($groups) ORDER BY h.name, s.description";
-     $DBRESULT = $pearDBO->query($query);
+    . "FROM centreon_acl acl "
+    . "LEFT JOIN hosts h on acl.host_id = h.host_id "
+    . "LEFT JOIN services s on s.service_id = acl.service_id "
+    . "WHERE acl.group_id IN ($groups) ORDER BY h.name, s.description";
+$DBRESULT = $pearDBO->query($query);
 
 for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
     if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
-    } elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
+    } elseif ($icone = $host_method->replaceMacroInString(
+        $resources["host_id"],
+        getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1)
+    )
+    ) {
         $host_icone = "./img/media/" . $icone;
     } else {
         $host_icone = "./img/icons/host.png";
     }
     $moptions = "";
-    $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                    "RowMenu_hico" => $host_icone,
-                    "RowMenu_host" => myDecode($resources["name"]),
-                    "RowMenu_service" => myDecode($resources["description"]),
-                    );
+    $elemArr[$i] = array(
+        "MenuClass" => "list_" . $style,
+        "RowMenu_hico" => $host_icone,
+        "RowMenu_host" => myDecode($resources["name"]),
+        "RowMenu_service" => myDecode($resources["description"]),
+    );
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);

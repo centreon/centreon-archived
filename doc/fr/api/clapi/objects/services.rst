@@ -169,8 +169,6 @@ notification_options             Status linked to notifications
 
 first_notification_delay           First notification delay in seconds
 
-parallelize_checks	         *1* when parallelize checks are enabled, *0* otherwise
-
 obsess_over_service	         *1* when obsess over service is enabled, *0* otherwise
 
 check_freshness	                 *1* when check freshness is enabled, *0* otherwise
@@ -181,8 +179,6 @@ event_handler_enabled	         *1* when event handler is enabled, *0* otherwise
 
 flap_detection_enabled	         *1* when flap detection is enabled, *0* otherwise
 
-process_perf_data	         *1* when process performance data is enabled, *0* otherwise
-
 retain_status_information	 *1* when status information is retained, *0* otherwise
 
 retain_nonstatus_information	 *1* when non status information is retained, *0* otherwise
@@ -191,8 +187,6 @@ event_handler	                 Name of the event handler command
 
 event_handler_arguments	         Arguments that go along with the event handler, 
                                  prepend each argument with the '!' character
-
-flap_detection_options	         Flap detection options
 
 notes	                         Notes
 

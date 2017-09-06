@@ -267,7 +267,6 @@ $help["use_retained_scheduling_info"] = dgettext(
 );
 
 
-
 $help["retained_service_attribute_mask"] = dgettext(
     "help",
     "This is an advanced feature. You'll need to read the Centreon Engine source code "
@@ -405,92 +404,519 @@ $help["max_host_check_spread"] = dgettext(
     . "on host check scheduling if scheduling information is being retained using "
     . "the use_retained_scheduling_info option. Default value is 30 (minutes)."
 );
-$help["max_service_check_spread"] = dgettext("help", "This option determines the maximum number of minutes from when Monitoring Engine starts that all services (that are scheduled to be regularly checked) are checked. This option will automatically adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the timeframe you specify. In general, this option will not have an effect on service check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. Default value is 30 (minutes).");
-$help["service_interleave_factor"] = dgettext("help", "This option determines how service checks are interleaved. Interleaving allows for a more even distribution of service checks, reduced load on remote hosts, and faster overall detection of host problems. By default this value is set to s (smart) for automatic calculation of the interleave factor. Don't change unless you have a specific reason to change it. Setting this value to a number greater than or equal to 1 specifies the interleave factor to use. A value of 1 is equivalent to not interleaving the service checks.");
-$help["service_inter_check_delay_method"] = dgettext("help", "This option allows you to control how service checks are initially \"spread out\" in the event queue. Enter \"s\" for using a \"smart\" delay calculation (the default), which will cause Monitoring Engine to calculate an average check interval and spread initial checks of all services out over that interval, thereby helping to eliminate CPU load spikes. Using no delay (\"n\") is generally not recommended, as it will cause all service checks to be scheduled for execution at the same time. This means that you will generally have large CPU spikes when the services are all executed in parallel. Use a \"d\" for a \"dumb\" delay of 1 second between service checks or supply a fixed value of x.xx seconds for the inter-check delay.");
-$help["host_inter_check_delay_method"] = dgettext("help", "This option allows you to control how host checks are initially \"spread out\" in the event queue. Enter \"s\" for using a \"smart\" delay calculation (the default), which will cause Monitoring Engine to calculate an average check interval and spread initial checks of all hosts out over that interval, thereby helping to eliminate CPU load spikes. Using no delay (\"n\") is generally not recommended, as it will cause all host checks to be scheduled for execution at the same time. This means that you will generally have large CPU spikes when the hosts are all executed in parallel. Use a \"d\" for a \"dumb\" delay of 1 second between host checks or supply a fixed value of x.xx seconds for the inter-check delay.");
-$help["check_result_reaper_frequency"] = dgettext("help", "This option allows you to control the frequency in seconds of check result \"reaper\" events. \"Reaper\" events process the results from host and service checks that have finished executing. These events constitute the core of the monitoring logic in Monitoring Engine.");
-$help["translate_passive_host_checks"] = dgettext("help", "This option determines whether or not Monitoring Engine will translate DOWN/UNREACHABLE passive host check results to their \"correct\" state from the viewpoint of the local Monitoring Engine instance. This can be very useful in distributed and failover monitoring installations. Option is disabled by default.");
-$help["passive_host_checks_are_soft"] = dgettext("help", "This option determines whether or not Monitoring Engine will treat passive host checks as HARD states or SOFT states. By default, a passive host check result will put a host into a HARD state type. This option is disabled by default.");
-$help["auto_reschedule_checks"] = dgettext("help", "This option determines whether or not Monitoring Engine will attempt to automatically reschedule active host and service checks to \"smooth\" them out over time. This can help to balance the load on the monitoring server, as it will attempt to keep the time between consecutive checks consistent, at the expense of executing checks on a more rigid schedule.<br><b>Warning:</b> this is an experimental feature and may be removed in future versions. Enabling this option can degrade performance - rather than increase it - if used improperly!");
-$help["auto_rescheduling_interval"] = dgettext("help", "This option determines how often Monitoring Engine will attempt to automatically reschedule checks. This option only has an effect if the auto_reschedule_checks option is enabled. Default is 30 seconds.");
-$help["auto_rescheduling_window"] = dgettext("help", "This option determines the \"window\" of time that Monitoring Engine will look at when automatically rescheduling checks. Only host and service checks that occur in the next X seconds (determined by this variable) will be rescheduled. This option only has an effect if the auto_reschedule_checks option is enabled. Default is 180 seconds (3 minutes).");
-$help["use_aggressive_host_checking"] = dgettext("help", "Monitoring Engine tries to be smart about how and when it checks the status of hosts. By default this option is disabled and will allow Monitoring Engine to make some smarter decisions and check hosts a bit faster. Enabling this option will increase the amount of time required to check hosts, but may improve reliability a bit. Unless you have problems with Monitoring Engine not recognizing that a host recovered, I would suggest not enabling this option.");
-$help["enable_flap_detection"] = dgettext("help", "This option determines whether or not Monitoring Engine will try and detect hosts and services that are \"flapping\". Flapping occurs when a host or service changes between states too frequently, resulting in a barrage of notifications being sent out. When Monitoring Engine detects that a host or service is flapping, it will temporarily suppress notifications for that host/service until it stops flapping. Flap detection is very experimental at this point, so use this feature with caution! More information on how flap detection and handling works can be found here. Note: If you have state retention enabled, Monitoring Engine will ignore this setting when it (re)starts and use the last known setting for this option (as stored in the state retention file), unless you disable the use_retained_program_state option. This option is disabled by default.");
-$help["low_service_flap_threshold"] = dgettext("help", "This option is used to set the low threshold for detection of service flapping. For more information read the Monitoring Engine section about flapping.");
-$help["high_service_flap_threshold"] = dgettext("help", "This option is used to set the high threshold for detection of service flapping. For more information read the Monitoring Engine section about flapping.");
-$help["low_host_flap_threshold"] = dgettext("help", "This option is used to set the low threshold for detection of host flapping. For more information read the Monitoring Engine section about flapping.");
-$help["high_host_flap_threshold"] = dgettext("help", "This option is used to set the high threshold for detection of host flapping. For more information read the Monitoring Engine section about flapping.");
-$help["soft_state_dependencies"] = dgettext("help", "This option determines whether or not Monitoring Engine will use soft state information when checking host and service dependencies. Normally Monitoring Engine will only use the latest hard host or service state when checking dependencies. If you want it to use the latest state (regardless of whether its a soft or hard state type), enable this option.");
-$help["service_check_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow service checks to run. If checks exceed this limit, they are killed and a CRITICAL state is returned. A timeout error will also be logged. This option is meant to be used as a last ditch mechanism to kill off plugins which are misbehaving and not exiting in a timely manner. It should be set to something high (like 60 seconds or more), so that each service check normally finishes executing within this time limit. If a service check runs longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes.");
-$help["host_check_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow host checks to run. If checks exceed this limit, they are killed and a CRITICAL state is returned and the host will be assumed to be DOWN. A timeout error will also be logged. This option is meant to be used as a last ditch mechanism to kill off plugins which are misbehaving and not exiting in a timely manner. It should be set to something high (like 60 seconds or more), so that each host check normally finishes executing within this time limit. If a host check runs longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes.");
-$help["event_handler_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow event handlers to be run. If an event handler exceeds this time limit it will be killed and a warning will be logged. This option is meant to be used as a last ditch mechanism to kill off commands which are misbehaving and not exiting in a timely manner. It should be set to something high (like 60 seconds or more), so that each event handler command normally finishes executing within this time limit. If an event handler runs longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes.");
-$help["notification_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow notification commands to be run. If a notification command exceeds this time limit it will be killed and a warning will be logged. This option is meant to be used as a last ditch mechanism to kill off commands which are misbehaving and not exiting in a timely manner. It should be set to something high (like 60 seconds or more), so that each notification command finishes executing within this time limit. If a notification command runs longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes.");
-$help["ocsp_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive service processor command to be run. If a command exceeds this time limit it will be killed and a warning will be logged.");
-$help["ochp_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive host processor command to be run. If a command exceeds this time limit it will be killed and a warning will be logged.");
-$help["perfdata_timeout"] = dgettext("help", "This is the maximum number of seconds that Monitoring Engine will allow a host performance data processor command or service performance data processor command to be run. If a command exceeds this time limit it will be killed and a warning will be logged.");
-$help["obsess_over_services"] = dgettext("help", "This value determines whether or not Monitoring Engine will \"obsess\" over service checks results and run the obsessive compulsive service processor command you define. This option is useful for performing distributed monitoring. This option is disabled by default. If you're not doing distributed monitoring, don't enable this option.");
-$help["ocsp_command"] = dgettext("help", "This option allows you to specify a command to be run after every service check, which can be useful in distributed monitoring. This command is executed after any event handler or notification commands. The maximum amount of time that this command can run is controlled by the ocsp_timeout option. This command is only executed if the obsess_over_services option is enabled globally and if the obsess_over_service directive in the service definition is enabled.");
-$help["obsess_over_hosts"] = dgettext("help", "This value determines whether or not Monitoring Engine will \"obsess\" over host checks results and run the obsessive compulsive host processor command you define. This option is useful for performing distributed monitoring. This option is disabled by default. If you're not doing distributed monitoring, don't enable this option.");
-$help["ochp_command"] = dgettext("help", "This option allows you to specify a command to be run after every host check, which can be useful in distributed monitoring. This command is executed after any event handler or notification commands. The maximum amount of time that this command can run is controlled by the ochp_timeout option. This command is only executed if the obsess_over_hosts option is enabled globally and if the obsess_over_host directive in the host definition is enabled.");
-$help["process_performance_data"] = dgettext("help", "This value determines whether or not Monitoring Engine will process host and service check performance data. This option is disabled by default.");
-$help["host_perfdata_command"] = dgettext("help", "This option allows you to specify a command to be run after every host check to process host performance data that may be returned from the check. This command is only executed if the process_performance_data option is enabled globally and if the process_perf_data directive in the host definition is enabled.");
-$help["service_perfdata_command"] = dgettext("help", "This option allows you to specify a command to be run after every service check to process service performance data that may be returned from the check. This command is only executed if the process_performance_data option is enabled globally and if the process_perf_data directive in the service definition is enabled.");
-$help["host_perfdata_file"] = dgettext("help", "This option allows you to specify a file to which host performance data will be written after every host check. Data will be written to the performance file as specified by the host_perfdata_file_template option. Performance data is only written to this file if the process_performance_data option is enabled globally and if the process_perf_data directive in the host definition is enabled.");
-$help["service_perfdata_file"] = dgettext("help", "This option allows you to specify a file to which service performance data will be written after every service check. Data will be written to the performance file as specified by the service_perfdata_file_template option. Performance data is only written to this file if the process_performance_data option is enabled globally and if the process_perf_data directive in the service definition is enabled.");
-$help["host_perfdata_file_template"] = dgettext("help", "This option determines what (and how) data is written to the host performance data file. The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) and plain text. A newline is automatically added after each write to the performance data file.");
-$help["service_perfdata_file_template"] = dgettext("help", "This option determines what (and how) data is written to the service performance data file. The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) and plain text. A newline is automatically added after each write to the performance data file.");
-$help["host_perfdata_file_mode"] = dgettext("help", "This option determines how the host performance data file is opened. Unless the file is a named pipe you'll probably want to use the default mode of append.");
-$help["service_perfdata_file_mode"] = dgettext("help", "This option determines how the service performance data file is opened. Unless the file is a named pipe you'll probably want to use the default mode of append.");
-$help["host_perfdata_file_processing_interval"] = dgettext("help", "This option allows you to specify the interval (in seconds) at which the host performance data file is processed using the host performance data file processing command. A value of 0 indicates that the performance data file should not be processed at regular intervals.");
-$help["service_perfdata_file_processing_interval"] = dgettext("help", "This option allows you to specify the interval (in seconds) at which the service performance data file is processed using the service performance data file processing command. A value of 0 indicates that the performance data file should not be processed at regular intervals.");
-$help["host_perfdata_file_processing_command"] = dgettext("help", "This option allows you to specify the command that should be executed to process the host performance data file.");
-$help["service_perfdata_file_processing_command"] = dgettext("help", "This option allows you to specify the command that should be executed to process the service performance data file.");
-$help["check_for_orphaned_services"] = dgettext("help", "This option allows you to enable or disable checks for orphaned service checks. Orphaned service checks are checks which have been executed and have been removed from the event queue, but have not had any results reported in a long time. Since no results have come back in for the service, it is not rescheduled in the event queue. This can cause service checks to stop being executed. Normally it is very rare for this to happen - it might happen if an external user or process killed off the process that was being used to execute a service check. If this option is enabled and Monitoring Engine finds that results for a particular service check have not come back, it will log an error message and reschedule the service check. This option is enabled by default.");
-$help["check_for_orphaned_hosts"] = dgettext("help", "This option allows you to enable or disable checks for orphaned hoste checks. Orphaned host checks are checks which have been executed and have been removed from the event queue, but have not had any results reported in a long time. Since no results have come back in for the host, it is not rescheduled in the event queue. This can cause host checks to stop being executed. Normally it is very rare for this to happen - it might happen if an external user or process killed off the process that was being used to execute a host check. If this option is enabled and Monitoring Engine finds that results for a particular host check have not come back, it will log an error message and reschedule the host check. This option is enabled by default.");
-$help["check_service_freshness"] = dgettext("help", "This option determines whether or not Monitoring Engine will periodically check the \"freshness\" of service checks. Enabling this option is useful for helping to ensure that passive service checks are received in a timely manner. If the check results is found to be not fresh, Monitoring Engine will force an active check of the host or service by executing the command specified by in the host or service definition. This option is enabled by default.");
-$help["service_freshness_check_interval"] = dgettext("help", "This setting determines how often (in seconds) Monitoring Engine will periodically check the \"freshness\" of service check results. If you have disabled service freshness checking (with the check_service_freshness option), this option has no effect.");
-$help["check_host_freshness"] = dgettext("help", "This option determines whether or not Monitoring Engine will periodically check the \"freshness\" of host checks. Enabling this option is useful for helping to ensure that passive host checks are received in a timely manner. If the check results is found to be not fresh, Monitoring Engine will force an active check of the host or service by executing the command specified by in the host or service definition. This option is enabled by default.");
-$help["host_freshness_check_interval"] = dgettext("help", "This setting determines how often (in seconds) Monitoring Engine will periodically check the \"freshness\" of host check results. If you have disabled host freshness checking (with the check_host_freshness option), this option has no effect.");
-$help["additional_freshness_latency"] = dgettext("help", "This option determines the number of seconds Monitoring Engine will add to any host or services freshness threshold it automatically calculates (e.g. those not specified explicitly by the user).");
-$help["date_format"] = dgettext("help", "This option allows you to specify what kind of date/time format Monitoring Engine should use in the web interface and date/time macros.");
-$help["admin_email"] = dgettext("help", "This is the email address for the administrator of the local machine (i.e. the one that Monitoring Engine is running on). This value can be used in notification commands by using the \$ADMINEMAIL\$ macro.");
-$help["admin_pager"] = dgettext("help", "This is the pager number (or pager email gateway) for the administrator of the local machine (i.e. the one that Monitoring Engine is running on). The pager number/address can be used in notification commands by using the \$ADMINPAGER\$ macro.");
-$help["illegal_object_name_chars"] = dgettext("help", "This option allows you to specify illegal characters that cannot be used in host names, service descriptions, or names of other object types. Monitoring Engine will allow you to use most characters in object definitions, but I recommend not using the characters set by default. Doing may give you problems in the web interface, notification commands, etc.");
-$help["illegal_macro_output_chars"] = dgettext("help", "This option allows you to specify illegal characters that should be stripped from macros before being used in notifications, event handlers, and other commands. This DOES NOT affect macros used in service or host check commands. Some of these characters are interpreted by the shell (i.e. the backtick) and can lead to security problems.");
-$help["use_regexp_matching"] = dgettext("help", "This option determines whether or not various directives in your object definitions will be processed as regular expressions. More information on how this works can be found in Monitoring Engine section on object tricks. This option is disabled by default.");
-$help["use_true_regexp_matching"] = dgettext("help", "If you've enabled regular expression matching of various object directives using the use_regexp_matching option, this option will determine when object directives are treated as regular expressions. If this option is disabled (the default), directives will only be treated as regular expressions if they contain *, ?, +, or \\.. If this option is enabled, all appropriate directives will be treated as regular expression.");
-$help["event_broker_options"] = dgettext("help", "This option controls what (if any) data gets sent to the event broker and, in turn, to any loaded event broker module. Centreon relies heavily on the broker and needs this value to be set as -1.");
-$help["broker_module"] = dgettext("help", "This directive is used to specify an event broker module that should by loaded by Monitoring Engine at startup. Use multiple directives if you want to load more than one module. Arguments that should be passed to the module at startup are separated from the module path by a space.");
-$help["enable_predictive_host_dependency_checks"] = dgettext("help", "This option determines whether or not Monitoring Engine will execute predictive checks of hosts that are being depended upon (as defined in host dependencies) for a particular host when it changes state. Predictive checks help ensure that the dependency logic is as accurate as possible. This option is enabled by default.");
-$help["enable_predictive_service_dependency_checks"] = dgettext("help", "This option determines whether or not Monitoring Engine will execute predictive checks of services that are being depended upon (as defined in service dependencies) for a particular service when it changes state. Predictive checks help ensure that the dependency logic is as accurate as possible. More information on how predictive checks work can be found here. This option is enabled by default.");
-$help["cached_host_check_horizon"] = dgettext("help", "This option determines the maximum amount of time (in seconds) that the state of a previous host check is considered current. Cached host states (from host checks that were performed more recently than the time specified by this value) can improve host check performance immensely. Too high of a value for this option may result in (temporarily) inaccurate host states, while a low value may result in a performance hit for host checks. Use a value of 0 if you want to disable host check caching.");
-$help["cached_service_check_horizon"] = dgettext("help", "This option determines the maximum amount of time (in seconds) that the state of a previous service check is considered current. Cached service states (from service checks that were performed more recently than the time specified by this value) can improve service check performance when a lot of service dependencies are used. Too high of a value for this option may result in inaccuracies in the service dependency logic. Use a value of 0 if you want to disable service check caching.");
-$help["use_large_installation_tweaks"] = dgettext("help", "This option determines whether or not the Monitoring Engine daemon will take several shortcuts to improve performance. These shortcuts result in the loss of a few features, but larger installations will likely see a lot of benefit from doing so. This option is disabled by default.");
-$help["free_child_process_memory"] = dgettext("help", "This option determines whether or not Monitoring Engine will free memory in child processes when they are fork()ed off from the main process. By default, Monitoring Engine frees memory. However, if the use_large_installation_tweaks option is enabled, it will not. By defining this option in your configuration file, you are able to override things to get the behavior you want.");
-$help["child_processes_fork_twice"] = dgettext("help", "This option determines whether or not Monitoring Engine will fork() child processes twice when it executes host and service checks. By default, Monitoring Engine fork()s twice. However, if the use_large_installation_tweaks option is enabled, it will only fork() once. By defining this option in your configuration file, you are able to override things to get the behavior you want.");
-$help["enable_environment_macros"] = dgettext("help", "This option determines whether or not the Monitoring Engine daemon will make all standard macros available as environment variables to your check, notification, event hander, etc. commands. In large Monitoring Engine installations this can be problematic because it takes additional memory and (more importantly) CPU to compute the values of all macros and make them available to the environment. This option is enabled by default.");
-$help["use_setpgid"] = dgettext("help", "Only works with Centreon Engine (>= 1.3). For better performance, set this to 'No'. But it is safer to leave it to 'Default' ('Yes'), for a few native plugins could trigger a monitoring crash.");
-$help["debug_file"] = dgettext("help", "This option determines where Monitoring Engine should write debugging information. What (if any) information is written is determined by the debug_level and debug_verbosity options. You can have Monitoring Engine automaticaly rotate the debug file when it reaches a certain size by using the max_debug_file_size option.");
-$help["max_debug_file_size"] = dgettext("help", "This option determines the maximum size (in bytes) of the debug file. If the file grows larger than this size, it will be renamed with a .old extension. If a file already exists with a .old extension it will automatically be deleted. This helps ensure your disk space usage doesn't get out of control when debugging Monitoring Engine.");
-$help["daemon_dumps_core"] = dgettext("help", "This option allows dumping core in case a segmentation fault occurs. Warning: Make sure that server has sufficient disk space for these dumps (ulimit). This option is discarded when using Centreon Engine.");
-$help["debug_verbosity"] = dgettext("help", "This option determines how much debugging information Monitoring Engine should write to the debug_file. By default the verbosity is set to level 1.");
-$help["Monitoring Engine_debug_level"] = dgettext("help", "This option determines what type of information Monitoring Engine should write to the debug_file.");
+$help["max_service_check_spread"] = dgettext(
+    "help",
+    "This option determines the maximum number of minutes from when Monitoring Engine starts that all " .
+    "services (that are scheduled to be regularly checked) are checked. This option will automatically " .
+    "adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all " .
+    "services occur within the timeframe you specify. In general, this option will not have an effect on service " .
+    "check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. " .
+    "Default value is 30 (minutes)."
+);
+$help["service_interleave_factor"] = dgettext(
+    "help",
+    "This option determines how service checks are interleaved. Interleaving allows for a more even " .
+    "distribution of service checks, reduced load on remote hosts, and faster overall detection of " .
+    "host problems. By default this value is set to s (smart) for automatic calculation of the interleave factor. " .
+    "Don't change unless you have a specific reason to change it. Setting this value to a number greater " .
+    "than or equal to 1 specifies the interleave factor to use. A value of 1 is equivalent to not interleaving " .
+    "the service checks."
+);
+$help["service_inter_check_delay_method"] = dgettext(
+    "help",
+    "This option allows you to control how service checks are initially \"spread out\" in the event queue. " .
+    "Enter \"s\" for using a \"smart\" delay calculation (the default), which will cause " .
+    "Monitoring Engine to calculate an average check interval and spread initial checks of all " .
+    "services out over that interval, thereby helping to eliminate CPU load spikes. Using no " .
+    "delay (\"n\") is generally not recommended, as it will cause all service checks to be scheduled " .
+    "for execution at the same time. This means that you will generally have large CPU spikes when the " .
+    "services are all executed in parallel. Use a \"d\" for a \"dumb\" delay of 1 second between service " .
+    "checks or supply a fixed value of x.xx seconds for the inter-check delay."
+);
+$help["host_inter_check_delay_method"] = dgettext(
+    "help",
+    "This option allows you to control how host checks are initially \"spread out\" in the event queue. " .
+    "Enter \"s\" for using a \"smart\" delay calculation (the default), which will cause Monitoring Engine " .
+    "to calculate an average check interval and spread initial checks of all hosts out over that interval, " .
+    "thereby helping to eliminate CPU load spikes. Using no delay (\"n\") is generally not recommended, " .
+    "as it will cause all host checks to be scheduled for execution at the same time. This means that you will " .
+    "generally have large CPU spikes when the hosts are all executed in parallel. " .
+    "Use a \"d\" for a \"dumb\" delay of 1 second between host checks or supply a fixed value of x.xx seconds " .
+    "for the inter-check delay."
+);
+$help["check_result_reaper_frequency"] = dgettext(
+    "help",
+    "This option allows you to control the frequency in seconds of check result \"reaper\" events. " .
+    "\"Reaper\" events process the results from host and service checks that have finished executing. These events " .
+    "constitute the core of the monitoring logic in Monitoring Engine."
+);
+$help["translate_passive_host_checks"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will translate DOWN/UNREACHABLE passive host " .
+    "check results to their \"correct\" state from the viewpoint of the local Monitoring Engine instance. " .
+    "This can be very useful in distributed and failover monitoring installations. Option is disabled by default."
+);
+$help["passive_host_checks_are_soft"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will treat passive host checks as HARD states or " .
+    "SOFT states. By default, a passive host check result will put a host into a HARD state type. This option is " .
+    "disabled by default."
+);
+$help["auto_reschedule_checks"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will attempt to automatically reschedule active " .
+    "host and service checks to \"smooth\" them out over time. This can help to balance the load on " .
+    "the monitoring server, as it will attempt to keep the time between consecutive checks consistent, " .
+    "at the expense of executing checks on a more rigid schedule.<br><b>Warning:</b> this is an experimental " .
+    "feature and may be removed in future versions. Enabling this option can degrade performance - rather than " .
+    "increase it - if used improperly!"
+);
+$help["auto_rescheduling_interval"] = dgettext(
+    "help",
+    "This option determines how often Monitoring Engine will attempt to automatically reschedule checks. " .
+    "This option only has an effect if the auto_reschedule_checks option is enabled. Default is 30 seconds."
+);
+$help["auto_rescheduling_window"] = dgettext(
+    "help",
+    "This option determines the \"window\" of time that Monitoring Engine will look at when automatically " .
+    "rescheduling checks. Only host and service checks that occur in the next X seconds " .
+    "(determined by this variable) will be rescheduled. This option only has an effect if the " .
+    "auto_reschedule_checks option is enabled. Default is 180 seconds (3 minutes)."
+);
+$help["use_aggressive_host_checking"] = dgettext(
+    "help",
+    "Monitoring Engine tries to be smart about how and when it checks the status of hosts. By default this " .
+    "option is disabled and will allow Monitoring Engine to make some smarter decisions and check hosts a " .
+    "bit faster. Enabling this option will increase the amount of time required to check hosts, but may " .
+    "improve reliability a bit. Unless you have problems with Monitoring Engine not recognizing that a " .
+    "host recovered, I would suggest not enabling this option."
+);
+$help["enable_flap_detection"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will try and detect hosts and services " .
+    "that are \"flapping\". Flapping occurs when a host or service changes between states too frequently, " .
+    "resulting in a barrage of notifications being sent out. When Monitoring Engine detects that a host " .
+    "or service is flapping, it will temporarily suppress notifications for that host/service until it stops " .
+    "flapping. Flap detection is very experimental at this point, so use this feature with caution! " .
+    "More information on how flap detection and handling works can be found here. Note: If you have " .
+    "state retention enabled, Monitoring Engine will ignore this setting when it (re)starts and use the " .
+    "last known setting for this option (as stored in the state retention file), unless you disable the " .
+    "use_retained_program_state option. This option is disabled by default."
+);
+$help["low_service_flap_threshold"] = dgettext(
+    "help",
+    "This option is used to set the low threshold for detection of service flapping. For more information " .
+    "read the Monitoring Engine section about flapping."
+);
+$help["high_service_flap_threshold"] = dgettext(
+    "help",
+    "This option is used to set the high threshold for detection of service flapping. For more " .
+    "information read the Monitoring Engine section about flapping."
+);
+$help["low_host_flap_threshold"] = dgettext(
+    "help",
+    "This option is used to set the low threshold for detection of host flapping. For more information " .
+    "read the Monitoring Engine section about flapping."
+);
+$help["high_host_flap_threshold"] = dgettext(
+    "help",
+    "This option is used to set the high threshold for detection of host flapping. For more information " .
+    "read the Monitoring Engine section about flapping."
+);
+$help["soft_state_dependencies"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will use soft state information when checking " .
+    "host and service dependencies. Normally Monitoring Engine will only use the latest hard host or " .
+    "service state when checking dependencies. If you want it to use the latest state (regardless of " .
+    "whether its a soft or hard state type), enable this option."
+);
+$help["service_check_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow service checks to run. " .
+    "If checks exceed this limit, they are killed and a CRITICAL state is returned. A timeout error will " .
+    "also be logged. This option is meant to be used as a last ditch mechanism to kill off plugins " .
+    "which are misbehaving and not exiting in a timely manner. It should be set to something high " .
+    "(like 60 seconds or more), so that each service check normally finishes executing within this " .
+    "time limit. If a service check runs longer than this limit, Monitoring Engine will kill it off " .
+    "thinking it is a runaway processes."
+);
+$help["host_check_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow host checks to run. " .
+    "If checks exceed this limit, they are killed and a CRITICAL state is returned and the host will be assumed " .
+    "to be DOWN. A timeout error will also be logged. This option is meant to be used as a last ditch mechanism " .
+    "to kill off plugins which are misbehaving and not exiting in a timely manner. It should be set to " .
+    "something high (like 60 seconds or more), so that each host check normally finishes executing within " .
+    "this time limit. If a host check runs longer than this limit, Monitoring Engine will kill it off thinking " .
+    "it is a runaway processes."
+);
+$help["event_handler_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow event handlers to be run. " .
+    "If an event handler exceeds this time limit it will be killed and a warning will be logged. This option " .
+    "is meant to be used as a last ditch mechanism to kill off commands which are misbehaving and not exiting " .
+    "in a timely manner. It should be set to something high (like 60 seconds or more), so that each event handler " .
+    "command normally finishes executing within this time limit. If an event handler runs longer than this limit, " .
+    "Monitoring Engine will kill it off thinking it is a runaway processes."
+);
+$help["notification_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow notification commands to be run. " .
+    "If a notification command exceeds this time limit it will be killed and a warning will be logged. " .
+    "This option is meant to be used as a last ditch mechanism to kill off commands which are misbehaving " .
+    "and not exiting in a timely manner. It should be set to something high (like 60 seconds or more), so that " .
+    "each notification command finishes executing within this time limit. If a notification command runs " .
+    "longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes."
+);
+$help["ocsp_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive " .
+    "service processor command to be run. If a command exceeds this time limit it will be killed and a " .
+    "warning will be logged."
+);
+$help["ochp_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive " .
+    "host processor command to be run. If a command exceeds this time limit it will be killed and a " .
+    "warning will be logged."
+);
+$help["perfdata_timeout"] = dgettext(
+    "help",
+    "This is the maximum number of seconds that Monitoring Engine will allow a host performance data " .
+    "processor command or service performance data processor command to be run. If a command exceeds " .
+    "this time limit it will be killed and a warning will be logged."
+);
+$help["obsess_over_services"] = dgettext(
+    "help",
+    "This value determines whether or not Monitoring Engine will \"obsess\" over service checks results " .
+    "and run the obsessive compulsive service processor command you define. This option is useful for " .
+    "performing distributed monitoring. This option is disabled by default. If you're not doing distributed " .
+    "monitoring, don't enable this option."
+);
+$help["ocsp_command"] = dgettext(
+    "help",
+    "This option allows you to specify a command to be run after every service check, which can be useful " .
+    "in distributed monitoring. This command is executed after any event handler or notification commands. " .
+    "The maximum amount of time that this command can run is controlled by the ocsp_timeout option. " .
+    "This command is only executed if the obsess_over_services option is enabled globally and if the " .
+    "obsess_over_service directive in the service definition is enabled."
+);
+$help["obsess_over_hosts"] = dgettext(
+    "help",
+    "This value determines whether or not Monitoring Engine will \"obsess\" over host checks results and " .
+    "run the obsessive compulsive host processor command you define. This option is useful for performing " .
+    "distributed monitoring. This option is disabled by default. If you're not doing distributed monitoring, " .
+    "don't enable this option."
+);
+$help["ochp_command"] = dgettext(
+    "help",
+    "This option allows you to specify a command to be run after every host check, which can be " .
+    "useful in distributed monitoring. This command is executed after any event handler or notification " .
+    "commands. The maximum amount of time that this command can run is controlled by the ochp_timeout option. " .
+    "This command is only executed if the obsess_over_hosts option is enabled globally and if the " .
+    "obsess_over_host directive in the host definition is enabled."
+);
+$help["process_performance_data"] = dgettext(
+    "help",
+    "This value determines whether or not Monitoring Engine will process host and service check " .
+    "performance data. This option is disabled by default."
+);
+$help["host_perfdata_command"] = dgettext(
+    "help",
+    "This option allows you to specify a command to be run after every host check to process host " .
+    "performance data that may be returned from the check. This command is only executed if the " .
+    "process_performance_data option is enabled globally and if the process_perf_data directive in " .
+    "the host definition is enabled."
+);
+$help["service_perfdata_command"] = dgettext(
+    "help",
+    "This option allows you to specify a command to be run after every service check to process " .
+    "service performance data that may be returned from the check. This command is only executed if the " .
+    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
+    "service definition is enabled."
+);
+$help["host_perfdata_file"] = dgettext(
+    "help",
+    "This option allows you to specify a file to which host performance data will be written after every " .
+    "host check. Data will be written to the performance file as specified by the " .
+    "host_perfdata_file_template option. Performance data is only written to this file if the " .
+    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
+    "host definition is enabled."
+);
+$help["service_perfdata_file"] = dgettext(
+    "help",
+    "This option allows you to specify a file to which service performance data will be written after " .
+    "every service check. Data will be written to the performance file as specified by the " .
+    "service_perfdata_file_template option. Performance data is only written to this file if the " .
+    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
+    "service definition is enabled."
+);
+$help["host_perfdata_file_template"] = dgettext(
+    "help",
+    "This option determines what (and how) data is written to the host performance data file. " .
+    "The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) " .
+    "and plain text. A newline is automatically added after each write to the performance data file."
+);
+$help["service_perfdata_file_template"] = dgettext(
+    "help",
+    "This option determines what (and how) data is written to the service performance data file. " .
+    "The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) " .
+    "and plain text. A newline is automatically added after each write to the performance data file."
+);
+$help["host_perfdata_file_mode"] = dgettext(
+    "help",
+    "This option determines how the host performance data file is opened. Unless the file is a " .
+    "named pipe you'll probably want to use the default mode of append."
+);
+$help["service_perfdata_file_mode"] = dgettext(
+    "help",
+    "This option determines how the service performance data file is opened. Unless the file is " .
+    "a named pipe you'll probably want to use the default mode of append."
+);
+$help["host_perfdata_file_processing_interval"] = dgettext(
+    "help",
+    "This option allows you to specify the interval (in seconds) at which the host performance data file " .
+    "is processed using the host performance data file processing command. A value of 0 indicates that " .
+    "the performance data file should not be processed at regular intervals."
+);
+$help["service_perfdata_file_processing_interval"] = dgettext(
+    "help",
+    "This option allows you to specify the interval (in seconds) at which the service performance " .
+    "data file is processed using the service performance data file processing command. A value of 0 " .
+    "indicates that the performance data file should not be processed at regular intervals."
+);
+$help["host_perfdata_file_processing_command"] = dgettext(
+    "help",
+    "This option allows you to specify the command that should be executed to process the host performance data file."
+);
+$help["service_perfdata_file_processing_command"] = dgettext(
+    "help",
+    "This option allows you to specify the command that should be executed to process " .
+    "the service performance data file."
+);
+$help["check_for_orphaned_services"] = dgettext(
+    "help",
+    "This option allows you to enable or disable checks for orphaned service checks. Orphaned service checks " .
+    "are checks which have been executed and have been removed from the event queue, but have not had any results " .
+    "reported in a long time. Since no results have come back in for the service, it is not rescheduled in " .
+    "the event queue. This can cause service checks to stop being executed. Normally it is very rare for " .
+    "this to happen - it might happen if an external user or process killed off the process that was " .
+    "being used to execute a service check. If this option is enabled and Monitoring Engine finds that results " .
+    "for a particular service check have not come back, it will log an error message and reschedule the " .
+    "service check. This option is enabled by default."
+);
+$help["check_for_orphaned_hosts"] = dgettext(
+    "help",
+    "This option allows you to enable or disable checks for orphaned hoste checks. Orphaned host checks are " .
+    "checks which have been executed and have been removed from the event queue, but have not had any results " .
+    "reported in a long time. Since no results have come back in for the host, it is not rescheduled in " .
+    "the event queue. This can cause host checks to stop being executed. Normally it is very rare for " .
+    "this to happen - it might happen if an external user or process killed off the process that was being " .
+    "used to execute a host check. If this option is enabled and Monitoring Engine finds that results for a " .
+    "particular host check have not come back, it will log an error message and reschedule the host check. " .
+    "This option is enabled by default."
+);
+$help["check_service_freshness"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will periodically check the \"freshness\" of " .
+    "service checks. Enabling this option is useful for helping to ensure that passive service checks are " .
+    "received in a timely manner. If the check results is found to be not fresh, Monitoring Engine will " .
+    "force an active check of the host or service by executing the command specified by in the host or " .
+    "service definition. This option is enabled by default."
+);
+$help["service_freshness_check_interval"] = dgettext(
+    "help",
+    "This setting determines how often (in seconds) Monitoring Engine will periodically check the \"freshness\" of " .
+    "service check results. If you have disabled service freshness checking (with the " .
+    "check_service_freshness option), this option has no effect."
+);
+$help["check_host_freshness"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will periodically check the \"freshness\" of " .
+    "host checks. Enabling this option is useful for helping to ensure that passive host checks are " .
+    "received in a timely manner. If the check results is found to be not fresh, Monitoring Engine will " .
+    "force an active check of the host or service by executing the command specified by in the host or " .
+    "service definition. This option is enabled by default."
+);
+$help["host_freshness_check_interval"] = dgettext(
+    "help",
+    "This setting determines how often (in seconds) Monitoring Engine will periodically check the \"freshness\" of " .
+    "host check results. If you have disabled host freshness checking (with the check_host_freshness option), " .
+    "this option has no effect."
+);
+$help["additional_freshness_latency"] = dgettext(
+    "help",
+    "This option determines the number of seconds Monitoring Engine will add to any host or services " .
+    "freshness threshold it automatically calculates (e.g. those not specified explicitly by the user)."
+);
+$help["date_format"] = dgettext(
+    "help",
+    "This option allows you to specify what kind of date/time format Monitoring Engine should use in the web " .
+    "interface and date/time macros."
+);
+$help["admin_email"] = dgettext(
+    "help",
+    "This is the email address for the administrator of the local machine (i.e. the one that Monitoring " .
+    "Engine is running on). This value can be used in notification commands by using the \$ADMINEMAIL\$ macro."
+);
+$help["admin_pager"] = dgettext(
+    "help",
+    "This is the pager number (or pager email gateway) for the administrator of the local machine (i.e. " .
+    "the one that Monitoring Engine is running on). The pager number/address can be used in notification " .
+    "commands by using the \$ADMINPAGER\$ macro."
+);
+$help["illegal_object_name_chars"] = dgettext(
+    "help",
+    "This option allows you to specify illegal characters that cannot be used in host names, service " .
+    "descriptions, or names of other object types. Monitoring Engine will allow you to use most characters " .
+    "in object definitions, but I recommend not using the characters set by default. Doing may give you problems " .
+    "in the web interface, notification commands, etc."
+);
+$help["illegal_macro_output_chars"] = dgettext(
+    "help",
+    "This option allows you to specify illegal characters that should be stripped from macros before " .
+    "being used in notifications, event handlers, and other commands. This DOES NOT affect macros used " .
+    "in service or host check commands. Some of these characters are interpreted by the shell (i.e. the backtick) " .
+    "and can lead to security problems."
+);
+$help["use_regexp_matching"] = dgettext(
+    "help",
+    "This option determines whether or not various directives in your object definitions will be processed " .
+    "as regular expressions. More information on how this works can be found in Monitoring Engine section " .
+    "on object tricks. This option is disabled by default."
+);
+$help["use_true_regexp_matching"] = dgettext(
+    "help",
+    "If you've enabled regular expression matching of various object directives using the use_regexp_matching " .
+    "option, this option will determine when object directives are treated as regular expressions. " .
+    "If this option is disabled (the default), directives will only be treated as regular expressions if " .
+    "they contain *, ?, +, or \\.. If this option is enabled, all appropriate directives will be treated " .
+    "as regular expression."
+);
+$help["event_broker_options"] = dgettext(
+    "help",
+    "This option controls what (if any) data gets sent to the event broker and, in turn, to any loaded event " .
+    "broker module. Centreon relies heavily on the broker and needs this value to be set as -1."
+);
+$help["broker_module"] = dgettext(
+    "help",
+    "This directive is used to specify an event broker module that should by loaded by Monitoring Engine " .
+    "at startup. Use multiple directives if you want to load more than one module. Arguments that should be " .
+    "passed to the module at startup are separated from the module path by a space."
+);
+$help["enable_predictive_host_dependency_checks"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will execute predictive checks of hosts that are " .
+    "being depended upon (as defined in host dependencies) for a particular host when it changes state. " .
+    "Predictive checks help ensure that the dependency logic is as accurate as possible. This option is " .
+    "enabled by default."
+);
+$help["enable_predictive_service_dependency_checks"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will execute predictive checks of services that are " .
+    "being depended upon (as defined in service dependencies) for a particular service when it changes state. " .
+    "Predictive checks help ensure that the dependency logic is as accurate as possible. More information on " .
+    "how predictive checks work can be found here. This option is enabled by default."
+);
+$help["cached_host_check_horizon"] = dgettext(
+    "help",
+    "This option determines the maximum amount of time (in seconds) that the state of a previous host check is " .
+    "considered current. Cached host states (from host checks that were performed more recently than the time " .
+    "specified by this value) can improve host check performance immensely. Too high of a value for this " .
+    "option may result in (temporarily) inaccurate host states, while a low value may result in a performance " .
+    "hit for host checks. Use a value of 0 if you want to disable host check caching."
+);
+$help["cached_service_check_horizon"] = dgettext(
+    "help",
+    "This option determines the maximum amount of time (in seconds) that the state of a previous service " .
+    "check is considered current. Cached service states (from service checks that were performed more " .
+    "recently than the time specified by this value) can improve service check performance when a lot of " .
+    "service dependencies are used. Too high of a value for this option may result in inaccuracies in the " .
+    "service dependency logic. Use a value of 0 if you want to disable service check caching."
+);
+$help["use_large_installation_tweaks"] = dgettext(
+    "help",
+    "This option determines whether or not the Monitoring Engine daemon will take several shortcuts to " .
+    "improve performance. These shortcuts result in the loss of a few features, but larger installations will " .
+    "likely see a lot of benefit from doing so. This option is disabled by default."
+);
+$help["free_child_process_memory"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will free memory in child processes when they " .
+    "are fork()ed off from the main process. By default, Monitoring Engine frees memory. However, " .
+    "if the use_large_installation_tweaks option is enabled, it will not. By defining this option in your " .
+    "configuration file, you are able to override things to get the behavior you want."
+);
+$help["child_processes_fork_twice"] = dgettext(
+    "help",
+    "This option determines whether or not Monitoring Engine will fork() child processes twice when it executes " .
+    "host and service checks. By default, Monitoring Engine fork()s twice. However, if the " .
+    "use_large_installation_tweaks option is enabled, it will only fork() once. By defining this option in " .
+    "your configuration file, you are able to override things to get the behavior you want."
+);
+$help["enable_environment_macros"] = dgettext(
+    "help",
+    "This option determines whether or not the Monitoring Engine daemon will make all standard macros available " .
+    "as environment variables to your check, notification, event hander, etc. commands. In large Monitoring " .
+    "Engine installations this can be problematic because it takes additional memory and (more importantly) " .
+    "CPU to compute the values of all macros and make them available to the environment. " .
+    "This option is enabled by default."
+);
+$help["use_setpgid"] = dgettext(
+    "help",
+    "Only works with Centreon Engine (>= 1.3). For better performance, set this to 'No'. But it is safer to leave " .
+    "it to 'Default' ('Yes'), for a few native plugins could trigger a monitoring crash."
+);
+$help["debug_file"] = dgettext(
+    "help",
+    "This option determines where Monitoring Engine should write debugging information. What (if any) " .
+    "information is written is determined by the debug_level and debug_verbosity options. You can have " .
+    "Monitoring Engine automaticaly rotate the debug file when it reaches a certain size by using the " .
+    "max_debug_file_size option."
+);
+$help["max_debug_file_size"] = dgettext(
+    "help",
+    "This option determines the maximum size (in bytes) of the debug file. If the file grows larger than this " .
+    "size, it will be renamed with a .old extension. If a file already exists with a .old extension it will " .
+    "automatically be deleted. This helps ensure your disk space usage doesn't get out of control when debugging " .
+    "Monitoring Engine."
+);
+$help["daemon_dumps_core"] = dgettext(
+    "help",
+    "This option allows dumping core in case a segmentation fault occurs. Warning: Make sure that server has " .
+    "sufficient disk space for these dumps (ulimit). This option is discarded when using Centreon Engine."
+);
+$help["debug_verbosity"] = dgettext(
+    "help",
+    "This option determines how much debugging information Monitoring Engine should write to the debug_file. " .
+    "By default the verbosity is set to level 1."
+);
+$help["Monitoring Engine_debug_level"] = dgettext(
+    "help",
+    "This option determines what type of information Monitoring Engine should write to the debug_file."
+);
 $help["Monitoring Engine_name"] = dgettext("help", "Description or name used to identify this configuration set.");
 $help["Monitoring Engine_activate"] = dgettext(
     "help",
     "Specify whether this configuration is currently active or not. "
     . "This way you can test different configuration sets for one monitoring node."
 );
-$help["Monitoring Engine_server_id"] = dgettext("help", "Choose the Monitoring Engine server instance this configuration is defined for.");
-$help["log_pid"] = dgettext("help", "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)");
-$help["use_check_result_path"] = dgettext("help", "This option enable or disable compatibility mode to use check result path.");
+$help["Monitoring Engine_server_id"] = dgettext(
+    "help",
+    "Choose the Monitoring Engine server instance this configuration is defined for."
+);
+$help["log_pid"] = dgettext(
+    "help",
+    "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)"
+);
+$help["use_check_result_path"] = dgettext(
+    "help",
+    "This option enable or disable compatibility mode to use check result path."
+);
 
 /*
  * unsupported in centreon
- */
-
-/*
+ *//*
 status_file
 status_update_interval
 

@@ -46,15 +46,16 @@ $pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTER
 
 /* Test if the call is for authenticate */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_GET['action']) && $_GET['action'] == 'authenticate') {
+    isset($_GET['action']) && $_GET['action'] == 'authenticate'
+) {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendResult("Bad parameters", 400);
     }
-    
+
     /* @todo Check if user already have valid token */
     require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
     require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
-    
+
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
     $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
@@ -62,17 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
         CentreonWebService::sendResult("Bad credentials", 403);
         exit();
     }
-    
+
     /* Check if user exists in contact table */
     $reachAPI = 0;
-    $res = $pearDB->prepare("SELECT contact_id, reach_api, contact_admin FROM contact WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?");
+    $query = "SELECT contact_id, reach_api, contact_admin FROM contact " .
+        "WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?";
+    $res = $pearDB->prepare($query);
     $res->execute(array($_POST['username']));
     while ($data = $res->fetch()) {
-      if (isset($data['contact_admin']) && $data['contact_admin'] == 1) {
+        if (isset($data['contact_admin']) && $data['contact_admin'] == 1) {
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
-               $reachAPI = 1;
+                $reachAPI = 1;
             }
         }
     }

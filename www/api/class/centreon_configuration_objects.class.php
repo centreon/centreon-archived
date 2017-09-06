@@ -152,6 +152,11 @@ class CentreonConfigurationObjects extends CentreonWebService
                 "FROM $externalObject[table] " .
                 "WHERE $externalObject[comparator] " .
                 "IN ($explodedValues)";
+
+            if (!empty($externalObject['additionalComparator'])) {
+                $query .= $this->processAdditionalComparator($externalObject['additionalComparator']);
+            }
+
             $stmt = $this->pearDB->prepare($query);
             $dbResult = $stmt->execute($values);
 
@@ -168,6 +173,24 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
         return $tmpValues;
     }
+
+    /**
+     * @param $additonalComparator
+     * @return string
+     */
+    protected function processAdditionalComparator($additonalComparator)
+    {
+        $additonalQueryComparator = '';
+        foreach ($additonalComparator as $field => $value) {
+            if (is_null($value)) {
+                $additonalQueryComparator .= 'AND ' . $field . ' IS NULL ';
+            } else {
+                $additonalQueryComparator .= 'AND ' . $field . ' = ' . $value;
+            }
+        }
+        return $additonalQueryComparator;
+    }
+
 
     /**
      * @param $currentObject

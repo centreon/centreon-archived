@@ -56,18 +56,15 @@ if (isset($_REQUEST)) {
     }
 }
 
-
 if (isset($_GET["num"])) {
-    $num = $_GET["num"];
+    $num = (int)$_GET["num"];
 } else {
     if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
-        $num = $oreon->historyPage[$url];
+        $num = (int)$oreon->historyPage[$url];
     } else {
         $num = 0;
     }
 }
-
-$num = mysql_real_escape_string($num);
 
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
@@ -94,7 +91,8 @@ if (isset($_GET["search_type_host"])) {
 }
 
 if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) &&
-    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)) {
+    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)
+) {
     $search_type_host = 1;
     $oreon->search_type_host = 1;
     $search_type_service = 1;

@@ -26,7 +26,7 @@ Feature: Custom views
         When the owner removes the view
         Then the view is not visible anymore for the user
 
-# user shared locke views
+# user shared locked views
     Scenario: Share read-only custom view with users
         Given a custom view shared in read only with a user
         When the user wishes to add a new custom view
@@ -52,7 +52,7 @@ Feature: Custom views
         When the owner removes the view
         Then the view is removed for all users displaying the custom view
 
-# user shared not locke views
+# user shared not locked views
     Scenario: Modify a shared view
         Given a shared custom view
         When the user is using the shared view
@@ -64,7 +64,7 @@ Feature: Custom views
         When he removes the shared view
         Then the view is not visible anymore
         And the user can use the shared view again
-        
+
     Scenario: Modify an unlocked shared view and applies changes
         Given a shared custom view
         And the user is using the shared view
@@ -79,7 +79,7 @@ Feature: Custom views
         Then the view remains visible for all users displaying the custom view
         And the view is removed for the owner
 
-# contact groups shared locke views
+# contact groups shared locked views
     Scenario: Share read-only custom view with groups
         Given a custom view shared in read only with a group
         When the user wishes to add a new custom view
@@ -105,7 +105,7 @@ Feature: Custom views
         When the owner removes the view
         Then the view is removed for all users displaying the custom view
 
-# contact groups shared not locke views
+# contact groups shared not locked views
     Scenario: Modify a shared view with groups
         Given a shared custom view with a group
         When the user is using the shared view

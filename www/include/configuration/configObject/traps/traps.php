@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  */
- 
+
 if (!isset($centreon)) {
     exit();
 }
@@ -96,23 +96,23 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 switch ($o) {
     case "a":
-        require_once($path."formTraps.php");
+        require_once($path . "formTraps.php");
         break; #Add a Trap
     case "w":
-        require_once($path."formTraps.php");
+        require_once($path . "formTraps.php");
         break; #Watch a Trap
     case "c":
-        require_once($path."formTraps.php");
+        require_once($path . "formTraps.php");
         break; #Modify a Trap
     case "m":
         $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break; #Duplicate n Traps
     case "d":
         $trapObj->delete(isset($select) ? $select : array());
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break; #Delete n Traps
     default:
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break;
 }

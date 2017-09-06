@@ -55,21 +55,29 @@ if (isset($pearDB)) {
     $query = "SELECT host_id, host_alias, host_name FROM host";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE host SET host_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['host_name']))."',
-        		   host_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['host_alias'])) . "' WHERE host_id = '".$rows['host_id']."'";
+        $query2 = "UPDATE host SET host_name = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['host_name'])) . "',
+        		   host_alias = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['host_alias'])) .
+            "' WHERE host_id = '" . $rows['host_id'] . "'";
         $pearDB->query($query2);
     }
 
     /**
      * Decodes Service description and service alias
      */
-    $query = "SELECT service_id, service_description, service_alias, command_command_id_arg, command_command_id_arg2 FROM service";
+    $query = "SELECT service_id, service_description, service_alias, command_command_id_arg, command_command_id_arg2
+ FROM service";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE service SET service_description = '".upgradeReplaceSpecialChars(html_entity_decode($rows['service_description']))."',
+        $query2 = "UPDATE service SET service_description = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['service_description'])) . "',
         		   service_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['service_alias'])) . "',
-        		   command_command_id_arg = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg'])) ."',
-        		   command_command_id_arg2 = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg2'])) ."' WHERE service_id = '".$rows['service_id']."'";
+        		   command_command_id_arg = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg'])) . "',
+        		   command_command_id_arg2 = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['command_command_id_arg2'])) .
+            "' WHERE service_id = '" . $rows['service_id'] . "'";
         $pearDB->query($query2);
     }
 
@@ -79,9 +87,11 @@ if (isset($pearDB)) {
     $query = "SELECT command_id, command_name, command_line, command_example FROM command";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE command SET command_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['command_name']))."',
+        $query2 = "UPDATE command SET command_name = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['command_name'])) . "',
         		   command_line = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['command_line'])) . "',
-        		   command_example = '". upgradeReplaceSpecialChars(html_entity_decode($rows['command_example'])) ."' WHERE command_id = '".$rows['command_id']."'";
+        		   command_example = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['command_example'])) .
+            "' WHERE command_id = '" . $rows['command_id'] . "'";
         $pearDB->query($query2);
     }
 
@@ -91,8 +101,10 @@ if (isset($pearDB)) {
     $query = "SELECT hg_id, hg_alias, hg_name FROM hostgroup";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE hostgroup SET hg_name = '".upgradeReplaceSpecialChars(html_entity_decode($rows['hg_name']))."',
-        		   hg_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['hg_alias'])) . "' WHERE hg_id = '".$rows['hg_id']."'";
+        $query2 = "UPDATE hostgroup SET hg_name = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['hg_name'])) . "',
+        		   hg_alias = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['hg_alias'])) .
+            "' WHERE hg_id = '" . $rows['hg_id'] . "'";
         $pearDB->query($query2);
     }
 
@@ -103,8 +115,9 @@ if (isset($pearDB)) {
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE on_demand_macro_host
-        		   SET host_macro_value = '".upgradeReplaceSpecialChars(html_entity_decode($rows['host_macro_value']))."'
-        		   WHERE host_macro_id = '".$rows['host_macro_id']."'";
+        		   SET host_macro_value = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['host_macro_value'])) . "'
+        		   WHERE host_macro_id = '" . $rows['host_macro_id'] . "'";
         $pearDB->query($query2);
     }
 
@@ -115,8 +128,9 @@ if (isset($pearDB)) {
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
         $query2 = "UPDATE on_demand_macro_service
-        		   SET svc_macro_value = '".upgradeReplaceSpecialChars(html_entity_decode($rows['svc_macro_value']))."'
-        		   WHERE svc_macro_id = '".$rows['svc_macro_id']."'";
+        		   SET svc_macro_value = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['svc_macro_value'])) . "'
+        		   WHERE svc_macro_id = '" . $rows['svc_macro_id'] . "'";
         $pearDB->query($query2);
     }
 
@@ -128,14 +142,15 @@ if (isset($pearDB)) {
   										`cfg_nagios_id` int(11) DEFAULT NULL,
   										`broker_module` varchar(255) DEFAULT NULL,
 										PRIMARY KEY (`bk_mod_id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1" ;
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
     $pearDB->query($query);
 
     $query = "SELECT nagios_id as cfg_nagios_id, broker_module FROM cfg_nagios WHERE nagios_server_id IN (
     			SELECT id from nagios_server WHERE localhost = '1')";
     $res = $pearDB->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$rows['cfg_nagios_id']."', '".$rows['broker_module']."')";
+        $query2 = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('" .
+            $rows['cfg_nagios_id'] . "', '" . $rows['broker_module'] . "')";
         $pearDB->query($query2);
     }
 }
@@ -150,9 +165,11 @@ if (isset($pearDBO)) {
     $query = "SELECT id, host_name, service_description FROM index_data";
     $res = $pearDBO->query($query);
     while ($rows = $res->fetchRow()) {
-        $query2 = "UPDATE index_data SET host_name = '" . upgradeReplaceSpecialChars(html_entity_decode($rows['host_name'])) .  "',
-        		   service_description = '". upgradeReplaceSpecialChars(html_entity_decode($rows['service_description'])) ."' WHERE id = '".$rows['id']."'";
+        $query2 = "UPDATE index_data SET host_name = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['host_name'])) . "',
+        		   service_description = '" .
+            upgradeReplaceSpecialChars(html_entity_decode($rows['service_description'])) .
+            "' WHERE id = '" . $rows['id'] . "'";
         $pearDBO->query($query2);
     }
 }
-?>

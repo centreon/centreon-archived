@@ -45,12 +45,12 @@ require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
  */
 $group = array();
 if (($o == "c" || $o == "w") && $acl_group_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '" . $acl_group_id . "' LIMIT 1");
     /*
      * Set base value
      */
     $group = array_map("myDecode", $DBRESULT->fetchRow());
-    
+
     /*
      * Set Contact Childs
      */
@@ -64,7 +64,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     }
     $DBRESULT->closeCursor();
-    
+
     /*
      * Set ContactGroup Childs
      */
@@ -76,7 +76,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
     }
     $DBRESULT->closeCursor();
-    
+
     /*
      * Set Menu link List
      */
@@ -88,7 +88,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
     }
     $DBRESULT->closeCursor();
-    
+
     /*
      * Set resources List
      */
@@ -103,7 +103,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     }
 
     $DBRESULT->closeCursor();
-    
+
     /*
      * Set Action List
      */
@@ -170,16 +170,16 @@ $DBRESULT->closeCursor();
 ##########################################################
 # Var information to format the element
 #
-$attrsText      = array("size"=>"30");
+$attrsText = array("size" => "30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
-$attrsTextarea  = array("rows"=>"6", "cols"=>"150");
-$eTemplate  = '<table><tr>'
+$attrsTextarea = array("rows" => "6", "cols" => "150");
+$eTemplate = '<table><tr>'
     . '<td><div class="ams">{label_2}</div>{unselected}</td>'
     . '<td align="center">{add}<br /><br /><br />{remove}</td>'
     . '<td><div class="ams">{label_3}</div>{selected}</td>'
     . '</tr></table>';
 
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Group"));
 } elseif ($o == "c") {
@@ -215,7 +215,7 @@ $ams1 = $form->addElement(
     $attrsAdvSelect,
     SORT_ASC
 );
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -232,7 +232,7 @@ $ams1 = $form->addElement(
     $attrsAdvSelect,
     SORT_ASC
 );
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -249,7 +249,7 @@ $ams1 = $form->addElement(
     $attrsAdvSelect,
     SORT_ASC
 );
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -266,7 +266,7 @@ $ams1 = $form->addElement(
     $attrsAdvSelect,
     SORT_ASC
 );
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -283,7 +283,7 @@ $ams1 = $form->addElement(
     $attrsAdvSelect,
     SORT_ASC
 );
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -324,7 +324,7 @@ $form->addRule('acl_group_name', _("Compulsory Name"), 'required');
 $form->addRule('acl_group_alias', _("Compulsory Alias"), 'required');
 $form->registerRule('exist', 'callback', 'testGroupExistence');
 $form->addRule('acl_group_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 $form->registerRule('cg_group_exists', 'callback', 'testCg');
 $form->addRule(
     'cg_contactGroups',
@@ -351,7 +351,7 @@ $tpl->assign("sort2", _("Authorizations information"));
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -364,7 +364,7 @@ if ($o == "w") {
         "change",
         _("Modify"),
         array(
-            "onClick" => "javascript:window.location.href='?p=".$p."&o=c&cg_id=".$group_id."'"
+            "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&cg_id=" . $group_id . "'"
         )
     );
     $form->setDefaults($group);
@@ -397,11 +397,11 @@ if ($form->validate()) {
 
 $action = $form->getSubmitValue("action");
 if ($valid) {
-    require_once($path."listGroupConfig.php");
+    require_once($path . "listGroupConfig.php");
 } else {
-     /*
-      * Apply a template definition
-      */
+    /*
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

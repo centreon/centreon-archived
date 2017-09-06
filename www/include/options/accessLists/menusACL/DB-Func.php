@@ -43,7 +43,8 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('lca_id');
     }
-    $DBRESULT = $pearDB->query("SELECT acl_topo_name, acl_topo_id FROM `acl_topology` WHERE acl_topo_name = '".$name."'");
+    $query = "SELECT acl_topo_name, acl_topo_id FROM `acl_topology` WHERE acl_topo_name = '" . $name . "'";
+    $DBRESULT = $pearDB->query($query);
     $lca = $DBRESULT->fetchRow();
     #Modif case
     if ($DBRESULT->rowCount() >= 1 && $lca["acl_topo_id"] == $id) {
@@ -62,7 +63,7 @@ function enableLCAInDB($acl_id = null)
     if (!$acl_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");
+    $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '" . $acl_id . "'");
 }
 
 function disableLCAInDB($acl_id = null)
@@ -71,14 +72,14 @@ function disableLCAInDB($acl_id = null)
     if (!$acl_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '".$acl_id."'");
+    $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '" . $acl_id . "'");
 }
 
 function deleteLCAInDB($acls = array())
 {
     global $pearDB;
     foreach ($acls as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM `acl_topology` WHERE acl_topo_id = '".$key."'");
+        $pearDB->query("DELETE FROM `acl_topology` WHERE acl_topo_id = '" . $key . "'");
     }
 }
 
@@ -86,27 +87,35 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 {
     global $pearDB;
     foreach ($lcas as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `acl_topology` WHERE acl_topo_id = '".$key."' LIMIT 1");
+        $DBRESULT = $pearDB->query("SELECT * FROM `acl_topology` WHERE acl_topo_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["acl_topo_id"] = '';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "acl_topo_name" ? ($acl_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $key2 == "acl_topo_name" ? ($acl_name = $value2 = $value2 . "_" . $i) : null;
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             if (testExistence($acl_name)) {
-                $val ? $rq = "INSERT INTO acl_topology VALUES (".$val.")" : $rq = null;
+                $val ? $rq = "INSERT INTO acl_topology VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
                 $maxId = $DBRESULT->fetchRow();
                 $DBRESULT->closeCursor();
                 if (isset($maxId["MAX(acl_topo_id)"])) {
                     $maxTopoId = $maxId['MAX(acl_topo_id)'];
-                    $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right)
-										(SELECT $maxTopoId, topology_topology_id, access_right FROM acl_topology_relations WHERE acl_topo_id = ".$pearDB->escape($key).")");
-                    $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id)
-										(SELECT $maxTopoId, acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = ".$pearDB->escape($key).")");
+
+                    $query = "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) " .
+                        "(SELECT $maxTopoId, topology_topology_id, access_right FROM acl_topology_relations " .
+                        "WHERE acl_topo_id = " . $pearDB->escape($key) . ")";
+                    $pearDB->query($query);
+
+                    $query = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) " .
+                        "(SELECT $maxTopoId, acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = " .
+                        $pearDB->escape($key) . ")";
+                    $pearDB->query($query);
                 }
             }
         }
@@ -136,9 +145,12 @@ function insertLCA()
     global $form, $pearDB;
     $ret = array();
     $ret = $form->getSubmitValues();
-    $rq  = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate, acl_comments) ";
-    $rq .= "VALUES ('".$pearDB->escape($ret["acl_topo_name"])."', '".$pearDB->escape($ret["acl_topo_alias"])."', '".$pearDB->escape($ret["acl_topo_activate"]["acl_topo_activate"])."', '".$pearDB->escape($ret['acl_comments'])."')";
-    $DBRESULT = $pearDB->query($rq);
+    $rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate, acl_comments) ";
+    $rq .= "VALUES ('" . $pearDB->escape($ret["acl_topo_name"]) . "', '" .
+        $pearDB->escape($ret["acl_topo_alias"]) . "', '" .
+        $pearDB->escape($ret["acl_topo_activate"]["acl_topo_activate"]) . "', '" .
+        $pearDB->escape($ret['acl_comments']) . "')";
+    $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM `acl_topology`");
     $acl = $DBRESULT->fetchRow();
     return ($acl["MAX(acl_topo_id)"]);
@@ -153,12 +165,12 @@ function updateLCA($acl_id = null)
     $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE `acl_topology`
-			   SET acl_topo_name = '".$pearDB->escape($ret["acl_topo_name"])."',
-			       acl_topo_alias = '".$pearDB->escape($ret["acl_topo_alias"])."',
-			       acl_topo_activate = '".$pearDB->escape($ret["acl_topo_activate"]["acl_topo_activate"])."',
-			       acl_comments = '".$pearDB->escape($ret['acl_comments'])."'
-			   WHERE acl_topo_id = '".$acl_id."'";
-    $DBRESULT = $pearDB->query($rq);
+			   SET acl_topo_name = '" . $pearDB->escape($ret["acl_topo_name"]) . "',
+			       acl_topo_alias = '" . $pearDB->escape($ret["acl_topo_alias"]) . "',
+			       acl_topo_activate = '" . $pearDB->escape($ret["acl_topo_activate"]["acl_topo_activate"]) . "',
+			       acl_comments = '" . $pearDB->escape($ret['acl_comments']) . "'
+			   WHERE acl_topo_id = '" . $acl_id . "'";
+    $pearDB->query($rq);
 }
 
 function updateLCATopology($acl_id = null)
@@ -167,12 +179,13 @@ function updateLCATopology($acl_id = null)
     if (!$acl_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
-    $ret = array();
+    $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '" . $acl_id . "'");
     $ret = $form->getSubmitValue("acl_r_topos");
     foreach ($ret as $key => $value) {
         if (isset($ret) && $key != 0) {
-            $DBRESULT = $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) VALUES ('".$acl_id."', '".$key."', " . $value . ")");
+            $query = "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right) " .
+                "VALUES ('" . $acl_id . "', '" . $key . "', " . $value . ")";
+            $pearDB->query($query);
         }
     }
 }
@@ -183,13 +196,14 @@ function updateGroups($acl_id = null)
     if (!$acl_id) {
         return;
     }
-    $DBRESULT = $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
-    $ret = array();
+    $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '" . $acl_id . "'");
     $ret = $form->getSubmitValue("acl_groups");
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $DBRESULT = $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
+                $query = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) " .
+                    "VALUES ('" . $acl_id . "', '" . $value . "')";
+                $pearDB->query($query);
             }
         }
     }

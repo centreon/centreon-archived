@@ -65,35 +65,35 @@ $path = "./include/options/accessLists/groupsACL/";
 /* 
  * PHP functions 
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 switch ($o) {
     case "a":
-        require_once($path."formGroupConfig.php");
+        require_once($path . "formGroupConfig.php");
         break; #Add a contactgroup
     case "w":
-        require_once($path."formGroupConfig.php");
+        require_once($path . "formGroupConfig.php");
         break; #Watch a contactgroup
     case "c":
-        require_once($path."formGroupConfig.php");
+        require_once($path . "formGroupConfig.php");
         break; #Modify a contactgroup
     case "s":
         enableGroupInDB($acl_group_id);
-        require_once($path."listGroupConfig.php");
+        require_once($path . "listGroupConfig.php");
         break; #Activate a contactgroup
     case "u":
         disableGroupInDB($acl_group_id);
-        require_once($path."listGroupConfig.php");
+        require_once($path . "listGroupConfig.php");
         break; #Desactivate a contactgroup
     case "m":
         multipleGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listGroupConfig.php");
+        require_once($path . "listGroupConfig.php");
         break; #Duplicate n contact grou
     case "d":
         deleteGroupInDB(isset($select) ? $select : array());
-        require_once($path."listGroupConfig.php");
+        require_once($path . "listGroupConfig.php");
         break; #Delete n contact group
     default:
-        require_once($path."listGroupConfig.php");
+        require_once($path . "listGroupConfig.php");
         break;
 }

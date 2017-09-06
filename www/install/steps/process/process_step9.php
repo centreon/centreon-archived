@@ -43,7 +43,7 @@ $message = '';
 try {
     $backupDir = realpath(__DIR__ . '/../../../../installDir/')
         . '/install-' . $version . '-' . date('Ymd_His');
-    $installDir =  realpath(__DIR__ . '/../..');
+    $installDir = realpath(__DIR__ . '/../..');
     $dependencyInjector['filesystem']->rename($installDir, $backupDir);
     if ($dependencyInjector['filesystem']->exists($installDir)) {
         throw new \Exception('Cannot move directory from ' . $installDir . ' to ' . $backupDir);

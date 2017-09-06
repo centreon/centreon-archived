@@ -40,12 +40,12 @@
 function myDecodeMnftr($arg)
 {
     $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-    return($arg);
+    return ($arg);
 }
 
 $mnftr = array();
 if (($o == "c" || $o == "w") && $id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '" . $id . "' LIMIT 1");
     # Set base value
     $mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
     $DBRESULT->closeCursor();
@@ -54,12 +54,12 @@ if (($o == "c" || $o == "w") && $id) {
 ##########################################################
 # Var information to format the element
 #
-$attrsText      = array("size"=>"50");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$attrsText = array("size" => "50");
+$attrsTextarea = array("rows" => "5", "cols" => "40");
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add Vendor"));
 } elseif ($o == "c") {
@@ -90,13 +90,14 @@ function myReplace()
     global $form;
     return (str_replace(" ", "_", $form->getSubmitValue("name")));
 }
+
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('name', 'myReplace');
 $form->addRule('name', _("Compulsory Name"), 'required');
 $form->addRule('alias', _("Compulsory Name"), 'required');
 $form->registerRule('exist', 'callback', 'testMnftrExistence');
 $form->addRule('name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 #
 ##End of form definition
@@ -105,20 +106,30 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 # Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
+    'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, ' .
+    'SHADOW, true, TEXTALIGN, "justify"'
+);
 
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
 # Just watch a Command information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&id=" . $id . "'")
+        );
     }
     $form->setDefaults($mnftr);
     $form->freeze();
@@ -146,7 +157,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path."listMnftr.php");
+    require_once($path . "listMnftr.php");
 } else {
     ##Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

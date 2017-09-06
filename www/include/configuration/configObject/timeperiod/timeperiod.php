@@ -59,7 +59,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $path = "./include/configuration/configObject/timeperiod/";
 
 //PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -69,26 +69,26 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 switch ($o) {
     case "a":
-        require_once($path."formTimeperiod.php");
+        require_once($path . "formTimeperiod.php");
         break; //Add a Timeperiod
     case "w":
-        require_once($path."formTimeperiod.php");
+        require_once($path . "formTimeperiod.php");
         break; //Watch a Timeperiod
     case "c":
-        require_once($path."formTimeperiod.php");
+        require_once($path . "formTimeperiod.php");
         break; //Modify a Timeperiod
     case "s":
-        require_once($path."renderTimeperiod.php");
+        require_once($path . "renderTimeperiod.php");
         break; //Show Timeperiod
     case "m":
         multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listTimeperiod.php");
+        require_once($path . "listTimeperiod.php");
         break; #Duplicate n Timeperiods
     case "d":
         deleteTimeperiodInDB(isset($select) ? $select : array());
-        require_once($path."listTimeperiod.php");
+        require_once($path . "listTimeperiod.php");
         break; #Delete n Timeperiods
     default:
-        require_once($path."listTimeperiod.php");
+        require_once($path . "listTimeperiod.php");
         break;
 }

@@ -99,7 +99,14 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
             ->setMethods(
-                array('getConfiguration', 'getTypes', 'getParameters', 'isInstalled', 'getIdByName', 'getParameterIdByName')
+                array(
+                    'getConfiguration',
+                    'getTypes',
+                    'getParameters',
+                    'isInstalled',
+                    'getIdByName',
+                    'getParameterIdByName'
+                )
             )
             ->getMock();
 

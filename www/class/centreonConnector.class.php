@@ -167,9 +167,9 @@ class CentreonConnector
                 if (isset($connector["command_id"])) {
                     foreach ($connector["command_id"] as $key => $value) {
                         try {
-                            $updateResult = $this->dbConnection->query(
-                                "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' WHERE `command_id` = '$value'"
-                            );
+                            $query = "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' " .
+                                "WHERE `command_id` = '" . $value . "'";
+                            $this->dbConnection->query($query);
                         } catch (\PDOException $e) {
                             throw new RuntimeException('Cannot update connector');
                         }
@@ -213,10 +213,10 @@ class CentreonConnector
 
         $connector = $result->fetchRow();
 
-        $connector['id'] = (int) $connector['id'];
-        $connector['enabled'] = (boolean) $connector['enabled'];
-        $connector['created'] = (int) $connector['created'];
-        $connector['modified'] = (int) $connector['modified'];
+        $connector['id'] = (int)$connector['id'];
+        $connector['enabled'] = (boolean)$connector['enabled'];
+        $connector['created'] = (int)$connector['created'];
+        $connector['modified'] = (int)$connector['modified'];
 
         $connector['command_id'] = array();
         $DBRESULT = $this->dbConnection->query("SELECT command_id FROM command WHERE connector_id = '$id'");
@@ -291,7 +291,7 @@ class CentreonConnector
         } catch (\PDOException $e) {
             throw new RuntimeException('Cannot update connector');
         }
-        
+
         if (isset($connector["command_id"])) {
             foreach ($connector["command_id"] as $key => $value) {
                 try {
@@ -303,8 +303,8 @@ class CentreonConnector
                 }
             }
         }
-        
-        
+
+
         return $this;
     }
 
@@ -393,10 +393,10 @@ class CentreonConnector
         }
         $connectors = array();
         while ($connector = $connectorsResult->fetchRow()) {
-            $connector['id'] = (int) $connector['id'];
-            $connector['enabled'] = (boolean) $connector['enabled'];
-            $connector['created'] = (int) $connector['created'];
-            $connector['modified'] = (int) $connector['modified'];
+            $connector['id'] = (int)$connector['id'];
+            $connector['enabled'] = (boolean)$connector['enabled'];
+            $connector['created'] = (int)$connector['created'];
+            $connector['modified'] = (int)$connector['modified'];
             $connectors[] = $connector;
         }
         return $connectors;
@@ -501,7 +501,7 @@ class CentreonConnector
                 'SELECT `id` FROM `connector` WHERE `id` = ? AND `name` = ? LIMIT 1',
                 array($connectorId, $name)
             );
-            if ((boolean) $existsResult->fetchRow()) {
+            if ((boolean)$existsResult->fetchRow()) {
                 return true;
             }
         }
@@ -516,9 +516,9 @@ class CentreonConnector
                 'Cannot verify if connector name already in use; Query not valid; Check the database schema'
             );
         }
-        return !((boolean) $existsResult->fetchRow());
+        return !((boolean)$existsResult->fetchRow());
     }
-    
+
     /**
      *
      * @param integer $field
@@ -541,12 +541,12 @@ class CentreonConnector
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
-  
+
         }
-        
+
         return $parameters;
     }
-    
+
     /**
      *
      * @param array $values
@@ -555,7 +555,7 @@ class CentreonConnector
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
+
         $explodedValues = implode(',', $values);
         if (empty($explodedValues)) {
             $explodedValues = "''";
@@ -566,7 +566,7 @@ class CentreonConnector
             . "FROM connector "
             . "WHERE id IN (" . $explodedValues . ") "
             . "ORDER BY name ";
-        
+
         $resRetrieval = $this->db->query($query);
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(

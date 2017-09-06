@@ -52,6 +52,20 @@ try {
           failedNewAll: '0'
         ])
       }
+    },
+    'debian9': {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh debian9'
+        step([
+          $class: 'XUnitBuilder',
+          thresholds: [
+            [$class: 'FailedThreshold', failureThreshold: '0'],
+            [$class: 'SkippedThreshold', failureThreshold: '0']
+          ],
+          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
+        ])
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -69,6 +83,12 @@ try {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos7'
+      }
+    },
+    'debian9': {
+      node {
+        sh 'cd /opt/centreon-build && git pull && cd -'
+        sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh debian9'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -144,14 +164,17 @@ try {
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
     build job: 'centreon-bam/master', wait: false
-    build job: 'centreon-map-web', wait: false
     build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
   }
-}
-finally {
-  buildStatus = currentBuild.result ?: 'SUCCESS';
-  if ((buildStatus != 'SUCCESS') && (env.BRANCH_NAME == 'master')) {
-    slackSend channel: '#monitoring-metrology', message: "@channel Centreon Web build ${env.BUILD_NUMBER} of branch ${env.BRANCH_NAME} was broken by ${source.COMMITTER}. Please fix it ASAP."
+} catch(e) {
+  if (env.BRANCH_NAME == 'master') {
+    slackSend channel: "#monitoring-metrology",
+        color: "#F30031",
+        message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
+            "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
+            "*INFO*: ${e}"
   }
+
+  currentBuild.result = 'FAILURE'
 }

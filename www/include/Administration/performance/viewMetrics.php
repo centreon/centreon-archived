@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 require_once './class/centreonBroker.class.php';
-        
+
 if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])) {
     if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed") {
         $selected = $_POST["select"];
@@ -52,42 +52,42 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
     } elseif ($_POST["o1"] == "hg" || $_POST["o2"] == "hg") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "nhg" || $_POST["o2"] == "nhg") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "lk" || $_POST["o2"] == "lk") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "nlk" || $_POST["o2"] == "nlk") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "dst_g" || $_POST["o2"] == "dst_g") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "dst_c" || $_POST["o2"] == "dst_c") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "dst_d" || $_POST["o2"] == "dst_d") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "dst_a" || $_POST["o2"] == "dst_a") {
         $selected = $_POST["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '3' WHERE `metric_id` = '".$key."'");
+            $pearDBO->query("UPDATE metrics SET `data_source_type` = '3' WHERE `metric_id` = '" . $key . "'");
         }
     }
 }
@@ -97,7 +97,8 @@ if (isset($search) && $search) {
     $search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
 }
 
-$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = '".$_GET["index_id"]."'");
+$query = "SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = '" . $_GET["index_id"] . "'";
+$DBRESULT = $pearDBO->query($query);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
 
@@ -106,7 +107,8 @@ $storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");
 $yesOrNo = array(null => "No", 0 => "No", 1 => "Yes", 2 => "Rebuilding");
 $rrd_dst = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 
-$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE to_delete = 0 AND index_id = '".$_GET["index_id"]."' ORDER BY metric_name");
+$query = "SELECT * FROM metrics WHERE to_delete = 0 AND index_id = '" . $_GET["index_id"] . "' ORDER BY metric_name";
+$DBRESULT2 = $pearDBO->query($query);
 unset($data);
 for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
     $metric = array();
@@ -116,7 +118,10 @@ for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
     $metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
     $metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
     $metric["unit_name"] = $metrics["unit_name"];
-    if (!isset($metrics["data_source_type"]) || isset($metrics["data_source_type"]) && $metrics["data_source_type"] == null) {
+    if (!isset($metrics["data_source_type"]) ||
+        isset($metrics["data_source_type"]) &&
+        $metrics["data_source_type"] == null
+    ) {
         $metric["data_source_type"] = $rrd_dst["0"];
     } else {
         $metric["data_source_type"] = $rrd_dst[$metrics["data_source_type"]];
@@ -128,7 +133,7 @@ for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
     $metric["warn"] = $metrics["warn"];
     $metric["crit"] = $metrics["crit"];
 
-    $metric["path"] = _CENTREON_VARLIB_.'/metrics/'.$metric["metric_id"].".rrd";
+    $metric["path"] = _CENTREON_VARLIB_ . '/metrics/' . $metric["metric_id"] . ".rrd";
 
     $data[$im] = $metric;
     unset($metric);
@@ -142,35 +147,39 @@ include_once "./include/common/checkPagination.php";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
 /*
  * Toolbar select
  */
 ?>
-<script type="text/javascript">
-var confirm_messages = [
-    '<?php echo _("Do you confirm the deletion ?") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
-];
+    <script type="text/javascript">
+        var confirm_messages = [
+            '<?php echo _("Do you confirm the deletion ?") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? " .
+                "If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? " .
+                "If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? " .
+                "If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? " .
+                "If yes, you must rebuild the RRD Database") ?>'
+        ];
 
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
 
-function on_action_change(id) {
-    var selected_id = this.form.elements[id].selectedIndex - 1;
-    
-    if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
-        return;
-    }
-    setO(this.form.elements[id].value);
-    document.forms['form'].submit();
-}
-</script>
+        function on_action_change(id) {
+            var selected_id = this.form.elements[id].selectedIndex - 1;
+
+            if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
+                return;
+            }
+            setO(this.form.elements[id].value);
+            document.forms['form'].submit();
+        }
+    </script>
 <?php
 $actions = array(
     null => _("More actions..."),

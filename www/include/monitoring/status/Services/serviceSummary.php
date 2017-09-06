@@ -59,7 +59,7 @@ $rows = 10;
 
 include_once("./include/monitoring/status/Common/default_poller.php");
 include_once("./include/monitoring/status/Common/default_hostgroups.php");
-include_once($svc_path."/serviceSummaryJS.php");
+include_once($svc_path . "/serviceSummaryJS.php");
 
 # Smarty template Init
 $tpl = new Smarty();
@@ -79,12 +79,12 @@ $tpl->assign("mon_last_check", _("Last Check"));
 $tpl->assign("mon_duration", _("Duration"));
 $tpl->assign("mon_status_information", _("Status information"));
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 $tpl->assign("tab_order", $tab_order);
-    
+
 $aTypeAffichageLevel1 = array(
     "svcOV" => _("Details"),
     "svcSum" => _("Summary")
@@ -95,68 +95,83 @@ $aTypeAffichageLevel2 = array(
     "ack_1" => _("Acknowledge"),
     "ack_0" => _("Not Acknowledged"),
 );
-    
+
 ##Toolbar select $lang["lgd_more_actions"]
 ?>
-<script type="text/javascript">
-p = <?php echo $p ?>;
+    <script type="text/javascript">
+        p = <?php echo $p ?>;
 
-function setO(_i) {
-        document.forms['form'].elements['cmd'].value = _i;
-        document.forms['form'].elements['o1'].selectedIndex = 0;
-        document.forms['form'].elements['o2'].selectedIndex = 0;
-}
+        function setO(_i) {
+            document.forms['form'].elements['cmd'].value = _i;
+            document.forms['form'].elements['o1'].selectedIndex = 0;
+            document.forms['form'].elements['o2'].selectedIndex = 0;
+        }
 
-function displayingLevel1(val)
-{
-    _o = val;
-    if (_o == 'svcOV') { 
-        _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
-        _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
-    } else {
-        _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
-        _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
-    }
-    monitoring_refresh();
+        function displayingLevel1(val) {
+            _o = val;
+            if (_o == 'svcOV') {
+                _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
+                _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
+            } else {
+                _addrXML = "./include/monitoring/status/Services/xml/serviceSummaryXML.php";
+                _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
+            }
+            monitoring_refresh();
 
-}
+        }
 
-function displayingLevel2(val)
-{
-    var sel1 = document.getElementById("typeDisplay").value;
-    _o = "svcSum";
-    if (val != '') {
-        _o = _o + "_" + val;
-    }
-    
-    monitoring_refresh();
-}
-</script>
+        function displayingLevel2(val) {
+            var sel1 = document.getElementById("typeDisplay").value;
+            _o = "svcSum";
+            if (val != '') {
+                _o = _o + "_" + val;
+            }
+
+            monitoring_refresh();
+        }
+    </script>
 <?php
-    
-$form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
-$form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-        
+
+$form->addElement(
+    'select',
+    'typeDisplay',
+    _('Display'),
+    $aTypeAffichageLevel1,
+    array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);")
+);
+$form->addElement(
+    'select',
+    'typeDisplay2',
+    _('Display '),
+    $aTypeAffichageLevel2,
+    array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);")
+);
+
 foreach (array('o1', 'o2') as $option) {
-    $attrs = array('onchange'=>"javascript: setO(this.form.elements['$option'].value); submit();");
-    $form->addElement('select', 
-                        'o1', 
-                        null, 
-                        array(null => _("More actions..."),
-                                "3"     =>  _("Verification Check"),
-                                "4"     =>  _("Verification Check (Forced)"),
-                                "70"    =>  _("Services : Acknowledge"),
-                                "71"    =>  _("Services : Disacknowledge"),
-                                "80"    =>  _("Services : Enable Notification"),
-                                "81"    =>  _("Services : Disable Notification"),
-                                "90"    =>  _("Services : Enable Check"),
-                                "91"    =>  _("Services : Disable Check"),
-                                "72"    =>  _("Hosts : Acknowledge"),
-                                "73"    =>  _("Hosts : Disacknowledge"),
-                                "82"    =>  _("Hosts : Enable Notification"),
-                                "83"    =>  _("Hosts : Disable Notification"),
-                                "92"    =>  _("Hosts : Enable Check"),
-                                "93"    =>  _("Hosts : Disable Check")), $attrs);
+    $attrs = array('onchange' => "javascript: setO(this.form.elements['$option'].value); submit();");
+    $form->addElement(
+        'select',
+        'o1',
+        null,
+        array(
+            null => _("More actions..."),
+            "3" => _("Verification Check"),
+            "4" => _("Verification Check (Forced)"),
+            "70" => _("Services : Acknowledge"),
+            "71" => _("Services : Disacknowledge"),
+            "80" => _("Services : Enable Notification"),
+            "81" => _("Services : Disable Notification"),
+            "90" => _("Services : Enable Check"),
+            "91" => _("Services : Disable Check"),
+            "72" => _("Hosts : Acknowledge"),
+            "73" => _("Hosts : Disacknowledge"),
+            "82" => _("Hosts : Enable Notification"),
+            "83" => _("Hosts : Disable Notification"),
+            "92" => _("Hosts : Enable Check"),
+            "93" => _("Hosts : Disable Check")
+        ),
+        $attrs
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);

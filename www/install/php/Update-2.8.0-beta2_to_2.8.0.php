@@ -104,5 +104,3 @@ if (isset($pearDB)) {
         }
     }
 }
-
-?>

@@ -35,29 +35,29 @@
  * SVN : $Id$
  * 
  */
- 
+
 if (!isset($oreon)) {
     exit();
 }
-    
-    /*
-	 * Pear library
-	 */
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/advmultiselect.php';
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-    
-    /*
-	 * Path to the option dir
-	 */
-    $path = "./include/configuration/configGenerate/";
-    
-    /*
-	 * PHP functions
-	 */
-    require_once $path."DB-Func.php";
-    require_once "./include/common/common-Func.php";
-    
+
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+/*
+ * Path to the option dir
+ */
+$path = "./include/configuration/configGenerate/";
+
+/*
+ * PHP functions
+ */
+require_once $path . "DB-Func.php";
+require_once "./include/common/common-Func.php";
+
 switch ($o) {
     default:
         require_once($path . "formGenerateFiles.php");

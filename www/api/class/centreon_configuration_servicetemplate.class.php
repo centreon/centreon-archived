@@ -139,7 +139,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             'AND hsr.service_service_id = s.service_id ' .
             'AND h.host_register = "0" ' .
             'AND s.service_register = "0" ' .
-            'AND s.service_description LIKE :description ' .
+            'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
             'ORDER BY h.host_name ';
         if (isset($range) && !empty($range)) {
             $queryService .= 'LIMIT :offset, :limit';

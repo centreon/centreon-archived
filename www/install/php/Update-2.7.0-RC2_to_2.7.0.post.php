@@ -51,5 +51,3 @@ if (isset($pearDB)) {
     $pearDB->query($query2);
 
 }
-
-?>

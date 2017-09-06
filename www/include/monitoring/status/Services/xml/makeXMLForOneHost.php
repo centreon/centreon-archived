@@ -78,46 +78,46 @@ $centreonlang->bindLang();
 /** **************************************************
  * Check Arguments From GET tab
  */
-$host_id        = $obj->checkArgument("host_id", $_GET, 0);
-$enable         = $obj->checkArgument("enable", $_GET, "");
-$disable        = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$host_id = $obj->checkArgument("host_id", $_GET, 0);
+$enable = $obj->checkArgument("enable", $_GET, "");
+$disable = $obj->checkArgument("disable", $_GET, "disable");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 /** ***************************************************
  * Get Host status
  */
-$rq1 =  " SELECT h.state," .
-        " h.address," .
-        " h.name," .
-        " h.alias," .
-        " i.name AS poller, " .
-        " h.perfdata," .
-        " h.check_attempt," .
-        " h.state_type," .
-        " h.last_check, " .
-        " h.next_check, " .
-        " h.latency," .
-        " h.execution_time," .
-        " h.last_state_change," .
-        " h.last_notification," .
-        " h.next_host_notification," .
-        " h.last_hard_state_change," .
-        " h.last_hard_state," .
-        " h.last_time_up," .
-        " h.last_time_down," .
-        " h.last_time_unreachable," .
-        " h.notification_number," .
-        " h.scheduled_downtime_depth," .
-        " h.output," .
-        " h.notes," .
-        " h.notify," .
-        " h.event_handler_enabled," .
-        " h.icon_image, " .
-        " h.timezone" .
-        " FROM hosts h, instances i " .
-        " WHERE h.host_id = " . $host_id .
-        " AND h.instance_id = i.instance_id " .
-        " LIMIT 1";
+$rq1 = " SELECT h.state," .
+    " h.address," .
+    " h.name," .
+    " h.alias," .
+    " i.name AS poller, " .
+    " h.perfdata," .
+    " h.check_attempt," .
+    " h.state_type," .
+    " h.last_check, " .
+    " h.next_check, " .
+    " h.latency," .
+    " h.execution_time," .
+    " h.last_state_change," .
+    " h.last_notification," .
+    " h.next_host_notification," .
+    " h.last_hard_state_change," .
+    " h.last_hard_state," .
+    " h.last_time_up," .
+    " h.last_time_down," .
+    " h.last_time_unreachable," .
+    " h.notification_number," .
+    " h.scheduled_downtime_depth," .
+    " h.output," .
+    " h.notes," .
+    " h.notify," .
+    " h.event_handler_enabled," .
+    " h.icon_image, " .
+    " h.timezone" .
+    " FROM hosts h, instances i " .
+    " WHERE h.host_id = " . $host_id .
+    " AND h.instance_id = i.instance_id " .
+    " LIMIT 1";
 /*
  * Request
  */

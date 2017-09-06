@@ -42,12 +42,14 @@ if (!isset($centreon)) {
  */
 if (($o == "c") && $acl_action_id) {
     // 1. Get "Actions Rule" id selected by user
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$acl_action_id."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '" . $acl_action_id . "' LIMIT 1");
     $action_infos = array();
     $action_infos = array_map("myDecode", $DBRESULT->fetchRow());
 
     // 2. Get "Groups" id linked with the selected Rule in order to initialize the form
-    $DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");
+    $query = "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations " .
+        "WHERE acl_action_id = '" . $acl_action_id . "'";
+    $DBRESULT = $pearDB->query($query);
 
     $selected = array();
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
@@ -56,7 +58,8 @@ if (($o == "c") && $acl_action_id) {
     $action_infos["acl_groups"] = $selected;
 
     // 3. Range in a table variable, all Groups used in this "Actions Access"
-    $DBRESULT = $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");
+    $query = "SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id";
+    $DBRESULT = $pearDB->query($query);
 
     $selected_actions = array();
     for ($i = 0; $act = $DBRESULT->fetchRow(); $i++) {
@@ -77,13 +80,14 @@ while ($group = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 // Var information to format the element
-$attrsText      = array("size"=>"30");
+$attrsText = array("size" => "30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"60");
-$eTemplate      = "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+$attrsTextarea = array("rows" => "5", "cols" => "60");
+$eTemplate = "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />" .
+    "{remove}</td><td>{selected}</td></tr></table>";
 
 // Form begin
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an Action"));
 } elseif ($o == "c") {
@@ -155,7 +159,7 @@ $form->addElement('checkbox', 'all_host', "");
 $form->addElement('checkbox', 'all_engine', "");
 
 
-$form->setDefaults(array("hostComment" => 1 ));
+$form->setDefaults(array("hostComment" => 1));
 
 // Contacts Selection
 $form->addElement('header', 'notification', _("Relations"));
@@ -165,7 +169,7 @@ $form->addElement('header', 'global_actions', _("Global Monitoring Engine Action
 $form->addElement('header', 'global_access', _("Global Functionalities Access"));
 
 $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
-$ams1->setButtonAttributes('add', array('value' =>  _("Add"), "class" => "btc bt_success"));
+$ams1->setButtonAttributes('add', array('value' => _("Add"), "class" => "btc bt_success"));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove"), "class" => "btc bt_danger"));
 $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
@@ -197,7 +201,7 @@ $form->addRule('acl_action_description', _("Compulsory Alias"), 'required');
 $form->addRule('acl_groups', _("Compulsory Groups"), 'required');
 $form->registerRule('exist', 'callback', 'testActionExistence');
 $form->addRule('acl_action_name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 // End of form definition
 
@@ -229,7 +233,12 @@ if ($form->validate()) {
         updateRulesActions($groupObj->getValue());
     }
     $o = null;
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&c_id=".$groupObj->getValue()."'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&c_id=" . $groupObj->getValue() . "'")
+    );
     $form->freeze();
     $valid = true;
 }
@@ -238,13 +247,13 @@ if ($form->validate()) {
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
 $action = $form->getSubmitValue("action");
 if ($valid) {
-    require_once($path."listsActionsAccess.php");
+    require_once($path . "listsActionsAccess.php");
 } else {
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

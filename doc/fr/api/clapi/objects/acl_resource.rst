@@ -140,6 +140,7 @@ revoke_host	          Put host name(s)	             [...] -a revoke_host -v "ACL
 revoke_hostgroup	  Put hostgroup name(s)	             [...] -a revoke_hostgroup -v "ACL Resource Test;Linux servers"	   Yes
 revoke_servicegroup	  Put servicegroup name(s)	     [...] -a revoke_servicegroup -v "ACL Resource Test;Ping"	           Yes
 revoke_metaservice	  Put metaservice name(s)	     [...] -a revoke_metaservice -v "ACL Resource Test;Traffic Average"	   Yes
+delhostexclusion	  Put hostgroup name(s)		     [...] -a delhostexclusion -v "ACL Resource Test;srv-test|srv-test2"   Yes
 addfilter_instance	  Put instance name(s)	             [...] -a addfilter_instance -v "ACL Resource Test;Monitoring-2"	   No
 addfilter_hostcategory	  Put host category name(s)	     [...] -a addfilter_hostcategory -v "ACL Resource Test;Customer-1"	   No
 addfilter_servicecategory Put service category name(s)	     [...] -a addfilter_servicecategory -v "ACL Resource Test;System"	   No

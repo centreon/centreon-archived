@@ -43,7 +43,7 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchN']) && $_POST['searchN']) {
     $search = $_POST['searchN'];
-    $SearchTool = " WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ";
+    $SearchTool = " WHERE nagios_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ";
 }
 
 $aclCond = "";
@@ -53,7 +53,7 @@ if (!$centreon->user->admin && count($allowedMainConf)) {
     } else {
         $aclCond = " WHERE ";
     }
-    $aclCond .= "nagios_id IN (".implode(',', array_keys($allowedMainConf)).") ";
+    $aclCond .= "nagios_id IN (" . implode(',', array_keys($allowedMainConf)) . ") ";
 }
 
 $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool $aclCond");
@@ -99,9 +99,9 @@ $tpl->assign("headerMenu_options", _("Options"));
 $DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id
                             FROM cfg_nagios $SearchTool $aclCond
                             ORDER BY nagios_name
-                            LIMIT ".$num * $limit.", ".$limit);
+                            LIMIT " . $num * $limit . ", " . $limit);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -114,22 +114,31 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
     $moptions = "";
-    $selectedElements = $form->addElement('checkbox', "select[".$nagios['nagios_id']."]");
+    $selectedElements = $form->addElement('checkbox', "select[" . $nagios['nagios_id'] . "]");
     if ($nagios["nagios_activate"]) {
-        $moptions .= "<a href='main.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=u&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14' border='0' " .
+            "alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=s&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "class='ico-14' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
-    $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$nagios['nagios_id']."]'></input>";
-    $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                    "RowMenu_select"=>$selectedElements->toHtml(),
-                    "RowMenu_name"=>$nagios["nagios_name"],
-                    "RowMenu_instance"=>$nagios_servers[$nagios["nagios_server_id"]],
-                    "RowMenu_link"=>"?p=".$p."&o=c&nagios_id=".$nagios['nagios_id'],
-                    "RowMenu_desc"=>substr($nagios["nagios_comment"], 0, 40),
-                    "RowMenu_status"=>$nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
-                    "RowMenu_badge" => $nagios["nagios_activate"] ? "service_ok" : "service_critical",
-                    "RowMenu_options"=>$moptions);
+    $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
+        "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
+        "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
+        $nagios['nagios_id'] . "]' />";
+    $elemArr[$i] = array(
+        "MenuClass" => "list_" . $style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => $nagios["nagios_name"],
+        "RowMenu_instance" => $nagios_servers[$nagios["nagios_server_id"]],
+        "RowMenu_link" => "?p=" . $p . "&o=c&nagios_id=" . $nagios['nagios_id'],
+        "RowMenu_desc" => substr($nagios["nagios_comment"], 0, 40),
+        "RowMenu_status" => $nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $nagios["nagios_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_options" => $moptions
+    );
     $style != "two" ? $style = "two" : $style = "one";
 }
 
@@ -138,27 +147,39 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign(
+    'msg',
+    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+);
 
 ?>
-<script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </SCRIPT>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array(
-        'onchange'=>"javascript: " .
-            "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['".$option."'].value); submit();} " .
-            "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['".$option."'].value); submit();} " .
-            "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['".$option."'].value); submit();} " .
-            "");
-    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+        'onchange' => "javascript: " .
+            "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
+            _("Do you confirm the duplication ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
+            _("Do you confirm the deletion ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            ""
+    );
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete")),
+        $attrs
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);

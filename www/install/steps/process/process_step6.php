@@ -58,7 +58,8 @@ foreach ($parameters as $name => $value) {
 }
 
 if (!in_array('db_password', $err['required']) && !in_array('db_password_confirm', $err['required']) &&
-    $parameters['db_password'] != $parameters['db_password_confirm']) {
+    $parameters['db_password'] != $parameters['db_password_confirm']
+) {
     $err['password'] = false;
 }
 
@@ -71,8 +72,8 @@ try {
     }
     $link = new \PDO(
         'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
-            'root',
-            $parameters['root_password']
+        'root',
+        $parameters['root_password']
     );
 } catch (\PDOException $e) {
     $err['connection'] = $e->getMessage();

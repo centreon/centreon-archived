@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2009 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,13 +34,14 @@
  *
  */
 
-class procedures_DB_Connector {
-	private $db_type = "mysql";
-	private $retry;
-	private $privatePearDB;
-	private $options;
-	private $log;
-	public $debug;
+class procedures_DB_Connector
+{
+    private $db_type = "mysql";
+    private $retry;
+    private $privatePearDB;
+    private $options;
+    private $log;
+    public $debug;
 
     /**
      * procedures_DB_Connector constructor.
@@ -53,9 +55,9 @@ class procedures_DB_Connector {
     {
         $this->retry = $retry;
         $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
-		$this->log = new CentreonLog();
-		$this->connect($db_name, $db_user, $db_host, $db_password);
-		$this->debug = 0;
+        $this->log = new CentreonLog();
+        $this->connect($db_name, $db_user, $db_host, $db_password);
+        $this->debug = 0;
     }
 
     private function displayConnectionErrorPage()
@@ -97,7 +99,7 @@ class procedures_DB_Connector {
             'outcome' => $outcome,
             'message' => $message
         );
-	}
+    }
 
     /**
      * Disconnection

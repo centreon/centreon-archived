@@ -56,7 +56,7 @@ if (isset($pearDB)) {
             }
         }
         $query3 = "UPDATE cfg_centreonbroker
-            SET retention_path = '" . $pearDB->escape($retention_path). "'
+            SET retention_path = '" . $pearDB->escape($retention_path) . "'
             WHERE config_id = " . $pearDB->escape($row1['config_id']);
         $pearDB->query($query3);
     }
@@ -66,7 +66,9 @@ if (isset($pearDB)) {
                 (SELECT cbi2.config_id,cbi2.config_group,cbi2.config_group_id
                 FROM cfg_centreonbroker_info cbi1, cfg_centreonbroker_info cbi2, cfg_centreonbroker_info cbi3
                 WHERE cbi1.config_id = cbi2.config_id and cbi1.config_group = cbi2.config_group
-                AND cbi2.config_id = cbi3.config_id AND cbi2.config_group = cbi3.config_group AND cbi2.config_group_id = cbi3.config_group_id
+                AND cbi2.config_id = cbi3.config_id 
+                AND cbi2.config_group = cbi3.config_group 
+                AND cbi2.config_group_id = cbi3.config_group_id
                 AND cbi1.config_group='output'
                 AND cbi2.config_group='output'
                 AND cbi3.config_group='output'
@@ -88,7 +90,7 @@ if (isset($pearDB)) {
     }
 
     # Delete failover names which join to non existing failover
-    $query ="UPDATE cfg_centreonbroker_info
+    $query = "UPDATE cfg_centreonbroker_info
         SET config_value=''
         WHERE config_key = 'failover'
         AND config_value NOT IN
@@ -115,7 +117,7 @@ if (isset($pearDB)) {
         WHERE config_group='correlation'
         OR config_group='stats'
         OR config_group='temporary'";
-     $pearDB->query($query);
+    $pearDB->query($query);
 
     # Delete correlation, stats and temporary tabs
     $query = "DELETE FROM cb_tag
@@ -131,4 +133,3 @@ if (isset($pearDB)) {
         OR name='temporary'";
     $pearDB->query($query);
 }
-?>

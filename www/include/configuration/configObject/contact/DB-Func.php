@@ -253,6 +253,22 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(contact_id) FROM contact");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(contact_id)"])) {
+
+                    /*
+                     * ACL update
+                     */
+                    $query = "SELECT DISTINCT acl_group_id FROM acl_group_contacts_relations " .
+                        "WHERE contact_contact_id = " . (int)$key;
+                    $dbResult = $pearDB->query($query);
+                    $fields["contact_aclRelation"] = "";
+                    while ($aclRelation = $dbResult->fetchRow()) {
+                        $query = "INSERT INTO acl_group_contacts_relations VALUES ('', '" .
+                            $maxId["MAX(contact_id)"] . "', '" . $aclRelation["acl_group_id"] . "')";
+                        $pearDB->query($query);
+                        $fields["contact_aclRelation"] .= $aclRelation["acl_group_id"] . ",";
+                    }
+                    $fields["contact_aclRelation"] = trim($fields["contact_aclRelation"], ",");
+
                     /*
                      * Command update
                      */

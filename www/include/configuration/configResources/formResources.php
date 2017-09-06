@@ -33,7 +33,11 @@
  *
  */
 
-if (!$centreon->user->admin && isset($resource_id) && count($allowedResourceConf) && !isset($allowedResourceConf[$resource_id])) {
+if (!$centreon->user->admin &&
+    isset($resource_id) &&
+    count($allowedResourceConf) &&
+    !isset($allowedResourceConf[$resource_id])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -52,7 +56,8 @@ $instances = $acl->getPollerAclConf(array('fields' => array('id', 'name'),
  * Database retrieve information for Resources CFG
  */
 if (($o == "c" || $o == "w") && $resource_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '" . $pearDB->escape($resource_id) . "' LIMIT 1");
+    $query = "SELECT * FROM cfg_resource WHERE resource_id = '" . $pearDB->escape($resource_id) . "' LIMIT 1";
+    $DBRESULT = $pearDB->query($query);
     // Set base value
     $rs = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->closeCursor();
@@ -64,7 +69,8 @@ if (($o == "c" || $o == "w") && $resource_id) {
 $attrsText = array("size" => "35");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 $attrsAdvSelect = array("style" => "width: 220px; height: 220px;");
-$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
+    '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 require_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 
@@ -95,9 +101,11 @@ $attrPoller = array(
     'linkedObject' => 'centreonInstance'
 );
 /* Host Parents */
+$route = './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
+    '&target=resources&field=instance_id&id=' . $resource_id;
 $attrPoller1 = array_merge(
     $attrPoller,
-    array('defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=defaultValues&target=resources&field=instance_id&id='.$resource_id)
+    array('defaultDatasetRoute' => $route)
 );
 $form->addElement('select2', 'instance_id', _("Linked Instances"), array(), $attrPoller1);
 
@@ -150,7 +158,12 @@ $tpl = initSmartyTpl($path, $tpl);
 // Just watch a Resources CFG information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $resource_id . "'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $resource_id . "'")
+        );
     }
     $form->setDefaults($rs);
     $form->freeze();
@@ -174,7 +187,12 @@ if ($form->validate()) {
         updateResourceInDB($rsObj->getValue());
     }
     $o = null;
-    $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $rsObj->getValue() . "'")
+    );
     $valid = true;
 }
 

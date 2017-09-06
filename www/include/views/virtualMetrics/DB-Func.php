@@ -46,8 +46,8 @@ function _TestRPNInfinityLoop()
     if (isset($form)) {
         $gsvs = $form->getSubmitValues();
     }
-    
-    if ($gsvs["vmetric_name"] != null && preg_match("/".$gsvs["vmetric_name"]."/i", $gsvs["rpn_function"])) {
+
+    if ($gsvs["vmetric_name"] != null && preg_match("/" . $gsvs["vmetric_name"] . "/i", $gsvs["rpn_function"])) {
         return false;
     } else {
         return true;
@@ -62,26 +62,26 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     if (isset($form)) {
         $gsvs = $form->getSubmitValues();
     }
-    
+
     $sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
-    $sql .= "vmetric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
-    $sql .= "AND index_id = '".($index_id == null ? $gsvs["index_id"] : $index_id)."'";
+    $sql .= "vmetric_name = '" . ($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name) . "' ";
+    $sql .= "AND index_id = '" . ($index_id == null ? $gsvs["index_id"] : $index_id) . "'";
     try {
         $DBRESULT = $pearDB->query($sql);
     } catch (\PDOException $e) {
-        print "DB Error : ".$e->getMessage();
+        print "DB Error : " . $e->getMessage();
     }
     $vmetric = $DBRESULT->fetchRow();
     $nR = $DBRESULT->rowCount();
     $DBRESULT->closeCursor();
 
     $sql = "SELECT metric_id FROM metrics WHERE ";
-    $sql .= "metric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
-    $sql .= "AND index_id = '".($index_id == null ? $gsvs["index_id"] : $index_id)."'";
+    $sql .= "metric_name = '" . ($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name) . "' ";
+    $sql .= "AND index_id = '" . ($index_id == null ? $gsvs["index_id"] : $index_id) . "'";
     try {
         $DBRESULT = $pearDBO->query($sql);
     } catch (\PDOException $e) {
-        print "DB Error : ".$e->getMessage();
+        print "DB Error : " . $e->getMessage();
     }
     $metric = $DBRESULT->fetchRow();
     $nR = $nR + $DBRESULT->rowCount();
@@ -101,7 +101,7 @@ function deleteVirtualMetricInDB($vmetrics = array())
         try {
             $DBRESULT = $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '" . $key . "'");
         } catch (\PDOException $e) {
-            print "DB Error : ".$e->getMessage();
+            print "DB Error : " . $e->getMessage();
         }
     }
 }
@@ -113,7 +113,7 @@ function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
         try {
             $DBRESULT = $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '" . $key . "' LIMIT 1");
         } catch (\PDOException $e) {
-            print "DB Error : ".$e->getMessage();
+            print "DB Error : " . $e->getMessage();
         }
         $row = $DBRESULT->fetchRow();
         $row["vmetric_id"] = '';
@@ -123,20 +123,22 @@ function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
                 $key2 == "index_id" ? $i_id = $value2 : null;
                 if ($key2 == "vmetric_name") {
                     $count = 1;
-                    $v_name = $value2."_".$count;
+                    $v_name = $value2 . "_" . $count;
                     while (!NameTestExistence($v_name, $i_id)) {
                         $count++;
-                        $v_name = $value2."_".$count;
+                        $v_name = $value2 . "_" . $count;
                     }
                     $value2 = $v_name;
                 }
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
-            $val ? $rq = "INSERT INTO virtual_metrics VALUES (".$val.")" : $rq = null;
+            $val ? $rq = "INSERT INTO virtual_metrics VALUES (" . $val . ")" : $rq = null;
             try {
                 $DBRESULT2 = $pearDB->query($rq);
             } catch (\PDOException $e) {
-                print "DB Error : ".$e->getMessage();
+                print "DB Error : " . $e->getMessage();
             }
         }
     }
@@ -163,8 +165,9 @@ function insertVirtualMetric()
     $s_id = null;
     $ret = array();
     $ret = $form->getSubmitValues();
-    
-    $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
+
+    $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, " .
+        "`unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
     $rq .= "VALUES ( NULL, ";
 
     if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
@@ -183,19 +186,25 @@ function insertVirtualMetric()
     } else {
         $rq .= "NULL, ";
     }
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
+        ? $rq .= "'" . htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'" . $ret["def_type"] . "', " : $rq .= "NULL, ";
+    isset($ret["rpn_function"]) && $ret["rpn_function"] != null
+        ? $rq .= "'" . $ret["rpn_function"] . "', "
+        : $rq .= "NULL, ";
+    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'" . $ret["unit_name"] . "', " : $rq .= "NULL, ";
+    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'" . $ret["warn"] . "', " : $rq .= "NULL, ";
+    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'" . $ret["crit"] . "', " : $rq .= "NULL, ";
+    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'" . $ret["vhidden"] . "', " : $rq .= "NULL, ";
+    isset($ret["comment"]) && $ret["comment"] != null
+        ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
     $rq .= "NULL, NULL";
     $rq .= ")";
     if ($centreon->optGen["debug_rrdtool"] == "1") {
         $debug_path = realpath($centreon->optGen["debug_path"]);
-        error_log("[" . date("d/m/Y H:s") ."] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
+        error_log("[" . date("d/m/Y H:s") . "] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
     }
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
@@ -230,24 +239,32 @@ function updateVirtualMetric($vmetric_id = null)
     } else {
         $rq .= "NULL, ";
     }
-    $rq .=  "vmetric_name = ";
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .=  "def_type = ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
-    $rq .=  "rpn_function = ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
-    $rq .=  "unit_name = ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
-    $rq .=  "warn = ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
-    $rq .=  "crit = ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
-    $rq .=  "hidden = ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
-    $rq .=  "comment = ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    $rq .= "vmetric_name = ";
+    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null
+        ? $rq .= "'" . htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
+    $rq .= "def_type = ";
+    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'" . $ret["def_type"] . "', " : $rq .= "NULL, ";
+    $rq .= "rpn_function = ";
+    isset($ret["rpn_function"]) && $ret["rpn_function"] != null
+        ? $rq .= "'" . $ret["rpn_function"] . "', "
+        : $rq .= "NULL, ";
+    $rq .= "unit_name = ";
+    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'" . $ret["unit_name"] . "', " : $rq .= "NULL, ";
+    $rq .= "warn = ";
+    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'" . $ret["warn"] . "', " : $rq .= "NULL, ";
+    $rq .= "crit = ";
+    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'" . $ret["crit"] . "', " : $rq .= "NULL, ";
+    $rq .= "hidden = ";
+    isset($ret["vhidden"]) && $ret["vhidden"] != null
+        ? $rq .= "'" . $ret["vhidden"] . "', "
+        : $rq .= "NULL, ";
+    $rq .= "comment = ";
+    isset($ret["comment"]) && $ret["comment"] != null
+        ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL, ";
     $rq .= "vmetric_activate = NULL, ck_state = NULL ";
-    $rq .= "WHERE vmetric_id = '".$vmetric_id."'";
+    $rq .= "WHERE vmetric_id = '" . $vmetric_id . "'";
     $DBRESULT = $pearDB->query($rq);
 
     if (!enableVirtualMetricInDB($vmetric_id)) {
@@ -261,7 +278,7 @@ function disableVirtualMetricInDB($vmetric_id = null, $force = 0)
         return 0;
     }
     global $pearDB;
-    
+
     $v_dis = disableVirtualMetric($vmetric_id, $force);
     if (!count($v_dis)) {
         return 0;
@@ -276,7 +293,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
 {
     global $pearDB;
     $v_dis = array();
-    
+
     $repA = array("*", "+", "-", "?", "^", "$");
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
@@ -284,7 +301,10 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     if ($l_pqy->rowCount() == 1) {
         $vmetric = $l_pqy->fetchRow();
         $l_pqy->closeCursor();
-        $l_pqy = $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
+        $query = "SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='" . $vmetric["index_id"] .
+            "' AND `vmetric_activate` = '1' " .
+            "AND `rpn_function` REGEXP '(^|,)" . str_replace($repA, $repB, $vmetric["vmetric_name"]) . "(,|$)';";
+        $l_pqy = $pearDB->query($query);
         while ($d_vmetric = $l_pqy->fetchRow()) {
             $lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);
             if (is_array($lv_dis)) {
@@ -334,7 +354,9 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
         $l_where = "vmetric_name = '$v_name' AND index_id ='$index_id'";
     }
 
-    $l_pqy = $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");
+    $query = "SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics " .
+        "WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);";
+    $l_pqy = $pearDB->query($query);
     if ($l_pqy->rowCount() == 1) {
         $p_vmetric = $l_pqy->fetchRow();
         $l_mlist = preg_split("/\,/", $p_vmetric["rpn_function"]);
@@ -360,12 +382,14 @@ function checkRRDGraphData($v_id = null, $force = 0)
     }
 
     /* Check if already Valid */
-    $l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );");
+    $query = "SELECT vmetric_id, def_type FROM virtual_metrics " .
+        "WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );";
+    $l_pqy = $pearDB->query($query);
     if ($l_pqy->rowCount() == 1) {
         /**
          * Create XML Request Objects
          */
-        $centreon = & $_SESSION["centreon"];
+        $centreon = &$_SESSION["centreon"];
         $obj = new CentreonGraph($centreon->user->get_id(), null, 0, 1);
 
         /**

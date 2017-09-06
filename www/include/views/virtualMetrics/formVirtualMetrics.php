@@ -49,7 +49,8 @@ if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
     $o = "c";
 }
 if (($o == "c" || $o == "w") && $vmetric_id) {
-    $p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
+    $query = "SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '" . $vmetric_id . "' LIMIT 1";
+    $p_qy = $pearDB->query($query);
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
     $p_qy->closeCursor();
@@ -59,16 +60,16 @@ if (($o == "c" || $o == "w") && $vmetric_id) {
  *
  * Existing Data Index List comes from DBO -> Store in $indds Array
  */
-$indds = array(""=> sprintf("%s%s", _("Host list"), "&nbsp;&nbsp;&nbsp;"));
+$indds = array("" => sprintf("%s%s", _("Host list"), "&nbsp;&nbsp;&nbsp;"));
 $mx_l = strlen($indds[""]);
 
 try {
     $dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
 } catch (\PDOException $e) {
-    print "DB Error : ".$e->getMessage()."<br />";
+    print "DB Error : " . $e->getMessage() . "<br />";
 }
 while ($indd = $dbindd->fetchRow()) {
-    $indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
+    $indds[$indd["host_id"]] = $indd["host_name"] . "&nbsp;&nbsp;&nbsp;";
     $hn_l = strlen($indd["host_name"]);
     if ($hn_l > $mx_l) {
         $mx_l = $hn_l;
@@ -79,19 +80,23 @@ $dbindd->closeCursor();
 /*
  * End of "database-retrieved" information
  */
- 
+
 /*
  * Var information to format the element
  */
 
-$attrsText  = array("size"=>"30");
-$attrsText2     = array("size"=>"10");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea  = array("rows"=>"4", "cols"=>"60");
+$attrsTextarea = array("rows" => "4", "cols" => "60");
+
+$availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
+$defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
+    '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetric_id;
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetric_id,
+    'availableDatasetRoute' => $availableRoute,
+    'defaultDatasetRoute' => $defaultRoute,
     'linkedObject' => 'centreonService',
     'multiple' => false
 );
@@ -99,7 +104,7 @@ $attrServices = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Virtual Metric"));
 } elseif ($o == "c") {
@@ -121,10 +126,22 @@ $form->addElement('text', 'vmetric_name', _("Metric Name"), $attrsText);
 $form->addElement('static', 'hsr_text', _("Choose a service if you want a specific virtual metric for it."));
 $form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrServices);
 
-$form->addElement('select', 'def_type', _("DEF Type"), array(0=>"CDEF&nbsp;&nbsp;&nbsp;",1=>"VDEF&nbsp;&nbsp;&nbsp;"), "onChange=manageVDEF();");
+$form->addElement(
+    'select',
+    'def_type',
+    _("DEF Type"),
+    array(0 => "CDEF&nbsp;&nbsp;&nbsp;", 1 => "VDEF&nbsp;&nbsp;&nbsp;"),
+    "onChange=manageVDEF();"
+);
 // RPN Function
 $form->addElement('textarea', 'rpn_function', _("RPN (Reverse Polish Notation) Function"), $attrsTextarea);
-$form->addElement('static', 'rpn_text', _("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn expressions."));
+$form->addElement(
+    'static',
+    'rpn_text',
+    _("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- " .
+        "Do not mix metrics of different sources.<br>&nbsp;&nbsp;&nbsp;- " .
+        "Only aggregation functions work in VDEF rpn expressions.")
+);
 #$form->addElement('select', 'real_metrics', null, $rmetrics);
 $form->addElement('text', 'unit_name', _("Metric Unit"), $attrsText2);
 $form->addElement('text', 'warn', _("Warning Threshold"), $attrsText2);
@@ -150,9 +167,15 @@ $form->addRule('host_id', _("Required service"), 'required');
 $form->registerRule('existName', 'callback', 'NameTestExistence');
 $form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
 $form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName');
-$form->addRule('rpn_function', _("Can't Use This Virtual Metric '".(isset($_POST["vmetric_name"]) ? htmlentities($_POST["vmetric_name"], ENT_QUOTES, "UTF-8") : '')."' In This RPN Function"), 'RPNInfinityLoop');
+$form->addRule(
+    'rpn_function',
+    _("Can't Use This Virtual Metric '" . (isset($_POST["vmetric_name"])
+            ? htmlentities($_POST["vmetric_name"], ENT_QUOTES, "UTF-8")
+            : '') . "' In This RPN Function"),
+    'RPNInfinityLoop'
+);
 
-$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 
 /*
  * End of form definition
@@ -164,22 +187,35 @@ $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
     // Just watch
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetric_id."'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&vmetric_id=" . $vmetric_id . "'")
+    );
     $form->setDefaults($vmetric);
     $form->freeze();
 } elseif ($o == "c") {
     // Modify
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");", "class" => "btc bt_default"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array(
+        "onClick" => "javascript:resetLists(" . $vmetric["host_id"] . "," . $vmetric["index_id"] . ");",
+        "class" => "btc bt_default"
+    ));
     $form->setDefaults($vmetric);
 } elseif ($o == "a") {
     // Add
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
+    $res = $form->addElement(
+        'reset',
+        'reset',
+        _("Reset"),
+        array("onClick" => "javascript:resetLists(0,0)", "class" => "btc bt_default")
+    );
 }
 
 if ($o == "c" || $o == "a") {
-?>
+    ?>
     <script type='text/javascript'>
         function insertValueQuery() {
             var e_txtarea = document.Form.rpn_function;
@@ -189,7 +225,7 @@ if ($o == "c" || $o == "a") {
                 var chaineAj = '';
                 chaineAj = e_select.options[sd_o].text;
                 //chaineAj = chaineAj.substring(0, chaineAj.length - 3);
-                chaineAj = chaineAj.replace(/\s(\[[CV]DEF\]|)\s*$/,"");
+                chaineAj = chaineAj.replace(/\s(\[[CV]DEF\]|)\s*$/, "");
 
                 if (document.selection) {
                     // IE support
@@ -212,14 +248,14 @@ if ($o == "c" || $o == "a") {
         function manageVDEF() {
             var e_checkbox = document.Form.vhidden;
             var vdef_state = document.Form.def_type.value;
-            if ( vdef_state == 1) {
+            if (vdef_state == 1) {
                 e_checkbox.checked = true;
             }
         }
     </script>
-<?php
+    <?php
 }
-$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&vmetric_id=".$vmetric_id, "changeT"=>_("Modify")));
+$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetric_id, "changeT" => _("Modify")));
 
 $tpl->assign("sort1", _("Properties"));
 $tpl->assign("sort2", _("Graphs"));
@@ -227,7 +263,7 @@ $tpl->assign("sort2", _("Graphs"));
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -255,7 +291,7 @@ if ($form->validate()) {
             "button",
             "change",
             _("Modify"),
-            array("onClick"=>"javascript:window.location.href='?p=$p&o=c&vmetric_id=".$vmetricObj->getValue()."'")
+            array("onClick" => "javascript:window.location.href='?p=$p&o=c&vmetric_id=" . $vmetricObj->getValue() . "'")
         );
         $form->freeze();
         $valid = true;
@@ -277,19 +313,23 @@ if ($valid) {
     $tpl->assign('o', $o);
     $tpl->display("formVirtualMetrics.ihtml");
 }
-$vdef=1; /* Display VDEF too */
+$vdef = 1; /* Display VDEF too */
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
 if ($o == "c" || $o == "w") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=$vmetric["host_id"];
+    isset($_POST["host_id"]) && $_POST["host_id"] != null
+        ? $host_service_id = $_POST["host_id"]
+        : $host_service_id = $vmetric["host_id"];
 } elseif ($o == "a") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
+    isset($_POST["host_id"]) && $_POST["host_id"] != null
+        ? $host_service_id = $_POST["host_id"]
+        : $host_service_id = 0;
 }
 ?>
 
 <script type="text/javascript">
     update_select_list('<?php echo $host_service_id;?>');
 
-    jQuery("#host_id").on('change', function() {
+    jQuery("#host_id").on('change', function () {
         update_select_list(this.value);
     });
 </script>

@@ -48,34 +48,50 @@ if (isset($pearDB)) {
             case 'ldap_host':
                 if ($row['value'] != null && $row['value'] != '') {
                     $insertLdap = true;
-                    array_unshift($queries, "INSERT INTO auth_ressource (ar_id, ar_type, ar_enable, ar_order) VALUES (2, 'ldap_tmpl', '0', 0)");
-                    array_unshift($queries, "INSERT INTO auth_ressource (ar_id, ar_type, ar_enable, ar_order) VALUES (1, 'ldap', '1', 1)");
-                    $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (1, 'host', '" . $row['value'] . "')";
+                    array_unshift(
+                        $queries,
+                        "INSERT INTO auth_ressource (ar_id, ar_type, ar_enable, ar_order)
+ VALUES (2, 'ldap_tmpl', '0', 0)"
+                    );
+                    array_unshift(
+                        $queries,
+                        "INSERT INTO auth_ressource (ar_id, ar_type, ar_enable, ar_order) VALUES (1, 'ldap', '1', 1)"
+                    );
+                    $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (1, 'host', '" . $row['value'] . "')";
                 }
                 break;
             case 'ldap_port':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (1, 'port', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (1, 'port', '" . $row['value'] . "')";
                 break;
             case 'ldap_base_dn':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'user_base_search', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (2, 'user_base_search', '" . $row['value'] . "')";
                 break;
             case 'ldap_login_attrib':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'alias', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (2, 'alias', '" . $row['value'] . "')";
                 break;
             case 'ldap_ssl':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (1, 'use_ssl', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (1, 'use_ssl', '" . $row['value'] . "')";
                 break;
             case 'ldap_search_user':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'bind_dn', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (2, 'bind_dn', '" . $row['value'] . "')";
                 break;
             case 'ldap_search_user_pwd':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'bind_pass', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (2, 'bind_pass', '" . $row['value'] . "')";
                 break;
             case 'ldap_search_filter':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'user_base_search', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (2, 'user_base_search', '" . $row['value'] . "')";
                 break;
             case 'ldap_protocol_version':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (1, 'protocol_version', '" . $row['value'] . "')";
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
+VALUES (1, 'protocol_version', '" . $row['value'] . "')";
                 break;
         }
     }
@@ -94,9 +110,8 @@ if (isset($pearDB)) {
         $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'group_name', '')";
         $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'group_member', '')";
         $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'tmpl', '0')";
-        
-        
-        
+
+
         foreach ($queries as $query) {
             try {
                 $pearDB->query($query);
@@ -104,10 +119,11 @@ if (isset($pearDB)) {
                 $errors = true;
             }
         }
-        
+
     }
     /* Delete old values */
-    $query = "DELETE FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_search_user', 'ldap_search_user_pwd', 'ldap_search_filter', 'ldap_protocol_version')";
+    $query = "DELETE FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib',
+ 'ldap_ssl', 'ldap_search_user', 'ldap_search_user_pwd', 'ldap_search_filter', 'ldap_protocol_version')";
     try {
         $pearDB->query($query);
     } catch (\PDOException $e) {
@@ -117,4 +133,3 @@ if (isset($pearDB)) {
         return false;
     }
 }
-?>

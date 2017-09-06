@@ -54,9 +54,9 @@ require_once "./include/common/common-Func.php";
 
 switch ($o) {
     case "a":
-        require_once($path."formMibs.php");
+        require_once($path . "formMibs.php");
         break; #Show command execution
     default:
-        require_once($path."formMibs.php");
+        require_once($path . "formMibs.php");
         break;
 }

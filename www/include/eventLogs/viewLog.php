@@ -242,7 +242,7 @@ $attrHost1 = array(
 $form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
 
 $serviceGroupRoute = './include/common/webServices/rest/'
-    .'internal.php?object=centreon_configuration_servicegroup&action=list';
+    . 'internal.php?object=centreon_configuration_servicegroup&action=list';
 $attrServicegroup1 = array(
     'datasourceOrigin' => 'ajax',
     'allowClear' => false,
@@ -300,503 +300,515 @@ if ($engine == 'false') {
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-function apply_period() {
-    var openid = getArgsForHost();
-    logs(openid[0],'','');
-}
-
-function apply_period_engine() {
-    logsEngine();
-}
-
-var _limit = 30;
-function setL(_this) {
-    _limit = _this;
-}
-
-var _num = 0;
-function log_4_host_page(id, formu, num)	{
-    _num = num;
-    logs(id, formu, '');
-}
-
-function log_4_engine_page(id,formu,num) {
-    _num = num;
-    logsEngine();
-}
-
-var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
-var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
-var _engine = <?php echo $engine; ?>;
-
-var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-var _up = <?php echo $user_params["log_filter_host_up"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-
-var _ok = <?php echo $user_params["log_filter_svc_ok"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-var _warning = <?php echo $user_params["log_filter_svc_warning"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-var _critical = <?php echo $user_params["log_filter_svc_critical"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-
-var _unknown = <?php echo $user_params["log_filter_svc_unknown"]; ?>;
-<?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
-
-<?php $filterNotif = $user_params["log_filter_notif"];?>
-var _notification = <?php echo !empty($filterNotif) ? $user_params["log_filter_notif"] : 'false';?>;
-var _error = <?php echo !empty($user_params["log_filter_error"]) ? $user_params["log_filter_error"] : 'false'; ?>;
-var _alert = <?php echo !empty($user_params["log_filter_alert"]) ? $user_params["log_filter_alert"] : 'false'; ?>;
-
-var _oh = <?php echo !empty($user_params["log_filter_oh"]) ? $user_params["log_filter_oh"] : 'false'; ?>;
-
-var _search_H = "<?php echo $user_params["search_H"]; ?>";
-var _search_S = "<?php echo $user_params["search_S"]; ?>";
-var _output = "<?php $output; ?>";
-// Period
-var currentTime = new Date();
-var period = '';
-
-var _zero_hour = '';
-var _zero_min = '';
-var StartDate='';
-var EndDate='';
-var StartTime='';
-var EndTime='';
-var opid='';
-
-if (document.FormPeriod && document.FormPeriod.period.value != "")	{
-    period = document.FormPeriod.period.value;
-}
-
-if (document.FormPeriod && document.FormPeriod.period.value == "") {
-    document.FormPeriod.StartDate.value = StartDate;
-    document.FormPeriod.EndDate.value = EndDate;
-    document.FormPeriod.StartTime.value = StartTime;
-    document.FormPeriod.EndTime.value = EndTime;
-}
-
-function logsEngine(type) {
-    _output = jQuery( "#output" ).val();
-    var poller_value = jQuery("#poller_filter").val();
-    var args = "";
-    var urlargs = "";
-    if (poller_value !== null) {
-        urlargs += "&poller=";
-        var flagfirst = true;
-        poller_value.each(function(val) {
-            if (val !== " " && val !== "") {
-                if (args !== "") {
-                    args += ",";
-                }
-                if (!flagfirst) {
-                    urlargs += ",";
-                } else {
-                    flagfirst = false;
-                }
-                urlargs += val;
-                args += val;
-            }
-        });
+    function apply_period() {
+        var openid = getArgsForHost();
+        logs(openid[0], '', '');
     }
-    
-    if (window.history.pushState) {
-        window.history.pushState("", "", "main.php?p=20302&engine=true"+urlargs);
+
+    function apply_period_engine() {
+        logsEngine();
     }
-    
-    controlTimePeriod();
-    var proc = new Transformation();
-    var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
-    
-    if (!type) {
-        var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
-            '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
-            '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
-            '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
-            '&limit=' + _limit + '&id=' + args;
-        proc.setXml(_addr)
-        proc.setXslt(_addrXSL)
-        proc.transform("logView4xml");
-    } else {
-        if (type == 'CSV') {
-            var _addr = './include/eventLogs/export/data.php?engine=true&output=' + _output +
-                '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
-                '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
-                '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
-                '&limit=' + _limit + '&id=' + args + '&export=1';
-        } else if (type == 'XML') {
+
+    var _limit = 30;
+
+    function setL(_this) {
+        _limit = _this;
+    }
+
+    var _num = 0;
+
+    function log_4_host_page(id, formu, num) {
+        _num = num;
+        logs(id, formu, '');
+    }
+
+    function log_4_engine_page(id, formu, num) {
+        _num = num;
+        logsEngine();
+    }
+
+    var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
+    var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
+    var _engine = <?php echo $engine; ?>;
+
+    var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+    var _up = <?php echo $user_params["log_filter_host_up"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+    var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+
+    var _ok = <?php echo $user_params["log_filter_svc_ok"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+    var _warning = <?php echo $user_params["log_filter_svc_warning"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+    var _critical = <?php echo $user_params["log_filter_svc_critical"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+
+    var _unknown = <?php echo $user_params["log_filter_svc_unknown"]; ?>;
+    <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
+
+    <?php $filterNotif = $user_params["log_filter_notif"];?>
+    var _notification = <?php echo !empty($filterNotif) ? $user_params["log_filter_notif"] : 'false';?>;
+    var _error = <?php echo !empty($user_params["log_filter_error"]) ? $user_params["log_filter_error"] : 'false'; ?>;
+    var _alert = <?php echo !empty($user_params["log_filter_alert"]) ? $user_params["log_filter_alert"] : 'false'; ?>;
+
+    var _oh = <?php echo !empty($user_params["log_filter_oh"]) ? $user_params["log_filter_oh"] : 'false'; ?>;
+
+    var _search_H = "<?php echo $user_params["search_H"]; ?>";
+    var _search_S = "<?php echo $user_params["search_S"]; ?>";
+    var _output = "<?php $output; ?>";
+    // Period
+    var currentTime = new Date();
+    var period = '';
+
+    var _zero_hour = '';
+    var _zero_min = '';
+    var StartDate = '';
+    var EndDate = '';
+    var StartTime = '';
+    var EndTime = '';
+    var opid = '';
+
+    if (document.FormPeriod && document.FormPeriod.period.value != "") {
+        period = document.FormPeriod.period.value;
+    }
+
+    if (document.FormPeriod && document.FormPeriod.period.value == "") {
+        document.FormPeriod.StartDate.value = StartDate;
+        document.FormPeriod.EndDate.value = EndDate;
+        document.FormPeriod.StartTime.value = StartTime;
+        document.FormPeriod.EndTime.value = EndTime;
+    }
+
+    function logsEngine(type) {
+        _output = jQuery("#output").val();
+        var poller_value = jQuery("#poller_filter").val();
+        var args = "";
+        var urlargs = "";
+        if (poller_value !== null) {
+            urlargs += "&poller=";
+            var flagfirst = true;
+            poller_value.each(function (val) {
+                if (val !== " " && val !== "") {
+                    if (args !== "") {
+                        args += ",";
+                    }
+                    if (!flagfirst) {
+                        urlargs += ",";
+                    } else {
+                        flagfirst = false;
+                    }
+                    urlargs += val;
+                    args += val;
+                }
+            });
+        }
+
+        if (window.history.pushState) {
+            window.history.pushState("", "", "main.php?p=20302&engine=true" + urlargs);
+        }
+
+        controlTimePeriod();
+        var proc = new Transformation();
+        var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
+
+        if (!type) {
             var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
                 '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
                 '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
                 '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
-                '&limit=' + _limit + '&id=' + args + '&export=1';
-        }
-        document.location.href = _addr;
-    }
-
-}
-
-function controlTimePeriod() {
-    if (document.FormPeriod) {
-        if (document.FormPeriod.period.value!="")   {
-            period = document.FormPeriod.period.value;
+                '&limit=' + _limit + '&id=' + args;
+            proc.setXml(_addr)
+            proc.setXslt(_addrXSL)
+            proc.transform("logView4xml");
         } else {
-            period = '';
-            StartDate = document.FormPeriod.StartDate.value;
-            EndDate = document.FormPeriod.EndDate.value;
-            StartTime = document.FormPeriod.StartTime.value;
-            EndTime = document.FormPeriod.EndTime.value;
-        }
-    }
-    if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
-        StartDate = document.FormPeriod.StartDate.value;
-    if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
-        EndDate = document.FormPeriod.EndDate.value;
-
-    if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
-        StartTime = document.FormPeriod.StartTime.value;
-    if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
-        EndTime = document.FormPeriod.EndTime.value;
-}
-
-function logs(id, formu, type) {
-    opid = id;
-    if (jQuery( "#output" ) !== "undefined") {
-        _output = jQuery( "#output" ).val();
-    }
-    
-    controlTimePeriod();
-
-    if (document.formu2 && document.formu2.notification) _notification = document.formu2.notification.checked;
-    if (document.formu2 && document.formu2.error) _error = document.formu2.error.checked;
-    if (document.formu2 && document.formu2.alert) _alert = document.formu2.alert.checked;
-    if (document.formu2 && document.formu2.up) _up = document.formu2.up.checked;
-    if (document.formu2 && document.formu2.down) _down = document.formu2.down.checked;
-    if (document.formu2 && document.formu2.unreachable) _unreachable = document.formu2.unreachable.checked;
-    if (document.formu2 && document.formu2.ok) _ok = document.formu2.ok.checked;
-    if (document.formu2 && document.formu2.warning) _warning = document.formu2.warning.checked;
-    if (document.formu2 && document.formu2.critical) _critical = document.formu2.critical.checked;
-    if (document.formu2 && document.formu2.unknown) _unknown = document.formu2.unknown.checked;
-    if (document.formu2 && document.formu2.oh) _oh = document.formu2.oh.checked;
-    if (document.formu2 && document.formu2.search_H) _search_H = document.formu2.search_H.checked;
-    if (document.formu2 && document.formu2.search_S) _search_S = document.formu2.search_S.checked;
-
-    var proc = new Transformation();
-    var _addrXSL = "./include/eventLogs/xsl/log.xsl";
-
-    if (!type) {
-        var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh + '&warning=' + _warning +
-            '&unknown=' + _unknown + '&critical=' + _critical + '&ok=' + _ok + '&unreachable=' + _unreachable +
-            '&down=' + _down + '&up=' + _up + '&num=' + _num + '&error=' + _error + '&alert=' + _alert +
-            '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
-            '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-            '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
-            '<?php
-            if (isset($search) && $search) {
-                print "&search_host=" . $search;
-            } if (isset($search_service) && $search_service) {
-                print "&search_service=" . $search_service;
-            } ?>';
-        proc.setXml(_addr)
-        proc.setXslt(_addrXSL)
-        proc.transform("logView4xml");
-    } else {
-        var openid = document.getElementById('openid').innerHTML;
-        if (_engine == 0) {
-            if (type == 'CSV') {
-                var _addr = './include/eventLogs/export/data.php?output=' + _output + '&oh=' + _oh +
-                    '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
-                    '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up + '&num=' + _num +
-                    '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
-                    '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
-                    '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                    '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
-                    '<?php
-                    if (isset($search) && $search) {
-                        print "&search_host=" . $search;
-                    } if (isset($search_service) && $search_service) {
-                        print "&search_service=" . $search_service;
-                    } ?>&export=1';
-            } else if (type == 'XML') {
-                var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh +
-                    '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
-                    '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up +
-                    '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
-                    '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
-                    '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                    '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
-                    '<?php
-                    if (isset($search) && $search) {
-                            print "&search_host=" . $search;
-                            print "&search_host=" . $search;
-                    } if (isset($search_service) && $search_service) {
-                        print "&search_service=" . $search_service;
-                    }?>&export=1';
-            }
-        } else {
-            var poller_value = jQuery("#poller_filter").val();
-            var args = "";
-            if (poller_value !== null) {
-                poller_value.each(function(val) {
-                    if (val !== " " && val !== "") {
-                        if (args !== "") {
-                            args += ",";
-                        }
-                        args += val;
-                    }
-                });
-            }
-
             if (type == 'CSV') {
                 var _addr = './include/eventLogs/export/data.php?engine=true&output=' + _output +
                     '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
                     '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
-                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
-                    '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1'
+                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
+                    '&limit=' + _limit + '&id=' + args + '&export=1';
             } else if (type == 'XML') {
                 var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
                     '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
                     '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
-                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
-                    '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1';
+                    '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
+                    '&limit=' + _limit + '&id=' + args + '&export=1';
+            }
+            document.location.href = _addr;
+        }
+
+    }
+
+    function controlTimePeriod() {
+        if (document.FormPeriod) {
+            if (document.FormPeriod.period.value != "") {
+                period = document.FormPeriod.period.value;
+            } else {
+                period = '';
+                StartDate = document.FormPeriod.StartDate.value;
+                EndDate = document.FormPeriod.EndDate.value;
+                StartTime = document.FormPeriod.StartTime.value;
+                EndTime = document.FormPeriod.EndTime.value;
             }
         }
-        document.location.href = _addr;
-    }
-}
+        if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
+            StartDate = document.FormPeriod.StartDate.value;
+        if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
+            EndDate = document.FormPeriod.EndDate.value;
 
-/**
- * Javascript action depending on the status checkboxes 
- *
- * @param bool isChecked 
- * @return void
- */
-function checkStatusCheckbox(isChecked) {
+        if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
+            StartTime = document.FormPeriod.StartTime.value;
+        if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
+            EndTime = document.FormPeriod.EndTime.value;
+    }
+
+    function logs(id, formu, type) {
+        opid = id;
+        if (jQuery("#output") !== "undefined") {
+            _output = jQuery("#output").val();
+        }
+
+        controlTimePeriod();
+
+        if (document.formu2 && document.formu2.notification) _notification = document.formu2.notification.checked;
+        if (document.formu2 && document.formu2.error) _error = document.formu2.error.checked;
+        if (document.formu2 && document.formu2.alert) _alert = document.formu2.alert.checked;
+        if (document.formu2 && document.formu2.up) _up = document.formu2.up.checked;
+        if (document.formu2 && document.formu2.down) _down = document.formu2.down.checked;
+        if (document.formu2 && document.formu2.unreachable) _unreachable = document.formu2.unreachable.checked;
+        if (document.formu2 && document.formu2.ok) _ok = document.formu2.ok.checked;
+        if (document.formu2 && document.formu2.warning) _warning = document.formu2.warning.checked;
+        if (document.formu2 && document.formu2.critical) _critical = document.formu2.critical.checked;
+        if (document.formu2 && document.formu2.unknown) _unknown = document.formu2.unknown.checked;
+        if (document.formu2 && document.formu2.oh) _oh = document.formu2.oh.checked;
+        if (document.formu2 && document.formu2.search_H) _search_H = document.formu2.search_H.checked;
+        if (document.formu2 && document.formu2.search_S) _search_S = document.formu2.search_S.checked;
+
+        var proc = new Transformation();
+        var _addrXSL = "./include/eventLogs/xsl/log.xsl";
+
+        if (!type) {
+            var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh + '&warning=' + _warning +
+                '&unknown=' + _unknown + '&critical=' + _critical + '&ok=' + _ok + '&unreachable=' + _unreachable +
+                '&down=' + _down + '&up=' + _up + '&num=' + _num + '&error=' + _error + '&alert=' + _alert +
+                '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
+                '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+                '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
+                <?php
+                if (isset($search) && $search) {
+                    print "&search_host=" . $search;
+                } if (isset($search_service) && $search_service) {
+                    print "&search_service=" . $search_service;
+                }
+                ?>;
+
+            proc.setXml(_addr)
+            proc.setXslt(_addrXSL)
+            proc.transform("logView4xml");
+        } else {
+            var openid = document.getElementById('openid').innerHTML;
+            if (_engine == 0) {
+                if (type == 'CSV') {
+                    var _addr = './include/eventLogs/export/data.php?output=' + _output + '&oh=' + _oh +
+                        '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
+                        '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up +
+                        '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
+                        '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
+                        '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        <?php
+                        if (isset($search) && $search) {
+                            print "&search_host=" . $search;
+                        } if (isset($search_service) && $search_service) {
+                            print "&search_service=" . $search_service;
+                        }
+                        ?> +'&export=1';
+                } else if (type == 'XML') {
+                    var _addr = './include/eventLogs/xml/data.php?output=' + _output + '&oh=' + _oh +
+                        '&warning=' + _warning + '&unknown=' + _unknown + '&critical=' + _critical +
+                        '&ok=' + _ok + '&unreachable=' + _unreachable + '&down=' + _down + '&up=' + _up +
+                        '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
+                        '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
+                        '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        <?php
+                        if (isset($search) && $search) {
+                            print "&search_host=" . $search;
+                            print "&search_host=" . $search;
+                        }
+                        if (isset($search_service) && $search_service) {
+                            print "&search_service=" . $search_service;
+                        }
+                        ?> +'&export=1';
+                }
+            } else {
+                var poller_value = jQuery("#poller_filter").val();
+                var args = "";
+                if (poller_value !== null) {
+                    poller_value.each(function (val) {
+                        if (val !== " " && val !== "") {
+                            if (args !== "") {
+                                args += ",";
+                            }
+                            args += val;
+                        }
+                    });
+                }
+
+                if (type == 'CSV') {
+                    var _addr = './include/eventLogs/export/data.php?engine=true&output=' + _output +
+                        '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                        '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                        '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
+                        '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1'
+                } else if (type == 'XML') {
+                    var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
+                        '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
+                        '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
+                        '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime +
+                        '&num=' + _num + '&limit=' + _limit + '&id=' + args + '&export=1';
+                }
+            }
+            document.location.href = _addr;
+        }
+    }
+
+    /**
+     * Javascript action depending on the status checkboxes
+     *
+     * @param bool isChecked
+     * @return void
+     */
+    function checkStatusCheckbox(isChecked) {
         var alertCb = document.getElementById('alertId');
 
         if (isChecked == true) {
             alertCb.checked = true;
         }
-}
-
-/**
- * Javascript action depending on the alert/notif checkboxes
- *
- * @return void
- */
-function checkAlertNotifCheckbox() {
-    if (document.getElementById('alertId').checked == false && document.getElementById('notifId').checked == false) {
-        document.getElementById('cb_up').checked = false;
-        document.getElementById('cb_down').checked = false;
-        document.getElementById('cb_unreachable').checked = false;
-        document.getElementById('cb_ok').checked = false;
-        document.getElementById('cb_warning').checked = false;
-        document.getElementById('cb_critical').checked = false;
-        document.getElementById('cb_unknown').checked = false;
     }
-}
 
-function getArgsForHost() {
-    var host_value = jQuery("#host_filter").val();
-    var service_value = jQuery("#service_filter").val();
-    var hg_value = jQuery("#host_group_filter").val();
-    var sg_value = jQuery("#service_group_filter").val();
-    
-    var args = "";
-    var urlargs = "";
-     if (host_value !== null) {
-         urlargs += "&h=";
-         var flagfirst = true;
-         host_value.each(function(val) {
-            if (val !== " " && val !== "") {
-                if (args !== "") {
-                     args += ",";
-                 }
-                 if (!flagfirst) {
-                     urlargs += ",";
-                 } else {
-                     flagfirst = false;
-                 }
-                 urlargs += val;
-                 args += "HH_" + val;
-             }
-         });
-     }
-     if (service_value !== null) {
-         urlargs += "&svc=";
-         var flagfirst = true;
-         service_value.each(function(val) {
-             if (val !== " " && val !== "") {
-                 if (args !== "") {
-                     args += ",";
-                 }
-                 if (!flagfirst) {
-                     urlargs += ",";
-                 } else {
-                     flagfirst = false;
-                 }
-                 urlargs += val.replace("-","_");
-                 args += "HS_" + val.replace("-","_");
-             }
-         });
-     }
-     if (hg_value !== null) {
-         urlargs += "&hg=";
-         var flagfirst = true;
-         hg_value.each(function(val) {
-             if (val !== " " && val !== "") {
-                 if (args !== "") {
-                     args += ",";
-                 }
-                 if (!flagfirst) {
-                     urlargs += ",";
-                 } else {
-                     flagfirst = false;
-                 }
-                 urlargs += val;
-                 args += "HG_" + val;
-             }
-         });
-     }
-     if (sg_value !== null) {
-         urlargs += "&svcg=";
-         var flagfirst = true;
-         sg_value.each(function(val) {
-             if (val !== " " && val !== "") {
-                 if (args !== "") {
-                     args += ",";
-                 }
-                 if (!flagfirst) {
-                     urlargs += ",";
-                 } else {
-                     flagfirst = false;
-                 }
-                 urlargs += val;
-                 args += "SG_" + val;
-             }
-         });
-     }
-    return new Array(args,urlargs);
-}
+    /**
+     * Javascript action depending on the alert/notif checkboxes
+     *
+     * @return void
+     */
+    function checkAlertNotifCheckbox() {
+        if (document.getElementById('alertId').checked == false &&
+            document.getElementById('notifId').checked == false
+        ) {
+            document.getElementById('cb_up').checked = false;
+            document.getElementById('cb_down').checked = false;
+            document.getElementById('cb_unreachable').checked = false;
+            document.getElementById('cb_ok').checked = false;
+            document.getElementById('cb_warning').checked = false;
+            document.getElementById('cb_critical').checked = false;
+            document.getElementById('cb_unknown').checked = false;
+        }
+    }
 
-jQuery(function () {
-    if (_engine == 0) {
-        // Here is your precious function
-        // You can call as many functions as you want here;
+    function getArgsForHost() {
+        var host_value = jQuery("#host_filter").val();
+        var service_value = jQuery("#service_filter").val();
+        var hg_value = jQuery("#host_group_filter").val();
+        var sg_value = jQuery("#service_group_filter").val();
 
-        jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(
-            function (event, infos) {
-                var argArray = getArgsForHost();
-                args = argArray[0];
-                urlargs = argArray[1];
+        var args = "";
+        var urlargs = "";
+        if (host_value !== null) {
+            urlargs += "&h=";
+            var flagfirst = true;
+            host_value.each(function (val) {
+                if (val !== " " && val !== "") {
+                    if (args !== "") {
+                        args += ",";
+                    }
+                    if (!flagfirst) {
+                        urlargs += ",";
+                    } else {
+                        flagfirst = false;
+                    }
+                    urlargs += val;
+                    args += "HH_" + val;
+                }
+            });
+        }
+        if (service_value !== null) {
+            urlargs += "&svc=";
+            var flagfirst = true;
+            service_value.each(function (val) {
+                if (val !== " " && val !== "") {
+                    if (args !== "") {
+                        args += ",";
+                    }
+                    if (!flagfirst) {
+                        urlargs += ",";
+                    } else {
+                        flagfirst = false;
+                    }
+                    urlargs += val.replace("-", "_");
+                    args += "HS_" + val.replace("-", "_");
+                }
+            });
+        }
+        if (hg_value !== null) {
+            urlargs += "&hg=";
+            var flagfirst = true;
+            hg_value.each(function (val) {
+                if (val !== " " && val !== "") {
+                    if (args !== "") {
+                        args += ",";
+                    }
+                    if (!flagfirst) {
+                        urlargs += ",";
+                    } else {
+                        flagfirst = false;
+                    }
+                    urlargs += val;
+                    args += "HG_" + val;
+                }
+            });
+        }
+        if (sg_value !== null) {
+            urlargs += "&svcg=";
+            var flagfirst = true;
+            sg_value.each(function (val) {
+                if (val !== " " && val !== "") {
+                    if (args !== "") {
+                        args += ",";
+                    }
+                    if (!flagfirst) {
+                        urlargs += ",";
+                    } else {
+                        flagfirst = false;
+                    }
+                    urlargs += val;
+                    args += "SG_" + val;
+                }
+            });
+        }
+        return new Array(args, urlargs);
+    }
+
+    jQuery(function () {
+        if (_engine == 0) {
+            // Here is your precious function
+            // You can call as many functions as you want here;
+
+            jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(
+                function (event, infos) {
+                    var argArray = getArgsForHost();
+                    args = argArray[0];
+                    urlargs = argArray[1];
+                    if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
+                        return false;
+                    }
+                    if (window.history.pushState) {
+                        window.history.pushState("", "", "main.php?p=20301" + urlargs);
+                    }
+                    document.getElementById('openid').innerHTML = args;
+                    logs(args, '', false);
+                });
+
+            //setServiceGroup
+            jQuery("#setHostGroup").click(function () {
+                var hg_value = jQuery("#host_group_filter").val();
+                var host_value = jQuery("#host_filter").val();
+                if (host_value === null) {
+                    host_value = new Array();
+                }
+                jQuery.ajax({
+                    url: "./api/internal.php?object=centreon_configuration_hostgroup&action=hostList",
+                    type: "GET",
+                    dataType: "json",
+                    data: "hgid=" + hg_value,
+                    success: function (json) {
+                        json.items.each(function (elem) {
+                            if (jQuery.inArray(elem.id, host_value) === -1) {
+                                var existingOptions = jQuery("#host_filter").find('option');
+                                var existFlag = false;
+                                existingOptions.each(function (el) {
+                                    if (jQuery(this).val() == elem.id) {
+                                        existFlag = true;
+                                    }
+                                });
+                                if (!existFlag) {
+                                    jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
+                                host_value.push(elem.id);
+                            }
+                        });
+                        jQuery("#host_filter").val(host_value).trigger("change", [{origin: "select2defaultinit"}]);
+                        jQuery("#host_group_filter").val('');
+                        jQuery("#host_group_filter").empty().append(jQuery('<option>'));
+                        jQuery("#host_group_filter").trigger("change", [{origin: "select2defaultinit"}]);
+                    }
+                });
+
+            });
+
+            jQuery("#setServiceGroup").click(function () {
+                var service_value = jQuery("#service_filter").val();
+                var sg_value = jQuery("#service_group_filter").val();
+                if (service_value === null) {
+                    service_value = new Array();
+                }
+                jQuery.ajax({
+                    url: "./api/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
+                    type: "GET",
+                    dataType: "json",
+                    data: "sgid=" + sg_value,
+                    success: function (json) {
+                        json.items.each(function (elem) {
+                            if (jQuery.inArray(elem.id, service_value) === -1) {
+                                var existingOptions = jQuery("#service_filter option");
+                                var existFlag = false;
+                                existingOptions.each(function () {
+                                    if (jQuery(this).val() == elem.id) {
+                                        existFlag = true;
+                                    }
+                                });
+                                if (!existFlag) {
+                                    jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
+                                }
+                                service_value.push(elem.id);
+                            }
+                        });
+                        jQuery("#service_filter").val(service_value).trigger(
+                            "change",
+                            [{origin: "select2defaultinit"}]
+                        );
+                        jQuery("#service_group_filter").val('');
+                        jQuery("#service_group_filter").empty().append(jQuery('<option>'));
+                        jQuery("#service_group_filter").trigger("change", [{origin: "select2defaultinit"}]);
+                    }
+                });
+            });
+
+            jQuery("#output").keypress(function (event) {
+                if (event.which == 13) {
+                    var argArray = getArgsForHost();
+                    args = argArray[0];
+                    urlargs = argArray[1];
+                    logs(args, '', false);
+                    event.preventDefault();
+                }
+            });
+
+        } else {
+            jQuery("#poller_filter").change(function (event, infos) {
                 if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
                     return false;
                 }
-                if (window.history.pushState) {
-                    window.history.pushState("", "", "main.php?p=20301" + urlargs);
-                }
-                document.getElementById('openid').innerHTML = args;
-                logs(args, '', false);
-            });
-
-        //setServiceGroup
-        jQuery("#setHostGroup").click(function() {
-            var hg_value = jQuery("#host_group_filter").val();
-            var host_value = jQuery("#host_filter").val();
-            if (host_value === null) {
-                host_value = new Array();
-            }
-            jQuery.ajax({
-                url: "./api/internal.php?object=centreon_configuration_hostgroup&action=hostList",
-                type: "GET",
-                dataType : "json",
-                data: "hgid="+hg_value,
-                success : function(json) {
-                    json.items.each(function(elem) {
-                        if (jQuery.inArray(elem.id,host_value) === -1) {
-                            var existingOptions = jQuery("#host_filter").find('option');
-                            var existFlag = false;
-                            existingOptions.each(function(el) {
-                                if (jQuery(this).val() == elem.id) {
-                                    existFlag = true;
-                                }
-                            });
-                            if (!existFlag) {
-                                jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
-                            }
-                            host_value.push(elem.id);
-                        }    
-                    });
-                    jQuery("#host_filter").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
-                    jQuery("#host_group_filter").val('');
-                    jQuery("#host_group_filter").empty().append(jQuery('<option>'));
-                    jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
-                }
-            });    
-
-        });
-
-        jQuery("#setServiceGroup").click(function() {
-           var service_value = jQuery("#service_filter").val();
-           var sg_value = jQuery("#service_group_filter").val();
-            if (service_value === null) {
-                service_value = new Array();
-            }
-            jQuery.ajax({
-                url: "./api/internal.php?object=centreon_configuration_servicegroup&action=serviceList",
-                type: "GET",
-                dataType : "json",
-                data: "sgid="+sg_value,
-                success : function(json) {
-                    json.items.each(function(elem) {
-                        if (jQuery.inArray(elem.id,service_value) === -1) {
-                            var existingOptions = jQuery("#service_filter option");
-                            var existFlag = false;
-                            existingOptions.each(function() {
-                                if (jQuery(this).val() == elem.id) {
-                                    existFlag = true;
-                                }
-                            });
-                            if (!existFlag) {
-                                jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
-                            }
-                            service_value.push(elem.id);
-                        }    
-                    });
-                    jQuery("#service_filter").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
-                    jQuery("#service_group_filter").val('');
-                    jQuery("#service_group_filter").empty().append(jQuery('<option>'));
-                    jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
-                }
-            });    
-        });
-
-        jQuery( "#output" ).keypress(function(  event ) {
-            if ( event.which == 13 ) {
-                var argArray = getArgsForHost();
-                args = argArray[0];
-                urlargs = argArray[1];
-                logs(args, '', false);
-               event.preventDefault();
-            }
-        });
-        
-    } else {
-        jQuery("#poller_filter").change(function(event,infos) {
-            if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {
-                return false;
-            }
-            logsEngine();
-        });
-        jQuery( "#output" ).keypress(function(  event ) {
-            if ( event.which == 13 ) {
                 logsEngine();
-                event.preventDefault();
-            }
-        });
-    }
+            });
+            jQuery("#output").keypress(function (event) {
+                if (event.which == 13) {
+                    logsEngine();
+                    event.preventDefault();
+                }
+            });
+        }
     });
 </script>

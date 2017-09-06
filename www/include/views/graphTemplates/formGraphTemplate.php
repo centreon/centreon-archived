@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 
 $graph = array();
 if (($o == "c" || $o == "w") && $graph_id) {
-    $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$graph_id."' LIMIT 1");
+    $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $graph_id . "' LIMIT 1");
     /*
 	 * Set base value
 	 */
@@ -63,15 +63,15 @@ $res->closeCursor();
 # Var information to format the element
 #
 
-$attrsText  = array("size"=>"30");
-$attrsText2     = array("size"=>"6");
+$attrsText = array("size" => "30");
+$attrsText2 = array("size" => "6");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea  = array("rows"=>"3", "cols"=>"30");
+$attrsTextarea = array("rows" => "3", "cols" => "30");
 
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Graph Template"));
 } elseif ($o == "c") {
@@ -87,47 +87,55 @@ $form->addElement('header', 'information', _("General Information"));
 $form->addElement('header', 'color', _("Legend"));
 $form->addElement('text', 'name', _("Template Name"), $attrsText);
 
-$form->addElement('select', 'img_format', _("Image Type"), array("PNG"=>"PNG", "GIF"=>"GIF"));
+$form->addElement('select', 'img_format', _("Image Type"), array("PNG" => "PNG", "GIF" => "GIF"));
 $form->addElement('text', 'vertical_label', _("Vertical Label"), $attrsText);
 $form->addElement('text', 'width', _("Width"), $attrsText2);
 $form->addElement('text', 'height', _("Height"), $attrsText2);
 $form->addElement('text', 'lower_limit', _("Lower Limit"), $attrsText2);
-$form->addElement('text', 'upper_limit', _("Upper Limit"), array('id'     => 'upperLimitTxt',
-                                                                 'size'   => '6'));
-$form->addElement('checkbox', 'size_to_max', _("Size to max"), '', array('id'      => 'sizeToMax',
-                                                                         'onClick' => 'sizeToMaxx();'));
+$form->addElement('text', 'upper_limit', _("Upper Limit"), array(
+    'id' => 'upperLimitTxt',
+    'size' => '6'
+));
+$form->addElement('checkbox', 'size_to_max', _("Size to max"), '', array(
+    'id' => 'sizeToMax',
+    'onClick' => 'sizeToMaxx();'
+));
 $form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
-$form->addElement('select', 'base', _("Base"), array("1000"=>"1000", "1024"=>"1024"));
+$form->addElement('select', 'base', _("Base"), array("1000" => "1000", "1024" => "1024"));
 
-$periods = array(   "10800"=>_("Last 3 Hours"),
-                    "21600"=>_("Last 6 Hours"),
-                    "43200"=>_("Last 12 Hours"),
-                    "86400"=>_("Last 24 Hours"),
-                    "172800"=>_("Last 2 Days"),
-                    "302400"=>_("Last 4 Days"),
-                    "604800"=>_("Last 7 Days"),
-                    "1209600"=>_("Last 14 Days"),
-                    "2419200"=>_("Last 28 Days"),
-                    "2592000"=>_("Last 30 Days"),
-                    "2678400"=>_("Last 31 Days"),
-                    "5184000"=>_("Last 2 Months"),
-                    "10368000"=>_("Last 4 Months"),
-                    "15552000"=>_("Last 6 Months"),
-                    "31104000"=>_("Last Year"));
+$periods = array(
+    "10800" => _("Last 3 Hours"),
+    "21600" => _("Last 6 Hours"),
+    "43200" => _("Last 12 Hours"),
+    "86400" => _("Last 24 Hours"),
+    "172800" => _("Last 2 Days"),
+    "302400" => _("Last 4 Days"),
+    "604800" => _("Last 7 Days"),
+    "1209600" => _("Last 14 Days"),
+    "2419200" => _("Last 28 Days"),
+    "2592000" => _("Last 30 Days"),
+    "2678400" => _("Last 31 Days"),
+    "5184000" => _("Last 2 Months"),
+    "10368000" => _("Last 4 Months"),
+    "15552000" => _("Last 6 Months"),
+    "31104000" => _("Last Year")
+);
 
 $sel = $form->addElement('select', 'period', _("Graph Period"), $periods);
-$steps = array(     "0"=>_("No Step"),
-                "2"=>"2",
-                "6"=>"6",
-                "10"=>"10",
-                "20"=>"20",
-                "50"=>"50",
-                "100"=>"100");
+$steps = array(
+    "0" => _("No Step"),
+    "2" => "2",
+    "6" => "6",
+    "10" => "10",
+    "20" => "20",
+    "50" => "50",
+    "100" => "100"
+);
 
 $sel = $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 if ($o == "c" || $o == "a") {
-    $form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
+    $form->addElement('button', $nameColor . '_modify', _("Modify"), $attrsText5);
 }
 
 $form->addElement('checkbox', 'stacked', _("Stacking"));
@@ -150,7 +158,7 @@ $form->addRule('height', _("Required Field"), 'required');
 $form->addRule('title', _("Required Field"), 'required');
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Name is already in use"), 'exist');
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 
 /*
@@ -162,7 +170,12 @@ $tpl = initSmartyTpl($path, $tpl);
 
 # Just watch
 if ($o == "w") {
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graph_id."'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&graph_id=" . $graph_id . "'")
+    );
     $form->setDefaults($graph);
     $form->freeze();
 } elseif ($o == "c") {
@@ -173,16 +186,16 @@ if ($o == "w") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&graph_id=".$graph_id, "changeT"=>_("Modify")));
+$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&graph_id=" . $graph_id, "changeT" => _("Modify")));
 
 $tpl->assign("sort1", _("Properties"));
 $tpl->assign("sort2", _("Data Sources"));
-            // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -209,7 +222,15 @@ $tpl->assign('colorJS', "
 				hcolor = bckcolor.substr(1,6);
 			}
 		}
-		Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title: '" . _('Pick a color') . "', width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
+		Modalbox.show(
+		    './include/common/javascript/color_picker_mb.php?name='+name,
+		    { 
+		        title: '" . _('Pick a color') . "',
+		        width: width,
+		        height: height ,
+		        afterLoad: function(){cp_init(t, hcolor);}
+		    }
+		    );
     }
 </script>
 ");
@@ -227,7 +248,12 @@ if ($form->validate()) {
         updateGraphTemplateInDB($graphObj->getValue());
     }
     $o = "w";
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graphObj->getValue()."'"));
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&graph_id=" . $graphObj->getValue() . "'")
+    );
     $form->freeze();
     $valid = true;
 }
@@ -247,18 +273,18 @@ if ($valid) {
 }
 ?>
 <script type='text/javascript'>
-jQuery(function() {
-    sizeToMaxx();
-});
+    jQuery(function () {
+        sizeToMaxx();
+    });
 
-function sizeToMaxx() {
-    var upperLimitTxt = $('#upperLimitTxt');
-    var sizeToMax = $('#sizeToMax');
+    function sizeToMaxx() {
+        var upperLimitTxt = $('#upperLimitTxt');
+        var sizeToMax = $('#sizeToMax');
 
-    if (sizeToMax.is(':checked')) {
-        upperLimitTxt.prop('disabled', true);
-    } else {
-        upperLimitTxt.prop('disabled', false);
+        if (sizeToMax.is(':checked')) {
+            upperLimitTxt.prop('disabled', true);
+        } else {
+            upperLimitTxt.prop('disabled', false);
+        }
     }
-}
 </script>

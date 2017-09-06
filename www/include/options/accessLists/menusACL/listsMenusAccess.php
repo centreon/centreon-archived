@@ -36,7 +36,7 @@
 if (!isset($oreon)) {
     exit();
 }
-    
+
 include("./include/common/autoNumLimit.php");
 
 $SearchStr = "";
@@ -44,9 +44,10 @@ $search = '';
 if (isset($_POST['searchACLM']) && $_POST['searchACLM']) {
     $search = $_POST['searchACLM'];
 }
-$SearchStr = " WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_topo_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+$SearchStr = " WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    "%' OR acl_topo_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
-    
+
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
 
@@ -69,14 +70,16 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $SearchStr = "";
 if (isset($search) && $search) {
-    $SearchStr = "WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_topo_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    $SearchStr = "WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+        "%' OR acl_topo_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate FROM acl_topology $SearchStr ORDER BY acl_topo_name LIMIT ".$num * $limit.", ".$limit;
+$rq = "SELECT acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate " .
+    "FROM acl_topology $SearchStr ORDER BY acl_topo_name LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -88,28 +91,37 @@ $style = "one";
  */
 $elemArr = array();
 for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
-    $selectedElements = $form->addElement('checkbox', "select[".$topo['acl_topo_id']."]");
+    $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_topo_id'] . "]");
     if ($topo["acl_topo_activate"]) {
-        $moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=u&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=s&limit=" . $limit .
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$topo['acl_topo_id']."]'></input>";
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
+        "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
+        "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
+        $topo['acl_topo_id'] . "]' />";
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '".$topo['acl_topo_id']."'";
+    $rq = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '" . $topo['acl_topo_id'] . "'";
     $DBRESULT2 = $pearDB->query($rq);
     $ctNbr = $DBRESULT2->fetchRow();
-    $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                        "RowMenu_select"=>$selectedElements->toHtml(),
-                        "RowMenu_name"=>$topo["acl_topo_name"],
-                        "RowMenu_link"=>"?p=".$p."&o=c&acl_topo_id=".$topo['acl_topo_id'],
-                        "RowMenu_alias"=>myDecode($topo["acl_topo_alias"]),
-                        "RowMenu_status"=>$topo["acl_topo_activate"] ? _("Enabled") : _("Disabled"),
-                        "RowMenu_badge" => $topo["acl_topo_activate"] ? "service_ok" : "service_critical",
-                        "RowMenu_options"=>$moptions);
-                        
+    $elemArr[$i] = array(
+        "MenuClass" => "list_" . $style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => $topo["acl_topo_name"],
+        "RowMenu_link" => "?p=" . $p . "&o=c&acl_topo_id=" . $topo['acl_topo_id'],
+        "RowMenu_alias" => myDecode($topo["acl_topo_alias"]),
+        "RowMenu_status" => $topo["acl_topo_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $topo["acl_topo_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_options" => $moptions
+    );
+
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
@@ -117,32 +129,48 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+$tpl->assign(
+    'msg',
+    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+);
 
 ?>
-<script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </SCRIPT>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
-        'onchange'=>"javascript: " .
-                "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} " .
-                "");
-    $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+        'onchange' => "javascript: " .
+            "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
+            _("Do you confirm the duplication ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
+            _("Do you confirm the deletion ?") . "')) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
+            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
+            ""
+    );
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete")
+        ),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
     $o1->setSelected(null);
 }
-    
+
 $tpl->assign('limit', $limit);
 $tpl->assign('searchACLM', $search);
 
