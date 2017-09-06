@@ -284,3 +284,7 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
+
+    clapi:
+      paths: [ %paths.base%/features/Clapi.feature ]
+      contexts: [ ClapiContext ]
