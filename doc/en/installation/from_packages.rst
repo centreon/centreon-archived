@@ -18,8 +18,8 @@ SELinux should be disabled; for this, you have to modify the file */etc/selinux/
 
     SELINUX=disabled
 
-After saving the file, please reboot your operating system to apply the changes.
-
+.. note::
+    After saving the file, please reboot your operating system to apply the changes.
 
 ******************
 Repository install
@@ -51,51 +51,18 @@ For CentOS 7.
 The repository is now installed.
 
 
-***************
-Package install
-***************
-
-Installing a central server
----------------------------
+************************
+Install a central server
+************************
 
 The chapter describes the installation of a Centreon central server.
 
 Perform the command:
 
- ::
+::
 
   $ yum install centreon-base-config-centreon-engine centreon
 
-
-:ref:`After this step you should connect to Centreon to finalise the installation process <installation_web_ces>`.
-
-Installing a poller
--------------------
-
-This chapter describes the installation of a collector.
-
-Perform the command:
-
- ::
-
- $ yum install centreon-poller-centreon-engine
-
-The communication between a central server and a poller server is by SSH.
-
-You should exchange the SSH keys between the servers.
-
-If you don’t have any private SSH keys on the central server for the Centreon user:
-
- ::
-
- $ su - centreon
- $ ssh-keygen -t rsa
-
-Copy this key on the collector:
-
- ::
-
- $ ssh-copy-id centreon@your_poller_ip
 
 Installing MySQL on the same server
 -----------------------------------
@@ -104,20 +71,16 @@ This chapter describes the installation of MySQL on a server including Centreon.
 
 Perform the command:
 
-  ::
+::
 
    $ yum install MariaDB-server
    $ service mysql restart
 
 
-******************
-Post-package steps
-******************
-
 PHP timezone
 ------------
 
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini which contains the following line :
 
 ::
 
@@ -156,28 +119,6 @@ Setting this option into /etc/my.cnf will NOT work.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysql restart
-
-Launch services during the system startup
------------------------------------------
-
-Enable the automatically start of services during the system startup.
-
-Execute these commands on central server.
-
-* **CentOS v6** ::
-
-    # chkconfig httpd on
-    # chkconfig snmpd on
-    # chkconfig mysql on
-
-* **CentOS v7** ::
-
-    # systemctl enable httpd.service
-    # systemctl enable snmpd.service
-    # systemctl enable mysql.service
-
-.. note::
-    If MySQL database is on a dedicated server, execute the enable command of mysql on DB server.
 
 Conclude installation
 ---------------------
