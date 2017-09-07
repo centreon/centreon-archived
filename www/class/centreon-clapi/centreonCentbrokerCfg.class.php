@@ -398,6 +398,21 @@ class CentreonCentbrokerCfg extends CentreonObject
             $defaultValues[$field['fieldname']] = $field['value'];
         }
 
+        $sql = "SELECT config_value " .
+            "FROM cfg_centreonbroker_info " .
+            "WHERE config_id = ? " .
+            "AND config_key = 'name' " .
+            "AND config_group = ? ";
+        $res = $this->db->query($sql, array($configId, $tagName));
+
+        while ($list = $res->fetch()) {
+            $listName[] = $list['config_value'];
+        }
+
+        if (in_array($args[1], $listName)) {
+            throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
+        }
+
         $blockId = $this->getBlockId($tagName, $args[2]);
         $sql = "SELECT MAX(config_group_id) as max_id "
             . "FROM cfg_centreonbroker_info "
