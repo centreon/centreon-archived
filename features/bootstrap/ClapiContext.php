@@ -24,7 +24,7 @@ class ClapiContext extends CentreonContext {
         }
 
         $output = $this->container->execute(
-            $cmd, 'web_fresh'
+            $cmd, 'web'
         );
         return $output;
     }
@@ -33,12 +33,12 @@ class ClapiContext extends CentreonContext {
      * @Given a configuration
      */
     public function aConfiguration() {
-        $this->file['localpath'] = 'tests/clapi_export/clapi-export.txt';
+        $this->file['localpath'] = 'tests/clapi_export/clapi-configuration.txt';
         $this->file['init'] = '/tmp/clapi-export.txt';
         $this->file['compare'] = '/tmp/compare-clapi-export.txt';
 
         $this->container->copyToContainer(
-            $this->file['localpath'], $this->file['init'], 'web_fresh'
+            $this->file['localpath'], $this->file['init'], 'web'
         );
     }
 
@@ -49,7 +49,7 @@ class ClapiContext extends CentreonContext {
         $cmd = "centreon -u admin -p centreon -i " . $this->file['init'];
 
         $this->container->execute(
-            $cmd, 'web_fresh'
+            $cmd, 'web'
         );
     }
 
