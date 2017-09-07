@@ -398,18 +398,18 @@ class CentreonCentbrokerCfg extends CentreonObject
             $defaultValues[$field['fieldname']] = $field['value'];
         }
 
-        $sql = "SELECT config_value "
-            . "FROM cfg_centreonbroker_info "
-            . "WHERE config_id = ? "
-            . "AND config_key = 'name' "
-            . "AND config_group = ? ";
+        $sql = "SELECT config_value " .
+            "FROM cfg_centreonbroker_info " .
+            "WHERE config_id = ? " .
+            "AND config_key = 'name' " .
+            "AND config_group = ? ";
         $res = $this->db->query($sql, array($configId, $tagName));
 
         while ($list = $res->fetch()) {
             $listName[] = $list['config_value'];
         }
 
-        if(in_array($args[1], $listName)){
+        if (in_array($args[1], $listName)) {
             throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
         }
 
