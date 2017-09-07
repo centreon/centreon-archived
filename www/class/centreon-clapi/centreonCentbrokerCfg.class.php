@@ -601,9 +601,6 @@ class CentreonCentbrokerCfg extends CentreonObject
      */
     protected function fieldIsValid($configId, $tagName, $args)
     {
-        if ($args[2] == 'type') {
-            return true;
-        }
         $sql = "SELECT config_value
         		FROM cfg_centreonbroker_info
         		WHERE config_key = 'blockId'
