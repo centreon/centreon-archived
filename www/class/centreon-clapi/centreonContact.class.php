@@ -37,6 +37,7 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
+require_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
 require_once "centreonTimePeriod.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
@@ -195,7 +196,7 @@ class CentreonContact extends CentreonObject
         if (!$locale || $locale == "") {
             return true;
         }
-        if (strtolower($locale) == "en_us") {
+        if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
         $dir = CentreonUtils::getCentreonPath() . "/www/locale/$locale";
@@ -257,6 +258,7 @@ class CentreonContact extends CentreonObject
      */
     public function add($parameters)
     {
+
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -266,7 +268,14 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $params[self::ORDER_NAME];
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
+
+        $algo = \detectPassPattern($params[self::ORDER_PASS]);
+        if(!$algo){
+            $addParams['contact_passwd'] = \encodePass($params[self::ORDER_PASS]);
+        } else {
+            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
+        }
+
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
         if ($this->checkLang($params[self::ORDER_LANG]) == false) {
@@ -460,7 +469,15 @@ class CentreonContact extends CentreonObject
             $filters,
             "AND"
         );
+
+
         foreach ($elements as $element) {
+
+            $algo = \detectPassPattern($element['contact_passwd']);
+            if(!$algo){
+                $element['contact_passwd'] = \encodePass($element['contact_passwd']);
+            }
+
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];
