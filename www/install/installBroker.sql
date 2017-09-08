@@ -115,7 +115,7 @@ CREATE TABLE `downtimes` (
   `triggered_by` int(11) DEFAULT NULL,
   `type` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`downtime_id`),
-  UNIQUE KEY `entry_time` (`entry_time`,`host_id`,`service_id`),
+  UNIQUE KEY `entry_time` (`entry_time`,`instance_id`,`internal_id`),
   KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
   KEY `entry_time_2` (`entry_time`),
