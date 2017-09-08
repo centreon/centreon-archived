@@ -34,6 +34,8 @@
  *
  */
 
+require_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
+
 class CentreonAuth
 {
     /*
@@ -148,6 +150,11 @@ class CentreonAuth
             return;
         }
 
+        $algo = detectPassPattern($this->userInfos["contact_passwd"]);
+        if (!$algo) {
+            $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
+        }
+
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
             /*
              * Insert LDAP Class
@@ -208,13 +215,15 @@ class CentreonAuth
             }
         } elseif ($this->userInfos["contact_auth_type"] == ""
             || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
+
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] == $token) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
             } elseif (!empty($password)
-                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password)
+                && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -268,6 +277,7 @@ class CentreonAuth
                 /*
                  * Check password matching
                  */
+
                 $this->getCryptFunction();
                 $this->checkPassword($password, $token);
 
@@ -342,16 +352,21 @@ class CentreonAuth
      */
     protected function myCrypt($str)
     {
-        switch ($this->cryptEngine) {
-            case 1:
-                return md5($str);
-                break;
-            case 2:
-                return sha1($str);
-                break;
-            default:
-                return md5($str);
-                break;
+        $algo = detectPassPattern($str);
+        if(!$algo){
+            switch ($this->cryptEngine) {
+                case 1:
+                    return encodePass($str, 'md5');
+                    break;
+                case 2:
+                    return encodePass($str, 'sha1');
+                    break;
+                default:
+                    return encodePass($str, 'md5');
+                    break;
+            }
+        } else {
+            return $str;
         }
     }
 
