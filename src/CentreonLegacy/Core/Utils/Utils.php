@@ -93,7 +93,7 @@ class Utils
         while (!feof($file)) {
             $line = fgets($file);
             if (!preg_match('/^(--|#)/', $line)) {
-                
+
                 $pos = strrpos($line, ";");
                 $str .= $line;
                 if ($pos !== false) {
@@ -180,14 +180,50 @@ class Utils
         }
         return $arrData;
     }
-    
+
     /**
-     *
-     * @param string $endPath
-     * @return string
+     * @param $endPath
+     * @return bool|string
      */
     public function buildPath($endPath)
     {
         return realpath(__DIR__ . '/../../../../www/' . $endPath);
     }
+
+    /**
+     * @param $password
+     * @param string $algo
+     * @return string
+     */
+    function encodePass($password, $algo = 'md5')
+    {
+        $encodePassword = '';
+        switch ($algo) {
+            case 'md5' :
+                $encodePassword .= 'md5__' . md5($password);
+                break;
+            case 'sha1' :
+                $encodePassword .= 'sha1__' . sha1($password);
+                break;
+            default :
+                $encodePassword .= 'md5__' . md5($password);
+                break;
+        }
+        return $encodePassword;
+    }
+
+    /**
+     * @param $pattern
+     * @return null
+     */
+    function detectPassPattern($pattern)
+    {
+        $patternData = explode('__', $pattern);
+        if (isset($patternData[1])) {
+            return $patternData[0];
+        } else {
+            return null;
+        }
+    }
+
 }

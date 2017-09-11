@@ -42,6 +42,7 @@ class CentreonAuthSSO extends CentreonAuth
     protected $sso_mandatory = 0;
 
     public function __construct(
+        $dependencyInjector,
         $username,
         $password,
         $autologin,
@@ -74,7 +75,16 @@ class CentreonAuthSSO extends CentreonAuth
             }
         }
 
-        parent::__construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token);
+        parent::__construct(
+            $dependencyInjector,
+            $username,
+            $password,
+            $autologin,
+            $pearDB,
+            $CentreonLog,
+            $encryptType,
+            $token
+        );
         if ($this->error != '' && $this->sso_mandatory == 1) {
             $this->error .= " SSO Protection (user=" . $this->sso_username . ').';
             global $msg_error;

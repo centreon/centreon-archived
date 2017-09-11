@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once _CENTREON_PATH_ . 'bootstrap.php';
+
 /**
  * @param null $name
  * @return bool
@@ -411,7 +413,7 @@ function insertContactInDB($ret = array())
  */
 function insertContact($ret = array())
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
@@ -447,15 +449,15 @@ function insertContact($ret = array())
         : $rq .= "NULL, ";
     if ($encryptType == 1) {
         isset($ret["contact_passwd"]) && $ret["contact_passwd"] != null
-            ? $rq .= "'" . md5($ret["contact_passwd"]) . "', "
+            ? $rq .= "'" . $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', "
             : $rq .= "NULL, ";
     } elseif ($encryptType == 2) {
         isset($ret["contact_passwd"]) && $ret["contact_passwd"] != null
-            ? $rq .= "'" . sha1($ret["contact_passwd"]) . "', "
+            ? $rq .= "'" . $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1') . "', "
             : $rq .= "NULL, ";
     } else {
         isset($ret["contact_passwd"]) && $ret["contact_passwd"] != null
-            ? $rq .= "'" . md5($ret["contact_passwd"]) . "', "
+            ? $rq .= "'" . $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', "
             : $rq .= "NULL, ";
     }
 
@@ -543,11 +545,11 @@ function insertContact($ret = array())
 
     if (isset($ret["contact_passwd"])) {
         if ($encryptType == 1) {
-            $ret["contact_passwd"] = md5($ret["contact_passwd"]);
+            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = sha1($ret["contact_passwd"]);
+            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
         } else {
-            $ret["contact_passwd"] = md5($ret["contact_passwd"]);
+            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         }
     }
 
@@ -570,7 +572,7 @@ function insertContact($ret = array())
  */
 function updateContact($contact_id = null, $from_MC = false)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
     if (!$contact_id) {
         return;
     }
@@ -606,11 +608,14 @@ function updateContact($contact_id = null, $from_MC = false)
     }
     if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
         if ($encryptType == 1) {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         } elseif ($encryptType == 2) {
-            $rq .= "contact_passwd = '" . sha1($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1') . "', ";
         } else {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         }
     }
     $rq .= "contact_lang = ";
@@ -716,11 +721,11 @@ function updateContact($contact_id = null, $from_MC = false)
     }
 
     if ($encryptType == 1) {
-        $ret["contact_passwd"] = md5($ret["contact_passwd"]);
+        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
     } elseif ($encryptType == 2) {
-        $ret["contact_passwd"] = sha1($ret["contact_passwd"]);
+        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
     } elseif (isset($ret['contact_passwd'])) {
-        $ret["contact_passwd"] = md5($ret["contact_passwd"]);
+        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
     }
 
     /* Prepare value for changelog */
@@ -733,7 +738,7 @@ function updateContact($contact_id = null, $from_MC = false)
  */
 function updateContact_MC($contact_id = null)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
 
     if (!$contact_id) {
         return;
@@ -750,11 +755,14 @@ function updateContact_MC($contact_id = null)
     }
     if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
         if ($encryptType == 1) {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         } elseif ($encryptType == 2) {
-            $rq .= "contact_passwd = '" . sha1($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1') . "', ";
         } else {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $rq .= "contact_passwd = '" .
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         }
     }
     if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $ret['contact_lang']) {

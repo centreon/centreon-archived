@@ -33,6 +33,8 @@
  *
  */
 
+require_once _CENTREON_PATH_ . 'bootstrap.php';
+
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) &&
         $_GET["autologin"] &&
@@ -80,6 +82,7 @@ if (isset($_POST["centreon_token"])
     }
 
     $centreonAuth = new CentreonAuthSSO(
+        $dependencyInjector,
         $useralias,
         $password,
         $autologin,

@@ -70,6 +70,7 @@ class CentreonContact extends CentreonObject
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
+    protected $dependencyInjector;
     public static $aDepends = array(
         'CONTACTTPL',
         'CMD',
@@ -156,6 +157,15 @@ class CentreonContact extends CentreonObject
     }
 
     /**
+     * @param $dependencyInjector
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
+    }
+
+
+    /**
      * Get contact ID
      *
      * @param unknown_type $contact_name
@@ -197,7 +207,7 @@ class CentreonContact extends CentreonObject
         if (!$locale || $locale == "") {
             return true;
         }
-        if (strtolower($locale) == "en_us") {
+        if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
         $dir = CentreonUtils::getCentreonPath() . "/www/locale/$locale";
@@ -269,6 +279,14 @@ class CentreonContact extends CentreonObject
         $addParams['contact_name'] = $params[self::ORDER_NAME];
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
         $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
+
+        $algo = $this->dependencyInjector['utils']->detectPassPattern($params[self::ORDER_PASS]);
+        if (!$algo) {
+            $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($params[self::ORDER_PASS]);
+        } else {
+            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
+        }
+
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
         if ($this->checkLang($params[self::ORDER_LANG]) == false) {
@@ -463,13 +481,16 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
+            $algo = \detectPassPattern($element['contact_passwd']);
+            if (!$algo) {
+                $element['contact_passwd'] = \encodePass($element['contact_passwd']);
+            }
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];
             }
             $addStr .= "\n";
             echo $addStr;
-
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter == "timeperiod_tp_id") {
