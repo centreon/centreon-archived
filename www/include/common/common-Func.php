@@ -2088,12 +2088,10 @@ function encodePass($password, $algo = 'md5')
  */
 function detectPassPattern($pattern)
 {
-    $pass = null;
-    list($algo, $pass) = explode('__', $pattern);
-    if ($pass) {
-        return $algo;
+    $patternData = explode('__', $pattern);
+    if (isset($patternData[1])) {
+        return $patternData[0];
     } else {
         return null;
     }
 }
-
