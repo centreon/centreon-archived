@@ -29,7 +29,7 @@ They can be installed by following the [online installation guide](https://docum
 ## Bug report / Feature request
 
 Bug reports and feature requests are more than welcome. However if you
-wish to open a new issue, please read [this page](project/issues.md)
+wish to open a new issue, please read [this page](project/creating-issue.md)
 first.
 
 ## Coding Style Guide
