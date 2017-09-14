@@ -211,10 +211,10 @@ function get_notified_infos_for_service($serviceId, $hostId)
             $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
 
-        if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
+        if ($service['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
             $stopReading['contacts'] = 1;
         }
-        if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
+        if ($service['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
             $stopReading['contactGroups'] = 1;
         }
 
