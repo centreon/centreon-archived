@@ -728,7 +728,8 @@ sub centralBackup() {
 	################
 	# Make archive #
 	################
-    `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-central.tar.gz backup`;
+        my $dir = basename($TEMP_DIR);
+        `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-central.tar.gz $dir`;
 	if ($? ne 0) {
 		print STDERR "Unable to make tar of backup\n";
 	}
@@ -901,10 +902,11 @@ sub monitoringengineBackup() {
         print STDERR "No ssh keys for Centreon Engine\n";
     }
 
-	##################
-	# Make archives #
-	#################
-	`cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-centreon-engine.tar.gz backup`;
+    ##################
+    # Make archives #
+    #################
+    my $dir = basename($TEMP_DIR);
+    `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-centreon-engine.tar.gz $dir`;
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
