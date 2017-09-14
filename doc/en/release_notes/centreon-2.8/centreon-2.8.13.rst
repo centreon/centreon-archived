@@ -17,5 +17,4 @@ Bugfix
 * [Documentation] Time Range exceptions invalid format #5578
 * [Chart] No graphics with backslash #5554 #5342 PR #5565
 * [LDAP] Problem with LDAP autoimport and groupmapping with comma in CN #4867
-* [Monitoring] No inheritance in query of notified contacts (Monitoring view) #4981
 
