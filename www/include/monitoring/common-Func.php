@@ -54,6 +54,7 @@ function getMyHostRow($host_id = null, $rowdata)
         }
     }
 }
+
 function get_user_param($user_id, $pearDB)
 {
     $list_param = array(
@@ -72,54 +73,56 @@ function get_user_param($user_id, $pearDB)
     }
     return $tab_row;
 }
+
 function set_user_param($user_id, $pearDB, $key, $value)
 {
     $_SESSION[$key] = $value;
 }
+
 function get_notified_infos_for_host($hostId)
 {
     global $pearDB;
-    $loop = array();    
+    $loop = array();
     $stack = array($hostId);
     $hosts = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
     $stopReading = array('contacts' => 0, 'contactGroups' => 0);
-    
+
     while (($hostId = array_shift($stack))) {
         if (isset($loop[$hostId])) {
             continue;
         }
         $loop[$hostId] = 1;
-        
+
         $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance
                 FROM host WHERE host_id = " . $hostId);
         $contactAdd = $DBRESULT->fetchRow();
-        
+
         /*
          * Manage contact inheritance
          */
         $contactGroups = getContactGroupsForHost($hostId);
         $contacts = getContactsForHost($hostId);
-        
+
         if ($stopReading['contacts'] == 0) {
             $results['contacts'] = $results['contacts'] + $contacts;
         }
         if ($stopReading['contactGroups'] == 0) {
             $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
-        
+
         if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
             $stopReading['contacts'] = 1;
         }
         if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
             $stopReading['contactGroups'] = 1;
         }
-        
-        
+
+
         if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
             break;
         }
-        
+
         /*
          * Manage template
          */
@@ -131,53 +134,56 @@ function get_notified_infos_for_host($hostId)
         while (($row = $DBRESULT->fetchRow())) {
             $hostsTpl[] = $row['host_tpl_id'];
         }
-        
+
         $stack = array_merge($hostsTpl, $stack);
     }
     asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
     asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     return $results;
 }
+
 function getContactgroupsForHost($hostId)
 {
     global $pearDB;
-    
+
     $contactGroups = array();
     $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_host_relation cghr
             WHERE cghr.host_host_id = " . $hostId . " AND cghr.contactgroup_cg_id = cg.cg_id");
     while (($row = $DBRESULT->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-    
+
     return $contactGroups;
 }
+
 function getContactsForHost($hostId)
 {
-    global $pearDB;    
-    
+    global $pearDB;
+
     $contacts = array();
     $DBRESULT = $pearDB->query("SELECT c.contact_id, contact_name FROM contact c, contact_host_relation chr
             WHERE chr.host_host_id = " . $hostId . " AND chr.contact_id = c.contact_id");
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
-    
+
     return $contacts;
 }
+
 function get_notified_infos_for_service($serviceId, $hostId)
 {
     global $pearDB;
-    $loop = array();    
+    $loop = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
     $stopReading = array('contacts' => 0, 'contactGroups' => 0);
     $useOnlyContactsFromHost = 0;
-    
+
     while (1) {
         if (isset($loop[$serviceId])) {
             continue;
         }
         $loop[$serviceId] = 1;
-        
+
         $DBRESULT = $pearDB->query("SELECT 
                     contact_additive_inheritance, 
                     cg_additive_inheritance, service_use_only_contacts_from_host, service_template_model_stm_id
@@ -187,39 +193,40 @@ function get_notified_infos_for_service($serviceId, $hostId)
             || $service['service_template_model_stm_id'] == '') {
             break;
         }
-        if (!is_null($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+        if (!is_null($service['service_use_only_contacts_from_host']) &&
+            $service['service_use_only_contacts_from_host'] == 1) {
             $useOnlyContactsFromHost = 1;
             break;
         }
-        
+
         /*
          * Manage contact inheritance
          */
         $contactGroups = getContactgroupsForService($serviceId);
         $contacts = getContactsForService($serviceId);
-        
+
         if ($stopReading['contacts'] == 0) {
             $results['contacts'] = $results['contacts'] + $contacts;
         }
         if ($stopReading['contactGroups'] == 0) {
             $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
-        
+
         if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
             $stopReading['contacts'] = 1;
         }
         if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
             $stopReading['contactGroups'] = 1;
         }
-        
-        
+
+
         if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
             break;
         }
-        
+
         $serviceId = $service['service_template_model_stm_id'];
     }
-     if ($useOnlyContactsFromHost || 
+    if ($useOnlyContactsFromHost ||
         (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0)) {
         return get_notified_infos_for_host($hostId);
     }
@@ -227,6 +234,7 @@ function get_notified_infos_for_service($serviceId, $hostId)
     asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     return $results;
 }
+
 function getContactgroupsForService($serviceId)
 {
     global $pearDB;
@@ -236,9 +244,10 @@ function getContactgroupsForService($serviceId)
     while (($row = $DBRESULT->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-    
+
     return $contactGroups;
 }
+
 function getContactsForService($serviceId)
 {
     global $pearDB;
@@ -248,6 +257,6 @@ function getContactsForService($serviceId)
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
-    
+
     return $contacts;
 }
