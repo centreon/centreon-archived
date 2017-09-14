@@ -3,7 +3,7 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 
-class TestProxyConfigurationContext extends CentreonContext 
+class TestProxyConfigurationContext extends CentreonContext
 {
     private $page;
     private $wrongProxyAddress = 'squad';
@@ -12,7 +12,7 @@ class TestProxyConfigurationContext extends CentreonContext
     /**
      * @When I test the proxy configuration in the interface
      */
-    public function ItestTheProxyConfigurationInTheInterface()
+    public function ITestTheProxyConfigurationInTheInterface()
     {
         $this->visit('main.php?p=50110&o=general');
         $this->assertFind('css', 'input[name="test_proxy"]')->click();
@@ -35,14 +35,14 @@ class TestProxyConfigurationContext extends CentreonContext
         $value = $this->assertFind('css', 'span[class="msg-field success2"]')->getText();
         if ($value !== 'Connection Successful') {
             throw new \Exception('The URL to reach failed');
-        } 
+        }
     }
     
     /**
      * @Given I am logged in a Centreon server with a wrongly configured proxy
      */
-    public function IamLoggedInAcentreonServerWithAwronglyConfiguredProxy()
-    {   
+    public function IAmLoggedInAcentreonServerWithAwronglyConfiguredProxy()
+    {
         $this->iAmLoggedInACentreonServer();
         $this->page = new ParametersCentreonUiPage($this);
         $this->page->setProperties(array(
@@ -69,6 +69,6 @@ class TestProxyConfigurationContext extends CentreonContext
         $value = $this->assertFind('css', 'span[class="msg-field error"]')->getText();
         if ($value == 'Connection Successful') {
             throw new \Exception('The Proxy configuration is incorrect');
-        } 
-    } 
+        }
+    }
 }
