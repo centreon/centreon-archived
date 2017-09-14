@@ -219,7 +219,6 @@ function get_notified_infos_for_service($serviceId, $hostId)
             $stopReading['contactGroups'] = 1;
         }
 
-
         if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
             break;
         }
