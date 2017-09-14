@@ -69,6 +69,26 @@ class InfluxdbContext extends CentreonContext
       $this->assertFind('css', '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
 
       $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
+
+      // Restart all pollers.
+      $this->restartAllPollers();
+
+      // Wait for the InfluxDB connection.
+      $this->spin(
+          function ($context) {
+              $retval = $context->container->execute(
+                  'cat /var/lib/centreon-broker/central-broker-master-stats.json',
+                  'web',
+                  false
+              );
+              if ($retval['exit_code'] === 0) {
+                  $stats = json_decode($retval['output'], true);
+                  return $stats['endpoint TestInfluxdb']['state'] == 'connected';
+              }
+              return false;
+          },
+          'Centreon Broker did not connect to InfluxDB.'
+      );
     }
 
     /**
