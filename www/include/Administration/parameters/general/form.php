@@ -150,11 +150,11 @@ $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin sh
  */
 $form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
 $form->addElement(
-    'button', 
-    'test_proxy', 
+    'button',
+    'test_proxy',
     _("Test Proxy Configuration"),
-    array("class" => "btc bt_success", "onClick" => "javascript:checkProxyConf()"  
-    ));
+    array("class" => "btc bt_success", "onClick" => "javascript:checkProxyConf()")
+);
 $form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
 $form->addElement('text', 'proxy_user', _("Proxy user"), $attrsText);
 $form->addElement('password', 'proxy_password', _("Proxy password"), $attrsText);
