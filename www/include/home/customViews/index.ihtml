@@ -780,8 +780,13 @@ jQuery(function () {
 
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
-    if (jQuery(e.target).parents('.cntn').length === 0
-       && jQuery(e.target).hasClass('select2-selection__choice__remove') === false) {
+    /* 
+     * if were are in dropdown selection or popin select all.
+     */
+    if (jQuery(e.target).parents('.cntn').length === 0 &&
+        jQuery(e.target).parents('.select2-dropdown').length === 0 &&
+        jQuery(e.target).parents('.centreon-popin').length === 0 &&
+        jQuery(e.target).hasClass('select2-selection__choice__remove') === false) {
       jQuery('.toggle_wrapper').hide();
     }
   });
