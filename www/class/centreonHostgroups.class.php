@@ -350,6 +350,7 @@ class CentreonHostgroups
                "FROM hostgroup_relation hgr, host h, hostgroup hg " .
                "WHERE hgr.host_host_id = h.host_id " .
                "AND hgr.hostgroup_hg_id = hg.hg_id " .
+               "AND h.host_activate = '1' " .
                "AND hg.hg_name = '" . $this->DB->escape($hgName) . "'";
         $result = $this->DB->query($query);
 
