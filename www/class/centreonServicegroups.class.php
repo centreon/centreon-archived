@@ -238,6 +238,7 @@ class CentreonServicegroups
               "FROM servicegroup_relation sgr, service s, servicegroup sg, host h " .
               "WHERE sgr.service_service_id = s.service_id " .
               "AND sgr.servicegroup_sg_id = sg.sg_id " .
+              "AND s.service_activate = '1' " .
               "AND sgr.host_host_id = h.host_id " .
               "AND sg.sg_name = '" . $this->DB->escape($sgName) . "'";
         $result = $this->DB->query($query);
