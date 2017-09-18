@@ -688,7 +688,9 @@ class CentreonAPI
                 return 1;
             }
             $obj = new $objName($this->DB, $this->object);
-            $obj->setDependencyInjector($this->dependencyInjector);
+            if (method_exists($obj, 'setDependencyInjector')) {
+                $obj->setDependencyInjector($this->dependencyInjector);
+            }
 
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
@@ -888,7 +890,9 @@ class CentreonAPI
         $className .= '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
         $this->objectTable[$objname] = new $className($this->DB, $objname);
-        $this->objectTable[$objname]->setDependencyInjector($this->dependencyInjector);
+        if (method_exists($this->objectTable[$objname], 'setDependencyInjector')) {
+            $this->objectTable[$objname]->setDependencyInjector($this->dependencyInjector);
+        }
     }
 
     /**
