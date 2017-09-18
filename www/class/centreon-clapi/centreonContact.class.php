@@ -70,7 +70,6 @@ class CentreonContact extends CentreonObject
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
-    protected $dependencyInjector;
     public static $aDepends = array(
         'CONTACTTPL',
         'CMD',
@@ -155,15 +154,6 @@ class CentreonContact extends CentreonObject
         $this->register = 1;
         $this->activateField = 'contact_activate';
     }
-
-    /**
-     * @param $dependencyInjector
-     */
-    public function setDependencyInjector($dependencyInjector)
-    {
-        $this->dependencyInjector = $dependencyInjector;
-    }
-
 
     /**
      * Get contact ID
