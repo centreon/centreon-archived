@@ -487,6 +487,14 @@ class CentreonAPI
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
+                $algo = $this->utilsObject->detectPassPattern($row['contact_passwd']);
+                if(!$algo) {
+                    if ($useSha1) {
+                        $row['contact_passwd'] = 'sha1__'.$row['contact_passwd'];
+                    } else {
+                        $row['contact_passwd'] = 'md5__'.$row['contact_passwd'];
+                    }
+                }
                 if ($row['contact_passwd'] == $pass) {
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
