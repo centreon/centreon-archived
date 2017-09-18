@@ -490,9 +490,9 @@ class CentreonAPI
                 $algo = $this->utilsObject->detectPassPattern($row['contact_passwd']);
                 if(!$algo) {
                     if ($useSha1) {
-                        $row['contact_passwd'] = 'sha1__'.$row['contact_passwd'];
+                        $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
                     } else {
-                        $row['contact_passwd'] = 'md5__'.$row['contact_passwd'];
+                        $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
                     }
                 }
                 if ($row['contact_passwd'] == $pass) {
