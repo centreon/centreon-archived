@@ -195,7 +195,7 @@ class Utils
      * @param string $algo
      * @return string
      */
-    function encodePass($password, $algo = 'md5')
+    public function encodePass($password, $algo = 'md5')
     {
         $encodePassword = '';
         switch ($algo) {
@@ -216,7 +216,7 @@ class Utils
      * @param $pattern
      * @return null
      */
-    function detectPassPattern($pattern)
+    public function detectPassPattern($pattern)
     {
         $patternData = explode('__', $pattern);
         if (isset($patternData[1])) {
