@@ -500,9 +500,9 @@ class CentreonAPI
          * Check Login / Password
          */
         if ($useSha1) {
-            $pass = sha1($this->password);
+            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'sha1');
         } else {
-            $pass = md5($this->password);
+            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
         }
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
@@ -512,6 +512,14 @@ class CentreonAPI
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
+                $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
+                if (!$algo) {
+                    if ($useSha1) {
+                        $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
+                    } else {
+                        $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
+                    }
+                }
                 if ($row['contact_passwd'] == $pass) {
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
@@ -642,6 +650,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
+
         $action = strtoupper($this->action);
 
         /**
