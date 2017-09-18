@@ -57,10 +57,11 @@ class CentreonTopology
      */
     public function getTopology($key, $value)
     {
-        $queryTopologyPage = 'SELECT * FROM topology WHERE topology_' . $key . ' = ?';
+        $queryTopologyPage = 'SELECT * FROM topology WHERE topology_' . $key . ' = :keyTopo';
         $stmt = $this->db->prepare($queryTopologyPage);
-        $dbresult = $this->db->execute($stmt, array($value));
-        $row = $dbresult->fetchRow();
+        $stmt->bindParam(':keyTopo', $value);
+        $stmt->execute();
+        $row = $stmt->fetch();
         return $row;
     }
 
