@@ -481,9 +481,9 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = \detectPassPattern($element['contact_passwd']);
+            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
             if (!$algo) {
-                $element['contact_passwd'] = \encodePass($element['contact_passwd']);
+                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
             }
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
