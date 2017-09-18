@@ -34,7 +34,7 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
+require_once __DIR__ . '/centreonUtils.class.php';
 
 class CentreonAuth
 {
@@ -55,6 +55,11 @@ class CentreonAuth
 
     // Web UI or API
     protected $source;
+
+    /**
+     * @var CentreonUtils
+     */
+    protected $utilsObject;
 
     /*
      * Flags
@@ -90,6 +95,8 @@ class CentreonAuth
     public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $source = "WEB")
     {
         global $centreon_crypt;
+
+        $this->utilsObject = new CentreonUtils();
 
         $this->cryptPossibilities = array('MD5', 'SHA1');
         $this->CentreonLog = $CentreonLog;
@@ -150,7 +157,7 @@ class CentreonAuth
             return;
         }
 
-        $algo = detectPassPattern($this->userInfos["contact_passwd"]);
+        $algo = $this->utilsObject->detectPassPattern($this->userInfos["contact_passwd"]);
         if (!$algo) {
             $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
         }
@@ -221,9 +228,11 @@ class CentreonAuth
                 $this->passwdOk = 1;
             } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
-                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password)
-                && $this->autologin == 0) {
+            } elseif (
+                !empty($password) &&
+                $this->userInfos["contact_passwd"] == $this->myCrypt($password) &&
+                $this->autologin == 0
+            ) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -352,17 +361,17 @@ class CentreonAuth
      */
     protected function myCrypt($str)
     {
-        $algo = detectPassPattern($str);
+        $algo = $this->utilsObject->detectPassPattern($str);
         if(!$algo){
             switch ($this->cryptEngine) {
                 case 1:
-                    return encodePass($str, 'md5');
+                    return $this->utilsObject->encodePass($str, 'md5');
                     break;
                 case 2:
-                    return encodePass($str, 'sha1');
+                    return $this->utilsObject->encodePass($str, 'sha1');
                     break;
                 default:
-                    return encodePass($str, 'md5');
+                    return $this->utilsObject->encodePass($str, 'md5');
                     break;
             }
         } else {
