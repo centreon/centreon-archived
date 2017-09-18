@@ -60,14 +60,8 @@ class CentreonTopology
         $queryTopologyPage = 'SELECT * FROM topology WHERE topology_' . $key . ' = ?';
         $stmt = $this->db->prepare($queryTopologyPage);
         $dbresult = $this->db->execute($stmt, array($value));
-        if (PEAR::isError($dbresult)) {
-            throw new \Exception("Error during request");
-        }
-
         $row = $dbresult->fetchRow();
-
         return $row;
-
     }
 
     /**
