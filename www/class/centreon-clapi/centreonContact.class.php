@@ -37,7 +37,6 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
-require_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
 require_once "centreonTimePeriod.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
@@ -114,6 +113,11 @@ class CentreonContact extends CentreonObject
     protected $timezoneObject;
 
     /**
+     * @var CentreonUtils
+     */
+    protected $utilsObject;
+
+    /**
      * Constructor
      *
      * @return void
@@ -124,6 +128,7 @@ class CentreonContact extends CentreonObject
         $this->tpObject = new CentreonTimePeriod();
         $this->object = new \Centreon_Object_Contact();
         $this->timezoneObject = new \Centreon_Object_Timezone();
+        $this->utilsObject = new CentreonUtils();
         $this->params = array('contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
             'contact_location' => '0',
@@ -269,9 +274,9 @@ class CentreonContact extends CentreonObject
         $addParams['contact_name'] = $params[self::ORDER_NAME];
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
 
-        $algo = \detectPassPattern($params[self::ORDER_PASS]);
+        $algo = $this->utilsObject->detectPassPattern($params[self::ORDER_PASS]);
         if(!$algo){
-            $addParams['contact_passwd'] = \encodePass($params[self::ORDER_PASS]);
+            $addParams['contact_passwd'] = $this->utilsObject->encodePass($params[self::ORDER_PASS]);
         } else {
             $addParams['contact_passwd'] = $params[self::ORDER_PASS];
         }
@@ -473,9 +478,9 @@ class CentreonContact extends CentreonObject
 
         foreach ($elements as $element) {
 
-            $algo = \detectPassPattern($element['contact_passwd']);
+            $algo = $this->utilsObject->detectPassPattern($element['contact_passwd']);
             if(!$algo){
-                $element['contact_passwd'] = \encodePass($element['contact_passwd']);
+                $element['contact_passwd'] = $this->utilsObject->encodePass($element['contact_passwd']);
             }
 
             $addStr = $this->action . $this->delim . "ADD";

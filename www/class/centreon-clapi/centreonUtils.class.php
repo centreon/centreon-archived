@@ -150,4 +150,40 @@ class CentreonUtils
     {
         return self::$clapiUserName;
     }
+
+    /**
+     * @param $password
+     * @param $algo
+     * @return string
+     */
+    public function encodePass($password, $algo = 'md5')
+    {
+        $encodePassword = '';
+        switch ($algo) {
+            case 'md5' :
+                $encodePassword .= 'md5__' . md5($password);
+                break;
+            case 'sha1' :
+                $encodePassword .= 'sha1__' . sha1($password);
+                break;
+            default :
+                $encodePassword .= 'md5__' . md5($password);
+                break;
+        }
+        return $encodePassword;
+    }
+
+    /**
+     * @param $pattern
+     * @return null|string
+     */
+    public function detectPassPattern($pattern)
+    {
+        $patternData = explode('__', $pattern);
+        if (isset($patternData[1])) {
+            return $patternData[0];
+        } else {
+            return null;
+        }
+    }
 }

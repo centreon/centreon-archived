@@ -42,6 +42,7 @@ require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
+require_once __DIR__ . '/centreonUtils.class.php';
 
 if (file_exists(realpath(dirname(__FILE__)."/../centreonSession.class.php"))) {
     require_once realpath(dirname(__FILE__)."/../centreonSession.class.php");
@@ -78,6 +79,7 @@ class CentreonAPI
     public $variables;
     public $centreon_path;
     public $optGen;
+    private $utilsObject;
     private $return_code;
     private $relationObject;
     private $objectTable;
@@ -126,6 +128,8 @@ class CentreonAPI
         $this->DB = new \CentreonDB();
         $this->DBC = new \CentreonDB('centstorage');
         $this->dateStart = time();
+
+        $this->utilsObject = new CentreonUtils();
 
         $this->relationObject = array();
         $this->relationObject["CMD"] = array(
@@ -471,9 +475,9 @@ class CentreonAPI
          * Check Login / Password
          */
         if ($useSha1) {
-            $pass = sha1($this->password);
+            $pass = $this->utilsObject->encodePass($this->password, 'sha1');
         } else {
-            $pass = md5($this->password);
+            $pass = $this->utilsObject->encodePass($this->password, 'md5');
         }
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
