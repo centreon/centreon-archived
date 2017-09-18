@@ -1,8 +1,3 @@
-{
-  "variables": [],
-  "info": {
-    "name": "Centreon Web Rest API",
-    "_postman_id": "2fe339f0-54b9-2167-6fd3-46fbc1f292fa",
     "description": "",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
@@ -47110,12 +47105,12 @@
                   "postman.setGlobalVariable(\"fixed\", \"1\");",
                   "",
                   "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + date.getHours() + \":\" + ",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
                   "",
                   "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + dateEnd.getHours() + \":\" + ",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
                   ""
