@@ -162,6 +162,7 @@ class CentreonTraps
             $res = $this->db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
             $row = $res->fetchRow();
             $row["traps_id"] = '';
+            
             for ($i = 1; $i <= $nbrDup[$key]; $i++) {
                 $val = null;
                 foreach ($row as $key2 => $value2) {
@@ -177,6 +178,7 @@ class CentreonTraps
                     }
                 }
                 $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
+
                 $res = $this->db->query($rq);
                 $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                 $maxId = $res2->fetchRow();
