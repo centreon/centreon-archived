@@ -257,7 +257,6 @@ class CentreonWebService
         $wsObj = new $webService['class']();
 
         if (false === method_exists($wsObj, $action)) {
-            print "KO2";
             static::sendJson("Method not found", 404);
         }
 
