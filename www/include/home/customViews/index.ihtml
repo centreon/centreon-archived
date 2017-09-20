@@ -775,7 +775,8 @@ jQuery(function () {
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
     if (jQuery(e.target).parents('.cntn').length === 0
-       && jQuery(e.target).hasClass('select2-selection__choice__remove') === false) {
+       && jQuery(e.target).hasClass('select2-selection__choice__remove') === false &&
+       jQuery(e.target).parents('.select2-results__option').length === 0) {
       jQuery('.toggle_wrapper').hide();
     }
   });
