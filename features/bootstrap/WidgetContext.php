@@ -56,17 +56,12 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsInstalled()
     {
-        $self = $this;
         $this->spin(
-            function () use ($self) {
-                $widget = $self->page->getEntry($self->widgetName);
-                if ($widget['actions']['install']) {
-                    return false;
-                }
-                return true;
+            function ($context) {
+                $widget = $context->page->getEntry($context->widgetName);
+                return !$widget['actions']['install'];
             },
-            'Widget ' . $self->widgetName . ' is not installed.',
-            5
+            'Widget ' . $this->widgetName . ' is not installed.'
         );
     }
 
@@ -75,10 +70,13 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
-        $this->page = new WidgetListingPage($this);
-        $widget = $this->page->getEntry($this->widgetName);
-        if ($widget['actions']['remove']) {
-            throw new \Exception('Widget ' . $this->widgetName . ' is not removed.');
-        }
+        $self = $this;
+        $this->spin(
+            function ($context) {
+                $widget = $context->page->getEntry($context->widgetName);
+                return !$widget['actions']['remove'];
+            },
+            'Widget ' . $this->widgetName . ' is not removed.'
+        );
     }
 }
