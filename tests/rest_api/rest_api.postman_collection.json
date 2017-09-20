@@ -1,4 +1,9 @@
-    "description": "",
+{
+"variables": [],
+"info": {
+"name": "Centreon Web Rest API",
+"_postman_id": "7e8d87c5-e220-ec4f-01f9-a531a68da178",
+"description": "",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
   "item": [
