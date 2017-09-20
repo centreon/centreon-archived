@@ -232,6 +232,7 @@ $INIT_SCRIPT start
 ###
 output_log "Mount LVM snapshot"
 mkdir -p "$SNAPSHOT_MOUNT"
+mkfs.ext4 /dev/$vg_name/dbbackup
 mount /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
