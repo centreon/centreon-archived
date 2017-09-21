@@ -407,7 +407,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         }
         $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id " .
             "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
-        $request .= " WHERE h.host_id = s.host_id" .
+        $request .= " WHERE h.host_id = s.host_id " .
             "AND s.enabled = 1 " .
             "AND h.enabled = 1 " .
             "AND h.instance_id = i.instance_id ";
@@ -493,12 +493,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
 
         (isset($tabOrder[$this->sortType])) ? $request .= $tabOrder[$this->sortType] : $request .= $tabOrder["default"];
         $request .= " LIMIT " . ($this->number * $this->limit) . "," . $this->limit;
-
-        /** * **************************************************
-         * Get Pagination Rows
-         */
         $dbResult = $this->realTimeDb->query($request);
-        $numRows = $this->realTimeDb->numberRows();
 
         $dataList = array();
         while ($data = $dbResult->fetchRow()) {
