@@ -95,7 +95,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
 
     protected function getFieldContent()
     {
-        $tab = split(',', $this->arguments['fields']);
+        $tab = explode(',', $this->arguments['fields']);
 
         $fieldList = array();
         foreach ($tab as $key) {
@@ -193,7 +193,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $fields["s.acknowledged"] = 'acknowledged';
             $fields["cv.value as criticality"] = 'criticality';
         } else {
-            $tab = split(',', $this->arguments['fields']);
+            $tab = explode(',', $this->arguments['fields']);
 
             $fieldList = array();
             foreach ($tab as $key) {
@@ -384,8 +384,8 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         $tabOrder["service_description"] = " ORDER BY s.description " . $this->order . ", h.name";
         $tabOrder["current_state"] = " ORDER BY s.state " . $this->order . ", h.name, s.description";
         $tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $this->order . ", h.name, s.description";
-        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change "
-            . $this->order . ", h.name, s.description";
+        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $this->order .
+            ", h.name, s.description";
         $tabOrder["last_check"] = " ORDER BY s.last_check " . $this->order . ", h.name, s.description";
         $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $this->order . ", h.name, s.description";
         $tabOrder["output"] = " ORDER BY s.output " . $this->order . ", h.name, s.description";
@@ -405,17 +405,17 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if (!$this->admin) {
             $request .= ", centreon_acl ";
         }
-        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id "
-            . "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
-        $request .= " WHERE h.host_id = s.host_id
-                        AND s.enabled = 1
-                        AND h.enabled = 1
-                        AND h.instance_id = i.instance_id ";
+        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id " .
+            "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
+        $request .= " WHERE h.host_id = s.host_id" .
+            "AND s.enabled = 1 " .
+            "AND h.enabled = 1 " .
+            "AND h.instance_id = i.instance_id ";
         if ($this->criticality) {
-            $request .= " AND s.service_id = cvs. service_id
-                          AND cvs.host_id = h.host_id
-                          AND cvs.name = 'CRITICALITY_ID'
-                          AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
+            $request .= " AND s.service_id = cvs. service_id " .
+                "AND cvs.host_id = h.host_id " .
+                "AND cvs.name = 'CRITICALITY_ID' " .
+                "AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
         }
         $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
@@ -471,24 +471,24 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
          * HostGroup Filter
          */
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
-            $request .= " AND hg.hostgroup_id = hg2.hostgroup_id "
-                . "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $this->hostgroup . ") ";
+            $request .= " AND hg.hostgroup_id = hg2.hostgroup_id " .
+                "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $this->hostgroup . ") ";
         }
         /**
          * ServiceGroup Filter
          */
         if (isset($this->servicegroup) && $this->servicegroup != 0) {
-            $request .= " AND ssg.servicegroup_id = sg.servicegroup_id "
-                . "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $this->servicegroup . ") ";
+            $request .= " AND ssg.servicegroup_id = sg.servicegroup_id " .
+                "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $this->servicegroup . ") ";
         }
 
         /**
          * ACL activation
          */
         if (!$this->admin) {
-            $request .= " AND h.host_id = centreon_acl.host_id "
-                . "AND s.service_id = centreon_acl.service_id "
-                . "AND group_id IN (" . $this->aclObj->getAccessGroupsString() . ") ";
+            $request .= " AND h.host_id = centreon_acl.host_id " .
+                "AND s.service_id = centreon_acl.service_id " .
+                "AND group_id IN (" . $this->aclObj->getAccessGroupsString() . ") ";
         }
 
         (isset($tabOrder[$this->sortType])) ? $request .= $tabOrder[$this->sortType] : $request .= $tabOrder["default"];
