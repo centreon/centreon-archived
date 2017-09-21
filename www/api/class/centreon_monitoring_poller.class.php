@@ -78,7 +78,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
 
         $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
             'FROM instances ' .
-            'WHERE name LIKE ? ' .
+            'WHERE name LIKE ? AND deleted=0 ' .
             'ORDER BY name ' . $range;
 
         $stmt = $this->pearDBMonitoring->prepare($queryPoller);
