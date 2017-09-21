@@ -46,7 +46,6 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
     /**
      * @var CentreonDB
      */
-    protected $pearDBMon;
     protected $aclObj;
     protected $admin;
 
@@ -73,8 +72,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         global $centreon;
 
         parent::__construct();
-        $this->pearDBMon = new CentreonDB('centstorage');
-        
+
         // Init ACL
         if (!$centreon->user->admin) {
             $this->admin = 0;
@@ -164,13 +162,13 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
      */
     protected function getFieldContent()
     {
-        $tab = split(',', $this->arguments['fields']);
+        $tab = explode(',', $this->arguments['fields']);
 
         $fieldList = array();
         foreach ($tab as $key) {
             $fieldList[trim($key)] = 1;
         }
-        return($fieldList);
+        return ($fieldList);
     }
 
     /**
@@ -305,7 +303,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         /*
          * Get Host status
          */
-        $query =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$this->fieldList." ";
+        $query = " SELECT SQL_CALC_FOUND_ROWS DISTINCT " . $this->fieldList . " ";
         $query .= " FROM instances i, ";
         if (!$this->admin) {
             $query .= " centreon_acl, ";
@@ -332,7 +330,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.host_id = cvs.host_id ";
             $query .= " AND cvs.name = 'CRITICALITY_ID' ";
             $query .= " AND cvs.service_id IS NULL ";
-            $query .= " AND cvs.value = '".CentreonDB::escape($criticality)."' ";
+            $query .= " AND cvs.value = '" . CentreonDB::escape($criticality) . "' ";
         }
 
         if (!$this->admin) {
@@ -354,7 +352,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.acknowledged = 0";
             $query .= " AND h.scheduled_downtime_depth = 0";
         } elseif ($this->viewType == "problems") {
-             $query .= " AND (h.state != 0 AND h.state != 4) ";
+            $query .= " AND (h.state != 0 AND h.state != 4) ";
         }
 
         if ($this->status == "up") {
@@ -374,49 +372,49 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
-            $query .= " AND h.instance_id = ".$this->instance;
+            $query .= " AND h.instance_id = " . $this->instance;
         }
         $query .= " AND h.enabled = 1 ";
-        
+
         switch ($this->sortType) {
             case 'name':
-                $query .= " ORDER BY h.name ". $this->order;
+                $query .= " ORDER BY h.name " . $this->order;
                 break;
             case 'current_state':
-                $query .= " ORDER BY h.state ". $this->order.", h.name ";
+                $query .= " ORDER BY h.state " . $this->order . ", h.name ";
                 break;
             case 'last_state_change':
-                $query .= " ORDER BY h.last_state_change ". $this->order.", h.name ";
+                $query .= " ORDER BY h.last_state_change " . $this->order . ", h.name ";
                 break;
             case 'last_hard_state_change':
-                $query .= " ORDER BY h.last_hard_state_change ". $this->order.",h.name ";
+                $query .= " ORDER BY h.last_hard_state_change " . $this->order . ",h.name ";
                 break;
             case 'last_check':
-                $query .= " ORDER BY h.last_check ". $this->order.", h.name ";
+                $query .= " ORDER BY h.last_check " . $this->order . ", h.name ";
                 break;
             case 'current_check_attempt':
-                $query .= " ORDER BY h.check_attempt ". $this->order.", h.name ";
+                $query .= " ORDER BY h.check_attempt " . $this->order . ", h.name ";
                 break;
             case 'ip':
-                $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) ". $this->order.", h.name ";
+                $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $this->order . ", h.name ";
                 break;
             case 'plugin_output':
-                $query .= " ORDER BY h.output ". $this->order.", h.name ";
+                $query .= " ORDER BY h.output " . $this->order . ", h.name ";
                 break;
             case 'criticality_id':
-                $query .= " ORDER BY isnull ".$this->order.", criticality ".$this->order.", h.name ";
+                $query .= " ORDER BY isnull " . $this->order . ", criticality " . $this->order . ", h.name ";
                 break;
             default:
-                $query .= " ORDER BY isnull ".$this->order.", criticality ".$this->order.", h.name ";
+                $query .= " ORDER BY isnull " . $this->order . ", criticality " . $this->order . ", h.name ";
                 break;
         }
-        $query .= " LIMIT ".($this->number * $this->limit).", ".$this->limit;
-        $DBRESULT = $this->pearDBMon->query($query);
+        $query .= " LIMIT " . ($this->number * $this->limit) . ", " . $this->limit;
+        $dbResult = $this->realTimeDb->query($query);
 
-        $datas = array();
-        while ($data = $DBRESULT->fetchRow()) {
-            $datas[] = $data;
+        $dataList = array();
+        while ($data = $dbResult->fetchRow()) {
+            $dataList[] = $data;
         }
-        return $datas;
+        return $dataList;
     }
 }
