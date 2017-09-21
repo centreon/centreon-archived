@@ -384,7 +384,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                 case 'address':
                     $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $this->order . ", h.name ";
                     break;
-                case 'current_state':
+                case 'state':
                     $query .= " ORDER BY h.state " . $this->order . ", h.name ";
                     break;
                 case 'last_state_change':
@@ -396,10 +396,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                 case 'last_check':
                     $query .= " ORDER BY h.last_check " . $this->order . ", h.name ";
                     break;
-                case 'current_check_attempt':
+                case 'check_attempt':
                     $query .= " ORDER BY h.check_attempt " . $this->order . ", h.name ";
                     break;
-                case 'plugin_output':
+                case 'output':
                     $query .= " ORDER BY h.output " . $this->order . ", h.name ";
                     break;
                 case 'criticality':
