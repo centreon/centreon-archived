@@ -278,9 +278,6 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             if (isset($fieldList['flapping'])) {
                 $fields["h.flapping"] = 'flapping';
             }
-            if (isset($fieldList['isnull'])) {
-                $fields["cv.value IS NULL as isnull"] = 'isnull';
-            }
         }
 
         /* Build Field List */
@@ -376,38 +373,39 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
         $query .= " AND h.enabled = 1 ";
 
-
-        switch ($this->sortType) {
-            case 'name':
-                $query .= " ORDER BY h.name " . $this->order;
-                break;
-            case 'current_state':
-                $query .= " ORDER BY h.state " . $this->order . ", h.name ";
-                break;
-            case 'last_state_change':
-                $query .= " ORDER BY h.last_state_change " . $this->order . ", h.name ";
-                break;
-            case 'last_hard_state_change':
-                $query .= " ORDER BY h.last_hard_state_change " . $this->order . ",h.name ";
-                break;
-            case 'last_check':
-                $query .= " ORDER BY h.last_check " . $this->order . ", h.name ";
-                break;
-            case 'current_check_attempt':
-                $query .= " ORDER BY h.check_attempt " . $this->order . ", h.name ";
-                break;
-            case 'ip':
-                $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $this->order . ", h.name ";
-                break;
-            case 'plugin_output':
-                $query .= " ORDER BY h.output " . $this->order . ", h.name ";
-                break;
-            case 'criticality_id':
-                $query .= " ORDER BY isnull " . $this->order . ", criticality " . $this->order . ", h.name ";
-                break;
-            default:
-                $query .= " ORDER BY isnull " . $this->order . ", criticality " . $this->order . ", h.name ";
-                break;
+        if (
+            in_array($this->sortType, explode(',', $this->arguments['fields'])) ||
+            is_null($this->arguments['fields'])
+        ) {
+            switch ($this->sortType) {
+                case 'name':
+                    $query .= " ORDER BY h.name " . $this->order;
+                    break;
+                case 'address':
+                    $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $this->order . ", h.name ";
+                    break;
+                case 'current_state':
+                    $query .= " ORDER BY h.state " . $this->order . ", h.name ";
+                    break;
+                case 'last_state_change':
+                    $query .= " ORDER BY h.last_state_change " . $this->order . ", h.name ";
+                    break;
+                case 'last_hard_state_change':
+                    $query .= " ORDER BY h.last_hard_state_change " . $this->order . ",h.name ";
+                    break;
+                case 'last_check':
+                    $query .= " ORDER BY h.last_check " . $this->order . ", h.name ";
+                    break;
+                case 'current_check_attempt':
+                    $query .= " ORDER BY h.check_attempt " . $this->order . ", h.name ";
+                    break;
+                case 'plugin_output':
+                    $query .= " ORDER BY h.output " . $this->order . ", h.name ";
+                    break;
+                case 'criticality':
+                    $query .= " ORDER BY criticality " . $this->order . ", h.name ";
+                    break;
+            }
         }
         $query .= " LIMIT " . ($this->number * $this->limit) . ", " . $this->limit;
         $dbResult = $this->realTimeDb->query($query);
