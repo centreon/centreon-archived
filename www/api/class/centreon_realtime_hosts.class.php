@@ -330,7 +330,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.host_id = cvs.host_id ";
             $query .= " AND cvs.name = 'CRITICALITY_ID' ";
             $query .= " AND cvs.service_id IS NULL ";
-            $query .= " AND cvs.value = '" . CentreonDB::escape($criticality) . "' ";
+            $query .= " AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
         }
 
         if (!$this->admin) {
@@ -367,7 +367,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
         if ($this->hostgroup) {
             $query .= " AND h.host_id = hhg.host_id ";
-            $query .= " AND hg.hostgroup_id IN ($hostgroups) ";
+            $query .= " AND hg.hostgroup_id IN ($this->hostgroup) ";
             $query .= " AND hhg.hostgroup_id = hg.hostgroup_id";
         }
 
@@ -375,6 +375,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.instance_id = " . $this->instance;
         }
         $query .= " AND h.enabled = 1 ";
+
 
         switch ($this->sortType) {
             case 'name':

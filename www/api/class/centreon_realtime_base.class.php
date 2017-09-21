@@ -190,9 +190,9 @@ class CentreonRealtimeBase extends CentreonWebService
         }
 
         // Getting Current Values
-        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " "
-            . "FROM " . $currentObject['table'] . " "
-            . "WHERE " . $currentObject['id'] . " = ?";
+        $queryValuesRetrieval = "SELECT " . implode(', ', $fields) . " " .
+            "FROM " . $currentObject['table'] . " " .
+            "WHERE " . $currentObject['id'] . " = ?";
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
         $resRetrieval = $this->pearDB->execute($stmt, array((int)$id));
