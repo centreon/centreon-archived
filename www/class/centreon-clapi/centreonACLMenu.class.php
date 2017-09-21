@@ -432,8 +432,7 @@ class CentreonACLMenu extends CentreonObject
         $queryAclMenuRelations = 'SELECT t.topology_page, t.topology_id, t.topology_name, atr.access_right ' .
             'FROM acl_topology_relations atr, topology t ' .
             'WHERE atr.topology_topology_id = t.topology_id ' .
-            "AND atr.access_right <> '0' " .
-            "AND LENGTH(t.topology_page) > 3 " .
+            "AND atr.access_right <> '0'" .
             'AND atr.acl_topo_id = ?';
 
         $grantedTopologyList = $this->db->fetchAll($queryAclMenuRelations, array($aclTopoId));
