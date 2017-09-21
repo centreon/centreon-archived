@@ -125,19 +125,19 @@ If you want to grant in Read/Write, Read Only or revoke menus in an ACL Menu rul
 
 Let's assume that you would like to grant full access to the [Monitoring] menu in your ACL Menu rule:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;Monitoring"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;1;Monitoring"
 
 Then, you would like to grant access to the [Home] > [Poller statistics] menu:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;Home;Poller statistics"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantrw -v "ACL Menu test;1;Home;Poller statistics"
 
 Then, you would like to grant access in read only to the [Configuration] > [Hosts] menu:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantro -v "ACL Menu test;Configuration;Hosts"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a grantro -v "ACL Menu test;1;Configuration;Hosts"
 
 Then, you decide to revoke access from [Monitoring] > [Event Logs]:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a revoke -v "ACL Menu test;Monitoring;Event Logs" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a revoke -v "ACL Menu test;1;Monitoring;Event Logs"
 
 
 Arguments are composed of the following columns:
@@ -145,9 +145,11 @@ Arguments are composed of the following columns:
 ======= ============================
 Order	Column description
 ======= ============================
-1	Name of ACL menu rule
+1	    Name of ACL menu rule
 
-2	Menu name to grant/revoke
+2	    Menu name to grant/revoke
 
-n	Possible sub menu name
+3       Grant/revoke children menus
+
+n	    Possible sub menu name
 ======= ============================
