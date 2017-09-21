@@ -70,7 +70,6 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
-        $self = $this;
         $this->spin(
             function ($context) {
                 $widget = $context->page->getEntry($context->widgetName);
