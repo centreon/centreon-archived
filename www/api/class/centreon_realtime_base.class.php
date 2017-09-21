@@ -39,11 +39,17 @@ require_once dirname(__FILE__) . "/webService.class.php";
 class CentreonRealtimeBase extends CentreonWebService
 {
     /**
+     * @var
+     */
+    protected $realTimeDb;
+
+    /**
      * CentreonConfigurationObjects constructor.
      */
     public function __construct()
     {
         parent::__construct();
+        $this->realTimeDb = new CentreonDB('centstorage');
     }
 
     /**
@@ -117,9 +123,9 @@ class CentreonRealtimeBase extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $externalObject
-     * @param array $values
+     * @param $externalObject
+     * @param $values
+     * @return array
      */
     protected function retrieveExternalObjectDatas($externalObject, $values)
     {

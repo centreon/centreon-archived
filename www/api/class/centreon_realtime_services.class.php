@@ -42,7 +42,6 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
     /**
      * @var CentreonDB
      */
-    protected $pearDBMon;
     protected $aclObj;
     protected $admin;
 
@@ -71,8 +70,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         global $centreon;
 
         parent::__construct();
-        $this->pearDBMon = new CentreonDB('centstorage');
-        
+
         // Init ACL
         if (!$centreon->user->admin) {
             $this->admin = 0;
@@ -103,7 +101,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         foreach ($tab as $key) {
             $fieldList[$key] = 1;
         }
-        return($fieldList);
+        return ($fieldList);
     }
 
     protected function setServiceFilters()
@@ -359,41 +357,41 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
          */
         $instance_filter = "";
         if ($this->instance != -1 && !empty($this->instance)) {
-            $instance_filter = " AND h.instance_id = ".$this->instance." ";
+            $instance_filter = " AND h.instance_id = " . $this->instance . " ";
         }
 
         /* Search string to a host name, alias or address */
         $searchHost = "";
         if ($this->searchHost) {
-            $searchHost .= " AND (h.name LIKE '%".CentreonDB::escape($this->searchHost)."%' ";
-            $searchHost .= " OR h.alias LIKE '%".CentreonDB::escape($this->searchHost)."%' ";
-            $searchHost .= " OR h.address LIKE '%".CentreonDB::escape($this->searchHost)."%') ";
+            $searchHost .= " AND (h.name LIKE '%" . CentreonDB::escape($this->searchHost) . "%' ";
+            $searchHost .= " OR h.alias LIKE '%" . CentreonDB::escape($this->searchHost) . "%' ";
+            $searchHost .= " OR h.address LIKE '%" . CentreonDB::escape($this->searchHost) . "%') ";
         }
 
         $searchService = "";
         if ($this->search) {
-            $searchService .= " AND (s.description LIKE '%".CentreonDB::escape($this->search)."%' ";
-            $searchService .= " OR s.display_name LIKE '%".CentreonDB::escape($this->search)."%')";
+            $searchService .= " AND (s.description LIKE '%" . CentreonDB::escape($this->search) . "%' ";
+            $searchService .= " OR s.display_name LIKE '%" . CentreonDB::escape($this->search) . "%')";
         }
         $searchOutput = "";
         if ($this->searchOutput) {
-            $searchOutput .= " AND s.output LIKE '%".CentreonDB::escape($this->searchOutput)."%' ";
+            $searchOutput .= " AND s.output LIKE '%" . CentreonDB::escape($this->searchOutput) . "%' ";
         }
 
         $tabOrder = array();
-        $tabOrder["criticality_id"] = " ORDER BY criticality ".$this->order.", h.name, s.description ";
+        $tabOrder["criticality_id"] = " ORDER BY criticality " . $this->order . ", h.name, s.description ";
         $tabOrder["host_name"] = " ORDER BY h.name " . $this->order . ", s.description ";
         $tabOrder["service_description"] = " ORDER BY s.description " . $this->order . ", h.name";
         $tabOrder["current_state"] = " ORDER BY s.state " . $this->order . ", h.name, s.description";
         $tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $this->order . ", h.name, s.description";
         $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change "
-                                                . $this->order . ", h.name, s.description";
+            . $this->order . ", h.name, s.description";
         $tabOrder["last_check"] = " ORDER BY s.last_check " . $this->order . ", h.name, s.description";
         $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $this->order . ", h.name, s.description";
         $tabOrder["output"] = " ORDER BY s.output " . $this->order . ", h.name, s.description";
         $tabOrder["default"] = " ORDER BY s.description " . $this->order . ", h.name";
 
-        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT ".$this->fieldList." ";
+        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT " . $this->fieldList . " ";
         $request .= " FROM hosts h, instances i ";
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
             $request .= ", hosts_hostgroups hg, hostgroups hg2";
@@ -408,7 +406,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $request .= ", centreon_acl ";
         }
         $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id "
-                        . "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
+            . "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
         $request .= " WHERE h.host_id = s.host_id
                         AND s.enabled = 1
                         AND h.enabled = 1
@@ -417,7 +415,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $request .= " AND s.service_id = cvs. service_id
                           AND cvs.host_id = h.host_id
                           AND cvs.name = 'CRITICALITY_ID'
-                          AND cvs.value = '".CentreonDB::escape($this->criticality)."' ";
+                          AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
         }
         $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
@@ -499,26 +497,25 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         /** * **************************************************
          * Get Pagination Rows
          */
-        $DBRESULT = $this->pearDBMon->query($request);
-        $numRows = $this->pearDBMon->numberRows();
+        $dbResult = $this->realTimeDb->query($request);
+        $numRows = $this->realTimeDb->numberRows();
 
-        $datas = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        $dataList = array();
+        while ($data = $dbResult->fetchRow()) {
             if (isset($data['criticality']) && isset($this->criticalityList[$data['criticality']])) {
                 $data["criticality"] = $this->criticalityList[$data['criticality']];
             }
-            $datas[] = $data;
+            $dataList[] = $data;
         }
-        return $datas;
+        return $dataList;
     }
 
     protected function getCriticality()
     {
         $this->criticalityList = array();
-        
-        $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description 
-                FROM service_categories 
-                    WHERE level IS NOT NULL ORDER BY level DESC";
+
+        $sql = "SELECT `sc_id`, `sc_name`, `level`, `icon_id`, `sc_description` FROM `service_categories` " .
+            "WHERE `level` IS NOT NULL ORDER BY `level` DESC";
         $res = $this->pearDB->query($sql);
         while ($row = $res->fetchRow()) {
             $this->criticalityList[$row['sc_name']] = $row;
