@@ -34,11 +34,13 @@
 
 (function ($, window) {
   'use strict';
-  
+
   function CentreonPopin(settings, $elem) {
-    var self = this;
-    var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
-    var $newElem = $('<div></div>');
+    var self = this,
+        closeBtn = $('<a class="close" href="#">' +
+                    '<img src="./img/icons/circle-cross.png" class="ico-18"></a>'),
+        $newElem = $('<div></div>');
+
     self.settings = settings;
 
     /* Add class */
@@ -46,7 +48,6 @@
     $newElem.addClass('centreon-popin');
     $newElem.hide();
     $elem.wrap($newElem);
-  
     self.$elem = $elem.parents('.centreon-popin').detach();
     self.$elem.appendTo('body');
 
@@ -57,14 +58,14 @@
     });
 
     self.initOverlay();
-    
-    if(self.settings.url !== null){
+
+    if (self.settings.url !== null) {
         $.ajax({
-           url : self.settings.url,
-           type: self.settings.ajaxType,
-           dataType : self.settings.ajaxDataType,
-           data: self.settings.postDatas,
-           success : function(html){
+            url : self.settings.url,
+            type: self.settings.ajaxType,
+            dataType : self.settings.ajaxDataType,
+            data: self.settings.postDatas,
+            success : function(html){
 
                /* Execute callback if defined on settings */
                if (typeof(self.settings.formatResponse) === 'function') {
@@ -82,9 +83,9 @@
                if (typeof(self.settings.onComplete) === 'function') {
                    self.settings.onComplete();
                }
-           }
+            }
         });
-    }else{
+    } else {
         self.reset();
         if (self.settings.open) {
            self.open();
@@ -101,17 +102,24 @@
           .addClass('centreon-popin-overlay')
           .hide()
           .prependTo('body');
-      }
-      $('#centreonPopinOverlay').on('click', function (e) {
-        if (self.settings.closeOnDocument) {
-          if ($(e.target).parents('.centreon-popin').length === 0) {
-            self.close();
+
+          if (self.settings.isModal) {
+              $('.close').hide();
+              $('.centreon-popin').css({'padding': '1em'})
           }
-        }
-      });
+      }
     },
-    setUrl : function(url){
-        this.settings.url = url;
+
+    handleOverlay: function() {
+        var self = this;
+
+        $('#centreonPopinOverlay').on('click', function (e) {
+            if (!self.settings.isModal) {
+                if ($(e.target).parents('.centreon-popin').length === 0) {
+                    self.close();
+                }
+            }
+        });
     },
 
     reset: function() {
@@ -159,6 +167,8 @@
       this.setCenter();
       this.setScroll();
       this.opened = true;
+
+      this.handleOverlay();
     },
     close: function () {
       this.opened = false;
@@ -168,7 +178,7 @@
       } else {
         this.$elem.hide();
       }
-      $('#centreonPopinOverlay').hide();
+      $('#centreonPopinOverlay').hide().off('click');
 
       /* Execute callback if defined on settings */
       if (typeof(this.settings.onClose) === 'function') {
@@ -176,26 +186,31 @@
       }
     }
   };
-  
+
   $.fn.centreonPopin = function (options) {
-    var args = Array.prototype.splice.call(arguments, 1);
-    var settings = $.extend({}, $.fn.centreonPopin.defaults, options);
-    var methodReturn;
+    var args = Array.prototype.splice.call(arguments, 1),
+        settings = $.extend({}, $.fn.centreonPopin.defaults, options),
+        methodReturn;
+
     var $set = this.each(function () {
-      var $this = $(this);
-      var data = $this.data('centreonPopin');
+      var $this = $(this),
+      data = $this.data('centreonPopin');
+
       if (!data) {
         $this.data('centreonPopin', (data = new CentreonPopin(settings, $this)));
       }
+
       if (typeof options === 'string') {
-        methodReturn = data[options].apply(data, args);
+          methodReturn = data[options].apply(data, args);
+      } else if (options.open) {
+          methodReturn = data['open'].apply(data, args);
       }
     });
-    return (methodReturn === undefined) ? $set : methodReturn;
+      if (methodReturn === undefined) return $set;
   };
-  
+
   $.fn.centreonPopin.defaults = {
-    closeOnDocument: true,
+    isModal: false,
     open: false,
     url : null,
     ajaxDataType: 'html',

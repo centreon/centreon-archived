@@ -82,7 +82,6 @@ class MassiveChangeHostsContext extends CentreonContext
         'notify_on_downtime_scheduled' => 1,
         'notify_on_none' => 0,
         'notification_interval' => 17,
-        'update_mode_hcg' => 1,
         'update_mode_notif_interval' => 0,
         'update_mode_timeperiod' => 0,
         'notification_period' => 'none',

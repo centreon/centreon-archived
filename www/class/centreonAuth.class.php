@@ -40,16 +40,17 @@ class CentreonAuth
      * Declare Values
      */
 
+    public $userInfos;
     protected $login;
     protected $password;
     protected $enable;
     protected $userExists;
     protected $cryptEngine;
     protected $autologin;
-    public $userInfos;
     protected $cryptPossibilities;
     protected $pearDB;
     protected $debug;
+    protected $dependencyInjector;
 
     // Web UI or API
     protected $source;
@@ -85,10 +86,20 @@ class CentreonAuth
      * @param string $token | for autologin
      * @return void
      */
-    public function __construct($username, $password, $autologin, $pearDB, $CentreonLog, $encryptType = 1, $token = "", $source = "WEB")
-    {
+    public function __construct(
+        $dependencyInjector,
+        $username,
+        $password,
+        $autologin,
+        $pearDB,
+        $CentreonLog,
+        $encryptType = 1,
+        $token = "",
+        $source = "WEB"
+    ) {
         global $centreon_crypt;
 
+        $this->dependencyInjector = $dependencyInjector;
         $this->cryptPossibilities = array('MD5', 'SHA1');
         $this->CentreonLog = $CentreonLog;
         $this->login = $username;
@@ -147,7 +158,10 @@ class CentreonAuth
             $this->passwdOk = 0;
             return;
         }
-
+        $algo = $this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"]);
+        if (!$algo) {
+            $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
+        }
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
             /*
              * Insert LDAP Class
@@ -214,7 +228,8 @@ class CentreonAuth
             } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
                 $this->passwdOk = 1;
             } elseif (!empty($password)
-                    && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+                && $this->userInfos["contact_passwd"] == $this->myCrypt($password)
+                && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -344,16 +359,21 @@ class CentreonAuth
      */
     protected function myCrypt($str)
     {
-        switch ($this->cryptEngine) {
-            case 1:
-                return md5($str);
-                break;
-            case 2:
-                return sha1($str);
-                break;
-            default:
-                return md5($str);
-                break;
+        $algo = $this->dependencyInjector['utils']->detectPassPattern($str);
+        if (!$algo) {
+            switch ($this->cryptEngine) {
+                case 1:
+                    return $this->dependencyInjector['utils']->encodePass($str, 'md5');
+                    break;
+                case 2:
+                    return $this->dependencyInjector['utils']->encodePass($str, 'sha1');
+                    break;
+                default:
+                    return $this->dependencyInjector['utils']->encodePass($str, 'md5');
+                    break;
+            }
+        } else {
+            return $str;
         }
     }
 

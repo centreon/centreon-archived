@@ -107,8 +107,8 @@ class PartEngine
             $day = "0" . $day;
         }
             
-        print "[".date(DATE_RFC822)."][updateParts] Create new part : " . ($ntime[5] + 1900) . $month . $day
-            . " - Range: $current_time\n";
+        print "[".date(DATE_RFC822)."][updateParts] Create new part for table " . $tableName . " : "
+            . ($ntime[5] + 1900) . $month . $day . " - Range: $current_time\n";
 
         $partitionQuery = "PARTITION `p" . ($ntime[5] + 1900) . $month . $day
             . "` VALUES LESS THAN(" . $current_time . ")";

@@ -1,5 +1,6 @@
 {$form.javascript}
 {$colorJS}
+<div id ="testProxy"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
 <table class="formTable table">
  	<tr class="ListHeader">
@@ -66,7 +67,7 @@
         <h4>{t}Proxy options{/t}</h4>
       </td>
     </tr>
-  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html}</td></tr>
+  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_url">{$form.proxy_url.label}</td><td class="FormRowValue">{$form.proxy_url.html} {if not $form.frozen}{$form.test_proxy.html}{/if}</td></tr>
   	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_port">{$form.proxy_port.label}</td><td class="FormRowValue">{$form.proxy_port.html}</td></tr>
   	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_user">{$form.proxy_user.label}</td><td class="FormRowValue">{$form.proxy_user.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_proxy_password">{$form.proxy_password.label}</td><td class="FormRowValue">{$form.proxy_password.html}</td></tr>
@@ -123,3 +124,31 @@
 {$form.hidden}
 </form>
 {$helptext}
+
+{literal}
+<script type="text/javascript">
+    
+function checkProxyConf() {
+    jQuery.ajax({
+        type : "POST",
+        url : "./include/common/webServices/rest/internal.php?object=centreon_proxy&action=checkConfiguration",
+        data : JSON.stringify({
+            url: jQuery( "input[name='proxy_url']" ).val(),
+            port: jQuery( "input[name='proxy_port']" ).val()
+            }),
+        success : function(data) {
+            var classpopin = 'success2';
+            var msg = data.message;
+
+            if (!data.outcome) {
+                classpopin ='error';
+            }
+            var span = '<span class="msg-field ' + classpopin + '">' + msg + '</span>';
+            jQuery('#msg-wrapper').html(span);
+            jQuery('#testProxy').centreonPopin("open");
+        }
+    });
+}
+
+</script>
+{/literal}

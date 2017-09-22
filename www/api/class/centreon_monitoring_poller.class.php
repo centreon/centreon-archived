@@ -69,7 +69,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
 
         $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
             'FROM instances ' .
-            'WHERE name LIKE :name ' .
+            'WHERE name LIKE :name AND deleted=0 ' .
             'ORDER BY name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];

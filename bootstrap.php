@@ -83,6 +83,11 @@ $dependencyInjector['filesystem'] = function ($c) {
     return new \Symfony\Component\Filesystem\Filesystem();
 };
 
+// Utils
+$dependencyInjector['utils'] = function ($c) use ($dependencyInjector) {
+    return new \CentreonLegacy\Core\Utils\Utils($dependencyInjector);
+};
+
 // Define finder
 $dependencyInjector['finder'] = $dependencyInjector->factory(function ($c) {
     return new \Symfony\Component\Finder\Finder();

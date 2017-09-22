@@ -61,6 +61,12 @@ abstract class CentreonObject
      * @var Zend_Db_Adapter
      */
     protected $db;
+
+    /**
+     * @var
+     */
+    protected $dependencyInjector;
+
     /**
      * Version of Centreon
      *
@@ -129,9 +135,20 @@ abstract class CentreonObject
         $this->api = CentreonAPI::getInstance();
     }
 
+    /**
+     * @return Centreon_Object
+     */
     public function getObject()
     {
         return $this->object;
+    }
+
+    /**
+     * @param $dependencyInjector
+     */
+    public function setDependencyInjector($dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
