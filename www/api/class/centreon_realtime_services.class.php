@@ -180,6 +180,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if (!isset($this->arguments['fields'])) {
             $fields["h.host_id as id"] = 'host_id';
             $fields["h.name"] = 'name';
+            $fields["s.description"] = 'description';
             $fields["s.service_id"] = 'service_id';
             $fields["s.state"] = 'state';
             $fields["s.state_type"] = 'state_type';
