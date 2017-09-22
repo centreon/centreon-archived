@@ -166,7 +166,7 @@ Field list :
 
 Using GET method and the URL below:  ::
 
-  api.domain.tld/api/index.php?action=action&object=centreon_realtine_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
 
 Service Status
 --------------
@@ -319,7 +319,7 @@ Example:
 
 Using GET method and the URL below:  ::
 
-  api.domain.tld/api/index.php?action=action&object=centreon_realtine_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
 
 
 Configuration 
