@@ -153,3 +153,60 @@ Setting this option into /etc/my.cnf will NOT work.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysql restart
+ 
+Launch services during the system startup
+-----------------------------------------
+
+Enable the automatically start of services during the system startup.
+
+Execute these commands on central server.
+
+* **CentOS v6** ::
+
+    # chkconfig httpd on
+    # chkconfig snmpd on
+    # chkconfig mysql on
+
+* **CentOS v7** ::
+
+    # systemctl enable httpd.service
+    # systemctl enable snmpd.service
+    # systemctl enable mysql.service
+    
+.. note::
+    If MySQL database is on a dedicated server, execute the enable command of mysql on DB server.
+
+Conclude installation
+---------------------
+
+:ref:`click here to finalise the installation process <installation_web_ces>`.
+
+*******************
+Installing a poller
+*******************
+
+This chapter describes the installation of a collector.
+
+Perform the command:
+
+::
+
+  $ yum install centreon-poller-centreon-engine
+
+The communication between a central server and a poller server is by SSH.
+
+You should exchange the SSH keys between the servers.
+
+If you don’t have any private SSH keys on the central server for the Centreon user:
+
+::
+
+    $ su - centreon
+    $ ssh-keygen -t rsa
+
+Copy this key on the collector:
+
+::
+
+    $ ssh-copy-id centreon@your_poller_ip
+
