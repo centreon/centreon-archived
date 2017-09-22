@@ -314,7 +314,7 @@
       var column;
       var name;
       var legend;
-      var axesName;
+      var axesName = 'y';
       var unit;
       var times = dataRaw.times;
       var thresholdData;
@@ -338,6 +338,9 @@
             units[dataRaw.data[i].unit] = [];
           }
           units[dataRaw.data[i].unit].push(name);
+          axis[axesName] = {
+            label: dataRaw.data[i].unit
+          };
         }
         data.names[name] = legend;
         data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
@@ -346,7 +349,6 @@
       }
 
       if (Object.keys(units).length === 2) {
-        axesName = 'y';
         data.axes = {};
         for (unit in units) {
           if (units.hasOwnProperty(unit)) {
