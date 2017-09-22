@@ -291,12 +291,12 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
     }
 
     /**
-     * Send hosts realtime information
-     *
-     * @return array with the results
+     * @return array
      */
     public function getHostState()
     {
+        $queryValues = array();
+
         /*
          * Get Host status
          */
@@ -327,7 +327,8 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.host_id = cvs.host_id ";
             $query .= " AND cvs.name = 'CRITICALITY_ID' ";
             $query .= " AND cvs.service_id IS NULL ";
-            $query .= " AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
+            $query .= " AND cvs.value = ? ";
+            $queryValues[] = (string)$this->criticality;
         }
 
         if (!$this->admin) {
@@ -339,9 +340,12 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             );
         }
 
-        $query .= " AND (h.name LIKE '%" . CentreonDB::escape($this->search) . "%' ";
-        $query .= " OR h.alias LIKE '%" . CentreonDB::escape($this->search) . "%' ";
-        $query .= " OR h.address LIKE '%" . CentreonDB::escape($this->search) . "%') ";
+        $query .= " AND (h.name LIKE ? ";
+        $queryValues[] = '%' . CentreonDB::escape($this->search) . '%';
+        $query .= " OR h.alias LIKE ? ";
+        $queryValues[] = '%' . CentreonDB::escape($this->search) . '%';
+        $query .= " OR h.address LIKE ? ) ";
+        $queryValues[] = '%' . CentreonDB::escape($this->search) . '%';
 
         if ($this->viewType == "unhandled") {
             $query .= " AND h.state = 1 ";
@@ -363,13 +367,20 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         if ($this->hostgroup) {
+            $explodedValues = '';
+            foreach ($this->hostgroup as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
             $query .= " AND h.host_id = hhg.host_id ";
-            $query .= " AND hg.hostgroup_id IN ($this->hostgroup) ";
+            $query .= " AND hg.hostgroup_id IN ($explodedValues) ";
             $query .= " AND hhg.hostgroup_id = hg.hostgroup_id";
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
-            $query .= " AND h.instance_id = " . $this->instance;
+            $query .= " AND h.instance_id = ? ";
+            $queryValues[] = (int)$this->instance;
         }
         $query .= " AND h.enabled = 1 ";
 
@@ -377,38 +388,48 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             in_array($this->sortType, explode(',', $this->arguments['fields'])) ||
             is_null($this->arguments['fields'])
         ) {
+            $q = 'ASC';
+            if (isset($this->order) && strtoupper($this->order) === 'DESC') {
+                $q = 'DESC';
+            }
+
             switch ($this->sortType) {
                 case 'name':
-                    $query .= " ORDER BY h.name " . $this->order;
+                    $query .= " ORDER BY h.name $q";
                     break;
                 case 'address':
-                    $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $this->order . ", h.name ";
+                    $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) $q, h.name ";
                     break;
                 case 'state':
-                    $query .= " ORDER BY h.state " . $this->order . ", h.name ";
+                    $query .= " ORDER BY h.state $q, h.name ";
                     break;
                 case 'last_state_change':
-                    $query .= " ORDER BY h.last_state_change " . $this->order . ", h.name ";
+                    $query .= " ORDER BY h.last_state_change $q, h.name ";
                     break;
                 case 'last_hard_state_change':
-                    $query .= " ORDER BY h.last_hard_state_change " . $this->order . ",h.name ";
+                    $query .= " ORDER BY h.last_hard_state_change $q,h.name ";
                     break;
                 case 'last_check':
-                    $query .= " ORDER BY h.last_check " . $this->order . ", h.name ";
+                    $query .= " ORDER BY h.last_check $q, h.name ";
                     break;
                 case 'check_attempt':
-                    $query .= " ORDER BY h.check_attempt " . $this->order . ", h.name ";
+                    $query .= " ORDER BY h.check_attempt $q, h.name ";
                     break;
                 case 'output':
-                    $query .= " ORDER BY h.output " . $this->order . ", h.name ";
+                    $query .= " ORDER BY h.output $q, h.name ";
                     break;
                 case 'criticality':
-                    $query .= " ORDER BY criticality " . $this->order . ", h.name ";
+                    $query .= " ORDER BY criticality $q, h.name ";
                     break;
             }
         }
-        $query .= " LIMIT " . ($this->number * $this->limit) . ", " . $this->limit;
-        $dbResult = $this->realTimeDb->query($query);
+
+        $query .= " LIMIT ?, ?";
+        $queryValues[] = (int)($this->number * $this->limit);
+        $queryValues[] = (int)$this->limit;
+
+        $stmt = $this->realTimeDb->prepare($query);
+        $dbResult = $this->realTimeDb->execute($stmt, $queryValues);
 
         $dataList = array();
         while ($data = $dbResult->fetchRow()) {
