@@ -146,9 +146,9 @@ Order	Column description
 ======= ============================
 1	    Name of ACL menu rule
 
-2	    Menu name to grant/revoke
+2       Grant/revoke children menus
 
-3       Grant/revoke children menus
+3	    Menu name to grant/revoke
 
 n	    Possible sub menu name
 ======= ============================
