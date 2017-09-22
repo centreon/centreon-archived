@@ -352,148 +352,163 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
      */
     public function getServiceState()
     {
+        $queryValues = array();
+
         /** * *************************************************
          * Get Service status
          */
-        $instance_filter = "";
-        if ($this->instance != -1 && !empty($this->instance)) {
-            $instance_filter = " AND h.instance_id = " . $this->instance . " ";
-        }
-
-        /* Search string to a host name, alias or address */
-        $searchHost = "";
-        if ($this->searchHost) {
-            $searchHost .= " AND (h.name LIKE '%" . CentreonDB::escape($this->searchHost) . "%' ";
-            $searchHost .= " OR h.alias LIKE '%" . CentreonDB::escape($this->searchHost) . "%' ";
-            $searchHost .= " OR h.address LIKE '%" . CentreonDB::escape($this->searchHost) . "%') ";
-        }
-
-        $searchService = "";
-        if ($this->search) {
-            $searchService .= " AND (s.description LIKE '%" . CentreonDB::escape($this->search) . "%' ";
-            $searchService .= " OR s.display_name LIKE '%" . CentreonDB::escape($this->search) . "%')";
-        }
-        $searchOutput = "";
-        if ($this->searchOutput) {
-            $searchOutput .= " AND s.output LIKE '%" . CentreonDB::escape($this->searchOutput) . "%' ";
-        }
-
-        $tabOrder = array();
-        $tabOrder["criticality_id"] = " ORDER BY criticality " . $this->order . ", h.name, s.description ";
-        $tabOrder["host_name"] = " ORDER BY h.name " . $this->order . ", s.description ";
-        $tabOrder["service_description"] = " ORDER BY s.description " . $this->order . ", h.name";
-        $tabOrder["current_state"] = " ORDER BY s.state " . $this->order . ", h.name, s.description";
-        $tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $this->order . ", h.name, s.description";
-        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $this->order .
-            ", h.name, s.description";
-        $tabOrder["last_check"] = " ORDER BY s.last_check " . $this->order . ", h.name, s.description";
-        $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $this->order . ", h.name, s.description";
-        $tabOrder["output"] = " ORDER BY s.output " . $this->order . ", h.name, s.description";
-        $tabOrder["default"] = " ORDER BY s.description " . $this->order . ", h.name";
-
-        $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT " . $this->fieldList . " ";
-        $request .= " FROM hosts h, instances i ";
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT " . $this->fieldList . " ";
+        $query .= " FROM hosts h, instances i ";
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
-            $request .= ", hosts_hostgroups hg, hostgroups hg2";
+            $query .= ", hosts_hostgroups hg, hostgroups hg2";
         }
         if (isset($this->servicegroup) && $this->servicegroup != 0) {
-            $request .= ", services_servicegroups ssg, servicegroups sg";
+            $query .= ", services_servicegroups ssg, servicegroups sg";
         }
         if ($this->criticality) {
-            $request .= ", customvariables cvs ";
+            $query .= ", customvariables cvs ";
         }
         if (!$this->admin) {
-            $request .= ", centreon_acl ";
+            $query .= ", centreon_acl ";
         }
-        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id " .
+        $query .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id " .
             "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
-        $request .= " WHERE h.host_id = s.host_id " .
+        $query .= " WHERE h.host_id = s.host_id " .
             "AND s.enabled = 1 " .
             "AND h.enabled = 1 " .
             "AND h.instance_id = i.instance_id ";
+
         if ($this->criticality) {
-            $request .= " AND s.service_id = cvs. service_id " .
+            $query .= " AND s.service_id = cvs. service_id " .
                 "AND cvs.host_id = h.host_id " .
                 "AND cvs.name = 'CRITICALITY_ID' " .
-                "AND cvs.value = '" . CentreonDB::escape($this->criticality) . "' ";
+                "AND cvs.value = ? ";
+            $queryValues[] = CentreonDB::escape($this->criticality);
         }
-        $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
+        $query .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
-        if ($searchHost) {
-            $request .= $searchHost;
+        /* Search string to a host name, alias or address */
+        if ($this->searchHost) {
+            $query .= " AND (h.name LIKE ? ";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
+            $query .= " OR h.alias LIKE ? ";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
+            $query .= " OR h.address LIKE ? ) ";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
         }
-        if ($searchService) {
-            $request .= $searchService;
+        /* Search string to a service */
+        if ($this->search) {
+            $query .= " AND (s.description LIKE ? ";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->search) . '%';
+            $query .= " OR s.display_name LIKE ? )";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->search) . '%';
         }
-        if ($searchOutput) {
-            $request .= $searchOutput;
+
+        if ($this->searchOutput) {
+            $query .= " AND s.output LIKE ? ";
+            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchOutput) . '%';
         }
-        $request .= $instance_filter;
+
+        if ($this->instance != -1 && !empty($this->instance)) {
+            $query = " AND h.instance_id = " . $this->instance . " ";
+            $queryValues[] = (int)$this->instance;
+        }
+
+        $q = 'ASC';
+        if (isset($this->order) && strtoupper($this->order) === 'DESC') {
+            $q = 'DESC';
+        }
+        $tabOrder = array();
+        $tabOrder["criticality_id"] = " ORDER BY criticality $q, h.name, s.description ";
+        $tabOrder["host_name"] = " ORDER BY h.name $q, s.description ";
+        $tabOrder["service_description"] = " ORDER BY s.description $q, h.name";
+        $tabOrder["current_state"] = " ORDER BY s.state $q, h.name, s.description";
+        $tabOrder["last_state_change"] = " ORDER BY s.last_state_change $q, h.name, s.description";
+        $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change $q, h.name, s.description";
+        $tabOrder["last_check"] = " ORDER BY s.last_check $q, h.name, s.description";
+        $tabOrder["current_attempt"] = " ORDER BY s.check_attempt $q, h.name, s.description";
+        $tabOrder["output"] = " ORDER BY s.output $q, h.name, s.description";
+        $tabOrder["default"] = " ORDER BY s.description $q, h.name";
 
         if (preg_match("/^unhandled/", $this->viewType)) {
             if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $this->viewType, $matches)) {
                 if (isset($matches[1]) && $matches[1] == 'warning') {
-                    $request .= " AND s.state = 1 ";
+                    $query .= " AND s.state = 1 ";
                 }
                 if (isset($matches[1]) && $matches[1] == "critical") {
-                    $request .= " AND s.state = 2 ";
+                    $query .= " AND s.state = 2 ";
                 } elseif (isset($matches[1]) && $matches[1] == "unknown") {
-                    $request .= " AND s.state = 3 ";
+                    $query .= " AND s.state = 3 ";
                 } elseif (isset($matches[1]) && $matches[1] == "pending") {
-                    $request .= " AND s.state = 4 ";
+                    $query .= " AND s.state = 4 ";
                 } else {
-                    $request .= " AND s.state != 0 ";
+                    $query .= " AND s.state != 0 ";
                 }
             } else {
-                $request .= " AND (s.state != 0 AND s.state != 4) ";
+                $query .= " AND (s.state != 0 AND s.state != 4) ";
             }
-            $request .= " AND s.state_type = 1";
-            $request .= " AND s.acknowledged = 0";
-            $request .= " AND s.scheduled_downtime_depth = 0";
-            $request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
+            $query .= " AND s.state_type = 1";
+            $query .= " AND s.acknowledged = 0";
+            $query .= " AND s.scheduled_downtime_depth = 0";
+            $query .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
         } elseif ($this->viewType == "problems") {
-            $request .= " AND s.state != 0 AND s.state != 4 ";
+            $query .= " AND s.state != 0 AND s.state != 4 ";
         }
 
         if ($this->status == "ok") {
-            $request .= " AND s.state = 0";
+            $query .= " AND s.state = 0";
         } elseif ($this->status == "warning") {
-            $request .= " AND s.state = 1";
+            $query .= " AND s.state = 1";
         } elseif ($this->status == "critical") {
-            $request .= " AND s.state = 2";
+            $query .= " AND s.state = 2";
         } elseif ($this->status == "unknown") {
-            $request .= " AND s.state = 3";
+            $query .= " AND s.state = 3";
         } elseif ($this->status == "pending") {
-            $request .= " AND s.state = 4";
+            $query .= " AND s.state = 4";
         }
 
         /**
          * HostGroup Filter
          */
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
-            $request .= " AND hg.hostgroup_id = hg2.hostgroup_id " .
-                "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $this->hostgroup . ") ";
+            $explodedValues = '';
+            foreach ($this->hostgroup as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $query .= " AND hg.hostgroup_id = hg2.hostgroup_id " .
+                "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $explodedValues . ") ";
         }
         /**
          * ServiceGroup Filter
          */
         if (isset($this->servicegroup) && $this->servicegroup != 0) {
-            $request .= " AND ssg.servicegroup_id = sg.servicegroup_id " .
-                "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $this->servicegroup . ") ";
+            $explodedValues = '';
+            foreach ($this->servicegroup as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $query .= " AND ssg.servicegroup_id = sg.servicegroup_id " .
+                "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $explodedValues . ") ";
         }
 
         /**
          * ACL activation
          */
         if (!$this->admin) {
-            $request .= " AND h.host_id = centreon_acl.host_id " .
+            $query .= " AND h.host_id = centreon_acl.host_id " .
                 "AND s.service_id = centreon_acl.service_id " .
                 "AND group_id IN (" . $this->aclObj->getAccessGroupsString() . ") ";
         }
 
-        (isset($tabOrder[$this->sortType])) ? $request .= $tabOrder[$this->sortType] : $request .= $tabOrder["default"];
-        $request .= " LIMIT " . ($this->number * $this->limit) . "," . $this->limit;
-        $dbResult = $this->realTimeDb->query($request);
+        (isset($tabOrder[$this->sortType])) ? $query .= $tabOrder[$this->sortType] : $query .= $tabOrder["default"];
+        $query .= " LIMIT ?,?";
+        $queryValues[] = (int)($this->number * $this->limit);
+        $queryValues[] = (int)$this->limit;
+
+        $stmt = $this->realTimeDb->prepare($query);
+        $dbResult = $this->realTimeDb->execute($stmt, $queryValues);
 
         $dataList = array();
         while ($data = $dbResult->fetchRow()) {
