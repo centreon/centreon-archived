@@ -45,13 +45,13 @@ require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Downtime/Host.php";
 require_once "Centreon/Object/Relation/Downtime/Hostgroup.php";
 require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
-require_once realpath(dirname(__FILE__) . '/../centreonExternalCommand.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonHostgroups.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonServicegroups.class.php');
-require_once realpath(dirname(__FILE__) . '/../centreonInstance.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonExternalCommand.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonDB.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonUser.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonGMT.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonHostgroups.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonServicegroups.class.php');
+require_once realpath(dirname(__FILE__).'/../centreonInstance.class.php');
 
 class CentreonRtDowntime extends CentreonObject
 {
@@ -63,13 +63,8 @@ class CentreonRtDowntime extends CentreonObject
         'SVC',
         'HG',
         'SG',
-        'INSTANCE'
+        'INSTANCE',
     );
-
-    /**
-     * @var
-     */
-    protected $pearDBMonitoring;
 
     /**
      * CentreonRtDowntime constructor.
@@ -78,36 +73,14 @@ class CentreonRtDowntime extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_RtDowntime();
-        $db = new \CentreonDB('centreon');
-        $this->hgObject = new \CentreonHostgroups($db);
-        $this->sgObject = new \CentreonServiceGroups($db);
-        $this->instanceObject = new \CentreonInstance($db);
+        $this->db = new \CentreonDB('centreon');
+        $this->hgObject = new \CentreonHostgroups($this->db);
+        $this->sgObject = new \CentreonServiceGroups($this->db);
+        $this->instanceObject = new \CentreonInstance($this->db);
         $this->externalCmdObj = new \CentreonExternalCommand();
         $this->action = "RTDOWNTIME";
         $this->externalCmdObj->setUserAlias(CentreonUtils::getUserName());
         $this->externalCmdObj->setUserId(CentreonUtils::getUserId());
-    }
-
-    /**
-     * Display downtimes
-     *
-     * @param null $parameters
-     */
-    public function show($parameters = null)
-    {
-        $params = array(
-            'author',
-            'actual_start_time',
-            'end_time',
-            'comment_data',
-            'duration',
-            'fixed'
-        );
-        echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
-        $elements = $this->object->getRunningDowntimes();
-        foreach ($elements as $tab) {
-            echo implode($this->delim, array_values($tab)) . "\n";
-        }
     }
 
     /**
@@ -126,7 +99,7 @@ class CentreonRtDowntime extends CentreonObject
         }
 
         // Check date format
-        $checkStart = \DateTime::createFromFormat('Y/m/d H:i',$start);
+        $checkStart = \DateTime::createFromFormat('Y/m/d H:i', $start);
         $checkEnd = \DateTime::createFromFormat('Y/m/d H:i', $end);
         if (!$checkStart || !$checkEnd) {
             throw new CentreonClapiException('Wrong date format, expected : YYYY/MM/DD HH:mm');
@@ -162,8 +135,99 @@ class CentreonRtDowntime extends CentreonObject
             'fixed' => $fixed,
             'duration' => $duration,
             'withServices' => $withServices,
-            'comment' => $comment
+            'comment' => $comment,
         );
+    }
+
+    /**
+     * @param $parameters
+     * @return array
+     */
+    private function parseShowParameters($parameters)
+    {
+        list($type, $resource) = explode(';', $parameters);
+
+        return array(
+            'type' => $type,
+            'resource' => $resource,
+        );
+    }
+
+    /**
+     * @param null $parameters
+     */
+    public function show($parameters = null)
+    {
+        $parsedParameters = $this->parseShowparameters($parameters);
+
+        $method = 'show'.ucfirst($parsedParameters['type']);
+
+        $this->$method($parsedParameters['resource']);
+    }
+
+    /**
+     * @param $hostList
+     */
+    public function showHost($hostList)
+    {
+        $fields = array(
+            'host_name',
+            'author',
+            'actual_start_time',
+            'end_time',
+            'comment_data',
+            'duration',
+            'fixed',
+        );
+
+        echo implode($this->delim, $fields)."\n";
+
+        // Résultat des la recherche dans la base
+        $hostList = array_filter(explode('|', $hostList));
+        $hostList = array_map(
+            function ($element) {
+                return $this->db->escape($element);
+            },
+            $hostList
+        );
+        $hostDowntimesList = $this->object->getHostDowntimes($hostList);
+
+        foreach ($hostDowntimesList as $hostDowntimes) {
+            echo implode($this->delim, array_values($hostDowntimes))."\n";
+        }
+    }
+
+    /**
+     * @param $svcList
+     */
+    public function showSvc($svcList)
+    {
+        $fields = array(
+            'host_name',
+            'service_name',
+            'author',
+            'actual_start_time',
+            'end_time',
+            'comment_data',
+            'duration',
+            'fixed',
+        );
+
+        echo implode($this->delim, $fields)."\n";
+        $svcList = array_filter(explode('|', $svcList));
+        $svcList = array_map(
+            function ($arrayElem) {
+                return $this->db->escape($arrayElem);
+            },
+            $svcList
+        );
+
+        // Résultat des la recherche dans la base
+        $serviceDowntimesList = $this->object->getSvcDowntimes($svcList);
+
+        foreach ($serviceDowntimesList as $hostDowntimes) {
+            echo implode($this->delim, array_values($hostDowntimes))."\n";
+        }
     }
 
     /**
@@ -174,7 +238,7 @@ class CentreonRtDowntime extends CentreonObject
         $parsedParameters = $this->parseParameters($this->action, $parameters);
 
         // Permet que $method prenne le bon nom de methode (addHostDowntime, addSvcDowntime etc.)
-        $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
+        $method = 'add'.ucfirst($parsedParameters['type']).'Downtime';
         $this->$method(
             $parsedParameters['resource'],
             $parsedParameters['start'],
@@ -201,31 +265,18 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $comment,
-        $withServices
+        $withServices,
+        $comment
     ) {
-        // Vérification de l'ajout des services avec les hosts
-        if ($withServices === true) {
-            $this->externalCmdObj->addHostDowntime(
-                $resource,
-                $comment,
-                $start,
-                $end,
-                $fixed,
-                $duration,
-                true
-            );
-        } else {
-            $this->externalCmdObj->addHostDowntime(
-                $resource,
-                $comment,
-                $start,
-                $end,
-                $fixed,
-                $duration,
-                $withServices
-            );
-        }
+        $this->externalCmdObj->addHostDowntime(
+            $resource,
+            $comment,
+            $start,
+            $end,
+            $fixed,
+            $duration,
+            $withServices
+        );
     }
 
     /**
@@ -244,8 +295,8 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $comment,
-        $withServices
+        $withServices,
+        $comment
     ) {
         // Check if a pipe is present
         if (preg_match('/^(.+)\|(.+)$/', $resource, $matches)) {
