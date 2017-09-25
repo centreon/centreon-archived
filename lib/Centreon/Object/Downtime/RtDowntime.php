@@ -34,7 +34,6 @@
  */
 
 require_once "Centreon/Object/Object.php";
-
 /**
  * Used for interacting with downtime objects
  *
@@ -43,6 +42,7 @@ require_once "Centreon/Object/Object.php";
 class Centreon_Object_RtDowntime extends Centreon_Object
 {
     protected $table = "downtimes";
+    protected $name = "downtime_name";
     protected $primaryKey = "downtime_id";
     protected $uniqueLabelField = "comment_data";
 
@@ -52,15 +52,60 @@ class Centreon_Object_RtDowntime extends Centreon_Object
         $this->db = Centreon_Db_Manager::factory('storage');
     }
 
-    public function getRunningDowntimes()
+    /**
+     * @param array $hostList
+     * @return array
+     */
+    public function getHostDowntimes($hostList = array())
     {
-        $query =  "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
-            "FROM downtimes " .
-            "WHERE service_id IS NULL " .
-            "AND cancelled = 0 " .
-            "AND started = 1 " .
-            "AND actual_end_time IS NULL " .
+        $hostFilter = '';
+
+        // Remplace les pipe par des virgules pour la requêtes SQL
+        if (!empty($hostList)) {
+            $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
+        }
+
+        $query =  "SELECT name, author, actual_start_time , end_time, comment_data, duration, fixed " .
+            "FROM downtimes d, hosts h " .
+            "WHERE d.host_id = h.host_id " .
+            "AND d.cancelled = 0 " .
+            "AND d.actual_end_time IS NULL " .
+            "AND service_id IS NULL " .
+            $hostFilter .
             "ORDER BY actual_start_time";
+
+        return $this->getResult($query, array(), "fetchAll");
+    }
+
+    /**
+     * @param array $svcList
+     * @return array
+     */
+    public function getSvcDowntimes($svcList = array())
+    {
+        $serviceFilter = '';
+
+        if (!empty($svcList)) {
+            $serviceFilter = 'AND (';
+            $filterTab = array();
+            for ($i = 0; $i < count($svcList); $i+=2) {
+                $hostname = $svcList[$i];
+                $serviceDescription = $svcList[$i + 1];
+                $filterTab[] = '(h.name = "' . $hostname . '" AND s.description = "' . $serviceDescription . '")';
+            }
+            $serviceFilter .= implode(' AND ', $filterTab) . ') ';
+        }
+
+        $query = "SELECT h.name, s.description, d.service_id, author, actual_start_time , end_time, comment_data, duration, fixed " .
+            "FROM downtimes d, hosts h, services s " .
+            "WHERE d.service_id = s.service_id " .
+            "AND d.host_id = s.host_id " .
+            "AND s.host_id = h.host_id " .
+            "AND d.cancelled = 0 " .
+            $serviceFilter .
+            "AND d.actual_end_time IS NULL " .
+            "ORDER BY actual_start_time";
+
         return $this->getResult($query, array(), "fetchAll");
     }
 }
