@@ -121,11 +121,7 @@ $query_svc_status = "SELECT " .
     "SUM(CASE WHEN s.state = 3 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
     "    THEN 1 ELSE 0 END) AS UNKNOWN_ACK_DT, " .
     "SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END) AS PENDING_TOTAL " .
-    "FROM hosts h, services s, instances i " ;
-if (!$obj->is_admin) {
-    $query_svc_status .=  ", centreon_acl ";
-}
-$query_svc_status .= "" .
+    "FROM hosts h, services s, instances i " .
     "WHERE i.deleted = 0 " .
     "AND h.enabled = 1 " .
     "AND s.enabled = 1 " .
@@ -133,9 +129,10 @@ $query_svc_status .= "" .
     "AND h.host_id = s.host_id ".
     "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
 if (!$obj->is_admin) {
-    $query_svc_status .=  "AND s.host_id = centreon_acl.host_id ".
-        "AND s.service_id = centreon_acl.service_id " .
-        "AND centreon_acl.group_id IN (".$obj->grouplistStr.")";
+    $query_svc_status .=  "AND s.service_id IN ( " .
+        "SELECT DISTINCT service_id " .
+        "FROM centreon_acl ".
+        "WHERE centreon_acl.group_id IN (".$obj->grouplistStr.")) ";
 }
 $DBRESULT = $obj->DBC->query($query_svc_status);
 $svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
