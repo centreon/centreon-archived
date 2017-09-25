@@ -190,7 +190,13 @@ class CentreonClapi extends CentreonWebService
         $return['result'] = array();
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
-                $return['result'][] = array_combine($headers, explode(';', $lines[$i]));
+                $tmpLine = explode(';', $lines[$i]);
+                foreach ($tmpLine as &$line) {
+                    if (strpos($line, "|") !== false) {
+                        $line = explode("|", $line);
+                    }
+                }
+                $return['result'][] = array_combine($headers, $tmpLine);;
             } elseif (strpos($lines[$i], "\t") !== false) {
                 $return['result'][] = array_combine($headers, explode("\t", $lines[$i]));
             } else {
