@@ -77,18 +77,13 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->firstContactAlias);
-        $this->assertFind('css', 'li#c2 a')->click();
-        $value = $this->assertFind('css', 'span[title="' . $this->accessContactName . '"]')->getText();
-        if ($value != $this->accessContactName) {
-
+        if ($this->page->getProperty('acl_groups') != $this->accessContactName) {
             throw new \Exception($this->firstContactAlias . ' have no Access list groups displayed');
         }
 
         $this->page = new ContactConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->secondContactAlias);
-        $this->assertFind('css', 'li#c2 a')->click();
-        $value = $this->assertFind('css', 'span[title="' . $this->accessContactName . '"]')->getText();
-        if ($value != $this->accessContactName) {
+        if ($this->page->getProperty('acl_groups') != $this->accessContactName) {
             throw new \Exception($this->secondContactAlias . ' have no Access list groups displayed');
         }
     }
@@ -122,8 +117,7 @@ class AclAccessGroupsContext extends CentreonContext
     {
         $this->page = new ContactGroupConfigurationListingPage($this);
         $this->page = $this->page->inspect($this->contactGroupName);
-        $value = $this->assertFind('css', 'span[title="' . $this->accessGroupsName . '"]')->getText();
-        if ($value != $this->accessGroupsName) {
+        if ($this->page->getProperty('acl') != $this->accessGroupsName) {
             throw new \Exception($this->contactGroupName . ' have no Linked ACL groups displayed');
         }
     }
