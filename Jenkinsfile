@@ -73,11 +73,11 @@ try {
     }
   }
 
-  stage('Acceptance tests') {
+  stage('Critical tests') {
     parallel 'centos6': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6'
+        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 @critical'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -92,7 +92,7 @@ try {
     'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7'
+        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -105,11 +105,47 @@ try {
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Acceptance tests stage failure.');
+      error('Critical tests stage failure.');
     }
   }
 
   if (env.BRANCH_NAME == '2.8.x') {
+    stage('Acceptance tests') {
+      parallel 'centos6': {
+        node {
+          sh 'cd /opt/centreon-build && git pull && cd -'
+          sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 ~@critical'
+          step([
+            $class: 'XUnitBuilder',
+            thresholds: [
+              [$class: 'FailedThreshold', failureThreshold: '0'],
+              [$class: 'SkippedThreshold', failureThreshold: '0']
+            ],
+            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
+          ])
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+        }
+      },
+      'centos7': {
+        node {
+          sh 'cd /opt/centreon-build && git pull && cd -'
+          sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 ~@critical'
+          step([
+            $class: 'XUnitBuilder',
+            thresholds: [
+              [$class: 'FailedThreshold', failureThreshold: '0'],
+              [$class: 'SkippedThreshold', failureThreshold: '0']
+            ],
+            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
+          ])
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+        }
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure.');
+      }
+    }
+
     stage('Delivery') {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
