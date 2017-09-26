@@ -180,7 +180,7 @@ class CentreonClapi extends CentreonWebService
                         $line = explode("|", $line);
                     }
                 }
-                $return['result'][] = array_combine($headers, $tmpLine);;
+                $return['result'][] = array_combine($headers, $tmpLine);
             } elseif (strpos($lines[$i], "\t") !== false) {
                 $return['result'][] = array_combine($headers, explode("\t", $lines[$i]));
             } else {
