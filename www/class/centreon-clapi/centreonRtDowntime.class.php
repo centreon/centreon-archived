@@ -178,6 +178,7 @@ class CentreonRtDowntime extends CentreonObject
             'comment_data',
             'duration',
             'fixed',
+            'url'
         );
 
         echo implode($this->delim, $fields)."\n";
@@ -190,10 +191,16 @@ class CentreonRtDowntime extends CentreonObject
             },
             $hostList
         );
+
+        // Résultat des la recherche dans la base
         $hostDowntimesList = $this->object->getHostDowntimes($hostList);
 
-        foreach ($hostDowntimesList as $hostDowntimes) {
-            echo implode($this->delim, array_values($hostDowntimes))."\n";
+        foreach ($hostDowntimesList as $hostDowntime) {
+            $url = '';
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'];
+            }
+            echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
         }
     }
 
@@ -211,6 +218,7 @@ class CentreonRtDowntime extends CentreonObject
             'comment_data',
             'duration',
             'fixed',
+            'url'
         );
 
         echo implode($this->delim, $fields)."\n";
@@ -225,8 +233,12 @@ class CentreonRtDowntime extends CentreonObject
         // Résultat des la recherche dans la base
         $serviceDowntimesList = $this->object->getSvcDowntimes($svcList);
 
-        foreach ($serviceDowntimesList as $hostDowntimes) {
-            echo implode($this->delim, array_values($hostDowntimes))."\n";
+        foreach ($serviceDowntimesList as $hostDowntime) {
+            $url = '';
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'] . '&search_service=' . $hostDowntime['description'];
+            }
+            echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
         }
     }
 
