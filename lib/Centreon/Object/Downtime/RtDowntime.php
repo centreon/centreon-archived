@@ -34,6 +34,7 @@
  */
 
 require_once "Centreon/Object/Object.php";
+
 /**
  * Used for interacting with downtime objects
  *
@@ -88,7 +89,7 @@ class Centreon_Object_RtDowntime extends Centreon_Object
         if (!empty($svcList)) {
             $serviceFilter = 'AND (';
             $filterTab = array();
-            for ($i = 0; $i < count($svcList); $i+=2) {
+            for ($i = 0; $i < count($svcList); $i += 2) {
                 $hostname = $svcList[$i];
                 $serviceDescription = $svcList[$i + 1];
                 $filterTab[] = '(h.name = "' . $hostname . '" AND s.description = "' . $serviceDescription . '")';

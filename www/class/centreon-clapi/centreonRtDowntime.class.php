@@ -173,17 +173,16 @@ class CentreonRtDowntime extends CentreonObject
         $fields = array(
             'host_name',
             'author',
-            'actual_start_time',
+            'start_time',
             'end_time',
             'comment_data',
             'duration',
             'fixed',
-            'url'
+            'url',
         );
 
         echo implode($this->delim, $fields)."\n";
 
-        // Résultat des la recherche dans la base
         $hostList = array_filter(explode('|', $hostList));
         $hostList = array_map(
             function ($element) {
@@ -192,9 +191,10 @@ class CentreonRtDowntime extends CentreonObject
             $hostList
         );
 
-        // Résultat des la recherche dans la base
+        // Result of the research in the base
         $hostDowntimesList = $this->object->getHostDowntimes($hostList);
 
+        //Separates hosts
         foreach ($hostDowntimesList as $hostDowntime) {
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
@@ -213,15 +213,16 @@ class CentreonRtDowntime extends CentreonObject
             'host_name',
             'service_name',
             'author',
-            'actual_start_time',
+            'start_time',
             'end_time',
             'comment_data',
             'duration',
             'fixed',
-            'url'
+            'url',
         );
 
         echo implode($this->delim, $fields)."\n";
+
         $svcList = array_filter(explode('|', $svcList));
         $svcList = array_map(
             function ($arrayElem) {
@@ -230,9 +231,10 @@ class CentreonRtDowntime extends CentreonObject
             $svcList
         );
 
-        // Résultat des la recherche dans la base
+        // Result of the research in the base
         $serviceDowntimesList = $this->object->getSvcDowntimes($svcList);
 
+        //Separates hosts and services
         foreach ($serviceDowntimesList as $hostDowntime) {
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
