@@ -46122,6 +46122,217 @@
             ],
             "body": {
               "mode": "raw",
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"downtime_test\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "List downtimes resource",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"id\": { \"type\": \"string\" },",
+                  "            \"name\": { \"type\": \"string\" },",
+                  "            \"description\": { \"type\": \"string\" },",
+                  "            \"activate\": { \"type\": \"string\" },",
+                  "            \"hosts\": {}",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"id \", \"name \", \"description\", \"activate\", \"hosts\", \"host groups\", \"services\", \"service groups\"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of downtimes\"] = result;",
+                  "    var i = 0;",
+                  "    while (i < result.length) {",
+                  "        if (postman.getEnvironmentVariable(\"downtime_name\") == result[i].name){",
+                  "            tests[\"Body contains added downtime_name\"] = postman.getEnvironmentVariable(\"downtime_name\") == result[i].name;",
+                  "            tests[\"Body contains added downtime_description\"] = postman.getEnvironmentVariable(\"downtime_description\") == result[i].description;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == engineData.length)",
+                  "        tests[\"enine_name was found\"] = false;",
+                  "}",
+                  "catch (e) {}",
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"downtime_test;host\"\n}"
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Addweeklyperiod",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"id\": { \"type\": \"string\" },",
+                  "            \"name\": { \"type\": \"string\" },",
+                  "            \"description\": { \"type\": \"string\" },",
+                  "            \"activate\": { \"type\": \"string\" },",
+                  "            \"hosts\": {},",
+                  "            \"host groups\": {},",
+                  "            \"services\": {},",
+                  "            \"service groups\": {}",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"id \", \"name \", \"description\", \"activate\", \"hosts\", \"host groups\", \"services\", \"service groups\"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of downtimes\"] = result;",
+                  "    var i = 0;",
+                  "    while (i < result.length) {",
+                  "        if (postman.getEnvironmentVariable(\"downtime_name\") == result[i].name){",
+                  "            tests[\"Body contains added downtime_name\"] = postman.getEnvironmentVariable(\"downtime_name\") == result[i].name;",
+                  "            tests[\"Body contains added downtime_description\"] = postman.getEnvironmentVariable(\"downtime_description\") == result[i].description;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == engineData.length)",
+                  "        tests[\"enine_name was found\"] = false;",
+                  "}",
+                  "catch (e) {}",
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
               "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"{{downtime_name}}\"\n}"
             },
             "description": ""
