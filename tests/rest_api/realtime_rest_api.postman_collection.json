@@ -1,0 +1,7463 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Centreon Web Rest API realtime",
+		"_postman_id": "fbbb7aff-7700-5886-8793-217eed438d0b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "00-Authenticate",
+			"description": "",
+			"item": [
+				{
+					"name": "Authenticate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=authenticate",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "authenticate",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{api_user}}",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{api_password}}",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "01-Base configuration",
+			"description": "",
+			"item": [
+				{
+					"name": "10-Timeperiods",
+					"description": "",
+					"item": [
+						{
+							"name": "Add tp",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"tp\",\n  \"values\": \"{{tp_name}};{{tp_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam sunday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};sunday;{{tp_sunday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam monday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};monday;{{tp_monday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam tuesday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};tuesday;{{tp_tuesday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam wednesday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};wednesday;{{tp_wednesday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam thursday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};thursday;{{tp_thursday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam friday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};friday;{{tp_friday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam saturday",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};saturday;{{tp_saturday}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "11-Commands",
+					"description": "Tests all commands to manage commands.",
+					"item": [
+						{
+							"name": "Add command",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cmd\",\n  \"values\": \"{{command_name}};{{command_type}};{{command_line}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "21-Contacts",
+					"description": "Tests all commands to manage contact.",
+					"item": [
+						{
+							"name": "Add contact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_name}};{{contact_alias}};test@localhost;{{contact_pwd}};0;0;en_US;Idap\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam hostnotifcmd",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifcmd;{{command_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam svcnotifcmd",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifcmd;{{command_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam hostnotifperiod",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifperiod;{{tp_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam svcnotifperiod",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifperiod;{{tp_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam hostnotifopt",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifopt;{{contact_hostnotifopt}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam svcnotifopt",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};servicenotifopt;{{contact_svcnotifopt}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "22-Contactgroups",
+					"description": "Tests all commands to manage contact groups.",
+					"item": [
+						{
+							"name": "Add contact group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{cg_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Addcontact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "23-Hostgroups",
+					"description": "Tests all commands to manage host groups.",
+					"item": [
+						{
+							"name": "Add hostgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hg\",\n  \"values\": \"{{hg_name}};{{hg_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "24-Hosts_Categories",
+					"description": "Tests all commands to manage host categories.",
+					"item": [
+						{
+							"name": "Add host category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Set hc severity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_severity_level}};{{hc_severity_icon}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "25-Services_Categories",
+					"description": "Tests all commands to manage service categories.",
+					"item": [
+						{
+							"name": "Add service category",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Set sc severity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_severity_level}};{{sc_severity_image}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "26-Servicegroups",
+					"description": "Tests all commands to manage service groups.",
+					"item": [
+						{
+							"name": "Add service group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"sg\",\n  \"values\": \"{{sg_name}};{{sg_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "30-Hosts_Templates",
+					"description": "",
+					"item": [
+						{
+							"name": "Create host template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{htpl_name}};{{host_address}};;central;\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam check_command",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam check_period",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_period;{{tp_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam max_check_attempts",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"description": "",
+											"equals": true,
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"description": "",
+											"equals": true,
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};max_check_attempts;{{host_max_check_attempts}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam snmp_community",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"description": "",
+											"equals": true,
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"description": "",
+											"equals": true,
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_community;{{host_snmp_community}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam snmp_version",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"description": "",
+											"equals": true,
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"description": "",
+											"equals": true,
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_version;{{host_snmp_version}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Addcontactgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"addcontactgroup\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{cg_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setseverity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{hc_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "31-Hosts",
+					"description": "Tests all commands to manage hosts",
+					"item": [
+						{
+							"name": "Add host",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{host_alias}};{{host_address}};{{htpl_name}};Central;\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam check_command",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Addtemplate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"addtemplate\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};{{htpl_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Applytpl",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"applytpl\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontactgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{cg_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Sethostgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"sethostgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hg_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setseverity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hc_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "40-Services_Templates",
+					"description": "Tests all commands to manage service templates.",
+					"item": [
+						{
+							"name": "Add service template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{stpl_alias}};\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam check_period",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_period;{{tp_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam check_command",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam max_check_attempts",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action"
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi"
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"description": "",
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"description": "",
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};max_check_attempts;{{stpl_max_check}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Sethosttemplate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"sethosttemplate\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{htpl_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontactgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{cg_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "41-Services",
+					"description": "Tests all commands to manage services.",
+					"item": [
+						{
+							"name": "Add service",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{stpl_description}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setparam template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};template;{{stpl_description}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setseverity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{sc_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Setcontactgroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{cg_name}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Set servicegroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setservice\",\n  \"object\": \"sg\",\n  \"values\": \"{{sg_name}};{{host_name}},{{service_description}}\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "99-Generate",
+					"description": "",
+					"item": [
+						{
+							"name": "Generate configuration",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"APPLYCFG\",\n  \"values\": \"Central\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "10-Host",
+			"description": "",
+			"item": [
+				{
+					"name": "host list with no parameters",
+					"description": "",
+					"item": [
+						{
+							"name": "host list",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Host list with limit parameter",
+					"description": "",
+					"item": [
+						{
+							"name": "Limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=id,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "id,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit=2&fields=name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "2",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field alias",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=alias,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "alias,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field address",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=address,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "address,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field state",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=state,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "state,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field state_type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=state_type,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "state_type,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field output",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=output,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "output,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field max_check_attempts",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=max_check_attempts,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "max_check_attempts,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field check_attempt",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=check_attempt,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "check_attempt,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field last_check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_check,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_check,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field last_state_change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_state_change,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_state_change,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field last_hard_state_change",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_hard_state_change,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_hard_state_change,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field acknowledged",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=acknowledged,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "acknowledged,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field instance",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=instance,name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "instance,name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Limit with field criticality",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&criticality=",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "criticality",
+											"value": "",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Host list with viewType parameter",
+					"description": "",
+					"item": [
+						{
+							"name": "list with viewType",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all,unhandled,problems",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "all,unhandled,problems",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "with viewType all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "all",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "with viewType unhandled",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=unhandled",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "unhandled",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "with viewType problems",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=problems",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "problems",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "viewType with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=all,unhandled,problems",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "all,unhandled,problems",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "viewType all with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=all",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "all",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "viewType unhandled with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=unhandled",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "unhandled",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "viewType problems with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=problems",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "problems",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Host list with status filter",
+					"description": "",
+					"item": [
+						{
+							"name": "status up with state and name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=up&fields=name, state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "up",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name, state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status down with state and name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=down&fields=name, state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "down",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name, state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status unreachable with state and name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=unreachable&fields=name, state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "unreachable",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name, state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status pending with state and name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=pending&fields=name, state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name, state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status all with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&status=all&fields=name, state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "all",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name, state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Host list by Host",
+					"description": "",
+					"item": [
+						{
+							"name": "search by host name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with status up",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=up",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "up",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with status down",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=down",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "down",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with status pending",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=pending",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with status unreachable",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=unreachable",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "status",
+											"value": "unreachable",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with id field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "id",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with name field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=name",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "name",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with alias field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=alias",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "alias",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with address field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=address",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "address",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with state field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=state",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "state",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with state_type  field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=state_type",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "state_type",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with output field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=output",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "output",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with max_check_attempts field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=max_check_attempts",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "max_check_attempts",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with last_check field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_check",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_check",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with last_state_change field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_state_change",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_state_change",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with last_hard_state_change field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_hard_state_change",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "last_hard_state_change",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with acknowledged field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=acknowledged",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "acknowledged",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with instance field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=instance",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "instance",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with criticality field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=criticality",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "criticality",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "search by host name with passive_checks field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests['response code is 200'] = responseCode.code === 200;",
+											"tests['response time is less than 200'] = responseTime < 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=passive_checks",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_hosts",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "search",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "passive_checks",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "20-Service",
+			"description": "",
+			"item": [
+				{
+					"name": "Service List",
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "list",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_realtime_services",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Service List by host name",
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "list",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_realtime_services",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "searchHost",
+									"value": "{{host_name}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Service List by host name and service name",
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&search={{service_description}}",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "list",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_realtime_services",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "searchHost",
+									"value": "{{host_name}}",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "search",
+									"value": "{{service_description}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
