@@ -96,7 +96,7 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             $serviceFilter .= implode(' AND ', $filterTab) . ') ';
         }
 
-        $query = "SELECT h.name, s.description, d.service_id, author, actual_start_time , end_time, comment_data, duration, fixed " .
+        $query = "SELECT h.name, s.description, author, actual_start_time , end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h, services s " .
             "WHERE d.service_id = s.service_id " .
             "AND d.host_id = s.host_id " .
