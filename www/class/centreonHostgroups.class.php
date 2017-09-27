@@ -34,17 +34,16 @@
  */
 
  /**
-  *
   * Hostgroups objects
-  * @author jmathis
   *
+  * @author jmathis
   */
 class CentreonHostgroups
 {
     /**
-      *
-      * @var type
-      */
+     *
+     * @var type
+     */
     private $DB;
     
     /**
@@ -60,8 +59,8 @@ class CentreonHostgroups
     private $dataTree;
 
     /**
-     *
      * Constructor
+     *
      * @param $pearDB
      */
     public function __construct($pearDB)
@@ -70,8 +69,8 @@ class CentreonHostgroups
     }
 
     /**
-     *
      * Enter description here ...
+     *
      * @param unknown_type $hg_id
      * @param unknown_type $searchHost
      * @param unknown_type $level
@@ -87,11 +86,13 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
+        $DBRESULT = $this->DB->query(
+            "SELECT hgr.host_host_id " .
                                     "FROM hostgroup_relation hgr, host h " .
                                     "WHERE hgr.hostgroup_hg_id = '".$this->DB->escape($hg_id)."' " .
                                     "AND h.host_id = hgr.host_host_id " .
-                                    "ORDER by h.host_name");
+            "ORDER by h.host_name"
+        );
         while ($elem = $DBRESULT->fetchRow()) {
             $ref[$elem["host_host_id"]] = $elem["host_host_id"];
             $hosts[] = $elem["host_host_id"];
@@ -115,7 +116,7 @@ class CentreonHostgroups
     /**
      * Get Hostgroup Name
      *
-     * @param int $hg_id
+     * @param  int $hg_id
      * @return string
      */
     public function getHostgroupName($hg_id)
@@ -140,7 +141,7 @@ class CentreonHostgroups
     /**
      * Get Hostgroup Id/Name
      *
-     * @param int $hg_id
+     * @param  int $hg_id
      * @return string
      */
     public function getHostsgroups($hg_id = array())
@@ -162,7 +163,7 @@ class CentreonHostgroups
     /**
      * Get Hostgroup Id
      *
-     * @param string $hg_name
+     * @param  string $hg_name
      * @return int
      */
     public function getHostgroupId($hg_name)
@@ -194,11 +195,13 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query("SELECT hg_child_id " .
+        $DBRESULT = $this->DB->query(
+            "SELECT hg_child_id " .
                                     "FROM hostgroup_hg_relation, hostgroup " .
                                     "WHERE hostgroup_hg_relation.hg_parent_id = '".$this->DB->escape($hg_id)."' " .
                                     "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
-                                    "ORDER BY hostgroup.hg_name");
+            "ORDER BY hostgroup.hg_name"
+        );
         while ($elem = $DBRESULT->fetchRow()) {
             $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
         }
@@ -288,7 +291,7 @@ class CentreonHostgroups
         global $centreon;
         $items = array();
 
-        # get list of authorized hostgroups
+        // get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
             $hgAcl = $centreon->user->access->getHostGroupAclConf(
                 null,
@@ -314,7 +317,7 @@ class CentreonHostgroups
             $explodedValues = "''";
         }
 
-        # get list of selected hostgroups
+        // get list of selected hostgroups
         $query = "SELECT hg_id, hg_name "
             . "FROM hostgroup "
             . "WHERE hg_id IN (" . $explodedValues . ") "
@@ -322,7 +325,7 @@ class CentreonHostgroups
 
         $resRetrieval = $this->DB->query($query);
         while ($row = $resRetrieval->fetchRow()) {
-            # hide unauthorized hostgroups
+            // hide unauthorized hostgroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['hg_id'], $hgAcl)) {
                 $hide = true;
@@ -354,7 +357,7 @@ class CentreonHostgroups
                "AND hg.hg_name = '" . $this->DB->escape($hgName) . "'";
         $result = $this->DB->query($query);
 
-        while($elem = $result->fetchrow()) {
+        while ($elem = $result->fetchrow()) {
             $hostList[] = array(
                 'host' => $elem['host_name'],
                 'host_id' => $elem['host_id'],

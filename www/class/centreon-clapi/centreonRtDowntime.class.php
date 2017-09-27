@@ -208,13 +208,15 @@ class CentreonRtDowntime extends CentreonObject
             $dateStart = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['actual_start_time'],
-                $centreon->user->getMyGMT());
+                $centreon->user->getMyGMT()
+            );
             $hostDowntime['actual_start_time'] = $dateStart;
 
             $dateEnd = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['end_time'],
-                $centreon->user->getMyGMT());
+                $centreon->user->getMyGMT()
+            );
             $hostDowntime['end_time'] = $dateEnd;
 
             echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
@@ -257,18 +259,22 @@ class CentreonRtDowntime extends CentreonObject
         foreach ($serviceDowntimesList as $hostDowntime) {
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
-                $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'] . '&search_service=' . $hostDowntime['description'];
+                $url = $this->getBaseUrl() .
+                    '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'] .
+                    '&search_service=' . $hostDowntime['description'];
             }
             $dateStart = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['actual_start_time'],
-                $centreon->user->getMyGMT());
+                $centreon->user->getMyGMT()
+            );
             $hostDowntime['actual_start_time'] = $dateStart;
 
             $dateEnd = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['end_time'],
-                $centreon->user->getMyGMT());
+                $centreon->user->getMyGMT()
+            );
             $hostDowntime['end_time'] = $dateEnd;
 
             echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";

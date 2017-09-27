@@ -243,7 +243,7 @@ class CentreonServicegroups
               "AND sg.sg_name = '" . $this->DB->escape($sgName) . "'";
         $result = $this->DB->query($query);
 
-        while($elem = $result->fetchrow()) {
+        while ($elem = $result->fetchrow()) {
             $serviceList[] = array(
                 'service' => $elem['service_description'],
                 'service_id' => $elem['service_id'],
