@@ -4160,7 +4160,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -4229,7 +4230,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -4448,7 +4450,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -4523,7 +4526,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -4605,7 +4609,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList([\"name\", \"state\"]);"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -4680,7 +4685,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList([\"name\", \"state\"]);"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5064,7 +5070,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5139,7 +5146,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}

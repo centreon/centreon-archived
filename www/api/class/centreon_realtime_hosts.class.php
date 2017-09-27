@@ -353,7 +353,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $query .= " AND h.acknowledged = 0";
             $query .= " AND h.scheduled_downtime_depth = 0";
         } elseif ($this->viewType == "problems") {
-            $query .= " AND (h.state != 0 AND h.state != 4) ";
+            $query .= " AND (h.state <> 0 AND h.state <> 4) ";
         }
 
         if ($this->status == "up") {
