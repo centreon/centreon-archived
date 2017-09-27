@@ -178,7 +178,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         $fields = array();
 
         if (!isset($this->arguments['fields'])) {
-            $fields["h.host_id as id"] = 'host_id';
+            $fields["h.host_id"] = 'host_id';
             $fields["h.name"] = 'name';
             $fields["s.description"] = 'description';
             $fields["s.service_id"] = 'service_id';
@@ -236,7 +236,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
                 $fields["i.name as instance_name"] = 'instance';
             }
             if (isset($fieldList['instance_id'])) {
-                $fields["i.id as instance_id"] = 'instance_id';
+                $fields["i.instance_id as instance_id"] = 'instance_id';
             }
             if (isset($fieldList['host_action_url'])) {
                 $fields["h.action_url as host_action_url"] = 'host_action_url';
@@ -432,28 +432,27 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         $tabOrder["default"] = " ORDER BY s.description $q, h.name";
 
         if (preg_match("/^unhandled/", $this->viewType)) {
-            if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $this->viewType, $matches)) {
+            if (preg_match("/^unhandled_(warning|critical|unknown)\$/", $this->viewType, $matches)) {
                 if (isset($matches[1]) && $matches[1] == 'warning') {
                     $query .= " AND s.state = 1 ";
-                }
-                if (isset($matches[1]) && $matches[1] == "critical") {
+                } elseif (isset($matches[1]) && $matches[1] == "critical") {
                     $query .= " AND s.state = 2 ";
                 } elseif (isset($matches[1]) && $matches[1] == "unknown") {
                     $query .= " AND s.state = 3 ";
                 } elseif (isset($matches[1]) && $matches[1] == "pending") {
                     $query .= " AND s.state = 4 ";
                 } else {
-                    $query .= " AND s.state != 0 ";
+                    $query .= " AND s.state <> 0 ";
                 }
             } else {
-                $query .= " AND (s.state != 0 AND s.state != 4) ";
+                $query .= " AND (s.state <> 0 AND s.state <> 4) ";
             }
             $query .= " AND s.state_type = 1";
             $query .= " AND s.acknowledged = 0";
             $query .= " AND s.scheduled_downtime_depth = 0";
             $query .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
         } elseif ($this->viewType == "problems") {
-            $query .= " AND s.state != 0 AND s.state != 4 ";
+            $query .= " AND s.state <> 0 AND s.state <> 4 ";
         }
 
         if ($this->status == "ok") {

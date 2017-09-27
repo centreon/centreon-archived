@@ -243,7 +243,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                 $fields["i.name as instance_name"] = 'instance';
             }
             if (isset($fieldList['instance_id'])) {
-                $fields["i.id as instance_id"] = 'instance_id';
+                $fields["i.instance_id as instance_id"] = 'instance_id';
             }
             if (isset($fieldList['criticality'])) {
                 $fields["cv.value as criticality"] = 'criticality';
