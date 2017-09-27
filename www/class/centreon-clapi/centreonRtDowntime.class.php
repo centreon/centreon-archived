@@ -125,6 +125,8 @@ class CentreonRtDowntime extends CentreonObject
             }
         }
 
+        $withServices = ($withServices == 1) ? true : false;
+
         // Sécurise le commentaire pour qu'il est forcément des guillemets
         $comment = escapeshellarg($comment);
 
