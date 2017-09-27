@@ -23,6 +23,7 @@
 									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);",
 									"",
 									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {",
+									"    \"use strict\";",
 									"    let helpers = {};",
 									"",
 									"    /** Test function to show this kludge is working. */",
