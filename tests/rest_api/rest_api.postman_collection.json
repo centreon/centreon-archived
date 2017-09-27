@@ -50361,11 +50361,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -50373,19 +50377,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home\"\n}"
             },
             "description": ""
           },
@@ -50481,11 +50485,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -50493,19 +50501,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views\"\n}"
             },
             "description": ""
           },
@@ -50629,7 +50637,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit View\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;Edit View\"\n}"
             },
             "description": ""
           },
@@ -50753,7 +50761,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share View\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;Share View\"\n}"
             },
             "description": ""
           },
@@ -50877,7 +50885,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Widget Parameters\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;Widget Parameters\"\n}"
             },
             "description": ""
           },
@@ -50973,11 +50981,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -50985,19 +50997,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add Widget\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;add Widget\"\n}"
             },
             "description": ""
           },
@@ -51093,11 +51105,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51105,19 +51121,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;rotation\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;rotation\"\n}"
             },
             "description": ""
           },
@@ -51213,11 +51229,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51225,19 +51245,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;delete view\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;delete view\"\n}"
             },
             "description": ""
           },
@@ -51333,11 +51353,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51345,19 +51369,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add view\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;add view\"\n}"
             },
             "description": ""
           },
@@ -51453,11 +51477,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51465,19 +51493,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;set default\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;set default\"\n}"
             },
             "description": ""
           },
@@ -51573,11 +51601,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51585,19 +51617,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics\"\n}"
             },
             "description": ""
           },
@@ -51693,11 +51725,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51705,19 +51741,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;broker statistics\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics;broker statistics\"\n}"
             },
             "description": ""
           },
@@ -51813,11 +51849,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51825,19 +51865,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;graphs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics;graphs\"\n}"
             },
             "description": ""
           },
@@ -51933,11 +51973,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -51945,19 +51989,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring\"\n}"
             },
             "description": ""
           },
@@ -52053,11 +52097,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52065,19 +52113,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details\"\n}"
             },
             "description": ""
           },
@@ -52173,11 +52221,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52185,19 +52237,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;services\"\n}"
             },
             "description": ""
           },
@@ -52293,11 +52345,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52305,19 +52361,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;hosts\"\n}"
             },
             "description": ""
           },
@@ -52413,11 +52469,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52425,19 +52485,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services grid\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;services grid\"\n}"
             },
             "description": ""
           },
@@ -52533,11 +52593,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52545,19 +52609,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by hostgroup\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;services by hostgroup\"\n}"
             },
             "description": ""
           },
@@ -52653,11 +52717,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52665,19 +52733,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by servicegroup\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;services by servicegroup\"\n}"
             },
             "description": ""
           },
@@ -52773,11 +52841,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52785,19 +52857,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hostgroups summary\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;status details;hostgroups summary\"\n}"
             },
             "description": ""
           },
@@ -52893,11 +52965,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -52905,19 +52981,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances\"\n}"
             },
             "description": ""
           },
@@ -53013,11 +53089,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53025,19 +53105,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;graphs\"\n}"
             },
             "description": ""
           },
@@ -53133,11 +53213,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53145,19 +53229,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart split\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;graphs;chart split\"\n}"
             },
             "description": ""
           },
@@ -53253,11 +53337,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53265,19 +53353,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart periods\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;graphs;chart periods\"\n}"
             },
             "description": ""
           },
@@ -53373,11 +53461,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53385,19 +53477,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;templates\"\n}"
             },
             "description": ""
           },
@@ -53493,11 +53585,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53505,19 +53601,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;curves\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;curves\"\n}"
             },
             "description": ""
           },
@@ -53613,11 +53709,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53625,19 +53725,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;metrics\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;metrics\"\n}"
             },
             "description": ""
           },
@@ -53733,11 +53833,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53745,19 +53849,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;event logs\"\n}"
             },
             "description": ""
           },
@@ -53853,11 +53957,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53865,19 +53973,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;event logs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;event logs;event logs\"\n}"
             },
             "description": ""
           },
@@ -53973,11 +54081,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -53985,19 +54097,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;system logs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;event logs;system logs\"\n}"
             },
             "description": ""
           },
@@ -54093,11 +54205,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54105,19 +54221,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;downtimes\"\n}"
             },
             "description": ""
           },
@@ -54213,11 +54329,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54225,19 +54345,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;downtimes\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;downtimes;downtimes\"\n}"
             },
             "description": ""
           },
@@ -54395,11 +54515,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54407,19 +54531,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;recurrent downtimes\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;downtimes;recurrent downtimes\"\n}"
             },
             "description": ""
           },
@@ -54515,11 +54639,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54527,19 +54655,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;comments\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;downtimes;comments\"\n}"
             },
             "description": ""
           },
@@ -54635,11 +54763,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54647,19 +54779,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting\"\n}"
             },
             "description": ""
           },
@@ -54755,11 +54887,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54767,19 +54903,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting;dashboard\"\n}"
             },
             "description": ""
           },
@@ -54875,11 +55011,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -54887,19 +55027,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting;dashboard;hosts\"\n}"
             },
             "description": ""
           },
@@ -54995,11 +55135,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55007,19 +55151,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting;dashboard;services\"\n}"
             },
             "description": ""
           },
@@ -55115,11 +55259,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55127,19 +55275,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;host groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting;dashboard;host groups\"\n}"
             },
             "description": ""
           },
@@ -55235,11 +55383,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55247,19 +55399,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;service groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;reporting;dashboard;service groups\"\n}"
             },
             "description": ""
           },
@@ -55355,11 +55507,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55367,19 +55523,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration\"\n}"
             },
             "description": ""
           },
@@ -55475,11 +55631,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55487,19 +55647,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;hosts\"\n}"
             },
             "description": ""
           },
@@ -55657,11 +55817,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55669,19 +55833,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;hosts;hosts\"\n}"
             },
             "description": ""
           },
@@ -55839,11 +56003,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -55851,19 +56019,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;host groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;hosts;host groups\"\n}"
             },
             "description": ""
           },
@@ -56021,11 +56189,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56033,19 +56205,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;hosts;templates\"\n}"
             },
             "description": ""
           },
@@ -56203,11 +56375,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56215,19 +56391,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;categories\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;hosts;categories\"\n}"
             },
             "description": ""
           },
@@ -56323,11 +56499,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56335,19 +56515,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services\"\n}"
             },
             "description": ""
           },
@@ -56505,11 +56685,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56517,19 +56701,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;services by host\"\n}"
             },
             "description": ""
           },
@@ -56687,11 +56871,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56699,19 +56887,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host group\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;services by host group\"\n}"
             },
             "description": ""
           },
@@ -56869,11 +57057,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -56881,19 +57073,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;service groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;service groups\"\n}"
             },
             "description": ""
           },
@@ -57051,11 +57243,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57063,19 +57259,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;templates\"\n}"
             },
             "description": ""
           },
@@ -57233,11 +57429,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57245,19 +57445,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;categories\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;categories\"\n}"
             },
             "description": ""
           },
@@ -57353,11 +57553,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57365,19 +57569,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;meta services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;services;meta services\"\n}"
             },
             "description": ""
           },
@@ -57473,11 +57677,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57485,19 +57693,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;users\"\n}"
             },
             "description": ""
           },
@@ -57655,11 +57863,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57667,19 +57879,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contacts / users\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;users;contacts / users\"\n}"
             },
             "description": ""
           },
@@ -57837,11 +58049,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -57849,19 +58065,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;users;contact templates\"\n}"
             },
             "description": ""
           },
@@ -58019,11 +58235,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58031,19 +58251,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;users;contact groups\"\n}"
             },
             "description": ""
           },
@@ -58201,11 +58421,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58213,19 +58437,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;time periods\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;users;time periods\"\n}"
             },
             "description": ""
           },
@@ -58321,11 +58545,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58333,19 +58561,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands\"\n}"
             },
             "description": ""
           },
@@ -58503,11 +58731,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58515,19 +58747,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;checks\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands;checks\"\n}"
             },
             "description": ""
           },
@@ -58685,11 +58917,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58697,19 +58933,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;notifications\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands;notifications\"\n}"
             },
             "description": ""
           },
@@ -58867,11 +59103,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -58879,19 +59119,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;discovery\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands;discovery\"\n}"
             },
             "description": ""
           },
@@ -59049,11 +59289,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59061,19 +59305,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;miscellaneous\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands;miscellaneous\"\n}"
             },
             "description": ""
           },
@@ -59231,11 +59475,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59243,19 +59491,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;connectors\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;commands;connectors\"\n}"
             },
             "description": ""
           },
@@ -59351,11 +59599,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59363,19 +59615,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications\"\n}"
             },
             "description": ""
           },
@@ -59533,11 +59785,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59545,19 +59801,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;escalations\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;escalations\"\n}"
             },
             "description": ""
           },
@@ -59715,11 +59971,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59727,19 +59987,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;hosts\"\n}"
             },
             "description": ""
           },
@@ -59897,11 +60157,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -59909,19 +60173,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;host groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;host groups\"\n}"
             },
             "description": ""
           },
@@ -60079,11 +60343,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60091,19 +60359,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;services\"\n}"
             },
             "description": ""
           },
@@ -60261,11 +60529,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60273,19 +60545,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;service groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;service groups\"\n}"
             },
             "description": ""
           },
@@ -60443,11 +60715,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60455,19 +60731,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;meta services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;notifications;meta services\"\n}"
             },
             "description": ""
           },
@@ -60563,11 +60839,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60575,19 +60855,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps\"\n}"
             },
             "description": ""
           },
@@ -60683,11 +60963,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60695,19 +60979,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;snmp traps\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps;snmp traps\"\n}"
             },
             "description": ""
           },
@@ -60803,11 +61087,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60815,19 +61103,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;manufacturer\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps;manufacturer\"\n}"
             },
             "description": ""
           },
@@ -60923,11 +61211,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -60935,19 +61227,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;group\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps;group\"\n}"
             },
             "description": ""
           },
@@ -61043,11 +61335,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61055,19 +61351,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;mibs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps;mibs\"\n}"
             },
             "description": ""
           },
@@ -61163,11 +61459,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61175,19 +61475,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;generate\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;SNMP traps;generate\"\n}"
             },
             "description": ""
           },
@@ -61283,11 +61583,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61295,19 +61599,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;knowledge base\"\n}"
             },
             "description": ""
           },
@@ -61403,11 +61707,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61415,19 +61723,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;hosts\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;knowledge base;hosts\"\n}"
             },
             "description": ""
           },
@@ -61523,11 +61831,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61535,19 +61847,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;services\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;knowledge base;services\"\n}"
             },
             "description": ""
           },
@@ -61643,11 +61955,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61655,19 +61971,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;host templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;knowledge base;host templates\"\n}"
             },
             "description": ""
           },
@@ -61763,11 +62079,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61775,19 +62095,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;service templates\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;knowledge base;service templates\"\n}"
             },
             "description": ""
           },
@@ -61883,11 +62203,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -61895,19 +62219,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers\"\n}"
             },
             "description": ""
           },
@@ -62003,11 +62327,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62015,19 +62343,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;export configuration\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;export configuration\"\n}"
             },
             "description": ""
           },
@@ -62185,11 +62513,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62197,19 +62529,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;pollers\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;pollers\"\n}"
             },
             "description": ""
           },
@@ -62367,11 +62699,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62379,19 +62715,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;engine configuration\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;engine configuration\"\n}"
             },
             "description": ""
           },
@@ -62487,11 +62823,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62499,19 +62839,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;broker configuration\"\n}"
             },
             "description": ""
           },
@@ -62607,11 +62947,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62619,19 +62963,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizard\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;broker configuration;wizard\"\n}"
             },
             "description": ""
           },
@@ -62727,11 +63071,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62739,19 +63087,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizardajax\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;broker configuration;wizardajax\"\n}"
             },
             "description": ""
           },
@@ -62847,11 +63195,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62859,19 +63211,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;resources\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;configuration;pollers;resources\"\n}"
             },
             "description": ""
           },
@@ -62967,11 +63319,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -62979,19 +63335,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration\"\n}"
             },
             "description": ""
           },
@@ -63087,11 +63443,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63099,19 +63459,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters\"\n}"
             },
             "description": ""
           },
@@ -63207,11 +63567,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63219,19 +63583,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centreon UI\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;centreon UI\"\n}"
             },
             "description": ""
           },
@@ -63327,11 +63691,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63339,19 +63707,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;monitoring\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;monitoring\"\n}"
             },
             "description": ""
           },
@@ -63447,11 +63815,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63459,19 +63831,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centcore\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;centcore\"\n}"
             },
             "description": ""
           },
@@ -63567,11 +63939,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63579,19 +63955,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;my account\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;my account\"\n}"
             },
             "description": ""
           },
@@ -63687,11 +64063,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63699,19 +64079,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;LDAP\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;LDAP\"\n}"
             },
             "description": ""
           },
@@ -63807,11 +64187,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63819,19 +64203,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;RRDtool\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;RRDtool\"\n}"
             },
             "description": ""
           },
@@ -63927,11 +64311,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -63939,19 +64327,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;debug\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;debug\"\n}"
             },
             "description": ""
           },
@@ -64047,11 +64435,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64059,19 +64451,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;knowledge base\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;knowledge base\"\n}"
             },
             "description": ""
           },
@@ -64167,11 +64559,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64179,19 +64575,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;CSS\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;CSS\"\n}"
             },
             "description": ""
           },
@@ -64287,11 +64683,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64299,19 +64699,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;backup\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;backup\"\n}"
             },
             "description": ""
           },
@@ -64407,11 +64807,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64419,19 +64823,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;options\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;options\"\n}"
             },
             "description": ""
           },
@@ -64527,11 +64931,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64539,19 +64947,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;data\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;data\"\n}"
             },
             "description": ""
           },
@@ -64647,11 +65055,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64659,19 +65071,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;images\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;images\"\n}"
             },
             "description": ""
           },
@@ -64767,11 +65179,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64779,19 +65195,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;extensions\"\n}"
             },
             "description": ""
           },
@@ -64887,11 +65303,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -64899,19 +65319,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;modules\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;extensions;modules\"\n}"
             },
             "description": ""
           },
@@ -65007,11 +65427,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65019,19 +65443,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;widgets\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;extensions;widgets\"\n}"
             },
             "description": ""
           },
@@ -65127,11 +65551,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65139,19 +65567,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL\"\n}"
             },
             "description": ""
           },
@@ -65247,11 +65675,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65259,19 +65691,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;access groups\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL;access groups\"\n}"
             },
             "description": ""
           },
@@ -65367,11 +65799,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65379,19 +65815,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;menus access\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL;menus access\"\n}"
             },
             "description": ""
           },
@@ -65487,11 +65923,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65499,19 +65939,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;resources access\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL;resources access\"\n}"
             },
             "description": ""
           },
@@ -65607,11 +66047,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65619,19 +66063,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;actions access\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL;actions access\"\n}"
             },
             "description": ""
           },
@@ -65727,11 +66171,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65739,19 +66187,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;reload ACL\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;ACL;reload ACL\"\n}"
             },
             "description": ""
           },
@@ -65847,11 +66295,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65859,19 +66311,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;logs\"\n}"
             },
             "description": ""
           },
@@ -65967,11 +66419,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -65979,19 +66435,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs;visualisation\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;logs;visualisation\"\n}"
             },
             "description": ""
           },
@@ -66087,11 +66543,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -66099,19 +66559,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;sessions\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;sessions\"\n}"
             },
             "description": ""
           },
@@ -66207,11 +66667,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -66219,19 +66683,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;server status\"\n}"
             },
             "description": ""
           },
@@ -66327,11 +66791,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -66339,19 +66807,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status;databases\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;server status;databases\"\n}"
             },
             "description": ""
           },
@@ -66447,11 +66915,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -66459,19 +66931,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;about\"\n}"
             },
             "description": ""
           },
@@ -66567,11 +67039,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -66579,19 +67055,19 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about;about\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;about;about\"\n}"
             },
             "description": ""
           },
