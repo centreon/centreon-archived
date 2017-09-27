@@ -214,16 +214,16 @@ class CentreonInstance
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
-     {
+    {
          $selectedInstances = '';
          $items= array();
 
          $explodedValues = implode(',', $values);
-         if (empty($explodedValues)) {
-             $explodedValues = "''";
-         }else {
-                 $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
-         }
+        if (empty($explodedValues)) {
+            $explodedValues = "''";
+        } else {
+                $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+        }
 
          $query = "SELECT DISTINCT p.name as name, p.id  as id"
              . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
@@ -233,35 +233,35 @@ class CentreonInstance
              . $selectedInstances
              . " ORDER BY p.name";
          $DBRESULT = $this->db->query($query);
-         while ($data = $DBRESULT->fetchRow()) {
-                 $items[] = array(
-                         'id' => $data['id'],
-                 'text' => $data['name']
-             );
-         }
+        while ($data = $DBRESULT->fetchRow()) {
+                $items[] = array(
+                        'id' => $data['id'],
+                'text' => $data['name']
+            );
+        }
 
          return $items;
-     }
+    }
 
-     public function getHostsByInstance($instanceName)
-     {
+    public function getHostsByInstance($instanceName)
+    {
         $instanceList = array();
 
         $query = "SELECT host_name, name " .
-              " FROM host h, nagios_server ns, ns_host_relation nshr " .
-              " WHERE ns.name = '" . $this->db->escape($instanceName) . "'" .
-              " AND nshr.host_host_id = h.host_id " .
-              " AND h.host_activate = '1' " .
-              " ORDER BY h.host_name";
+             " FROM host h, nagios_server ns, ns_host_relation nshr " .
+             " WHERE ns.name = '" . $this->db->escape($instanceName) . "'" .
+             " AND nshr.host_host_id = h.host_id " .
+             " AND h.host_activate = '1' " .
+             " ORDER BY h.host_name";
         $result = $this->db->query($query);
 
-         while($elem = $result->fetchrow()) {
-             $instanceList[] = array(
-                 'host' => $elem['host_name'],
-                 'name' => $elem['instance_name']
-             );
-         }
+        while ($elem = $result->fetchrow()) {
+            $instanceList[] = array(
+                'host' => $elem['host_name'],
+                'name' => $elem['instance_name']
+            );
+        }
 
-         return $instanceList;
-     }
+        return $instanceList;
+    }
 }
