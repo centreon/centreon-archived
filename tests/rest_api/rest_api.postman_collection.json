@@ -46122,7 +46122,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"downtime_test\"\n}"
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"{{downtime_name}}\"\n}"
             },
             "description": ""
           },
@@ -46226,7 +46226,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"downtime_test;host\"\n}"
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\",\n  \"values\" : \"{{downtime_name}};host\"\n}"
             },
             "description": ""
           },
