@@ -20,7 +20,111 @@
 								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);"
+									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);",
+									"",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {",
+									"    let helpers = {};",
+									"",
+									"    /** Test function to show this kludge is working. */",
+									"    helpers.test200 = function test200() {",
+									"        tests[\"Response returned 200\"] = responseCode.code === 200;",
+									"    }",
+									"    ",
+									"    helpers.testJson = function testJson() {",
+									"        tests[\"Content-Type header is application/json\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
+									"        ",
+									"        let result;",
+									"        try {",
+									"            JSON.parse(responseBody);",
+									"        } catch (e) {",
+									"            result = false;",
+									"        }",
+									"        result = true;",
+									"        ",
+									"        tests[\"Response body uses json format\"] = result;",
+									"    }",
+									"    ",
+									"    helpers.notEmpty = function notEmpty() {",
+									"        tests[\"Result is not empty\"] = JSON.parse(responseBody).length > 0;",
+									"    }",
+									"    ",
+									"    helpers.checkHostListFormat = function checkHostListFormat() {",
+									"        let hostListSchema = {",
+									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"          \"type\": \"array\",",
+									"          \"items\": {\t\t",
+									"            \"type\": \"object\",",
+									"            \"required \": [\"id \", \"name \", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"criticality\"],",
+									"            \"properties\": {",
+									"              \"id\": { \"type\": \"string\" },",
+									"              \"name\": { \"type \": \"string\" },",
+									"              \"alias\": { \"type \": \"string\" },",
+									"              \"address\": { \"type\": \"string\" },",
+									"              \"state\": { \"type\": \"string\" },",
+									"              \"state_type\": { \"type \": \"string\" },",
+									"              \"output\": { \"type \": \"string\" },",
+									"              \"max_check_attempts\": { \"type\": \"string\" },",
+									"              \"check_attempt\": { \"type\": \"string\" },",
+									"              \"last_check\": { \"type \": \"string\" },",
+									"              \"last_state_change\": { \"type\": \"string\" },",
+									"              \"last_hard_state_change\": { \"type\": \"string\" },",
+									"              \"acknowledged\": { \"type \": \"string\" },",
+									"              \"instance_name\": { \"type \": \"string\" },",
+									"              \"criticality\": { \"type\": \"string\" }",
+									"            },",
+									"            \"additionalProperties\": false",
+									"          }",
+									"        };",
+									"        tests[\"host list is well formated\"] = tv4.validate(JSON.parse(responseBody), hostListSchema);",
+									"    }",
+									"    ",
+									"    helpers.checkServiceListFormat = function checkServiceListFormat() {",
+									"        let serviceListSchema = {",
+									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"          \"type\": \"array\",",
+									"          \"items\": {\t\t",
+									"            \"type\": \"object\",",
+									"            \"required \": [\"id \", \"name \", \"description\", \"service_id\", \"state\", \"state_type\", \"output\", \"perfdata\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"criticality\"],",
+									"            \"properties\": {",
+									"              \"id\": { \"type\": \"string\" },",
+									"              \"name\": { \"type \": \"string\" },",
+									"              \"description\": { \"type \": \"string\" },",
+									"              \"service_id\": { \"type\": \"string\" },",
+									"              \"state\": { \"type\": \"string\" },",
+									"              \"state_type\": { \"type \": \"string\" },",
+									"              \"output\": { \"type \": \"string\" },",
+									"              \"perfdata\": { \"type \": \"string\" },",
+									"              \"max_check_attempts\": { \"type\": \"string\" },",
+									"              \"check_attempt\": { \"type\": \"string\" },",
+									"              \"last_check\": { \"type \": \"string\" },",
+									"              \"last_state_change\": { \"type\": \"string\" },",
+									"              \"last_hard_state_change\": { \"type\": \"string\" },",
+									"              \"acknowledged\": { \"type \": \"string\" },",
+									"              \"criticality\": { \"type\": \"string\" }",
+									"            },",
+									"            \"additionalProperties\": false",
+									"          }",
+									"        };",
+									"        tests[\"service list is well formated\"] = tv4.validate(JSON.parse(responseBody), serviceListSchema);",
+									"    }",
+									"    ",
+									"    helpers.checkHostList = function checkHostList() {",
+									"        helpers.test200();",
+									"        helpers.testJson();",
+									"        helpers.notEmpty();",
+									"        helpers.checkHostListFormat();",
+									"    }",
+									"    ",
+									"    helpers.checkServiceList = function checkServiceList() {",
+									"        helpers.test200();",
+									"        helpers.testJson();",
+									"        helpers.notEmpty();",
+									"        helpers.checkServiceListFormat();",
+									"    }",
+									"",
+									"    return helpers;",
+									"} + '; loadHelpers();'); // when eval'd out of globals, execute it",
+									"tests[\"helpers initialized\"] = true;"
 								]
 							}
 						}
@@ -3549,8 +3653,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3619,8 +3723,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3688,8 +3792,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3763,8 +3867,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3838,8 +3942,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3913,8 +4017,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3988,8 +4092,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4063,8 +4167,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4138,8 +4242,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4213,8 +4317,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4288,8 +4392,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4363,8 +4467,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4438,8 +4542,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4513,8 +4617,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4588,8 +4692,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4663,8 +4767,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4738,8 +4842,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4820,8 +4924,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4889,8 +4993,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4958,8 +5062,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5027,8 +5131,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5096,8 +5200,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5171,8 +5275,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5246,8 +5350,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5321,8 +5425,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5403,8 +5507,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5478,8 +5582,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5553,8 +5657,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5628,8 +5732,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5703,8 +5807,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5791,8 +5895,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5860,8 +5964,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5935,8 +6039,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6010,8 +6114,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6085,8 +6189,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6160,8 +6264,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6235,8 +6339,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6310,8 +6414,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6385,8 +6489,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6460,8 +6564,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6535,8 +6639,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6610,8 +6714,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6685,8 +6789,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6760,8 +6864,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6835,8 +6939,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6910,8 +7014,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -6985,8 +7089,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -7060,8 +7164,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -7135,8 +7239,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -7210,8 +7314,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -7288,6 +7392,18 @@
 			"item": [
 				{
 					"name": "Service List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);",
+									"helpers.checkServiceList();"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services",
@@ -7339,6 +7455,18 @@
 				},
 				{
 					"name": "Service List by host name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);",
+									"helpers.checkServiceList();"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
@@ -7396,6 +7524,18 @@
 				},
 				{
 					"name": "Service List by host name and service name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);",
+									"helpers.checkServiceList();"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&search={{service_description}}",
