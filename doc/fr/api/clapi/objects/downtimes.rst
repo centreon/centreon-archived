@@ -32,6 +32,20 @@ Activate     					  Whether or not the downtime is activated
 
 ================================= ===========================================================================
 
+In order to show resources of a downtime, use the **Show** action with parameters::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a show -v "mail-backup;host"
+
+The parameters are the following:
+
+========= ============================================
+Order     Description
+========= ============================================
+1         Name of the downtime
+
+2         (optional) Object type (host, hg, service, sg)
+
+========= ============================================
 
 Add
 ---
