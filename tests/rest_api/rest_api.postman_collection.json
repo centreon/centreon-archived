@@ -1,8 +1,8 @@
 {
   "variables": [],
   "info": {
-    "name": "Centreon Web Rest API copy",
-    "_postman_id": "e687a42e-6678-d1f4-1fcf-14cd2867c15c",
+    "name": "Centreon Web Rest API",
+    "_postman_id": "7e8d87c5-e220-ec4f-01f9-a531a68da178",
     "description": "",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
@@ -19056,64 +19056,6 @@
           "response": []
         },
         {
-          "name": "Set contact non admin",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};admin;0\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
           "name": "Create contact-2",
           "event": [
             {
@@ -19176,13 +19118,34 @@
           "response": []
         },
         {
-          "name": "Set contact non admin",
+          "name": "List contact copy",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var contactData = jsonData.result;",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of contacts\"] = contactData;",
+                  "    var i = 0;",
+                  "    while (i < contactData.length) {",
+                  "        if (postman.getEnvironmentVariable(\"contact_name\") == contactData[i].name) {",
+                  "            tests[\"Body contains added contact_name\"] = postman.getEnvironmentVariable(\"contact_name\") == contactData[i].name;",
+                  "            tests[\"Body contains added contact_alias\"] = postman.getEnvironmentVariable(\"contact_alias\") == contactData[i].alias;",
+                  "            tests[\"Body contains added contact_email\"] = postman.getEnvironmentVariable(\"contact_mail\") == contactData[i].email;",
+                  "            tests[\"Body contains added contact_GUI_access\"] = postman.getEnvironmentVariable(\"contact_GUI_access\") == contactData[i]['gui access'];",
+                  "            tests[\"Body contains added contact_admin\"] = postman.getEnvironmentVariable(\"contact_admin\") == contactData[i].admin;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == contactData.length)",
+                  "        tests[\"contact_name was found\"] = false;",
+                  "} catch (e) {}",
+                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;"
                 ]
               }
@@ -19231,7 +19194,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};admin;0\"\n}"
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"contact\"\n}"
             },
             "description": ""
           },
@@ -33918,7 +33881,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
+              "raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}\"\n}"
             },
             "description": ""
           },
@@ -33980,7 +33943,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"delcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
+              "raw": "{\n  \"action\": \"delcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}\"\n}"
             },
             "description": ""
           },
@@ -34042,7 +34005,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}|{{contact_alias2}}\"\n}"
+              "raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_name}}|{{contact_name2}}\"\n}"
             },
             "description": ""
           },
@@ -35459,130 +35422,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};passive_checks_enabled;{{service_passive_check_enabled}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Setparam contact_additive_inheritance",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};contact_additive_inheritance;{{service_contact_additive_inheritance}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Setparam cg_additive_inheritance",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};cg_additive_inheritance;{{service_cg_additive_inheritance}}\"\n}"
             },
             "description": ""
           },
@@ -39770,130 +39609,6 @@
           "response": []
         },
         {
-          "name": "Setparam contact_additive_inheritance",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}};contact_additive_inheritance;{{hgservice_contact_additive_inheritance}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Setparam cg_additive_inheritance",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}};cg_additive_inheritance;{{hgservice_cg_additive_inheritance}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
           "name": "Setparam notifications_enabled",
           "event": [
             {
@@ -41864,68 +41579,6 @@
           "response": []
         },
         {
-          "name": "Delmacro",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"delmacro\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}};{{hgservice_macro_name}};{{hgservice_macro_value}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
           "name": "Addcontact",
           "event": [
             {
@@ -42187,130 +41840,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\": \"getcontact\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Setseverity",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}};{{sc_name}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Unsetseverity",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"unsetseverity\",\n  \"object\": \"hgservice\",\n  \"values\": \"{{hg_name}};{{hgservice_description}}\"\n}"
             },
             "description": ""
           },
@@ -43850,68 +43379,6 @@
           "response": []
         },
         {
-          "name": "Setservice",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setservice\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{host_name}},{{service_description}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
           "name": "Addservicetemplate",
           "event": [
             {
@@ -44110,68 +43577,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\": \"delservicetemplate\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{stpl_description}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Setservicetemplate",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"setservicetemplate\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{stpl_description}}\"\n}"
             },
             "description": ""
           },
@@ -45976,7 +45381,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"DOWNTIME\"\n}"
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"downtime\"\n}"
             },
             "description": ""
           },
@@ -46996,615 +46401,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\": \"setservicegroup\",\n  \"object\": \"downtime\",\n  \"values\": \"{{downtime_name}};{{sg_name}}\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Show Service Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
-                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
-                  "",
-                  "var jsonData = JSON.parse(responseBody);",
-                  "var result = jsonData.result;",
-                  "",
-                  "var schema = {",
-                  "    \"type\": \"array\",",
-                  "    \"items\": {",
-                  "        \"type\": \"object\",",
-                  "        \"properties\": {",
-                  "            \"host_name\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"service_name\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"author\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"actual_start_time\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"end_time\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"comment_data\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"duration\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"fixed\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"url\": {",
-                  "                \"type\": \"string\"",
-                  "            }",
-                  "        },",
-                  "        \"additionalProperties\": false,",
-                  "        \"required\": [\"host_name\", \"service_name\", \"author\", \"actual_start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
-                  "    }",
-                  "}",
-                  "",
-                  "tests[\"Validate schema JSON\"] = tv4.validate(result, schema);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;esx-alger-01|ping\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Show Host Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
-                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
-                  "",
-                  "var jsonData = JSON.parse(responseBody);",
-                  "var result = jsonData.result;",
-                  "",
-                  "var schema = {",
-                  "    \"type\": \"array\",",
-                  "    \"items\": {",
-                  "        \"type\": \"object\",",
-                  "        \"properties\": {",
-                  "            \"host_name\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"author\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"actual_start_time\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"end_time\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"comment_data\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"duration\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"fixed\": {",
-                  "                \"type\": \"string\"",
-                  "            },",
-                  "            \"url\": {",
-                  "                \"type\": \"string\"",
-                  "            }",
-                  "        },",
-                  "        \"additionalProperties\": false,",
-                  "        \"required\": [\"host_name\", \"author\", \"actual_start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
-                  "    }",
-                  "}",
-                  "",
-                  "tests[\"Validate schema JSON\"] = tv4.validate(result, schema);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;esx-alger-01\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Addhost Realtime",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
-                  ""
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;esx-alger-01;{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire\"\n}\n"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Addservice Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
-                  ""
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;esx-alger-01|ping;{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Addhostgroup Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + date.getHours() + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + dateEnd.getHours() + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;Databases1;{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Addservicegroup Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + date.getHours() + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + dateEnd.getHours() + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;Traffic-Europe;{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Addinstance Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + date.getHours() + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + dateEnd.getHours() + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true,
-                  "description": ""
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true,
-                  "description": ""
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}",
-                "description": ""
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;Central;{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
             },
             "description": ""
           },
@@ -50860,7 +49656,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Home",
+          "name": "Grant Home",
           "event": [
             {
               "listen": "test",
@@ -50911,7 +49707,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home\"\n}"
             },
             "description": ""
           },
@@ -50976,7 +49772,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Custom Views",
+          "name": "Grant Custom Views",
           "event": [
             {
               "listen": "test",
@@ -51027,7 +49823,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views\"\n}"
             },
             "description": ""
           },
@@ -51092,7 +49888,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Edit View",
+          "name": "Grant Edit View",
           "event": [
             {
               "listen": "test",
@@ -51147,7 +49943,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit View\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Edit View\"\n}"
             },
             "description": ""
           },
@@ -51216,7 +50012,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Share View",
+          "name": "Grant Share View",
           "event": [
             {
               "listen": "test",
@@ -51271,7 +50067,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share View\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Share View\"\n}"
             },
             "description": ""
           },
@@ -51340,7 +50136,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Widget Parameters",
+          "name": "Grant Widget Parameters",
           "event": [
             {
               "listen": "test",
@@ -51395,7 +50191,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Widget Parameters\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;Widget Parameters\"\n}"
             },
             "description": ""
           },
@@ -51464,7 +50260,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Add Widget",
+          "name": "Grant Add Widget",
           "event": [
             {
               "listen": "test",
@@ -51515,7 +50311,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add Widget\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add Widget\"\n}"
             },
             "description": ""
           },
@@ -51580,7 +50376,7 @@
           "response": []
         },
         {
-          "name": "Grantrw rotation",
+          "name": "Grant rotation",
           "event": [
             {
               "listen": "test",
@@ -51631,7 +50427,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;rotation\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;rotation\"\n}"
             },
             "description": ""
           },
@@ -51696,7 +50492,7 @@
           "response": []
         },
         {
-          "name": "Grantrw delete view",
+          "name": "Grant delete view",
           "event": [
             {
               "listen": "test",
@@ -51747,7 +50543,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;delete view\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;delete view\"\n}"
             },
             "description": ""
           },
@@ -51812,7 +50608,7 @@
           "response": []
         },
         {
-          "name": "Grantrw add view",
+          "name": "Grant add view",
           "event": [
             {
               "listen": "test",
@@ -51863,7 +50659,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add view\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;add view\"\n}"
             },
             "description": ""
           },
@@ -51928,7 +50724,7 @@
           "response": []
         },
         {
-          "name": "Grantrw set default",
+          "name": "Grant set default",
           "event": [
             {
               "listen": "test",
@@ -51979,7 +50775,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;set default\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;Custom Views;set default\"\n}"
             },
             "description": ""
           },
@@ -52044,7 +50840,7 @@
           "response": []
         },
         {
-          "name": "Grantrw poller statistics",
+          "name": "Grant poller statistics",
           "event": [
             {
               "listen": "test",
@@ -52095,7 +50891,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics\"\n}"
             },
             "description": ""
           },
@@ -52160,7 +50956,7 @@
           "response": []
         },
         {
-          "name": "Grantrw broker statistics",
+          "name": "Grant broker statistics",
           "event": [
             {
               "listen": "test",
@@ -52211,7 +51007,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;broker statistics\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;broker statistics\"\n}"
             },
             "description": ""
           },
@@ -52276,7 +51072,7 @@
           "response": []
         },
         {
-          "name": "Grantrw graphs (poller)",
+          "name": "Grant graphs (poller)",
           "event": [
             {
               "listen": "test",
@@ -52327,7 +51123,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;graphs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};Home;poller statistics;graphs\"\n}"
             },
             "description": ""
           },
@@ -52392,7 +51188,7 @@
           "response": []
         },
         {
-          "name": "Grantrw monitoring",
+          "name": "Grant monitoring",
           "event": [
             {
               "listen": "test",
@@ -52443,7 +51239,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring\"\n}"
             },
             "description": ""
           },
@@ -52508,7 +51304,7 @@
           "response": []
         },
         {
-          "name": "Grantrw status details",
+          "name": "Grant status details",
           "event": [
             {
               "listen": "test",
@@ -52559,7 +51355,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details\"\n}"
             },
             "description": ""
           },
@@ -52624,7 +51420,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services (monitoring)",
+          "name": "Grant services (monitoring)",
           "event": [
             {
               "listen": "test",
@@ -52675,7 +51471,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services\"\n}"
             },
             "description": ""
           },
@@ -52740,7 +51536,7 @@
           "response": []
         },
         {
-          "name": "Grantrw hosts (monitoring)",
+          "name": "Grant hosts (monitoring)",
           "event": [
             {
               "listen": "test",
@@ -52791,7 +51587,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hosts\"\n}"
             },
             "description": ""
           },
@@ -52856,7 +51652,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services grid",
+          "name": "Grant services grid",
           "event": [
             {
               "listen": "test",
@@ -52907,7 +51703,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services grid\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services grid\"\n}"
             },
             "description": ""
           },
@@ -52972,7 +51768,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services by hostgroup",
+          "name": "Grant services by hostgroup",
           "event": [
             {
               "listen": "test",
@@ -53023,7 +51819,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by hostgroup\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by hostgroup\"\n}"
             },
             "description": ""
           },
@@ -53088,7 +51884,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services by servicegroup",
+          "name": "Grant services by servicegroup",
           "event": [
             {
               "listen": "test",
@@ -53139,7 +51935,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by servicegroup\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;services by servicegroup\"\n}"
             },
             "description": ""
           },
@@ -53204,7 +52000,7 @@
           "response": []
         },
         {
-          "name": "Grantrw hostgroups summary",
+          "name": "Grant hostgroups summary",
           "event": [
             {
               "listen": "test",
@@ -53255,7 +52051,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hostgroups summary\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;status details;hostgroups summary\"\n}"
             },
             "description": ""
           },
@@ -53320,7 +52116,7 @@
           "response": []
         },
         {
-          "name": "Grantrw performances",
+          "name": "Grant performances",
           "event": [
             {
               "listen": "test",
@@ -53371,7 +52167,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances\"\n}"
             },
             "description": ""
           },
@@ -53436,7 +52232,7 @@
           "response": []
         },
         {
-          "name": "Grantrw graphs",
+          "name": "Grant graphs",
           "event": [
             {
               "listen": "test",
@@ -53487,7 +52283,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs\"\n}"
             },
             "description": ""
           },
@@ -53552,7 +52348,7 @@
           "response": []
         },
         {
-          "name": "Grantrw chart split",
+          "name": "Grant chart split",
           "event": [
             {
               "listen": "test",
@@ -53603,7 +52399,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart split\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart split\"\n}"
             },
             "description": ""
           },
@@ -53668,7 +52464,7 @@
           "response": []
         },
         {
-          "name": "Grantrw chart periods",
+          "name": "Grant chart periods",
           "event": [
             {
               "listen": "test",
@@ -53719,7 +52515,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart periods\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;graphs;chart periods\"\n}"
             },
             "description": ""
           },
@@ -53784,7 +52580,7 @@
           "response": []
         },
         {
-          "name": "Grantrw templates (perf)",
+          "name": "Grant templates (perf)",
           "event": [
             {
               "listen": "test",
@@ -53835,7 +52631,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;templates\"\n}"
             },
             "description": ""
           },
@@ -53900,7 +52696,7 @@
           "response": []
         },
         {
-          "name": "Grantrw curves",
+          "name": "Grant curves",
           "event": [
             {
               "listen": "test",
@@ -53951,7 +52747,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;curves\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;curves\"\n}"
             },
             "description": ""
           },
@@ -54016,7 +52812,7 @@
           "response": []
         },
         {
-          "name": "Grantrw metrics",
+          "name": "Grant metrics",
           "event": [
             {
               "listen": "test",
@@ -54067,7 +52863,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;metrics\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;performances;metrics\"\n}"
             },
             "description": ""
           },
@@ -54132,7 +52928,7 @@
           "response": []
         },
         {
-          "name": "Grantrw event logs",
+          "name": "Grant event logs",
           "event": [
             {
               "listen": "test",
@@ -54183,7 +52979,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs\"\n}"
             },
             "description": ""
           },
@@ -54248,7 +53044,7 @@
           "response": []
         },
         {
-          "name": "Grantrw event logs (advanced)",
+          "name": "Grant event logs (advanced)",
           "event": [
             {
               "listen": "test",
@@ -54299,7 +53095,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;event logs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;event logs\"\n}"
             },
             "description": ""
           },
@@ -54364,7 +53160,7 @@
           "response": []
         },
         {
-          "name": "Grantrw system logs",
+          "name": "Grant system logs",
           "event": [
             {
               "listen": "test",
@@ -54415,7 +53211,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;system logs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;event logs;system logs\"\n}"
             },
             "description": ""
           },
@@ -54480,7 +53276,7 @@
           "response": []
         },
         {
-          "name": "Grantrw downtimes",
+          "name": "Grant downtimes",
           "event": [
             {
               "listen": "test",
@@ -54531,7 +53327,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes\"\n}"
             },
             "description": ""
           },
@@ -54596,7 +53392,7 @@
           "response": []
         },
         {
-          "name": "Grantrw downtimes (main menu)",
+          "name": "Grant downtimes (main menu)",
           "event": [
             {
               "listen": "test",
@@ -54647,7 +53443,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;downtimes\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;downtimes\"\n}"
             },
             "description": ""
           },
@@ -54712,7 +53508,7 @@
           "response": []
         },
         {
-          "name": "Grantrw recurrent downtimes",
+          "name": "Grant recurrent downtimes",
           "event": [
             {
               "listen": "test",
@@ -54763,65 +53559,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;recurrent downtimes\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro recurrent downtimes",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;recurrent downtimes\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;recurrent downtimes\"\n}"
             },
             "description": ""
           },
@@ -54886,7 +53624,7 @@
           "response": []
         },
         {
-          "name": "Grantrw comments",
+          "name": "Grant comments",
           "event": [
             {
               "listen": "test",
@@ -54937,7 +53675,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;comments\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};monitoring;downtimes;comments\"\n}"
             },
             "description": ""
           },
@@ -55002,7 +53740,7 @@
           "response": []
         },
         {
-          "name": "Grantrw reporting",
+          "name": "Grant reporting",
           "event": [
             {
               "listen": "test",
@@ -55053,7 +53791,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting\"\n}"
             },
             "description": ""
           },
@@ -55118,7 +53856,7 @@
           "response": []
         },
         {
-          "name": "Grantrw dashboard",
+          "name": "Grant dashboard",
           "event": [
             {
               "listen": "test",
@@ -55169,7 +53907,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard\"\n}"
             },
             "description": ""
           },
@@ -55234,7 +53972,7 @@
           "response": []
         },
         {
-          "name": "Grantrw hosts (dashboard)",
+          "name": "Grant hosts (dashboard)",
           "event": [
             {
               "listen": "test",
@@ -55285,7 +54023,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;hosts\"\n}"
             },
             "description": ""
           },
@@ -55350,7 +54088,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services (dashboard)",
+          "name": "Grant services (dashboard)",
           "event": [
             {
               "listen": "test",
@@ -55401,7 +54139,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;services\"\n}"
             },
             "description": ""
           },
@@ -55466,7 +54204,7 @@
           "response": []
         },
         {
-          "name": "Grantrw host groups (dashboard)",
+          "name": "Grant host groups (dashboard)",
           "event": [
             {
               "listen": "test",
@@ -55517,7 +54255,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;host groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;host groups\"\n}"
             },
             "description": ""
           },
@@ -55582,7 +54320,7 @@
           "response": []
         },
         {
-          "name": "Grantrw service groups (dashboard)",
+          "name": "Grant service groups (dashboard)",
           "event": [
             {
               "listen": "test",
@@ -55633,7 +54371,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;service groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};reporting;dashboard;service groups\"\n}"
             },
             "description": ""
           },
@@ -55698,7 +54436,7 @@
           "response": []
         },
         {
-          "name": "Grantrw configuration",
+          "name": "Grant configuration",
           "event": [
             {
               "listen": "test",
@@ -55749,7 +54487,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration\"\n}"
             },
             "description": ""
           },
@@ -55814,7 +54552,7 @@
           "response": []
         },
         {
-          "name": "Grant hostsrw (config)",
+          "name": "Grant hosts (config)",
           "event": [
             {
               "listen": "test",
@@ -55865,7 +54603,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts\"\n}"
             },
             "description": ""
           },
@@ -55930,7 +54668,7 @@
           "response": []
         },
         {
-          "name": "Grant hostsrw (config/host)",
+          "name": "Grant hosts (config/host)",
           "event": [
             {
               "listen": "test",
@@ -55981,65 +54719,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;hosts\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grant hostsro (config/host)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;hosts\"\n}"
             },
             "description": ""
           },
@@ -56104,7 +54784,7 @@
           "response": []
         },
         {
-          "name": "Grantrw host groups (config/hosts)",
+          "name": "Grant host groups (config/hosts)",
           "event": [
             {
               "listen": "test",
@@ -56155,65 +54835,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;host groups\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro host groups (config/hosts)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;host groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;host groups\"\n}"
             },
             "description": ""
           },
@@ -56278,7 +54900,7 @@
           "response": []
         },
         {
-          "name": "Grantrw templates (config/hosts)",
+          "name": "Grant templates (config/hosts)",
           "event": [
             {
               "listen": "test",
@@ -56329,65 +54951,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;templates\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro templates (config/hosts)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;templates\"\n}"
             },
             "description": ""
           },
@@ -56452,7 +55016,7 @@
           "response": []
         },
         {
-          "name": "Grantrw categories (config/hosts)",
+          "name": "Grant categories (config/hosts)",
           "event": [
             {
               "listen": "test",
@@ -56503,65 +55067,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;categories\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro categories (config/hosts)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;categories\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;hosts;categories\"\n}"
             },
             "description": ""
           },
@@ -56626,7 +55132,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services (config)",
+          "name": "Grant services (config)",
           "event": [
             {
               "listen": "test",
@@ -56677,7 +55183,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services\"\n}"
             },
             "description": ""
           },
@@ -56742,7 +55248,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services by host (config/services)",
+          "name": "Grant services by host (config/services)",
           "event": [
             {
               "listen": "test",
@@ -56793,65 +55299,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro services by host (config/services)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host\"\n}"
             },
             "description": ""
           },
@@ -56916,7 +55364,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services by host group (config/services)",
+          "name": "Grant services by host group (config/services)",
           "event": [
             {
               "listen": "test",
@@ -56967,65 +55415,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host group\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro services by host group (config/services)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host group\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;services by host group\"\n}"
             },
             "description": ""
           },
@@ -57090,7 +55480,7 @@
           "response": []
         },
         {
-          "name": "Grantrw service groups (config/services)",
+          "name": "Grant service groups (config/services)",
           "event": [
             {
               "listen": "test",
@@ -57141,65 +55531,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;service groups\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro service groups (config/services)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;service groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;service groups\"\n}"
             },
             "description": ""
           },
@@ -57264,7 +55596,7 @@
           "response": []
         },
         {
-          "name": "Grantrw templates (config/services)",
+          "name": "Grant templates (config/services)",
           "event": [
             {
               "listen": "test",
@@ -57315,65 +55647,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;templates\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro templates (config/services)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;templates\"\n}"
             },
             "description": ""
           },
@@ -57438,7 +55712,7 @@
           "response": []
         },
         {
-          "name": "Grantrw categories (config/services)",
+          "name": "Grant categories (config/services)",
           "event": [
             {
               "listen": "test",
@@ -57489,65 +55763,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;categories\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro categories (config/services)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;categories\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;categories\"\n}"
             },
             "description": ""
           },
@@ -57612,7 +55828,7 @@
           "response": []
         },
         {
-          "name": "Grantrw meta services(config/services)",
+          "name": "Grant meta services(config/services)",
           "event": [
             {
               "listen": "test",
@@ -57663,7 +55879,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;meta services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;services;meta services\"\n}"
             },
             "description": ""
           },
@@ -57728,7 +55944,7 @@
           "response": []
         },
         {
-          "name": "Grantrw users",
+          "name": "Grant users",
           "event": [
             {
               "listen": "test",
@@ -57779,7 +55995,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users\"\n}"
             },
             "description": ""
           },
@@ -57844,7 +56060,7 @@
           "response": []
         },
         {
-          "name": "Grantrw Contacts / Users",
+          "name": "Grant Contacts / Users",
           "event": [
             {
               "listen": "test",
@@ -57895,65 +56111,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contacts / users\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro Contacts / Users",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contacts / users\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contacts / users\"\n}"
             },
             "description": ""
           },
@@ -58018,7 +56176,7 @@
           "response": []
         },
         {
-          "name": "Grantrw contact templates",
+          "name": "Grant contact templates",
           "event": [
             {
               "listen": "test",
@@ -58069,65 +56227,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact templates\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro contact templates",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact templates\"\n}"
             },
             "description": ""
           },
@@ -58192,7 +56292,7 @@
           "response": []
         },
         {
-          "name": "Grantrw contact groups",
+          "name": "Grant contact groups",
           "event": [
             {
               "listen": "test",
@@ -58243,65 +56343,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact groups\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro contact groups",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;contact groups\"\n}"
             },
             "description": ""
           },
@@ -58366,7 +56408,7 @@
           "response": []
         },
         {
-          "name": "Grantrw time periods",
+          "name": "Grant time periods",
           "event": [
             {
               "listen": "test",
@@ -58417,65 +56459,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;time periods\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro time periods",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;time periods\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;users;time periods\"\n}"
             },
             "description": ""
           },
@@ -58540,7 +56524,7 @@
           "response": []
         },
         {
-          "name": "Grantrw commands",
+          "name": "Grant commands",
           "event": [
             {
               "listen": "test",
@@ -58591,7 +56575,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands\"\n}"
             },
             "description": ""
           },
@@ -58656,7 +56640,7 @@
           "response": []
         },
         {
-          "name": "Grantrw checks",
+          "name": "Grant checks",
           "event": [
             {
               "listen": "test",
@@ -58707,65 +56691,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;checks\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro checks",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;checks\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;checks\"\n}"
             },
             "description": ""
           },
@@ -58830,7 +56756,7 @@
           "response": []
         },
         {
-          "name": "Grantrw notifications",
+          "name": "Grant notifications",
           "event": [
             {
               "listen": "test",
@@ -58881,65 +56807,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;notifications\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro notifications",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;notifications\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;notifications\"\n}"
             },
             "description": ""
           },
@@ -59004,7 +56872,7 @@
           "response": []
         },
         {
-          "name": "Grantrw discovery",
+          "name": "Grant discovery",
           "event": [
             {
               "listen": "test",
@@ -59055,65 +56923,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;discovery\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro discovery",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;discovery\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;discovery\"\n}"
             },
             "description": ""
           },
@@ -59178,7 +56988,7 @@
           "response": []
         },
         {
-          "name": "Grantrw miscellaneous",
+          "name": "Grant miscellaneous",
           "event": [
             {
               "listen": "test",
@@ -59229,65 +57039,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;miscellaneous\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro miscellaneous",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;miscellaneous\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;miscellaneous\"\n}"
             },
             "description": ""
           },
@@ -59352,7 +57104,7 @@
           "response": []
         },
         {
-          "name": "Grantrw connectors",
+          "name": "Grant connectors",
           "event": [
             {
               "listen": "test",
@@ -59403,65 +57155,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;connectors\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro connectors",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;connectors\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;commands;connectors\"\n}"
             },
             "description": ""
           },
@@ -59526,7 +57220,7 @@
           "response": []
         },
         {
-          "name": "Grantrw notifications",
+          "name": "Grant notifications",
           "event": [
             {
               "listen": "test",
@@ -59577,7 +57271,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications\"\n}"
             },
             "description": ""
           },
@@ -59642,7 +57336,7 @@
           "response": []
         },
         {
-          "name": "Grantrw escalations",
+          "name": "Grant escalations",
           "event": [
             {
               "listen": "test",
@@ -59693,65 +57387,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;escalations\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro escalations",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;escalations\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;escalations\"\n}"
             },
             "description": ""
           },
@@ -59816,7 +57452,7 @@
           "response": []
         },
         {
-          "name": "Grantrw hosts (dependencies)",
+          "name": "Grant hosts (dependencies)",
           "event": [
             {
               "listen": "test",
@@ -59867,65 +57503,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;hosts\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro hosts (dependencies)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;hosts\"\n}"
             },
             "description": ""
           },
@@ -59990,7 +57568,7 @@
           "response": []
         },
         {
-          "name": "Grantrw host groups (dependencies)",
+          "name": "Grant host groups (dependencies)",
           "event": [
             {
               "listen": "test",
@@ -60041,65 +57619,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;host groups\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro host groups (dependencies)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;host groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;host groups\"\n}"
             },
             "description": ""
           },
@@ -60164,7 +57684,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services(dependencies)",
+          "name": "Grant services(dependencies)",
           "event": [
             {
               "listen": "test",
@@ -60215,65 +57735,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;services\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro services(dependencies)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;services\"\n}"
             },
             "description": ""
           },
@@ -60338,7 +57800,7 @@
           "response": []
         },
         {
-          "name": "Grantrw service groups(dependencies)",
+          "name": "Grant service groups(dependencies)",
           "event": [
             {
               "listen": "test",
@@ -60389,65 +57851,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;service groups\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro service groups(dependencies)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;service groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;service groups\"\n}"
             },
             "description": ""
           },
@@ -60512,7 +57916,7 @@
           "response": []
         },
         {
-          "name": "Grantrw meta services (dependencies)",
+          "name": "Grant meta services (dependencies)",
           "event": [
             {
               "listen": "test",
@@ -60563,65 +57967,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;meta services\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro meta services (dependencies)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;meta services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;notifications;meta services\"\n}"
             },
             "description": ""
           },
@@ -60686,7 +58032,7 @@
           "response": []
         },
         {
-          "name": "Grantrw SNMP traps (config)",
+          "name": "Grant SNMP traps (config)",
           "event": [
             {
               "listen": "test",
@@ -60737,7 +58083,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps\"\n}"
             },
             "description": ""
           },
@@ -60802,7 +58148,7 @@
           "response": []
         },
         {
-          "name": "Grantrw SNMP traps (SNMP)",
+          "name": "Grant SNMP traps (SNMP)",
           "event": [
             {
               "listen": "test",
@@ -60853,7 +58199,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;snmp traps\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;snmp traps\"\n}"
             },
             "description": ""
           },
@@ -60918,7 +58264,7 @@
           "response": []
         },
         {
-          "name": "Grantrw manufacturer",
+          "name": "Grant manufacturer",
           "event": [
             {
               "listen": "test",
@@ -60969,7 +58315,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;manufacturer\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;manufacturer\"\n}"
             },
             "description": ""
           },
@@ -61034,7 +58380,7 @@
           "response": []
         },
         {
-          "name": "Grantrw group (SNMP)",
+          "name": "Grant group (SNMP)",
           "event": [
             {
               "listen": "test",
@@ -61085,7 +58431,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;group\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;group\"\n}"
             },
             "description": ""
           },
@@ -61150,7 +58496,7 @@
           "response": []
         },
         {
-          "name": "Grantrw mibs",
+          "name": "Grant mibs",
           "event": [
             {
               "listen": "test",
@@ -61201,7 +58547,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;mibs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;mibs\"\n}"
             },
             "description": ""
           },
@@ -61266,7 +58612,7 @@
           "response": []
         },
         {
-          "name": "Grantrw generate",
+          "name": "Grant generate",
           "event": [
             {
               "listen": "test",
@@ -61317,7 +58663,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;generate\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;SNMP traps;generate\"\n}"
             },
             "description": ""
           },
@@ -61382,7 +58728,7 @@
           "response": []
         },
         {
-          "name": "Grantrw knowledge base",
+          "name": "Grant knowledge base",
           "event": [
             {
               "listen": "test",
@@ -61433,7 +58779,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base\"\n}"
             },
             "description": ""
           },
@@ -61498,7 +58844,7 @@
           "response": []
         },
         {
-          "name": "Grantrw hosts (knowledge)",
+          "name": "Grant hosts (knowledge)",
           "event": [
             {
               "listen": "test",
@@ -61549,7 +58895,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;hosts\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;hosts\"\n}"
             },
             "description": ""
           },
@@ -61614,7 +58960,7 @@
           "response": []
         },
         {
-          "name": "Grantrw services (knowledge)",
+          "name": "Grant services (knowledge)",
           "event": [
             {
               "listen": "test",
@@ -61665,7 +59011,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;services\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;services\"\n}"
             },
             "description": ""
           },
@@ -61730,7 +59076,7 @@
           "response": []
         },
         {
-          "name": "Grantrw host templates (knowledge)",
+          "name": "Grant host templates (knowledge)",
           "event": [
             {
               "listen": "test",
@@ -61781,7 +59127,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;host templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;host templates\"\n}"
             },
             "description": ""
           },
@@ -61846,7 +59192,7 @@
           "response": []
         },
         {
-          "name": "Grantrw service templates (knowledge)",
+          "name": "Grant service templates (knowledge)",
           "event": [
             {
               "listen": "test",
@@ -61897,7 +59243,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;service templates\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;knowledge base;service templates\"\n}"
             },
             "description": ""
           },
@@ -61962,7 +59308,7 @@
           "response": []
         },
         {
-          "name": "Grantrw pollers (config)",
+          "name": "Grant pollers (config)",
           "event": [
             {
               "listen": "test",
@@ -62013,7 +59359,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers\"\n}"
             },
             "description": ""
           },
@@ -62078,7 +59424,7 @@
           "response": []
         },
         {
-          "name": "Grantrw export configuration",
+          "name": "Grant export configuration",
           "event": [
             {
               "listen": "test",
@@ -62129,7 +59475,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;export configuration\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;export configuration\"\n}"
             },
             "description": ""
           },
@@ -62194,7 +59540,7 @@
           "response": []
         },
         {
-          "name": "Grantrw pollers (pollers)",
+          "name": "Grant pollers (pollers)",
           "event": [
             {
               "listen": "test",
@@ -62245,65 +59591,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;pollers\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro pollers (pollers)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;pollers\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;pollers\"\n}"
             },
             "description": ""
           },
@@ -62368,7 +59656,7 @@
           "response": []
         },
         {
-          "name": "Grantrw engine configuration",
+          "name": "Grant engine configuration",
           "event": [
             {
               "listen": "test",
@@ -62419,65 +59707,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;engine configuration\"\n}"
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "Grantro engine configuration",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ],
-              "variable": []
-            },
-            "method": "POST",
-            "header": [
-              {
-                "description": "",
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "description": "",
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantro\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;engine configuration\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;engine configuration\"\n}"
             },
             "description": ""
           },
@@ -62542,7 +59772,7 @@
           "response": []
         },
         {
-          "name": "Grantrw broker configuration",
+          "name": "Grant broker configuration",
           "event": [
             {
               "listen": "test",
@@ -62593,7 +59823,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration\"\n}"
             },
             "description": ""
           },
@@ -62658,7 +59888,7 @@
           "response": []
         },
         {
-          "name": "Grantrw wizard",
+          "name": "Grant wizard",
           "event": [
             {
               "listen": "test",
@@ -62709,7 +59939,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizard\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizard\"\n}"
             },
             "description": ""
           },
@@ -62774,7 +60004,7 @@
           "response": []
         },
         {
-          "name": "Grantrw wizardajax",
+          "name": "Grant wizardajax",
           "event": [
             {
               "listen": "test",
@@ -62825,7 +60055,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizardajax\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;broker configuration;wizardajax\"\n}"
             },
             "description": ""
           },
@@ -62890,7 +60120,7 @@
           "response": []
         },
         {
-          "name": "Grantrw resources",
+          "name": "Grant resources",
           "event": [
             {
               "listen": "test",
@@ -62941,7 +60171,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;resources\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};configuration;pollers;resources\"\n}"
             },
             "description": ""
           },
@@ -63006,7 +60236,7 @@
           "response": []
         },
         {
-          "name": "Grantrw administration",
+          "name": "Grant administration",
           "event": [
             {
               "listen": "test",
@@ -63057,7 +60287,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration\"\n}"
             },
             "description": ""
           },
@@ -63122,7 +60352,7 @@
           "response": []
         },
         {
-          "name": "Grantrw parameters",
+          "name": "Grant parameters",
           "event": [
             {
               "listen": "test",
@@ -63173,7 +60403,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters\"\n}"
             },
             "description": ""
           },
@@ -63238,7 +60468,7 @@
           "response": []
         },
         {
-          "name": "Grantrw centreon UI",
+          "name": "Grant centreon UI",
           "event": [
             {
               "listen": "test",
@@ -63289,7 +60519,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centreon UI\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centreon UI\"\n}"
             },
             "description": ""
           },
@@ -63354,7 +60584,7 @@
           "response": []
         },
         {
-          "name": "Grantrw monitoring (parameters)",
+          "name": "Grant monitoring (parameters)",
           "event": [
             {
               "listen": "test",
@@ -63405,7 +60635,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;monitoring\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;monitoring\"\n}"
             },
             "description": ""
           },
@@ -63470,7 +60700,7 @@
           "response": []
         },
         {
-          "name": "Grantrw centcore",
+          "name": "Grant centcore",
           "event": [
             {
               "listen": "test",
@@ -63521,7 +60751,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centcore\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;centcore\"\n}"
             },
             "description": ""
           },
@@ -63586,7 +60816,7 @@
           "response": []
         },
         {
-          "name": "Grantrw my account",
+          "name": "Grant my account",
           "event": [
             {
               "listen": "test",
@@ -63637,7 +60867,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;my account\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;my account\"\n}"
             },
             "description": ""
           },
@@ -63702,7 +60932,7 @@
           "response": []
         },
         {
-          "name": "Grantrw LDAP",
+          "name": "Grant LDAP",
           "event": [
             {
               "listen": "test",
@@ -63753,7 +60983,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;LDAP\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;LDAP\"\n}"
             },
             "description": ""
           },
@@ -63818,7 +61048,7 @@
           "response": []
         },
         {
-          "name": "Grantrw RRDtool",
+          "name": "Grant RRDtool",
           "event": [
             {
               "listen": "test",
@@ -63869,7 +61099,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;RRDtool\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;RRDtool\"\n}"
             },
             "description": ""
           },
@@ -63934,7 +61164,7 @@
           "response": []
         },
         {
-          "name": "Grantrw debug",
+          "name": "Grant debug",
           "event": [
             {
               "listen": "test",
@@ -63985,7 +61215,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;debug\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;debug\"\n}"
             },
             "description": ""
           },
@@ -64050,7 +61280,7 @@
           "response": []
         },
         {
-          "name": "Grantrw knowledge base (parameters)",
+          "name": "Grant knowledge base (parameters)",
           "event": [
             {
               "listen": "test",
@@ -64101,7 +61331,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;knowledge base\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;knowledge base\"\n}"
             },
             "description": ""
           },
@@ -64166,7 +61396,7 @@
           "response": []
         },
         {
-          "name": "Grantrw CSS",
+          "name": "Grant CSS",
           "event": [
             {
               "listen": "test",
@@ -64217,7 +61447,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;CSS\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;CSS\"\n}"
             },
             "description": ""
           },
@@ -64282,7 +61512,7 @@
           "response": []
         },
         {
-          "name": "Grantrw backup",
+          "name": "Grant backup",
           "event": [
             {
               "listen": "test",
@@ -64333,7 +61563,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;backup\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;backup\"\n}"
             },
             "description": ""
           },
@@ -64398,7 +61628,7 @@
           "response": []
         },
         {
-          "name": "Grantrw options",
+          "name": "Grant options",
           "event": [
             {
               "listen": "test",
@@ -64449,7 +61679,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;options\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;options\"\n}"
             },
             "description": ""
           },
@@ -64514,7 +61744,7 @@
           "response": []
         },
         {
-          "name": "Grantrw data",
+          "name": "Grant data",
           "event": [
             {
               "listen": "test",
@@ -64565,7 +61795,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;data\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;data\"\n}"
             },
             "description": ""
           },
@@ -64630,7 +61860,7 @@
           "response": []
         },
         {
-          "name": "Grantrw images",
+          "name": "Grant images",
           "event": [
             {
               "listen": "test",
@@ -64681,7 +61911,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;images\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;parameters;images\"\n}"
             },
             "description": ""
           },
@@ -64746,7 +61976,7 @@
           "response": []
         },
         {
-          "name": "Grantrw extensions",
+          "name": "Grant extensions",
           "event": [
             {
               "listen": "test",
@@ -64797,7 +62027,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions\"\n}"
             },
             "description": ""
           },
@@ -64862,7 +62092,7 @@
           "response": []
         },
         {
-          "name": "Grantrw modules",
+          "name": "Grant modules",
           "event": [
             {
               "listen": "test",
@@ -64913,7 +62143,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;modules\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;modules\"\n}"
             },
             "description": ""
           },
@@ -64978,7 +62208,7 @@
           "response": []
         },
         {
-          "name": "Grantrw widgets",
+          "name": "Grant widgets",
           "event": [
             {
               "listen": "test",
@@ -65029,7 +62259,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;widgets\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;extensions;widgets\"\n}"
             },
             "description": ""
           },
@@ -65094,7 +62324,7 @@
           "response": []
         },
         {
-          "name": "Grantrw ACL",
+          "name": "Grant ACL",
           "event": [
             {
               "listen": "test",
@@ -65145,7 +62375,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL\"\n}"
             },
             "description": ""
           },
@@ -65210,7 +62440,7 @@
           "response": []
         },
         {
-          "name": "Grantrw access groups",
+          "name": "Grant access groups",
           "event": [
             {
               "listen": "test",
@@ -65261,7 +62491,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;access groups\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;access groups\"\n}"
             },
             "description": ""
           },
@@ -65326,7 +62556,7 @@
           "response": []
         },
         {
-          "name": "Grantrw menus access",
+          "name": "Grant menus access",
           "event": [
             {
               "listen": "test",
@@ -65377,7 +62607,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;menus access\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;menus access\"\n}"
             },
             "description": ""
           },
@@ -65442,7 +62672,7 @@
           "response": []
         },
         {
-          "name": "Grantrw resources access",
+          "name": "Grant resources access",
           "event": [
             {
               "listen": "test",
@@ -65493,7 +62723,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;resources access\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;resources access\"\n}"
             },
             "description": ""
           },
@@ -65558,7 +62788,7 @@
           "response": []
         },
         {
-          "name": "Grantrw actions access",
+          "name": "Grant actions access",
           "event": [
             {
               "listen": "test",
@@ -65609,7 +62839,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;actions access\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;actions access\"\n}"
             },
             "description": ""
           },
@@ -65674,7 +62904,7 @@
           "response": []
         },
         {
-          "name": "Grantrw reload ACL",
+          "name": "Grant reload ACL",
           "event": [
             {
               "listen": "test",
@@ -65725,7 +62955,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;reload ACL\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;ACL;reload ACL\"\n}"
             },
             "description": ""
           },
@@ -65790,7 +63020,7 @@
           "response": []
         },
         {
-          "name": "Grantrw logs",
+          "name": "Grant logs",
           "event": [
             {
               "listen": "test",
@@ -65841,7 +63071,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs\"\n}"
             },
             "description": ""
           },
@@ -65906,7 +63136,7 @@
           "response": []
         },
         {
-          "name": "Grantrw visualisation",
+          "name": "Grant visualisation",
           "event": [
             {
               "listen": "test",
@@ -65957,7 +63187,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs;visualisation\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;logs;visualisation\"\n}"
             },
             "description": ""
           },
@@ -66022,7 +63252,7 @@
           "response": []
         },
         {
-          "name": "Grantrw sessions",
+          "name": "Grant sessions",
           "event": [
             {
               "listen": "test",
@@ -66073,7 +63303,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;sessions\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;sessions\"\n}"
             },
             "description": ""
           },
@@ -66138,7 +63368,7 @@
           "response": []
         },
         {
-          "name": "Grantrw server status",
+          "name": "Grant server status",
           "event": [
             {
               "listen": "test",
@@ -66189,7 +63419,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status\"\n}"
             },
             "description": ""
           },
@@ -66254,7 +63484,7 @@
           "response": []
         },
         {
-          "name": "Grantrw databases",
+          "name": "Grant databases",
           "event": [
             {
               "listen": "test",
@@ -66305,7 +63535,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status;databases\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;server status;databases\"\n}"
             },
             "description": ""
           },
@@ -66370,7 +63600,7 @@
           "response": []
         },
         {
-          "name": "Grantrw about (admin)",
+          "name": "Grant about (admin)",
           "event": [
             {
               "listen": "test",
@@ -66421,7 +63651,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about\"\n}"
             },
             "description": ""
           },
@@ -66486,7 +63716,7 @@
           "response": []
         },
         {
-          "name": "Grantrw about (about)",
+          "name": "Grant about (about)",
           "event": [
             {
               "listen": "test",
@@ -66537,7 +63767,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about;about\"\n}"
+              "raw": "{\n  \"action\": \"grant\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};administration;about;about\"\n}"
             },
             "description": ""
           },
