@@ -48520,11 +48520,15 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true,
+                  "description": ""
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true,
+                  "description": ""
                 }
               ],
               "variable": []
@@ -48532,14 +48536,14 @@
             "method": "POST",
             "header": [
               {
-                "description": "",
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "application/json",
+                "description": ""
               },
               {
-                "description": "",
                 "key": "centreon-auth-token",
-                "value": "{{token}}"
+                "value": "{{token}}",
+                "description": ""
               }
             ],
             "body": {
