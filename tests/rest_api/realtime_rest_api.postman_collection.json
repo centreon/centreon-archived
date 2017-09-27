@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Centreon Web Rest API realtime",
-		"_postman_id": "fbbb7aff-7700-5886-8793-217eed438d0b",
+		"_postman_id": "24b0e0a1-2177-135a-838e-0f9b0d441e51",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -20,7 +20,121 @@
 								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);"
+									"postman.setEnvironmentVariable(\"token\",jsonData.authToken);",
+									"",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {",
+									"    \"use strict\";",
+									"    let helpers = {};",
+									"",
+									"    /** Test function to show this kludge is working. */",
+									"    helpers.test200 = function test200() {",
+									"        tests[\"Response returned 200\"] = responseCode.code === 200;",
+									"    }",
+									"    ",
+									"    helpers.testJson = function testJson() {",
+									"        tests[\"Content-Type header is application/json\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
+									"        ",
+									"        let result;",
+									"        try {",
+									"            JSON.parse(responseBody);",
+									"        } catch (e) {",
+									"            result = false;",
+									"        }",
+									"        result = true;",
+									"        ",
+									"        tests[\"Response body uses json format\"] = result;",
+									"    }",
+									"    ",
+									"    helpers.notEmpty = function notEmpty() {",
+									"        tests[\"Result is not empty\"] = JSON.parse(responseBody).length > 0;",
+									"    }",
+									"    ",
+									"    helpers.checkHostListFormat = function checkHostListFormat(columns) {",
+									"        if (typeof columns === 'undefined') {",
+									"            columns = [\"id\", \"name\", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"criticality\"];",
+									"        }",
+									"        ",
+									"        let hostListSchema = {",
+									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"          \"type\": \"array\",",
+									"          \"items\": {\t\t",
+									"            \"type\": \"object\",",
+									"            \"required\": columns,",
+									"            \"properties\": {",
+									"              \"id\": { \"type\": \"string\" },",
+									"              \"name\": { \"type \": \"string\" },",
+									"              \"alias\": { \"type \": \"string\" },",
+									"              \"address\": { \"type\": \"string\" },",
+									"              \"state\": { \"type\": \"string\" },",
+									"              \"state_type\": { \"type \": \"string\" },",
+									"              \"output\": { \"type \": \"string\" },",
+									"              \"max_check_attempts\": { \"type\": \"string\" },",
+									"              \"check_attempt\": { \"type\": \"string\" },",
+									"              \"last_check\": { \"type \": \"string\" },",
+									"              \"last_state_change\": { \"type\": \"string\" },",
+									"              \"last_hard_state_change\": { \"type\": \"string\" },",
+									"              \"acknowledged\": { \"type \": \"string\" },",
+									"              \"instance_name\": { \"type \": \"string\" },",
+									"              \"criticality\": { \"type\": \"string\" }",
+									"            },",
+									"            \"additionalProperties\": true",
+									"          }",
+									"        };",
+									"        tests[\"host list is well formated\"] = tv4.validate(JSON.parse(responseBody), hostListSchema);",
+									"    }",
+									"    ",
+									"    helpers.checkServiceListFormat = function checkServiceListFormat(columns) {",
+									"        if (typeof columns === 'undefined') {",
+									"            columns = [\"host_id\", \"name\", \"description\", \"service_id\", \"state\", \"state_type\", \"output\", \"perfdata\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"criticality\"];",
+									"        }",
+									"        ",
+									"        let serviceListSchema = {",
+									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"          \"type\": \"array\",",
+									"          \"items\": {\t\t",
+									"            \"type\": \"object\",",
+									"            \"required\": columns,",
+									"            \"properties\": {",
+									"              \"host_id\": { \"type\": \"string\" },",
+									"              \"name\": { \"type \": \"string\" },",
+									"              \"description\": { \"type \": \"string\" },",
+									"              \"service_id\": { \"type\": \"string\" },",
+									"              \"state\": { \"type\": \"string\" },",
+									"              \"state_type\": { \"type \": \"string\" },",
+									"              \"output\": { \"type \": \"string\" },",
+									"              \"perfdata\": { \"type \": \"string\" },",
+									"              \"max_check_attempts\": { \"type\": \"string\" },",
+									"              \"check_attempt\": { \"type\": \"string\" },",
+									"              \"last_check\": { \"type \": \"string\" },",
+									"              \"last_state_change\": { \"type\": \"string\" },",
+									"              \"last_hard_state_change\": { \"type\": \"string\" },",
+									"              \"acknowledged\": { \"type \": \"string\" },",
+									"              \"criticality\": { \"type\": \"string\" }",
+									"            },",
+									"            \"additionalProperties\": true",
+									"          }",
+									"        };",
+									"        tests[\"service list is well formated\"] = tv4.validate(JSON.parse(responseBody), serviceListSchema);",
+									"    }",
+									"    ",
+									"    helpers.checkHostList = function checkHostList(columns) {",
+									"        helpers.test200();",
+									"        helpers.testJson();",
+									"        helpers.notEmpty();",
+									"        helpers.checkHostListFormat(columns);",
+									"    }",
+									"    ",
+									"    helpers.checkServiceList = function checkServiceList(columns) {",
+									"        helpers.test200();",
+									"        helpers.testJson();",
+									"        helpers.notEmpty();",
+									"        helpers.checkServiceListFormat(columns);",
+									"    }",
+									"",
+									"    return helpers;",
+									"} + '; loadHelpers();'); // when eval'd out of globals, execute it",
+									"tests[\"helpers initialized\"] = true;",
+									""
 								]
 							}
 						}
@@ -2642,6 +2756,68 @@
 								"description": ""
 							},
 							"response": []
+						},
+						{
+							"name": "Add host 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name2}};{{host_alias}};0.0.0.0;{{htpl_name}};Central;\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
 						}
 					],
 					"_postman_isSubFolder": true
@@ -3538,7 +3714,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "host list with no parameters",
+					"name": "host list without parameters",
 					"description": "",
 					"item": [
 						{
@@ -3549,8 +3725,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3619,8 +3795,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -3681,81 +3857,6 @@
 							"response": []
 						},
 						{
-							"name": "Limit with field id",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=id,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "id,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
 							"name": "Limit with field name",
 							"event": [
 								{
@@ -3763,8 +3864,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList([\"name\"]);"
 										]
 									}
 								}
@@ -3831,22 +3932,22 @@
 							"response": []
 						},
 						{
-							"name": "Limit with field alias",
+							"name": "Limit with all fields",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList([\"id\", \"name\", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"next_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"instance_id\", \"criticality\", \"passive_checks\", \"active_checks\", \"notify\", \"action_url\", \"notes_url\", \"notes\", \"icon_image\", \"icon_image_alt\", \"scheduled_downtime_depth\", \"flapping\"]);"
 										]
 									}
 								}
 							],
 							"request": {
 								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=alias,name",
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit=2&fields=id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 									"protocol": "http",
 									"host": [
 										"{{url}}"
@@ -3871,913 +3972,13 @@
 										},
 										{
 											"key": "limit",
-											"value": "{{my_limit}}",
+											"value": "2",
 											"equals": true,
 											"description": ""
 										},
 										{
 											"key": "fields",
-											"value": "alias,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field address",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=address,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "address,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field state",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=state,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "state,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field state_type",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=state_type,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "state_type,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field output",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=output,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "output,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field max_check_attempts",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=max_check_attempts,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "max_check_attempts,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field check_attempt",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=check_attempt,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "check_attempt,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field last_check",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_check,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_check,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field last_state_change",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_state_change,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_state_change,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field last_hard_state_change",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=last_hard_state_change,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_hard_state_change,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field acknowledged",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=acknowledged,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "acknowledged,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field instance",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&fields=instance,name",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "instance,name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "Limit with field criticality",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&criticality=",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "limit",
-											"value": "{{my_limit}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "criticality",
-											"value": "",
+											"value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 											"equals": true,
 											"description": ""
 										}
@@ -4820,8 +4021,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4889,8 +4090,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -4958,8 +4159,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5027,8 +4229,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5096,8 +4299,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5171,8 +4374,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5246,8 +4449,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5321,8 +4525,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5403,8 +4608,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5478,8 +4684,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5553,8 +4760,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5628,8 +4836,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5703,8 +4912,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList([\"name\", \"state\"]);"
 										]
 									}
 								}
@@ -5791,8 +5000,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList();"
 										]
 									}
 								}
@@ -5860,8 +5069,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5935,8 +5145,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -6010,8 +5221,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -6085,8 +5297,9 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -6160,8 +5373,8 @@
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList([\"id\"]);"
 										]
 									}
 								}
@@ -6228,22 +5441,22 @@
 							"response": []
 						},
 						{
-							"name": "search by host name with name field",
+							"name": "search by host name with all fields",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"type": "text/javascript",
 										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkHostList([\"id\", \"name\", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"next_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"instance_id\", \"criticality\", \"passive_checks\", \"active_checks\", \"notify\", \"action_url\", \"notes_url\", \"notes\", \"icon_image\", \"icon_image_alt\", \"scheduled_downtime_depth\", \"flapping\"]);"
 										]
 									}
 								}
 							],
 							"request": {
 								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=name",
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 									"protocol": "http",
 									"host": [
 										"{{url}}"
@@ -6274,982 +5487,7 @@
 										},
 										{
 											"key": "fields",
-											"value": "name",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with alias field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=alias",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "alias",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with address field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=address",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "address",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with state field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=state",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "state",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with state_type  field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=state_type",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "state_type",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with output field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=output",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "output",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with max_check_attempts field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=max_check_attempts",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "max_check_attempts",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with last_check field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_check",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_check",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with last_state_change field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_state_change",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_state_change",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with last_hard_state_change field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=last_hard_state_change",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "last_hard_state_change",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with acknowledged field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=acknowledged",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "acknowledged",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with instance field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=instance",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "instance",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with criticality field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=criticality",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "criticality",
-											"equals": true,
-											"description": ""
-										}
-									],
-									"variable": []
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"description": ""
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}",
-										"description": ""
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"description": ""
-							},
-							"response": []
-						},
-						{
-							"name": "search by host name with passive_checks field",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"tests['response code is 200'] = responseCode.code === 200;",
-											"tests['response time is less than 200'] = responseTime < 200;"
-										]
-									}
-								}
-							],
-							"request": {
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=passive_checks",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "list",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "object",
-											"value": "centreon_realtime_hosts",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "search",
-											"value": "{{host_name}}",
-											"equals": true,
-											"description": ""
-										},
-										{
-											"key": "fields",
-											"value": "passive_checks",
+											"value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 											"equals": true,
 											"description": ""
 										}
@@ -7287,10 +5525,784 @@
 			"description": "",
 			"item": [
 				{
-					"name": "Service List",
+					"name": "Service list without parameters",
+					"description": "",
+					"item": [
+						{
+							"name": "Service List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Service list by host and service",
+					"description": "",
+					"item": [
+						{
+							"name": "Service List by host name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "searchHost",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Service List by service description",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "searchHost",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "searchService",
+											"value": "{{service_description}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Service List by host name and service description",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "searchHost",
+											"value": "{{host_name}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "searchService",
+											"value": "{{service_description}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Service list with limit parameter",
+					"description": "",
+					"item": [
+						{
+							"name": "Service List with limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Service List with limit and one field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList([\"service_id\"]);"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "id",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Service List with limit and all fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.checkServiceList([",
+											"    \"host_id\",",
+											"    \"host_name\",",
+											"    \"host_alias\",",
+											"    \"host_address\",",
+											"    \"host_state\",",
+											"    \"host_state_type\",",
+											"    \"host_output\",",
+											"    \"host_last_check\",",
+											"    \"host_next_check\",",
+											"    \"host_acknowledged\",",
+											"    \"instance_name\",",
+											"    \"instance_id\",",
+											"    \"host_action_url\",",
+											"    \"host_notes_url\",",
+											"    \"host_icon_image\",",
+											"    \"description\",",
+											"    \"state\",",
+											"    \"state_type\",",
+											"    \"service_id\",",
+											"    \"output\",",
+											"    \"perfdata\",",
+											"    \"current_attempt\",",
+											"    \"last_update\",",
+											"    \"last_state_change\",",
+											"    \"last_hard_state_change\",",
+											"    \"last_check\",",
+											"    \"next_check\",",
+											"    \"max_check_attempts\",",
+											"    \"notes\",",
+											"    \"notes_url\",",
+											"    \"action_url\",",
+											"    \"icon_image\",",
+											"    \"display_name\",",
+											"    \"notify\",",
+											"    \"acknowledged\",",
+											"    \"passive_checks\",",
+											"    \"active_checks\",",
+											"    \"event_handler_enabled\",",
+											"    \"flapping\",",
+											"    \"scheduled_downtime_depth\",",
+											"    \"flap_detection\",",
+											"    \"criticality\"",
+											"    ]);"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "limit",
+											"value": "{{my_limit}}",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "fields",
+											"value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Service list with viewType parameter",
+					"description": "",
+					"item": [
+						{
+							"name": "Service List with viewType problems",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&viewType=problems",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "problems",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Service List with viewType unhandled critical",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"var helpers = eval(globals.loadHelpers);",
+											"helpers.test200();",
+											"helpers.testJson();"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&viewType=unhandled_critical",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "list",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_realtime_services",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "viewType",
+											"value": "unhandled_critical",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "50-Downtime Realtime",
+			"description": "",
+			"item": [
+				{
+					"name": "Show Service Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var contentType = postman.getResponseHeader(\"Content-Type\");",
+									"tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"var result = jsonData.result;",
+									"",
+									"var schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"host_name\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"service_name\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"author\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"actual_start_time\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"end_time\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"comment_data\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"duration\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"fixed\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"url\": {",
+									"                \"type\": \"string\"",
+									"            }",
+									"        },",
+									"        \"additionalProperties\": false,",
+									"        \"required\": [\"host_name\", \"service_name\", \"author\", \"actual_start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
+									"    }",
+									"}",
+									"",
+									"tests[\"Validate schema JSON\"] = tv4.validate(result, schema);"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services",
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -7303,20 +6315,20 @@
 							"query": [
 								{
 									"key": "action",
-									"value": "list",
+									"value": "action",
 									"equals": true,
 									"description": ""
 								},
 								{
 									"key": "object",
-									"value": "centreon_realtime_services",
+									"value": "centreon_clapi",
 									"equals": true,
 									"description": ""
 								}
 							],
 							"variable": []
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -7331,17 +6343,70 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}}\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Service List by host name",
+					"name": "Show Host Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var contentType = postman.getResponseHeader(\"Content-Type\");",
+									"tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"var result = jsonData.result;",
+									"",
+									"var schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"host_name\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"author\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"actual_start_time\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"end_time\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"comment_data\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"duration\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"fixed\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"url\": {",
+									"                \"type\": \"string\"",
+									"            }",
+									"        },",
+									"        \"additionalProperties\": false,",
+									"        \"required\": [\"host_name\", \"author\", \"actual_start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
+									"    }",
+									"}",
+									"",
+									"tests[\"Validate schema JSON\"] = tv4.validate(result, schema);"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -7354,26 +6419,20 @@
 							"query": [
 								{
 									"key": "action",
-									"value": "list",
+									"value": "action",
 									"equals": true,
 									"description": ""
 								},
 								{
 									"key": "object",
-									"value": "centreon_realtime_services",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "searchHost",
-									"value": "{{host_name}}",
+									"value": "centreon_clapi",
 									"equals": true,
 									"description": ""
 								}
 							],
 							"variable": []
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -7388,17 +6447,39 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}}\"\n}"
 						},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "Service List by host name and service name",
+					"name": "Addhost Realtime",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.setGlobalVariable(\"fixed\", \"1\");",
+									"",
+									"var date = new Date();",
+									"var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+									"                     ('0' + date.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
+									"",
+									"var dateEnd = new Date(date.setHours(date.getHours()+1));",
+									"var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+									"('0' + dateEnd.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"end_time\", datetime_end);",
+									""
+								]
+							}
+						}
+					],
 					"request": {
 						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&search={{service_description}}",
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -7411,32 +6492,20 @@
 							"query": [
 								{
 									"key": "action",
-									"value": "list",
+									"value": "action",
 									"equals": true,
 									"description": ""
 								},
 								{
 									"key": "object",
-									"value": "centreon_realtime_services",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "searchHost",
-									"value": "{{host_name}}",
-									"equals": true,
-									"description": ""
-								},
-								{
-									"key": "search",
-									"value": "{{service_description}}",
+									"value": "centreon_clapi",
 									"equals": true,
 									"description": ""
 								}
 							],
 							"variable": []
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -7451,7 +6520,332 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Addservice Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.setGlobalVariable(\"fixed\", \"1\");",
+									"",
+									"var date = new Date();",
+									"var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+									"                     ('0' + date.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
+									"",
+									"var dateEnd = new Date(date.setHours(date.getHours()+1));",
+									"var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+									"('0' + dateEnd.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"end_time\", datetime_end);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}};{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Addhostgroup Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.setGlobalVariable(\"fixed\", \"1\");",
+									"",
+									"var date = new Date();",
+									"var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+									"                     ('0' + date.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
+									"",
+									"var dateEnd = new Date(date.setHours(date.getHours()+1));",
+									"var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+									"('0' + dateEnd.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Addservicegroup Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.setGlobalVariable(\"fixed\", \"1\");",
+									"",
+									"var date = new Date();",
+									"var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+									"                     ('0' + date.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
+									"",
+									"var dateEnd = new Date(date.setHours(date.getHours()+1));",
+									"var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+									"('0' + dateEnd.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{actual_start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Addinstance Realtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"postman.setGlobalVariable(\"fixed\", \"1\");",
+									"",
+									"var date = new Date();",
+									"var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+									"                     ('0' + date.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"actual_start_time\", datetime_start);",
+									"",
+									"var dateEnd = new Date(date.setHours(date.getHours()+1));",
+									"var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+									"('0' + dateEnd.getMinutes()).slice(-2);",
+									"postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;Central;{{actual_start_time}};{{end_time}};1;3600;1;Ceci est un commentaire;\"\n}"
 						},
 						"description": ""
 					},
