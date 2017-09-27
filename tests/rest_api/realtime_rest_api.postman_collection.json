@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Centreon Web Rest API realtime",
-		"_postman_id": "fbbb7aff-7700-5886-8793-217eed438d0b",
+		"_postman_id": "c96848b0-2e96-2cc6-b153-2d825065d1fb",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -48,13 +48,17 @@
 									"        tests[\"Result is not empty\"] = JSON.parse(responseBody).length > 0;",
 									"    }",
 									"    ",
-									"    helpers.checkHostListFormat = function checkHostListFormat() {",
+									"    helpers.checkHostListFormat = function checkHostListFormat(columns) {",
+									"        if (typeof columns === 'undefined') {",
+									"            columns = [\"id\", \"name\", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"criticality\"];",
+									"        }",
+									"        ",
 									"        let hostListSchema = {",
 									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
 									"          \"type\": \"array\",",
 									"          \"items\": {\t\t",
 									"            \"type\": \"object\",",
-									"            \"required \": [\"id \", \"name \", \"alias\", \"address\", \"state\", \"state_type\", \"output\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"instance_name\", \"criticality\"],",
+									"            \"required\": columns,",
 									"            \"properties\": {",
 									"              \"id\": { \"type\": \"string\" },",
 									"              \"name\": { \"type \": \"string\" },",
@@ -78,13 +82,17 @@
 									"        tests[\"host list is well formated\"] = tv4.validate(JSON.parse(responseBody), hostListSchema);",
 									"    }",
 									"    ",
-									"    helpers.checkServiceListFormat = function checkServiceListFormat() {",
+									"    helpers.checkServiceListFormat = function checkServiceListFormat(columns) {",
+									"        if (typeof columns === 'undefined') {",
+									"            columns = [\"id\", \"name\", \"description\", \"service_id\", \"state\", \"state_type\", \"output\", \"perfdata\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"criticality\"];",
+									"        }",
+									"        ",
 									"        let serviceListSchema = {",
 									"          \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
 									"          \"type\": \"array\",",
 									"          \"items\": {\t\t",
 									"            \"type\": \"object\",",
-									"            \"required \": [\"id \", \"name \", \"description\", \"service_id\", \"state\", \"state_type\", \"output\", \"perfdata\", \"max_check_attempts\", \"check_attempt\", \"last_check\", \"last_state_change\", \"last_hard_state_change\", \"acknowledged\", \"criticality\"],",
+									"            \"required\": columns,",
 									"            \"properties\": {",
 									"              \"id\": { \"type\": \"string\" },",
 									"              \"name\": { \"type \": \"string\" },",
@@ -108,18 +116,18 @@
 									"        tests[\"service list is well formated\"] = tv4.validate(JSON.parse(responseBody), serviceListSchema);",
 									"    }",
 									"    ",
-									"    helpers.checkHostList = function checkHostList() {",
+									"    helpers.checkHostList = function checkHostList(columns) {",
 									"        helpers.test200();",
 									"        helpers.testJson();",
 									"        helpers.notEmpty();",
-									"        helpers.checkHostListFormat();",
+									"        helpers.checkHostListFormat(columns);",
 									"    }",
 									"    ",
-									"    helpers.checkServiceList = function checkServiceList() {",
+									"    helpers.checkServiceList = function checkServiceList(columns) {",
 									"        helpers.test200();",
 									"        helpers.testJson();",
 									"        helpers.notEmpty();",
-									"        helpers.checkServiceListFormat();",
+									"        helpers.checkServiceListFormat(columns);",
 									"    }",
 									"",
 									"    return helpers;",
@@ -2746,6 +2754,68 @@
 								"description": ""
 							},
 							"response": []
+						},
+						{
+							"name": "Add host 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;"
+										]
+									}
+								}
+							],
+							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name2}};{{host_alias}};0.0.0.0;{{htpl_name}};Central;\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
 						}
 					],
 					"_postman_isSubFolder": true
@@ -3793,7 +3863,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"id\"]);"
 										]
 									}
 								}
@@ -3868,7 +3938,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\"]);"
 										]
 									}
 								}
@@ -3943,7 +4013,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"alias\"]);"
 										]
 									}
 								}
@@ -4018,7 +4088,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"address\"]);"
 										]
 									}
 								}
@@ -4093,7 +4163,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"state\"]);"
 										]
 									}
 								}
@@ -4168,7 +4238,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"state_type\"]);"
 										]
 									}
 								}
@@ -4243,7 +4313,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"output\"]);"
 										]
 									}
 								}
@@ -4318,7 +4388,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"max_check_attempts\"]);"
 										]
 									}
 								}
@@ -4393,7 +4463,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"check_attempt\"]);"
 										]
 									}
 								}
@@ -4468,7 +4538,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"last_check\"]);"
 										]
 									}
 								}
@@ -4543,7 +4613,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"last_state_change\"]);"
 										]
 									}
 								}
@@ -4618,7 +4688,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"last_hard_state_change\"]);"
 										]
 									}
 								}
@@ -4693,7 +4763,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"acknowledged\"]);"
 										]
 									}
 								}
@@ -4768,7 +4838,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"instance\"]);"
 										]
 									}
 								}
@@ -4843,7 +4913,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"criticality\"]);"
 										]
 									}
 								}
@@ -5508,7 +5578,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"state\"]);"
 										]
 									}
 								}
@@ -5583,7 +5653,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"state\"]);"
 										]
 									}
 								}
@@ -5658,7 +5728,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5733,7 +5804,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -5808,7 +5880,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"state\"]);"
 										]
 									}
 								}
@@ -6115,7 +6187,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -6190,7 +6263,8 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.test200();",
+											"helpers.testJson();"
 										]
 									}
 								}
@@ -6265,7 +6339,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"id\"]);"
 										]
 									}
 								}
@@ -6340,7 +6414,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\"]);"
 										]
 									}
 								}
@@ -6415,7 +6489,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"alias\"]);"
 										]
 									}
 								}
@@ -6490,7 +6564,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"address\"]);"
 										]
 									}
 								}
@@ -6565,7 +6639,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"state\"]);"
 										]
 									}
 								}
@@ -6640,7 +6714,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"state_type\"]);"
 										]
 									}
 								}
@@ -6715,7 +6789,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"output\"]);"
 										]
 									}
 								}
@@ -6790,7 +6864,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"max_check_attempts\"]);"
 										]
 									}
 								}
@@ -6865,7 +6939,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"last_check\"]);"
 										]
 									}
 								}
@@ -6940,7 +7014,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"last_state_change\"]);"
 										]
 									}
 								}
@@ -7015,7 +7089,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"last_hard_state_change\"]);"
 										]
 									}
 								}
@@ -7090,7 +7164,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"acknowledge\"]);"
 										]
 									}
 								}
@@ -7165,7 +7239,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"instance\"]);"
 										]
 									}
 								}
@@ -7240,7 +7314,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"criticality\"]);"
 										]
 									}
 								}
@@ -7315,7 +7389,7 @@
 										"type": "text/javascript",
 										"exec": [
 											"var helpers = eval(globals.loadHelpers);",
-											"helpers.checkHostList();"
+											"helpers.checkHostList([\"name\", \"passive_checks\"]);"
 										]
 									}
 								}
