@@ -163,7 +163,7 @@ class CentreonDowntime extends CentreonObject
                             echo $paramString . ";service groups\n";
                             $filterList = ';' . $this->listServiceGroups($element["dt_id"]);
                             break;
-                        default :
+                        default:
                             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
                     }
                 } else {
@@ -176,7 +176,6 @@ class CentreonDowntime extends CentreonObject
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . $filterList . "\n";
         }
-
     }
 
     /**
@@ -236,18 +235,18 @@ class CentreonDowntime extends CentreonObject
         $rows = $this->getPeriods($dtId);
 
         echo implode(
-                $this->delim,
-                array(
-                    'position',
-                    'start time',
-                    'end time',
-                    'fixed',
-                    'duration',
-                    'day of week',
-                    'day of month',
-                    'month cycle'
-                )
-            ) . "\n";
+            $this->delim,
+            array(
+                'position',
+                'start time',
+                'end time',
+                'fixed',
+                'duration',
+                'day of week',
+                'day of month',
+                'month cycle'
+            )
+        ) . "\n";
         $pos = 1;
         foreach ($rows as $row) {
             unset($row['dt_id']);
@@ -661,8 +660,13 @@ class CentreonDowntime extends CentreonObject
                 AND service_service_id = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0], $ids[1]));
             if ($stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf('Relationship with %s / %s already exists', $host,
-                    $service));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Relationship with %s / %s already exists',
+                        $host,
+                        $service
+                    )
+                );
             }
 
             $objectIds[] = $ids;
@@ -736,8 +740,13 @@ class CentreonDowntime extends CentreonObject
                 AND service_service_id = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0], $ids[1]));
             if (!$stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf('Relationship with %s / %s does not exist', $host,
-                    $service));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Relationship with %s / %s does not exist',
+                        $host,
+                        $service
+                    )
+                );
             }
 
             $objectIds[] = $ids;
@@ -847,21 +856,20 @@ class CentreonDowntime extends CentreonObject
             }
             if (!is_null($periodType)) {
                 echo implode(
-                        $this->delim,
-                        array_merge(
-                            array(
-                                $this->action,
-                                $periodType,
-                                $row['dt_name'],
-                                $row['dtp_start_time'],
-                                $row['dtp_end_time'],
-                                $row['dtp_fixed'],
-                                $row['dtp_duration']
-
-                            ),
-                            $extraData
-                        )
-                    ) . "\n";
+                    $this->delim,
+                    array_merge(
+                        array(
+                            $this->action,
+                            $periodType,
+                            $row['dt_name'],
+                            $row['dtp_start_time'],
+                            $row['dtp_end_time'],
+                            $row['dtp_fixed'],
+                            $row['dtp_duration']
+                        ),
+                        $extraData
+                    )
+                ) . "\n";
             }
         }
     }
@@ -926,14 +934,14 @@ class CentreonDowntime extends CentreonObject
         $rows = $stmt->fetchAll();
         foreach ($rows as $row) {
             echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        $actionType,
-                        $row['dt_name'],
-                        $row['object_name']
-                    )
-                ) . "\n";
+                $this->delim,
+                array(
+                    $this->action,
+                    $actionType,
+                    $row['dt_name'],
+                    $row['object_name']
+                )
+            ) . "\n";
         }
     }
 
