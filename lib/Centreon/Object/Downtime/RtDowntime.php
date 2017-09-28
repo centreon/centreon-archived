@@ -66,14 +66,16 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
         }
 
-        $query =  "SELECT name, author, actual_start_time , end_time, comment_data, duration, fixed " .
+        $query =  "SELECT name, author, actual_start_time , actual_end_time, " .
+            "start_time, end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h " .
             "WHERE d.host_id = h.host_id " .
             "AND d.cancelled = 0 " .
-            "AND d.actual_end_time IS NULL " .
             "AND service_id IS NULL " .
+            "AND end_time > UNIX_TIMESTAMP(NOW()) " .
+            "AND start_time < UNIX_TIMESTAMP(NOW()) " .
             $hostFilter .
-            "ORDER BY actual_start_time";
+            "ORDER BY actual_start_time, name";
 
         return $this->getResult($query, array(), "fetchAll");
     }
@@ -97,15 +99,17 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             $serviceFilter .= implode(' AND ', $filterTab) . ') ';
         }
 
-        $query = "SELECT h.name, s.description, author, actual_start_time , end_time, comment_data, duration, fixed " .
+        $query = "SELECT h.name, s.description, author, actual_start_time, actual_end_time, " .
+            "start_time, end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h, services s " .
             "WHERE d.service_id = s.service_id " .
             "AND d.host_id = s.host_id " .
             "AND s.host_id = h.host_id " .
             "AND d.cancelled = 0 " .
+            "AND end_time > UNIX_TIMESTAMP(NOW()) " .
+            "AND start_time < UNIX_TIMESTAMP(NOW()) " .
             $serviceFilter .
-            "AND d.actual_end_time IS NULL " .
-            "ORDER BY actual_start_time";
+            "ORDER BY actual_start_time, h.name, s.description";
 
         return $this->getResult($query, array(), "fetchAll");
     }
