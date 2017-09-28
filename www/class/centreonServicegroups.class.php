@@ -225,4 +225,33 @@ class CentreonServicegroups
 
         return $items;
     }
+
+    /**
+     * @param $sgName
+     * @return array
+     */
+    public function getServicesByServicegroupName($sgName)
+    {
+        $serviceList = array();
+
+        $query = "SELECT service_description, service_id, host_name " .
+              "FROM servicegroup_relation sgr, service s, servicegroup sg, host h " .
+              "WHERE sgr.service_service_id = s.service_id " .
+              "AND sgr.servicegroup_sg_id = sg.sg_id " .
+              "AND s.service_activate = '1' " .
+              "AND sgr.host_host_id = h.host_id " .
+              "AND sg.sg_name = '" . $this->DB->escape($sgName) . "'";
+        $result = $this->DB->query($query);
+
+        while($elem = $result->fetchrow()) {
+            $serviceList[] = array(
+                'service' => $elem['service_description'],
+                'service_id' => $elem['service_id'],
+                'host' => $elem['host_name'],
+                'sg_name' => $elem[$sgName]
+            );
+        }
+
+        return $serviceList;
+    }
 }

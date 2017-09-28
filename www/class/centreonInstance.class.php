@@ -242,4 +242,26 @@ class CentreonInstance
 
          return $items;
      }
+
+     public function getHostsByInstance($instanceName)
+     {
+        $instanceList = array();
+
+        $query = "SELECT host_name, name " .
+              " FROM host h, nagios_server ns, ns_host_relation nshr " .
+              " WHERE ns.name = '" . $this->db->escape($instanceName) . "'" .
+              " AND nshr.host_host_id = h.host_id " .
+              " AND h.host_activate = '1' " .
+              " ORDER BY h.host_name";
+        $result = $this->db->query($query);
+
+         while($elem = $result->fetchrow()) {
+             $instanceList[] = array(
+                 'host' => $elem['host_name'],
+                 'name' => $elem['instance_name']
+             );
+         }
+
+         return $instanceList;
+     }
 }

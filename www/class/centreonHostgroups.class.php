@@ -184,9 +184,8 @@ class CentreonHostgroups
     }
 
     /**
-     *
-     * Enter description here ...
-     * @param $hg_id
+     * @param null $hg_id
+     * @return array|void
      */
     public function getHostGroupHostGroups($hg_id = null)
     {
@@ -210,7 +209,6 @@ class CentreonHostgroups
 
     /**
      *
-     * Enter description here ...
      */
     private function setHgHgCache()
     {
@@ -338,5 +336,32 @@ class CentreonHostgroups
         }
 
         return $items;
+    }
+
+    /**
+     * @param $hgName
+     * @return array
+     */
+    public function getHostsByHostgroupName($hgName)
+    {
+        $hostList = array();
+
+        $query = "SELECT host_name, host_id  " .
+               "FROM hostgroup_relation hgr, host h, hostgroup hg " .
+               "WHERE hgr.host_host_id = h.host_id " .
+               "AND hgr.hostgroup_hg_id = hg.hg_id " .
+               "AND h.host_activate = '1' " .
+               "AND hg.hg_name = '" . $this->DB->escape($hgName) . "'";
+        $result = $this->DB->query($query);
+
+        while($elem = $result->fetchrow()) {
+            $hostList[] = array(
+                'host' => $elem['host_name'],
+                'host_id' => $elem['host_id'],
+                'hg_name' => $elem[$hgName]
+            );
+        }
+
+        return $hostList;
     }
 }
