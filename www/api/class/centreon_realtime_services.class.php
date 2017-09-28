@@ -383,36 +383,36 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $query .= " AND s.service_id = cvs. service_id " .
                 "AND cvs.host_id = h.host_id " .
                 "AND cvs.name = 'CRITICALITY_ID' " .
-                "AND cvs.value = ? ";
-            $queryValues[] = CentreonDB::escape($this->criticality);
+                "AND cvs.value =  :criticality";
+            $queryValues['criticality'] = (string)$this->criticality;
         }
         $query .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
         /* Search string to a host name, alias or address */
         if ($this->searchHost) {
-            $query .= " AND (h.name LIKE ? ";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
-            $query .= " OR h.alias LIKE ? ";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
-            $query .= " OR h.address LIKE ? ) ";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchHost) . '%';
+            $query .= " AND (h.name LIKE :searchName ";
+            $queryValues['searchName'] = (string)'%' . $this->searchHost . '%';
+            $query .= " OR h.alias LIKE :searchAlias ";
+            $queryValues['searchAlias'] = (string)'%' . $this->searchHost . '%';
+            $query .= " OR h.address LIKE :searchAddress ) ";
+            $queryValues['searchAddress'] = (string)'%' . $this->searchHost . '%';
         }
         /* Search string to a service */
         if ($this->search) {
-            $query .= " AND (s.description LIKE ? ";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->search) . '%';
-            $query .= " OR s.display_name LIKE ? )";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->search) . '%';
+            $query .= " AND (s.description LIKE :serviceName ";
+            $queryValues['serviceName'] = (string)'%' . $this->search . '%';
+            $query .= " OR s.display_name LIKE :serviceDisplay )";
+            $queryValues['serviceDisplay'] = (string)'%' . $this->search . '%';
         }
 
         if ($this->searchOutput) {
-            $query .= " AND s.output LIKE ? ";
-            $queryValues[] = (string)'%' . CentreonDB::escape($this->searchOutput) . '%';
+            $query .= " AND s.output LIKE :output ";
+            $queryValues['output'] = (string)'%' . $this->searchOutput . '%';
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
-            $query = " AND h.instance_id = " . $this->instance . " ";
-            $queryValues[] = (int)$this->instance;
+            $query = " AND h.instance_id = :instanceId ";
+            $queryValues['instanceId'] = (int)$this->instance;
         }
 
         $q = 'ASC';
@@ -472,23 +472,27 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
          */
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
             $explodedValues = '';
-            foreach ($this->hostgroup as $k => $v) {
-                $explodedValues .= '?,';
-                $queryValues[] = (int)$v;
+            foreach ($this->hostgroup as $hgId => $hgValue) {
+                $explodedValues .= ':hostgroup' . $hgId . ',';
+                $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
             $explodedValues = rtrim($explodedValues, ',');
             $query .= " AND hg.hostgroup_id = hg2.hostgroup_id " .
                 "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $explodedValues . ") ";
         }
+
         /**
          * ServiceGroup Filter
          */
         if (isset($this->servicegroup) && $this->servicegroup != 0) {
             $explodedValues = '';
-            foreach ($this->servicegroup as $k => $v) {
-                $explodedValues .= '?,';
-                $queryValues[] = (int)$v;
+
+            foreach ($this->hostgroup as $sgId => $sgValue) {
+                $explodedValues .= ':servicegroup' . $sgId . ',';
+                $queryValues['servicegroup'][$sgId] = (int)$sgValue;
             }
+            $explodedValues = rtrim($explodedValues, ',');
+
             $query .= " AND ssg.servicegroup_id = sg.servicegroup_id " .
                 "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $explodedValues . ") ";
         }
@@ -503,15 +507,55 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         }
 
         (isset($tabOrder[$this->sortType])) ? $query .= $tabOrder[$this->sortType] : $query .= $tabOrder["default"];
-        $query .= " LIMIT ?,?";
-        $queryValues[] = (int)($this->number * $this->limit);
-        $queryValues[] = (int)$this->limit;
+
+        $query .= " LIMIT :offset,:limit";
+        $queryValues['offset'] = (int)($this->number * $this->limit);
+        $queryValues['limit'] = (int)$this->limit;
 
         $stmt = $this->realTimeDb->prepare($query);
-        $dbResult = $this->realTimeDb->execute($stmt, $queryValues);
+
+        if (isset($queryValues['criticality'])) {
+            $stmt->bindParam(':criticality', $queryValues["criticality"], PDO::PARAM_INT);
+        }
+
+        if (isset($queryValues['searchName'])) {
+            $stmt->bindParam(':searchName', $queryValues["searchName"], PDO::PARAM_STR);
+            $stmt->bindParam(':searchAlias', $queryValues["searchAlias"], PDO::PARAM_STR);
+            $stmt->bindParam(':searchAddress', $queryValues["searchAddress"], PDO::PARAM_STR);
+        }
+
+        if (isset($queryValues['serviceName'])) {
+            $stmt->bindParam(':serviceName', $queryValues["serviceName"], PDO::PARAM_STR);
+            $stmt->bindParam(':serviceDisplay', $queryValues["serviceDisplay"], PDO::PARAM_STR);
+        }
+
+        if (isset($queryValues['output'])) {
+            $stmt->bindParam(':output', $queryValues["output"], PDO::PARAM_STR);
+        }
+
+        if (isset($queryValues['instanceId'])) {
+            $stmt->bindParam(':instanceId', $queryValues["instanceId"], PDO::PARAM_INT);
+        }
+
+        if (isset($queryValues['hostgroup'])) {
+            foreach ($queryValues['hostgroup'] as $hgId => $hgValue) {
+                $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
+            }
+        }
+
+        if (isset($queryValues['servicegroup'])) {
+            foreach ($queryValues['servicegroup'] as $hgId => $hgValue) {
+                $stmt->bindParam(':servicegroup' . $hgId, $hgValue, PDO::PARAM_INT);
+            }
+        }
+
+        $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+
+        $stmt->execute();
 
         $dataList = array();
-        while ($data = $dbResult->fetchRow()) {
+        while ($data = $stmt->fetch()) {
             if (isset($data['criticality']) && isset($this->criticalityList[$data['criticality']])) {
                 $data["criticality"] = $this->criticalityList[$data['criticality']];
             }
@@ -527,7 +571,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         $sql = "SELECT `sc_id`, `sc_name`, `level`, `icon_id`, `sc_description` FROM `service_categories` " .
             "WHERE `level` IS NOT NULL ORDER BY `level` DESC";
         $res = $this->pearDB->query($sql);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $this->criticalityList[$row['sc_name']] = $row;
         }
     }
