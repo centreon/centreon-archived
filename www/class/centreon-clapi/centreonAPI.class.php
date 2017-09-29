@@ -523,8 +523,8 @@ class CentreonAPI
                 if ($row['contact_passwd'] == $pass) {
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
-                    $CentreonLog = new CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new CentreonAuthLDAP(
+                    $CentreonLog = new \CentreonUserLog(-1, $this->DB);
+                    $centreonAuth = new \CentreonAuthLDAP(
                         $this->DB,
                         $CentreonLog,
                         $this->login,
