@@ -18,7 +18,7 @@ class CentreonProxy extends CentreonWebService
             $message = _('Connection Successful');
         } catch (\Exception $e) {
             $outcome = false;
-            $message = _('Connection failed to imp portal (') . $e->getMessage() . ')';
+            $message = _('Could not establish connection to Centreon IMP servers (') . $e->getMessage() . ')';
         }
 
         return array(
