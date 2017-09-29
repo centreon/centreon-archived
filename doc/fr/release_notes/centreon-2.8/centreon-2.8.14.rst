@@ -17,7 +17,7 @@ Bugfix
 ======
 
 * [API] Fix poller List #5635
-* [API] Fix list of hosts with gesthosts method of Instance object #5300 PR #5603
+* [API] Fix list of hosts with gethosts method of Instance object #5300 PR #5603
 * [Install]  Add unique key on comments table PR #5665
 * [Custom Views] Sharing View problem to select multiple users #5029
 * [Configuration] Multiple 'update mode' fields in massive changes #5266 PR #5636
