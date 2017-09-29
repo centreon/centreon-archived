@@ -8,6 +8,8 @@ class RestApiContext extends CentreonContext
     private $envfile;
     private $logfile;
     private $retval;
+    private $restCollection;
+    private $logFilePrefix;
 
     /**
      * @Given a Centreon server with REST API testing data
@@ -48,6 +50,26 @@ class RestApiContext extends CentreonContext
      */
     public function restApiAreCalled()
     {
+        $this->restCollection = 'rest_api.postman_collection.json';
+        $this->logFilePrefix = 'rest_api_log';
+        $this->callRestApi();
+    }
+
+    /**
+     * @When realtime REST API are called
+     */
+    public function realtimeRestApiAreCalled()
+    {
+        $this->restCollection = 'realtime_rest_api.postman_collection.json';
+        $this->logFilePrefix = 'realtime_rest_api_log';
+        $this->callRestApi();
+    }
+
+    /**
+     * launch newman for api tests
+     */
+    public function callRestApi()
+    {
         $env = file_get_contents('tests/rest_api/rest_api.postman_environment.json');
         $env = str_replace(
             '@IP_CENTREON@',
@@ -56,12 +78,12 @@ class RestApiContext extends CentreonContext
         );
         $this->envfile = tempnam('/tmp', 'rest_api_env');
         file_put_contents($this->envfile, $env);
-        $this->logfile = tempnam('/tmp', 'rest_api_log');
+        $this->logfile = tempnam('/tmp', $this->logFilePrefix);
         exec(
             'newman run' .
             ' --no-color --disable-unicode --reporter-cli-no-assertions' .
             ' --environment ' . $this->envfile .
-            ' tests/rest_api/rest_api.postman_collection.json' .
+            ' tests/rest_api/' . $this->restCollection .
             ' > ' . $this->logfile,
             $output,
             $retval
