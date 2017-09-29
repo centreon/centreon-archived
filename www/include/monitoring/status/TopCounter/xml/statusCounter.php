@@ -126,13 +126,13 @@ $query_svc_status = "SELECT " .
     "AND h.enabled = 1 " .
     "AND s.enabled = 1 " .
     "AND i.instance_id = h.instance_id " .
-    "AND h.host_id = s.host_id ".
+    "AND h.host_id = s.host_id " .
     "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
 if (!$obj->is_admin) {
     $query_svc_status .=  "AND s.service_id IN ( " .
         "SELECT DISTINCT service_id " .
-        "FROM centreon_acl ".
-        "WHERE centreon_acl.group_id IN (".$obj->grouplistStr.")) ";
+        "FROM centreon_acl " .
+        "WHERE centreon_acl.group_id IN (" . $obj->grouplistStr . ")) ";
 }
 $DBRESULT = $obj->DBC->query($query_svc_status);
 $svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
