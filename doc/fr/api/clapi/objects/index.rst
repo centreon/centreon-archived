@@ -16,6 +16,7 @@ Object management
    contact_groups
    dependencies
    downtimes
+   realtime_downtimes
    engine_cfg
    host_templates
    hosts
