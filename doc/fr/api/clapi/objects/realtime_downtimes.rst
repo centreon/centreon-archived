@@ -85,10 +85,10 @@ Real time Downtime for : Addhost, addhostgroup, addservice, addservicegroup
 If you want to associate a host, host group, service or service group to a real time downtime, use the **ADD** action::
 To set the value of the start/end, use following format : YYYY/MM/DD HH:mm::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "HOST;generic_host;start_time;end_time;fixed;duration;withservices;comment"
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SVC;generic_host|generic_service;start_time;end_time;fixed;duration;withservices;comment"
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "HG;generic_hostgroup;start_time;end_time;fixed;duration;withservices;comment"
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SG;generic_servicegroup;start_time;end_time;fixed;duration;withservices;comment"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "HOST;central;2017/09/24 10:00;2017/09/24 12:00;1;3600;1;my comments"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SVC;central|ping;2017/09/24 10:00;2017/09/24 12:00;1;3600;1;my comments"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "HG;linux-servers;2017/09/24 10:00;2017/09/24 12:00;1;3600;1;my comments"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SG;servicegroup1;2017/09/24 10:00;2017/09/24 12:00;1;3600;1;my comments"
 
 The required parameters are the following :
 
@@ -103,14 +103,15 @@ Order     Description
 
 4         End of downtime
 
-5         Downtime starts and stops at the exact start and end times (0/1)
+5         Type of downtime (1 = fixed, 0 = flexible)
 
-6         Duration of Downtime
+6         Duration of downtime for flexible mode (seconds)
 
-7         Associate services (0/1)
+7         Apply downtime on linked services (0/1)
 
 8         Short description of the real time downtime
 
+========= ============================================
 ========= ============================================
 
 Add instance real time downtime
@@ -134,11 +135,11 @@ Order     Description
 
 4         End of downtime
 
-5         Downtime starts and stops at the exact start and end times (0/1)
+5         Type of downtime (1 = fixed, 0 = flexible)
 
-6         Duration of Downtime
+6         Duration of downtime for flexible mode (seconds)
 
-7         Associate services (0/1)
+7         Apply downtime on linked services (0/1)
 
 8         Short description of the real time downtime
 
