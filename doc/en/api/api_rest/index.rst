@@ -50,6 +50,280 @@ The response is a json flow getting back the authentication token  ::
 
 This token will be used later on the other API actions.
 
+Realtime information
+====================
+
+Host Status
+-----------
+
+All monitoring information regarding hosts are available in throw the Centreon API.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/api/action=list&object=centreon_realtime_hosts
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of services that you want to    |
+|                | get                                        |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup filter                           |
++----------------+--------------------------------------------+
+| instance       | instance name filter                       |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on host name        |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| id                       | host id                                  |
++--------------------------+------------------------------------------±
+| name                     | host name                                |
++--------------------------+------------------------------------------±
+| alias                    | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| address                  | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| state                    | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| state_type               | host state type (SOFT / HARD)            |
++--------------------------+------------------------------------------±
+| output                   | Plugin output - state message            |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts                   |
++--------------------------+------------------------------------------±
+| check_attempt            | current attempts                         |
++--------------------------+------------------------------------------±
+| last_check               | last check time                          |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this host                 |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | note                                     |
++--------------------------+------------------------------------------±
+| icon_image               | icone image for this host                |
++--------------------------+------------------------------------------±
+| icon_image_alt           | title of the image                       |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+
+Service Status
+--------------
+
+All monitoring information regarding services are available in throw the Centreon API. With this call, you can also get host informations in the same time that service information. This web service provide the same possibility that the service monitoring view.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/api/action=list&object=centreon_realtime_services
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of services that you want to    |
+|                | get                                        |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup filter                           |
++----------------+--------------------------------------------+
+| servicegroup   | servicegroup filter                        |
++----------------+--------------------------------------------+
+| instance       | instance name filter                       |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on service          |
++----------------+--------------------------------------------+
+| searchHost     | search pattern applyed on host             |
++----------------+--------------------------------------------+
+| searchOutput   | search pattern applyed on output           |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| host_id                  | host id                                  |
++--------------------------+------------------------------------------±
+| host_name                | host name                                |
++--------------------------+------------------------------------------±
+| host_alias               | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| host_address             | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| host_state               | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| host_state_type          | host state type (SOFT / HARD)            |
++--------------------------+------------------------------------------±
+| host_output              | Plugin output - state message            |
++--------------------------+------------------------------------------+
+| host_max_check_attempts  | maximum check attempts for host          |
++--------------------------+------------------------------------------+
+| host_check_attempt       | current attempts                         |
++--------------------------+------------------------------------------±
+| host_last_check          | last check time                          |
++--------------------------+------------------------------------------±
+| host_acknowledged        | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| host_action_url          | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| host_notes_url           | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| host_notes               | note                                     |
++--------------------------+------------------------------------------±
+| description              | service description - service name       |
++--------------------------+------------------------------------------±
+| display_name             | service display name                     |
++--------------------------+------------------------------------------±
+| service_id               | service id                               |
++--------------------------+------------------------------------------±
+| state                    | service state                            |
++--------------------------+------------------------------------------±
+| state_type               | service state type (HARD = 1, SOFT = 0)  |
++--------------------------+------------------------------------------±
+| output                   | service output returned by plugins       |
++--------------------------+------------------------------------------±
+| perfdata                 | service perfdata returned by plugins     |
++--------------------------+------------------------------------------±
+| current_attempt          | maximum check attempts for the service   |
++--------------------------+------------------------------------------±
+| last_update              | last update date for service             |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| next_check               | next check time for service              |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts for service       |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | notes                                    |
++--------------------------+------------------------------------------±
+| icone_image              | icone image for service                  |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+| event_handler_enabled    | is the event-handfler enabled            |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this service              |
++--------------------------+------------------------------------------±
+
+Example:
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
+
+
+Configuration
+-------------
 
 Getting started
 ----------------
