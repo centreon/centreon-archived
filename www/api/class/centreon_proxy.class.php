@@ -10,7 +10,7 @@ class CentreonProxy extends CentreonWebService
         $proxyAddress = $this->arguments['url'];
         $proxyPort = $this->arguments['port'];
         try {
-            $testUrl = 'http://ci.int.centreon.com:3000/api/pluginpack/pluginpack';
+            $testUrl = 'https://api.imp.centreon.com/api/pluginpack/pluginpack';
             $restHttpLib = new \CentreonRestHttp();
             $restHttpLib->setProxy($proxyAddress, $proxyPort);
             $restHttpLib->call($testUrl);
@@ -18,7 +18,7 @@ class CentreonProxy extends CentreonWebService
             $message = _('Connection Successful');
         } catch (\Exception $e) {
             $outcome = false;
-            $message = $e->getMessage();
+            $message = _('Connection failed to imp portal (') . $e->getMessage() . ')';
         }
 
         return array(
