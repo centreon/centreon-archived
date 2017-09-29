@@ -110,7 +110,7 @@ Add instance realtime downtime
 
 In order to add a new realtime downtime for a poller, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "HOST;generic_poller;start_time;end_time;fixed;duration;withservices;comment"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "INSTANCE;Central;2017/09/24 10:00;2017/09/24 12:00;1;3600;1;my comments
 
 The required parameters are the following:
 
