@@ -505,8 +505,8 @@ class CentreonAPI
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 } elseif ($row['contact_auth_type'] == 'ldap') {
-                    $CentreonLog = new CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new CentreonAuthLDAP(
+                    $CentreonLog = new \CentreonUserLog(-1, $this->DB);
+                    $centreonAuth = new \CentreonAuthLDAP(
                         $this->DB,
                         $CentreonLog,
                         $this->login,
