@@ -440,7 +440,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                 $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
-        $stmt->bindParam(':instanceId', $queryValues['instanceId'], PDO::PARAM_INT);
+        if (isset($queryValues['instanceId'])) {
+            $stmt->bindParam(':instanceId', $queryValues['instanceId'], PDO::PARAM_INT);
+        }
+
         $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
         $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         $stmt->execute();
