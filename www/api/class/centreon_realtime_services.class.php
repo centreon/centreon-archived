@@ -411,7 +411,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
-            $query = " AND h.instance_id = " . $this->instance . " ";
+            $query .= " AND h.instance_id = ? ";
             $queryValues[] = (int)$this->instance;
         }
 

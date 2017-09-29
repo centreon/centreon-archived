@@ -45,13 +45,13 @@ require_once "Centreon/Object/Service/Group.php";
 require_once "Centreon/Object/Relation/Downtime/Host.php";
 require_once "Centreon/Object/Relation/Downtime/Hostgroup.php";
 require_once "Centreon/Object/Relation/Downtime/Servicegroup.php";
-require_once realpath(dirname(__FILE__).'/../centreonExternalCommand.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonDB.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonUser.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonGMT.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonHostgroups.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonServicegroups.class.php');
-require_once realpath(dirname(__FILE__).'/../centreonInstance.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonExternalCommand.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonHostgroups.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonServicegroups.class.php');
+require_once realpath(dirname(__FILE__) . '/../centreonInstance.class.php');
 
 class CentreonRtDowntime extends CentreonObject
 {
@@ -89,7 +89,7 @@ class CentreonRtDowntime extends CentreonObject
      * @return array
      * @throws CentreonClapiException
      */
-    private function parseParameters($action, $parameters)
+    private function parseParameters($parameters)
     {
         // Permet de sécuriser les inputs pour chaque paramètre
         list($type, $resource, $start, $end, $fixed, $duration, $withServices, $comment) = explode(';', $parameters);
@@ -163,7 +163,7 @@ class CentreonRtDowntime extends CentreonObject
     {
         $parsedParameters = $this->parseShowparameters($parameters);
 
-        $method = 'show'.ucfirst($parsedParameters['type']);
+        $method = 'show' . ucfirst($parsedParameters['type']);
 
         $this->$method($parsedParameters['resource']);
     }
@@ -186,7 +186,7 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
-        echo implode($this->delim, $fields)."\n";
+        echo implode($this->delim, $fields) . "\n";
 
         $hostList = array_filter(explode('|', $hostList));
         $db = $this->db;
@@ -257,7 +257,7 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
-        echo implode($this->delim, $fields)."\n";
+        echo implode($this->delim, $fields) . "\n";
 
         $svcList = array_filter(explode('|', $svcList));
         $db = $this->db;
@@ -316,10 +316,10 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function add($parameters = null)
     {
-        $parsedParameters = $this->parseParameters($this->action, $parameters);
+        $parsedParameters = $this->parseParameters($parameters);
 
         // Permet que $method prenne le bon nom de methode (addHostDowntime, addSvcDowntime etc.)
-        $method = 'add'.ucfirst($parsedParameters['type']).'Downtime';
+        $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
         $this->$method(
             $parsedParameters['resource'],
             $parsedParameters['start'],
