@@ -222,6 +222,28 @@ abstract class CentreonObject
         return "";
     }
 
+    /**
+     * Catch the beginning of the URL
+     *
+     * @return string
+     *
+     */
+    public function getBaseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https" : "http";
+        $port = '';
+        if (($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80) ||
+            ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
+        ) {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        }
+        $uri = 'centreon';
+        if (preg_match('/^(.+)\/api/', $_SERVER['REQUEST_URI'], $matches)) {
+            $uri = $matches[1];
+        }
+
+        return $protocol . '://' . $_SERVER['HTTP_HOST'] . $port . $uri;
+    }
 
     /**
      * Checks if parameters are correct
