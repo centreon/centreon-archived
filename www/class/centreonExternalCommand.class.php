@@ -51,13 +51,16 @@ class CentreonExternalCommand
     protected $actions = array();
     protected $GMT;
     public $debug = 0;
+    protected $userAlias;
+    protected $userId;
 
-    /*
-     *  Constructor
+    /**
+     * CentreonExternalCommand constructor.
      */
-
     public function __construct()
     {
+        global $centreon;
+
         $rq = "SELECT id FROM `nagios_server` WHERE localhost = '1'";
         $DBRES = CentreonDBInstance::getConfInstance()->query($rq);
         while ($row = $DBRES->fetchRow()) {
@@ -72,6 +75,27 @@ class CentreonExternalCommand
          */
         $this->GMT = new CentreonGMT();
         $this->GMT->getMyGMTFromSession(session_id(), CentreonDBInstance::getConfInstance());
+
+        if (!is_null($centreon)) {
+            $this->userId = $centreon->user->get_id();
+            $this->userAlias = $centreon->user->get_alias();
+        }
+    }
+
+    /**
+     * @param $newUserId
+     */
+    public function setUserId($newUserId)
+    {
+        $this->userId = $newUserId;
+    }
+
+    /**
+     * @param $newUserAlias
+     */
+    public function setUserAlias($newUserAlias)
+    {
+        $this->userAlias = $newUserAlias;
     }
 
     /**
@@ -367,7 +391,7 @@ class CentreonExternalCommand
 
         $this->setProcessCommand(
             "ACKNOWLEDGE_SVC_PROBLEM;" . $hostName . ";" . $serviceDescription . ";" .
-                $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
+            $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
             $pollerId
         );
 
@@ -427,11 +451,11 @@ class CentreonExternalCommand
         if ($hostOrCentreonTime == "0") {
             $start_time = $this->GMT->getUTCDateFromString(
                 $start,
-                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+                $this->GMT->getMyGTMFromUser($this->userId)
             );
             $end_time = $this->GMT->getUTCDateFromString(
                 $end,
-                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+                $this->GMT->getMyGTMFromUser($this->userId)
             );
         } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
@@ -449,15 +473,21 @@ class CentreonExternalCommand
         if (!isset($duration)) {
             $duration = $start_time - $end_time;
         }
+        $finalHostName = '';
+        if (!is_numeric($host)) {
+            $finalHostName .= $host;
+        } else {
+            $finalHostName .= getMyHostName($host);
+        }
         $this->setProcessCommand(
-            "SCHEDULE_HOST_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time .
-            ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment,
+            "SCHEDULE_HOST_DOWNTIME;" . $finalHostName . ";" . $start_time . ";" . $end_time .
+            ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias . ";" . $comment,
             $poller_id
         );
         if ($withServices === true) {
             $this->setProcessCommand(
-                "SCHEDULE_HOST_SVC_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time .
-                ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment,
+                "SCHEDULE_HOST_SVC_DOWNTIME;" . $finalHostName . ";" . $start_time . ";" . $end_time .
+                ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias . ";" . $comment,
                 $poller_id
             );
         }
@@ -499,11 +529,11 @@ class CentreonExternalCommand
         if ($hostOrCentreonTime == "0") {
             $start_time = $this->GMT->getUTCDateFromString(
                 $start,
-                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+                $this->GMT->getMyGTMFromUser($centreon->userId)
             );
             $end_time = $this->GMT->getUTCDateFromString(
                 $end,
-                $this->GMT->getMyGTMFromUser($centreon->user->get_id())
+                $this->GMT->getMyGTMFromUser($centreon->userId)
             );
         } else {
             $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
@@ -521,12 +551,28 @@ class CentreonExternalCommand
         if (!isset($duration)) {
             $duration = $start_time - $end_time;
         }
+        $finalHostName = '';
+        if (!is_numeric($host)) {
+            $finalHostName .= $host;
+        } else {
+            $finalHostName .= getMyHostName($host);
+        }
+        $finalServiceName = '';
+        if (!is_numeric($service)) {
+            $finalServiceName .= $service;
+        } else {
+            $finalServiceName .= getMyServiceName($service);
+        }
         $this->setProcessCommand(
-            "SCHEDULE_SVC_DOWNTIME;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $start_time .
-            ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() .
+            "SCHEDULE_SVC_DOWNTIME;" . $finalHostName . ";" . $finalServiceName . ";" . $start_time .
+            ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias .
             ";" . $comment,
             $poller_id
         );
+        echo "SCHEDULE_SVC_DOWNTIME;" . $finalHostName . ";" . $finalServiceName . ";" . $start_time .
+            ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias .
+            ";" . $comment, $poller_id;
+
         $this->write();
     }
 }

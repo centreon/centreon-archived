@@ -33,26 +33,26 @@
  *
  */
 
- /**
-  *
-  * Hostgroups objects
-  * @author jmathis
-  *
-  */
+/**
+ *
+ * Hostgroups objects
+ * @author jmathis
+ *
+ */
 class CentreonHostgroups
 {
     /**
-      *
-      * @var type
-      */
+     *
+     * @var type
+     */
     private $DB;
-    
+
     /**
      *
      * @var type
      */
     private $relationCache;
-    
+
     /**
      *
      * @var type
@@ -87,11 +87,13 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
-                                    "FROM hostgroup_relation hgr, host h " .
-                                    "WHERE hgr.hostgroup_hg_id = '".$this->DB->escape($hg_id)."' " .
-                                    "AND h.host_id = hgr.host_host_id " .
-                                    "ORDER by h.host_name");
+        $DBRESULT = $this->DB->query(
+            "SELECT hgr.host_host_id " .
+            "FROM hostgroup_relation hgr, host h " .
+            "WHERE hgr.hostgroup_hg_id = '" . $this->DB->escape($hg_id) . "' " .
+            "AND h.host_id = hgr.host_host_id " .
+            "ORDER by h.host_name"
+        );
         while ($elem = $DBRESULT->fetchRow()) {
             $ref[$elem["host_host_id"]] = $elem["host_host_id"];
             $hosts[] = $elem["host_host_id"];
@@ -135,8 +137,8 @@ class CentreonHostgroups
         }
         return "";
     }
-    
-    
+
+
     /**
      * Get Hostgroup Id/Name
      *
@@ -148,7 +150,7 @@ class CentreonHostgroups
         $arrayReturn = array();
         if (!empty($hg_id)) {
             $query = "SELECT hg_id, hg_name FROM hostgroup
-                WHERE hg_id IN (" . $this->DB->escape(implode(",", $hg_id)).")";
+                WHERE hg_id IN (" . $this->DB->escape(implode(",", $hg_id)) . ")";
             $res = $this->DB->query($query);
             $arrayReturn = array();
             while ($row = $res->fetchRow()) {
@@ -157,7 +159,7 @@ class CentreonHostgroups
         }
         return $arrayReturn;
     }
-    
+
 
     /**
      * Get Hostgroup Id
@@ -184,9 +186,8 @@ class CentreonHostgroups
     }
 
     /**
-     *
-     * Enter description here ...
-     * @param $hg_id
+     * @param null $hg_id
+     * @return array|void
      */
     public function getHostGroupHostGroups($hg_id = null)
     {
@@ -195,11 +196,13 @@ class CentreonHostgroups
         }
 
         $hosts = array();
-        $DBRESULT = $this->DB->query("SELECT hg_child_id " .
-                                    "FROM hostgroup_hg_relation, hostgroup " .
-                                    "WHERE hostgroup_hg_relation.hg_parent_id = '".$this->DB->escape($hg_id)."' " .
-                                    "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
-                                    "ORDER BY hostgroup.hg_name");
+        $DBRESULT = $this->DB->query(
+            "SELECT hg_child_id " .
+            "FROM hostgroup_hg_relation, hostgroup " .
+            "WHERE hostgroup_hg_relation.hg_parent_id = '" . $this->DB->escape($hg_id) . "' " .
+            "AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
+            "ORDER BY hostgroup.hg_name"
+        );
         while ($elem = $DBRESULT->fetchRow()) {
             $hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
         }
@@ -249,7 +252,7 @@ class CentreonHostgroups
     {
         $this->dataTree = array();
     }
-    
+
     /**
      *
      * @param integer $field
@@ -276,7 +279,7 @@ class CentreonHostgroups
                 $parameters['relationObject']['comparator'] = 'hostgroup_hg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
@@ -290,14 +293,14 @@ class CentreonHostgroups
         global $centreon;
         $items = array();
 
-        # get list of authorized hostgroups
+        // get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
             $hgAcl = $centreon->user->access->getHostGroupAclConf(
                 null,
                 'broker',
                 array(
                     'distinct' => true,
-                    'fields'  => array('hostgroup.hg_id'),
+                    'fields' => array('hostgroup.hg_id'),
                     'get_row' => 'hg_id',
                     'keys' => array('hg_id'),
                     'conditions' => array(
@@ -316,7 +319,7 @@ class CentreonHostgroups
             $explodedValues = "''";
         }
 
-        # get list of selected hostgroups
+        // get list of selected hostgroups
         $query = "SELECT hg_id, hg_name "
             . "FROM hostgroup "
             . "WHERE hg_id IN (" . $explodedValues . ") "
@@ -324,7 +327,7 @@ class CentreonHostgroups
 
         $resRetrieval = $this->DB->query($query);
         while ($row = $resRetrieval->fetchRow()) {
-            # hide unauthorized hostgroups
+            // hide unauthorized hostgroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['hg_id'], $hgAcl)) {
                 $hide = true;
@@ -338,5 +341,29 @@ class CentreonHostgroups
         }
 
         return $items;
+    }
+
+    /**
+     * @param $hgName
+     * @return array
+     */
+    public function getHostsByHostgroupName($hgName)
+    {
+        $hostList = array();
+        $query = "SELECT host_name, host_id  " .
+            "FROM hostgroup_relation hgr, host h, hostgroup hg " .
+            "WHERE hgr.host_host_id = h.host_id " .
+            "AND hgr.hostgroup_hg_id = hg.hg_id " .
+            "AND h.host_activate = '1' " .
+            "AND hg.hg_name = '" . $this->DB->escape($hgName) . "'";
+        $result = $this->DB->query($query);
+        while ($elem = $result->fetchrow()) {
+            $hostList[] = array(
+                'host' => $elem['host_name'],
+                'host_id' => $elem['host_id'],
+                'hg_name' => $elem[$hgName]
+            );
+        }
+        return $hostList;
     }
 }
