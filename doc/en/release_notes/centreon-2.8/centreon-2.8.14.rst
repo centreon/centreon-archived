@@ -7,7 +7,7 @@ Enhancements
 
 * [API] Update CLAPI commands to show resources of a downtime PR #5705
 * [API] Add possibility to grant access to children menu (or not) PR #5694
-* [API] Add possibility to create on-demand downtime #5192 #5682 PR #5623 - beta
+* [API] Add possibility to add and get list of on-demand downtime #5192 #5682 PR #5623 - beta
 * [API] Add possibility to get realtime hosts status #5682 - beta
 * [API] Add possibility to get realtime services status #5682 - beta
 * [Documentation] Activate services at system startup PR #5698
