@@ -47,6 +47,10 @@ class CentreonUtils
      */
     private static $clapiUserName;
 
+    /**
+     * @var int
+     */
+    private static $clapiUserId;
 
     /**
      * Get centreon application path
@@ -111,13 +115,13 @@ class CentreonUtils
             return null;
         }
 
-        $query = "SELECT img.img_id ".
-                        "FROM view_img_dir dir, view_img_dir_relation rel, view_img img ".
-                        "WHERE dir.dir_id = rel.dir_dir_parent_id " .
-                        "AND rel.img_img_id = img.img_id ".
-                        "AND img.img_path = '".$imagename."' ".
-                        "AND dir.dir_name = '".$dirname."' " .
-                        "LIMIT 1";
+        $query = "SELECT img.img_id " .
+            "FROM view_img_dir dir, view_img_dir_relation rel, view_img img " .
+            "WHERE dir.dir_id = rel.dir_dir_parent_id " .
+            "AND rel.img_img_id = img.img_id " .
+            "AND img.img_path = '" . $imagename . "' " .
+            "AND dir.dir_name = '" . $dirname . "' " .
+            "LIMIT 1";
         $db = new \CentreonDB('centreon');
         $res = $db->query($query);
         $img_id = null;
@@ -149,5 +153,15 @@ class CentreonUtils
     public static function getUserName()
     {
         return self::$clapiUserName;
+    }
+
+    public static function setUserId($userId)
+    {
+        self::$clapiUserId = $userId;
+    }
+
+    public static function getuserId()
+    {
+        return self::$clapiUserId;
     }
 }
