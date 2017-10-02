@@ -503,8 +503,8 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $comment,
-        $withServices
+        $withServices,
+        $comment
     ) {
         $hostList = $this->instanceObject->getHostsByInstance($resource);
 
