@@ -569,10 +569,6 @@ class CentreonExternalCommand
             ";" . $comment,
             $poller_id
         );
-        echo "SCHEDULE_SVC_DOWNTIME;" . $finalHostName . ";" . $finalServiceName . ";" . $start_time .
-            ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias .
-            ";" . $comment, $poller_id;
-
         $this->write();
     }
 }
