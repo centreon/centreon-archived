@@ -349,6 +349,7 @@ class CentreonRtDowntime extends CentreonObject
         $withServices,
         $comment
     ) {
+        $withServices = 0;
         // Check if a pipe is present
         if (preg_match('/^(.+)\|(.+)$/', $resource, $matches)) {
             $this->externalCmdObj->addSvcDowntime(
@@ -432,6 +433,7 @@ class CentreonRtDowntime extends CentreonObject
         $withServices,
         $comment
     ) {
+        $withServices = 0;
         $serviceList = $this->sgObject->getServicesByServicegroupName($resource);
         foreach ($serviceList as $service) {
             $this->externalCmdObj->addSvcDowntime(
