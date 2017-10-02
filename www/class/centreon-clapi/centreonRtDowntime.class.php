@@ -176,7 +176,7 @@ class CentreonRtDowntime extends CentreonObject
         if ($parameters !== '') {
             $parsedParameters = $this->parseShowparameters($parameters);
             if (strtoupper($parsedParameters['type']) !== 'HOST' && strtoupper($parsedParameters['type']) !== 'SVC') {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+                throw new CentreonClapiException(self::UNKNOWNPARAMETER);
             }
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
@@ -211,6 +211,7 @@ class CentreonRtDowntime extends CentreonObject
 
     /**
      * @param $hostList
+     * @throws CentreonClapiException
      */
     public function showHost($hostList)
     {
@@ -244,8 +245,10 @@ class CentreonRtDowntime extends CentreonObject
         // Init user timezone
         $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
 
+        $existingHost = array();
         //Separates hosts
         foreach ($hostDowntimesList as $hostDowntime) {
+            $existingHost[] = $hostDowntime['name'];
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
                 $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'];
@@ -276,6 +279,11 @@ class CentreonRtDowntime extends CentreonObject
             );
 
             echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
+        }
+
+        $diff = array_diff($hostList, $existingHost);
+        if (count($diff) !== 0) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : Host : ' . implode('|', $diff) . "\n");
         }
     }
 
