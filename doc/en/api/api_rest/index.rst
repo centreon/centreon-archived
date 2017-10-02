@@ -60,7 +60,7 @@ All monitoring information regarding hosts are available in throw the Centreon A
 
 Using GET method and the URL below:  ::
 
- api.domain.tld/api/action=list&object=centreon_realtime_hosts
+ api.domain.tld/api/index.php?object=centreon_realtime_hosts&action=list
 
 **Header:**
 
@@ -86,12 +86,12 @@ You can pass a list of parameters in order to select the data you want.
 | fields         | the fields list that you want to get       |
 |                | separated by a ","                         |
 +----------------+--------------------------------------------+
-| status         | the status of services that you want to    |
-|                | get                                        |
+| status         | the status of hosts that you want to get   |
+|                | (up, down, unreachable, pending)           |
 +----------------+--------------------------------------------+
 | hostgroup      | hostgroup filter                           |
 +----------------+--------------------------------------------+
-| instance       | instance name filter                       |
+| instance       | instance id filter                         |
 +----------------+--------------------------------------------+
 | search         | search pattern applyed on host name        |
 +----------------+--------------------------------------------+
@@ -99,7 +99,7 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | sortType       | ASC ou DESC                                |
 +----------------+--------------------------------------------+
-| limit          | number of line you want                    |
+| limit          | number of line you want                    |
 +----------------+--------------------------------------------+
 | number         | page number                                |
 +----------------+--------------------------------------------+
@@ -121,7 +121,7 @@ Field list :
 +--------------------------+------------------------------------------±
 | state                    | host state (UP = 0, DOWN = 2, UNREA = 3) |
 +--------------------------+------------------------------------------±
-| state_type               | host state type (SOFT / HARD)            |
+| state_type               | host state type (SOFT = 0, HARD = 1)     |
 +--------------------------+------------------------------------------±
 | output                   | Plugin output - state message            |
 +--------------------------+------------------------------------------±
@@ -166,7 +166,7 @@ Field list :
 
 Using GET method and the URL below:  ::
 
-  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+  api.domain.tld/api/index.php?object=centreon_realtime_hosts&action=list&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
 
 Service Status
 --------------
@@ -175,7 +175,7 @@ All monitoring information regarding services are available in throw the Centreo
 
 Using GET method and the URL below:  ::
 
- api.domain.tld/api/action=list&object=centreon_realtime_services
+ api.domain.tld/api/index.php?object=centreon_realtime_services&action=list
 
 **Header:**
 
@@ -202,13 +202,14 @@ You can pass a list of parameters in order to select the data you want.
 |                | separated by a ","                         |
 +----------------+--------------------------------------------+
 | status         | the status of services that you want to    |
-|                | get                                        |
+|                | get (ok, warning, critical, unknown,       |
+|                | pending)                                   |
 +----------------+--------------------------------------------+
 | hostgroup      | hostgroup filter                           |
 +----------------+--------------------------------------------+
 | servicegroup   | servicegroup filter                        |
 +----------------+--------------------------------------------+
-| instance       | instance name filter                       |
+| instance       | instance id filter                         |
 +----------------+--------------------------------------------+
 | search         | search pattern applyed on service          |
 +----------------+--------------------------------------------+
@@ -220,7 +221,7 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | sortType       | ASC ou DESC                                |
 +----------------+--------------------------------------------+
-| limit          | number of line you want                    |
+| limit          | number of line you want                    |
 +----------------+--------------------------------------------+
 | number         | page number                                |
 +----------------+--------------------------------------------+
@@ -242,7 +243,7 @@ Field list :
 +--------------------------+------------------------------------------±
 | host_state               | host state (UP = 0, DOWN = 2, UNREA = 3) |
 +--------------------------+------------------------------------------±
-| host_state_type          | host state type (SOFT / HARD)            |
+| host_state_type          | host state type (SOFT = 0, HARD = 1)     |
 +--------------------------+------------------------------------------±
 | host_output              | Plugin output - state message            |
 +--------------------------+------------------------------------------+
@@ -272,7 +273,7 @@ Field list :
 +--------------------------+------------------------------------------±
 | state                    | service state                            |
 +--------------------------+------------------------------------------±
-| state_type               | service state type (HARD = 1, SOFT = 0)  |
+| state_type               | service state type (SOFT = 0, HARD = 1)  |
 +--------------------------+------------------------------------------±
 | output                   | service output returned by plugins       |
 +--------------------------+------------------------------------------±
@@ -326,7 +327,7 @@ Configuration
 -------------
 
 Getting started
-----------------
+---------------
 
 Most of the actions available (about 95%) in the command line API is available in the rest API.
 
