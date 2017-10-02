@@ -85,6 +85,8 @@ class CentreonRtDowntime extends CentreonObject
         $this->object = new \Centreon_Object_RtDowntime();
         $this->db = new \CentreonDB('centreon');
         $this->hgObject = new \CentreonHostgroups($this->db);
+        $this->hostObject = new CentreonHost($this->db);
+        $this->serviceObject = new CentreonService($this->db);
         $this->sgObject = new \CentreonServiceGroups($this->db);
         $this->instanceObject = new \CentreonInstance($this->db);
         $this->GMTObject = new \CentreonGMT($this->db);
@@ -388,6 +390,11 @@ class CentreonRtDowntime extends CentreonObject
         $withServices,
         $comment
     ) {
+
+        if ($this->hostObject->getHostID($resource) == 0) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        }
+
         $this->externalCmdObj->addHostDowntime(
             $resource,
             $comment,
@@ -457,6 +464,9 @@ class CentreonRtDowntime extends CentreonObject
         $hostList = $this->hgObject->getHostsByHostgroupName($resource);
 
         //check add services with host
+        if (count($hostList) == 0) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        }
         if ($withServices === true) {
             foreach ($hostList as $host) {
                 $this->externalCmdObj->addHostDowntime(
@@ -504,6 +514,11 @@ class CentreonRtDowntime extends CentreonObject
     ) {
         $withServices = 0;
         $serviceList = $this->sgObject->getServicesByServicegroupName($resource);
+
+        if (count($serviceList) == 0) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        }
+
         foreach ($serviceList as $service) {
             $this->externalCmdObj->addSvcDowntime(
                 $service['host'],
