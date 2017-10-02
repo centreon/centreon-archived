@@ -381,8 +381,8 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $comment,
-        $withServices
+        $withServices,
+        $comment
     ) {
         $hostList = $this->hgObject->getHostsByHostgroupName($resource);
 
@@ -429,8 +429,8 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $comment,
-        $withServices
+        $withServices,
+        $comment
     ) {
         $serviceList = $this->sgObject->getServicesByServicegroupName($resource);
         foreach ($serviceList as $service) {
