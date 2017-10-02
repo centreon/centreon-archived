@@ -67,6 +67,16 @@ class CentreonRtDowntime extends CentreonObject
     );
 
     /**
+     * @var
+     */
+    protected $dHosts;
+
+    /**
+     * @var
+     */
+    protected $dServices;
+
+    /**
      * CentreonRtDowntime constructor.
      */
     public function __construct()
@@ -161,11 +171,37 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function show($parameters = null)
     {
-        $parsedParameters = $this->parseShowparameters($parameters);
+        if ($parameters !== '') {
+            $parsedParameters = $this->parseShowparameters($parameters);
+            $method = 'show' . ucfirst($parsedParameters['type']);
+            $this->$method($parsedParameters['resource']);
+        } else {
+            $this->dHosts = $this->object->getHostDowntimes();
+            $this->dServices = $this->object->getSvcDowntimes();
 
-        $method = 'show' . ucfirst($parsedParameters['type']);
+            $list = '';
+            //all host
+            if (count($this->dHosts) !== 0) {
+                foreach ($this->dHosts as $host) {
+                    $list .= $host['name'] . '|';
+                }
+                $list = rtrim($list, '|');
+            }
+            $list .= ';';
 
-        $this->$method($parsedParameters['resource']);
+            //all service
+            if (count($this->dServices) !== 0) {
+                foreach ($this->dServices as $service) {
+                    $list .= $service['name'] . ',' . $service['description'] . '|';
+                }
+                $list = rtrim($list, '|');
+            }
+            $list .= ';';
+
+            echo "hosts;services\n";
+            echo $list;
+        }
+
     }
 
     /**
