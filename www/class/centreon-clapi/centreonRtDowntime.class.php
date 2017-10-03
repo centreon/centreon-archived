@@ -173,6 +173,9 @@ class CentreonRtDowntime extends CentreonObject
     {
         if ($parameters !== '') {
             $parsedParameters = $this->parseShowparameters($parameters);
+            if (strtoupper($parsedParameters['type']) !== 'HOST' && strtoupper($parsedParameters['type']) !== 'SVC') {
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+            }
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
         } else {
