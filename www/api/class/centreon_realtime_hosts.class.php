@@ -430,7 +430,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         $stmt = $this->realTimeDb->prepare($query);
 
         if ($this->criticality) {
-            $stmt->bindParam(':criticality', $queryValues["criticality"], PDO::PARAM_INT);
+            $stmt->bindParam(':criticality', $queryValues["criticality"], PDO::PARAM_STR);
         }
         $stmt->bindParam(':searchName', $queryValues["searchName"], PDO::PARAM_STR);
         $stmt->bindParam(':searchAlias', $queryValues["searchAlias"], PDO::PARAM_STR);
