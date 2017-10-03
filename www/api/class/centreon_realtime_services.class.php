@@ -472,7 +472,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
          */
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
             $explodedValues = '';
-            foreach ($this->hostgroup as $hgId => $hgValue) {
+            foreach (explode(',', $this->hostgroup) as $hgId => $hgValue) {
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
@@ -487,7 +487,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if (isset($this->servicegroup) && $this->servicegroup != 0) {
             $explodedValues = '';
 
-            foreach ($this->hostgroup as $sgId => $sgValue) {
+            foreach (explode(',', $this->servicegroup) as $sgId => $sgValue) {
                 $explodedValues .= ':servicegroup' . $sgId . ',';
                 $queryValues['servicegroup'][$sgId] = (int)$sgValue;
             }

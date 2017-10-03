@@ -341,7 +341,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         $query .= " AND (h.name LIKE :searchName ";
-        $queryValues['searchName'] = '%' .(string)$this->search . '%';
+        $queryValues['searchName'] = '%' . (string)$this->search . '%';
         $query .= " OR h.alias LIKE :searchAlias ";
         $queryValues['searchAlias'] = '%' . (string)$this->search . '%';
         $query .= " OR h.address LIKE :searchAddress ) ";
@@ -368,7 +368,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
         if ($this->hostgroup) {
             $explodedValues = '';
-            foreach ($this->hostgroup as $hgId => $hgValue) {
+            foreach (explode(',', $this->hostgroup) as $hgId => $hgValue) {
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
