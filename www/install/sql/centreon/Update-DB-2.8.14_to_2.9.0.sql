@@ -37,3 +37,7 @@ ALTER TABLE `custom_view_user_relation`
         FOREIGN KEY (`custom_view_id`)
         REFERENCES `centreon`.`custom_views` (`custom_view_id`)
         ON DELETE CASCADE;
+
+-- Adding a filter for trap management
+ALTER TABLE `traps` 
+CHANGE COLUMN `traps_exec_interval_type` `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0' ;

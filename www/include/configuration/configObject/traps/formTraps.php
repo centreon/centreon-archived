@@ -358,6 +358,13 @@ $excecution_type[] = HTML_QuickForm::createElement(
     _("By OID and Host"),
     '2'
 );
+$excecution_type[] = HTML_QuickForm::createElement(
+    'radio',
+    'traps_exec_interval_type',
+    null,
+    _("By OID, Host and Service"),
+    '3'
+);
 $form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
 
 $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
