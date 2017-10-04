@@ -66,12 +66,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
 
         $page = new DowntimeConfigurationPage($this);
-
-        $downtimeEndTime = '+1 minutes';
-        $currentSeconds = date("s");
-        if ($currentSeconds >= 45) {
-            $downtimeEndTime = '+2 minutes';
-        }
+        $downtimeEndTime = '+2 minutes';
         $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
@@ -91,12 +86,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
 
         $page = new DowntimeConfigurationPage($this);
-
-        $downtimeEndTime = '+1 minutes';
-        $currentSeconds = date("s");
-        if ($currentSeconds >= 45) {
-            $downtimeEndTime = '+2 minutes';
-        }
+        $downtimeEndTime = '+2 minutes';
         $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
@@ -181,12 +171,10 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                if (date("H:i") >= $context->downtimeEndTime) {
-                    return true;
-                }
+                return date("H:i") >= $context->downtimeEndTime;
             },
             'The end of the downtime is too late (' . $this->downtimeEndTime . ').',
-            80
+            180 // 3 minutes for 2 minutes-long downtimes
         );
     }
 

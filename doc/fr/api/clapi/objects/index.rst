@@ -10,13 +10,13 @@ Object management
    acl_menu
    acl_resource
    broker_cfg
-   cgi_cfg
    commands
    contacts
    contact_templates
    contact_groups
    dependencies
    downtimes
+   engine_cfg
    host_templates
    hosts
    host_categories
@@ -24,9 +24,6 @@ Object management
    host_group_services
    instances
    ldap_servers
-   nagios_cfg
-   ndo2db_cfg
-   ndomod_cfg
    resource_cfg
    service_templates
    services
@@ -36,4 +33,3 @@ Object management
    time_periods
    traps
    vendors
-

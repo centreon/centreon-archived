@@ -102,6 +102,7 @@ If you have chosen the option **Service list**, in the screen containing all the
 * The **Host** field serves to select the host to which the service to be selected belongs.
 * The **Service** field serves to choose the service (first list) as well as the metric in this service (second list).
 * The **Status** and **Comment** fields serve to enable / disable or comment on the indicator.
+
 3.      Repeat the operation until you have added all the indicators necessary for the calculation of the meta-service.
 
 .. note::

@@ -59,7 +59,7 @@ This part covers the configuration of centreon-backup.
 The following window is displayed:
 
 .. image:: /images/guide_exploitation/backup.png
-:align: center
+    :align: center
 
 * **Backup enabled** Enable/Disable backup
 * **Backup directory** Directory where backup will be stored
@@ -79,9 +79,7 @@ The following window is displayed:
 * **Remote directory** Remote directory for SCP export
 
 .. warning::
-
     **Temporary directory** can not be a folder of **Backup directory**.
-
 
 **********************************
 Restore of Centreon central server
@@ -89,8 +87,8 @@ Restore of Centreon central server
 
 Restore process is divided in two main steps:
 
-*   Re-install the Centreon platform following the installation documentation. Do not forget to upgrade system.
-*   Restore Centreon-Engines configuration files and Centreon databases
+* Re-install the Centreon platform following the installation documentation. Do not forget to upgrade system.
+* Restore Centreon-Engines configuration files and Centreon databases
 
 Configurations file restore
 ===========================
@@ -120,13 +118,13 @@ Once Centreon server reinstalled (**same Centreon version**), unzip centreon and
     # gzip -d YYYY-MM-DD-centreon_storage.sql.gz
     # mysql centreon_storage < YYYY-MM-DD-centreon_storage.sql
 
-.. note::
-Password is stored in configuration files previously restored. For example **$mysql_passwd** field in file "/etc/centreon/conf.pm".
-
-Chis may take a while due to the size of "centreon_storage" databases.
+This may take a while due to the size of "centreon_storage" databases.
 
 .. note::
-The default configuration does not define any password for mysql root user. That's why we can connect to database using only command "mysql".
+    Password is stored in configuration files previously restored. For example **$mysql_passwd** field in file "/etc/centreon/conf.pm".
+
+.. note::
+    The default configuration does not define any password for mysql root user. That's why we can connect to database using only command "mysql".
 
 SSH keys restore
 ================
@@ -150,7 +148,7 @@ Connection test from central to poller::
 Answer "Yes" to the ask question. This is about add poller print on the central server.
 
 .. note::
-You have to do this operations only if you work with a distributed environment.
+    You have to do this operations only if you work with a distributed environment.
 
 Plugins restore
 ===============
@@ -189,7 +187,7 @@ In case you're using NRPE or NSCA agents, you have to reinstall and then restore
     # cp  nsca.cfg /etc/centreon-engine/
 
 .. note::
-You have to do this only if you're using the monitoring agents.
+    You have to do this only if you're using the monitoring agents.
 
 Generate Centreon-Engine configuration files within centreon
 ============================================================

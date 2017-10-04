@@ -31,7 +31,6 @@ Order	Description
 4	Comments regarding the configuration file
 ======= ===========================================
 
-
 Add
 ---
 
@@ -50,7 +49,6 @@ Order	 Description
 
 3	 Comment regarding the configuration file
 ======== ===========================================
-
 
 Del
 ---
@@ -97,13 +95,12 @@ nagios_activate	 *1* if activated, *0* otherwise
                  Because the list is quite long, it is best to refer to the official documentation of Engine
 ================ =============================================================================================================================
 
-
 Addbrokermodule
 ---------------
 
 If you want to add new broker module without removing existing modules, use the **ADDBROKERMODULE**::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
+    [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so"
 
 Arguments are composed of the following columns:
 
@@ -117,7 +114,6 @@ Order	Column description
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules
   [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
-
 
 Delbrokermodule
 ---------------

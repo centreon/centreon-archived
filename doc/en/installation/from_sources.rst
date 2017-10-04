@@ -148,7 +148,7 @@ Install this Stream Multiplexers before continuing with the installation.
 Centreon
 ********
 
-Download the latest version of Centreon :ref:`here <https://download.centreon.com>`.
+Download the latest version of Centreon `here <https://download.centreon.com>`_.
 
 
 Shell Installation
@@ -238,7 +238,7 @@ Answer [y] to all the questions.
 
 
   Definition of installation paths
---------------------------------
+  --------------------------------
 
 ::
 
@@ -323,7 +323,7 @@ Monitoring user
 ---------------
 
 This is the user used to run the monitoring engine (Centreon Engine). If you followed the
-`official installation procedure <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
+`Centreon Engine official installation procedure <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 the user will likely be *centreon-engine*.
 
  ::
@@ -333,7 +333,7 @@ the user will likely be *centreon-engine*.
   >
 
 This is the user used to run the stream broker (Centreon Broker). If you followed the
-`official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
+`Centreon Broker official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 the user will likely be *centreon-broker*.
 
  ::
@@ -681,7 +681,7 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
  ::
 
- SELINUX=disabled
+    SELINUX=disabled
 
 After saving the file, please reboot your operating system to apply the changes.
 
@@ -689,7 +689,7 @@ PHP timezone should be set; go to /etc/php.d directory and create a file named p
 
  ::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 After saving the file, please don't forget to restart apache server.
 

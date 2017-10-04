@@ -342,7 +342,7 @@ Utilisateur de la supervision
 -----------------------------
 
 Cet utilisateur exécute le moteur de supervision Centreon Engine. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Engine <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-engine*.
 
 ::
@@ -352,7 +352,7 @@ l'utilisateur sera vraisemblablement *centreon-engine*.
   >
 
 Cet utilisateur exécute le multiplexeur de flux Centreon Broker. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Broker <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-broker*.
 
 ::
@@ -697,17 +697,17 @@ Pour tous les OS
 
 SELinux doit être désactivé. Pour cela, vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
- ::
+  ::
 
- SELINUX=disabled
+    SELINUX=disabled
 
 Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
 
 La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant la ligne suivante :
 
- ::
+  ::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
 

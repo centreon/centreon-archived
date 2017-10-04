@@ -694,7 +694,7 @@ class CentreonConfigPoller
      * @param unknown_type $status
      * @return string
      */
-    private function display_copying_file($filename = null, $status)
+    private function display_copying_file($filename = null, $status = null)
     {
         if (!isset($filename)) {
             return;
