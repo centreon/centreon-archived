@@ -48,7 +48,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 /*
  * Create XML Request Objects
  */
-CentreonSession::start(1);
+CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
@@ -83,6 +83,9 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
+
+
+$_SESSION['monitoring_service_groups'] = $sgSearch;
 
 /** **********************************************
  * Prepare pagination

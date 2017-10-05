@@ -85,6 +85,10 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 
+/* Store in session the last type of call */
+$_SESSION['monitoring_host_status'] = $statusHost;
+$_SESSION['monitoring_host_status_filter'] = $statusFilter;
+
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
@@ -96,12 +100,6 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 }
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-/* Store in session the last type of call */
-if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
-    $_SESSION['monitoring_host_status'] = $statusHost;
-    $_SESSION['monitoring_host_status_filter'] = $statusFilter;
-}
-  
 /*
  * Backup poller selection
  */

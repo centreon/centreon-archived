@@ -38,7 +38,6 @@
                 <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
                 <span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></a></span>
                 <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
-                <span class="consol_button" id="instance_selected"></span>
             </div>
         </td>
         <td id="pagination1" class="ToolbarPagination"></td>
