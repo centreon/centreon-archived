@@ -139,10 +139,9 @@ CentreonDb::checkInjection($search_type_service);
 CentreonDb::checkInjection($criticality_id);
 
 /* Store in session the last type of call */
-if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
-    $_SESSION['monitoring_service_status'] = $statusService;
-    $_SESSION['monitoring_service_status_filter'] = $statusFilter;
-}
+$_SESSION['monitoring_service_status'] = $statusService;
+$_SESSION['monitoring_service_status_filter'] = $statusFilter;
+
 
 /** * *************************************************
  * Backup poller selection
