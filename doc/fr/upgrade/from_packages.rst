@@ -4,7 +4,7 @@
 Mise à jour RPM
 ===============
 
-La version 3.4 de Centreon ISO est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+La version 3.4 de Centreon ISO est l'ensemble Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
 Deux versions de Centreon 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
 .. warning::
@@ -286,8 +286,7 @@ Afin de vous aider à éviter le plus possible des problèmes éventuels liés �
 Les risques sont les suivants :
 ===============================
 
-* Incompatibilité avec la plupart des produits commerciaux : Centreon MBI, Centreon BAM et Centreon Map ne sont pas encore compatible avec Centreon Web 2.8.
-* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.6) sont des prérequis au fonctionnement de Centreon Web 2.8
+* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.8) sont des prérequis au fonctionnement de Centreon Web 2.8
 * Problèmes de mise à jour des schémas de base de données
 * Les nouveau graphiques de performances ont des échelles affichant trop de détails
 * Des erreurs PHP de type warning apparaissent dans le journal d'évènement d'Apache
