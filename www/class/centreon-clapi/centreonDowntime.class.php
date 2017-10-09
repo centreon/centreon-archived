@@ -163,7 +163,7 @@ class CentreonDowntime extends CentreonObject
                             echo $paramString . ";service groups\n";
                             $filterList = ';' . $this->listServiceGroups($element["dt_id"]);
                             break;
-                        default :
+                        default:
                             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
                     }
                 } else {
@@ -235,7 +235,8 @@ class CentreonDowntime extends CentreonObject
         $dtId = $this->getObjectId($parameters);
         $rows = $this->getPeriods($dtId);
 
-        echo implode(
+        echo
+            implode(
                 $this->delim,
                 array(
                     'position',
@@ -662,8 +663,13 @@ class CentreonDowntime extends CentreonObject
                 AND service_service_id = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0], $ids[1]));
             if ($stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf('Relationship with %s / %s already exists', $host,
-                    $service));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Relationship with %s / %s already exists',
+                        $host,
+                        $service
+                    )
+                );
             }
 
             $objectIds[] = $ids;
@@ -737,8 +743,13 @@ class CentreonDowntime extends CentreonObject
                 AND service_service_id = ?";
             $stmt = $this->db->query($sql, array($downtimeId, $ids[0], $ids[1]));
             if (!$stmt->rowCount()) {
-                throw new CentreonClapiException(sprintf('Relationship with %s / %s does not exist', $host,
-                    $service));
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Relationship with %s / %s does not exist',
+                        $host,
+                        $service
+                    )
+                );
             }
 
             $objectIds[] = $ids;
@@ -847,7 +858,8 @@ class CentreonDowntime extends CentreonObject
                 $extraData[] = $row['dtp_month_cycle'];
             }
             if (!is_null($periodType)) {
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array_merge(
                             array(
@@ -926,7 +938,8 @@ class CentreonDowntime extends CentreonObject
         $stmt = $this->db->query($sql);
         $rows = $stmt->fetchAll();
         foreach ($rows as $row) {
-            echo implode(
+            echo
+                implode(
                     $this->delim,
                     array(
                         $this->action,
