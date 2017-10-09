@@ -3650,7 +3650,16 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
-                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                      "",
+                      "function wait(millis) {",
+                      "  var date = new Date();",
+                      "  var curDate = null;",
+                      "  do { curDate = new Date(); }",
+                      "  while(curDate-date < millis);",
+                      "}",
+                      "",
+                      "wait(2000);"
                     ]
                   }
                 }
