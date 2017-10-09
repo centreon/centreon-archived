@@ -49,12 +49,6 @@ if (isset($pearDB)) {
         );
 
         $pearDB->query(
-            "ALTER TABLE `traps_group_relation` " .
-            "ADD CONSTRAINT `traps_group_relation_ibfk_2` " .
-            "FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE"
-        );
-
-        $pearDB->query(
             "ALTER TABLE `traps_group` ADD PRIMARY KEY (`traps_group_id`)"
         );
 
@@ -63,5 +57,10 @@ if (isset($pearDB)) {
             "  DROP KEY `traps_group_id`"
         );
 
+        $pearDB->query(
+            "ALTER TABLE `traps_group_relation` " .
+            "ADD CONSTRAINT `traps_group_relation_ibfk_2` " .
+            "FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE"
+        );
     }
 }
