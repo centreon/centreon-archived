@@ -870,7 +870,6 @@ class CentreonDowntime extends CentreonObject
                                 $row['dtp_end_time'],
                                 $row['dtp_fixed'],
                                 $row['dtp_duration']
-
                             ),
                             $extraData
                         )
