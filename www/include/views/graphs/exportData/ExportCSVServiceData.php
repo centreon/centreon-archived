@@ -76,9 +76,12 @@ if (isset($hName) && isset($sName)) {
 
 $listMetric = array();
 $datas = array();
+$listEmptyMetric = array();
+
 $DBRESULT = $pearDBO->query("SELECT DISTINCT metric_id, metric_name FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name");
 while ($index_data = $DBRESULT->fetchRow()){
     $listMetric[$index_data["metric_id"]] = $index_data["metric_name"];
+    $listEmptyMetric[$index_data["metric_id"]] = '';
     $DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
     while ($data = $DBRESULT2->fetchRow()) {
         $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
@@ -87,6 +90,11 @@ while ($index_data = $DBRESULT->fetchRow()){
 
 # Order by timestamp
 ksort($datas);
+foreach ($datas as $key => $data){
+    $datas[$key] =   $data + $listEmptyMetric;
+    # Order by metric
+    ksort($datas[$key]);
+}
 
 print "time;humantime";
 if (count($listMetric)) {
@@ -97,7 +105,11 @@ print "\n";
 foreach ($datas as $ctime => $tab) {
     print $ctime . ";" . date("Y-m-d H:i:s", $ctime);
     foreach($tab as $metric_value) {
-        printf(";%f", $metric_value);
+        if($metric_value !== ''){
+            printf(";%f", $metric_value);
+        } else {
+            printf(";");
+        }
     }
     print "\n";
 }
