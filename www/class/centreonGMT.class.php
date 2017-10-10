@@ -325,10 +325,11 @@ class CentreonGMT
                 "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
         if (PEAR::isError($DBRESULT)) {
             $this->myGMT = 0;
+        } else {
+            $info = $DBRESULT->fetchRow();
+            $DBRESULT->free();
+            $this->myGMT = $info["contact_location"];
         }
-        $info = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        $this->myGMT = $info["contact_location"];
     }
     
     /**
@@ -351,10 +352,11 @@ class CentreonGMT
                     "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
             if (PEAR::isError($DBRESULT)) {
                 $this->myGMT = 0;
+            } else {
+                $info = $DBRESULT->fetchRow();
+                $DBRESULT->free();
+                $this->myGMT = $info["contact_location"];
             }
-            $info = $DBRESULT->fetchRow();
-            $DBRESULT->free();
-            $this->myGMT = $info["contact_location"];
         } else {
             $this->myGMT = 0;
         }
