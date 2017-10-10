@@ -360,7 +360,7 @@ sub databasesBackup() {
     my @localtime = localtime(time);
     my $dayOfWeek = @localtime[6];
     my @fullBackupDays = split(/,/, $BACKUP_DATABASE_FULL);
-    my $lvmBackupCmd="$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today";
+    my $lvmBackupCmd = "$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today";
     if ($BACKUP_DATABASE_TYPE == '1') {
         # Do LVM snapshot backup or fall into degraded mode with mysqldump
 
@@ -375,8 +375,8 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-	    $lvmBackupCmd.=" -p";
-            system($lvmBackupCmd);;
+            $lvmBackupCmd.=" -p";
+            system($lvmBackupCmd);
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
