@@ -228,9 +228,11 @@ class CentreonRtDowntime extends CentreonObject
         echo implode($this->delim, $fields) . "\n";
 
         $hostList = array_filter(explode('|', $hostList));
+
+        $db = $this->db;
         $hostList = array_map(
-            function ($element) {
-                return $this->db->escape($element);
+            function ($element) use ($db) {
+                return $db->escape($element);
             },
             $hostList
         );
@@ -273,7 +275,7 @@ class CentreonRtDowntime extends CentreonObject
             'host_name',
             'service_name',
             'author',
-            'actual_start_time',
+            'start_time',
             'end_time',
             'comment_data',
             'duration',
@@ -284,9 +286,11 @@ class CentreonRtDowntime extends CentreonObject
         echo implode($this->delim, $fields) . "\n";
 
         $svcList = array_filter(explode('|', $svcList));
+
+        $db = $this->db;
         $svcList = array_map(
-            function ($arrayElem) {
-                return $this->db->escape($arrayElem);
+            function ($arrayElem) use ($db) {
+                return $db->escape($arrayElem);
             },
             $svcList
         );
@@ -318,6 +322,7 @@ class CentreonRtDowntime extends CentreonObject
 
             echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
         }
+
     }
 
     /**
