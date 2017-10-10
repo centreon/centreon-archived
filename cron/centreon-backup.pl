@@ -375,7 +375,7 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            $lvmBackupCmd.=" -p";
+            $lvmBackupCmd .= " -p";
             system($lvmBackupCmd);
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
