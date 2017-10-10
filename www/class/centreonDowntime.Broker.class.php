@@ -323,15 +323,15 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
             $endTimestamp = $endTime->getTimestamp();
 
-            # Check if HH:mm time is approaching
-            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
-                continue;
-            }
-
             # Check if we jump an hour
             $startTimestamp = $this->manageWinterToSummerTimestamp($startTime, $startTimestamp, $timezone);
             $endTimestamp = $this->manageWinterToSummerTimestamp($endTime, $endTimestamp, $timezone);
             if ($startTimestamp == $endTimestamp) {
+                continue;
+            }
+
+            # Check if HH:mm time is approaching
+            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
                 continue;
             }
 
