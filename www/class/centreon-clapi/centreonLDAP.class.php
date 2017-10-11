@@ -325,7 +325,7 @@ class CentreonLDAP extends CentreonObject
         if (in_array(strtolower($params[1]), array('name', 'description', 'enable'))) {
             if (strtolower($params[1]) == 'name') {
                 if (!$this->isUnique($params[2], $arId)) {
-                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $name . ')');
+                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $params[2] . ')');
                 }
             }
             $this->db->query(
