@@ -174,13 +174,13 @@ class CentreonACLMenu extends CentreonObject
         $menus = array();
         $topologies = array();
         $levels[self::LEVEL_1] = $params[2];
-        if (isset($params[2])) {
+        if (isset($params[3])) {
             $levels[self::LEVEL_2] = $params[3];
         }
-        if (isset($params[3])) {
+        if (isset($params[4])) {
             $levels[self::LEVEL_3] = $params[4];
         }
-        if (isset($params[4])) {
+        if (isset($params[5])) {
             $levels[self::LEVEL_4] = $params[5];
         }
         foreach ($levels as $level => $menu) {
