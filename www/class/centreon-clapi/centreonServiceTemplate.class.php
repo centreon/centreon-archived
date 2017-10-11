@@ -757,16 +757,19 @@ class CentreonServiceTemplate extends CentreonObject
                     }
 
                     $existingRelationIds = $relobj->getTargetIdFromSourceId(
-                        $relobj->getFirstKey(),
                         $relobj->getSecondKey(),
+                        $relobj->getFirstKey(),
                         $serviceId
                     );
+
                     foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {
                             $relobj->delete($relationId, $serviceId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {
                             if (!in_array($relationId, $existingRelationIds)) {
                                 $relobj->insert($relationId, $serviceId);
+                            } else {
+                                throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
                             }
                         }
                     }
