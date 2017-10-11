@@ -101,7 +101,7 @@ class CentreonRtDowntime extends CentreonObject
      */
     private function parseParameters($parameters)
     {
-        // Permet de sécuriser les inputs pour chaque paramètre
+        // Make safe the inputs
         list($type, $resource, $start, $end, $fixed, $duration, $withServices, $comment) = explode(';', $parameters);
 
         // Check if object type is supported
@@ -137,7 +137,7 @@ class CentreonRtDowntime extends CentreonObject
 
         $withServices = ($withServices == 1) ? true : false;
 
-        // Sécurise le commentaire pour qu'il est forcément des guillemets
+        // Make safe the comment
         $comment = escapeshellarg($comment);
 
         return array(
@@ -357,7 +357,7 @@ class CentreonRtDowntime extends CentreonObject
     {
         $parsedParameters = $this->parseParameters($parameters);
 
-        // Permet que $method prenne le bon nom de methode (addHostDowntime, addSvcDowntime etc.)
+        // to choose the best add (addHostDowntime, addSvcDowntime etc.)
         $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
         $this->$method(
             $parsedParameters['resource'],
@@ -456,7 +456,7 @@ class CentreonRtDowntime extends CentreonObject
     ) {
         $hostList = $this->hgObject->getHostsByHostgroupName($resource);
 
-        // Vérification de l'ajout des services avec les hosts
+        //check add services with host
         if ($withServices === true) {
             foreach ($hostList as $host) {
                 $this->externalCmdObj->addHostDowntime(
@@ -538,7 +538,7 @@ class CentreonRtDowntime extends CentreonObject
     ) {
         $hostList = $this->instanceObject->getHostsByInstance($resource);
 
-        // Ajout des services avec les hosts forcé avec le true en dernier param
+        //check add services with host with true in last param
         foreach ($hostList as $host) {
             $this->externalCmdObj->addHostDowntime(
                 $host['host'],
