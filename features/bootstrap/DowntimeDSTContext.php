@@ -3,9 +3,6 @@
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
 use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
-use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
-use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\RecurrentDowntimeConfigurationPage;
 
 /**
@@ -18,7 +15,7 @@ class DowntimeDSTContext extends CentreonContext
     protected $service = 'downtimeService';
     protected $downtimeProperties;
 
-    private function setDowntime()
+    private function setRecurrentDowntime()
     {
         $this->page = new RecurrentDowntimeConfigurationPage($this);
 
@@ -29,6 +26,25 @@ class DowntimeDSTContext extends CentreonContext
             'start' => $this->downtimeProperties['start_time'],
             'end' => $this->downtimeProperties['end_time'],
             'svc_relation' => $this->host . ' - ' . $this->service
+        ));
+
+        $this->page->save();
+    }
+
+    private function setRealtimeDowntime()
+    {
+        $this->page = new DowntimeConfigurationPage($this);
+
+        $downtimeEndTime = '+2 minutes';
+        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
+        $this->page->setProperties(array(
+            'type' => DowntimeConfigurationPage::TYPE_SERVICE,
+            'service' => $this->host . ' - ' . $this->service,
+            'comment' => 'Acceptance test',
+            'start_day' => $this->downtimeProperties['start_day'],
+            'start_time' => $this->downtimeProperties['start_time'],
+            'end_day' => $this->downtimeProperties['end_day'],
+            'end_time' => $this->downtimeProperties['end_time'],
         ));
 
         $this->page->save();
@@ -64,219 +80,224 @@ class DowntimeDSTContext extends CentreonContext
     }
 
     /**
-     * @Given a recurrent downtime starting on summer changing time
+     * @Given a downtime starting on summer changing time
      */
-    public function aRecurrentDowntimeStartingOnSummerChangingTime()
+    public function aDowntimeStartingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-03-28',
             'start_time' => '02:30',
+            'end_day' => '2021-03-28',
             'end_time' => '03:30',
             'expected_start' => '2021-03-28 03:00',
             'expected_end' => '2021-03-28 03:30',
             'expected_duration' => '1800', // 30m
             'faketime' => '2021-03-28 01:56:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime ending on summer changing time
+     * @Given a downtime ending on summer changing time
      */
-    public function aRecurrentDowntimeEndingOnSummerChangingTime()
+    public function aDowntimeEndingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-03-28',
             'start_time' => '01:30',
+            'end_day' => '2021-03-28',
             'end_time' => '02:30',
             'expected_start' => '2021-03-28 01:30',
             'expected_end' => '2021-03-28 03:00',
             'expected_duration' => '1800', // 30m
             'faketime' => '2021-03-28 01:26:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime starting and ending on summer changing time
+     * @Given a downtime starting and ending on summer changing time
      */
-    public function aRecurrentDowntimeStartingAndEndingOnSummerChangingTime()
+    public function aDowntimeStartingAndEndingOnSummerChangingTime()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-03-28',
             'start_time' => '02:03',
+            'end_day' => '2021-03-28',
             'end_time' => '02:33',
             'expected_start' => '',
             'expected_end' => '',
             'expected_duration' => '0',
             'faketime' => '2021-03-28 01:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime during all day on summer changing date
+     * @Given a downtime during all day on summer changing date
      */
-    public function aRecurrentDowntimeDuringAllDayOnSummerChangingDate()
+    public function aDowntimeDuringAllDayOnSummerChangingDate()
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-03-28',
             'start_time' => '00:00',
+            'end_day' => '2021-03-28',
             'end_time' => '24:00',
             'expected_start' => '2021-03-28 00:00',
             'expected_end' => '2021-03-29 00:00',
             'expected_duration' => '82800', // 23h
             'faketime' => '2021-03-27 23:56:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime during all day on summer changing date is scheduled
+     * @Given a downtime during all day on summer changing date is scheduled
      */
-    public function aRecurrentDowntimeDuringAllDayOnSummerChangingDateIsScheduled()
+    public function aDowntimeDuringAllDayOnSummerChangingDateIsScheduled()
     {
-        $this->aRecurrentDowntimeDuringAllDayOnSummerChangingDate();
-        $this->downtimeIsApproaching();
-        $this->theDowntimeIsScheduled();
+        $this->aDowntimeDuringAllDayOnSummerChangingDate();
+        $this->downtimeIsApplied('recurrent');
+        $this->theDowntimeIsProperlyScheduled();
     }
 
     /**
-     * @Given a recurrent downtime of next day of summer changing date
+     * @Given a downtime of next day of summer changing date
      */
-    public function aRecurrentDowntimeOfNextDayOfSummerChangingDate()
+    public function aDowntimeOfNextDayOfSummerChangingDate()
     {
         $this->downtimeProperties = array(
+            'start_day' => '2021-03-28',
             'start_time' => '00:00',
+            'end_day' => '2021-03-28',
             'end_time' => '24:00',
             'expected_start' => '2021-03-29 00:00',
             'expected_end' => '2021-03-30 00:00',
             'expected_duration' => '86400', // 24h
             'faketime' => '2021-03-28 23:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
      * @Given a recurrent downtime starting on winter changing time
      */
-    public function aRecurrentDowntimeStartingOnWinterChangingDate()
+    public function aDowntimeStartingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-10-31',
             'start_time' => '02:03',
+            'end_day' => '2021-10-31',
             'end_time' => '03:33',
             'expected_start' => '2021-10-31 02:03',
             'expected_end' => '2021-10-31 03:33',
             'expected_duration' => '5400', // 1h30
             'faketime' => '2021-10-31 01:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime ending on winter changing time
+     * @Given a downtime ending on winter changing time
      */
-    public function aRecurrentDowntimeEndingOnWinterChangingDate()
+    public function aDowntimeEndingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-10-31',
             'start_time' => '01:00',
+            'end_day' => '2021-10-31',
             'end_time' => '02:30',
             'expected_start' => '2021-10-31 01:00',
             'expected_end' => '2021-10-31 02:30',
             'expected_duration' => '9000', // 2h30
             'faketime' => '2021-10-31 00:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime starting and ending on winter changing time
+     * @Given a downtime starting and ending on winter changing time
      */
-    public function aRecurrentDowntimeStartingAndEndingOnWinterChangingDate()
+    public function aDowntimeStartingAndEndingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-10-31',
             'start_time' => '02:03',
+            'end_day' => '2021-10-31',
             'end_time' => '02:33',
             'expected_start' => '2021-10-31 02:03',
             'expected_end' => '2021-10-31 02:33',
             'expected_duration' => '1800', // 30m
             'faketime' => '2021-10-31 01:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime during all day on winter changing date
+     * @Given a downtime during all day on winter changing date
      */
-    public function aRecurrentDowntimeDuringAllDayOnWinterChangingDate()
+    public function aDowntimeDuringAllDayOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
+            'start_day' => '2021-10-31',
             'start_time' => '00:00',
+            'end_day' => '2021-10-31',
             'end_time' => '24:00',
             'expected_start' => '2021-10-31 00:00',
             'expected_end' => '2021-11-01 00:00',
             'expected_duration' => '90000', // 25h
             'faketime' => '2021-10-30 23:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @Given a recurrent downtime during all day on winter changing date is scheduled
+     * @Given a downtime during all day on winter changing date is scheduled
      */
-    public function aRecurrentDowntimeDuringAllDayOnWinterChangingDateIsScheduled()
+    public function aDowntimeDuringAllDayOnWinterChangingDateIsScheduled()
     {
-        $this->aRecurrentDowntimeDuringAllDayOnWinterChangingDate();
-        $this->downtimeIsApproaching();
-        $this->theDowntimeIsScheduled();
+        $this->aDowntimeDuringAllDayOnWinterChangingDate();
+        $this->downtimeIsApplied('recurrent');
+        $this->theDowntimeIsProperlyScheduled();
     }
 
     /**
-     * @Given a recurrent downtime of next day of winter changing date
+     * @Given a downtime of next day of winter changing date
      */
-    public function aRecurrentDowntimeOfNextDayOfWinterChangingDate()
+    public function aDowntimeOfNextDayOfWinterChangingDate()
     {
         $this->downtimeProperties = array(
+            'start_day' => '2021-10-31',
             'start_time' => '00:00',
+            'end_day' => '2021-10-31',
             'end_time' => '24:00',
             'expected_start' => '2021-11-01 00:00',
             'expected_end' => '2021-11-02 00:00',
             'expected_duration' => '86400', // 24h
             'faketime' => '2021-10-31 23:58:00'
         );
-
-        $this->setDowntime();
     }
 
     /**
-     * @When downtime is approaching
+     * @When :downtimeType downtime is applied
      */
-    public function downtimeIsApproaching()
+    public function downtimeIsApplied($downtimeType)
     {
-        $this->container->execute(
-            "faketime '" . $this->downtimeProperties['faketime'] . "'" .
-            " php /usr/share/centreon/cron/downtimeManager.php",
-            'web'
-        );
+        if ($downtimeType == 'realtime') {
+            $this->setRealtimeDowntime();
+        } else {
+            $this->setRecurrentDowntime();
+            $this->container->execute(
+                "faketime '" . $this->downtimeProperties['faketime'] . "'" .
+                " php /usr/share/centreon/cron/downtimeManager.php",
+                'web'
+            );
+        }
     }
 
     /**
-     * @Then the downtime is scheduled
+     * @Then the downtime is properly scheduled
      */
-    public function theDowntimeIsScheduled()
+    public function theDowntimeIsProperlyScheduled()
     {
         $this->spin(
             function ($context) {
@@ -286,6 +307,7 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
+                //var_dump($output);
                 if (
                     preg_match_all(
                         '/SCHEDULE_SVC_DOWNTIME;' . $this->host . ';' . $this->service . ';(\d+);(\d+);.+/',
@@ -299,6 +321,9 @@ class DowntimeDSTContext extends CentreonContext
                     $dateStart->setTimestamp($startTimestamp);
                     $dateEnd = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateEnd->setTimestamp($endTimestamp);
+                    var_dump($dateStart->format('Y-m-d H:i'));
+                    var_dump($dateEnd->format('Y-m-d H:i'));
+                    var_dump($endTimestamp - $startTimestamp);
                     if ($dateStart->format('Y-m-d H:i') == $this->downtimeProperties['expected_start'] &&
                         $dateEnd->format('Y-m-d H:i') == $this->downtimeProperties['expected_end'] &&
                         ($endTimestamp - $startTimestamp) == $this->downtimeProperties['expected_duration']) {
@@ -335,6 +360,7 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
+                var_dump($output);
                 if (
                 preg_match(
                     '/SCHEDULE_SVC_DOWNTIME;' . $this->host . ';' . $this->service . ';(\d+);(\d+);.+/',

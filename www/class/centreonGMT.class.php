@@ -535,7 +535,7 @@ class CentreonGMT
      * @param string $gmt
      * @return string timezone
      */
-    private function getActiveTimezone($gmt)
+    public function getActiveTimezone($gmt)
     {
         $sTimezone = "";
         if (count($this->timezones) == 0) {
