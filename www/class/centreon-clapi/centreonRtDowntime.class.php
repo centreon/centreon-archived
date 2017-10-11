@@ -101,7 +101,7 @@ class CentreonRtDowntime extends CentreonObject
      */
     private function parseParameters($parameters)
     {
-        // Get all parameters
+        // Make safe the inputs
         list($type, $resource, $start, $end, $fixed, $duration, $withServices, $comment) = explode(';', $parameters);
 
         // Check if object type is supported
@@ -137,7 +137,7 @@ class CentreonRtDowntime extends CentreonObject
 
         $withServices = ($withServices == 1) ? true : false;
 
-        // Secure comment
+        // Make safe the comment
         $comment = escapeshellarg($comment);
 
         return array(
@@ -212,11 +212,11 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function showHost($hostList)
     {
-        global $centreon;
-
         $fields = array(
             'host_name',
             'author',
+            'actual_start_time',
+            'actual_end_time',
             'start_time',
             'end_time',
             'comment_data',
@@ -228,7 +228,6 @@ class CentreonRtDowntime extends CentreonObject
         echo implode($this->delim, $fields) . "\n";
 
         $hostList = array_filter(explode('|', $hostList));
-
         $db = $this->db;
         $hostList = array_map(
             function ($element) use ($db) {
@@ -240,25 +239,39 @@ class CentreonRtDowntime extends CentreonObject
         // Result of the research in the base
         $hostDowntimesList = $this->object->getHostDowntimes($hostList);
 
+        // Init user timezone
+        $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
+
         //Separates hosts
         foreach ($hostDowntimesList as $hostDowntime) {
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
                 $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'];
             }
-            $dateStart = $this->GMTObject->getDate(
+
+            $hostDowntime['actual_start_time'] = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['actual_start_time'],
-                $centreon->user->getMyGMT()
+                $this->GMTObject->getMyGMT()
             );
-            $hostDowntime['actual_start_time'] = $dateStart;
 
-            $dateEnd = $this->GMTObject->getDate(
+            $hostDowntime['actual_end_time'] = $this->GMTObject->getDate(
+                'Y/m/d H:i',
+                $hostDowntime['actual_end_time'],
+                $this->GMTObject->getMyGMT()
+            );
+
+            $hostDowntime['start_time'] = $this->GMTObject->getDate(
+                'Y/m/d H:i',
+                $hostDowntime['start_time'],
+                $this->GMTObject->getMyGMT()
+            );
+
+            $hostDowntime['end_time'] = $this->GMTObject->getDate(
                 'Y/m/d H:i',
                 $hostDowntime['end_time'],
-                $centreon->user->getMyGMT()
+                $this->GMTObject->getMyGMT()
             );
-            $hostDowntime['end_time'] = $dateEnd;
 
             echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
         }
@@ -269,12 +282,12 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function showSvc($svcList)
     {
-        global $centreon;
-
         $fields = array(
             'host_name',
             'service_name',
             'author',
+            'actual_start_time',
+            'actual_end_time',
             'start_time',
             'end_time',
             'comment_data',
@@ -286,7 +299,6 @@ class CentreonRtDowntime extends CentreonObject
         echo implode($this->delim, $fields) . "\n";
 
         $svcList = array_filter(explode('|', $svcList));
-
         $db = $this->db;
         $svcList = array_map(
             function ($arrayElem) use ($db) {
@@ -298,31 +310,44 @@ class CentreonRtDowntime extends CentreonObject
         // Result of the research in the base
         $serviceDowntimesList = $this->object->getSvcDowntimes($svcList);
 
+        // Init user timezone
+        $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
+
         //Separates hosts and services
-        foreach ($serviceDowntimesList as $hostDowntime) {
+        foreach ($serviceDowntimesList as $serviceDowntime) {
             $url = '';
             if (isset($_SERVER['HTTP_HOST'])) {
                 $url = $this->getBaseUrl() .
-                    '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'] .
-                    '&search_service=' . $hostDowntime['description'];
+                    '/' . 'main.php?p=210&search_host=' . $serviceDowntime['name'] .
+                    '&search_service=' . $serviceDowntime['description'];
             }
-            $dateStart = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $hostDowntime['actual_start_time'],
-                $centreon->user->getMyGMT()
-            );
-            $hostDowntime['actual_start_time'] = $dateStart;
 
-            $dateEnd = $this->GMTObject->getDate(
+            $serviceDowntime['actual_start_time'] = $this->GMTObject->getDate(
                 'Y/m/d H:i',
-                $hostDowntime['end_time'],
-                $centreon->user->getMyGMT()
+                $serviceDowntime['actual_start_time'],
+                $this->GMTObject->getMyGMT()
             );
-            $hostDowntime['end_time'] = $dateEnd;
 
-            echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
+            $serviceDowntime['actual_end_time'] = $this->GMTObject->getDate(
+                'Y/m/d H:i',
+                $serviceDowntime['actual_end_time'],
+                $this->GMTObject->getMyGMT()
+            );
+
+            $serviceDowntime['start_time'] = $this->GMTObject->getDate(
+                'Y/m/d H:i',
+                $serviceDowntime['start_time'],
+                $this->GMTObject->getMyGMT()
+            );
+
+            $serviceDowntime['end_time'] = $this->GMTObject->getDate(
+                'Y/m/d H:i',
+                $serviceDowntime['end_time'],
+                $this->GMTObject->getMyGMT()
+            );
+
+            echo implode($this->delim, array_values($serviceDowntime)) . ';' . $url . "\n";
         }
-
     }
 
     /**
@@ -332,7 +357,7 @@ class CentreonRtDowntime extends CentreonObject
     {
         $parsedParameters = $this->parseParameters($parameters);
 
-        // Use good method (addHostDowntime, addSvcDowntime etc.)
+        // to choose the best add (addHostDowntime, addSvcDowntime etc.)
         $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
         $this->$method(
             $parsedParameters['resource'],
@@ -431,7 +456,7 @@ class CentreonRtDowntime extends CentreonObject
     ) {
         $hostList = $this->hgObject->getHostsByHostgroupName($resource);
 
-        // Vérification de l'ajout des services avec les hosts
+        //check add services with host
         if ($withServices === true) {
             foreach ($hostList as $host) {
                 $this->externalCmdObj->addHostDowntime(
@@ -513,7 +538,7 @@ class CentreonRtDowntime extends CentreonObject
     ) {
         $hostList = $this->instanceObject->getHostsByInstance($resource);
 
-        // Ajout des services avec les hosts forcé avec le true en dernier param
+        //check add services with host with true in last param
         foreach ($hostList as $host) {
             $this->externalCmdObj->addHostDowntime(
                 $host['host'],
