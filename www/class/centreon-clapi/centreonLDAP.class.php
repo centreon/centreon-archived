@@ -136,6 +136,18 @@ class CentreonLDAP extends CentreonObject
     }
 
     /**
+     * @param $id
+     * @return mixed
+     */
+    public function getLdapServers($id)
+    {
+        $query = "SELECT host_address, host_port FROM auth_ressource_host  WHERE auth_ressource_id = ?";
+        $res = $this->db->query($query, array($id));
+        $row = $res->fetchAll();
+        return $row;
+    }
+
+    /**
      * Show list of ldap configurations
      *
      * @return void
@@ -235,9 +247,17 @@ class CentreonLDAP extends CentreonObject
         }
         list($arName, $address, $port, $ssl, $tls) = $params;
         $arId = $this->getLdapId($arName);
+
         if (is_null($arId)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' ' . $arName);
         }
+
+        $serverList = $this->getLdapServers($arId);
+        $newServer = array('host_address' => $address, 'host_port' => $port);
+        if (in_array($newServer, $serverList)) {
+            throw new CentreonClapiException(self::OBJECTALREADYEXISTS . ' ' . $address);
+        }
+
         $this->db->query(
             "INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls)
              VALUES (:arId, :address, :port, :ssl, :tls)",
@@ -305,7 +325,7 @@ class CentreonLDAP extends CentreonObject
         if (in_array(strtolower($params[1]), array('name', 'description', 'enable'))) {
             if (strtolower($params[1]) == 'name') {
                 if (!$this->isUnique($params[2], $arId)) {
-                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $name . ')');
+                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $params[2] . ')');
                 }
             }
             $this->db->query(
