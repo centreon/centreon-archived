@@ -4,11 +4,11 @@ Feature: Clapi
   To industrialize it
 
   Background:
-    Given I am logged in a Centreon server
+    Given a Centreon server
 
   @critical
   Scenario: import/export
-    Given a configuration
-    When I import this configuration
-    And I export it
-    Then The configuration exported is similar when it was imported
+    Given a Clapi configuration file
+    And it was imported
+    When I export the configuration through Clapi
+    Then the exported file is similar to the imported filed

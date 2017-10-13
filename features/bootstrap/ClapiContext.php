@@ -30,9 +30,9 @@ class ClapiContext extends CentreonContext {
     }
 
     /**
-     * @Given a configuration
+     * @Given a Clapi configuration file
      */
-    public function aConfiguration() {
+    public function aClapiConfigurationFile() {
         $this->file['localpath'] = 'tests/clapi_export/clapi-configuration.txt';
         $this->file['init'] = '/tmp/clapi-export.txt';
         $this->file['compare'] = '/tmp/compare-clapi-export.txt';
@@ -43,9 +43,9 @@ class ClapiContext extends CentreonContext {
     }
 
     /**
-     * @When I import this configuration
+     * @Given it was imported
      */
-    public function IimportThisConfiguration() {
+    public function itWasImported() {
         $cmd = "centreon -u admin -p centreon -i " . $this->file['init'];
 
         $this->container->execute(
@@ -54,18 +54,17 @@ class ClapiContext extends CentreonContext {
     }
 
     /**
-     * @When I export it
+     * @When I export the configuration through Clapi
      */
-    public function IexportIt() {
+    public function IExportTheConfigurationThroughClapi() {
         $this->exportClapi($this->file['compare']);
     }
 
     /**
-     * @Then The configuration exported is similar when it was imported
+     * @Then the exported file is similar to the imported filed
      */
-    public function TheConfigurationExportedIsSimilarWhenItWasImported()
+    public function theExportedFileIsSimilarToTheImportedFiled()
     {
-
         $fileLocal = trim(file_get_contents($this->file['localpath'], FILE_USE_INCLUDE_PATH));
         $fileCompare = trim(file_get_contents($this->file['compare'], FILE_USE_INCLUDE_PATH));
 
