@@ -189,9 +189,9 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeOfNextDayOfSummerChangingDate()
     {
         $this->downtimeProperties = array(
-            'start_day' => '2021/03/28',
+            'start_day' => '2021/03/29',
             'start_time' => '00:00',
-            'end_day' => '2021/03/28',
+            'end_day' => '2021/03/29',
             'end_time' => '24:00',
             'expected_start' => '2021-03-29 00:00',
             'expected_end' => '2021-03-30 00:00',

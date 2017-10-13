@@ -296,7 +296,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         $dstDate = new DateTime('now', $timezone);
         $dstDate->setTimestamp($timestamp);
-        $dateTime2 = clone($dstDate);
+        $dateTime2 = clone $dstDate;
         $dateTime2->setTimestamp($timestamp - 3600);
 
         if ($dateTime2->getTimestamp() == $dstDate->getTimestamp()) {
