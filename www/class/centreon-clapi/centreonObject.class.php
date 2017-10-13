@@ -283,6 +283,23 @@ abstract class CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param string $parameters
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $p = $this->object->getParameters($params[0], $params[1]);
+        print $p[$params[1]] . "\n";
+    }
+
+    /**
      * Set Param
      *
      * @param int $objectId
