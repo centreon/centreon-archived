@@ -35,8 +35,6 @@ class DowntimeDSTContext extends CentreonContext
     {
         $this->page = new DowntimeConfigurationPage($this);
 
-        $downtimeEndTime = '+2 minutes';
-        $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
         $this->page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
             'service' => $this->host . ' - ' . $this->service,
@@ -77,6 +75,30 @@ class DowntimeDSTContext extends CentreonContext
 
         $this->reloadAllPollers();
         $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
+        $this->waitServiceInMonitoring();
+    }
+
+    private function waitServiceInMonitoring()
+    {
+        $this->spin(
+            function ($context) {
+                $monitored = false;
+                $storageDb = $context->getStorageDatabase();
+                $res = $storageDb->query(
+                    'SELECT s.service_id ' .
+                    'FROM hosts h, services s ' .
+                    'WHERE s.host_id = h.host_id ' .
+                    'AND h.name = "' . $context->host . '" ' .
+                    'AND s.description = "' . $context->service . '" '
+                );
+                if ($res->fetch()) {
+                    $monitored = true;
+                }
+                return $monitored;
+            },
+            'Service ' . $this->host . ' / ' . $this->service . ' is not monitored.',
+            30
+        );
     }
 
     /**
@@ -86,9 +108,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-03-28',
+            'start_day' => '2021/03/28',
             'start_time' => '02:30',
-            'end_day' => '2021-03-28',
+            'end_day' => '2021/03/28',
             'end_time' => '03:30',
             'expected_start' => '2021-03-28 03:00',
             'expected_end' => '2021-03-28 03:30',
@@ -104,9 +126,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-03-28',
+            'start_day' => '2021/03/28',
             'start_time' => '01:30',
-            'end_day' => '2021-03-28',
+            'end_day' => '2021/03/28',
             'end_time' => '02:30',
             'expected_start' => '2021-03-28 01:30',
             'expected_end' => '2021-03-28 03:00',
@@ -122,9 +144,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-03-28',
+            'start_day' => '2021/03/28',
             'start_time' => '02:03',
-            'end_day' => '2021-03-28',
+            'end_day' => '2021/03/28',
             'end_time' => '02:33',
             'expected_start' => '',
             'expected_end' => '',
@@ -140,9 +162,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-03-28',
+            'start_day' => '2021/03/28',
             'start_time' => '00:00',
-            'end_day' => '2021-03-28',
+            'end_day' => '2021/03/28',
             'end_time' => '24:00',
             'expected_start' => '2021-03-28 00:00',
             'expected_end' => '2021-03-29 00:00',
@@ -167,9 +189,9 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeOfNextDayOfSummerChangingDate()
     {
         $this->downtimeProperties = array(
-            'start_day' => '2021-03-28',
+            'start_day' => '2021/03/28',
             'start_time' => '00:00',
-            'end_day' => '2021-03-28',
+            'end_day' => '2021/03/28',
             'end_time' => '24:00',
             'expected_start' => '2021-03-29 00:00',
             'expected_end' => '2021-03-30 00:00',
@@ -179,19 +201,19 @@ class DowntimeDSTContext extends CentreonContext
     }
 
     /**
-     * @Given a recurrent downtime starting on winter changing time
+     * @Given a downtime starting on winter changing time
      */
     public function aDowntimeStartingOnWinterChangingDate()
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-10-31',
+            'start_day' => '2021/10/31',
             'start_time' => '02:03',
-            'end_day' => '2021-10-31',
+            'end_day' => '2021/10/31',
             'end_time' => '03:33',
             'expected_start' => '2021-10-31 02:03',
             'expected_end' => '2021-10-31 03:33',
-            'expected_duration' => '5400', // 1h30
+            'expected_duration' => '9000', // 2h30
             'faketime' => '2021-10-31 01:58:00'
         );
     }
@@ -203,9 +225,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-10-31',
+            'start_day' => '2021/10/31',
             'start_time' => '01:00',
-            'end_day' => '2021-10-31',
+            'end_day' => '2021/10/31',
             'end_time' => '02:30',
             'expected_start' => '2021-10-31 01:00',
             'expected_end' => '2021-10-31 02:30',
@@ -221,13 +243,13 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-10-31',
+            'start_day' => '2021/10/31',
             'start_time' => '02:03',
-            'end_day' => '2021-10-31',
+            'end_day' => '2021/10/31',
             'end_time' => '02:33',
             'expected_start' => '2021-10-31 02:03',
             'expected_end' => '2021-10-31 02:33',
-            'expected_duration' => '1800', // 30m
+            'expected_duration' => '5400', // 1h30
             'faketime' => '2021-10-31 01:58:00'
         );
     }
@@ -239,9 +261,9 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '2021-10-31',
+            'start_day' => '2021/10/31',
             'start_time' => '00:00',
-            'end_day' => '2021-10-31',
+            'end_day' => '2021/10/31',
             'end_time' => '24:00',
             'expected_start' => '2021-10-31 00:00',
             'expected_end' => '2021-11-01 00:00',
@@ -266,9 +288,9 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeOfNextDayOfWinterChangingDate()
     {
         $this->downtimeProperties = array(
-            'start_day' => '2021-10-31',
+            'start_day' => '2021/11/01',
             'start_time' => '00:00',
-            'end_day' => '2021-10-31',
+            'end_day' => '2021/11/01',
             'end_time' => '24:00',
             'expected_start' => '2021-11-01 00:00',
             'expected_end' => '2021-11-02 00:00',
@@ -307,10 +329,9 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
-                //var_dump($output);
                 if (
                     preg_match_all(
-                        '/SCHEDULE_SVC_DOWNTIME;' . $this->host . ';' . $this->service . ';(\d+);(\d+);.+/',
+                        '/SCHEDULE_SVC_DOWNTIME;' . $context->host . ';' . $context->service . ';(\d+);(\d+);.+/',
                         $output,
                         $matches
                     )
@@ -321,15 +342,12 @@ class DowntimeDSTContext extends CentreonContext
                     $dateStart->setTimestamp($startTimestamp);
                     $dateEnd = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateEnd->setTimestamp($endTimestamp);
-                    var_dump($dateStart->format('Y-m-d H:i'));
-                    var_dump($dateEnd->format('Y-m-d H:i'));
-                    var_dump($endTimestamp - $startTimestamp);
-                    if ($dateStart->format('Y-m-d H:i') == $this->downtimeProperties['expected_start'] &&
-                        $dateEnd->format('Y-m-d H:i') == $this->downtimeProperties['expected_end'] &&
-                        ($endTimestamp - $startTimestamp) == $this->downtimeProperties['expected_duration']) {
+                    if ($dateStart->format('Y-m-d H:i') == $context->downtimeProperties['expected_start'] &&
+                        $dateEnd->format('Y-m-d H:i') == $context->downtimeProperties['expected_end'] &&
+                        ($endTimestamp - $startTimestamp) == $context->downtimeProperties['expected_duration']) {
                         $scheduled = true;
                     }
-                    $storageDb = $this->getStorageDatabase();
+                    $storageDb = $context->getStorageDatabase();
                     $res = $storageDb->query(
                         "SELECT downtime_id FROM downtimes " .
                         "WHERE start_time = " . $startTimestamp . " " .
@@ -360,7 +378,6 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
-                var_dump($output);
                 if (
                 preg_match(
                     '/SCHEDULE_SVC_DOWNTIME;' . $this->host . ';' . $this->service . ';(\d+);(\d+);.+/',

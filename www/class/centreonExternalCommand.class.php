@@ -403,8 +403,8 @@ class CentreonExternalCommand
     private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
     {
         $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
-        //$dst = $dateTime->format("I");
 
+        // Winter to summer dst
         $dateTime2 = clone($dateTime);
         $dateTime2->setTimestamp($dateTime2->getTimestamp());
         if ($dateTime2->format("H") != $dateTime->format("H")) {
@@ -413,45 +413,28 @@ class CentreonExternalCommand
             return $dateTime->getTimestamp();
         }
 
+        // Summer to winter dst
         $dateTime3 = clone($dateTime);
-        $dateTime3->sub(new \DateInterval("PT1H"));
-        if ($dateTime3->format("H") == $dateTime->format("H")) {
+        $dateTime3 = $dateTime3->setTimestamp($dateTime3->getTimestamp() - 3600);
+        if ($dateTime3->getTimestamp() == $dateTime->getTimestamp()) {
             if ($start) {
-                return $dateTime3->getTimestamp();
+                return $dateTime3->getTimestamp() - 3600;
             } else {
+                return $dateTime3->getTimestamp();
+            }
+        }
+
+        $dateTime4 = clone($dateTime);
+        $dateTime4 = $dateTime3->setTimestamp($dateTime4->getTimestamp() + 3600);
+        if ($dateTime4->getTimestamp() == $dateTime->getTimestamp()) {
+            if ($start) {
                 return $dateTime->getTimestamp();
+            } else {
+                return $dateTime4->getTimestamp() + 3600;
             }
         }
 
         return $dateTime->getTimestamp();
-
-/*
-        // Check if previous is on winter time
-        $dateTime2 = clone($dateTime);
-        $dateTime2->sub(new \DateInterval("PT1H"));
-
-        // Check if next is on summer time
-        $dateTime3 = clone($dateTime);
-        $dateTime3->add(new \DateInterval("PT1H"));
-
-        if ($dst == "1" && $dateTime2->format("I") != $dst) {
-            if ()
-            $hour = $dateTime->format('H');
-            $dateTime->setTime($hour, '00');
-            $timestamp = $dateTime->getTimestamp();
-        } elseif ($dateTime3->format("I") != $dst && $start) {
-            if ($dateTime->format('H:i') == $dateTime3->format("H:i")) {
-
-            }
-            $hour = $dateTime->format('H');
-            $dateTime->setTime($hour, '00');
-            $timestamp = $dateTime->getTimestamp();
-        } else {
-            $timestamp = $dateTime->getTimestamp();
-        }
-
-        return $timestamp;
-        */
     }
 
     /**

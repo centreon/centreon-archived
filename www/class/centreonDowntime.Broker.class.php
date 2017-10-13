@@ -292,6 +292,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $timestamp;
     }
 
+    private function manageSummerToWinterTimestamp($timestamp, $timezone)
+    {
+        $dstDate = new DateTime('now', $timezone);
+        $dstDate->setTimestamp($timestamp);
+        $dateTime2 = clone($dstDate);
+        $dateTime2->setTimestamp($timestamp - 3600);
+
+        if ($dateTime2->getTimestamp() == $dstDate->getTimestamp()) {
+            $timestamp = $timestamp - 3600;
+        }
+
+        return $timestamp;
+    }
+
     public function getApproachingDowntimes($delay)
     {
         $approachingDowntimes = array();
@@ -334,6 +348,9 @@ class CentreonDowntimeBroker extends CentreonDowntime
             if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
                 continue;
             }
+
+            # check backward of one hour
+            $startTimestamp = $this->manageSummerToWinterTimestamp($startTimestamp, $timezone);
 
             $approaching = false;
             if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])) {
