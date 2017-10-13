@@ -405,7 +405,7 @@ class CentreonExternalCommand
         $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
 
         // Winter to summer dst
-        $dateTime2 = clone($dateTime);
+        $dateTime2 = clone $dateTime;
         $dateTime2->setTimestamp($dateTime2->getTimestamp());
         if ($dateTime2->format("H") != $dateTime->format("H")) {
             $hour = $dateTime->format('H');
@@ -414,7 +414,7 @@ class CentreonExternalCommand
         }
 
         // Summer to winter dst
-        $dateTime3 = clone($dateTime);
+        $dateTime3 = clone $dateTime;
         $dateTime3 = $dateTime3->setTimestamp($dateTime3->getTimestamp() - 3600);
         if ($dateTime3->getTimestamp() == $dateTime->getTimestamp()) {
             if ($start) {
@@ -424,7 +424,7 @@ class CentreonExternalCommand
             }
         }
 
-        $dateTime4 = clone($dateTime);
+        $dateTime4 = clone $dateTime;
         $dateTime4 = $dateTime3->setTimestamp($dateTime4->getTimestamp() + 3600);
         if ($dateTime4->getTimestamp() == $dateTime->getTimestamp()) {
             if ($start) {

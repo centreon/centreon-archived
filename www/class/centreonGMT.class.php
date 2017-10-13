@@ -501,16 +501,23 @@ class CentreonGMT
             return $this->hostLocations;
         }
 
+        $timezones = array();
+        $query = 'SELECT timezone_id, timezone_name FROM timezone';
+        $res  = $this->db->query($query);
+        while ($row = $res->fetchRow()) {
+            $timezones[$row['timezone_id']] = $row['timezone_name'];
+        }
 
-        $this->hostLocations = array();
-
-        $query = 'SELECT host_id, instance_id, timezone FROM hosts WHERE enabled = 1 ';
-        $res  = $this->dbc->query($query);
-        if (!PEAR::isError($res)) {
-            while ($row = $res->fetchRow()) {
-                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+        $query = 'SELECT host_id, host_location FROM host WHERE host_register = "1" ';
+        $res = $this->db->query($query);
+        while ($row = $res->fetchRow()) {
+            if (isset($timezones[$row['host_location']])) {
+                $this->hostLocations[$row['host_id']] = $timezones[$row['host_location']];
+            } else {
+                $this->hostLocations[$row['host_id']] = "";
             }
         }
+
         return $this->hostLocations;
     }
 
