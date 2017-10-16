@@ -298,3 +298,7 @@ default:
     test_proxy_configuration:
       paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
       contexts: [ TestProxyConfigurationContext ]
+
+    test_clapi:
+      paths: [ %paths.base%/features/Clapi.feature ]
+      contexts: [ ClapiContext ]
