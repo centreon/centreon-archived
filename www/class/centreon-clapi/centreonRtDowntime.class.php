@@ -97,6 +97,17 @@ class CentreonRtDowntime extends CentreonObject
     }
 
     /**
+     * @param $date
+     * @param string $format
+     * @return bool
+     */
+    private function validateDate($date, $format = 'Y/m/d H:i')
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+
+    /**
      * @param $parameters
      * @return array
      * @throws CentreonClapiException
@@ -112,8 +123,9 @@ class CentreonRtDowntime extends CentreonObject
         }
 
         // Check date format
-        $checkStart = \DateTime::createFromFormat('Y/m/d H:i', $start);
-        $checkEnd = \DateTime::createFromFormat('Y/m/d H:i', $end);
+        $checkStart = $this->validateDate($start);
+        $checkEnd = $this->validateDate($end);
+
         if (!$checkStart || !$checkEnd) {
             throw new CentreonClapiException('Wrong date format, expected : YYYY/MM/DD HH:mm');
         }
@@ -334,7 +346,6 @@ class CentreonRtDowntime extends CentreonObject
         );
 
         // check if service exist
-
         foreach ($svcList as $service) {
             $serviceData = explode(',', $service);
             if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
