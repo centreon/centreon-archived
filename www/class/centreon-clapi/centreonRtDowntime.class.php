@@ -85,8 +85,8 @@ class CentreonRtDowntime extends CentreonObject
         $this->object = new \Centreon_Object_RtDowntime();
         $this->db = new \CentreonDB('centreon');
         $this->hgObject = new \CentreonHostgroups($this->db);
-        $this->hostObject = new CentreonHost($this->db);
-        $this->serviceObject = new CentreonService($this->db);
+        $this->hostObject = new \CentreonClapi\CentreonHost($this->db);
+        $this->serviceObject = new \CentreonClapi\CentreonService($this->db);
         $this->sgObject = new \CentreonServiceGroups($this->db);
         $this->instanceObject = new \CentreonInstance($this->db);
         $this->GMTObject = new \CentreonGMT($this->db);
@@ -176,11 +176,12 @@ class CentreonRtDowntime extends CentreonObject
         if ($parameters !== '') {
             $parsedParameters = $this->parseShowparameters($parameters);
             if (strtoupper($parsedParameters['type']) !== 'HOST' && strtoupper($parsedParameters['type']) !== 'SVC') {
-                throw new CentreonClapiException(self::UNKNOWNPARAMETER);
+                throw new CentreonClapiException(self::UNKNOWNPARAMETER . ' : ' . $parsedParameters['type']);
             }
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
         } else {
+
             $this->dHosts = $this->object->getHostDowntimes();
             $this->dServices = $this->object->getSvcDowntimes();
 
@@ -228,7 +229,6 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
-        echo implode($this->delim, $fields) . "\n";
 
         $hostList = array_filter(explode('|', $hostList));
         $db = $this->db;
@@ -239,59 +239,76 @@ class CentreonRtDowntime extends CentreonObject
             $hostList
         );
 
+        // check if host exist
+        $unknownHost = array();
+        $existingHost = array();
+        foreach ($hostList as $host) {
+            if ($this->hostObject->getHostID($host) == 0) {
+                $unknownHost[] = $host;
+            } else {
+                $existingHost[] = $host;
+            }
+        }
+
         // Result of the research in the base
-        $hostDowntimesList = $this->object->getHostDowntimes($hostList);
+        $hostDowntimesList = $this->object->getHostDowntimes($existingHost);
 
         // Init user timezone
         $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
 
-        $existingHost = array();
+        echo implode($this->delim, $fields) . "\n";
         //Separates hosts
-        foreach ($hostDowntimesList as $hostDowntime) {
-            $existingHost[] = $hostDowntime['name'];
-            $url = '';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'];
+        if (count($hostDowntimesList)) {
+            foreach ($hostDowntimesList as $hostDowntime) {
+                $url = '';
+                if (isset($_SERVER['HTTP_HOST'])) {
+                    $url = $this->getBaseUrl() . '/' . 'main.php?p=210&search_host=' . $hostDowntime['name'];
+                }
+
+                $hostDowntime['actual_start_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $hostDowntime['actual_start_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $hostDowntime['actual_end_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $hostDowntime['actual_end_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $hostDowntime['start_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $hostDowntime['start_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $hostDowntime['end_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $hostDowntime['end_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
             }
-
-            $hostDowntime['actual_start_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $hostDowntime['actual_start_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $hostDowntime['actual_end_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $hostDowntime['actual_end_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $hostDowntime['start_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $hostDowntime['start_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $hostDowntime['end_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $hostDowntime['end_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            echo implode($this->delim, array_values($hostDowntime)) . ';' . $url . "\n";
         }
 
-        $diff = array_diff($hostList, $existingHost);
-        if (count($diff) !== 0) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : Host : ' . implode('|', $diff) . "\n");
+        if (count($unknownHost) !== 0) {
+            echo "\n";
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : Host : ' . implode('|', $unknownHost) . "\n");
         }
     }
 
     /**
      * @param $svcList
+     * @throws CentreonClapiException
      */
     public function showSvc($svcList)
     {
+        $serviceDowntimesList = array();
+        $unknownService = array();
+        $existingService = array();
+
         $fields = array(
             'host_name',
             'service_name',
@@ -306,7 +323,6 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
-        echo implode($this->delim, $fields) . "\n";
 
         $svcList = array_filter(explode('|', $svcList));
         $db = $this->db;
@@ -317,47 +333,74 @@ class CentreonRtDowntime extends CentreonObject
             $svcList
         );
 
-        // Result of the research in the base
-        $serviceDowntimesList = $this->object->getSvcDowntimes($svcList);
+        // check if service exist
 
+        foreach ($svcList as $service) {
+            $serviceData = explode(',', $service);
+            if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
+                $existingService[] = $serviceData;
+            } else {
+                $unknownService[] = $service;
+            }
+        }
+
+        // Result of the research in the base
+        foreach ($existingService as $svc) {
+            $tmpDowntime = $this->object->getSvcDowntimes($svc);
+            if (!empty($tmpDowntime)) {
+                $serviceDowntimesList[] = $tmpDowntime;
+            }
+        }
         // Init user timezone
         $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
 
         //Separates hosts and services
-        foreach ($serviceDowntimesList as $serviceDowntime) {
-            $url = '';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $url = $this->getBaseUrl() .
-                    '/' . 'main.php?p=210&search_host=' . $serviceDowntime['name'] .
-                    '&search_service=' . $serviceDowntime['description'];
+        echo implode($this->delim, $fields) . "\n";
+
+        if (count($serviceDowntimesList)) {
+            foreach ($serviceDowntimesList as $serviceDowntime) {
+                $url = '';
+                if (isset($_SERVER['HTTP_HOST'])) {
+                    $url = $this->getBaseUrl() .
+                        '/' . 'main.php?p=210&search_host=' . $serviceDowntime['name'] .
+                        '&search_service=' . $serviceDowntime['description'];
+                }
+
+                $serviceDowntime['actual_start_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $serviceDowntime['actual_start_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $serviceDowntime['actual_end_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $serviceDowntime['actual_end_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $serviceDowntime['start_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $serviceDowntime['start_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                $serviceDowntime['end_time'] = $this->GMTObject->getDate(
+                    'Y/m/d H:i',
+                    $serviceDowntime['end_time'],
+                    $this->GMTObject->getMyGMT()
+                );
+
+                echo implode($this->delim, array_values($serviceDowntime)) . ';' . $url . "\n";
             }
-
-            $serviceDowntime['actual_start_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $serviceDowntime['actual_start_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $serviceDowntime['actual_end_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $serviceDowntime['actual_end_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $serviceDowntime['start_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $serviceDowntime['start_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            $serviceDowntime['end_time'] = $this->GMTObject->getDate(
-                'Y/m/d H:i',
-                $serviceDowntime['end_time'],
-                $this->GMTObject->getMyGMT()
-            );
-
-            echo implode($this->delim, array_values($serviceDowntime)) . ';' . $url . "\n";
         }
+
+        if (count($unknownService) !== 0) {
+            echo "\n";
+            throw new CentreonClapiException(
+                self::OBJECT_NOT_FOUND . ' : Service : ' . implode('|', $unknownService) . "\n"
+            );
+        }
+
     }
 
     /**
