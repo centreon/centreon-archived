@@ -2,14 +2,16 @@
 
 use Centreon\Test\Behat\CentreonContext;
 
-class ClapiContext extends CentreonContext {
+class ClapiContext extends CentreonContext
+{
 
     protected $test;
     protected $object;
     protected $parameter;
     protected $file;
 
-    public function exportClapi($file = null, $selectList = array(), $filter = null) {
+    public function exportClapi($file = null, $selectList = array(), $filter = null)
+    {
         $cmd = "centreon -u admin -p centreon -e";
         if (!empty($selectList)) {
             foreach ($selectList as $select) {
@@ -24,7 +26,8 @@ class ClapiContext extends CentreonContext {
         }
 
         $output = $this->container->execute(
-            $cmd, 'web'
+            $cmd,
+            'web'
         );
         return $output;
     }
@@ -32,31 +35,37 @@ class ClapiContext extends CentreonContext {
     /**
      * @Given a Clapi configuration file
      */
-    public function aClapiConfigurationFile() {
+    public function aClapiConfigurationFile()
+    {
         $this->file['localpath'] = 'tests/clapi_export/clapi-configuration.txt';
         $this->file['init'] = '/tmp/clapi-export.txt';
         $this->file['compare'] = '/tmp/compare-clapi-export.txt';
 
         $this->container->copyToContainer(
-            $this->file['localpath'], $this->file['init'], 'web'
+            $this->file['localpath'],
+            $this->file['init'],
+            'web'
         );
     }
 
     /**
      * @Given it was imported
      */
-    public function itWasImported() {
+    public function itWasImported()
+    {
         $cmd = "centreon -u admin -p centreon -i " . $this->file['init'];
 
         $this->container->execute(
-            $cmd, 'web'
+            $cmd,
+            'web'
         );
     }
 
     /**
      * @When I export the configuration through Clapi
      */
-    public function IExportTheConfigurationThroughClapi() {
+    public function IExportTheConfigurationThroughClapi()
+    {
         $this->exportClapi($this->file['compare']);
     }
 
