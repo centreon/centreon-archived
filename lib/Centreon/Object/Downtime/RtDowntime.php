@@ -111,6 +111,6 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             $serviceFilter .
             "ORDER BY actual_start_time, h.name, s.description";
 
-        return $this->getResult($query, array(), "fetchAll");
+        return $this->getResult($query);
     }
 }

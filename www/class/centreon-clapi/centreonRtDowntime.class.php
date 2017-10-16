@@ -182,6 +182,7 @@ class CentreonRtDowntime extends CentreonObject
 
     /**
      * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function show($parameters = null)
     {
@@ -217,9 +218,8 @@ class CentreonRtDowntime extends CentreonObject
             $list .= ';';
 
             echo "hosts;services\n";
-            echo $list;
+            echo $list . "\n";;
         }
-
     }
 
     /**
@@ -241,29 +241,33 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
+        if (!empty($hostList)) {
+            $hostList = array_filter(explode('|', $hostList));
+            $db = $this->db;
+            $hostList = array_map(
+                function ($element) use ($db) {
+                    return $db->escape($element);
+                },
+                $hostList
+            );
 
-        $hostList = array_filter(explode('|', $hostList));
-        $db = $this->db;
-        $hostList = array_map(
-            function ($element) use ($db) {
-                return $db->escape($element);
-            },
-            $hostList
-        );
-
-        // check if host exist
-        $unknownHost = array();
-        $existingHost = array();
-        foreach ($hostList as $host) {
-            if ($this->hostObject->getHostID($host) == 0) {
-                $unknownHost[] = $host;
-            } else {
-                $existingHost[] = $host;
+            // check if host exist
+            $unknownHost = array();
+            $existingHost = array();
+            foreach ($hostList as $host) {
+                if ($this->hostObject->getHostID($host) == 0) {
+                    $unknownHost[] = $host;
+                } else {
+                    $existingHost[] = $host;
+                }
             }
-        }
 
-        // Result of the research in the base
-        $hostDowntimesList = $this->object->getHostDowntimes($existingHost);
+            // Result of the research in the base
+            $hostDowntimesList = $this->object->getHostDowntimes($existingHost);
+
+        } else {
+            $hostDowntimesList = $this->object->getHostDowntimes();
+        }
 
         // Init user timezone
         $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
@@ -335,33 +339,39 @@ class CentreonRtDowntime extends CentreonObject
             'url',
         );
 
+        if (!empty($svcList)) {
+            $svcList = array_filter(explode('|', $svcList));
+            $db = $this->db;
+            $svcList = array_map(
+                function ($arrayElem) use ($db) {
+                    return $db->escape($arrayElem);
+                },
+                $svcList
+            );
 
-        $svcList = array_filter(explode('|', $svcList));
-        $db = $this->db;
-        $svcList = array_map(
-            function ($arrayElem) use ($db) {
-                return $db->escape($arrayElem);
-            },
-            $svcList
-        );
-
-        // check if service exist
-        foreach ($svcList as $service) {
-            $serviceData = explode(',', $service);
-            if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
-                $existingService[] = $serviceData;
-            } else {
-                $unknownService[] = $service;
+            // check if service exist
+            foreach ($svcList as $service) {
+                $serviceData = explode(',', $service);
+                if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
+                    $existingService[] = $serviceData;
+                } else {
+                    $unknownService[] = $service;
+                }
             }
+
+            // Result of the research in the base
+            if (count($existingService)) {
+                foreach ($existingService as $svc) {
+                    $tmpDowntime = $this->object->getSvcDowntimes($svc);
+                    if (!empty($tmpDowntime)) {
+                        $serviceDowntimesList[] = $tmpDowntime[0];
+                    }
+                }
+            }
+        } else {
+            $serviceDowntimesList = $this->object->getSvcDowntimes();
         }
 
-        // Result of the research in the base
-        foreach ($existingService as $svc) {
-            $tmpDowntime = $this->object->getSvcDowntimes($svc);
-            if (!empty($tmpDowntime)) {
-                $serviceDowntimesList[] = $tmpDowntime;
-            }
-        }
         // Init user timezone
         $this->GMTObject->getMyGTMFromUser(CentreonUtils::getuserId());
 
@@ -511,8 +521,9 @@ class CentreonRtDowntime extends CentreonObject
      * @param $end
      * @param $fixed
      * @param $duration
-     * @param $comment
      * @param $withServices
+     * @param $comment
+     * @throws CentreonClapiException
      */
     private function addHgDowntime(
         $resource,
@@ -527,7 +538,7 @@ class CentreonRtDowntime extends CentreonObject
 
         //check add services with host
         if (count($hostList) == 0) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : ' . $resource);
         }
         if ($withServices === true) {
             foreach ($hostList as $host) {
@@ -613,8 +624,13 @@ class CentreonRtDowntime extends CentreonObject
         $withServices,
         $comment
     ) {
-        $hostList = $this->instanceObject->getHostsByInstance($resource);
 
+        $instanceList = $this->instanceObject->getInstanceId($resource);
+        if (count($instanceList) == 0) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' INSTANCE : ' . $resource);
+        }
+
+        $hostList = $this->instanceObject->getHostsByInstance($resource);
         //check add services with host with true in last param
         foreach ($hostList as $host) {
             $this->externalCmdObj->addHostDowntime(
