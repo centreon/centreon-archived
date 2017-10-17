@@ -600,23 +600,23 @@ class CentreonRtDowntime extends CentreonObject
                 $unknownHg[] = $hg;
             }
         }
-
-        foreach ($existingHg as $hg) {
-            $hostList = $this->hgObject->getHostsByHostgroupName($hg);
-            //check add services with host
-            foreach ($hostList as $host) {
-                $this->externalCmdObj->addHostDowntime(
-                    $host['host'],
-                    $comment,
-                    $start,
-                    $end,
-                    $fixed,
-                    $duration,
-                    $withServices
-                );
+        if (count($existingHg)) {
+            foreach ($existingHg as $hg) {
+                $hostList = $this->hgObject->getHostsByHostgroupName($hg);
+                //check add services with host
+                foreach ($hostList as $host) {
+                    $this->externalCmdObj->addHostDowntime(
+                        $host['host'],
+                        $comment,
+                        $start,
+                        $end,
+                        $fixed,
+                        $duration,
+                        $withServices
+                    );
+                }
             }
         }
-
         if (count($unknownHg)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' HG : ' . implode('|', $unknownHg));
         }
@@ -656,18 +656,20 @@ class CentreonRtDowntime extends CentreonObject
             }
         }
 
-        foreach ($existingSg as $sg) {
-            $serviceList = $this->sgObject->getServicesByServicegroupName($sg);
-            foreach ($serviceList as $service) {
-                $this->externalCmdObj->addSvcDowntime(
-                    $service['host'],
-                    $service['service'],
-                    $comment,
-                    $start,
-                    $end,
-                    $fixed,
-                    $duration
-                );
+        if (count($existingSg)) {
+            foreach ($existingSg as $sg) {
+                $serviceList = $this->sgObject->getServicesByServicegroupName($sg);
+                foreach ($serviceList as $service) {
+                    $this->externalCmdObj->addSvcDowntime(
+                        $service['host'],
+                        $service['service'],
+                        $comment,
+                        $start,
+                        $end,
+                        $fixed,
+                        $duration
+                    );
+                }
             }
         }
 
@@ -709,19 +711,21 @@ class CentreonRtDowntime extends CentreonObject
             }
         }
 
-        foreach ($existingPoller as $poller) {
-            $hostList = $this->instanceObject->getHostsByInstance($poller);
-            //check add services with host with true in last param
-            foreach ($hostList as $host) {
-                $this->externalCmdObj->addHostDowntime(
-                    $host['host'],
-                    $comment,
-                    $start,
-                    $end,
-                    $fixed,
-                    $duration,
-                    true
-                );
+        if (count($existingPoller)) {
+            foreach ($existingPoller as $poller) {
+                $hostList = $this->instanceObject->getHostsByInstance($poller);
+                //check add services with host with true in last param
+                foreach ($hostList as $host) {
+                    $this->externalCmdObj->addHostDowntime(
+                        $host['host'],
+                        $comment,
+                        $start,
+                        $end,
+                        $fixed,
+                        $duration,
+                        true
+                    );
+                }
             }
         }
 
