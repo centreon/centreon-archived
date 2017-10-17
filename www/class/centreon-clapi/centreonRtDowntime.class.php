@@ -450,8 +450,9 @@ class CentreonRtDowntime extends CentreonObject
      * @param $end
      * @param $fixed
      * @param $duration
-     * @param $comment
      * @param $withServices
+     * @param $comment
+     * @throws CentreonClapiException
      */
     private function addHostDowntime(
         $resource,
@@ -462,20 +463,31 @@ class CentreonRtDowntime extends CentreonObject
         $withServices,
         $comment
     ) {
+        if ($resource === "") {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $unknownHost = array();
+        $listHost = explode('|', $resource);
 
-        if ($this->hostObject->getHostID($resource) == 0) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
+        foreach ($listHost as $host) {
+            if ($this->hostObject->getHostID($host) == 0) {
+                $unknownHost[] = $host;
+            } else {
+                $this->externalCmdObj->addHostDowntime(
+                    $host,
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration,
+                    $withServices
+                );
+            }
         }
 
-        $this->externalCmdObj->addHostDowntime(
-            $resource,
-            $comment,
-            $start,
-            $end,
-            $fixed,
-            $duration,
-            $withServices
-        );
+        if (count($unknownHost)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' HOST : ' . implode('|', $unknownHost));
+        }
     }
 
     /**
