@@ -5704,7 +5704,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;0;Ceci est un commentaire\"\n}\n"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}\n"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -5780,7 +5780,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}};{{start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -5855,7 +5855,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -5930,7 +5930,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;0;Ceci est un commentaire;\"\n}"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -6005,7 +6005,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;Central;{{start_time}};{{end_time}};1;3600;1;Ceci est un commentaire;\"\n}"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"INSTANCE;Central;{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -6112,7 +6112,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}}\"\n}"
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}}\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
