@@ -433,15 +433,26 @@ class CentreonRtDowntime extends CentreonObject
 
         // to choose the best add (addHostDowntime, addSvcDowntime etc.)
         $method = 'add' . ucfirst($parsedParameters['type']) . 'Downtime';
-        $this->$method(
-            $parsedParameters['resource'],
-            $parsedParameters['start'],
-            $parsedParameters['end'],
-            $parsedParameters['fixed'],
-            $parsedParameters['duration'],
-            $parsedParameters['withServices'],
-            $parsedParameters['comment']
-        );
+        if ((ucfirst($parsedParameters['type']) === 'Host') || (ucfirst($parsedParameters['type']) === 'Hg')) {
+            $this->$method(
+                $parsedParameters['resource'],
+                $parsedParameters['start'],
+                $parsedParameters['end'],
+                $parsedParameters['fixed'],
+                $parsedParameters['duration'],
+                $parsedParameters['comment'],
+                $parsedParameters['withServices']
+            );
+        } else {
+            $this->$method(
+                $parsedParameters['resource'],
+                $parsedParameters['start'],
+                $parsedParameters['end'],
+                $parsedParameters['fixed'],
+                $parsedParameters['duration'],
+                $parsedParameters['comment']
+            );
+        }
     }
 
     /**
@@ -460,8 +471,8 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $withServices,
-        $comment
+        $comment,
+        $withServices = 1
     ) {
         if ($resource === "") {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -497,7 +508,6 @@ class CentreonRtDowntime extends CentreonObject
      * @param $fixed
      * @param $duration
      * @param $comment
-     * @param $withServices
      * @throws CentreonClapiException
      */
     private function addSvcDowntime(
@@ -506,24 +516,42 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $withServices,
         $comment
     ) {
-        $withServices = 0;
-        // Check if a pipe is present
-        if (preg_match('/^(.+)\|(.+)$/', $resource, $matches)) {
-            $this->externalCmdObj->addSvcDowntime(
-                $matches[1],
-                $matches[2],
-                $comment,
-                $start,
-                $end,
-                $fixed,
-                $duration,
-                $withServices
-            );
-        } else {
-            throw new CentreonClapiException('Bad resource parameter');
+        if ($resource === "") {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $unknownService = array();
+        $listService = explode('|', $resource);
+
+        // check if service exist
+        foreach ($listService as $service) {
+            $serviceData = explode(',', $service);
+            if ($this->serviceObject->serviceExists($serviceData[0], $serviceData[1])) {
+                $existingService[] = $serviceData;
+            } else {
+                $unknownService[] = $service;
+            }
+        }
+
+        // Result of the research in the base
+        if (count($existingService)) {
+            foreach ($existingService as $service) {
+                $this->externalCmdObj->addSvcDowntime(
+                    $service[0],
+                    $service[1],
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration
+                );
+
+            }
+        }
+
+        if (count($unknownService)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' SERVICE : ' . implode('|', $unknownService));
         }
     }
 
@@ -543,40 +571,39 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $withServices,
-        $comment
+        $comment,
+        $withServices = 1
     ) {
+        //check add services with host
+        if ($resource === "") {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
+        if ($withServices == 1) {
+            $withServices = true;
+        } else {
+            $withServices = false;
+        }
+
         $hostList = $this->hgObject->getHostsByHostgroupName($resource);
 
         //check add services with host
         if (count($hostList) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : ' . $resource);
         }
-        if ($withServices === true) {
-            foreach ($hostList as $host) {
-                $this->externalCmdObj->addHostDowntime(
-                    $host['host'],
-                    $comment,
-                    $start,
-                    $end,
-                    $fixed,
-                    $duration,
-                    true
-                );
-            }
-        } else {
-            foreach ($hostList as $host) {
-                $this->externalCmdObj->addHostDowntime(
-                    $host['host'],
-                    $comment,
-                    $start,
-                    $end,
-                    $fixed,
-                    $duration,
-                    $withServices
-                );
-            }
+
+        foreach ($hostList as $host) {
+            $this->externalCmdObj->addHostDowntime(
+                $host['host'],
+                $comment,
+                $start,
+                $end,
+                $fixed,
+                $duration,
+                $withServices
+            );
         }
+
     }
 
     /**
@@ -586,7 +613,7 @@ class CentreonRtDowntime extends CentreonObject
      * @param $fixed
      * @param $duration
      * @param $comment
-     * @param $withServices
+     * @throws CentreonClapiException
      */
     private function addSgDowntime(
         $resource,
@@ -594,10 +621,12 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $withServices,
         $comment
     ) {
-        $withServices = 0;
+        if ($resource === "") {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
         $serviceList = $this->sgObject->getServicesByServicegroupName($resource);
 
         if (count($serviceList) == 0) {
@@ -612,8 +641,7 @@ class CentreonRtDowntime extends CentreonObject
                 $start,
                 $end,
                 $fixed,
-                $duration,
-                $withServices
+                $duration
             );
         }
     }
@@ -633,9 +661,12 @@ class CentreonRtDowntime extends CentreonObject
         $end,
         $fixed,
         $duration,
-        $withServices,
         $comment
     ) {
+        if ($resource === "") {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
 
         $instanceList = $this->instanceObject->getInstanceId($resource);
         if (count($instanceList) == 0) {
