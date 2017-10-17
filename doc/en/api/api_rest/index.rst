@@ -7,7 +7,7 @@ API Rest
 Introduction
 ------------
 
-Welcome to the Centreon API rest documentation. This documentation is for devlopers familiar with HTTP requests and JSON. It explains various API operations, related request and response structure, and error codes.
+Welcome to the Centreon API rest documentation. This documentation is for developers familiar with HTTP requests and JSON. It explains various API operations, related request and response structure, and error codes.
 If you are not familiar with the JSON API, we recommend you to use the Centreon command line API documentation.
 
 This documentation is available in english only.
@@ -26,7 +26,7 @@ Authentication
 
 Using POST method and the URL below: ::
 
- api.domain.tld/api/index.php?action=authenticate
+ api.domain.tld/centreon/api/index.php?action=authenticate
 
 Body form-data:
 
@@ -60,7 +60,7 @@ All monitoring information regarding hosts are available in throw the Centreon A
 
 Using GET method and the URL below:  ::
 
- api.domain.tld/api/index.php?object=centreon_realtime_hosts&action=list
+ api.domain.tld/centreon/api/index.php?object=centreon_realtime_hosts&action=list
 
 **Header:**
 
@@ -166,7 +166,7 @@ Field list :
 
 Using GET method and the URL below:  ::
 
-  api.domain.tld/api/index.php?object=centreon_realtime_hosts&action=list&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+  api.domain.tld/centreon/api/index.php?object=centreon_realtime_hosts&action=list&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
 
 Service Status
 --------------
@@ -175,7 +175,7 @@ All monitoring information regarding services are available in throw the Centreo
 
 Using GET method and the URL below:  ::
 
- api.domain.tld/api/index.php?object=centreon_realtime_services&action=list
+ api.domain.tld/centreon/api/index.php?object=centreon_realtime_services&action=list
 
 **Header:**
 
@@ -320,7 +320,7 @@ Example:
 
 Using GET method and the URL below:  ::
 
-  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
+  api.domain.tld/centreon/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
 
 
 Configuration
@@ -335,7 +335,7 @@ Here is an example for listing hosts using rest API.
 
 Using POST method and the URL below:  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 **Header:**
 
@@ -411,7 +411,7 @@ List hosts
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -472,7 +472,7 @@ Add host
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -510,7 +510,7 @@ Delete host
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -549,7 +549,7 @@ Set parameters
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -680,7 +680,7 @@ Set instance poller
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -718,7 +718,7 @@ Get macro
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -779,7 +779,7 @@ Set macro
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -817,7 +817,7 @@ Delete macro
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -855,7 +855,7 @@ Get template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -908,7 +908,7 @@ Set template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -946,7 +946,7 @@ Add template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -983,7 +983,7 @@ Delete template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1020,7 +1020,7 @@ Apply template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1056,7 +1056,7 @@ Get parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1098,7 +1098,7 @@ Add parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1140,7 +1140,7 @@ Set parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1183,7 +1183,7 @@ Delete parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1225,7 +1225,7 @@ Get contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1269,7 +1269,7 @@ Add contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1312,7 +1312,7 @@ Set contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1355,7 +1355,7 @@ Delete contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1396,7 +1396,7 @@ Get contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1438,7 +1438,7 @@ Add contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1481,7 +1481,7 @@ Set contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1525,7 +1525,7 @@ Delete contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1566,7 +1566,7 @@ Get hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1611,7 +1611,7 @@ Add hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1655,7 +1655,7 @@ Set hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1699,7 +1699,7 @@ Delete hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1750,7 +1750,7 @@ Enable
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1788,7 +1788,7 @@ Disable
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
