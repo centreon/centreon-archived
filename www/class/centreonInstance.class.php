@@ -266,4 +266,14 @@ class CentreonInstance
         }
         return $instanceList;
     }
+
+    public function getInstanceId($instanceName)
+    {
+        $query = "SELECT ns.id " .
+            " FROM nagios_server ns " .
+            " WHERE ns.name = '" . $this->db->escape($instanceName) . "'";
+        $result = $this->db->query($query);
+
+        return $result->fetchrow();
+    }
 }

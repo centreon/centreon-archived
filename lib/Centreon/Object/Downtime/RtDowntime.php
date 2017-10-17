@@ -59,7 +59,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
             $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
         }
 
-        $query =  "SELECT name, author, actual_start_time , end_time, comment_data, duration, fixed " .
+        $query = "SELECT name, author, actual_start_time , end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h " .
             "WHERE d.host_id = h.host_id " .
             "AND d.cancelled = 0 " .

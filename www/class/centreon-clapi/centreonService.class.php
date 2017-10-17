@@ -200,7 +200,7 @@ class CentreonService extends CentreonObject
      * @param string $serviceDescription
      * @return bool
      */
-    protected function serviceExists($hostName, $serviceDescription)
+    public function serviceExists($hostName, $serviceDescription)
     {
         $relObj = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $elements = $relObj->getMergedParameters(

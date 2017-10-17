@@ -251,4 +251,26 @@ class CentreonServicegroups
         }
         return $serviceList;
     }
+
+    /**
+     * @param $sg_name
+     * @return int|mixed
+     */
+    public function getServicesGroupId($sg_name)
+    {
+        static $ids = array();
+
+        if (!isset($ids[$sg_name])) {
+            $query = "SELECT sg_id FROM servicegroup WHERE sg_name = '" . $this->DB->escape($sg_name) . "'";
+            $res = $this->DB->query($query);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $ids[$sg_name] = $row['sg_id'];
+            }
+        }
+        if (isset($ids[$sg_name])) {
+            return $ids[$sg_name];
+        }
+        return 0;
+    }
 }
