@@ -578,32 +578,43 @@ class CentreonRtDowntime extends CentreonObject
         if ($resource === "") {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-
         if ($withServices == 1) {
             $withServices = true;
         } else {
             $withServices = false;
         }
+        $existingHg = array();
+        $unknownHg = array();
+        $listHg = explode('|', $resource);
 
-        $hostList = $this->hgObject->getHostsByHostgroupName($resource);
-
-        //check add services with host
-        if (count($hostList) == 0) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' : ' . $resource);
+        // check if service exist
+        foreach ($listHg as $hg) {
+            if ($this->hgObject->getHostgroupId($hg)) {
+                $existingHg[] = $hg;
+            } else {
+                $unknownHg[] = $hg;
+            }
         }
 
-        foreach ($hostList as $host) {
-            $this->externalCmdObj->addHostDowntime(
-                $host['host'],
-                $comment,
-                $start,
-                $end,
-                $fixed,
-                $duration,
-                $withServices
-            );
+        foreach ($existingHg as $hg) {
+            $hostList = $this->hgObject->getHostsByHostgroupName($hg);
+            //check add services with host
+            foreach ($hostList as $host) {
+                $this->externalCmdObj->addHostDowntime(
+                    $host['host'],
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration,
+                    $withServices
+                );
+            }
         }
 
+        if (count($unknownHg)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' HG : ' . implode('|', $unknownHg));
+        }
     }
 
     /**
