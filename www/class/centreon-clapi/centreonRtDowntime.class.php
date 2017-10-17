@@ -260,10 +260,8 @@ class CentreonRtDowntime extends CentreonObject
                     $existingHost[] = $host;
                 }
             }
-
             // Result of the research in the base
             $hostDowntimesList = $this->object->getHostDowntimes($existingHost);
-
         } else {
             $hostDowntimesList = $this->object->getHostDowntimes();
         }
@@ -551,7 +549,6 @@ class CentreonRtDowntime extends CentreonObject
                     $fixed,
                     $duration
                 );
-
             }
         }
 
