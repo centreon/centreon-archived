@@ -691,23 +691,36 @@ class CentreonRtDowntime extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        $instanceList = $this->instanceObject->getInstanceId($resource);
-        if (count($instanceList) == 0) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' INSTANCE : ' . $resource);
+        $existingPoller = array();
+        $unknownPoller = array();
+        $listPoller = explode('|', $resource);
+
+        foreach ($listPoller as $poller) {
+            if ($this->sgObject->getInstanceId($poller)) {
+                $existingPoller[] = $poller;
+            } else {
+                $unknownPoller[] = $poller;
+            }
         }
 
-        $hostList = $this->instanceObject->getHostsByInstance($resource);
-        //check add services with host with true in last param
-        foreach ($hostList as $host) {
-            $this->externalCmdObj->addHostDowntime(
-                $host['host'],
-                $comment,
-                $start,
-                $end,
-                $fixed,
-                $duration,
-                true
-            );
+        foreach ($existingPoller as $poller) {
+            $hostList = $this->instanceObject->getHostsByInstance($poller);
+            //check add services with host with true in last param
+            foreach ($hostList as $host) {
+                $this->externalCmdObj->addHostDowntime(
+                    $host['host'],
+                    $comment,
+                    $start,
+                    $end,
+                    $fixed,
+                    $duration,
+                    true
+                );
+            }
+        }
+
+        if (count($unknownPoller)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' INSTANCE : ' . implode('|', $unknownPoller));
         }
     }
 }
