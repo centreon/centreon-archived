@@ -214,17 +214,17 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
                     break;
             }
 	    }
-        $ecObj->AddSvcDowntime(
-            $_POST["host_id"], 
-            $_POST["service_id"],  
+	    $ecObj->AddSvcDowntime(
+            $_POST["host_id"],
+            $_POST["service_id"],
             $_POST["comment"],
             $startDate . ' ' . $_POST['start_time'],
             $endDate . ' ' . $_POST['end_time'],
-            $_POST["persistant"], 
+            $_POST["persistant"],
             $duration,
             $host_or_centreon_time
         );
-    	require_once("listDowntime.php");
+        require_once("listDowntime.php");
 	} else {
 		/*
 		 * Smarty template Init

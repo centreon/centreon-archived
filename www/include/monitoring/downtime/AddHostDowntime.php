@@ -239,13 +239,13 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 
 			$startDate = $_POST["start"];
 			if (preg_match('#(\d{2})/(\d{2})/(\d{4})#', $startDate, $matches)) {
-                $startDate = $matches[3] . '/' . $matches[2] . '/' . $matches[1];
-            }
+			    $startDate = $matches[3] . '/' . $matches[2] . '/' . $matches[1];
+			}
 
-            $endDate = $_POST["end"];
-            if (preg_match('#(\d{2})/(\d{2})/(\d{4})#', $endDate, $matches)) {
-                $endDate = $matches[3] . '/' . $matches[2] . '/' . $matches[1];
-            }
+			$endDate = $_POST["end"];
+			if (preg_match('#(\d{2})/(\d{2})/(\d{4})#', $endDate, $matches)) {
+			    $endDate = $matches[3] . '/' . $matches[2] . '/' . $matches[1];
+			}
             
 		    $dt_w_services = false;
 		    if ($values['with_services']['with_services'] == 1) {
@@ -255,7 +255,7 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		        /*
 		         * Set a downtime for only host
 		         */
-                $ecObj->AddHostDowntime(
+		        $ecObj->AddHostDowntime(
                     $_POST["host_id"],
                     $_POST["comment"],
                     $startDate . ' ' . $_POST['start_time'],
@@ -274,14 +274,14 @@ if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		        $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
 		        foreach ($hostlist as $host_id) {
 		            if ($oreon->user->access->admin || in_array($host_id, $host_acl_id)) {
-						$ecObj->AddHostDowntime(
-							$host_id, 
-							$_POST["comment"],
+		                $ecObj->AddHostDowntime(
+		                    $host_id,
+                            $_POST["comment"],
                             $startDate . ' '. $_POST["start_time"],
                             $endDate . ' ' . $_POST["end_time"],
-							$_POST["persistant"], 
-							$duration, 
-							$dt_w_services,
+                            $_POST["persistant"],
+                            $duration,
+                            $dt_w_services,
                             $host_or_centreon_time
 						);
 		            }
