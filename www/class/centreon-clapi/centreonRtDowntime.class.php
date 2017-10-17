@@ -218,7 +218,7 @@ class CentreonRtDowntime extends CentreonObject
             $list .= ';';
 
             echo "hosts;services\n";
-            echo $list . "\n";;
+            echo $list . "\n";
         }
     }
 
@@ -677,7 +677,7 @@ class CentreonRtDowntime extends CentreonObject
      * @param $fixed
      * @param $duration
      * @param $comment
-     * @param $withServices
+     * @throws CentreonClapiException
      */
     private function addInstanceDowntime(
         $resource,
