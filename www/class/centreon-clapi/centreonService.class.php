@@ -927,10 +927,6 @@ class CentreonService extends CentreonObject
      */
     public function __call($name, $arg)
     {
-
-        var_dump($name);
-        var_dump($arg);
-
         /* Get the method name */
         $name = strtolower($name);
         /* Get the action and the object */
@@ -1037,8 +1033,6 @@ class CentreonService extends CentreonObject
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
             }
         } else {
-
-            var_dump('uvw');
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
     }
