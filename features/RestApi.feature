@@ -3,12 +3,12 @@ Feature: REST API
   I want REST API in Centreon Web
   So that I can develop software interfacing with Centreon Web
 
-  @critical
   Scenario: Configuration REST API tests
     Given a Centreon server with REST API testing data
     When REST API are called
     Then they reply as per specifications
 
+  @critical
   Scenario: Realtime REST API tests
     Given a Centreon server with REST API testing data
     When realtime REST API are called
