@@ -329,13 +329,11 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
-                if (
-                    preg_match_all(
-                        '/SCHEDULE_SVC_DOWNTIME;' . $context->host . ';' . $context->service . ';(\d+);(\d+);.+/',
-                        $output,
-                        $matches
-                    )
-                ) {
+                if (preg_match_all(
+                    '/SCHEDULE_SVC_DOWNTIME;' . $context->host . ';' . $context->service . ';(\d+);(\d+);.+/',
+                    $output,
+                    $matches
+                )) {
                     $startTimestamp = end($matches[1]);
                     $endTimestamp = end($matches[2]);
                     $dateStart = new DateTime('now', new \DateTimeZone('Europe/Paris'));
@@ -378,12 +376,10 @@ class DowntimeDSTContext extends CentreonContext
                     'web'
                 );
                 $output = $return['output'];
-                if (
-                preg_match(
+                if (preg_match(
                     '/SCHEDULE_SVC_DOWNTIME;' . $this->host . ';' . $this->service . ';(\d+);(\d+);.+/',
                     $output
-                )
-                ) {
+                )) {
                     $scheduled = false;
                 }
 
