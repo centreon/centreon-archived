@@ -480,10 +480,14 @@ class CentreonRtDowntime extends CentreonObject
         $unknownHost = array();
         $listHost = explode('|', $resource);
 
+        if ($withServices == 1) {
+            $withServices = true;
+        } else {
+            $withServices = false;
+        }
+
         foreach ($listHost as $host) {
-            if ($this->hostObject->getHostID($host) == 0) {
-                $unknownHost[] = $host;
-            } else {
+            if ($this->hostObject->getHostID($host)) {
                 $this->externalCmdObj->addHostDowntime(
                     $host,
                     $comment,
@@ -493,6 +497,8 @@ class CentreonRtDowntime extends CentreonObject
                     $duration,
                     $withServices
                 );
+            } else {
+                $unknownHost[] = $host;
             }
         }
 
