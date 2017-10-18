@@ -5780,7 +5780,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}}|{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
