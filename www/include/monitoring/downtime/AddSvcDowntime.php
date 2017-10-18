@@ -171,7 +171,7 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
             $_POST["persistant"] = '0';
         }
         isset($_POST['host_or_centreon_time']['host_or_centreon_time']) && $_POST['host_or_centreon_time']['host_or_centreon_time'] ? $host_or_centreon_time = $_POST['host_or_centreon_time']['host_or_centreon_time'] : $host_or_centreon_time = "0";
-            
+
         if (!isset($_POST["comment"]))
             $_POST["comment"] = 0;
 	    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
@@ -204,17 +204,17 @@ if ($oreon->user->access->checkAction("service_schedule_downtime")) {
                     break;
             }
 	    }
-        $ecObj->AddSvcDowntime(
-            $_POST["host_id"], 
-            $_POST["service_id"],  
-            $_POST["comment"], 
-            $_POST["start"] . ' ' . $_POST['start_time'], 
-            $_POST["end"] . ' ' . $_POST['end_time'], 
-            $_POST["persistant"], 
+	    $ecObj->AddSvcDowntime(
+            $_POST["host_id"],
+            $_POST["service_id"],
+            $_POST["comment"],
+            $_POST["start"] . ' ' . $_POST['start_time'],
+            $_POST["end"] . ' ' . $_POST['end_time'],
+            $_POST["persistant"],
             $duration,
             $host_or_centreon_time
         );
-    	require_once("listDowntime.php");
+        require_once("listDowntime.php");
 	} else {
 		/*
 		 * Smarty template Init
