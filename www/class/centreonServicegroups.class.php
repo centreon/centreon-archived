@@ -69,25 +69,24 @@ class CentreonServicegroups
     }
 
     /**
-     *
-     * Enter description here ...
-     * @param unknown_type $sg_id
+     * @param null $sgId
+     * @return array|void
      */
-    public function getServiceGroupServices($sg_id = null)
+    public function getServiceGroupServices($sgId = null)
     {
-        if (!$sg_id) {
+        if (!$sgId) {
             return;
         }
 
         $services = array();
         $query = "SELECT host_host_id, service_service_id "
             . "FROM servicegroup_relation "
-            . "WHERE servicegroup_sg_id = " . $sg_id . " "
+            . "WHERE servicegroup_sg_id = " . $sgId . " "
             . "AND host_host_id IS NOT NULL "
             . "UNION "
             . "SELECT hgr.host_host_id, hsr.service_service_id "
             . "FROM servicegroup_relation sgr, host_service_relation hsr, hostgroup_relation hgr "
-            . "WHERE sgr.servicegroup_sg_id = " . $sg_id . " "
+            . "WHERE sgr.servicegroup_sg_id = " . $sgId . " "
             . "AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
             . "AND hsr.service_service_id = sgr.service_service_id "
             . "AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id ";
@@ -101,14 +100,18 @@ class CentreonServicegroups
         return $services;
     }
 
-    public function getServicesGroups($sg_id = array())
+    /**
+     * @param array $sgId
+     * @return array
+     */
+    public function getServicesGroups($sgId = array())
     {
         $arrayReturn = array();
 
-        if (!empty($sg_id)) {
+        if (!empty($sgId)) {
             $query = "SELECT sg_id, sg_name "
                 . "FROM servicegroup "
-                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sg_id)) . " ) ";
+                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sgId)) . " ) ";
             $res = $this->DB->query($query);
             while ($row = $res->fetchRow()) {
                 $arrayReturn[] = array(
@@ -253,23 +256,23 @@ class CentreonServicegroups
     }
 
     /**
-     * @param $sg_name
+     * @param $sgName
      * @return int|mixed
      */
-    public function getServicesGroupId($sg_name)
+    public function getServicesGroupId($sgName)
     {
         static $ids = array();
 
-        if (!isset($ids[$sg_name])) {
-            $query = "SELECT sg_id FROM servicegroup WHERE sg_name = '" . $this->DB->escape($sg_name) . "'";
+        if (!isset($ids[$sgName])) {
+            $query = "SELECT sg_id FROM servicegroup WHERE sg_name = '" . $this->DB->escape($sgName) . "'";
             $res = $this->DB->query($query);
             if ($res->numRows()) {
                 $row = $res->fetchRow();
-                $ids[$sg_name] = $row['sg_id'];
+                $ids[$sgName] = $row['sg_id'];
             }
         }
-        if (isset($ids[$sg_name])) {
-            return $ids[$sg_name];
+        if (isset($ids[$sgName])) {
+            return $ids[$sgName];
         }
         return 0;
     }
