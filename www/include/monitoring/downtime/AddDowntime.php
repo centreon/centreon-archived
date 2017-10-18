@@ -250,8 +250,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addRule('comment', _("Required Field"), 'required');
 
     $data = array();
-    $data["start"] = $centreonGMT->getDate("Y/m/d", time());
-    $data["end"] = $centreonGMT->getDate("Y/m/d", time() + 7200);
+    $data["start"] = $centreonGMT->getDate("m/d/Y", time());
+    $data["end"] = $centreonGMT->getDate("m/d/Y", time() + 7200);
     $data["start_time"] = $centreonGMT->getDate("G:i", time());
     $data["end_time"] = $centreonGMT->getDate("G:i", time() + 7200);
     $data["host_or_hg"] = 1;

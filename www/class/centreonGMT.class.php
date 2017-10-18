@@ -61,6 +61,12 @@ class CentreonGMT
     protected $hostLocations = array();
 
     /**
+     *
+     * @param array $pollerLocations
+     */
+    protected $pollerLocations = array();
+
+    /**
      * Default timezone setted in adminstration/options
      * @var string $sDefaultTimezone
      */
@@ -473,13 +479,19 @@ class CentreonGMT
             return $this->hostLocations;
         }
 
+        $this->getPollerLocations();
+
         $this->hostLocations = array();
 
-        $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
+        $query = 'SELECT host_id, instance_id, timezone FROM hosts WHERE enabled = 1 ';
         try {
             $res = CentreonDBInstance::getMonInstance()->query($query);
             while ($row = $res->fetchRow()) {
-                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                if ($row['timezone'] == "" && isset($this->pollerLocations[$row['instance_id']])) {
+                    $this->hostLocations[$row['host_id']] = $this->pollerLocations[$row['instance_id']];
+                } else {
+                    $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                }
             }
         } catch (\PDOException $e) {
             // Nothing to do
@@ -487,6 +499,33 @@ class CentreonGMT
         return $this->hostLocations;
     }
 
+    /**
+     * Get list of timezone of pollers
+     * @return array
+     */
+    public function getPollerLocations()
+    {
+        if (count($this->pollerLocations)) {
+            return $this->pollerLocations;
+        }
+
+        $query = 'SELECT ns.id, t.timezone_name ' .
+            'FROM cfg_nagios cfgn, nagios_server ns, timezone t ' .
+            'WHERE cfgn.nagios_activate = "1" ' .
+            'AND cfgn.nagios_server_id = ns.id ' .
+            'AND cfgn.use_timezone = t.timezone_id ';
+        try {
+            $res  = CentreonDBInstance::getConfInstance()->query($query);
+            while ($row = $res->fetchRow()) {
+                $this->pollerLocations[$row['id']] = $row['timezone_name'];
+            }
+        } catch (\Exception $e) {
+            // Nothing to do
+        }
+
+        return $this->pollerLocations;
+    }
+    
     /**
      * Get default timezone setted in admintration/options
      *
@@ -517,7 +556,7 @@ class CentreonGMT
      * @param string $gmt
      * @return string timezone
      */
-    private function getActiveTimezone($gmt)
+    public function getActiveTimezone($gmt)
     {
         $sTimezone = "";
         if (count($this->timezones) == 0) {

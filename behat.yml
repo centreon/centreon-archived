@@ -101,6 +101,10 @@ default:
       paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
       contexts: [ DowntimeStartAndStopContext ]
 
+    downtime_dst:
+      paths: [ %paths.base%/features/DowntimeDST.feature ]
+      contexts: [ DowntimeDSTContext ]
+
     command_arguments:
       paths: [ %paths.base%/features/CommandArguments.feature ]
       contexts: [ CommandArgumentsContext ]
