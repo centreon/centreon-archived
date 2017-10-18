@@ -265,7 +265,8 @@ class WikiApi
         $postfields = array(
             'format' => 'json',
             'action' => 'query',
-            'list' => 'allpages'
+            'list' => 'allpages',
+            'aplimit' => '1000'
         );
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
