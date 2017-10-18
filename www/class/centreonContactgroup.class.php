@@ -211,9 +211,9 @@ class CentreonContactgroup
                     /*
                      * Test is the group a not move or delete in ldap
                      */
-                    if (false === $ldapConn->getEntry($row['cg_ldap_dn']) && ldap_errno($ldapConn->getDs()) !=3) {
+                    if (false === $ldapConn->getEntry($row['cg_ldap_dn']) && ldap_errno($ldapConn->getDs()) != 3) {
                         $dn = $ldapConn->findGroupDn($row['cg_name']);
-                        if (false === $dn  && ldap_errno($ldapConn->getDs()) !=3) {
+                        if (false === $dn  && ldap_errno($ldapConn->getDs()) != 3) {
                             /*
                              * Delete the ldap group in contactgroup
                              */
