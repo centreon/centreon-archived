@@ -400,6 +400,43 @@ class CentreonExternalCommand
      * Downtime
      ***********/
 
+    private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
+    {
+        $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
+
+        // Winter to summer dst
+        $dateTime2 = clone $dateTime;
+        $dateTime2->setTimestamp($dateTime2->getTimestamp());
+        if ($dateTime2->format("H") != $dateTime->format("H")) {
+            $hour = $dateTime->format('H');
+            $dateTime->setTime($hour, '00');
+            return $dateTime->getTimestamp();
+        }
+
+        // Summer to winter dst
+        $dateTime3 = clone $dateTime;
+        $dateTime3 = $dateTime3->setTimestamp($dateTime3->getTimestamp() - 3600);
+        if ($dateTime3->getTimestamp() == $dateTime->getTimestamp()) {
+            if ($start) {
+                return $dateTime3->getTimestamp() - 3600;
+            } else {
+                return $dateTime3->getTimestamp();
+            }
+        }
+
+        $dateTime4 = clone $dateTime;
+        $dateTime4 = $dateTime3->setTimestamp($dateTime4->getTimestamp() + 3600);
+        if ($dateTime4->getTimestamp() == $dateTime->getTimestamp()) {
+            if ($start) {
+                return $dateTime->getTimestamp();
+            } else {
+                return $dateTime4->getTimestamp() + 3600;
+            }
+        }
+
+        return $dateTime->getTimestamp();
+    }
+
     /**
      *
      * Delete downtimes.
@@ -447,17 +484,16 @@ class CentreonExternalCommand
         }
 
         if ($hostOrCentreonTime == "0") {
-            $start_time = $this->GMT->getUTCDateFromString(
-                $start,
-                $this->GMT->getMyGTMFromUser($this->userId)
-            );
-            $end_time = $this->GMT->getUTCDateFromString(
-                $end,
-                $this->GMT->getMyGTMFromUser($this->userId)
-            );
+            $timezoneId = $this->GMT->getMyGTMFromUser($this->userId);
         } else {
-            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+            $timezoneId = $this->GMT->getUTCLocationHost($host);
+        }
+        $timezone = $this->GMT->getActiveTimezone($timezoneId);
+        $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
+        $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
+
+        if ($end_time == $start_time) {
+            return;
         }
 
         /*
@@ -469,7 +505,7 @@ class CentreonExternalCommand
          * Send command
          */
         if (!isset($duration)) {
-            $duration = $start_time - $end_time;
+            $duration = $end_time - $start_time;
         }
         $finalHostName = '';
         if (!is_numeric($host)) {
@@ -524,17 +560,17 @@ class CentreonExternalCommand
         }
 
         if ($hostOrCentreonTime == "0") {
-            $start_time = $this->GMT->getUTCDateFromString(
-                $start,
-                $this->GMT->getMyGTMFromUser($centreon->userId)
-            );
-            $end_time = $this->GMT->getUTCDateFromString(
-                $end,
-                $this->GMT->getMyGTMFromUser($centreon->userId)
-            );
+            $timezoneId = $this->GMT->getMyGTMFromUser($this->userId);
         } else {
-            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
+            $timezoneId = $this->GMT->getUTCLocationHost($host);
+        }
+
+        $timezone = $this->GMT->getActiveTimezone($timezoneId);
+        $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
+        $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
+
+        if ($end_time == $start_time) {
+            return;
         }
 
         /*
@@ -546,7 +582,7 @@ class CentreonExternalCommand
          * Send command
          */
         if (!isset($duration)) {
-            $duration = $start_time - $end_time;
+            $duration = $end_time - $start_time;
         }
         $finalHostName = '';
         if (!is_numeric($host)) {
