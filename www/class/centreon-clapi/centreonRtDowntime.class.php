@@ -700,7 +700,7 @@ class CentreonRtDowntime extends CentreonObject
         $listPoller = explode('|', $resource);
 
         foreach ($listPoller as $poller) {
-            if ($this->sgObject->getInstanceId($poller)) {
+            if ($this->instanceObject->getInstanceId($poller)) {
                 $existingPoller[] = $poller;
             } else {
                 $unknownPoller[] = $poller;
