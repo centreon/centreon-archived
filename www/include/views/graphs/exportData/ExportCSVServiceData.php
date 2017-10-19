@@ -35,12 +35,12 @@
 
 function get_error($str)
 {
-    echo $str."<br />";
+    echo $str . "<br />";
     exit(0);
 }
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-include_once _CENTREON_PATH_."www/class/centreonDB.class.php";
+include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
@@ -50,7 +50,7 @@ session_write_close();
 
 $sid = session_id();
 if (isset($sid)) {
-    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
     if (!$session = $res->fetchRow()) {
         get_error('bad session id');
     }
@@ -89,17 +89,25 @@ while ($res = $DBRESULT->fetchRow()) {
 
 header("Content-Type: application/csv-tab-delimited-table");
 if (isset($hName) && isset($sName)) {
-    header("Content-disposition: filename=".$hName."_".$sName.".csv");
+    header("Content-disposition: filename=" . $hName . "_" . $sName . ".csv");
 } else {
-    header("Content-disposition: filename=".$index.".csv");
+    header("Content-disposition: filename=" . $index . ".csv");
 }
 
 $listMetric = array();
 $datas = array();
-$DBRESULT = $pearDBO->query("SELECT DISTINCT metric_id, metric_name FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name");
+$listEmptyMetric = array();
+
+$query = "SELECT DISTINCT metric_id, metric_name FROM metrics, index_data " .
+    "WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name";
+$DBRESULT = $pearDBO->query($query);
 while ($index_data = $DBRESULT->fetchRow()) {
     $listMetric[$index_data["metric_id"]] = $index_data["metric_name"];
-    $DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
+    $listEmptyMetric[$index_data["metric_id"]] = '';
+    $query2 = "SELECT ctime,value FROM data_bin WHERE id_metric = '" . $index_data["metric_id"] .
+        "' AND ctime >= '" . htmlentities($_GET["start"], ENT_QUOTES, "UTF-8") .
+        "' AND ctime < '" . htmlentities($_GET["end"], ENT_QUOTES, "UTF-8") . "'";
+    $DBRESULT2 = $pearDBO->query($query2);
     while ($data = $DBRESULT2->fetchRow()) {
         $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
     }
@@ -107,6 +115,11 @@ while ($index_data = $DBRESULT->fetchRow()) {
 
 # Order by timestamp
 ksort($datas);
+foreach ($datas as $key => $data) {
+    $datas[$key] = $data + $listEmptyMetric;
+    # Order by metric
+    ksort($datas[$key]);
+}
 
 print "time;humantime";
 if (count($listMetric)) {
@@ -117,7 +130,11 @@ print "\n";
 foreach ($datas as $ctime => $tab) {
     print $ctime . ";" . date("Y-m-d H:i:s", $ctime);
     foreach ($tab as $metric_value) {
-        printf(";%f", $metric_value);
+        if ($metric_value !== '') {
+            printf(";%f", $metric_value);
+        } else {
+            print(";");
+        }
     }
     print "\n";
 }
