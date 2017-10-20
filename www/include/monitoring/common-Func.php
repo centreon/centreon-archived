@@ -86,46 +86,73 @@ function get_notified_infos_for_host($hostId)
 {
     global $pearDB;
 
-    $loop = array();
+    $loop = array();    
     $stack = array($hostId);
     $hosts = array();
-    $results = array('contacts' => array(), 'contactGroups' => array());
-    $stopReading = array('contacts' => 0, 'contactGroups' => 0);
-
+    $results = array('contacts' => array(), 'contactGroups' => array(), 'enableNotif' => 2);
+    $stopReading = array('contacts' => 0, 'contactGroups' => 0, 'notifParam' => 0,
+        'contactAdditiveInheritance' => 0, 'cgAdditiveInheritance' => 0);
+    
     while (($hostId = array_shift($stack))) {
         if (isset($loop[$hostId])) {
             continue;
         }
         $loop[$hostId] = 1;
-
-        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance
+        
+        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance,
+                host_notifications_enabled
                 FROM host WHERE host_id = " . $hostId);
-        $contactAdd = $DBRESULT->fetchRow();
+        $notifParam = $DBRESULT->fetchRow();
 
+        /*
+         * Manage notification activation
+         */
+        if ($notifParam['host_notifications_enabled'] == 1 && $results['enableNotif'] == 2) {
+            $results['enableNotif'] = 1;
+            $stopReading['notifParam'] = 1;
+        }
+        if ($notifParam['host_notifications_enabled'] == 0 && $results['enableNotif'] == 2) {
+            $results['enableNotif'] = 0;
+            break;
+        }
+        
         /*
          * Manage contact inheritance
          */
-        $contactGroups = getContactGroupsForHost($hostId);
-        $contacts = getContactsForHost($hostId);
-
         if ($stopReading['contacts'] == 0) {
+            $contacts = getContactsForHost($hostId);
             $results['contacts'] = $results['contacts'] + $contacts;
-        }
-        if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
+            if ($notifParam['contact_additive_inheritance'] == 1) {
+               $stopReading['contactAdditiveInheritance'] = 1;
+            }
+            if ($notifParam['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
+               $stopReading['contactAdditiveInheritance'] = 0;
+            }
+
         }
 
-        if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
+        if (count($results['contacts']) > 0 && $stopReading['contactAdditiveInheritance'] == 0) {
             $stopReading['contacts'] = 1;
         }
-        if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
+        if ($stopReading['contactGroups'] == 0) {
+            $contactGroups = getContactGroupsForHost($hostId);
+            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
+            if ($notifParam['cg_additive_inheritance'] == 1) {
+               $stopReading['cgAdditiveInheritance'] = 1;
+            }
+            if ($notifParam['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
+               $stopReading['cgAdditiveInheritance'] = 0;
+            }
+        }
+
+        if (count($results['contactGroups']) > 0 && $stopReading['cgAdditiveInheritance'] == 0) {
             $stopReading['contactGroups'] = 1;
         }
-
-        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
+        
+        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1 && $stopReading['notifParam'] == 1) {
             break;
         }
-
+        
         /*
          * Manage template
          */
@@ -137,11 +164,15 @@ function get_notified_infos_for_host($hostId)
         while (($row = $DBRESULT->fetchRow())) {
             $hostsTpl[] = $row['host_tpl_id'];
         }
-
+        
         $stack = array_merge($hostsTpl, $stack);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0) {
+    if ($results['enableNotif'] == 0) {
+        $results = array('contacts' => array(), 'contactGroups' => array());
+    }
+
+    if (version_compare(phpversion(), '5.4.0') >= 0){
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {
@@ -155,28 +186,30 @@ function get_notified_infos_for_host($hostId)
 function getContactgroupsForHost($hostId)
 {
     global $pearDB;
-
+    
     $contactGroups = array();
     $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_host_relation cghr
-            WHERE cghr.host_host_id = " . $hostId . " AND cghr.contactgroup_cg_id = cg.cg_id");
+            WHERE cghr.host_host_id = " . $hostId . " AND cghr.contactgroup_cg_id = cg.cg_id
+            AND cg.cg_activate = '1'");
     while (($row = $DBRESULT->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-
+    
     return $contactGroups;
 }
 
 function getContactsForHost($hostId)
 {
-    global $pearDB;
-
+    global $pearDB;    
+    
     $contacts = array();
     $DBRESULT = $pearDB->query("SELECT c.contact_id, contact_name FROM contact c, contact_host_relation chr
-            WHERE chr.host_host_id = " . $hostId . " AND chr.contact_id = c.contact_id");
+            WHERE chr.host_host_id = " . $hostId . " AND chr.contact_id = c.contact_id
+            AND c.contact_activate = '1' AND NOT c.contact_enable_notifications = '0'");
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
-
+    
     return $contacts;
 }
 
@@ -185,66 +218,101 @@ function get_notified_infos_for_service($serviceId, $hostId)
     global $pearDB;
 
     $loop = array();
-    $results = array('contacts' => array(), 'contactGroups' => array());
-    $stopReading = array('contacts' => 0, 'contactGroups' => 0);
+    $results = array('contacts' => array(), 'contactGroups' => array(), 'enableNotif' => 2);
+    $stopReading = array('contacts' => 0, 'contactGroups' => 0, 'notifParam' => 0,
+        'contactAdditiveInheritance' => 0, 'cgAdditiveInheritance' => 0);
     $useOnlyContactsFromHost = 0;
-
+    
     while (1) {
         if (isset($loop[$serviceId])) {
-            continue;
-        }
-        $loop[$serviceId] = 1;
-
-        $DBRESULT = $pearDB->query("SELECT 
-                    contact_additive_inheritance, 
-                    cg_additive_inheritance, service_use_only_contacts_from_host, service_template_model_stm_id
-                FROM service WHERE service_id = " . $serviceId);
-        $service = $DBRESULT->fetchRow();
-        if (!isset($service['service_template_model_stm_id']) || is_null($service['service_template_model_stm_id'])
-            || $service['service_template_model_stm_id'] == '') {
             break;
         }
-        if (!is_null($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1
-        ) {
+        $loop[$serviceId] = 1;
+        
+        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, service_notifications_enabled,
+                cg_additive_inheritance, service_use_only_contacts_from_host, service_template_model_stm_id
+                FROM service WHERE service_id = " . $serviceId);
+        $notifParam = $DBRESULT->fetchRow();
+
+        /*
+         * Manage notification activation
+         */
+        if ($notifParam['service_notifications_enabled'] == 1 && $results['enableNotif'] == 2) {
+            $results['enableNotif'] = 1;
+            $stopReading['notifParam'] = 1;
+        }
+        if ($notifParam['service_notifications_enabled'] == 0 && $results['enableNotif'] == 2) {
+            $results['enableNotif'] = 0;
+            break;
+        }
+        
+        /*
+         * Manage contact inheritance
+         */
+        if (!is_null($notifParam['service_use_only_contacts_from_host']) && 
+            $notifParam['service_use_only_contacts_from_host'] == 1) {
             $useOnlyContactsFromHost = 1;
+        }
+
+        if ($stopReading['contacts'] == 0 && $useOnlyContactsFromHost == 0) {
+            $contacts = getContactsForService($serviceId);
+            $results['contacts'] = $results['contacts'] + $contacts;
+            if ($notifParam['contact_additive_inheritance'] == 1) {
+               $stopReading['contactAdditiveInheritance'] = 1;
+            }
+            if ($notifParam['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
+               $stopReading['contactAdditiveInheritance'] = 0;
+            }
+        }
+
+        if (count($results['contacts']) > 0 && $stopReading['contactAdditiveInheritance'] == 0 || 
+            $useOnlyContactsFromHost == 1) {
+            $stopReading['contacts'] = 1;
+        }
+
+        if ($stopReading['contactGroups'] == 0 && $useOnlyContactsFromHost == 0) {
+            $contactGroups = getContactgroupsForService($serviceId);
+            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
+            if ($notifParam['cg_additive_inheritance'] == 1) {
+               $stopReading['cgAdditiveInheritance'] = 1;
+            }
+            if ($notifParam['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
+               $stopReading['cgAdditiveInheritance'] = 0;
+            }
+        }
+
+        if (count($results['contactGroups']) > 0 && $stopReading['cgAdditiveInheritance'] == 0 || 
+            $useOnlyContactsFromHost == 1) {
+            $stopReading['contactGroups'] = 1;
+        }
+        
+        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1 && $stopReading['notifParam'] == 1) {
             break;
         }
 
         /*
-         * Manage contact inheritance
+         * Manage template
          */
-        $contactGroups = getContactgroupsForService($serviceId);
-        $contacts = getContactsForService($serviceId);
-
-        if ($stopReading['contacts'] == 0) {
-            $results['contacts'] = $results['contacts'] + $contacts;
-        }
-        if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
-        }
-
-        if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
-            $stopReading['contacts'] = 1;
-        }
-        if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
-            $stopReading['contactGroups'] = 1;
-        }
-
-
-        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
+        if (!isset($notifParam['service_template_model_stm_id']) || 
+            is_null($notifParam['service_template_model_stm_id'])
+            || $notifParam['service_template_model_stm_id'] == '') {
             break;
         }
 
-        $serviceId = $service['service_template_model_stm_id'];
+        $serviceId = $notifParam['service_template_model_stm_id'];
     }
 
-    if ($useOnlyContactsFromHost ||
-        (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0)) {
+    if ($useOnlyContactsFromHost || 
+        (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0) 
+            && $results['enableNotif'] != 0) {
         return get_notified_infos_for_host($hostId);
     }
-
-    if (version_compare(phpversion(), '5.4.0') >= 0) {
+   
+    if ($results['enableNotif'] == 0) {
+        $results = array('contacts' => array(), 'contactGroups' => array());
+    }
+         
+    if (version_compare(phpversion(), '5.4.0') >= 0){
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {
@@ -261,11 +329,12 @@ function getContactgroupsForService($serviceId)
 
     $contactGroups = array();
     $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
-            WHERE cgsr.service_service_id = " . $serviceId . " AND cgsr.contactgroup_cg_id = cg.cg_id");
+            WHERE cgsr.service_service_id = " . $serviceId . " AND cgsr.contactgroup_cg_id = cg.cg_id
+            AND cg.cg_activate = '1'");
     while (($row = $DBRESULT->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-
+    
     return $contactGroups;
 }
 
@@ -275,10 +344,11 @@ function getContactsForService($serviceId)
 
     $contacts = array();
     $DBRESULT = $pearDB->query("SELECT c.contact_id , contact_name FROM contact c, contact_service_relation csr
-            WHERE csr.service_service_id = " . $serviceId . " AND csr.contact_id = c.contact_id");
+            WHERE csr.service_service_id = " . $serviceId . " AND csr.contact_id = c.contact_id
+            AND c.contact_activate = '1' AND NOT c.contact_enable_notifications = '0'");
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
-
+    
     return $contacts;
 }
