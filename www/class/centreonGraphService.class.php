@@ -95,6 +95,10 @@ class CentreonGraphService extends CentreonGraph
         $vname = array();
         $virtuals = array();
         $i = 0;
+        
+        if (empty($this->metrics)) {
+            throw new RuntimeException();
+        }
 
         /* Parse metrics */
         foreach ($this->metrics as $metric) {
