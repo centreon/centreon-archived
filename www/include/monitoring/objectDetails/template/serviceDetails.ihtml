@@ -126,7 +126,6 @@
                         </table>
                     </td>
                 </tr>
-
                 <tr>
                     <td>
                         {if $tools}
@@ -153,7 +152,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {if $index_data}
+                        {if $metrics}
                         <table class="ListTable">
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
@@ -174,8 +173,8 @@
                                 </td>
                             </tr>
                         </table>
+			<br/>
                         {/if}
-                        <br />
                         {if $flag_graph}
                         <table class="ListTable">
                             <tr class='list_lvl_1'>
@@ -194,33 +193,57 @@
                     </td>
                 </tr>
             </table>
+            {if $count_comments_svc}
+            <br/>
+            <table class="ListTable table">
+                <tr class='list_lvl_1'>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_host_name}</h4></td>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_service_descr}</h4></td>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_entry_time}</h4></td>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_author}</h4></td>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_comment}</h4></td>
+                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_persistent}</h4></td>
+                </tr>
+                {foreach item=tcs from=$tab_comments_svc}
+                {if $tcs.host_name == $h.host_name}
+                <tr class={cycle values="list_two, list_one"}>
+                    <td class="ListColLeft ColPopup" width="120">{$tcs.host_name}</td>
+                    <td class="ListColLeft ColPopup" width="120">{$tcs.service_description}</td>
+                    <td class="ListColCenter" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
+                    <td class="ListColCenter" width="100">{$tcs.author_name}</td>
+                    <td class="ListColLeft">{$tcs.comment_data}</td>
+                    <td class="ListColCenter" width="50">{$tcs.is_persistent}</td>
+                    </tr>
+                {/if}
+                {/foreach}
+            </table>
+            {/if}
         </td>
-
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
             <table> <!-- Right Table -->
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
-                        <table class="table ListTable linkList">
+                        <table class="ListTable">
                             {if $is_meta == 'false'}
                             <tr class='list_lvl_1'>
-                                <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
+                                <td class="FormHeader" style="width: 50%; border-bottom:1px solid #d1d2d4;">
                                     <h4>{$host_shortcut}</h4>
                                 </td>
-                                <td class="FormHeader" style="border-bottom:1px solid #d1d2d4;">
+                                <td class="FormHeader" style="width: 50%; border-bottom:1px solid #d1d2d4;">
                                     <h4>{$serv_shortcut}</h4>
                                 </td>
                             </tr>
                             {if $lcaTopo.201 || $admin == 1}
-                            <tr>
+                            <tr class="list_one">
                                 <td class="ColPopup">
                                         <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
 
                                 </td>
-                                <td></td>
+                                <td class="ColPopup"></td>
                             </tr>
                             {/if}
                             {if $lcaTopo.6 || $lcaTopo.602 || $admin == 1}
-                            <tr>
+                            <tr class="list_two">
                                 <td class="ColPopup">
                                     {if $lcaTopo.6 || $admin == 1}
                                         <a href='./main.php?p=60101&host_id={$h.host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
@@ -234,7 +257,7 @@
                             </tr>
                             {/if}
                             {if $lcaTopo.20301 || $admin == 1}
-                            <tr>
+                            <tr class="list_one">
                                 <td class="ColPopup">
                                         <a href='./main.php?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
                                 </td>
@@ -244,7 +267,7 @@
                             </tr>
                             {/if}
                             {if $lcaTopo.307 || $lcaTopo.30702 || $admin == 1}
-                            <tr>
+                            <tr class="list_two">
                                 <td class="ColPopup">
                                     {if $lcaTopo.307 || $admin == 1}
                                         <a href='./main.php?p=307&host={$h.host_id}'>{$lnk_host_reports}</a>
@@ -259,7 +282,7 @@
                             </tr>
                             {/if}
                             {if $lcaTopo.4 || $admin == 1}
-                            <tr>
+                            <tr class="list_one">
                                 <td class="ColPopup">
                                         <a href='./main.php?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
                                 </td>
@@ -295,16 +318,18 @@
                 {if $is_meta == 'false' && ($lcaTopo.20201 || $admin == 1)}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
-                        <table class="table linkList">
+                        <table class="ListTable">
                             <tr class='list_lvl_1'>
                                 <td colspan="2" class="FormHeader">
                                     <h4>{$all_serv}</h4>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="ColPopup">
-                                    <a href='./main.php?p=20201&o=svc&host_search={$h.host_name}'>{$lnk_serv_status}</a>
-                                </td>
+				<tr class='list_one'>
+                                    <td colspan="2" class="ColPopup">
+                                        <a href='./main.php?p=20201&o=svc&host_search={$h.host_name}'>{$lnk_serv_status}</a>
+                                    </td>
+				</td>
                             </tr>
                         </table>
                     </td>
@@ -312,44 +337,44 @@
                 {/if}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
-                        <table class="ListTable table linkList">
+                        <table class="ListTable">
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader">
                                     <h4>{$m_mon_service_command}</h4>
                                 </td>
                             </tr>
                                 {if ($aclAct.service_schedule_check || $admin == true) && $service_data.active_checks_enabled}
-                                    <tr class='list_two'>
+                                    <tr class='list_one'>
                                         <td class="ListColLeft ColPopup" id="service_schedule_check">
-                                            <b><a href="#" onClick="send_command('service_schedule_check', '0');">{$m_mon_schedule}</a></b>
+                                            <a href="#" onClick="send_command('service_schedule_check', '0');">{$m_mon_schedule}</a>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if ($aclAct.service_schedule_forced_check || $admin == true) && $service_data.active_checks_enabled}
-                                    <tr class='list_one'>
-                                        <td class="ListColLeft ColPopup" id="service_schedule_check_forced">
-                                            <b><a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a></b>
+                                    <tr class='list_two'>
+                                        <td class="ColLeft ColPopup" id="service_schedule_check_forced">
+                                            <a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if $aclAct.service_schedule_downtime || $admin == true}
-                                    <tr class='list_two'>
+                                    <tr class='list_one'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a></b>
+                                            <a href='./main.php?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if $aclAct.service_comment || $admin == true}
-                                    <tr class='list_one'>
+                                    <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
+                                            <a href='./main.php?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if ($aclAct.service_submit_result || $admin == true) && $service_data.passive_checks_enabled}
-                                    <tr class='list_two'>
+                                    <tr class='list_one'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
+                                            <a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a>
                                         </td>
                                     </tr>
                                 {/if}
@@ -358,7 +383,7 @@
                 </tr>
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;" nowrap="nowrap">
-                        <table class="ListTable table linkList">
+                        <table class="ListTable">
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" colspan="3">
                                     <h4>Options</h4>
@@ -493,7 +518,7 @@
                 {if $is_meta == 'false'}
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important;">
-                        <table class="ListTable table linkList">
+                        <table class="ListTable">
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader" colspan="2">
                                     <h4>{$links}</h4></td>
@@ -530,7 +555,7 @@
 
                 <tr>
                     <td>
-                        <table class="ListTable table linkList">
+                        <table class="ListTable">
                             <tr class='list_lvl_1'>
                                 <td class="FormHeader"  colspan="2">
                                     <h4>{$notifications}</h4>
@@ -538,21 +563,21 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">
-                                {$contactgroups_label}
-                                </td>
-                                <td>
-                                {foreach from=$contactgroups item=cg key=k}
-                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
-                                {/foreach}
-                                </td>
-                            </tr>
-                            <tr class='list_two'>
-                                <td class="ListColLeft ColPopup">
                                 {$contacts_label}
                                 </td>
                                 <td>
                                 {foreach from=$contacts item=c key=k}
                                         &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
+                                {/foreach}
+                                </td>
+                            </tr>
+                            <tr class='list_two'>
+                                <td class="ListColLeft ColPopup">
+                                {$contactgroups_label}
+                                </td>
+                                <td>
+                                {foreach from=$contactgroups item=cg key=k}
+                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                 {/foreach}
                                 </td>
                             </tr>
@@ -597,37 +622,6 @@
         </td>
     </tr>
 </table>
-<br />
-{if $count_comments_svc}
-<table class="ListTable">
-    <tr class='ListHeader'>
-        <td class="ListColHeaderLeft" colspan="3">&nbsp;<img src="./img/icones/16x16/messages.gif">&nbsp;{$m_comment_for_service}</td>
-    </tr>
-</table>
-<br />
-<table class="ListTable">
-    <tr class='ListHeader'>
-        <td class="ListColHeaderCenter">{$cmt_host_name}</td>
-        <td class="ListColHeaderCenter">{$cmt_service_descr}</td>
-        <td class="ListColHeaderCenter">{$cmt_entry_time}</td>
-        <td class="ListColHeaderCenter">{$cmt_author}</td>
-        <td class="ListColHeaderCenter">{$cmt_comment}</td>
-        <td class="ListColHeaderCenter">{$cmt_persistent}</td>
-    </tr>
-    {foreach item=tcs from=$tab_comments_svc}
-    {if $tcs.host_name == $h.host_name}
-    <tr class={cycle values="list_two, list_one"}>
-        <td class="ListColLeft ColPopup" width="120">{$tcs.host_name}</td>
-        <td class="ListColLeft ColPopup" width="120">{$tcs.service_description}</td>
-        <td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
-        <td class="ListColCenter" width="100">{$tcs.author_name}</td>
-        <td class="ListColNoWrap">{$tcs.comment_data}</td>
-        <td class="ListColCenter" width="50">{$tcs.is_persistent}</td>
-        </tr>
-    {/if}
-    {/foreach}
-</table>
-{/if}
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 {literal}

@@ -467,7 +467,7 @@ if (!$is_admin && !$haveAccess) {
         $tpl->assign("header_service_duration", _("Duration"));
         $tpl->assign("header_service_output", _("Ouput"));
         $tpl->assign("m_mon_host_status", _("Host Status"));
-        $tpl->assign("m_mon_host_status_info", _("Status information"));
+        $tpl->assign("m_mon_host_status_info", _("Status Information"));
         $tpl->assign("m_mon_performance_data", _("Performance Data"));
         $tpl->assign("m_mon_current_attempt", _("Current Attempt"));
         $tpl->assign("m_mon_state_type", _("State Type"));
@@ -584,7 +584,7 @@ if (!$is_admin && !$haveAccess) {
         /*
          * Hostgroups Display
          */
-        $tpl->assign("hostgroups_label", _("Member of Host Groups"));
+        $tpl->assign("hostgroups_label", _("Host Groups"));
         if (isset($hostGroups)) {
             $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
@@ -816,4 +816,3 @@ if (!$is_admin && !$haveAccess) {
     </script>
     <?php
 }
-

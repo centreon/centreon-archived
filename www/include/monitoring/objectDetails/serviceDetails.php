@@ -441,6 +441,13 @@ if (!is_null($host_id)) {
         }
         $optionsURL2 = "index=" . $index_data;
 
+	$DBRES = $pearDBO->query("SELECT COUNT(*) AS metrics FROM `metrics` WHERE index_id = '" . $index_data . "'");
+	$metrics = 0;
+	if ($DBRES->numRows()) {
+            $row = $DBRES->fetchRow();
+            $metrics = $row['metrics'];
+        }
+
         /*
          * Assign translations
          */
@@ -453,8 +460,8 @@ if (!is_null($host_id)) {
         $tpl->assign("m_mon_status_info", _("Status Details"));
         $tpl->assign("m_mon_on_host", _("on host"));
         $tpl->assign("m_mon_services_status", _("Service Status"));
-        $tpl->assign("m_mon_host_status_info", _("Status information"));
-        $tpl->assign("m_mon_host_long_info", _("Extended status information"));
+        $tpl->assign("m_mon_host_status_info", _("Status Information"));
+        $tpl->assign("m_mon_host_long_info", _("Extended Status Information"));
         $tpl->assign("m_mon_performance_data", _("Performance Data"));
         $tpl->assign("m_mon_services_attempt", _("Current Attempt"));
         $tpl->assign("m_mon_services_state", _("State Type"));
@@ -596,7 +603,7 @@ if (!is_null($host_id)) {
         /*
          * Servicegroup Display
          */
-        $tpl->assign("servicegroups_label", _("Service groups"));
+        $tpl->assign("servicegroups_label", _("Service Groups"));
         if (isset($serviceGroups)) {
             $tpl->assign("servicegroups", CentreonUtils::escapeSecure($serviceGroups));
         }
@@ -657,6 +664,7 @@ if (!is_null($host_id)) {
         $tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
         $tpl->assign("options", $optionsURL);
         $tpl->assign("index_data", $index_data);
+        $tpl->assign("metrics", $metrics);
         $tpl->assign("options2", CentreonUtils::escapeSecure($optionsURL2));
 
         /*

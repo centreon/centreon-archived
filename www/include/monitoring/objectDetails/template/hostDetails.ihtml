@@ -4,15 +4,19 @@
         <td style="width: 70%;vertical-align:top; padding-right:8px;">
             <table class="table"> <!-- Left Table -->
                 <tr class='ListHeader'> <!-- Header -->
-                    <td class="ListColHeaderLeft {$host_data.status_class}" >
+                    <td class="ListColHeaderLeft {$host_data.status_class}" style="padding-bottom: 4px !important;">
                         <h3 style="color: #fff;">
-                            <img src='./img/icons/host.png' width="16px" style="vertical-align:middle;" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> {$host_data.name} / {$host_data.alias} <span>[{$host_data.address}]</span>
+                            <img src='./img/icons/host.png' width="16px" style="vertical-align:middle;" {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}> | {$host_data.name}
+			    <p style="padding-left: 28px; font-size: 12px;float:right;">
+                                {$host_data.address}
+                            </p>
                         </h3>
                         {if $sv_ext_notes_url}
                         <a href="{$sv_ext_notes_url}" target="_blank">
                             <img src='./img/icons/link.png' class="ico-14" style="vertical-align:middle;" title="{if $sv_ext_notes} {$sv_ext_notes} {else} {$sv_ext_notes_url} {/if}">
                         </a>
                         {/if}
+			<p style="margin-left: 30px;">{$host_data.alias}</p>
                     </td>
                 </tr>
                 <tr>
@@ -83,7 +87,7 @@
                                 {foreach key=graphId item=HS from=$graphs}
                                 {assign var=names value=';'|explode:$HS}
                                 <tr>
-                                    <td class="ListColLeft ColPopup" style='text-align:center;'>
+                                    <td class="ListColLeft" style='text-align:center;'>
                                         <h3 class="detail-chart-title">
                                             {$names[1]} <a href='./main.php?p=204&mode=0&svc_id={$HS}'>
                                             <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
@@ -172,7 +176,7 @@
                             <br />
                             <table width='100%'>
                                 <tr>
-                                    <td style="vertical-align:top;">
+                                    <td width='50%' style="vertical-align:top;">
                                         <table class="ListTable table linkList">
                                             <tr class='list_lvl_1'>
                                                 <td class="ListColHeaderLeft FormHeader" colspan="3">
@@ -264,15 +268,15 @@
                                         </table>
                                     </td>
                                     <td style='padding:5px;'></td>
-                                    <td>
-                                        <table class="ListTable table linkList">
+                                    <td width='50%'>
+                                        <table class="ListTable">
                                             <tr class='list_lvl_1'  >
-                                                <td class="ListColHeaderLeft FormHeader" colspan="2">
+                                                <td class="FormHeader" colspan="2">
                                                     <h4>{$links}</h4>
                                                 </td>
                                             </tr>
                                             <tr class='list_one'>
-                                                <td class="ListColLeft ColPopup">{$hostgroups_label}:</td>
+                                                <td class="ListColLeft ColPopup">{$hostgroups_label}</td>
                                                 <td class="ListColLeft ColPopup">
                                                     {foreach item=hg from=$hostgroups}
                                                     &nbsp;&nbsp;&nbsp;-&nbsp;{$hg}<br>
@@ -280,7 +284,7 @@
                                                 </td>
                                             </tr>
                                             <tr class='list_one'>
-                                                <td class="ListColLeft ColPopup">{$hostcategorie_label}:</td>
+                                                <td class="ListColLeft ColPopup">{$hostcategorie_label}</td>
                                                 <td class="ListColLeft ColPopup">
                                                     {foreach item=hc from=$hostcategorie}
                                                     &nbsp;&nbsp;&nbsp;-&nbsp;{$hc}<br>
@@ -289,25 +293,25 @@
                                             </tr>
                                         </table>
                                         <br>
-                                        <table class="ListTable table linkList">
+                                        <table class="ListTable table">
                                             <tr class='list_lvl_1' >
                                                 <td class="ListColHeaderLeft FormHeader" colspan="2">
                                                     <h4>{$notifications}</h4>
                                                 </td>
                                             </tr>
                                             <tr class='list_one' >
-                                                <td class="ListColLeft ColPopup">{$contactgroups_label}:</td>
+                                                <td class="ListColLeft ColPopup">{$contacts_label}</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach from=$contactgroups item=cg key=k}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
+                                                    {foreach from=$contacts item=c key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
                                             <tr class='list_two'>
-                                                <td class="ListColLeft ColPopup">{$contacts_label}:</td>
+                                                <td class="ListColLeft ColPopup">{$contactgroups_label}</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach from=$contacts item=c key=k}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
+                                                    {foreach from=$contactgroups item=cg key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
@@ -317,18 +321,18 @@
                             </table>
                         </div>
                         <div id='tab4' class='tab'>
-                            <table class="ListTable">
+                            <table class="ListTable table">
                                 <tr class='list_lvl_1'>
-                                    <td class="ListColHeaderCenter FormHeader">{$cmt_host_name}</td>
-                                    <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_entry_time}</td>
-                                    <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_author}</td>
-                                    <td class="ListColHeaderCenter FormHeader">{$cmt_comment}</td>
-                                    <td class="ListColHeaderCenter FormHeader" width="50">{$cmt_persistent}</td>
+                                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_host_name}</h4></td>
+                                    <td class="ListColHeaderCenter FormHeader" width="120"><h4>{$cmt_entry_time}</h4></td>
+                                    <td class="ListColHeaderCenter FormHeader" width="120"><h4>{$cmt_author}</h4></td>
+                                    <td class="ListColHeaderCenter FormHeader"><h4>{$cmt_comment}</h4></td>
+                                    <td class="ListColHeaderCenter FormHeader" width="50"><h4>{$cmt_persistent}</h4></td>
                                 </tr>
                                 {foreach item=tch from=$tab_comments_host}
                                 <tr class={cycle values="list_two, list_one"}>
                                     <td class="ListColLeft">{$tch.host_name}</td>
-                                    <td class="ListColRight">{$tch.comment_time}</td>
+                                    <td class="ListColCenter">{$tch.comment_time}</td>
                                     <td class="ListColCenter">{$tch.author_name}</td>
                                     <td class="ListColLeft">{$tch.comment_data}</td>
                                     <td class="ListColCenter">{$tch.is_persistent}</td>
@@ -341,7 +345,7 @@
             </table>
         </td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
-            <table class="table ListTable linkList">
+            <table class="ListTable">
                 <tr class='list_lvl_1'>
                     <td class="ListColHeaderLeft FormHeader" colspan="2"><h4>{$m_mon_host_info}</h4></td>
                 </tr>
@@ -367,10 +371,10 @@
                 </tr>
             </table>
             <br />
-            <table class="table ListTable linkList">
+            <table class="ListTable">
                 <tr class='list_lvl_1'>
                     <td class="FormHeader" style="width: 50%;border-bottom:1px solid #d1d2d4;">
-                        <h4>{t}Host commands and shortcuts{/t}</h4>
+                        <h4>{t}Host Commands And Shortcuts{/t}</h4>
                     </td>
                 </tr>
                 {if $lcaTopo.60101 || $admin == 1}
