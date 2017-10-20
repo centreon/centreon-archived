@@ -110,20 +110,12 @@ if (isset($conf_centreon['port'])) {
         $dbConfig['port'] = $p;
     }
 }
-$db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+//$db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+$db = $dependencyInjector['configuration_db'];
 $db->query('SET NAMES utf8');
 $dbConfig['dbname'] = $conf_centreon['dbcstg'];
-$db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
-try {
-  $db->getConnection();
-  $db_storage->getConnection();
-} catch (Exception $e) {
-    echo sprintf("Could not connect to database. Check your configuration file %s\n", _CENTREON_ETC_.'/centreon.conf.php');
-    if (isset($options['h'])) {
-        CentreonClapi\CentreonAPI::printHelp(false, 1);
-    }
-    exit(1);
-  }
+//$db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
+$db_storage = $dependencyInjector['realtime_db'];
 
 /**
  * Create Centreon API object

@@ -33,7 +33,7 @@
  *
  */
 
-require_once "Centreon/Db/Manager/Manager.php";
+//require_once "Centreon/Db/Manager/Manager.php";
 require_once "Centreon/Cache/Manager/Manager.php";
 
 /**
@@ -79,9 +79,9 @@ abstract class Centreon_Object_Relation
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = Centreon_Db_Manager::factory('centreon');
+        $this->db = $dependencyInjector['configuration_db'];
         $this->cache = Centreon_Cache_Manager::factory('centreonRelations');
         $this->useCache = false;
     }

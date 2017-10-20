@@ -59,12 +59,12 @@ class CentreonACLAction extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Action();
-        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
-        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Action();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Action($dependencyInjector);
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Action($dependencyInjector);
         $this->params = array('acl_action_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->availableActions = array(
@@ -321,10 +321,12 @@ class CentreonACLAction extends CentreonObject
     private function exportGrantActions($aclActionRuleId, $aclActionName)
     {
         $grantActions = '';
+        $query = 'SELECT * FROM acl_actions_rules WHERE acl_action_rule_id = :ruleId';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':ruleId', $aclActionRuleId);
+        $stmt->execute();
 
-        $query = 'SELECT * FROM acl_actions_rules WHERE acl_action_rule_id = ?';
-
-        $aclActionList = $this->db->fetchAll($query, array($aclActionRuleId));
+        $aclActionList = $stmt->fetchAll();
 
         foreach ($aclActionList as $aclAction) {
             $grantActions .= $this->action . $this->delim . 'GRANT' . $this->delim .

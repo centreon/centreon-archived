@@ -117,12 +117,13 @@ class CentreonContact extends CentreonObject
      *
      * @return void
      */
-    public function __construct($db)
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->tpObject = new CentreonTimePeriod();
-        $this->object = new \Centreon_Object_Contact();
-        $this->timezoneObject = new \Centreon_Object_Timezone();
+        parent::__construct($dependencyInjector);
+        $this->dependencyInjector = $dependencyInjector;
+        $this->tpObject = new CentreonTimePeriod($dependencyInjector);
+        $this->object = new \Centreon_Object_Contact($dependencyInjector);
+        $this->timezoneObject = new \Centreon_Object_Timezone($dependencyInjector);
         $this->params = array(
             'contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
@@ -389,7 +390,7 @@ class CentreonContact extends CentreonObject
     {
         $cmds = explode("|", $commands);
         $cmdIds = array();
-        $cmdObject = new \Centreon_Object_Command();
+        $cmdObject = new \Centreon_Object_Command($this->dependencyInjector);
         foreach ($cmds as $commandName) {
             $tmp = $cmdObject->getIdByParameter($cmdObject->getUniqueLabelField(), $commandName);
             if (count($tmp)) {
@@ -399,9 +400,9 @@ class CentreonContact extends CentreonObject
             }
         }
         if ($type == self::HOST_NOTIF_CMD) {
-            $relObj = new \Centreon_Object_Relation_Contact_Command_Host();
+            $relObj = new \Centreon_Object_Relation_Contact_Command_Host($this->dependencyInjector);
         } else {
-            $relObj = new \Centreon_Object_Relation_Contact_Command_Service();
+            $relObj = new \Centreon_Object_Relation_Contact_Command_Service($this->dependencyInjector);
         }
         $relObj->delete($contactId);
         foreach ($cmdIds as $cmdId) {
@@ -419,11 +420,11 @@ class CentreonContact extends CentreonObject
      */
     private function exportNotifCommands($objType, $contactId, $contactName)
     {
-        $commandObj = new \Centreon_Object_Command();
+        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
         if ($objType == self::HOST_NOTIF_CMD) {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Host();
+            $obj = new \Centreon_Object_Relation_Contact_Command_Host($this->dependencyInjector);
         } else {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Service();
+            $obj = new \Centreon_Object_Relation_Contact_Command_Service($this->dependencyInjector);
         }
 
         $cmds = $obj->getMergedParameters(

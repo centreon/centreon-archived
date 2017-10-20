@@ -66,10 +66,10 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Host_Group();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Host_Group($dependencyInjector);
         $this->params = array('hg_activate' => '1');
         $this->insertParams = array('hg_name', 'hg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -218,11 +218,11 @@ class CentreonHostGroup extends CentreonObject
             $groupId = $hgIds[0];
 
             if ($matches[2] == "host" || $matches[2] == "member") {
-                $relobj = new \Centreon_Object_Relation_Host_Group_Host();
-                $obj = new \Centreon_Object_Host();
+                $relobj = new \Centreon_Object_Relation_Host_Group_Host($this->dependencyInjector);
+                $obj = new \Centreon_Object_Host($this->dependencyInjector);
             } elseif ($matches[2] == "servicegroup") {
-                $relobj = new \Centreon_Object_Relation_Host_Group_Service_Group();
-                $obj = new \Centreon_Object_Service_Group();
+                $relobj = new \Centreon_Object_Relation_Host_Group_Service_Group($this->dependencyInjector);
+                $obj = new \Centreon_Object_Service_Group($this->dependencyInjector);
             }
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hgIds);
@@ -265,7 +265,7 @@ class CentreonHostGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
@@ -282,8 +282,8 @@ class CentreonHostGroup extends CentreonObject
     {
         parent::export($filters);
 
-        $relObj = new \Centreon_Object_Relation_Host_Group_Host();
-        $hostObj = new \Centreon_Object_Host();
+        $relObj = new \Centreon_Object_Relation_Host_Group_Host($this->dependencyInjector);
+        $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
 
         $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();

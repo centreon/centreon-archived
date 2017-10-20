@@ -63,10 +63,10 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Contact_Group();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Contact_Group($dependencyInjector);
         $this->params = array('cg_activate' => '1');
         $this->insertParams = array('cg_name', 'cg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -151,8 +151,8 @@ class CentreonContactGroup extends CentreonObject
         $name = strtolower($name);
         /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)contact$/", $name, $matches)) {
-            $relobj = new \Centreon_Object_Relation_Contact_Group_Contact();
-            $obj = new \Centreon_Object_Contact();
+            $relobj = new \Centreon_Object_Relation_Contact_Group_Contact($this->dependencyInjector);
+            $obj = new \Centreon_Object_Contact($this->dependencyInjector);
 
             /* Parse arguments */
             if (!isset($arg[0])) {
@@ -203,7 +203,7 @@ class CentreonContactGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
@@ -219,8 +219,8 @@ class CentreonContactGroup extends CentreonObject
     public function export($filters = null)
     {
         parent::export($filters);
-        $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
-        $contactObj = new \Centreon_Object_Contact();
+        $relObj = new \Centreon_Object_Relation_Contact_Group_Contact($this->dependencyInjector);
+        $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
         $cgFieldName = $this->object->getUniqueLabelField();
         $cFieldName = $contactObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(

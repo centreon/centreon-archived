@@ -71,10 +71,10 @@ class CentreonACLGroup extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Group();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Group($dependencyInjector);
         $this->params = array(
             'acl_group_changed' => '1',
             'acl_group_activate' => '1'

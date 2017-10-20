@@ -79,15 +79,14 @@ class CentreonRtDowntime extends CentreonObject
     /**
      * CentreonRtDowntime constructor.
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_RtDowntime();
-        $this->db = new \CentreonDB('centreon');
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_RtDowntime($dependencyInjector);
         $this->hgObject = new \CentreonHostgroups($this->db);
         $this->sgObject = new \CentreonServiceGroups($this->db);
         $this->instanceObject = new \CentreonInstance($this->db);
-        $this->GMTObject = new \CentreonGMT($this->db);
+        $this->GMTObject = new \CentreonGMT();
         $this->externalCmdObj = new \CentreonExternalCommand();
         $this->action = "RTDOWNTIME";
         $this->externalCmdObj->setUserAlias(CentreonUtils::getUserName());

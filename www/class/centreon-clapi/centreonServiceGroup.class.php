@@ -63,10 +63,10 @@ class CentreonServiceGroup extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Service_Group();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Service_Group($dependencyInjector);
         $this->params = array('sg_activate' => '1');
         $this->insertParams = array('sg_name', 'sg_alias');
         $this->exportExcludedParams = array_merge($this->insertParams, array($this->object->getPrimaryKey()));
@@ -165,13 +165,13 @@ class CentreonServiceGroup extends CentreonObject
             $sgId = $sgIds[0];
 
             if ($matches[2] == "service") {
-                $relobj = new \Centreon_Object_Relation_Service_Group_Service();
-                $obj = new \Centreon_Object_Relation_Host_Service();
+                $relobj = new \Centreon_Object_Relation_Service_Group_Service($this->dependencyInjector);
+                $obj = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
                 $existingRelationIds = $relobj->getHostIdServiceIdFromServicegroupId($sgId);
                 $hstring = "host_id";
             } else {
-                $relobj = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();
-                $obj = new \Centreon_Object_Relation_Host_Group_Service();
+                $relobj = new \Centreon_Object_Relation_Service_Group_Host_Group_Service($this->dependencyInjector);
+                $obj = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
                 $existingRelationIds = $relobj->getHostGroupIdServiceIdFromServicegroupId($sgId);
                 $hstring = "hostgroup_id";
             }
@@ -307,7 +307,7 @@ class CentreonServiceGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
@@ -330,10 +330,10 @@ class CentreonServiceGroup extends CentreonObject
             null,
             $filters
         );
-        $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service();
-        $objSvc = new \Centreon_Object_Relation_Host_Service();
-        $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();
-        $objHgSvc = new \Centreon_Object_Relation_Host_Group_Service();
+        $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service($this->dependencyInjector);
+        $objSvc = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
+        $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service($this->dependencyInjector);
+        $objHgSvc = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
 
         foreach ($sgs as $sg) {
             $sgId = $sg[$this->object->getPrimaryKey()];

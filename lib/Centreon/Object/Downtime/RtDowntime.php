@@ -33,25 +33,19 @@
  *
  */
 
-require_once "Centreon/Object/Object.php";
+require_once "Centreon/Object/ObjectRt.php";
 
 /**
  * Used for interacting with downtime objects
  *
  * @author Baldo Guillaume
  */
-class Centreon_Object_RtDowntime extends Centreon_Object
+class Centreon_Object_RtDowntime extends Centreon_ObjectRt
 {
     protected $table = "downtimes";
     protected $name = "downtime_name";
     protected $primaryKey = "downtime_id";
     protected $uniqueLabelField = "comment_data";
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->db = Centreon_Db_Manager::factory('storage');
-    }
 
     /**
      * @param array $hostList
@@ -74,7 +68,7 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             $hostFilter .
             "ORDER BY actual_start_time";
 
-        return $this->getResult($query, array(), "fetchAll");
+        return $this->getResult($query);
     }
 
     /**
@@ -106,6 +100,6 @@ class Centreon_Object_RtDowntime extends Centreon_Object
             "AND d.actual_end_time IS NULL " .
             "ORDER BY actual_start_time";
 
-        return $this->getResult($query, array(), "fetchAll");
+        return $this->getResult($query);
     }
 }

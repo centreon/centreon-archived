@@ -48,10 +48,10 @@ class Centreon_Object_Relation_Downtime_Host extends Centreon_Object_Relation
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Downtime();
-        $this->secondObject = new Centreon_Object_Host();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Downtime($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Host($dependencyInjector);
     }
 }

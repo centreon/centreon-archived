@@ -39,9 +39,9 @@ class CentreonACLResources
 {
     private $DB;
 
-    public function __construct($DB)
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->_DB = $DB;
+        $this->_DB = $dependencyInjector['configuration_db'];
     }
 
     public function getACLResourceID($name)
@@ -61,12 +61,12 @@ class CentreonACLResources
     {
         $request = "DELETE FROM acl_group_contacts_relations "
             . "WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
-        $DBRESULT = $this->_DB->query($request);
+        $this->_DB->query($request);
 
         $request = "INSERT INTO acl_group_contacts_relations "
             . "(acl_group_id, contact_contact_id) "
             . "VALUES ('" . $aclid . "', '" . $contact_id . "')";
-        $DBRESULT = $this->_DB->query($request);
+        $this->_DB->query($request);
         return 0;
     }
 
@@ -74,14 +74,14 @@ class CentreonACLResources
     {
         $request = "DELETE FROM acl_group_contacts_relations "
             . "WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
-        $DBRESULT = $this->_DB->query($request);
+        $this->_DB->query($request);
         return 0;
     }
 
     public function updateACL()
     {
         $request = "UPDATE `acl_resources` SET `changed` = '1'";
-        $DBRESULT = $this->_DB->query($request);
+        $this->_DB->query($request);
         return 0;
     }
 }

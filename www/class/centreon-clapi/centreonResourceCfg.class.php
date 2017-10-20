@@ -64,12 +64,12 @@ class CentreonResourceCfg extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->instanceObj = new CentreonInstance();
-        $this->relObj = new \Centreon_Object_Relation_Instance_Resource();
-        $this->object = new \Centreon_Object_Resource();
+        parent::__construct($dependencyInjector);
+        $this->instanceObj = new CentreonInstance($dependencyInjector);
+        $this->relObj = new \Centreon_Object_Relation_Instance_Resource($dependencyInjector);
+        $this->object = new \Centreon_Object_Resource($dependencyInjector);
         $this->params = array('resource_line' => '',
             'resource_comment' => '',
             'resource_activate' => '1'
@@ -408,8 +408,8 @@ class CentreonResourceCfg extends CentreonObject
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
                 }
 
-                $relobj = new $relclass();
-                $obj = new $class();
+                $relobj = new $relclass($this->dependencyInjector);
+                $obj = new $class($this->dependencyInjector);
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId(
                         $relobj->getFirstKey(),

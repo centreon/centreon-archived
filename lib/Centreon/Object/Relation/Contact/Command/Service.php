@@ -46,10 +46,10 @@ class Centreon_Object_Relation_Contact_Command_Service extends Centreon_Object_R
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Contact();
-        $this->secondObject = new Centreon_Object_Command();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Contact($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Command($dependencyInjector);
     }
 }

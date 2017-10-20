@@ -46,10 +46,10 @@ class Centreon_Object_Relation_Contact_Group_Contact extends Centreon_Object_Rel
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Contact_Group();
-        $this->secondObject = new Centreon_Object_Contact();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Contact_Group($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Contact($dependencyInjector);
     }
 }

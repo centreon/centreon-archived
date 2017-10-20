@@ -62,10 +62,10 @@ require_once "Centreon/Object/Relation/Acl/Resource/Instance.php";
  */
 class CentreonACLResource extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
 
-    const UNSUPPORTED_WILDCARD    = "Action does not support the '*' wildcard";
+    const UNSUPPORTED_WILDCARD = "Action does not support the '*' wildcard";
 
     /**
      *
@@ -108,13 +108,12 @@ class CentreonACLResource extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Resource();
-        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
-        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource();
-
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Resource($dependencyInjector);
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource($dependencyInjector);
         $this->params = array(
             'all_hosts' => '0',
             'all_hostgroups' => '0',
@@ -161,11 +160,11 @@ class CentreonACLResource extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $params[1] = "acl_res_".$params[1];
+            $params[1] = "acl_res_" . $params[1];
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -179,7 +178,7 @@ class CentreonACLResource extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("acl_res_id", "acl_res_name", "acl_res_alias", "acl_res_comment", "acl_res_activate");
         $paramString = str_replace("acl_res_", "", implode($this->delim, $params));
@@ -209,7 +208,7 @@ class CentreonACLResource extends CentreonObject
         }
         $aclResId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($aclResName));
         if (!count($aclResId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$aclResName);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $aclResName);
         }
         $groupIds = $this->relObject->getacl_group_idFromacl_res_id($aclResId[0]);
         echo "id;name" . "\n";
@@ -237,43 +236,51 @@ class CentreonACLResource extends CentreonObject
         }
         $aclResId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($params[0]));
         if (!count($aclResId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[0]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
         $resources = explode("|", $params[1]);
         $resourceIds = array();
 
         switch ($type) {
             case "host":
-                $this->resourceTypeObject = new \Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host();
+                $this->resourceTypeObject = new \Centreon_Object_Host($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host($this->dependencyInjector);
                 break;
             case "hostgroup":
-                $this->resourceTypeObject = new \Centreon_Object_Host_Group();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Group($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Group($this->dependencyInjector);
                 break;
             case "hostcategory":
-                $this->resourceTypeObject = new \Centreon_Object_Host_Category();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Category($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Category($this->dependencyInjector);
                 break;
             case "servicegroup":
-                $this->resourceTypeObject = new \Centreon_Object_Service_Group();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Group($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Service_Group($this->dependencyInjector);
                 break;
             case "servicecategory":
-                $this->resourceTypeObject = new \Centreon_Object_Service_Category();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Category($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Service_Category($this->dependencyInjector);
                 break;
             case "metaservice":
-                $this->resourceTypeObject = new \Centreon_Object_Meta_Service();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Meta_Service();
+                $this->resourceTypeObject = new \Centreon_Object_Meta_Service($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Meta_Service($this->dependencyInjector);
                 break;
             case "instance":
-                $this->resourceTypeObject = new \Centreon_Object_Instance();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Instance();
+                $this->resourceTypeObject = new \Centreon_Object_Instance($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Instance($this->dependencyInjector);
                 break;
             case "excludehost":
-                $this->resourceTypeObject = new \Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Exclude();
+                $this->resourceTypeObject = new \Centreon_Object_Host($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Exclude($this->dependencyInjector);
                 break;
             default:
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
@@ -287,7 +294,7 @@ class CentreonACLResource extends CentreonObject
                     array($resource)
                 );
                 if (!count($ids)) {
-                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$resource);
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $resource);
                 }
                 $resourceIds[] = $ids[0];
             } else {
@@ -321,7 +328,7 @@ class CentreonACLResource extends CentreonObject
                     if ($type != "host" && $type != "hostgroup" && $type != "servicegroup") {
                         throw new CentreonClapiException(self::UNSUPPORTED_WILDCARD);
                     }
-                    $field = "all_".$type."s";
+                    $field = "all_" . $type . "s";
                     $this->object->update($aclResourceId, array($field => '1', 'changed' => '1'));
                 }
             }
@@ -348,7 +355,7 @@ class CentreonACLResource extends CentreonObject
                 }
             }
             if ($type == "host" || $type == "hostgroup" || $type == "servicegroup") {
-                $field = "all_".$type."s";
+                $field = "all_" . $type . "s";
                 $this->object->update($aclResourceId, array($field => '0', 'changed' => '1'));
             }
         }

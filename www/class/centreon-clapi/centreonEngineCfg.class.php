@@ -61,13 +61,13 @@ class CentreonEngineCfg extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->instanceObj = new CentreonInstance();
-        $this->commandObj = new \Centreon_Object_Command();
-        $this->object = new \Centreon_Object_Engine();
-        $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module();
+        parent::__construct($dependencyInjector);
+        $this->instanceObj = new CentreonInstance($dependencyInjector);
+        $this->commandObj = new \Centreon_Object_Command($dependencyInjector);
+        $this->object = new \Centreon_Object_Engine($dependencyInjector);
+        $this->brokerModuleObj = new \Centreon_Object_Engine_Broker_Module($dependencyInjector);
         $this->params = array(
             'log_file' => '/var/log/centreon-engine/centengine.log',
             'cfg_dir' => '/etc/centreon-engine/',
@@ -222,7 +222,7 @@ class CentreonEngineCfg extends CentreonObject
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
                 $commandName = $matches[1];
                 if ($params[2]) {
-                    $commandObj = new \Centreon_Object_Command();
+                    $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
                     $res = $commandObj->getIdByParameter($commandObj->getUniqueLabelField(), $params[2]);
                     if (count($res)) {
                         $params[2] = $res[0];
@@ -287,7 +287,7 @@ class CentreonEngineCfg extends CentreonObject
     public function export($filters = null)
     {
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
-        $tpObj = new \Centreon_Object_Timeperiod();
+        $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
         foreach ($elements as $element) {
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";

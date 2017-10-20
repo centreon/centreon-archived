@@ -72,10 +72,10 @@ class CentreonCommand extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Command();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Command($dependencyInjector);
         $this->params = array();
         $this->insertParams = array("command_name", "command_type", "command_line");
         $this->exportExcludedParams = array_merge(
@@ -174,7 +174,7 @@ class CentreonCommand extends CentreonObject
                     $params[2] = $this->typeConversion[$params[2]];
                 }
             } elseif ($params[1] == "graph_id") {
-                $graphObject = new \Centreon_Object_Graph_Template();
+                $graphObject = new \Centreon_Object_Graph_Template($this->dependencyInjector);
                 $tmp = $graphObject->getIdByParameter($graphObject->getUniqueLabelField(), $params[2]);
                 if (!count($tmp)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
@@ -197,7 +197,7 @@ class CentreonCommand extends CentreonObject
      */
     public function getId($commandName)
     {
-        $obj = new \Centreon_Object_Command();
+        $obj = new \Centreon_Object_Command($this->dependencyInjector);
         $tmp = $obj->getIdByParameter($obj->getUniqueLabelField(), $commandName);
         if (count($tmp)) {
             $id = $tmp[0];
@@ -237,7 +237,7 @@ class CentreonCommand extends CentreonObject
                     }
                 }
                 if ($parameter == "graph_id" && !empty($value)) {
-                    $graphObject = new \Centreon_Object_Graph_Template();
+                    $graphObject = new \Centreon_Object_Graph_Template($this->dependencyInjector);
                     $tmp = $graphObject->getParameters($value, array($graphObject->getUniqueLabelField()));
 
                     if (!count($tmp)) {
@@ -344,7 +344,7 @@ class CentreonCommand extends CentreonObject
     public function getMacroDescription($iIdCmd)
     {
         $aReturn = array();
-        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = " . intval($iIdCmd);
+        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = " . (int)$iIdCmd;
 
         $DBRESULT = $this->db->query($sSql);
         while ($row = $DBRESULT->fetch()) {

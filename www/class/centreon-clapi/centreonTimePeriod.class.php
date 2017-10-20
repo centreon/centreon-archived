@@ -53,6 +53,12 @@ class CentreonTimePeriod extends CentreonObject
      * @var Centreon_Relation_Timeperiod_Exclude
      */
     protected $exclude;
+
+    /**
+     * @var Centreon_Relation_Timeperiod_Exclude
+     */
+    protected $dependencyInjector;
+
     /**
      *
      * @var Centreon_Relation_Timeperiod_Include
@@ -64,10 +70,11 @@ class CentreonTimePeriod extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Timeperiod();
+        parent::__construct($dependencyInjector);
+        $this->dependencyInjector = $dependencyInjector;
+        $this->object = new \Centreon_Object_Timeperiod($dependencyInjector);
         $this->params = array(
             'tp_sunday' => '',
             'tp_monday' => '',
@@ -180,7 +187,7 @@ class CentreonTimePeriod extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $excObj = new \Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception($this->dependencyInjector);
         $escList = $excObj->getList(
             $excObj->getPrimaryKey(),
             -1,
@@ -220,7 +227,7 @@ class CentreonTimePeriod extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $excObj = new \Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception($this->dependencyInjector);
         $escList = $excObj->getList(
             $excObj->getPrimaryKey(),
             -1,
@@ -250,7 +257,7 @@ class CentreonTimePeriod extends CentreonObject
         if (($tpId = $this->getObjectId($parameters)) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $parameters);
         }
-        $excObj = new \Centreon_Object_Timeperiod_Exception();
+        $excObj = new \Centreon_Object_Timeperiod_Exception($this->dependencyInjector);
         $escList = $excObj->getList(array("days", "timerange"), -1, 0, null, null, array("timeperiod_id" => $tpId));
         echo "days;timerange\n";
         foreach ($escList as $exc) {
@@ -307,9 +314,9 @@ class CentreonTimePeriod extends CentreonObject
             $relationIds[] = $this->getTimePeriodId($name);
         }
         if ($relationType == self::TP_INCLUDE) {
-            $relObj = new \Centreon_Object_Relation_Timeperiod_Include();
+            $relObj = new \Centreon_Object_Relation_Timeperiod_Include($this->dependencyInjector);
         } else {
-            $relObj = new \Centreon_Object_Relation_Timeperiod_Exclude();
+            $relObj = new \Centreon_Object_Relation_Timeperiod_Exclude($this->dependencyInjector);
         }
         $relObj->delete($sourceId);
         foreach ($relationIds as $relId) {
