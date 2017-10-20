@@ -187,8 +187,8 @@ class CentreonACLGroup extends CentreonObject
                 }
                 $groupId = $groupIds[0];
 
-                $relobj = new $relclass();
-                $obj = new $class();
+                $relobj = new $relclass($this->dependencyInjector);
+                $obj = new $class($this->dependencyInjector);
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $groupIds);
                     echo "id".$this->delim."name"."\n";
@@ -330,7 +330,7 @@ class CentreonACLGroup extends CentreonObject
             throw  new CentreonClapiException('Unsupported relation object : ' . $relClass);
         }
 
-        $relObj = new $relClass();
+        $relObj = new $relClass($this->dependencyInjector);
 
         $comparisonKey1 = $this->object->getTableName() . '.' . $this->object->getPrimaryKey();
 

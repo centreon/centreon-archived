@@ -86,14 +86,21 @@ class CentreonClapi extends CentreonWebService
                 $dbConfig['port'] = $p;
             }
         }
-        $db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
-        $dbConfig['dbname'] = $conf_centreon['dbcstg'];
-        $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
+
+        // $db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+        $db = $this->dependencyInjector['configuration_db'];
+
+        // $dbConfig['dbname'] = $conf_centreon['dbcstg'];
+        $db_storage = $this->dependencyInjector['realtime_db'];
+
+        //  $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
+        /*
         try {
             $db->getConnection();
             $db_storage->getConnection();
         } catch (Exception $e) {
         }
+        */
 
         $username = $centreon->user->alias;
 

@@ -336,7 +336,7 @@ class CentreonServiceTemplate extends CentreonObject
                 break;
             case "notification_period":
                 $params[1] = "timeperiod_tp_id2";
-                $tpObj = new CentreonTimePeriod($this->dependencyInjectork);
+                $tpObj = new CentreonTimePeriod($this->dependencyInjector);
                 $params[2] = $tpObj->getTimeperiodId($params[2]);
                 break;
             case "flap_detection_options":

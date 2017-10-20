@@ -452,7 +452,7 @@ abstract class CentreonObject
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
 
-        $dbstorage = \Centreon_Db_Manager::factory('storage');
+        $dbstorage = $this->dependencyInjector['realtime_db'];
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
             VALUES (?, ?, ?, ?, ?, ?)';

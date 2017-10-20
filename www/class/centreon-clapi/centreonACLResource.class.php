@@ -520,9 +520,11 @@ class CentreonACLResource extends CentreonObject
             $queryHostGranted = 'SELECT h.host_name AS "object_name" ' .
                 'FROM host h, acl_resources_host_relations arhr ' .
                 'WHERE arhr.host_host_id = h.host_id ' .
-                'AND arhr.acl_res_id = ?';
-
-            $grantedHostList = $this->db->fetchAll($queryHostGranted, array($aclResId));
+                'AND arhr.acl_res_id = :aclId';
+            $stmt = $this->db->prepare($queryHostGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedHostList = $stmt->fetchAll();
             $grantHostResources .= $this->exportGrantObject($grantedHostList, 'GRANT_HOST', $aclResName);
         }
 
@@ -530,9 +532,11 @@ class CentreonACLResource extends CentreonObject
             $queryHostExcluded = 'SELECT h.host_name AS "object_name" ' .
                 'FROM host h, acl_resources_hostex_relations arher ' .
                 'WHERE arher.host_host_id = h.host_id ' .
-                'AND arher.acl_res_id = ?';
-
-            $excludedHostList = $this->db->fetchAll($queryHostExcluded, array($aclResId));
+                'AND arher.acl_res_id = :aclId';
+            $stmt = $this->db->prepare($queryHostExcluded);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $excludedHostList = $stmt->fetchAll();
             $grantHostResources .= $this->exportGrantObject(
                 $excludedHostList,
                 'ADDHOSTEXCLUSION',
@@ -559,9 +563,13 @@ class CentreonACLResource extends CentreonObject
             $queryHostgroupGranted = 'SELECT hg.hg_name AS "object_name" ' .
                 'FROM hostgroup hg, acl_resources_hg_relations arhgr ' .
                 'WHERE arhgr.hg_hg_id = hg.hg_id ' .
-                'AND arhgr.acl_res_id = ?';
+                'AND arhgr.acl_res_id = :aclId';
 
-            $grantedHostgroupList = $this->db->fetchAll($queryHostgroupGranted, array($aclResId));
+            $stmt = $this->db->prepare($queryHostgroupGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedHostgroupList = $stmt->fetchAll();
+
             $grantHostgroupResources .= $this->exportGrantObject(
                 $grantedHostgroupList,
                 'GRANT_HOSTGROUP',
@@ -588,9 +596,12 @@ class CentreonACLResource extends CentreonObject
             $queryServicegroupGranted = 'SELECT sg.sg_name AS "object_name" ' .
                 'FROM servicegroup sg, acl_resources_sg_relations arsgr ' .
                 'WHERE arsgr.sg_id = sg.sg_id ' .
-                'AND arsgr.acl_res_id = ?';
+                'AND arsgr.acl_res_id = :aclId';
 
-            $grantedServicegroupList = $this->db->fetchAll($queryServicegroupGranted, array($aclResId));
+            $stmt = $this->db->prepare($queryServicegroupGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedServicegroupList = $stmt->fetchAll();
             $grantServicegroupResources .= $this->exportGrantObject(
                 $grantedServicegroupList,
                 'GRANT_SERVICEGROUP',
@@ -613,9 +624,12 @@ class CentreonACLResource extends CentreonObject
         $queryMetaserviceGranted = 'SELECT m.meta_name AS "object_name" ' .
             'FROM meta_service m, acl_resources_meta_relations armr ' .
             'WHERE armr.meta_id = m.meta_id ' .
-            'AND armr.acl_res_id = ?';
+            'AND armr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryMetaserviceGranted);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $grantedMetaserviceList = $stmt->fetchAll();
 
-        $grantedMetaserviceList = $this->db->fetchAll($queryMetaserviceGranted, array($aclResId));
         $grantMetaserviceResources .= $this->exportGrantObject(
             $grantedMetaserviceList,
             'GRANT_METASERVICE',
@@ -637,9 +651,11 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredInstances = 'SELECT n.name AS "object_name" ' .
             'FROM nagios_server n, acl_resources_poller_relations arpr ' .
             'WHERE arpr.poller_id = n.id ' .
-            'AND arpr.acl_res_id = ?';
-
-        $filteredInstanceList = $this->db->fetchAll($queryFilteredInstances, array($aclResId));
+            'AND arpr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredInstances);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredInstanceList = $stmt->fetchAll();
         $filterInstances .= $this->exportGrantObject($filteredInstanceList, 'ADDFILTER_INSTANCE', $aclResName);
 
         return $filterInstances;
@@ -657,9 +673,12 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredHostCategories = 'SELECT hc.hc_name AS "object_name" ' .
             'FROM hostcategories hc, acl_resources_hc_relations arhcr ' .
             'WHERE arhcr.hc_id = hc.hc_id ' .
-            'AND arhcr.acl_res_id = ?';
+            'AND arhcr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredHostCategories);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredHostCategoryList = $stmt->fetchAll();
 
-        $filteredHostCategoryList = $this->db->fetchAll($queryFilteredHostCategories, array($aclResId));
         $filterHostCategories .= $this->exportGrantObject(
             $filteredHostCategoryList,
             'ADDFILTER_HOSTCATEGORY',
@@ -681,9 +700,12 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredServiceCategories = 'SELECT sc.sc_name AS "object_name" ' .
             'FROM service_categories sc, acl_resources_sc_relations arscr ' .
             'WHERE arscr.sc_id = sc.sc_id ' .
-            'AND arscr.acl_res_id = ?';
+            'AND arscr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredServiceCategories);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredServiceCategoryList = $stmt->fetchAll();
 
-        $filteredServiceCategoryList = $this->db->fetchAll($queryFilteredServiceCategories, array($aclResId));
         $filterServiceCategories .= $this->exportGrantObject(
             $filteredServiceCategoryList,
             'ADDFILTER_SERVICECATEGORY',

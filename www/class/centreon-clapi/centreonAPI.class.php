@@ -229,12 +229,14 @@ class CentreonAPI
             'class' => 'Downtime',
             'export' => true
         );
+
         /* RtDowntimes */
         $this->relationObject["RTDOWNTIME"] = array(
             'module' => 'core',
             'class' => 'RtDowntime',
             'export' => true
         );
+
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
