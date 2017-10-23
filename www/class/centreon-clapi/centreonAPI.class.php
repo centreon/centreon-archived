@@ -234,7 +234,7 @@ class CentreonAPI
         $this->relationObject["RTDOWNTIME"] = array(
             'module' => 'core',
             'class' => 'RtDowntime',
-            'export' => true
+            'export' => false
         );
 
         /* Templates */
