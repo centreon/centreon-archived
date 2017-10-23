@@ -86,7 +86,7 @@ function get_notified_infos_for_host($hostId)
 {
     global $pearDB;
 
-    $loop = array();    
+    $loop = array();
     $stack = array($hostId);
     $hosts = array();
     $results = array('contacts' => array(), 'contactGroups' => array(), 'enableNotif' => 2);
