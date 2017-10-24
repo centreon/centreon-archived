@@ -33,13 +33,10 @@
  *
  */
 
-//require_once "Centreon/Db/Manager/Manager.php";
 require_once "Centreon/Cache/Manager/Manager.php";
 
 /**
  * Abstract Centreon Object class
- *
- * @author sylvestre
  */
 abstract class Centreon_ObjectRt
 {
@@ -139,8 +136,15 @@ abstract class Centreon_ObjectRt
      * @return array
      * @throws Exception
      */
-    public function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }

@@ -33,7 +33,6 @@
  *
  */
 
-//require_once "Centreon/Db/Manager/Manager.php";
 require_once "Centreon/Cache/Manager/Manager.php";
 
 /**
@@ -133,7 +132,7 @@ abstract class Centreon_Object
             $sqlParams[] = trim($value);
         }
         if ($sqlFields && $sqlValues) {
-            $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
+            $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
             $this->db->query($sql, $sqlParams);
             return $this->db->lastInsertId();
         }
@@ -260,8 +259,15 @@ abstract class Centreon_Object
      * @return array
      * @throws Exception
      */
-    public function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }

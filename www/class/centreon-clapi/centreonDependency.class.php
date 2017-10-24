@@ -1080,7 +1080,8 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1096,7 +1097,8 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1115,7 +1117,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1135,7 +1138,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1147,7 +1151,8 @@ class CentreonDependency extends CentreonObject
                 }
             } else {
                 // addparent
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1184,7 +1189,8 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1200,7 +1206,8 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1219,7 +1226,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1239,7 +1247,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1251,7 +1260,8 @@ class CentreonDependency extends CentreonObject
                 }
             } else {
                 // addparent
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1287,7 +1297,8 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1303,7 +1314,8 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1322,7 +1334,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1334,7 +1347,8 @@ class CentreonDependency extends CentreonObject
                 }
             } else {
                 // addparent
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1370,7 +1384,8 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1386,7 +1401,8 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1405,7 +1421,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1417,7 +1434,8 @@ class CentreonDependency extends CentreonObject
                 }
             } else {
                 // addparent
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1453,7 +1471,8 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
@@ -1469,7 +1488,8 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1488,7 +1508,8 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
+                    echo
+                        implode(
                             $this->delim,
                             array(
                                 $this->action,
@@ -1500,7 +1521,8 @@ class CentreonDependency extends CentreonObject
                 }
             } else {
                 // addparent
-                echo implode(
+                echo
+                    implode(
                         $this->delim,
                         array(
                             $this->action,
