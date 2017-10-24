@@ -94,9 +94,26 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
 
+        
         return array(
             'items' => $trapList,
             'total' => $total
         );
+    }
+
+    public function getDefaultValues()
+    {
+        $finalDatas = parent::getDefaultValues();
+        foreach ($finalDatas as &$trap) {
+            $queryTraps = 'SELECT m.name ' .
+            'FROM traps t, traps_vendor m ' .
+            'WHERE t.manufacturer_id = m.id ' .
+            'AND traps_id = ?';
+             $stmt = $this->pearDB->prepare($queryTraps);
+             $dbResult = $this->pearDB->execute($stmt, array($trap['id']));
+             $vendor = $dbResult->fetchRow();
+             $trap['text'] = $vendor['name'].' - '.$trap['text'];
+        }
+        return $finalDatas;
     }
 }
