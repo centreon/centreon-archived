@@ -267,7 +267,7 @@ class CentreonCentbrokerCfg extends CentreonObject
      */
     private function getFlow($configId, $tagName, $args)
     {
-        if (!isset($args[1]) || !$args[1]) {
+        if (!isset($args[1]) || $args[1] == '') {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
