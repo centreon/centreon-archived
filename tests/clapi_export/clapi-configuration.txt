@@ -422,7 +422,7 @@ CMD;ADD;base_centreon_ping;2;$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPAC
 CMD;setparam;base_centreon_ping;enable_shell;0
 CMD;setparam;base_centreon_ping;command_activate;1
 CMD;setparam;base_centreon_ping;command_locked;0
-RESOURCECFG;ADD;$USER1$;/usr/lib/nagios/plugins/;Central;Nagios Plugins Path
+RESOURCECFG;ADD;$USER1$;/usr/lib/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;$USER1$;activate;1
 RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins/;Central;Centreon Plugins Path
 RESOURCECFG;setparam;$CENTREONPLUGINS$;activate;1
@@ -442,7 +442,7 @@ CENTBROKERCFG;SETINPUT;central-broker-master;1;tls;no
 CENTBROKERCFG;SETINPUT;central-broker-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-broker-master;1;compression;no
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker//central-broker-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
 CENTBROKERCFG;SETLOGGER;central-broker-master;1;type;file
 CENTBROKERCFG;SETLOGGER;central-broker-master;1;config;yes
 CENTBROKERCFG;SETLOGGER;central-broker-master;1;debug;no
@@ -451,6 +451,8 @@ CENTBROKERCFG;SETLOGGER;central-broker-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-broker-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;sql
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;store_in_data_bin;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_type;mysql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_port;3306
@@ -461,6 +463,7 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;port;5670
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;host;localhost
@@ -469,7 +472,7 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;2;tls;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;compression;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;buffering_timeout;0
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker//central-broker-master.log;file
 CENTBROKERCFG;SETLOGGER;central-broker-master;2;type;file
 CENTBROKERCFG;SETLOGGER;central-broker-master;2;config;yes
 CENTBROKERCFG;SETLOGGER;central-broker-master;2;debug;no
@@ -497,6 +500,7 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;buffering_timeout;0
@@ -504,7 +508,7 @@ CENTBROKERCFG;SETINPUT;central-rrd-master;1;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;tls;auto
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;compression;auto
-CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker//central-rrd-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker/central-rrd-master.log;file
 CENTBROKERCFG;SETLOGGER;central-rrd-master;1;type;file
 CENTBROKERCFG;SETLOGGER;central-rrd-master;1;config;yes
 CENTBROKERCFG;SETLOGGER;central-rrd-master;1;debug;no
@@ -513,6 +517,7 @@ CENTBROKERCFG;SETLOGGER;central-rrd-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-rrd-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;type;rrd
+CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;metrics_path;/var/lib/centreon/metrics
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;status_path;/var/lib/centreon/status
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;retry_interval;60
@@ -520,7 +525,7 @@ CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;store_in_data_bin;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;write_metrics;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;write_status;yes
-CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker/central-rrd-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker//central-rrd-master.log;file
 CENTBROKERCFG;SETLOGGER;central-rrd-master;2;type;file
 CENTBROKERCFG;SETLOGGER;central-rrd-master;2;config;yes
 CENTBROKERCFG;SETLOGGER;central-rrd-master;2;debug;no
@@ -533,7 +538,7 @@ CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-e
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker//central-module-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
 CENTBROKERCFG;SETLOGGER;central-module-master;1;type;file
 CENTBROKERCFG;SETLOGGER;central-module-master;1;config;yes
 CENTBROKERCFG;SETLOGGER;central-module-master;1;debug;no
@@ -542,6 +547,8 @@ CENTBROKERCFG;SETLOGGER;central-module-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-module-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;port;5669
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;retry_interval;60
@@ -549,7 +556,7 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;1;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;compression;no
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
+CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker//central-module-master.log;file
 CENTBROKERCFG;SETLOGGER;central-module-master;2;type;file
 CENTBROKERCFG;SETLOGGER;central-module-master;2;config;yes
 CENTBROKERCFG;SETLOGGER;central-module-master;2;debug;no
