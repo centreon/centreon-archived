@@ -433,7 +433,6 @@ CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-broker-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;1;type;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;1;port;5669
 CENTBROKERCFG;SETINPUT;central-broker-master;1;retry_interval;60
@@ -461,8 +460,8 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;port;5670
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;protocol;bbdo
@@ -497,8 +496,8 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;buffering_timeout;0
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;retry_interval;60
