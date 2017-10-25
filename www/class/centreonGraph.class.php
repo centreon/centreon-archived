@@ -558,7 +558,14 @@ class CentreonGraph
                             preg_match($metricPattern, $metric['metric_name'])
                         ) {
                             $ds_data_associated = $ds_val;
+                            if ($ds_val['ds_legend'] != '') {
+                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $ds_val['ds_legend'];
+                            }
                             break;
+                        } else {
+                            if (preg_match($metricPattern, $metric['metric_name']) && $ds_val['ds_legend'] != '') {
+                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $ds_val['ds_legend'];
+                            }
                         }
 
                         /* Check regular */
