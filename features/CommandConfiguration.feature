@@ -7,7 +7,6 @@ Feature: Edit a command
         Given I am logged in a Centreon server
         And a command is configured
 
-    @critical
     Scenario: Change the properties of a command
         When I change the properties of a command
         Then the properties are updated

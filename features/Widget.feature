@@ -8,7 +8,6 @@ Feature: Widget
     Background:
         Given I am logged in a Centreon server
 
-    @critical
     Scenario: Widget installation
         Given a widget is ready to install
         When I install the widget
