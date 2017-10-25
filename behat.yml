@@ -306,3 +306,7 @@ default:
     test_clapi:
       paths: [ %paths.base%/features/Clapi.feature ]
       contexts: [ ClapiContext ]
+
+    traps_snmp_group_configuration:
+      paths: [ %paths.base%/features/TrapsSNMPGroupConfiguration.feature ]
+      contexts: [ TrapsSNMPGroupConfigurationContext ]
