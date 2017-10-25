@@ -108,11 +108,12 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $queryTraps = 'SELECT m.name ' .
             'FROM traps t, traps_vendor m ' .
             'WHERE t.manufacturer_id = m.id ' .
-            'AND traps_id = ?';
-             $stmt = $this->pearDB->prepare($queryTraps);
-             $dbResult = $this->pearDB->execute($stmt, array($trap['id']));
-             $vendor = $dbResult->fetchRow();
-             $trap['text'] = $vendor['name'].' - '.$trap['text'];
+            'AND traps_id = :id';
+            $stmt = $this->pearDB->prepare($queryTraps);
+            $stmt->bindParam(':id', $trap['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            $vendor = $stmt->fetch();
+            $trap['text'] = $vendor['name'].' - '.$trap['text'];
         }
         return $finalDatas;
     }
