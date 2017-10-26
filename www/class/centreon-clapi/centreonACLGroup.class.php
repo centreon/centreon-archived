@@ -71,10 +71,10 @@ class CentreonACLGroup extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Group();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Group($dependencyInjector);
         $this->params = array(
             'acl_group_changed' => '1',
             'acl_group_activate' => '1'
@@ -187,8 +187,8 @@ class CentreonACLGroup extends CentreonObject
                 }
                 $groupId = $groupIds[0];
 
-                $relobj = new $relclass();
-                $obj = new $class();
+                $relobj = new $relclass($this->dependencyInjector);
+                $obj = new $class($this->dependencyInjector);
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $groupIds);
                     echo "id".$this->delim."name"."\n";
@@ -330,7 +330,7 @@ class CentreonACLGroup extends CentreonObject
             throw  new CentreonClapiException('Unsupported relation object : ' . $relClass);
         }
 
-        $relObj = new $relClass();
+        $relObj = new $relClass($this->dependencyInjector);
 
         $comparisonKey1 = $this->object->getTableName() . '.' . $this->object->getPrimaryKey();
 

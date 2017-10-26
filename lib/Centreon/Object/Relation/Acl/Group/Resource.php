@@ -41,10 +41,10 @@ class Centreon_Object_Relation_Acl_Group_Resource extends Centreon_Object_Relati
     protected $firstKey = "acl_group_id";
     protected $secondKey = "acl_res_id";
 
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Acl_Group();
-        $this->secondObject = new Centreon_Object_Acl_Resource();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Acl_Group($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Acl_Resource($dependencyInjector);
     }
 }

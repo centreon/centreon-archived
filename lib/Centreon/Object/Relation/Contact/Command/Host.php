@@ -42,14 +42,13 @@ class Centreon_Object_Relation_Contact_Command_Host extends Centreon_Object_Rela
     protected $secondKey = "command_command_id";
 
     /**
-     * Constructor
-     *
-     * @return void
+     * Centreon_Object_Relation_Contact_Command_Host constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Contact();
-        $this->secondObject = new Centreon_Object_Command();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Contact($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Command($dependencyInjector);
     }
 }

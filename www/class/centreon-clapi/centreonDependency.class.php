@@ -55,15 +55,15 @@ require_once "Centreon/Object/Relation/Dependency/Parent/Metaservice.php";
  */
 class CentreonDependency extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
-    const ORDER_DEP_TYPE          = 2;
-    const ORDER_PARENTS           = 3;
-    const DEP_TYPE_HOST           = 'HOST';
-    const DEP_TYPE_HOSTGROUP      = 'HG';
-    const DEP_TYPE_SERVICE        = 'SERVICE';
-    const DEP_TYPE_SERVICEGROUP   = 'SG';
-    const DEP_TYPE_META           = 'META';
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
+    const ORDER_DEP_TYPE = 2;
+    const ORDER_PARENTS = 3;
+    const DEP_TYPE_HOST = 'HOST';
+    const DEP_TYPE_HOSTGROUP = 'HG';
+    const DEP_TYPE_SERVICE = 'SERVICE';
+    const DEP_TYPE_SERVICEGROUP = 'SG';
+    const DEP_TYPE_META = 'META';
     protected $serviceObj;
 
     /**
@@ -71,11 +71,11 @@ class CentreonDependency extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->serviceObj = new CentreonService();
-        $this->object = new \Centreon_Object_Dependency();
+        parent::__construct($dependencyInjector);
+        $this->serviceObj = new CentreonService($dependencyInjector);
+        $this->object = new \Centreon_Object_Dependency($dependencyInjector);
         $this->action = "DEP";
         $this->insertParams = array(
             'dep_name',
@@ -96,7 +96,7 @@ class CentreonDependency extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array(
             'dep_id',
@@ -169,27 +169,27 @@ class CentreonDependency extends CentreonObject
      */
     protected function getDependencyType($dependencyName)
     {
-        $sql = "SELECT '".self::DEP_TYPE_HOST."' as type
+        $sql = "SELECT '" . self::DEP_TYPE_HOST . "' as type
             FROM dependency d, dependency_hostParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name
             UNION
-            SELECT '".self::DEP_TYPE_SERVICE."'
+            SELECT '" . self::DEP_TYPE_SERVICE . "'
             FROM dependency d, dependency_serviceParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name
             UNION
-            SELECT '".self::DEP_TYPE_HOSTGROUP."'
+            SELECT '" . self::DEP_TYPE_HOSTGROUP . "'
             FROM dependency d, dependency_hostgroupParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name
             UNION
-            SELECT '".self::DEP_TYPE_SERVICEGROUP."'
+            SELECT '" . self::DEP_TYPE_SERVICEGROUP . "'
             FROM dependency d, dependency_servicegroupParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name
             UNION
-            SELECT '".self::DEP_TYPE_META."'
+            SELECT '" . self::DEP_TYPE_META . "'
             FROM dependency d, dependency_metaserviceParent_relation rel
             WHERE rel.dependency_dep_id = d.dep_id
             AND d.dep_name = :name";
@@ -251,8 +251,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addHostDependency($params)
     {
-        $obj = new \Centreon_Object_Host();
-        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Host();
+        $obj = new \Centreon_Object_Host($this->dependencyInjector);
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Host($this->dependencyInjector);
         $this->insertDependency(
             $params['dep_name'],
             $params['dep_description'],
@@ -269,8 +269,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addHostGroupDependency($params)
     {
-        $obj = new \Centreon_Object_Host_Group();
-        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Hostgroup();
+        $obj = new \Centreon_Object_Host_Group($this->dependencyInjector);
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Hostgroup($this->dependencyInjector);
         $this->insertDependency(
             $params['dep_name'],
             $params['dep_description'],
@@ -330,8 +330,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addServiceGroupDependency($params)
     {
-        $obj = new \Centreon_Object_Service_Group();
-        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Servicegroup();
+        $obj = new \Centreon_Object_Service_Group($this->dependencyInjector);
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Servicegroup($this->dependencyInjector);
         $this->insertDependency(
             $params['dep_name'],
             $params['dep_description'],
@@ -348,8 +348,8 @@ class CentreonDependency extends CentreonObject
      */
     protected function addMetaDependency($params)
     {
-        $obj = new \Centreon_Object_Meta_Service();
-        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Metaservice();
+        $obj = new \Centreon_Object_Meta_Service($this->dependencyInjector);
+        $relObj = new \Centreon_Object_Relation_Dependency_Parent_Metaservice($this->dependencyInjector);
         $this->insertDependency(
             $params['dep_name'],
             $params['dep_description'],
@@ -374,12 +374,12 @@ class CentreonDependency extends CentreonObject
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             if (in_array($params[1], array('comment', 'name', 'description')) && !preg_match("/^dep_/", $params[1])) {
-                $params[1] = "dep_".$params[1];
+                $params[1] = "dep_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -501,7 +501,7 @@ class CentreonDependency extends CentreonObject
         $rows = $res->fetchAll();
         $serviceChildren = array();
         foreach ($rows as $row) {
-            $serviceChildren[] = $row['host_name'] . ',' .$row['service_description'];
+            $serviceChildren[] = $row['host_name'] . ',' . $row['service_description'];
         }
 
         $strParents = implode('|', $parents) . $this->delim;
@@ -623,7 +623,7 @@ class CentreonDependency extends CentreonObject
         $rows = $res->fetchAll();
         $serviceChildren = array();
         foreach ($rows as $row) {
-            $serviceChildren[] = $row['host_name'] . ',' .$row['service_description'];
+            $serviceChildren[] = $row['host_name'] . ',' . $row['service_description'];
         }
 
         $strParents = implode('|', $parents) . $this->delim;
@@ -686,7 +686,7 @@ class CentreonDependency extends CentreonObject
     {
         $table = "dependency_hostgroup" . ucfirst($relType) . "_relation";
         $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (?, ?)";
-        $obj = new \Centreon_Object_Host_Group();
+        $obj = new \Centreon_Object_Host_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToInsert));
@@ -704,7 +704,7 @@ class CentreonDependency extends CentreonObject
     {
         $table = "dependency_servicegroup" . ucfirst($relType) . "_relation";
         $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
-        $obj = new \Centreon_Object_Service_Group();
+        $obj = new \Centreon_Object_Service_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToInsert));
@@ -723,7 +723,7 @@ class CentreonDependency extends CentreonObject
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
 
         $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
-        $obj = new \Centreon_Object_Meta_Service();
+        $obj = new \Centreon_Object_Meta_Service($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToInsert));
@@ -741,7 +741,7 @@ class CentreonDependency extends CentreonObject
     {
         if ($relType == 'parent') {
             $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -759,7 +759,7 @@ class CentreonDependency extends CentreonObject
             $params = array($depId, $idTab[0], $idTab[1]);
         } elseif ($relType == 'child') { // host child
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -802,7 +802,7 @@ class CentreonDependency extends CentreonObject
         } elseif ($relType == 'child') { // host child
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
                 VALUES (?, ?)";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
@@ -868,7 +868,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND hostgroup_hg_id = ?";
-        $obj = new \Centreon_Object_Host_Group();
+        $obj = new \Centreon_Object_Host_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToDelete));
@@ -888,7 +888,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND servicegroup_sg_id = ?";
-        $obj = new \Centreon_Object_Service_Group();
+        $obj = new \Centreon_Object_Service_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToDelete));
@@ -909,7 +909,7 @@ class CentreonDependency extends CentreonObject
         $sql = "DELETE FROM {$table}
             WHERE dependency_dep_id = ?
             AND meta_service_meta_id = ?";
-        $obj = new \Centreon_Object_Meta_Service();
+        $obj = new \Centreon_Object_Meta_Service($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToDelete));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToDelete));
@@ -929,7 +929,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostParent_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));
@@ -950,7 +950,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostChild_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));
@@ -997,7 +997,7 @@ class CentreonDependency extends CentreonObject
             $sql = "DELETE FROM dependency_hostChild_relation
                 WHERE dependency_dep_id = ?
                 AND host_host_id = ?";
-            $hostObj = new \Centreon_Object_Host();
+            $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToDelete));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToDelete));
@@ -1080,32 +1080,34 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADD',
-                        $row['dep_name'],
-                        $row['dep_description'],
-                        self::DEP_TYPE_HOST,
-                        $row['host_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADD',
+                            $row['dep_name'],
+                            $row['dep_description'],
+                            self::DEP_TYPE_HOST,
+                            $row['host_name']
+                        )
+                    ) . "\n";
                 foreach ($row as $k => $v) {
                     if (!in_array($k, $paramArr)) {
                         continue;
                     }
                     // setparam
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'SETPARAM',
-                            $row['dep_name'],
-                            $k,
-                            $v,
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'SETPARAM',
+                                $row['dep_name'],
+                                $k,
+                                $v,
+                            )
+                        ) . "\n";
                 }
                 // add host children
                 $childSql = "SELECT host_name
@@ -1115,15 +1117,16 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['host_name']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['host_name']
+                            )
+                        ) . "\n";
                 }
 
                 // add service children
@@ -1135,27 +1138,29 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['host_name'] . ',' . $childRow['service_description']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['host_name'] . ',' . $childRow['service_description']
+                            )
+                        ) . "\n";
                 }
             } else {
                 // addparent
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADDPARENT',
-                        $row['dep_name'],
-                        $row['host_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADDPARENT',
+                            $row['dep_name'],
+                            $row['host_name']
+                        )
+                    ) . "\n";
             }
             $previous = $row['dep_id'];
         }
@@ -1184,32 +1189,34 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADD',
-                        $row['dep_name'],
-                        $row['dep_description'],
-                        self::DEP_TYPE_SERVICE,
-                        $row['host_name'] . ',' . $row['service_description']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADD',
+                            $row['dep_name'],
+                            $row['dep_description'],
+                            self::DEP_TYPE_SERVICE,
+                            $row['host_name'] . ',' . $row['service_description']
+                        )
+                    ) . "\n";
                 foreach ($row as $k => $v) {
                     if (!in_array($k, $paramArr)) {
                         continue;
                     }
                     // setparam
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'SETPARAM',
-                            $row['dep_name'],
-                            $k,
-                            $v,
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'SETPARAM',
+                                $row['dep_name'],
+                                $k,
+                                $v,
+                            )
+                        ) . "\n";
                 }
                 // add host children
                 $childSql = "SELECT host_name
@@ -1219,15 +1226,16 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['host_name']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['host_name']
+                            )
+                        ) . "\n";
                 }
 
                 // add service children
@@ -1239,27 +1247,29 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['host_name'] . ',' . $childRow['service_description']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['host_name'] . ',' . $childRow['service_description']
+                            )
+                        ) . "\n";
                 }
             } else {
                 // addparent
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADDPARENT',
-                        $row['dep_name'],
-                        $row['host_name'] . ',' . $row['service_description']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADDPARENT',
+                            $row['dep_name'],
+                            $row['host_name'] . ',' . $row['service_description']
+                        )
+                    ) . "\n";
             }
             $previous = $row['dep_id'];
         }
@@ -1287,32 +1297,34 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADD',
-                        $row['dep_name'],
-                        $row['dep_description'],
-                        self::DEP_TYPE_HOSTGROUP,
-                        $row['hg_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADD',
+                            $row['dep_name'],
+                            $row['dep_description'],
+                            self::DEP_TYPE_HOSTGROUP,
+                            $row['hg_name']
+                        )
+                    ) . "\n";
                 foreach ($row as $k => $v) {
                     if (!in_array($k, $paramArr)) {
                         continue;
                     }
                     // setparam
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'SETPARAM',
-                            $row['dep_name'],
-                            $k,
-                            $v,
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'SETPARAM',
+                                $row['dep_name'],
+                                $k,
+                                $v,
+                            )
+                        ) . "\n";
                 }
                 // add children
                 $childSql = "SELECT hg_name
@@ -1322,27 +1334,29 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['hg_name']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['hg_name']
+                            )
+                        ) . "\n";
                 }
             } else {
                 // addparent
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADDPARENT',
-                        $row['dep_name'],
-                        $row['hg_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADDPARENT',
+                            $row['dep_name'],
+                            $row['hg_name']
+                        )
+                    ) . "\n";
             }
             $previous = $row['dep_id'];
         }
@@ -1370,32 +1384,34 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADD',
-                        $row['dep_name'],
-                        $row['dep_description'],
-                        self::DEP_TYPE_SERVICEGROUP,
-                        $row['sg_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADD',
+                            $row['dep_name'],
+                            $row['dep_description'],
+                            self::DEP_TYPE_SERVICEGROUP,
+                            $row['sg_name']
+                        )
+                    ) . "\n";
                 foreach ($row as $k => $v) {
                     if (!in_array($k, $paramArr)) {
                         continue;
                     }
                     // setparam
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'SETPARAM',
-                            $row['dep_name'],
-                            $k,
-                            $v,
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'SETPARAM',
+                                $row['dep_name'],
+                                $k,
+                                $v,
+                            )
+                        ) . "\n";
                 }
                 // add children
                 $childSql = "SELECT sg_name
@@ -1405,27 +1421,29 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['sg_name']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['sg_name']
+                            )
+                        ) . "\n";
                 }
             } else {
                 // addparent
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADDPARENT',
-                        $row['dep_name'],
-                        $row['sg_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADDPARENT',
+                            $row['dep_name'],
+                            $row['sg_name']
+                        )
+                    ) . "\n";
             }
             $previous = $row['dep_id'];
         }
@@ -1453,32 +1471,34 @@ class CentreonDependency extends CentreonObject
         );
         foreach ($rows as $row) {
             if ($row['dep_id'] != $previous) { // add dependency
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADD',
-                        $row['dep_name'],
-                        $row['dep_description'],
-                        self::DEP_TYPE_META,
-                        $row['meta_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADD',
+                            $row['dep_name'],
+                            $row['dep_description'],
+                            self::DEP_TYPE_META,
+                            $row['meta_name']
+                        )
+                    ) . "\n";
                 foreach ($row as $k => $v) {
                     if (!in_array($k, $paramArr)) {
                         continue;
                     }
                     // setparam
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'SETPARAM',
-                            $row['dep_name'],
-                            $k,
-                            $v,
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'SETPARAM',
+                                $row['dep_name'],
+                                $k,
+                                $v,
+                            )
+                        ) . "\n";
                 }
                 // add children
                 $childSql = "SELECT meta_name
@@ -1488,27 +1508,29 @@ class CentreonDependency extends CentreonObject
                 $res = $this->db->query($childSql, array($row['dep_id']));
                 $childRows = $res->fetchAll();
                 foreach ($childRows as $childRow) {
-                    echo implode(
-                        $this->delim,
-                        array(
-                            $this->action,
-                            'ADDCHILD',
-                            $row['dep_name'],
-                            $childRow['meta_name']
-                        )
-                    ) . "\n";
+                    echo
+                        implode(
+                            $this->delim,
+                            array(
+                                $this->action,
+                                'ADDCHILD',
+                                $row['dep_name'],
+                                $childRow['meta_name']
+                            )
+                        ) . "\n";
                 }
             } else {
                 // addparent
-                echo implode(
-                    $this->delim,
-                    array(
-                        $this->action,
-                        'ADDPARENT',
-                        $row['dep_name'],
-                        $row['meta_name']
-                    )
-                ) . "\n";
+                echo
+                    implode(
+                        $this->delim,
+                        array(
+                            $this->action,
+                            'ADDPARENT',
+                            $row['dep_name'],
+                            $row['meta_name']
+                        )
+                    ) . "\n";
             }
             $previous = $row['dep_id'];
         }

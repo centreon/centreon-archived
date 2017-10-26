@@ -35,27 +35,28 @@
  */
 
 $debug = 0;
-	
+
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
+require_once realpath(dirname(__FILE__) . '/../config/centreon.config.php');
 require_once realpath(__DIR__ . "/../bootstrap.php");
 
 define('APPLICATION_PATH', realpath(dirname(__FILE__)));
-set_include_path(implode(PATH_SEPARATOR, array(realpath(APPLICATION_PATH . '/../lib'),    											   
-                                               realpath(APPLICATION_PATH . '/../www/class/centreon-clapi'),
-                                               get_include_path()
-                                               )));
+set_include_path(implode(PATH_SEPARATOR, array(
+    realpath(APPLICATION_PATH . '/../lib'),
+    realpath(APPLICATION_PATH . '/../www/class/centreon-clapi'),
+    get_include_path()
+)));
 
-define('_CLAPI_LIB_', realpath(dirname(__FILE__))."/../lib");
-define('_CLAPI_CLASS_', realpath(dirname(__FILE__))."/../www/class/centreon-clapi");
+define('_CLAPI_LIB_', realpath(dirname(__FILE__)) . "/../lib");
+define('_CLAPI_CLASS_', realpath(dirname(__FILE__)) . "/../www/class/centreon-clapi");
 
 global $version;
 
 /**
- * Declare Options 
+ * Declare Options
  */
-$shortopts  = "";
+$shortopts = "";
 $shortopts .= "d"; /* Debug mode */
 $shortopts .= "u:"; /* Users */
 $shortopts .= "p:"; /* Password */
@@ -68,7 +69,7 @@ $shortopts .= "a:"; /* Action */
 $shortopts .= "i:"; /* Import Massive data */
 $shortopts .= "e"; /* Export all configuration */
 
-$longopts  = array(
+$longopts = array(
     "select:",
     "filter-type:",
     "filter-ariane:"
@@ -85,55 +86,45 @@ if (isset($options['s'])) {
 if ($debug) {
     print_r($options);
 } else {
-    // Set logging options                                                                                                                                                                                                                                                    
-	if (defined("E_DEPRECATED")) {
-		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-	} else {
-		ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
-	}
+    // Set logging options
+    if (defined("E_DEPRECATED")) {
+        ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+    } else {
+        ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
+    }
 }
 
-require_once _CENTREON_ETC_."/centreon.conf.php";
-require_once _CLAPI_CLASS_."/centreonAPI.class.php";
-require_once _CLAPI_CLASS_."/centreonUtils.class.php";
-require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
+require_once _CENTREON_ETC_ . "/centreon.conf.php";
+require_once _CLAPI_CLASS_ . "/centreonAPI.class.php";
+require_once _CLAPI_CLASS_ . "/centreonUtils.class.php";
+require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
 
 $dbConfig['host'] = $conf_centreon['hostCentreon'];
 $dbConfig['username'] = $conf_centreon['user'];
 $dbConfig['password'] = $conf_centreon['password'];
 $dbConfig['dbname'] = $conf_centreon['db'];
 if (isset($conf_centreon['port'])) {
-    $dbConfig['port'] = $conf_centreon['port']; 
+    $dbConfig['port'] = $conf_centreon['port'];
 } elseif ($p = strstr($dbConfig['host'], ':')) {
     $p = substr($p, 1);
     if (is_numeric($p)) {
         $dbConfig['port'] = $p;
     }
 }
-$db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+$db = $dependencyInjector['configuration_db'];
 $db->query('SET NAMES utf8');
 $dbConfig['dbname'] = $conf_centreon['dbcstg'];
-$db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
-try {
-  $db->getConnection();
-  $db_storage->getConnection();
-} catch (Exception $e) {
-    echo sprintf("Could not connect to database. Check your configuration file %s\n", _CENTREON_ETC_.'/centreon.conf.php');
-    if (isset($options['h'])) {
-        CentreonClapi\CentreonAPI::printHelp(false, 1);
-    }
-    exit(1);
-  }
+$db_storage = $dependencyInjector['realtime_db'];
 
 /**
  * Create Centreon API object
  */
 CentreonClapi\CentreonUtils::setUserName($options['u']);
 $api = CentreonClapi\CentreonAPI::getInstance(
-    (isset($options["u"]) ? $options["u"] : ""), 
-    (isset($options["p"]) ? $options["p"] : ""), 
-    (isset($options["a"]) ? $options["a"] : ""), 
-    $centreon_path, 
+    (isset($options["u"]) ? $options["u"] : ""),
+    (isset($options["p"]) ? $options["p"] : ""),
+    (isset($options["a"]) ? $options["a"] : ""),
+    $centreon_path,
     $options,
     $dependencyInjector
 );
@@ -143,21 +134,21 @@ if (isset($options["h"])) {
 
 if (isset($options["V"])) {
     $api->printVersion();
-    exit(0);		
+    exit(0);
 }
 
 /**
  * Now works
  */
 if ($api->login == "" || $api->password == "") {
-    if (file_exists($_SERVER["HOME"]."/.centreonApi")) {
-        $uid = posix_getpwuid (fileowner($_SERVER["HOME"]."/.centreonApi"));
-        $perms = substr(sprintf('%o', fileperms($_SERVER["HOME"]."/.centreonApi")), -3);
-        if (strcmp($perms,'400') == 0  && strcmp($_SERVER['USER'], $uid['name']) == 0) {
-            $handle = @fopen($_SERVER["HOME"]."/.centreonApi", "r");
+    if (file_exists($_SERVER["HOME"] . "/.centreonApi")) {
+        $uid = posix_getpwuid(fileowner($_SERVER["HOME"] . "/.centreonApi"));
+        $perms = substr(sprintf('%o', fileperms($_SERVER["HOME"] . "/.centreonApi")), -3);
+        if (strcmp($perms, '400') == 0 && strcmp($_SERVER['USER'], $uid['name']) == 0) {
+            $handle = @fopen($_SERVER["HOME"] . "/.centreonApi", "r");
             if ($handle) {
                 /**
-                 * Read Only the first line 
+                 * Read Only the first line
                  */
                 $str = fgets($handle);
                 fclose($handle);
@@ -175,19 +166,19 @@ if ($api->login == "" || $api->password == "") {
         $api->printHelp();
     }
 } else {
-	  	
+
     if (!isset($api->options["V"]) && !isset($api->options["h"])) {
         $api->checkUser($useSha1);
     }
-		
+
     /*
      * Check action to do
      */
     if (isset($api->options["e"])) {
         $api->export();
-    } else if (isset($api->options["i"])) {
+    } elseif (isset($api->options["i"])) {
         $api->import($api->options["i"]);
-    } else if (isset($api->options["a"])) {
+    } elseif (isset($api->options["a"])) {
         try {
             $api->launchAction();
         } catch (\CentreonClapi\CentreonClapiException $e) {

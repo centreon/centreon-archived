@@ -81,10 +81,10 @@ class CentreonServiceTemplate extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Service();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Service($dependencyInjector);
         $this->params = array(
             'service_is_volatile' => '2',
             'service_active_checks_enabled' => '2',
@@ -150,7 +150,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (isset($parameters)) {
             $filters["service_description"] = "%" . $parameters . "%";
         }
-        $commandObject = new \Centreon_Object_Command();
+        $commandObject = new \Centreon_Object_Command($this->dependencyInjector);
         $paramsSvc = array(
             'service_id',
             'service_description',
@@ -250,7 +250,7 @@ class CentreonServiceTemplate extends CentreonObject
         $this->params = array_merge($this->params, $addParams);
         $serviceId = parent::add();
 
-        $extended = new \Centreon_Object_Service_Extended();
+        $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
     }
 
@@ -313,7 +313,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
         $objectId = $elements[0]['service_id'];
         $extended = false;
-        $commandObject = new CentreonCommand();
+        $commandObject = new CentreonCommand($this->dependencyInjector);
         switch ($params[1]) {
             case "check_command":
                 $params[1] = "command_command_id";
@@ -331,12 +331,12 @@ class CentreonServiceTemplate extends CentreonObject
                 break;
             case "check_period":
                 $params[1] = "timeperiod_tp_id";
-                $tpObj = new CentreonTimePeriod();
+                $tpObj = new CentreonTimePeriod($this->dependencyInjector);
                 $params[2] = $tpObj->getTimeperiodId($params[2]);
                 break;
             case "notification_period":
                 $params[1] = "timeperiod_tp_id2";
-                $tpObj = new CentreonTimePeriod();
+                $tpObj = new CentreonTimePeriod($this->dependencyInjector);
                 $params[2] = $tpObj->getTimeperiodId($params[2]);
                 break;
             case "flap_detection_options":
@@ -359,7 +359,7 @@ class CentreonServiceTemplate extends CentreonObject
                 break;
             case "graphtemplate":
                 $extended = true;
-                $graphObj = new \Centreon_Object_Graph_Template();
+                $graphObj = new \Centreon_Object_Graph_Template($this->dependencyInjector);
                 $tmp = $graphObj->getIdByParameter($graphObj->getUniqueLabelField(), $params[2]);
                 if (!count($tmp)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
@@ -418,7 +418,7 @@ class CentreonServiceTemplate extends CentreonObject
                     }
                 }
             }
-            $extended = new \Centreon_Object_Service_Extended();
+            $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
             $extended->update($objectId, array($params[1] => $params[2]));
         }
     }
@@ -475,7 +475,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $serviceDesc);
         }
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macroList = $macroObj->getList(
             array("svc_macro_name", "svc_macro_value", "description"),
             -1,
@@ -520,7 +520,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macroList = $macroObj->getList(
             $macroObj->getPrimaryKey(),
             -1,
@@ -570,7 +570,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macroList = $macroObj->getList(
             $macroObj->getPrimaryKey(),
             -1,
@@ -604,7 +604,7 @@ class CentreonServiceTemplate extends CentreonObject
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_SVCDESC]);
         }
 
-        $severityObj = new \Centreon_Object_Service_Category();
+        $severityObj = new \Centreon_Object_Service_Category($this->dependencyInjector);
         $severity = $severityObj->getIdByParameter(
             $severityObj->getUniqueLabelField(),
             $params[1]
@@ -625,7 +625,7 @@ class CentreonServiceTemplate extends CentreonObject
                  AND sc_id IN (SELECT sc_id FROM service_categories WHERE level > 0)",
                 $serviceId
             );
-            $rel = new \Centreon_Object_Relation_Service_Category_Service();
+            $rel = new \Centreon_Object_Relation_Service_Category_Service($this->dependencyInjector);
             $rel->insert($severityId, $serviceId);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[1]);
@@ -720,8 +720,8 @@ class CentreonServiceTemplate extends CentreonObject
                 }
                 $serviceId = $elements[0]['service_id'];
 
-                $relobj = new $relclass();
-                $obj = new $class();
+                $relobj = new $relclass($this->dependencyInjector);
+                $obj = new $class($this->dependencyInjector);
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId(
                         $relobj->getFirstKey(),
@@ -819,10 +819,10 @@ class CentreonServiceTemplate extends CentreonObject
      */
     protected function parseTemplateTree($tree, $filter_id = null)
     {
-        $commandObj = new \Centreon_Object_Command();
-        $tpObj = new \Centreon_Object_Timeperiod();
-        $extendedObj = new \Centreon_Object_Service_Extended();
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
+        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
+        $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
+        $extendedObj = new \Centreon_Object_Service_Extended($this->dependencyInjector);
+        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         foreach ($tree as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -941,7 +941,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // contact groups
-        $cgRel = new \Centreon_Object_Relation_Contact_Group_Service();
+        $cgRel = new \Centreon_Object_Relation_Contact_Group_Service($this->dependencyInjector);
         $filters_cgRel = array("service_register" => $this->register);
         if (!is_null($filters['service_id'])) {
             $filters_cgRel['service_id'] = $filters['service_id'];
@@ -965,7 +965,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // contacts
-        $contactRel = new \Centreon_Object_Relation_Contact_Service();
+        $contactRel = new \Centreon_Object_Relation_Contact_Service($this->dependencyInjector);
         $filters_contactRel = array("service_register" => $this->register);
         if (!is_null($filters['service_id'])) {
             $filters_contactRel['service_id'] = $filters['service_id'];
@@ -989,7 +989,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // macros
-        $macroObj = new \Centreon_Object_Service_Macro_Custom();
+        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macros = $macroObj->getList(
             "*",
             -1,
@@ -1009,7 +1009,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // traps
-        $trapRel = new \Centreon_Object_Relation_Trap_Service();
+        $trapRel = new \Centreon_Object_Relation_Trap_Service($this->dependencyInjector);
         $filters_trapRel = array("service_register" => $this->register);
         if (!is_null($filters['service_id'])) {
             $filters_trapRel['traps_service_relation.service_id'] = $filters['service_id'];
@@ -1033,7 +1033,7 @@ class CentreonServiceTemplate extends CentreonObject
         }
 
         // hosts
-        $hostRel = new \Centreon_Object_Relation_Host_Service();
+        $hostRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $filters_hostRel = array("service_register" => $this->register);
         if (!is_null($filters['service_id'])) {
             $filters_hostRel['service_id'] = $filters['service_id'];

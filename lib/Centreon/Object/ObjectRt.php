@@ -37,15 +37,13 @@ require_once "Centreon/Cache/Manager/Manager.php";
 
 /**
  * Abstract Centreon Object class
- *
- * @author sylvestre
  */
-abstract class Centreon_Object
+abstract class Centreon_ObjectRt
 {
     /**
      * Database Connector
      */
-    protected $db;
+    protected $dbMon;
 
     /**
      * Database Cache
@@ -79,7 +77,7 @@ abstract class Centreon_Object
      */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = $dependencyInjector['configuration_db'];
+        $this->dbMon = $dependencyInjector['realtime_db'];
         $this->cache = Centreon_Cache_Manager::factory('centreonObjects', 60, '/tmp/');
         $this->useCache = false;
     }
@@ -96,134 +94,13 @@ abstract class Centreon_Object
     {
         $cacheFileName = Centreon_Cache_Manager::getCacheFileName($sqlQuery, $sqlParams);
         if (($this->useCache === false) || ($result = $this->cache->load($cacheFileName)) === false) {
-            $res = $this->db->query($sqlQuery, $sqlParams);
+            $res = $this->dbMon->query($sqlQuery, $sqlParams);
             $result = $res->{$fetchMethod}();
             if ($this->useCache === true) {
                 $this->cache->save($result, $cacheFileName);
             }
         }
         return $result;
-    }
-
-    /**
-     * Used for inserting object into database
-     *
-     * @param array $params
-     * @return int
-     */
-    public function insert($params = array())
-    {
-        $sql = "INSERT INTO $this->table ";
-        $sqlFields = "";
-        $sqlValues = "";
-        $sqlParams = array();
-        foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey) {
-                continue;
-            }
-            if ($sqlFields != "") {
-                $sqlFields .= ",";
-            }
-            if ($sqlValues != "") {
-                $sqlValues .= ",";
-            }
-            $sqlFields .= $key;
-            $sqlValues .= "?";
-            $sqlParams[] = trim($value);
-        }
-        if ($sqlFields && $sqlValues) {
-            $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
-            $this->db->query($sql, $sqlParams);
-            return $this->db->lastInsertId();
-        }
-        return null;
-    }
-
-    /**
-     * Used for deleteing object from database
-     *
-     * @param int $objectId
-     */
-    public function delete($objectId)
-    {
-        $sql = "DELETE FROM  $this->table WHERE $this->primaryKey = ?";
-        $this->db->query($sql, array($objectId));
-    }
-
-    /**
-     * Used for updating object in database
-     *
-     * @param int $objectId
-     * @param array $params
-     * @return void
-     */
-    public function update($objectId, $params = array())
-    {
-        $sql = "UPDATE $this->table SET ";
-        $sqlUpdate = "";
-        $sqlParams = array();
-        $not_null_attributes = array();
-
-        if (array_search("", $params)) {
-            $sql_attr = "SHOW FIELDS FROM $this->table";
-            $res = $this->getResult($sql_attr, array(), "fetchAll");
-            foreach ($res as $tab) {
-                if ($tab['Null'] == 'NO') {
-                    $not_null_attributes[$tab['Field']] = true;
-                }
-            }
-        }
-
-        foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey) {
-                continue;
-            }
-            if ($sqlUpdate != "") {
-                $sqlUpdate .= ",";
-            }
-            $sqlUpdate .= $key . " = ? ";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
-                $value = null;
-            }
-            if (!is_null($value)) {
-                $value = str_replace("<br/>", "\n", $value);
-            }
-            $sqlParams[] = $value;
-        }
-
-        if ($sqlUpdate) {
-            $sqlParams[] = $objectId;
-            $sql .= $sqlUpdate . " WHERE $this->primaryKey = ?";
-            $this->db->query($sql, $sqlParams);
-        }
-    }
-
-    /**
-     * Used for duplicating object
-     *
-     * @param int $sourceObjectId
-     * @param int $duplicateEntries
-     * @todo relations
-     */
-    public function duplicate($sourceObjectId, $duplicateEntries = 1)
-    {
-        $sourceParams = $this->getParameters($sourceObjectId, "*");
-        if (isset($sourceParams[$this->primaryKey])) {
-            unset($sourceParams[$this->primaryKey]);
-        }
-        if (isset($sourceParams[$this->uniqueLabelField])) {
-            $originalName = $sourceParams[$this->uniqueLabelField];
-        }
-        $originalName = $sourceParams[$this->uniqueLabelField];
-        for ($i = 1; $i <= $duplicateEntries; $i++) {
-            if (isset($sourceParams[$this->uniqueLabelField]) && isset($originalName)) {
-                $sourceParams[$this->uniqueLabelField] = $originalName . "_" . $i;
-            }
-            $ids = $this->getIdByParameter($this->uniqueLabelField, array($sourceParams[$this->uniqueLabelField]));
-            if (!count($ids)) {
-                $this->insert($sourceParams);
-            }
-        }
     }
 
     /**
@@ -296,7 +173,7 @@ abstract class Centreon_Object
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $sql = $this->db->limit($sql, $count, $offset);
+            $sql = $this->dbMon->limit($sql, $count, $offset);
         }
         return $this->getResult($sql, $filterTab, "fetchAll");
     }

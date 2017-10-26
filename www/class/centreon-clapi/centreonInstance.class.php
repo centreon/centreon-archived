@@ -56,10 +56,10 @@ class CentreonInstance extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Instance();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Instance($dependencyInjector);
         $this->params = array(
             'localhost' => '0',
             'ns_activate' => '1',
@@ -82,7 +82,7 @@ class CentreonInstance extends CentreonObject
         $this->action = "INSTANCE";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->activateField = "ns_activate";
-        $this->centreonConfigPoller = new CentreonConfigPoller(_CENTREON_PATH_, $this->api->getDependencyInjector());
+        $this->centreonConfigPoller = new CentreonConfigPoller(_CENTREON_PATH_, $dependencyInjector);
     }
 
     /**
@@ -211,7 +211,7 @@ class CentreonInstance extends CentreonObject
      */
     public function getHosts($instanceName)
     {
-        $relObj = new \Centreon_Object_Relation_Instance_Host();
+        $relObj = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
         $fields = array('host_id', 'host_name', 'host_address');
         $elems = $relObj->getMergedParameters(
             array(),

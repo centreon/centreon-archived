@@ -41,10 +41,10 @@ class Centreon_Object_Relation_Acl_Group_Contact_Group extends Centreon_Object_R
     protected $firstKey = "acl_group_id";
     protected $secondKey = "cg_cg_id";
 
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Acl_Group();
-        $this->secondObject = new Centreon_Object_Contact_Group();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Acl_Group($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Contact_Group($dependencyInjector);
     }
 }

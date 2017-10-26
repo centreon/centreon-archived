@@ -48,11 +48,11 @@ require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
  */
 class CentreonCentbrokerCfg extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_INSTANCE          = 1;
-    const UNKNOWNCOMBO            = "Unknown combination";
-    const INVALIDFIELD            = "Invalid field";
-    const NOENTRYFOUND            = "No entry found";
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_INSTANCE = 1;
+    const UNKNOWNCOMBO = "Unknown combination";
+    const INVALIDFIELD = "Invalid field";
+    const NOENTRYFOUND = "No entry found";
     protected $instanceObj;
     protected $brokerObj;
 
@@ -65,12 +65,12 @@ class CentreonCentbrokerCfg extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->instanceObj = new CentreonInstance();
-        $this->brokerObj = new \CentreonConfigCentreonBroker((new \CentreonDB()));
-        $this->object = new \Centreon_Object_Broker();
+        parent::__construct($dependencyInjector);
+        $this->instanceObj = new CentreonInstance($dependencyInjector);
+        $this->brokerObj = new \CentreonConfigCentreonBroker($dependencyInjector['configuration_db']);
+        $this->object = new \Centreon_Object_Broker($dependencyInjector);
         $this->params = array(
             'config_filename' => 'central-broker.xml',
             'config_activate' => '1'
@@ -127,13 +127,13 @@ class CentreonCentbrokerCfg extends CentreonObject
                     "daemon"
                 );
                 if (!in_array($params[1], $parametersWithoutPrefix)) {
-                    $params[1] = 'config_'.$params[1];
+                    $params[1] = 'config_' . $params[1];
                 }
             }
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -145,7 +145,7 @@ class CentreonCentbrokerCfg extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("config_id", "config_name", "ns_nagios_server");
         $paramString = str_replace("_", " ", implode($this->delim, $params));
@@ -208,7 +208,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             $args = explode($this->delim, $arg[0]);
             $configIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($configIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $configId = $configIds[0];
 
@@ -267,7 +267,7 @@ class CentreonCentbrokerCfg extends CentreonObject
      */
     private function getFlow($configId, $tagName, $args)
     {
-        if (!isset($args[1]) || !$args[1]) {
+        if (!isset($args[1]) || $args[1] == '') {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
@@ -378,7 +378,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!isset($args[2])) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        
+
         $cbTypeId = $this->brokerObj->getTypeId($args[2]);
         if (is_null($cbTypeId)) {
             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
@@ -499,14 +499,14 @@ class CentreonCentbrokerCfg extends CentreonObject
         $res = $this->db->query($sql, array($tagName));
         $rows = $res->fetchAll();
         if (!count($rows)) {
-            throw new CentreonClapiException(self::NOENTRYFOUND." for ".$tagName);
+            throw new CentreonClapiException(self::NOENTRYFOUND . " for " . $tagName);
         }
-        echo "type id".$this->delim."short name".$this->delim."name\n";
+        echo "type id" . $this->delim . "short name" . $this->delim . "name\n";
         foreach ($rows as $row) {
-            echo $row['cb_type_id'].$this->delim.$row['type_shortname'].$this->delim.$row['type_name']."\n";
+            echo $row['cb_type_id'] . $this->delim . $row['type_shortname'] . $this->delim . $row['type_name'] . "\n";
         }
     }
-    
+
     /**
      * User help method
      * Get Field list from Type
@@ -527,15 +527,15 @@ class CentreonCentbrokerCfg extends CentreonObject
         $res = $this->db->query($sql, array($typeName));
         $rows = $res->fetchAll();
         if (!count($rows)) {
-            throw new CentreonClapiException(self::NOENTRYFOUND." for ".$typeName);
+            throw new CentreonClapiException(self::NOENTRYFOUND . " for " . $typeName);
         }
-        echo "field id".$this->delim."short name".$this->delim."name\n";
+        echo "field id" . $this->delim . "short name" . $this->delim . "name\n";
         foreach ($rows as $row) {
-            echo $row['cb_field_id'].$this->delim.$row['fieldname'];
+            echo $row['cb_field_id'] . $this->delim . $row['fieldname'];
             if ($row['fieldtype'] == 'select' || $row['fieldtype'] == 'multiselect') {
                 echo "*";
             }
-            echo $this->delim.$row['displayname'].$this->delim.$row['fieldtype']."\n";
+            echo $this->delim . $row['displayname'] . $this->delim . $row['fieldtype'] . "\n";
         }
     }
 
@@ -559,11 +559,11 @@ class CentreonCentbrokerCfg extends CentreonObject
         $res = $this->db->query($sql, array($selectName));
         $rows = $res->fetchAll();
         if (!count($rows)) {
-            throw new CentreonClapiException(self::NOENTRYFOUND." for ".$selectName);
+            throw new CentreonClapiException(self::NOENTRYFOUND . " for " . $selectName);
         }
         echo "possible values\n";
         foreach ($rows as $row) {
-            echo $row['value_value']."\n";
+            echo $row['value_value'] . "\n";
         }
     }
 
@@ -586,9 +586,9 @@ class CentreonCentbrokerCfg extends CentreonObject
         $res = $this->db->query($sql, array($tagName, $typeName));
         $row = $res->fetch();
         if (!isset($row['cb_type_id']) || !isset($row['cb_tag_id'])) {
-            throw new CentreonClapiException(self::UNKNOWNCOMBO.': '.$tagName.'/'.$typeName);
+            throw new CentreonClapiException(self::UNKNOWNCOMBO . ': ' . $tagName . '/' . $typeName);
         }
-        return $row['cb_tag_id']."_".$row['cb_type_id'];
+        return $row['cb_tag_id'] . "_" . $row['cb_type_id'];
     }
 
     /**
@@ -703,10 +703,10 @@ class CentreonCentbrokerCfg extends CentreonObject
 
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD".
-                      $this->delim.$element['config_name'].
-                      $this->delim.$this->instanceObj->getInstanceName($element['ns_nagios_server']);
-            echo $addStr."\n";
+            $addStr = $this->action . $this->delim . "ADD" .
+                $this->delim . $element['config_name'] .
+                $this->delim . $this->instanceObj->getInstanceName($element['ns_nagios_server']);
+            echo $addStr . "\n";
             echo $this->action . $this->delim
                 . "SETPARAM" . $this->delim
                 . $element['config_name'] . $this->delim
@@ -716,7 +716,7 @@ class CentreonCentbrokerCfg extends CentreonObject
                 . "SETPARAM" . $this->delim
                 . $element['config_name'] . $this->delim
                 . "cache_directory" . $this->delim
-                . $element['cache_directory']."\n";
+                . $element['cache_directory'] . "\n";
             echo $this->action . $this->delim
                 . "SETPARAM" . $this->delim
                 . $element['config_name'] . $this->delim
@@ -748,27 +748,27 @@ class CentreonCentbrokerCfg extends CentreonObject
                     && $row['config_key'] != 'blockId'
                     && $row['config_key'] != 'filters'
                     && $row['config_key'] != 'category') {
-                    if (!isset($setParamStr[$row['config_group'].'_'.$row['config_group_id']])) {
-                        $setParamStr[$row['config_group'].'_'.$row['config_group_id']] = "";
+                    if (!isset($setParamStr[$row['config_group'] . '_' . $row['config_group_id']])) {
+                        $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] = "";
                     }
                     $row['config_value'] = CentreonUtils::convertLineBreak($row['config_value']);
                     if ($row['config_value'] != '') {
                         $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] .=
-                            $this->action.$this->delim."SET".strtoupper($row['config_group']) .
-                            $this->delim.$element['config_name'] .
-                            $this->delim.$row['config_group_id'] .
-                            $this->delim.$row['config_key'] .
-                            $this->delim.$row['config_value'] . "\n";
+                            $this->action . $this->delim . "SET" . strtoupper($row['config_group']) .
+                            $this->delim . $element['config_name'] .
+                            $this->delim . $row['config_group_id'] .
+                            $this->delim . $row['config_key'] .
+                            $this->delim . $row['config_value'] . "\n";
                     }
                 } elseif ($row['config_key'] == 'name') {
-                    $addParamStr[$row['config_group'].'_'.$row['config_group_id']] =
-                        $this->action.$this->delim."ADD".strtoupper($row['config_group']).
-                        $this->delim.$element['config_name'].
-                        $this->delim.$row['config_value'];
+                    $addParamStr[$row['config_group'] . '_' . $row['config_group_id']] =
+                        $this->action . $this->delim . "ADD" . strtoupper($row['config_group']) .
+                        $this->delim . $element['config_name'] .
+                        $this->delim . $row['config_value'];
                 } elseif ($row['config_key'] == 'blockId') {
-                    $blockId[$row['config_group'].'_'.$row['config_group_id']] = $row['config_value'];
+                    $blockId[$row['config_group'] . '_' . $row['config_group_id']] = $row['config_value'];
                 } elseif ($row['config_key'] == 'category') {
-                    $categories[$row['config_group'].'_'.$row['config_group_id']][] = $row['config_value'];
+                    $categories[$row['config_group'] . '_' . $row['config_group_id']][] = $row['config_value'];
                 }
             }
             foreach ($addParamStr as $id => $add) {
@@ -780,18 +780,18 @@ class CentreonCentbrokerCfg extends CentreonObject
                     );
                     $rowType = $resType->fetch();
                     if (isset($rowType['type_shortname'])) {
-                        echo $add.$this->delim.$rowType['type_shortname']."\n";
+                        echo $add . $this->delim . $rowType['type_shortname'] . "\n";
                         echo $setParamStr[$id];
                     }
                     unset($resType);
                 }
                 if (isset($categories[$id])) {
                     list($configGroup, $configGroupId) = explode('_', $id);
-                    echo $this->action.$this->delim."SET".strtoupper($configGroup)
-                        .$this->delim.$element['config_name']
-                        .$this->delim.$configGroupId
-                        .$this->delim.'category'
-                        .$this->delim.implode(',', $categories[$id])."\n";
+                    echo $this->action . $this->delim . "SET" . strtoupper($configGroup)
+                        . $this->delim . $element['config_name']
+                        . $this->delim . $configGroupId
+                        . $this->delim . 'category'
+                        . $this->delim . implode(',', $categories[$id]) . "\n";
                 }
             }
         }

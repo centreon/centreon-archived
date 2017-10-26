@@ -47,10 +47,10 @@ class Centreon_Object_Relation_Host_Group_Service extends Centreon_Object_Relati
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Host_Group();
-        $this->secondObject = new Centreon_Object_Service();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Host_Group($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Service($dependencyInjector);
     }
 }

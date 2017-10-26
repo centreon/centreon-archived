@@ -121,9 +121,10 @@ abstract class CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = \Centreon_Db_Manager::factory('centreon');
+        $this->db = $dependencyInjector['configuration_db'];
+        $this->dependencyInjector = $dependencyInjector;
         $res = $this->db->query("SELECT `value` FROM informations WHERE `key` = 'version'");
         $row = $res->fetch();
         $this->version = $row['value'];
@@ -447,11 +448,11 @@ abstract class CentreonObject
         }
         $objType = $objectTypes[$objType];
 
-        $contactObj = new \Centreon_Object_Contact();
+        $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
 
-        $dbstorage = \Centreon_Db_Manager::factory('storage');
+        $dbstorage = $this->dependencyInjector['realtime_db'];
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
             VALUES (?, ?, ?, ?, ?, ?)';

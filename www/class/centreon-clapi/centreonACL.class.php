@@ -55,9 +55,9 @@ class CentreonACL
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = \Centreon_Db_Manager::factory('centreon');
+        $this->db = $dependencyInjector['configuration_db'];
     }
 
     /**

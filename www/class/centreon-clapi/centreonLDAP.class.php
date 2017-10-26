@@ -58,13 +58,13 @@ class CentreonLDAP extends CentreonObject
 
 
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonLDAP constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Ldap($dependencyInjector);
         $this->baseParams = array(
             'alias' => '',
             'bind_dn' => '',
@@ -91,7 +91,6 @@ class CentreonLDAP extends CentreonObject
             'user_pager' => '',
             'user_group' => ''
         );
-        $this->object = new \Centreon_Object_Ldap();
         $this->serverParams = array('host_address', 'host_port', 'host_order', 'use_ssl', 'use_tls');
         $this->action = "LDAP";
     }
@@ -334,7 +333,7 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
-                $contactObj = new CentreonContact($this->db);
+                $contactObj = new CentreonContact($this->dependencyInjector);
                 $params[2] = $contactObj->getContactID($params[2]);
             }
             $this->db->query(
@@ -386,8 +385,8 @@ class CentreonLDAP extends CentreonObject
      */
     public function export($filters = null)
     {
-        $configurationLdapObj = new \Centreon_Object_Configuration_Ldap();
-        $serverLdapObj = new \Centreon_Object_Server_Ldap();
+        $configurationLdapObj = new \Centreon_Object_Configuration_Ldap($this->dependencyInjector);
+        $serverLdapObj = new \Centreon_Object_Server_Ldap($this->dependencyInjector);
         $ldapList = $this->object->getList('*', -1, 0, null, null, $filters);
 
         foreach ($ldapList as $ldap) {
@@ -422,7 +421,7 @@ class CentreonLDAP extends CentreonObject
                     $configuration['ari_name'] != 'ldap_dns_use_tls'
                 ) {
                     if ($configuration['ari_name'] == 'ldap_contact_tmpl') {
-                        $contactObj = new \Centreon_Object_Contact();
+                        $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
                         $contactName = $contactObj->getParameters($configuration['ari_value'], 'contact_name');
                         $configuration['ari_value'] = $contactName['contact_name'];
                     }

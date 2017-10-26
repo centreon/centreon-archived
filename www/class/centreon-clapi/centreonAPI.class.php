@@ -229,12 +229,14 @@ class CentreonAPI
             'class' => 'Downtime',
             'export' => true
         );
+
         /* RtDowntimes */
         $this->relationObject["RTDOWNTIME"] = array(
             'module' => 'core',
             'class' => 'RtDowntime',
-            'export' => true
+            'export' => false
         );
+
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
@@ -695,10 +697,8 @@ class CentreonAPI
                 print "Object $this->object not found in Centreon API.\n";
                 return 1;
             }
-            $obj = new $objName($this->DB, $this->object);
-            if (method_exists($obj, 'setDependencyInjector')) {
-                $obj->setDependencyInjector($this->dependencyInjector);
-            }
+
+            $obj = new $objName($this->dependencyInjector, $this->object);
 
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
@@ -897,10 +897,7 @@ class CentreonAPI
         }
         $className .= '\CentreonClapi\centreon' . $this->relationObject[$objname]['class'];
         $this->requireLibs($objname);
-        $this->objectTable[$objname] = new $className($this->DB, $objname);
-        if (method_exists($this->objectTable[$objname], 'setDependencyInjector')) {
-            $this->objectTable[$objname]->setDependencyInjector($this->dependencyInjector);
-        }
+        $this->objectTable[$objname] = new $className($this->dependencyInjector, $objname);
     }
 
     /**

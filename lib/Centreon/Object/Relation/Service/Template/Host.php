@@ -41,11 +41,11 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
     protected $firstKey = "service_service_id";
     protected $secondKey = "host_host_id";
 
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Service_Template();
-        $this->secondObject = new Centreon_Object_Host_Template();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Service_Template($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Host_Template($dependencyInjector);
     }
 
     /**

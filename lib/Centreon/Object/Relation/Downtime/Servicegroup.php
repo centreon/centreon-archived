@@ -48,10 +48,10 @@ class Centreon_Object_Relation_Downtime_Servicegroup extends Centreon_Object_Rel
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Downtime();
-        $this->secondObject = new Centreon_Object_Service_Group();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Downtime($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Service_Group($dependencyInjector);
     }
 }

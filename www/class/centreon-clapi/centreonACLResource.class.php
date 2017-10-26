@@ -62,10 +62,10 @@ require_once "Centreon/Object/Relation/Acl/Resource/Instance.php";
  */
 class CentreonACLResource extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
 
-    const UNSUPPORTED_WILDCARD    = "Action does not support the '*' wildcard";
+    const UNSUPPORTED_WILDCARD = "Action does not support the '*' wildcard";
 
     /**
      *
@@ -108,13 +108,12 @@ class CentreonACLResource extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Resource();
-        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
-        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource();
-
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Resource($dependencyInjector);
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Resource($dependencyInjector);
         $this->params = array(
             'all_hosts' => '0',
             'all_hostgroups' => '0',
@@ -161,11 +160,11 @@ class CentreonACLResource extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $params[1] = "acl_res_".$params[1];
+            $params[1] = "acl_res_" . $params[1];
             $updateParams = array($params[1] => $params[2]);
             parent::setparam($objectId, $updateParams);
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -179,7 +178,7 @@ class CentreonACLResource extends CentreonObject
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("acl_res_id", "acl_res_name", "acl_res_alias", "acl_res_comment", "acl_res_activate");
         $paramString = str_replace("acl_res_", "", implode($this->delim, $params));
@@ -209,7 +208,7 @@ class CentreonACLResource extends CentreonObject
         }
         $aclResId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($aclResName));
         if (!count($aclResId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$aclResName);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $aclResName);
         }
         $groupIds = $this->relObject->getacl_group_idFromacl_res_id($aclResId[0]);
         echo "id;name" . "\n";
@@ -237,43 +236,51 @@ class CentreonACLResource extends CentreonObject
         }
         $aclResId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($params[0]));
         if (!count($aclResId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[0]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
         $resources = explode("|", $params[1]);
         $resourceIds = array();
 
         switch ($type) {
             case "host":
-                $this->resourceTypeObject = new \Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host();
+                $this->resourceTypeObject = new \Centreon_Object_Host($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host($this->dependencyInjector);
                 break;
             case "hostgroup":
-                $this->resourceTypeObject = new \Centreon_Object_Host_Group();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Group($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Group($this->dependencyInjector);
                 break;
             case "hostcategory":
-                $this->resourceTypeObject = new \Centreon_Object_Host_Category();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Host_Category($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Category($this->dependencyInjector);
                 break;
             case "servicegroup":
-                $this->resourceTypeObject = new \Centreon_Object_Service_Group();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Group();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Group($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Service_Group($this->dependencyInjector);
                 break;
             case "servicecategory":
-                $this->resourceTypeObject = new \Centreon_Object_Service_Category();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Service_Category();
+                $this->resourceTypeObject = new \Centreon_Object_Service_Category($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Service_Category($this->dependencyInjector);
                 break;
             case "metaservice":
-                $this->resourceTypeObject = new \Centreon_Object_Meta_Service();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Meta_Service();
+                $this->resourceTypeObject = new \Centreon_Object_Meta_Service($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Meta_Service($this->dependencyInjector);
                 break;
             case "instance":
-                $this->resourceTypeObject = new \Centreon_Object_Instance();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Instance();
+                $this->resourceTypeObject = new \Centreon_Object_Instance($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Instance($this->dependencyInjector);
                 break;
             case "excludehost":
-                $this->resourceTypeObject = new \Centreon_Object_Host();
-                $this->resourceTypeObjectRelation = new \Centreon_Object_Relation_Acl_Resource_Host_Exclude();
+                $this->resourceTypeObject = new \Centreon_Object_Host($this->dependencyInjector);
+                $this->resourceTypeObjectRelation =
+                    new \Centreon_Object_Relation_Acl_Resource_Host_Exclude($this->dependencyInjector);
                 break;
             default:
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
@@ -287,7 +294,7 @@ class CentreonACLResource extends CentreonObject
                     array($resource)
                 );
                 if (!count($ids)) {
-                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$resource);
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $resource);
                 }
                 $resourceIds[] = $ids[0];
             } else {
@@ -321,7 +328,7 @@ class CentreonACLResource extends CentreonObject
                     if ($type != "host" && $type != "hostgroup" && $type != "servicegroup") {
                         throw new CentreonClapiException(self::UNSUPPORTED_WILDCARD);
                     }
-                    $field = "all_".$type."s";
+                    $field = "all_" . $type . "s";
                     $this->object->update($aclResourceId, array($field => '1', 'changed' => '1'));
                 }
             }
@@ -348,7 +355,7 @@ class CentreonACLResource extends CentreonObject
                 }
             }
             if ($type == "host" || $type == "hostgroup" || $type == "servicegroup") {
-                $field = "all_".$type."s";
+                $field = "all_" . $type . "s";
                 $this->object->update($aclResourceId, array($field => '0', 'changed' => '1'));
             }
         }
@@ -513,9 +520,11 @@ class CentreonACLResource extends CentreonObject
             $queryHostGranted = 'SELECT h.host_name AS "object_name" ' .
                 'FROM host h, acl_resources_host_relations arhr ' .
                 'WHERE arhr.host_host_id = h.host_id ' .
-                'AND arhr.acl_res_id = ?';
-
-            $grantedHostList = $this->db->fetchAll($queryHostGranted, array($aclResId));
+                'AND arhr.acl_res_id = :aclId';
+            $stmt = $this->db->prepare($queryHostGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedHostList = $stmt->fetchAll();
             $grantHostResources .= $this->exportGrantObject($grantedHostList, 'GRANT_HOST', $aclResName);
         }
 
@@ -523,9 +532,11 @@ class CentreonACLResource extends CentreonObject
             $queryHostExcluded = 'SELECT h.host_name AS "object_name" ' .
                 'FROM host h, acl_resources_hostex_relations arher ' .
                 'WHERE arher.host_host_id = h.host_id ' .
-                'AND arher.acl_res_id = ?';
-
-            $excludedHostList = $this->db->fetchAll($queryHostExcluded, array($aclResId));
+                'AND arher.acl_res_id = :aclId';
+            $stmt = $this->db->prepare($queryHostExcluded);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $excludedHostList = $stmt->fetchAll();
             $grantHostResources .= $this->exportGrantObject(
                 $excludedHostList,
                 'ADDHOSTEXCLUSION',
@@ -552,9 +563,13 @@ class CentreonACLResource extends CentreonObject
             $queryHostgroupGranted = 'SELECT hg.hg_name AS "object_name" ' .
                 'FROM hostgroup hg, acl_resources_hg_relations arhgr ' .
                 'WHERE arhgr.hg_hg_id = hg.hg_id ' .
-                'AND arhgr.acl_res_id = ?';
+                'AND arhgr.acl_res_id = :aclId';
 
-            $grantedHostgroupList = $this->db->fetchAll($queryHostgroupGranted, array($aclResId));
+            $stmt = $this->db->prepare($queryHostgroupGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedHostgroupList = $stmt->fetchAll();
+
             $grantHostgroupResources .= $this->exportGrantObject(
                 $grantedHostgroupList,
                 'GRANT_HOSTGROUP',
@@ -581,9 +596,12 @@ class CentreonACLResource extends CentreonObject
             $queryServicegroupGranted = 'SELECT sg.sg_name AS "object_name" ' .
                 'FROM servicegroup sg, acl_resources_sg_relations arsgr ' .
                 'WHERE arsgr.sg_id = sg.sg_id ' .
-                'AND arsgr.acl_res_id = ?';
+                'AND arsgr.acl_res_id = :aclId';
 
-            $grantedServicegroupList = $this->db->fetchAll($queryServicegroupGranted, array($aclResId));
+            $stmt = $this->db->prepare($queryServicegroupGranted);
+            $stmt->bindParam(':aclId', $aclResId);
+            $stmt->execute();
+            $grantedServicegroupList = $stmt->fetchAll();
             $grantServicegroupResources .= $this->exportGrantObject(
                 $grantedServicegroupList,
                 'GRANT_SERVICEGROUP',
@@ -606,9 +624,12 @@ class CentreonACLResource extends CentreonObject
         $queryMetaserviceGranted = 'SELECT m.meta_name AS "object_name" ' .
             'FROM meta_service m, acl_resources_meta_relations armr ' .
             'WHERE armr.meta_id = m.meta_id ' .
-            'AND armr.acl_res_id = ?';
+            'AND armr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryMetaserviceGranted);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $grantedMetaserviceList = $stmt->fetchAll();
 
-        $grantedMetaserviceList = $this->db->fetchAll($queryMetaserviceGranted, array($aclResId));
         $grantMetaserviceResources .= $this->exportGrantObject(
             $grantedMetaserviceList,
             'GRANT_METASERVICE',
@@ -630,9 +651,11 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredInstances = 'SELECT n.name AS "object_name" ' .
             'FROM nagios_server n, acl_resources_poller_relations arpr ' .
             'WHERE arpr.poller_id = n.id ' .
-            'AND arpr.acl_res_id = ?';
-
-        $filteredInstanceList = $this->db->fetchAll($queryFilteredInstances, array($aclResId));
+            'AND arpr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredInstances);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredInstanceList = $stmt->fetchAll();
         $filterInstances .= $this->exportGrantObject($filteredInstanceList, 'ADDFILTER_INSTANCE', $aclResName);
 
         return $filterInstances;
@@ -650,9 +673,12 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredHostCategories = 'SELECT hc.hc_name AS "object_name" ' .
             'FROM hostcategories hc, acl_resources_hc_relations arhcr ' .
             'WHERE arhcr.hc_id = hc.hc_id ' .
-            'AND arhcr.acl_res_id = ?';
+            'AND arhcr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredHostCategories);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredHostCategoryList = $stmt->fetchAll();
 
-        $filteredHostCategoryList = $this->db->fetchAll($queryFilteredHostCategories, array($aclResId));
         $filterHostCategories .= $this->exportGrantObject(
             $filteredHostCategoryList,
             'ADDFILTER_HOSTCATEGORY',
@@ -674,9 +700,12 @@ class CentreonACLResource extends CentreonObject
         $queryFilteredServiceCategories = 'SELECT sc.sc_name AS "object_name" ' .
             'FROM service_categories sc, acl_resources_sc_relations arscr ' .
             'WHERE arscr.sc_id = sc.sc_id ' .
-            'AND arscr.acl_res_id = ?';
+            'AND arscr.acl_res_id = :aclId';
+        $stmt = $this->db->prepare($queryFilteredServiceCategories);
+        $stmt->bindParam(':aclId', $aclResId);
+        $stmt->execute();
+        $filteredServiceCategoryList = $stmt->fetchAll();
 
-        $filteredServiceCategoryList = $this->db->fetchAll($queryFilteredServiceCategories, array($aclResId));
         $filterServiceCategories .= $this->exportGrantObject(
             $filteredServiceCategoryList,
             'ADDFILTER_SERVICECATEGORY',
