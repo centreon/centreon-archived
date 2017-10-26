@@ -68,6 +68,15 @@ $path = "./include/options/accessLists/menusACL/";
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
+
 switch ($o) {
     case "a":
         require_once($path."formMenusAccess.php");
@@ -82,10 +91,18 @@ switch ($o) {
         enableLCAInDB($acl_id);
         require_once($path."listsMenusAccess.php");
         break; #Activate a LCA
+    case "ms":
+        enableLCAInDB(null, isset($select) ? $select : array());
+        require_once($path."listsMenusAccess.php");
+        break; #Activate n LCA
     case "u":
         disableLCAInDB($acl_id);
         require_once($path."listsMenusAccess.php");
         break; #Desactivate a LCA
+    case "mu":
+        disableLCAInDB(null, isset($select) ? $select : array());
+        require_once($path."listsMenusAccess.php");
+        break; #Desactivate n LCA
     case "m":
         multipleLCAInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path."listsMenusAccess.php");

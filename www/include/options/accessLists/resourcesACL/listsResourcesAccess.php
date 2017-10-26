@@ -39,17 +39,17 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchStr = "";
-$search = "";
+$searchStr = "";
+$search = '';
 if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
     $search = $_POST['searchACLR'];
-    $SearchStr = " WHERE (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
+    $searchStr = "WHERE (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 }
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
-
+$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources ".$searchStr);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
+$DBRESULT->free();
 
 include("./include/common/checkPagination.php");
 
@@ -71,22 +71,18 @@ $tpl->assign("headerMenu_allSG", _("All Servicegroups"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$SearchStr = "";
-if ($search) {
-    $SearchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+$searchStr = "";
+if (isset($search) && $search) {
+    $searchStr = "AND (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
+        ."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 }
-$rq = 'SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate '
-    . 'FROM acl_resources '
-    . 'WHERE locked = 0 '
-    . $SearchStr . ' '
-    . 'ORDER BY acl_res_name '
-    . 'LIMIT ' . $num * $limit . ', ' . $limit;
-$DBRESULT = $pearDB->query($rq);
+$DBRESULT = $pearDB->query("SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, "
+    . "all_servicegroups, acl_res_activate FROM acl_resources WHERE locked = 0 $searchStr "
+    . "ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit);
 
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
 /*
  * Different style between each lines
@@ -111,6 +107,7 @@ for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
+
     $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))"
         . " event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) "
@@ -119,10 +116,8 @@ for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
 
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr 
-          FROM acl_resources_host_relations 
-          WHERE acl_res_id = '" . $resources['acl_res_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
+    $DBRESULT2 = $pearDB->query("SELECT COUNT(*) AS nbr FROM acl_resources_host_relations
+        WHERE acl_res_id = '".$resources['acl_res_id']."'");
     $ctNbr = $DBRESULT2->fetchRow();
 
     $allHostgroups = (isset($resources["all_hostgroups"]) && $resources["all_hostgroups"] == 1 ? _("Yes") : _("No"));
@@ -159,70 +154,36 @@ $tpl->assign('msg', array(
     "delConfirm" => _("Do you confirm the deletion ?")
 ));
 
+/*
+ * Toolbar select lgd_more_actions
+ */
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
-$attrs1 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"
-        . _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"
-        . _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o1',
-    null,
-    array(
-        null => _("More actions..."),
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange'=>"javascript: "
+            . "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the duplication ?")."')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
+            . _("Do you confirm the deletion ?")."')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 3 || "
+            . "this.form.elements['$option'].selectedIndex == 4) {"
+            . "setO(this.form.elements['$option'].value); submit();}");
+    $form->addElement('select', $option, null, array(null => _("More actions..."),
         "m" => _("Duplicate"),
-        "d" => _("Delete")
-    ),
-    $attrs1
-);
-$form->setDefaults(array('o1' => null));
-
-$attrs2 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"
-        . _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"
-        . _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o2',
-    null,
-    array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete")
-    ),
-    $attrs2
-);
-$form->setDefaults(array('o2' => null));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-$o1->setSelected(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
-$o2->setSelected(null);
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchACLR', $search);

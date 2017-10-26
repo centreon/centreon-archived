@@ -250,7 +250,7 @@ class CentreonLogAction
             "SELECT action_log_id, action_log_date, action_type
                 FROM log_action
                 WHERE object_id = '" . CentreonDB::escape($id) . "'
-                    AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC"
+                AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC"
         );
         while ($row = $DBRESULT->fetchRow()) {
             $DBRESULT2 = $pearDBO->query(
@@ -314,7 +314,7 @@ class CentreonLogAction
         $object_type_tab[6] = "hostgroup";
         $object_type_tab[7] = "service";
         $object_type_tab[8] = "servicegroup";
-        $object_type_tab[9] = "snmp traps";
+        $object_type_tab[9] = "traps";
         $object_type_tab[10] = "escalation";
         $object_type_tab[11] = "host dependency";
         $object_type_tab[12] = "hostgroup dependency";
@@ -325,6 +325,12 @@ class CentreonLogAction
         $object_type_tab[17] = "broker";
         $object_type_tab[18] = "resources";
         $object_type_tab[19] = "meta";
+        $object_type_tab[20] = "access group";
+        $object_type_tab[21] = "menu access";
+        $object_type_tab[22] = "resource access";
+        $object_type_tab[23] = "action access";
+        $object_type_tab[24] = "manufacturer";
+        $object_type_tab[25] = "hostcategories";
 
         return $object_type_tab;
     }
