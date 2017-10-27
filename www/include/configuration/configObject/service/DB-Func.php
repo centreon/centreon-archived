@@ -262,8 +262,11 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
             $hgPars = array();
         }
     }
+
+    $escapeName = CentreonDB::escape($centreon->checkIllegalChar($name));
+
     foreach ($hPars as $host) {
-        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
+        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '" . $escapeName . "'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
         if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
@@ -272,7 +275,7 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
         $DBRESULT->free();
     }
     foreach ($hgPars as $hostgroup) {
-        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
+        $DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '" . $escapeName . "'");
         $service = $DBRESULT->fetchRow();
         #Duplicate entry
         if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
