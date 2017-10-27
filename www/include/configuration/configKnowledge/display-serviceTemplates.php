@@ -126,7 +126,7 @@ try {
         "WHERE service_register = '0' " .
         "AND service_locked = '0' ";
     if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
-        $query .= " AND service_description LIKE ' % " . $_REQUEST['searchServiceTemplate'] . " % ' ";
+        $query .= " AND service_description LIKE '%" . $_REQUEST['searchServiceTemplate'] . "%' ";
     }
     $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
     $DBRESULT = $pearDB->query($query);
