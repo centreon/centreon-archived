@@ -248,6 +248,10 @@ default:
       contexts: [ HostGroupServiceConfigurationContext ]
 
     service_template_configuration:
+      paths: [ %paths.base%/features/ServiceTemplateConfiguration.feature ]
+      contexts: [ ServiceTemplateConfigurationContext ]
+
+    contact_template_configuration:
       paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
       contexts: [ ContactTemplateConfigurationContext ]
 
@@ -298,7 +302,7 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
-    
+
     test_proxy_configuration:
       paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
       contexts: [ TestProxyConfigurationContext ]
