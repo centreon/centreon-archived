@@ -108,6 +108,78 @@ function is_gd2($filename)
 }
 
 
+function uploadImg($htmlFile, $dir_alias, $img_comment = "")
+{
+
+    $file = $htmlFile->getValue();
+    $user = $_SESSION['centreon']->user->name;
+    $error = false;
+    $legalExtensions = array("JPG", "PNG", "GIF", "TXT");
+    $legalSize = "2000000";
+
+    $newName = substr($user, 0, 3) . '-' . time();
+    $path = "../filesUpload/images/";
+
+    $actualName = $file['name'];
+    $actualSize = $file['size'];
+
+    $info = new SplFileInfo($actualName);
+    $extension = $info->getExtension();
+
+    //check if file is empty
+    if ($actualName == 0 || $actualSize == 0) {
+        $error = true;
+    }
+
+    $completePath = $path . '/' . $newName . '.' . $extension;
+    //check if file name exist
+    if (file_exists($completePath)) {
+        $error = true;
+    }
+
+    if (!$error) {
+        if (($actualSize < $legalSize ) && in_array($extension, $legalExtensions)) {
+
+            //check content
+            $handle = fopen($completePath, 'r');
+            if ($handle) {
+                while (!feof($handle) AND !$error) {
+
+                    $buffer = fgets($handle);
+                    switch (true) {
+                        case strstr($buffer, '<'):
+                            $error = true;
+                            break;
+                        case strstr($buffer, '>'):
+                            $error = true;
+                            break;
+                        case strstr($buffer, ';'):
+                            $error = true;
+                            break;
+                        case strstr($buffer, '&'):
+                            $error = true;
+                            break;
+                        case strstr($buffer, '?'):
+                            $error = true;
+                            break;
+                    }
+                }
+            }
+            fclose($handle);
+
+            if (!$error) {
+                $htmlFile->moveUploadedFile($path, $newName . '.' . $extension);
+            } else {
+                @unlink($completePath);
+                echo "upload fail";
+            }
+        }
+    } else {
+        @unlink($completePath);
+        echo "upload fail";
+    }
+}
+
 function handleUpload($HTMLfile, $dir_alias, $img_comment = "")
 {
     if (!$HTMLfile || !$dir_alias) {

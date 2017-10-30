@@ -204,7 +204,13 @@ if ($form->validate()) {
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
     if ($form->getSubmitValue("submitA")) {
-        $valid = handleUpload($file, $imgPath, $imgComment);
+
+
+        $valid = uploadImg($file, $imgPath, $imgComment);
+
+
+
+       // $valid = handleUpload($file, $imgPath, $imgComment);
     } elseif ($form->getSubmitValue("submitC")) {
         $imgName = $form->getElement('img_name')->getValue();
         $valid = updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
