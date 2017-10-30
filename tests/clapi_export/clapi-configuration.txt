@@ -440,7 +440,6 @@ CENTBROKERCFG;SETINPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;SETINPUT;central-broker-master;1;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-broker-master;1;tls;no
-CENTBROKERCFG;SETINPUT;central-broker-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-broker-master;1;compression;no
 CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
