@@ -545,11 +545,14 @@ function insertContact($ret = array())
 
     if (isset($ret["contact_passwd"])) {
         if ($encryptType == 1) {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
         } else {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         }
     }
 
@@ -719,6 +722,7 @@ function updateContact($contact_id = null, $from_MC = false)
     if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);
     }
+<<<<<<< HEAD
 
     if ($encryptType == 1) {
         $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
@@ -726,6 +730,17 @@ function updateContact($contact_id = null, $from_MC = false)
         $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
     } elseif (isset($ret['contact_passwd'])) {
         $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+=======
+    
+    if (isset($ret["contact_passwd"])) {
+        if ($encryptType == 1) {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] = $utilsObject->encodePass($ret["contact_passwd"], 'md5');
+        } elseif ($encryptType == 2) {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] = $utilsObject->encodePass($ret["contact_passwd"], 'sha1');
+        } else {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] = $utilsObject->encodePass($ret["contact_passwd"], 'md5');
+        }
+>>>>>>> 327e13f94... fix(conf): some field was not encoded
     }
 
     /* Prepare value for changelog */
