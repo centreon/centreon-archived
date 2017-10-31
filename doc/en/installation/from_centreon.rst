@@ -11,7 +11,7 @@ Installation
 Step 1 : Start
 ==============
 
-To install, start your server on the support (created from the ISO file) of the Centreon.
+To install Centreon, start the server/virtual machine using the ISO file cited in the downloads section of the installation guide.
 Start with the **Install or upgrade an existing system** option
 
 .. image :: /images/user/abootmenu.png
@@ -58,7 +58,7 @@ A warning message may appear
 
 Choose your hostname and click on **Configure network** in order to modify your network card configuration.
 
-Select the network card that you want to use and go into "IPv4 Settings" or "IPv6 Settings" tab (depending on the requirement) to configure the IP address of the interfaces. Click on **Apply** to save the changes.
+Select the network card that you want to use and go to the “IPv4 Settings” tab or the “IPv6 Settings” tab (depending on the requirements) to configure the IP addresses of the different interfaces. Click on **Apply** to save the changes.
 
 .. image :: /images/user/anetworkconfig.png
    :align: center
@@ -87,7 +87,7 @@ Step 4 : Component selection
 Choose the server type
 ----------------------
 
-It is possible to choose different options in answer to the question: **Which server type would you like to install?**:
+It is possible to choose from different options to answer the question: **Which server type would you like to install?**:
 
 
 .. image :: /images/user/aservertoinstall.png
@@ -197,7 +197,7 @@ The End of installation wizard configures the databases, click on **Next**.
 
 The installation is finished, click on Finish.
 
-At this stage a publicity allows to know the latest Centreon . If your platform is connected to the Internet you have the latest information , if the information present in this version will be offered.
+At this stage, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
 
 .. image :: /images/user/aendinstall.png
    :align: center
@@ -212,9 +212,9 @@ You can now log in.
 Start monitoring
 ================
 
-To start monitoring engine :
+To start the monitoring engine :
 
- 1.	On web interface, go to **Configuration** ==> **Monitoring engines**
+ 1.	On the web interface, go to **Configuration** ==> **Monitoring engines**
  2.	Leave the default options and click on **Export**
  3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
  4.	Check **Move Export Files** and **Restart Monitoring Engine**
@@ -278,18 +278,18 @@ Easy monitoring configuration
 
 Centreon is great in itself, highly versatile  and can be configured to
 fit the very specifics of your monitored infrastructure. However you
-might find useful to use Centreon IMP to get you started in minutes.
+might find it useful to use Centreon IMP to get you started in minutes.
 Centreon IMP provides you Plugin Packs which are bundled configuration
 templates that highly reduce the time needed to properly monitor the
 most common services of your network.
 
-Centreon IMP needs the technical components Centreon License Manager
+Centreon IMP needs the technical components: Centreon License Manager
 and Centreon Plugin Pack Manager to work.
 
 Install packages
 ================
 
-When using Centreon ISO, installation of Centreon Plugin Pack Manager is very
+When using Centreon ISO, the installation of Centreon Plugin Pack Manager is very
 easy. You'll see that Centreon License Manager will be installed too
 as a dependency.
 
@@ -300,8 +300,8 @@ as a dependency.
 Web install
 ===========
 
-Once the packages installed, you need to enable the module in Centreon.
-So get to the Administration -> Extensions -> Modules page.
+Once the packages are installed, you need to enable the module in Centreon.
+So go to the Administration -> Extensions -> Modules page.
 
 .. image:: /_static/images/installation/ppm_1.png
    :align: center
@@ -316,7 +316,7 @@ Then install Centreon Plugin Pack Manager itself.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-You're now ready to got to Administration -> Extensions -> Plugin packs -> Setup.
+You're now ready to go to Administration -> Extensions -> Plugin packs -> Setup.
 You'll find there 6 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
