@@ -343,6 +343,8 @@ class CentreonGMT
         } else {
             $this->myGMT = 0;
         }
+        
+        return $this->myGMT;
     }
 
     /**
