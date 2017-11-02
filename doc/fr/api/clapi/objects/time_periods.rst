@@ -5,7 +5,7 @@ Time periods
 Overview
 --------
 
-Object name: **TIMEPERIOD**
+Object name: **TP**
 
 Show
 ----
