@@ -36,6 +36,9 @@
  *
  */
 
+require_once _CENTREON_PATH_."www/class/centreonImageUploader.php";
+
+
 if (!isset($centreon)) {
     exit();
 }
@@ -97,7 +100,7 @@ if ($o == "a") {
         $dir_list_sel,
         array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
     );
-    $file = $form->addElement('file', 'filename', _("Image or archive"));
+    $form->addElement('file', 'filename', _("Image or archive"));
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
 } elseif ($o == "ci") {
     $form->addElement('header', 'title', _("Modify Image"));
@@ -117,7 +120,7 @@ if ($o == "a") {
         array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
     );
     $list_dir->setSelected($dir['dir_id']);
-    $file = $form->addElement('file', 'filename', _("Image"));
+    $form->addElement('file', 'filename', _("Image"));
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $form->setDefaults($img);
     $form->addRule('img_name', _("Compulsory image name"), 'required');
@@ -126,7 +129,7 @@ if ($o == "a") {
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement('text', 'img_path', $img_path, null);
     $form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
-    $file = $form->addElement('file', 'filename', _("Image"));
+    $form->addElement('file', 'filename', _("Image"));
     $form->addElement(
         "button",
         "change",
@@ -204,16 +207,11 @@ if ($form->validate()) {
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
     if ($form->getSubmitValue("submitA")) {
-
-
-        $valid = uploadImg($file, $imgPath, $imgComment);
-
-
-
-       // $valid = handleUpload($file, $imgPath, $imgComment);
+        $oImageUploader = new centreonImageUploader($_FILES, './img/media/', $imgPath, $imgComment);
+        $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {
         $imgName = $form->getElement('img_name')->getValue();
-        $valid = updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
+        $valid = updateImg($imgID->getValue(), $_FILES, $imgPath, $imgName, $imgComment);
     }
     $form->freeze();
     if (false === $valid) {
@@ -222,7 +220,7 @@ if ($form->validate()) {
 }
 $action = $form->getSubmitValue("action");
 
-if ($valid) {
+if (is_array($valid)) {
     require_once("listImg.php");
 } else {
     /*
