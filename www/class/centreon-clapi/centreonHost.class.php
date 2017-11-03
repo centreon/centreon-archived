@@ -898,6 +898,52 @@ class CentreonHost extends CentreonObject
         $tpObj = new \Centreon_Object_Timeperiod();
         $macroObj = new \Centreon_Object_Host_Macro_Custom();
         $instanceRel = new \Centreon_Object_Relation_Instance_Host();
+        $hostParent = new \Centreon_Object_Relation_Host_Parent_Host();
+
+        $parentShip = array();
+        $relations = $hostParent->getRelations();
+        foreach ($relations as $relation) {
+            $firstkey = $relation[$hostParent->getFirstKey()];
+            $secondKey = $relation[$hostParent->getSecondKey()];
+            $parentShip[$secondKey][] = $firstkey;
+        }
+
+        $hosts = array();
+        foreach ($elements as $element){
+            $hosts[] = $element['host_id'];
+        }
+
+        $sortedHosts = array();
+        while($hostId = array_pop($hosts)){
+            if(!in_array($hostId, array_keys($parentShip))){
+                $sortedHosts[] = $hostId;
+            }else{
+                $parents = $parentShip[$hostId];
+                $parentExported = true;
+                foreach($parents as $parentId){
+                    if(!in_array($parentId, $sortedHosts)){
+                        $parentExported = false;
+                        break;
+                    }
+                }
+                if($parentExported){
+                    $sortedHosts[] = $hostId;
+                }else{
+                    array_unshift($hosts, $hostId);
+                }
+            }
+        }
+
+        $elementsIndexedById = array();
+        foreach ($elements as $element) {
+            $elementsIndexedById[$element['host_id']] = $element;
+        }
+
+        $elements = array();
+        foreach ($sortedHosts as $hostId) {
+            $elements[$hostId] = $elementsIndexedById[$hostId];
+        }
+
         if ($this->register) {
             $instElements = $instanceRel->getMergedParameters(
                 array("name"),
@@ -910,6 +956,7 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
         }
+
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -941,6 +988,7 @@ class CentreonHost extends CentreonObject
                     } elseif ($parameter == 'host_location') {
                         $tmpObj = $this->timezoneObject;
                     }
+
                     if (isset($tmpObj)) {
                         $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
@@ -960,6 +1008,17 @@ class CentreonHost extends CentreonObject
                         . $value . "\n";
                 }
             }
+
+            // Set parentship
+            if (isset($parentShip[$element[$this->object->getPrimaryKey()]])) {
+                foreach ($parentShip[$element[$this->object->getPrimaryKey()]] as $parentId) {
+                    echo $this->action . $this->delim
+                        . "addparent" . $this->delim
+                        . $element[$this->object->getUniqueLabelField()] . $this->delim
+                        . $elements[$parentId][$this->object->getUniqueLabelField()] . "\n";
+                }
+            }
+
             $params = $extendedObj->getParameters(
                 $element[$this->object->getPrimaryKey()],
                 array(
@@ -1005,6 +1064,7 @@ class CentreonHost extends CentreonObject
                     . "'" . $macro['description'] . "'" . "\n";
             }
         }
+
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host();
         $filters_cgRel = array("host_register" => $this->register);
         if (!is_null($filters['host_id'])) {

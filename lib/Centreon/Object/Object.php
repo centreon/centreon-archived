@@ -272,6 +272,7 @@ abstract class Centreon_Object
         }
         $sql = "SELECT $params FROM $this->table ";
         $filterTab = array();
+
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (!count($filterTab)) {
@@ -289,9 +290,11 @@ abstract class Centreon_Object
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+
         if (isset($count) && $count != -1) {
             $sql = $this->db->limit($sql, $count, $offset);
         }
+
         return $this->getResult($sql, $filterTab, "fetchAll");
     }
 
