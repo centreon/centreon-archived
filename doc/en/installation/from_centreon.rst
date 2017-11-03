@@ -219,19 +219,19 @@ To start the monitoring engine :
  3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
  4.	Check **Move Export Files** and **Restart Monitoring Engine**
  5.	Click on **Export** again
- 6.   Log into the ‘root’ user on your server
+ 6. Log into the ‘root’ user on your server
  7.	Start Centreon Broker
 
 ::
 
 	service cbd start
- 8.   Start Centreon Engine
+ 8. Start Centreon Engine
 
 ::
 
    service centengine start
 
- 8.   Start centcore
+ 9. Start centcore
 
 ::
 
