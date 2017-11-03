@@ -220,7 +220,7 @@
             {/if}
         </td>
         <td style="width: 30%; vertical-align: top;" nowrap="nowrap">
-            <table> <!-- Right Table -->
+            <table width='100%'> <!-- Right Table -->
                 <tr>
                     <td style="vertical-align: top; padding-bottom: 8px !important; " nowrap="nowrap">
                         <table class="ListTable">
