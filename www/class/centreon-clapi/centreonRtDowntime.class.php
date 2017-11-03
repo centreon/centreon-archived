@@ -84,8 +84,8 @@ class CentreonRtDowntime extends CentreonObject
         parent::__construct($dependencyInjector);
         $this->object = new \Centreon_Object_RtDowntime($dependencyInjector);
         $this->hgObject = new \CentreonHostgroups($this->db);
-        $this->hostObject = new \CentreonClapi\CentreonHost($this->db);
-        $this->serviceObject = new \CentreonClapi\CentreonService($this->db);
+        $this->hostObject = new \CentreonClapi\CentreonHost($dependencyInjector);
+        $this->serviceObject = new \CentreonClapi\CentreonService($dependencyInjector);
         $this->sgObject = new \CentreonServiceGroups($this->db);
         $this->instanceObject = new \CentreonInstance($this->db);
         $this->GMTObject = new \CentreonGMT();
