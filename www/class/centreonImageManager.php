@@ -26,7 +26,6 @@ class centreonImageManager extends centreonFileManager
         $this->legalSize = 2000000;
     }
 
-
     /**
      * @param bool $insert
      * @return array
@@ -90,7 +89,6 @@ class centreonImageManager extends centreonFileManager
         $pearDB->query($query);
     }
 
-
     /**
      * @param $fullpath
      */
@@ -98,7 +96,6 @@ class centreonImageManager extends centreonFileManager
     {
         unlink($fullpath);
     }
-
 
     /**
      * @return int

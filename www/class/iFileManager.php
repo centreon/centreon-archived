@@ -19,5 +19,4 @@ interface iFileManager
      * @return mixed
      */
     public function update($id, $name);
-
 }

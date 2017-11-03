@@ -213,7 +213,6 @@ if ($form->validate()) {
         $imgName = $form->getElement('img_name')->getValue();
         $valid = $oImageUploader->update($imgId, $imgName);
     }
-
     $form->freeze();
     if (false === $valid) {
         $form->setElementError('filename', "An image is not uploaded.");

@@ -60,10 +60,11 @@ class centreonFileManager implements iFileManager
     /**
      * @param $id
      * @param $name
+     * @return bool
      */
     public function update($id, $name)
     {
-
+        return true;
     }
 
     /**
@@ -81,7 +82,6 @@ class centreonFileManager implements iFileManager
             return true;
         }
     }
-
 
     /**
      * @param $text
@@ -141,7 +141,6 @@ class centreonFileManager implements iFileManager
     }
 
     /**
-     * @param $size
      * @return bool
      */
     protected function validSize()
@@ -183,5 +182,4 @@ class centreonFileManager implements iFileManager
     {
         move_uploaded_file($this->tmpFile, $this->completePath);
     }
-
 }
