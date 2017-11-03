@@ -36,7 +36,7 @@
  *
  */
 
-require_once _CENTREON_PATH_."www/class/centreonImageUploader.php";
+require_once _CENTREON_PATH_."www/class/centreonImageManager.php";
 
 
 if (!isset($centreon)) {
@@ -203,16 +203,17 @@ $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    $imgID = $form->getElement('img_id');
+    $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
+    $oImageUploader = new centreonImageManager($_FILES, './img/media/', $imgPath, $imgComment);
     if ($form->getSubmitValue("submitA")) {
-        $oImageUploader = new centreonImageUploader($_FILES, './img/media/', $imgPath, $imgComment);
         $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {
         $imgName = $form->getElement('img_name')->getValue();
-        $valid = updateImg($imgID->getValue(), $_FILES, $imgPath, $imgName, $imgComment);
+        $valid = $oImageUploader->update($imgId, $imgName);
     }
+
     $form->freeze();
     if (false === $valid) {
         $form->setElementError('filename', "An image is not uploaded.");

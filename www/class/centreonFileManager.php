@@ -6,7 +6,7 @@
  * Time: 11:55
  */
 
-class centreonFileUploader implements iFileUploader
+class centreonFileManager implements iFileManager
 {
 
     protected $rawFile;
@@ -54,6 +54,14 @@ class centreonFileUploader implements iFileUploader
         };
     }
 
+    /**
+     * @param $id
+     * @param $name
+     */
+    public function update($id, $name)
+    {
+
+    }
 
     /**
      * @return bool
