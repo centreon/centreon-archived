@@ -229,9 +229,9 @@ sub parseArchive {
         $self->{logger}->writeLogInfo("Can't get information on poller");
         return;
     }
-    my $tmp_server = $sth->fetchrow_hashref();
+    my $poller = $sth->fetchrow_hashref();
 
-    if ($tmp_server->{'localhost'}) {
+    if ($poller->{'localhost'}) {
         ($status, $sth) = $self->{cdb}->query("SELECT `log_archive_path`
             FROM `cfg_nagios`, `nagios_server` 
             WHERE `nagios_server_id` = '$instance' 
@@ -253,12 +253,19 @@ sub parseArchive {
         $archives = $self->{centreon_config}->{VarLib} . "/log/$instance/archives/";
     }
 
+    my @files;
     opendir (DIR, $archives) or $self->{logger}->writeLogError("Can't find $archives directory") and return;
-    while (my $file = readdir(DIR)) {
-        next if ($file =~ /^\./);
-        $self->parseFile($archives.$file, $tmp_server->{'name'});
+    while (readdir(DIR)) {
+        push(@files, $_) if ($_ !~ m/^\.|\.gz$/msi);
     }
     closedir DIR;
+
+    @files = sort { ($a =~ m/.*-(.*?)$/msi)[0] <=> ($b =~ m/.*-(.*?)$/msi)[0] } @files;
+
+    while (my $file = shift @files) {
+        $self->parseFile($archives.$file, $poller->{'name'});
+    }
+
 }
 
 sub run {
