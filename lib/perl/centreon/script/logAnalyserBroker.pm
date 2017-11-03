@@ -74,7 +74,8 @@ sub new {
 
     %{$self->{cache_host}} = ();
     %{$self->{cache_host_service}} = ();
-    $self->{current_time} = time();
+    my ($day,$month,$year) = (localtime(time()))[3,4,5];
+    $self->{current_time} = mktime(0,0,0,$day,$month,$year,0,0,-1);
     return $self;
 }
 
@@ -244,7 +245,7 @@ sub parseArchive {
         }
         my $data = $sth->fetchrow_hashref();
         if (!$data->{'log_archive_path'}) {
-            $self->{logger}->writeLogError("Can't find local varlib directory");
+            $self->{logger}->writeLogError("Can't find local varlib directory \"$data->{'log_archive_path'}\"");
             return;
         }
         $archives = $data->{log_archive_path};
@@ -274,15 +275,20 @@ sub run {
     }
 
     # Get conf Data
-    my ($status, $sth_config) = $self->{csdb}->query("SELECT `archive_retention` FROM `config` LIMIT 1");
-    if ($status == -1) {
-        $self->{logger}->writeLogError("Can't get logs retention duration");
-        return;
-    }
-    my $data = $sth_config->fetchrow_hashref();
+    if (defined($self->{opt_s})) {
+        my ($day,$month,$year) = (split(/-/, $self->{opt_s}))[1,0,2];
+        $self->{retention_time} = mktime(0,0,0,$day,$month-1,$year-1900,0,0,-1);
+    } else {
+        my ($status, $sth_config) = $self->{csdb}->query("SELECT `archive_retention` FROM `config` LIMIT 1");
+        if ($status == -1) {
+            $self->{logger}->writeLogError("Can't get logs retention duration");
+            return;
+        }
+        my $data = $sth_config->fetchrow_hashref();
 
-    my ($day,$month,$year) = (localtime(time()))[3,4,5];
-    $self->{retention_time} =  mktime(0,0,0,$day-$data->{'archive_retention'},$month,$year,0,0,-1);
+        my ($day,$month,$year) = (localtime(time()))[3,4,5];
+        $self->{retention_time} =  mktime(0,0,0,$day-$data->{'archive_retention'},$month,$year,0,0,-1);
+    }
 
     # Get cache
     my $filter_instance = "";
@@ -296,7 +302,7 @@ sub run {
         $filter_instance = "ns_host_relation.nagios_server_id = '$instance_id' AND";
     }
 
-    ($status, my $sth_cache) = $self->{cdb}->query("SELECT host.host_id, host.host_name 
+    my ($status, $sth_cache) = $self->{cdb}->query("SELECT host.host_id, host.host_name 
         FROM host, ns_host_relation 
         WHERE $filter_instance ns_host_relation.host_host_id = host.host_id 
         AND host.host_activate = '1'");
@@ -337,12 +343,7 @@ sub run {
         $self->{cache_host_service}{$tmp_cache->{'host_name'} . ':' . $tmp_cache->{'service_description'}} = {'host_id' =>  $tmp_cache->{'host_id'}, 'service_id' =>  $tmp_cache->{'service_id'}};
     }
 
-    if (defined($self->{opt_s})) {
-        my ($day,$month,$year) = (split(/-/, $self->{opt_s}))[1,0,2];
-        $self->{retention_time} =  mktime(0,0,0,$day,$month-1,$year-1900,0,0,-1);
-    }
-
-    $self->{logger}->writeLogInfo("Starting logs import from ".localtime($self->{retention_time}));
+    $self->{logger}->writeLogInfo("Starting logs import from ".localtime($self->{retention_time})." to ".localtime($self->{current_time}));
 
     if (defined($self->{opt_p}) && $instance_id) {
 	    $self->{logger}->writeLogInfo("Processing poller $self->{opt_p}");
