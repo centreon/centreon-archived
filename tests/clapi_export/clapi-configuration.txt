@@ -1,101 +1,4 @@
 {OBJECT_TYPE};{COMMAND};{PARAMETERS}
-ACLMENU;ADD;test_access-group;test_access-group;
-ACLMENU;SETPARAM;test_access-group;activate;1;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Host Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Categories;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Services by host;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Services by host group;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Service Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Categories;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Meta Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contacts / Users;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contact Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contact Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Time Periods;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Checks;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Notifications;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Discovery;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Miscellaneous;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Connectors;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Escalations;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Host Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Service Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Meta Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;SNMP Traps;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Manufacturer;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Group;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;MIBs;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Generate;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Host Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Service Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Export configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Pollers;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Engine configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;Wizard;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;WizardAjax;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Centreon UI;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Monitoring;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;CentCore;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;My Account;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;LDAP;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;RRDTool;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Debug;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Knowledge Base;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;CSS;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Backup;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Options;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Data;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Images;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Extensions;Modules;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Extensions;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Extensions;Widgets;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Access Groups;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Menus Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Resources Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Actions Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Reload ACL;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Logs;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Logs;Visualisation;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Sessions;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Server Status;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Server Status;Databases;
-ACLMENU;GRANTRW;test_access-group;0;Administration;
-ACLMENU;GRANTRW;test_access-group;0;Administration;About;
-ACLMENU;GRANTRW;test_access-group;0;Administration;About;About;
-ACLACTION;ADD;Simple User;Simple User;
-ACLACTION;SETPARAM;Simple User;activate;1;
-ACLACTION;GRANT;Simple User;poller_stats;
-ACLACTION;GRANT;Simple User;top_counter;
-ACLACTION;GRANT;Simple User;service_acknowledgement;
-ACLACTION;GRANT;Simple User;service_schedule_check;
-ACLACTION;GRANT;Simple User;service_schedule_forced_check;
-ACLACTION;GRANT;Simple User;service_schedule_downtime;
-ACLACTION;GRANT;Simple User;service_comment;
-ACLACTION;GRANT;Simple User;host_acknowledgement;
-ACLACTION;GRANT;Simple User;host_schedule_check;
-ACLACTION;GRANT;Simple User;host_schedule_forced_check;
-ACLACTION;GRANT;Simple User;host_schedule_downtime;
-ACLACTION;GRANT;Simple User;host_comment;
 INSTANCE;ADD;Central;127.0.0.1;22
 INSTANCE;setparam;Central;localhost;1
 INSTANCE;setparam;Central;is_default;0
@@ -184,6 +87,30 @@ VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
+CMD;setparam;host-notify-by-email;enable_shell;1
+CMD;setparam;host-notify-by-email;command_activate;1
+CMD;setparam;host-notify-by-email;command_locked;0
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
+CMD;setparam;service-notify-by-email;enable_shell;1
+CMD;setparam;service-notify-by-email;command_activate;1
+CMD;setparam;service-notify-by-email;command_locked;0
+CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
+CMD;setparam;host-notify-by-epager;enable_shell;1
+CMD;setparam;host-notify-by-epager;command_activate;1
+CMD;setparam;host-notify-by-epager;command_locked;0
+CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
+CMD;setparam;service-notify-by-epager;enable_shell;1
+CMD;setparam;service-notify-by-epager;command_activate;1
+CMD;setparam;service-notify-by-epager;command_locked;0
+CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
+CMD;setparam;host-notify-by-jabber;enable_shell;0
+CMD;setparam;host-notify-by-jabber;command_activate;1
+CMD;setparam;host-notify-by-jabber;command_locked;0
+CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
+CMD;setparam;service-notify-by-jabber;enable_shell;0
+CMD;setparam;service-notify-by-jabber;command_activate;1
+CMD;setparam;service-notify-by-jabber;command_locked;0
 CMD;ADD;check_host_alive;2;$USER1$/check_icmp -H $HOSTADDRESS$ -w 3000.0,80% -c 5000.0,100% -p 1
 CMD;setparam;check_host_alive;enable_shell;0
 CMD;setparam;check_host_alive;command_activate;1
@@ -330,27 +257,11 @@ CMD;ADD;check_centreon_nt;2;$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -v $ARG1$
 CMD;setparam;check_centreon_nt;enable_shell;0
 CMD;setparam;check_centreon_nt;command_activate;1
 CMD;setparam;check_centreon_nt;command_locked;0
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
-CMD;setparam;host-notify-by-email;enable_shell;1
-CMD;setparam;host-notify-by-email;command_activate;1
-CMD;setparam;host-notify-by-email;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
-CMD;setparam;service-notify-by-email;enable_shell;1
-CMD;setparam;service-notify-by-email;command_activate;1
-CMD;setparam;service-notify-by-email;command_locked;0
-CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
-CMD;setparam;host-notify-by-epager;enable_shell;1
-CMD;setparam;host-notify-by-epager;command_activate;1
-CMD;setparam;host-notify-by-epager;command_locked;0
-CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
-CMD;setparam;service-notify-by-epager;enable_shell;1
-CMD;setparam;service-notify-by-epager;command_activate;1
-CMD;setparam;service-notify-by-epager;command_locked;0
-CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;
+CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039
 CMD;setparam;submit-host-check-result;enable_shell;0
 CMD;setparam;submit-host-check-result;command_activate;1
 CMD;setparam;submit-host-check-result;command_locked;0
-CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;
+CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039
 CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
@@ -389,14 +300,6 @@ CMD;ADD;check_maxq;2;$USER1$/check_maxq_script_return -r $ARG1$ -P $ARG2$
 CMD;setparam;check_maxq;enable_shell;0
 CMD;setparam;check_maxq;command_activate;1
 CMD;setparam;check_maxq;command_locked;0
-CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
-CMD;setparam;host-notify-by-jabber;enable_shell;0
-CMD;setparam;host-notify-by-jabber;command_activate;1
-CMD;setparam;host-notify-by-jabber;command_locked;0
-CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
-CMD;setparam;service-notify-by-jabber;enable_shell;0
-CMD;setparam;service-notify-by-jabber;command_activate;1
-CMD;setparam;service-notify-by-jabber;command_locked;0
 CMD;ADD;check_centreon_snmp_value;2;$USER1$/check_centreon_snmp_value -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -o $ARG1$ -w $ARG2$ -c $ARG53
 CMD;setparam;check_centreon_snmp_value;command_example;!1.3.6.1.4.1.705.1.8.1.0!190!210
 CMD;setparam;check_centreon_snmp_value;enable_shell;0
@@ -424,7 +327,7 @@ CMD;setparam;base_centreon_ping;command_activate;1
 CMD;setparam;base_centreon_ping;command_locked;0
 RESOURCECFG;ADD;$USER1$;/usr/lib/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;$USER1$;activate;1
-RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins;Central;Centreon Plugins Path
+RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins/;Central;Centreon Plugins Path
 RESOURCECFG;setparam;$CENTREONPLUGINS$;activate;1
 CENTBROKERCFG;ADD;central-broker-master;Central
 CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.xml
@@ -451,6 +354,8 @@ CENTBROKERCFG;SETLOGGER;central-broker-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-broker-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;sql
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;store_in_data_bin;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_type;mysql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_port;3306
@@ -461,6 +366,7 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;port;5670
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;host;localhost
@@ -490,6 +396,7 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;buffering_timeout;0
@@ -506,6 +413,7 @@ CENTBROKERCFG;SETLOGGER;central-rrd-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-rrd-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;type;rrd
+CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;metrics_path;/var/lib/centreon/metrics
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;status_path;/var/lib/centreon/status
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;1;retry_interval;60
@@ -528,6 +436,8 @@ CENTBROKERCFG;SETLOGGER;central-module-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-module-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;port;5669
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;retry_interval;60
@@ -703,6 +613,8 @@ ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;;;local
+CONTACTTPL;setparam;contact_template;hostnotifopt;n
+CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
 CONTACTTPL;setparam;contact_template;timezone;
 CONTACTTPL;setparam;contact_template;reach_api;0
@@ -718,58 +630,6 @@ CONTACTTPL;setparam;test_contact-template;reach_api;0
 CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
 CONTACTTPL;setparam;test_contact-template;contact_type_msg;txt
 CONTACTTPL;setparam;test_contact-template;contact_activate;1
-LDAP;ADD;openldap;openldap;
-LDAP;SETPARAM;openldap;enable;1;
-LDAP;ADDSERVER;openldap;openldap;389;0;0;
-LDAP;SETPARAM;openldap;alias;uid;
-LDAP;SETPARAM;openldap;bind_dn;cn=admin,dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;bind_pass;centreon;
-LDAP;SETPARAM;openldap;group_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;group_filter;(&(cn=%s)(objectClass=groupOfNames));
-LDAP;SETPARAM;openldap;group_member;member;
-LDAP;SETPARAM;openldap;group_name;cn;
-LDAP;SETPARAM;openldap;ldap_auto_import;1;
-LDAP;SETPARAM;openldap;ldap_contact_tmpl;contact_template;
-LDAP;SETPARAM;openldap;ldap_dns_use_domain;;
-LDAP;SETPARAM;openldap;ldap_search_limit;60;
-LDAP;SETPARAM;openldap;ldap_search_timeout;60;
-LDAP;SETPARAM;openldap;ldap_srv_dns;0;
-LDAP;SETPARAM;openldap;ldap_store_password;1;
-LDAP;SETPARAM;openldap;ldap_template;Posix;
-LDAP;SETPARAM;openldap;protocol_version;3;
-LDAP;SETPARAM;openldap;user_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;user_email;mail;
-LDAP;SETPARAM;openldap;user_filter;(&(uid=%s)(objectClass=posixAccount));
-LDAP;SETPARAM;openldap;user_firstname;givenname;
-LDAP;SETPARAM;openldap;user_group;;
-LDAP;SETPARAM;openldap;user_lastname;sn;
-LDAP;SETPARAM;openldap;user_name;cn;
-LDAP;SETPARAM;openldap;user_pager;mobile;
-LDAP;ADD;test_configuration-LDAP;test_configuration-LDAP;
-LDAP;SETPARAM;test_configuration-LDAP;enable;0;
-LDAP;SETPARAM;test_configuration-LDAP;alias;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;bind_dn;;
-LDAP;SETPARAM;test_configuration-LDAP;bind_pass;;
-LDAP;SETPARAM;test_configuration-LDAP;group_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;group_filter;(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456));
-LDAP;SETPARAM;test_configuration-LDAP;group_member;member;
-LDAP;SETPARAM;test_configuration-LDAP;group_name;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_auto_import;1;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_dns_use_domain;;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_limit;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_timeout;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_srv_dns;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_store_password;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_template;Active Directory;
-LDAP;SETPARAM;test_configuration-LDAP;protocol_version;2;
-LDAP;SETPARAM;test_configuration-LDAP;user_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;user_email;mail;
-LDAP;SETPARAM;test_configuration-LDAP;user_filter;(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368));
-LDAP;SETPARAM;test_configuration-LDAP;user_firstname;givenname;
-LDAP;SETPARAM;test_configuration-LDAP;user_group;memberOf;
-LDAP;SETPARAM;test_configuration-LDAP;user_lastname;sn;
-LDAP;SETPARAM;test_configuration-LDAP;user_name;name;
-LDAP;SETPARAM;test_configuration-LDAP;user_pager;mobile;
 CONTACT;ADD;admin admin;admin;admin@centreon.com;md5__2f0a912f1c89b4f4fc9edd324d9d1c89;1;1;en_US;local
 CONTACT;setparam;admin;hostnotifperiod;24x7
 CONTACT;setparam;admin;svcnotifperiod;24x7
@@ -827,6 +687,58 @@ CONTACT;setparam;jeanpierre;reach_api;0
 CONTACT;setparam;jeanpierre;contact_enable_notifications;2
 CONTACT;setparam;jeanpierre;contact_type_msg;txt
 CONTACT;setparam;jeanpierre;contact_activate;1
+LDAP;ADD;openldap;openldap;
+LDAP;SETPARAM;openldap;enable;1;
+LDAP;ADDSERVER;openldap;openldap;389;0;0;
+LDAP;SETPARAM;openldap;alias;uid;
+LDAP;SETPARAM;openldap;bind_dn;cn=admin,dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;bind_pass;centreon;
+LDAP;SETPARAM;openldap;group_base_search;dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;group_filter;(&(cn=%s)(objectClass=groupOfNames));
+LDAP;SETPARAM;openldap;group_member;member;
+LDAP;SETPARAM;openldap;group_name;cn;
+LDAP;SETPARAM;openldap;ldap_auto_import;1;
+LDAP;SETPARAM;openldap;ldap_contact_tmpl;contact_template;
+LDAP;SETPARAM;openldap;ldap_dns_use_domain;;
+LDAP;SETPARAM;openldap;ldap_search_limit;60;
+LDAP;SETPARAM;openldap;ldap_search_timeout;60;
+LDAP;SETPARAM;openldap;ldap_srv_dns;0;
+LDAP;SETPARAM;openldap;ldap_store_password;1;
+LDAP;SETPARAM;openldap;ldap_template;Posix;
+LDAP;SETPARAM;openldap;protocol_version;3;
+LDAP;SETPARAM;openldap;user_base_search;dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;user_email;mail;
+LDAP;SETPARAM;openldap;user_filter;(&(uid=%s)(objectClass=posixAccount));
+LDAP;SETPARAM;openldap;user_firstname;givenname;
+LDAP;SETPARAM;openldap;user_group;;
+LDAP;SETPARAM;openldap;user_lastname;sn;
+LDAP;SETPARAM;openldap;user_name;cn;
+LDAP;SETPARAM;openldap;user_pager;mobile;
+LDAP;ADD;test_configuration-LDAP;test_configuration-LDAP;
+LDAP;SETPARAM;test_configuration-LDAP;enable;0;
+LDAP;SETPARAM;test_configuration-LDAP;alias;samaccountname;
+LDAP;SETPARAM;test_configuration-LDAP;bind_dn;;
+LDAP;SETPARAM;test_configuration-LDAP;bind_pass;;
+LDAP;SETPARAM;test_configuration-LDAP;group_base_search;;
+LDAP;SETPARAM;test_configuration-LDAP;group_filter;(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456));
+LDAP;SETPARAM;test_configuration-LDAP;group_member;member;
+LDAP;SETPARAM;test_configuration-LDAP;group_name;samaccountname;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_auto_import;1;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_dns_use_domain;;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_search_limit;60;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_search_timeout;60;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_srv_dns;0;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_store_password;0;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_template;Active Directory;
+LDAP;SETPARAM;test_configuration-LDAP;protocol_version;2;
+LDAP;SETPARAM;test_configuration-LDAP;user_base_search;;
+LDAP;SETPARAM;test_configuration-LDAP;user_email;mail;
+LDAP;SETPARAM;test_configuration-LDAP;user_filter;(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368));
+LDAP;SETPARAM;test_configuration-LDAP;user_firstname;givenname;
+LDAP;SETPARAM;test_configuration-LDAP;user_group;memberOf;
+LDAP;SETPARAM;test_configuration-LDAP;user_lastname;sn;
+LDAP;SETPARAM;test_configuration-LDAP;user_name;name;
+LDAP;SETPARAM;test_configuration-LDAP;user_pager;mobile;
 TRAP;ADD;linkDown;.1.3.6.1.6.3.1.1.5.3
 TRAP;setparam;linkDown;traps_name;linkDown
 TRAP;setparam;linkDown;traps_oid;.1.3.6.1.6.3.1.1.5.3
@@ -5413,15 +5325,3 @@ SC;addservicetemplate;Memory;SNMP-Win2K-memory
 SC;addservicetemplate;Memory;SNMP-Win2K3-Memory
 SC;addservicetemplate;Memory;SNMP-Win2K3-Swap
 SC;addservicetemplate;Memory;SNMP-Linux-Memory
-ACLRESOURCE;ADD;All Resources;All Resources;
-ACLRESOURCE;SETPARAM;All Resources;activate;1;
-ACLRESOURCE;GRANT_HOST;All Resources;*;
-ACLRESOURCE;GRANT_HOSTGROUP;All Resources;*;
-ACLRESOURCE;GRANT_SERVICEGROUP;All Resources;*;
-ACLGROUP;ADD;ALL;ALL;
-ACLGROUP;SETPARAM;ALL;activate;1;
-ACLGROUP;SETMENU;ALL;test_access-group;
-ACLGROUP;SETACTION;ALL;Simple User;
-ACLGROUP;SETRESOURCE;ALL;All Resources;
-ACLGROUP;SETCONTACT;ALL;test_contact;
-ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
