@@ -12,6 +12,7 @@ class centreonFileManager implements iFileManager
     protected $rawFile;
     protected $comment;
     protected $tmpFile;
+    protected $mediaPath;
     protected $destinationPath;
     protected $destinationDir;
     protected $originalFile;
@@ -30,10 +31,12 @@ class centreonFileManager implements iFileManager
      */
     public function __construct($rawFile, $mediaPath, $destinationDir, $comment = '')
     {
+
+        $this->mediaPath = $mediaPath;
         $this->comment = $comment;
         $this->rawFile = $rawFile["filename"];
         $this->destinationDir = $this->secureName($destinationDir);
-        $this->destinationPath = $mediaPath . $this->destinationDir;
+        $this->destinationPath = $this->mediaPath . $this->destinationDir;
         $this->dirExist($this->destinationPath);
         $this->originalFile = $this->rawFile['name'];
         $this->tmpFile = $this->rawFile['tmp_name'];

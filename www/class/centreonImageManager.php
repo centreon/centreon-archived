@@ -52,7 +52,6 @@ class centreonImageManager extends centreonFileManager
      */
     public function update($imgId, $imgName)
     {
-
         if (!$imgId) {
             return false;
         }
@@ -67,62 +66,37 @@ class centreonImageManager extends centreonFileManager
         }
         $img_info = $dbResult->fetchRow();
 
-
-        // check new file
-        if(!empty($this->originalFile) && !empty($this->tmpFile)){
+        // update if new file
+        if (!empty($this->originalFile) && !empty($this->tmpFile)) {
+            $this->deleteImg($this->mediaPath . $img_info["dir_alias"] . '/' . $img_info["img_path"]);
             $this->upload(false);
-
-            deleteImg($img_id);
-            $img_id = insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_info["img_path"],
-                $img_info["img_comment"]);
-
-
+            $query = "UPDATE view_img SET img_path  = '" . $this->newFile . "' WHERE img_id = '" . $imgId . "'";
+            $pearDB->query($query);
         }
 
+        // update image info
+        $query = "UPDATE view_img SET img_name  = '" . $this->secureName($imgName) .
+            "', img_comment = '" . $this->comment . "' WHERE img_id = '" . $imgId . "'";
+        $pearDB->query($query);
 
-
-
-
-
-        /* rename AND not moved*/
-        if ($img_name && $dir_alias == $img_info["dir_alias"]) {
-            $img_ext = pathinfo($img_info["img_path"], PATHINFO_EXTENSION);
-            $filename = $img_name . "." . $img_ext;
-            $oldname = $mediadir . $img_info["dir_alias"] . "/" . $img_info["img_path"];
-            $newname = $mediadir . $img_info["dir_alias"] . "/" . $filename;
-            if (rename($oldname, $newname)) {
-                $img_info["img_path"] = $filename;
-                $DBRESULT = $pearDB->query(
-                    "UPDATE view_img SET img_name = '" . $img_name
-                    . "', img_path = '" . $filename . "' WHERE img_id = '"
-                    . $img_id . "'"
-                );
-            }
+        //check directory
+        if (!($dirId = $this->checkDirectoryExistence())) {
+            $dirId = $this->insertDirectory();
         }
 
-        /* move to new dir - only processed if no file was uploaded */
-        if (!$HTMLfile->isUploadedFile() && $dir_alias != $img_info["dir_alias"]) {
-            if (!($dir_id = testDirectoryExistence($dir_alias))) {
-                $dir_id = insertDirectory($dir_alias);
-            }
-            $oldpath = $mediadir . $img_info["dir_alias"] . "/" . $img_info["img_path"];
-            $newpath = $mediadir . $dir_alias . "/" . $img_info["img_path"];
-            if (rename($oldpath, $newpath)) {
-                $DBRESULT = $pearDB->query(
-                    "UPDATE view_img_dir_relation SET dir_dir_parent_id = '"
-                    . $dir_id . "' WHERE img_img_id = '" . $img_id . "'"
-                );
-            }
-        }
-        if ($img_comment) {
-            $DBRESULT = $pearDB->query(
-                "UPDATE view_img SET img_comment = '"
-                . htmlentities($img_comment, ENT_QUOTES, "UTF-8")
-                . "' WHERE img_id = '" . $img_id . "'"
-            );
-        }
+        //update relation
+        $query = "UPDATE view_img_dir_relation SET dir_dir_parent_id  = '" . $dirId .
+            "' WHERE img_img_id = '" . $imgId . "'";
+        $pearDB->query($query);
+    }
 
 
+    /**
+     * @param $fullpath
+     */
+    protected function deleteImg($fullpath)
+    {
+        unlink($fullpath);
     }
 
 
@@ -161,6 +135,16 @@ class centreonImageManager extends centreonFileManager
         return ($dirId["MAX(dir_id)"]);
     }
 
+    /**
+     * @param $dirId
+     */
+    protected function updateDirectory($dirId)
+    {
+        global $pearDB;
+        $query = "UPDATE view_img_dir SET dir_name = '" . $this->destinationDir .
+            "', dir_alias = '" . $this->destinationDir . "' WHERE dir_id = " . $dirId;
+        $pearDB->query($query);
+    }
 
     /**
      * @return mixed
