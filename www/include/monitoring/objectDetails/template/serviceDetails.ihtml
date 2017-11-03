@@ -296,7 +296,7 @@
                                 </td>
                             </tr>
                             {if $lcaTopo.60204 || $admin == 1}
-                            <tr>
+                            <tr class="list_one">
                                 <td class="ColPopup">
                                         <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
 
@@ -304,7 +304,7 @@
                             </tr>
                             {/if}
                             {if $lcaTopo.20301 || $admin == 1}
-                            <tr>
+                            <tr class="list_two">
                                 <td class="ColPopup">
                                         <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
 
