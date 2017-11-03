@@ -50,7 +50,7 @@
                                         <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
                                             <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
                                         </td>
-                                        <td>
+                                        <td width='6%'>
                                             {if $hs.svc_index > 0}
                                             <a href="main.php?p=204&amp;mode=0&amp;svc_id={$hs.hnl};{$hs.sdl}">
                                                 <img id="{$host_id}-{$hs.svc_id}" class="graph-volant ico-18" src="./img/icons/chart.png"/>
