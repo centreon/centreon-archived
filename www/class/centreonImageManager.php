@@ -51,7 +51,7 @@ class centreonImageManager extends centreonFileManager
      */
     public function update($imgId, $imgName)
     {
-        if (!$imgId) {
+        if (!$imgId || empty($imgName)) {
             return false;
         }
 
@@ -81,6 +81,10 @@ class centreonImageManager extends centreonFileManager
         //check directory
         if (!($dirId = $this->checkDirectoryExistence())) {
             $dirId = $this->insertDirectory();
+        } elseif ($img_info['dir_alias'] != $this->destinationDir) {
+            $old = $this->mediaPath . $img_info['dir_alias'] . '/' . $img_info["img_path"];
+            $new = $this->mediaPath . $this->destinationDir . '/' . $img_info["img_path"];
+            $this->moveImage($old, $new);
         }
 
         //update relation
@@ -90,11 +94,11 @@ class centreonImageManager extends centreonFileManager
     }
 
     /**
-     * @param $fullpath
+     * @param $fullPath
      */
-    protected function deleteImg($fullpath)
+    protected function deleteImg($fullPath)
     {
-        unlink($fullpath);
+        unlink($fullPath);
     }
 
     /**
@@ -169,4 +173,15 @@ class centreonImageManager extends centreonFileManager
         $res->free();
         return ($imgId);
     }
+
+    /**
+     * @param $old
+     * @param $new
+     */
+    protected function moveImage($old, $new)
+    {
+        copy($old, $new);
+        $this->deleteImg($old);
+    }
+
 }
