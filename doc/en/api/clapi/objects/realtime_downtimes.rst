@@ -118,7 +118,7 @@ Real time Downtime for : addservice, addservicegroup
 If you want to associate a service or service group to a real time downtime, use the **ADD** action::
 To set the value of the start/end, use following format : YYYY/MM/DD HH:mm::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SVC;central|ping;2017/09/24 10:00;2017/09/24 12:00;1;3600;my comments"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SVC;central,ping|central,memory;2017/09/24 10:00;2017/09/24 12:00;1;3600;my comments"
   [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a add -v "SG;servicegroup1;2017/09/24 10:00;2017/09/24 12:00;1;3600;my comments"
 
 The required parameters are the following :
