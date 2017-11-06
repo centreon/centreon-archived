@@ -184,6 +184,30 @@ VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
+CMD;setparam;host-notify-by-email;enable_shell;1
+CMD;setparam;host-notify-by-email;command_activate;1
+CMD;setparam;host-notify-by-email;command_locked;0
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
+CMD;setparam;service-notify-by-email;enable_shell;1
+CMD;setparam;service-notify-by-email;command_activate;1
+CMD;setparam;service-notify-by-email;command_locked;0
+CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
+CMD;setparam;host-notify-by-epager;enable_shell;1
+CMD;setparam;host-notify-by-epager;command_activate;1
+CMD;setparam;host-notify-by-epager;command_locked;0
+CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
+CMD;setparam;service-notify-by-epager;enable_shell;1
+CMD;setparam;service-notify-by-epager;command_activate;1
+CMD;setparam;service-notify-by-epager;command_locked;0
+CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
+CMD;setparam;host-notify-by-jabber;enable_shell;0
+CMD;setparam;host-notify-by-jabber;command_activate;1
+CMD;setparam;host-notify-by-jabber;command_locked;0
+CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
+CMD;setparam;service-notify-by-jabber;enable_shell;0
+CMD;setparam;service-notify-by-jabber;command_activate;1
+CMD;setparam;service-notify-by-jabber;command_locked;0
 CMD;ADD;check_host_alive;2;$USER1$/check_icmp -H $HOSTADDRESS$ -w 3000.0,80% -c 5000.0,100% -p 1
 CMD;setparam;check_host_alive;enable_shell;0
 CMD;setparam;check_host_alive;command_activate;1
@@ -330,27 +354,11 @@ CMD;ADD;check_centreon_nt;2;$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -v $ARG1$
 CMD;setparam;check_centreon_nt;enable_shell;0
 CMD;setparam;check_centreon_nt;command_activate;1
 CMD;setparam;check_centreon_nt;command_locked;0
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
-CMD;setparam;host-notify-by-email;enable_shell;1
-CMD;setparam;host-notify-by-email;command_activate;1
-CMD;setparam;host-notify-by-email;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
-CMD;setparam;service-notify-by-email;enable_shell;1
-CMD;setparam;service-notify-by-email;command_activate;1
-CMD;setparam;service-notify-by-email;command_locked;0
-CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
-CMD;setparam;host-notify-by-epager;enable_shell;1
-CMD;setparam;host-notify-by-epager;command_activate;1
-CMD;setparam;host-notify-by-epager;command_locked;0
-CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
-CMD;setparam;service-notify-by-epager;enable_shell;1
-CMD;setparam;service-notify-by-epager;command_activate;1
-CMD;setparam;service-notify-by-epager;command_locked;0
-CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;
+CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039
 CMD;setparam;submit-host-check-result;enable_shell;0
 CMD;setparam;submit-host-check-result;command_activate;1
 CMD;setparam;submit-host-check-result;command_locked;0
-CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;
+CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039
 CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
@@ -389,14 +397,6 @@ CMD;ADD;check_maxq;2;$USER1$/check_maxq_script_return -r $ARG1$ -P $ARG2$
 CMD;setparam;check_maxq;enable_shell;0
 CMD;setparam;check_maxq;command_activate;1
 CMD;setparam;check_maxq;command_locked;0
-CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
-CMD;setparam;host-notify-by-jabber;enable_shell;0
-CMD;setparam;host-notify-by-jabber;command_activate;1
-CMD;setparam;host-notify-by-jabber;command_locked;0
-CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
-CMD;setparam;service-notify-by-jabber;enable_shell;0
-CMD;setparam;service-notify-by-jabber;command_activate;1
-CMD;setparam;service-notify-by-jabber;command_locked;0
 CMD;ADD;check_centreon_snmp_value;2;$USER1$/check_centreon_snmp_value -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -o $ARG1$ -w $ARG2$ -c $ARG53
 CMD;setparam;check_centreon_snmp_value;command_example;!1.3.6.1.4.1.705.1.8.1.0!190!210
 CMD;setparam;check_centreon_snmp_value;enable_shell;0
@@ -461,6 +461,7 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;port;5670
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;host;localhost
@@ -471,6 +472,8 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;2;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-perfdata;storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;type;storage
+CENTBROKERCFG;SETOUTPUT;central-broker-master;3;store_in_data_bin;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;3;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;buffering_timeout;0
@@ -490,6 +493,7 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;buffering_timeout;0
@@ -528,6 +532,8 @@ CENTBROKERCFG;SETLOGGER;central-module-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-module-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;port;5669
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;retry_interval;60
@@ -703,6 +709,8 @@ ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;;;local
+CONTACTTPL;setparam;contact_template;hostnotifopt;n
+CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
 CONTACTTPL;setparam;contact_template;timezone;
 CONTACTTPL;setparam;contact_template;reach_api;0
