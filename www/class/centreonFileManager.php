@@ -58,16 +58,6 @@ class centreonFileManager implements iFileManager
     }
 
     /**
-     * @param $id
-     * @param $name
-     * @return bool
-     */
-    public function update($id, $name)
-    {
-        return true;
-    }
-
-    /**
      * @return bool
      */
     protected function securityCheck()

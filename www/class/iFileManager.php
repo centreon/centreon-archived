@@ -12,11 +12,4 @@ interface iFileManager
      * @return mixed
      */
     public function upload();
-
-    /**
-     * @param $id
-     * @param $name
-     * @return mixed
-     */
-    public function update($id, $name);
 }
