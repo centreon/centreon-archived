@@ -10,6 +10,7 @@ class centreonFileManager implements iFileManager
 {
 
     protected $rawFile;
+    protected $dependencyInjector;
     protected $comment;
     protected $tmpFile;
     protected $mediaPath;
@@ -23,15 +24,22 @@ class centreonFileManager implements iFileManager
     protected $completePath;
 
     /**
-     * centreonFileUploader constructor.
+     * centreonFileManager constructor.
+     * @param \Pimple\Container $dependencyInjector
      * @param $rawFile
      * @param $mediaPath
      * @param $destinationDir
      * @param string $comment
      */
-    public function __construct($rawFile, $mediaPath, $destinationDir, $comment = '')
-    {
+    public function __construct(
+        \Pimple\Container $dependencyInjector,
+        $rawFile,
+        $mediaPath,
+        $destinationDir,
+        $comment = ''
+    ) {
 
+        $this->dependencyInjector = $dependencyInjector;
         $this->mediaPath = $mediaPath;
         $this->comment = $comment;
         $this->rawFile = $rawFile["filename"];

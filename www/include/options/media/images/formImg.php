@@ -36,6 +36,7 @@
  *
  */
 require_once _CENTREON_PATH_ . "www/class/centreonImageManager.php";
+require_once __DIR__ . '/../../../../bootstrap.php';
 
 if (!isset($centreon)) {
     exit();
@@ -204,7 +205,7 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
-    $oImageUploader = new centreonImageManager($_FILES, './img/media/', $imgPath, $imgComment);
+    $oImageUploader = new centreonImageManager($dependencyInjector, $_FILES, './img/media/', $imgPath, $imgComment);
     if ($form->getSubmitValue("submitA")) {
         $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {
