@@ -45,9 +45,21 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
     {
         $queryValues = array();
 
-        $filterAclgroup = '';
+        global $centreon;
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $filterAclgroup = ' WHERE ';
+
+        if(!$isAdmin){
+            $acl = new CentreonACL($userId, $isAdmin);
+            $filterAclgroup .= ' acl_group_id IN (' . $acl->getAccessGroupsString() . ') ';
+        }
+
         if (isset($this->arguments['q'])) {
-            $filterAclgroup = "WHERE acl_group_name LIKE ? OR acl_group_alias LIKE ? ";
+            if(!$isAdmin){
+                $filterAclgroup .= ' AND ';
+            }
+            $filterAclgroup .= " (acl_group_name LIKE ? OR acl_group_alias LIKE ?) ";
             $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
             $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
         }
@@ -67,6 +79,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             $filterAclgroup .
             "ORDER BY acl_group_name " .
             $range;
+
         $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
