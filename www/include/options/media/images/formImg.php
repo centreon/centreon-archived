@@ -205,7 +205,7 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
-    $oImageUploader = new centreonImageManager($dependencyInjector, $_FILES, './img/media/', $imgPath, $imgComment);
+    $oImageUploader = new CentreonImageManager($dependencyInjector, $_FILES, './img/media/', $imgPath, $imgComment);
     if ($form->getSubmitValue("submitA")) {
         $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {
