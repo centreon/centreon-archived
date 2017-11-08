@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2017 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -901,15 +901,15 @@ class CentreonHost extends CentreonObject
         }
 
         $hosts = array();
-        foreach ($elements as $element){
+        foreach ($elements as $element) {
             $hosts[] = $element['host_id'];
         }
 
         $sortedHosts = array();
-        while($hostId = array_pop($hosts)){
+        while ($hostId = array_pop($hosts)) {
             if(!in_array($hostId, array_keys($parentShip))){
                 $sortedHosts[] = $hostId;
-            }else{
+            } else {
                 $parents = $parentShip[$hostId];
                 $parentExported = true;
                 foreach($parents as $parentId){
@@ -918,9 +918,9 @@ class CentreonHost extends CentreonObject
                         break;
                     }
                 }
-                if($parentExported){
+                if ($parentExported) {
                     $sortedHosts[] = $hostId;
-                }else{
+                } else {
                     array_unshift($hosts, $hostId);
                 }
             }
