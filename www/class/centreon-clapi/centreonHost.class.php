@@ -885,19 +885,11 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param $elements
+     * @return array
      */
-    public function export($filters = null)
+    protected function getHostListByParent(&$elements)
     {
-        $filters["host_register"] = $this->register;
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
-        $extendedObj = new \Centreon_Object_Host_Extended();
-        $commandObj = new \Centreon_Object_Command();
-        $tpObj = new \Centreon_Object_Timeperiod();
-        $macroObj = new \Centreon_Object_Host_Macro_Custom();
-        $instanceRel = new \Centreon_Object_Relation_Instance_Host();
         $hostParent = new \Centreon_Object_Relation_Host_Parent_Host();
 
         $parentShip = array();
@@ -943,6 +935,24 @@ class CentreonHost extends CentreonObject
         foreach ($sortedHosts as $hostId) {
             $elements[$hostId] = $elementsIndexedById[$hostId];
         }
+        return $parentShip;
+    }
+
+    /**
+     * Export
+     *
+     * @return void
+     */
+    public function export($filters = null)
+    {
+        $filters["host_register"] = $this->register;
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $extendedObj = new \Centreon_Object_Host_Extended();
+        $commandObj = new \Centreon_Object_Command();
+        $tpObj = new \Centreon_Object_Timeperiod();
+        $macroObj = new \Centreon_Object_Host_Macro_Custom();
+        $instanceRel = new \Centreon_Object_Relation_Instance_Host();
+        $parentShip = $this->getHostListByParent($elements);
 
         if ($this->register) {
             $instElements = $instanceRel->getMergedParameters(
