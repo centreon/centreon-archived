@@ -135,6 +135,19 @@ abstract class Centreon_Object_Relation
     }
 
     /**
+     * Get relation Ids
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getRelations()
+    {
+        $sql = 'SELECT ' . $this->firstKey . ',' . $this->secondKey . ' ' .
+            'FROM ' . $this->relationTable;
+        return $this->getResult($sql);
+    }
+
+    /**
      * Get Merged Parameters from seperate tables
      *
      * @param array $firstTableParams
