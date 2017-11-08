@@ -895,9 +895,9 @@ class CentreonHost extends CentreonObject
         $parentShip = array();
         $relations = $hostParent->getRelations();
         foreach ($relations as $relation) {
-            $firstkey = $relation[$hostParent->getFirstKey()];
+            $firstKey = $relation[$hostParent->getFirstKey()];
             $secondKey = $relation[$hostParent->getSecondKey()];
-            $parentShip[$secondKey][] = $firstkey;
+            $parentShip[$secondKey][] = $firstKey;
         }
 
         $hosts = array();
@@ -907,12 +907,12 @@ class CentreonHost extends CentreonObject
 
         $sortedHosts = array();
         while ($hostId = array_pop($hosts)) {
-            if(!in_array($hostId, array_keys($parentShip))){
+            if (!in_array($hostId, array_keys($parentShip))) {
                 $sortedHosts[] = $hostId;
             } else {
                 $parents = $parentShip[$hostId];
                 $parentExported = true;
-                foreach($parents as $parentId){
+                foreach ($parents as $parentId) {
                     if(!in_array($parentId, $sortedHosts)){
                         $parentExported = false;
                         break;
