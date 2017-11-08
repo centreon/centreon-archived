@@ -39,8 +39,9 @@ class CentreonImageManager extends centreonFileManager
      */
     public function upload($insert = true)
     {
-        parent::upload();
-        if ($insert) {
+        $parentUpload = parent::upload();
+
+        if ($parentUpload && $insert) {
             $img_ids[] = $this->insertImg(
                 $this->destinationPath,
                 $this->destinationDir,
@@ -49,6 +50,7 @@ class CentreonImageManager extends centreonFileManager
             );
             return $img_ids;
         }
+
     }
 
     /**

@@ -66,6 +66,9 @@ class CentreonFileManager implements iFileManager
     {
         if ($this->securityCheck()) {
             $this->moveFile();
+            return true;
+        } else {
+            return false;
         };
     }
 
@@ -120,6 +123,7 @@ class CentreonFileManager implements iFileManager
      */
     protected function secureExtension()
     {
+
         if (in_array(strtolower($this->extension), $this->legalExtensions)) {
             return true;
         } else {
