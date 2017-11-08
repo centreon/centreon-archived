@@ -145,7 +145,7 @@ abstract class Centreon_Object_Relation
         $sql = 'SELECT ' . $this->firstKey . ',' . $this->secondKey . ' ' .
             'FROM ' . $this->relationTable;
 
-        return $this->getResult($sql, array(), "fetchAll");
+        return $this->getResult($sql);
     }
 
     /**
