@@ -6,7 +6,7 @@
  * Time: 11:55
  */
 
-class centreonFileManager implements iFileManager
+class CentreonFileManager implements iFileManager
 {
 
     protected $rawFile;
@@ -21,17 +21,23 @@ class centreonFileManager implements iFileManager
     protected $extension;
     protected $newFile;
     protected $completePath;
+    protected $legalExtensions;
+    protected $legalSize;
 
     /**
-     * centreonFileUploader constructor.
+     * centreonFileManager constructor.
+     * @param \Pimple\Container $dependencyInjector
      * @param $rawFile
      * @param $mediaPath
      * @param $destinationDir
      * @param string $comment
      */
-    public function __construct($rawFile, $mediaPath, $destinationDir, $comment = '')
-    {
-
+    public function __construct(
+        $rawFile,
+        $mediaPath,
+        $destinationDir,
+        $comment = ''
+    ) {
         $this->mediaPath = $mediaPath;
         $this->comment = $comment;
         $this->rawFile = $rawFile["filename"];
@@ -45,6 +51,8 @@ class centreonFileManager implements iFileManager
         $this->fileName = $this->secureName(basename($this->originalFile, '.' . $this->extension));
         $this->newFile = $this->fileName . '.' . $this->extension;
         $this->completePath = $this->destinationPath . '/' . $this->newFile;
+        $this->legalExtensions = array();
+        $this->legalSize = 500000;
     }
 
     /**
@@ -54,6 +62,9 @@ class centreonFileManager implements iFileManager
     {
         if ($this->securityCheck()) {
             $this->moveFile();
+            return true;
+        } else {
+            return false;
         };
     }
 
@@ -62,10 +73,10 @@ class centreonFileManager implements iFileManager
      */
     protected function securityCheck()
     {
-        if (!$this->validFile($this->tmpFile, $this->size) ||
+        if (!$this->validFile() ||
             !$this->validSize() ||
-            !$this->secureExtension($this->extension) ||
-            $this->fileExist($this->completePath)
+            !$this->secureExtension() ||
+            $this->fileExist()
         ) {
             return false;
         } else {
@@ -104,12 +115,12 @@ class centreonFileManager implements iFileManager
     }
 
     /**
-     * @param $extension
      * @return bool
      */
-    protected function secureExtension($extension)
+    protected function secureExtension()
     {
-        if (in_array(strtolower($extension), $this->legalExtensions)) {
+
+        if (in_array(strtolower($this->extension), $this->legalExtensions)) {
             return true;
         } else {
             return false;
@@ -117,13 +128,11 @@ class centreonFileManager implements iFileManager
     }
 
     /**
-     * @param $file
-     * @param $size
      * @return bool
      */
-    protected function validFile($file, $size)
+    protected function validFile()
     {
-        if (empty($file) || $size == 0) {
+        if (empty($this->tmpFile) || $this->size == 0) {
             return false;
         } else {
             return true;
@@ -143,12 +152,11 @@ class centreonFileManager implements iFileManager
     }
 
     /**
-     * @param $pathFile
      * @return bool
      */
-    protected function fileExist($pathFile)
+    protected function fileExist()
     {
-        if (file_exists($pathFile)) {
+        if (file_exists($this->completePath)) {
             return true;
         } else {
             return false;

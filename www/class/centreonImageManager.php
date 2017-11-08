@@ -6,7 +6,7 @@
  * Time: 11:55
  */
 
-class centreonImageManager extends centreonFileManager
+class CentreonImageManager extends centreonFileManager
 {
 
     protected $legalExtensions;
@@ -32,8 +32,8 @@ class centreonImageManager extends centreonFileManager
      */
     public function upload($insert = true)
     {
-        parent::upload();
-        if ($insert) {
+        $parentUpload = parent::upload();
+        if ($parentUpload && $insert) {
             $img_ids[] = $this->insertImg(
                 $this->destinationPath,
                 $this->destinationDir,
