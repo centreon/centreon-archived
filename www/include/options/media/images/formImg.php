@@ -219,7 +219,7 @@ if ($form->validate()) {
 }
 $action = $form->getSubmitValue("action");
 
-if (is_array($valid)) {
+if ($valid) {
     require_once("listImg.php");
 } else {
     /*
