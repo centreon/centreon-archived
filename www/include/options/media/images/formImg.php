@@ -36,7 +36,7 @@
  *
  */
 require_once _CENTREON_PATH_ . "www/class/centreonImageManager.php";
-require_once __DIR__ . '/../../../../bootstrap.php';
+require_once __DIR__ . '/../../../../../bootstrap.php';
 
 if (!isset($centreon)) {
     exit();
