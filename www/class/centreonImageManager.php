@@ -6,15 +6,14 @@
  * Time: 11:55
  */
 
-class centreonImageManager extends centreonFileManager
+class CentreonImageManager extends centreonFileManager
 {
-
     protected $legalExtensions;
     protected $legalSize;
     protected $dbConfig;
 
     /**
-     * centreonImageManager constructor.
+     * CentreonImageManager constructor.
      * @param \Pimple\Container $dependencyInjector
      * @param $rawFile
      * @param $basePath
@@ -203,5 +202,4 @@ class centreonImageManager extends centreonFileManager
         copy($old, $new);
         $this->deleteImg($old);
     }
-
 }
