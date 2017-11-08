@@ -33,14 +33,18 @@ class CentreonImageManager extends centreonFileManager
     public function upload($insert = true)
     {
         $parentUpload = parent::upload();
-        if ($parentUpload && $insert) {
-            $img_ids[] = $this->insertImg(
-                $this->destinationPath,
-                $this->destinationDir,
-                $this->newFile,
-                $this->comment
-            );
-            return $img_ids;
+        if ($parentUpload) {
+            if ($insert) {
+                $img_ids[] = $this->insertImg(
+                    $this->destinationPath,
+                    $this->destinationDir,
+                    $this->newFile,
+                    $this->comment
+                );
+                return $img_ids;
+            }
+        } else {
+            return false;
         }
     }
 
