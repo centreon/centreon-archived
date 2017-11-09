@@ -563,8 +563,6 @@ jQuery(function() {
                     jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
                     jQuery(elem).find("input[id^='macroPassword_']").parent('span').hide()
                 }
-
-                }
         });
     {/literal}{/if}{literal}
     });
