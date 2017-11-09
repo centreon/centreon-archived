@@ -503,7 +503,7 @@ jQuery(function() {
         }
         {/literal}{else}{literal}
         if ($passwordCheckbox.is(':checked')) {
-            $passwordCheckbox.parent('span').empty();
+            $passwordCheckbox.parent('span').hide();
         }
         {/literal}{/if}{literal}
     });
