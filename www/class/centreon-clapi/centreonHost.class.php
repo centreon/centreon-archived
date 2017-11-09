@@ -88,6 +88,7 @@ class CentreonHost extends CentreonObject
      * @var Timezone
      */
     protected $timezoneObject;
+    protected $register;
 
     public static $aDepends = array(
         'CMD',
@@ -952,7 +953,7 @@ class CentreonHost extends CentreonObject
         $tpObj = new \Centreon_Object_Timeperiod();
         $macroObj = new \Centreon_Object_Host_Macro_Custom();
         $instanceRel = new \Centreon_Object_Relation_Instance_Host();
-        $parentShip = $this->getHostListByParent($elements);
+        $parentShip = array();
 
         if ($this->register) {
             $instElements = $instanceRel->getMergedParameters(
@@ -1020,6 +1021,9 @@ class CentreonHost extends CentreonObject
             }
 
             // Set parentship
+            if ($this->register == 1) {
+                $parentShip = $this->getHostListByParent($elements);
+            }
             if (isset($parentShip[$element[$this->object->getPrimaryKey()]])) {
                 foreach ($parentShip[$element[$this->object->getPrimaryKey()]] as $parentId) {
                     echo $this->action . $this->delim
