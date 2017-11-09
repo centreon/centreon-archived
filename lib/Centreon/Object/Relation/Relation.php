@@ -135,6 +135,20 @@ abstract class Centreon_Object_Relation
     }
 
     /**
+     * Get relation Ids
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getRelations()
+    {
+        $sql = 'SELECT ' . $this->firstKey . ',' . $this->secondKey . ' ' .
+            'FROM ' . $this->relationTable;
+
+        return $this->getResult($sql);
+    }
+
+    /**
      * Get Merged Parameters from seperate tables
      *
      * @param array $firstTableParams
@@ -148,6 +162,7 @@ abstract class Centreon_Object_Relation
      */
     public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
+
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
@@ -183,6 +198,7 @@ abstract class Centreon_Object_Relation
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+
         if (isset($count) && $count != -1) {
             $sql = $this->db->limit($sql, $count, $offset);
         }
