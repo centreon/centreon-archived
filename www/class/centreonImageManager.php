@@ -145,6 +145,8 @@ class CentreonImageManager extends centreonFileManager
         $stmt->bindParam(':dirId', $dirId);
         $stmt->bindParam(':imgId', $imgId);
         $stmt->execute();
+        
+        return true;
     }
 
     /**
