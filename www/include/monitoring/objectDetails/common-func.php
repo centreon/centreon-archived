@@ -56,13 +56,10 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     $executed_check_command = $row['command_line'];
     $host_id = $row['host_id'];
 
-    /* Get custom macros from service and templates */
-    $objHost = new CentreonHost($pearDB);
-    $arrtSvcTpl = $objHost->getServicesTemplates($service_id);
-
+    $arrtSvcTpl = getListTemplates($pearDB, $service_id);
     $arrSvcTplID = array($service_id);
     foreach ($arrtSvcTpl as $svc) {
-        $arrSvcTplID = array_merge ($arrSvcTplID, $svc['service_id']);
+        $arrSvcTplID[] = $svc['service_id'];
     }
 
     $query_custom_macro_svc = "SELECT svc_macro_name "
