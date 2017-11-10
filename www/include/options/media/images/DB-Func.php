@@ -107,7 +107,6 @@ function is_gd2($filename)
     return false;
 }
 
-
 function handleUpload($HTMLfile, $dir_alias, $img_comment = "")
 {
     if (!$HTMLfile || !$dir_alias) {
