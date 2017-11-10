@@ -502,7 +502,7 @@ jQuery(function() {
         }
         {/literal}{else}{literal}
         if ($passwordCheckbox.is(':checked')) {
-            $passwordCheckbox.parent('span').empty();
+            $passwordCheckbox.parent('span').hide();
         }
         {/literal}{/if}{literal}
     });
@@ -619,9 +619,9 @@ function clonerefreshListener(el){
 
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                         	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                            jQuery(elem).find("input[id^='macroPassword_']").parent('span').hide();
                     	}
                     });
-                    
                 }
             });
     }
