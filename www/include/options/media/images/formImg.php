@@ -35,6 +35,8 @@
  * SVN : $Id$
  *
  */
+require_once _CENTREON_PATH_ . "www/class/centreonImageManager.php";
+require_once __DIR__ . '/../../../../../bootstrap.php';
 
 if (!isset($centreon)) {
     exit();
@@ -43,20 +45,20 @@ if (!isset($centreon)) {
 /*
  * Database retrieve information
  */
-$img = array("img_path"=>null);
+$img = array("img_path" => null);
 if ($o == "ci" || $o == "w") {
-    $res = $pearDB->query("SELECT * FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
+    $res = $pearDB->query("SELECT * FROM view_img WHERE img_id = '" . $img_id . "' LIMIT 1");
     # Set base value
     $img = array_map("myDecode", $res->fetchRow());
 
     # Set Directories
-    $q =  "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img";
+    $q = "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img";
     $q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
     $q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
-    $q .= "  WHERE img_id = '".$img_id."' LIMIT 1";
+    $q .= "  WHERE img_id = '" . $img_id . "' LIMIT 1";
     $DBRESULT = $pearDB->query($q);
     $dir = $DBRESULT->fetchRow();
-    $img_path = "./img/media/".$dir["dir_alias"]."/".$dir["img_path"];
+    $img_path = "./img/media/" . $dir["dir_alias"] . "/" . $dir["img_path"];
     $img["directories"] = $dir["dir_name"];
     $DBRESULT->closeCursor();
 }
@@ -73,14 +75,14 @@ asort($dir_list_sel);
 /*
  * Styles
  */
-$attrsText    = array("size"=>"35");
+$attrsText = array("size" => "35");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea    = array("rows"=>"5", "cols"=>"80");
+$attrsTextarea = array("rows" => "5", "cols" => "80");
 
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add Image(s)"));
     $form->addElement(
@@ -97,7 +99,7 @@ if ($o == "a") {
         $dir_list_sel,
         array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
     );
-    $file = $form->addElement('file', 'filename', _("Image or archive"));
+    $form->addElement('file', 'filename', _("Image or archive"));
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
 } elseif ($o == "ci") {
     $form->addElement('header', 'title', _("Modify Image"));
@@ -117,7 +119,7 @@ if ($o == "a") {
         array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
     );
     $list_dir->setSelected($dir['dir_id']);
-    $file = $form->addElement('file', 'filename', _("Image"));
+    $form->addElement('file', 'filename', _("Image"));
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $form->setDefaults($img);
     $form->addRule('img_name', _("Compulsory image name"), 'required');
@@ -126,7 +128,7 @@ if ($o == "a") {
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement('text', 'img_path', $img_path, null);
     $form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
-    $file = $form->addElement('file', 'filename', _("Image"));
+    $form->addElement('file', 'filename', _("Image"));
     $form->addElement(
         "button",
         "change",
@@ -154,7 +156,7 @@ $tab = array();
 $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Return to list"), '1');
 $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Review form after save"), '0');
 $form->addGroup($tab, 'action', _("Action"), '&nbsp;');
-$form->setDefaults(array('action'=>'1'));
+$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'img_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -194,20 +196,21 @@ $tpl->assign(
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    $imgID = $form->getElement('img_id');
+    $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
+    $oImageUploader = new CentreonImageManager($dependencyInjector, $_FILES, './img/media/', $imgPath, $imgComment);
     if ($form->getSubmitValue("submitA")) {
-        $valid = handleUpload($file, $imgPath, $imgComment);
+        $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {
         $imgName = $form->getElement('img_name')->getValue();
-        $valid = updateImg($imgID->getValue(), $file, $imgPath, $imgName, $imgComment);
+        $valid = $oImageUploader->update($imgId, $imgName);
     }
     $form->freeze();
     if (false === $valid) {
