@@ -45,9 +45,18 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
     {
         $queryValues = array();
 
-        $filterAclgroup = '';
+        global $centreon;
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $filterAclgroup = array();
+
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $filterAclgroup[] = ' acl_group_id IN (' . $acl->getAccessGroupsString() . ') ';
+        }
+
         if (isset($this->arguments['q'])) {
-            $filterAclgroup = "WHERE acl_group_name LIKE ? OR acl_group_alias LIKE ? ";
+            $filterAclgroup[] = " (acl_group_name LIKE ? OR acl_group_alias LIKE ?) ";
             $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
             $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
         }
@@ -62,11 +71,12 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             $range = '';
         }
 
-        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name " .
-            "FROM acl_groups " .
-            $filterAclgroup .
-            "ORDER BY acl_group_name " .
-            $range;
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name FROM acl_groups ";
+        if (count($filterAclgroup)) {
+            $query .= ' WHERE ' . implode(' AND ', $filterAclgroup);
+        }
+        $query .= " ORDER BY acl_group_name " . $range;
+
         $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
