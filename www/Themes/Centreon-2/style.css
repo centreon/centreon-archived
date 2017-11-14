@@ -2142,17 +2142,17 @@ textarea.default-textarea {
 
 /* -- Views Performance page -- */
 .graph-options {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2px;
 }
 
 .graphZone {
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .graphZone.col2 .graph {
