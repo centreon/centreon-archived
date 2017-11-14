@@ -400,7 +400,7 @@ class CentreonACLMenu extends CentreonObject
                 $aclMenu['acl_topo_name'] . $this->delim;
 
             if (!empty($aclMenu['acl_comments'])) {
-                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim . "\n";
+                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim;
             }
 
 
