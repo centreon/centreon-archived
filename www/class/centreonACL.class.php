@@ -1594,7 +1594,7 @@ class CentreonACL
                         // Put new entries in the table with group_id
                         foreach ($groupIds as $group_id) {
                             $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                . "VALUES ('" . $host_id . "', NULL, " . $group_id . ")";
+                                . "VALUES ('" . $data["id"] . "', NULL, " . $group_id . ")";
                             $pearDBO->query($request2);
                         }
 
