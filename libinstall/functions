@@ -979,7 +979,7 @@ function locate_centreontrapd_bindir() {
 #----
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
-		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		answer_with_createfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
 	SUDO_FILE=`trim ${SUDO_FILE%/}`
