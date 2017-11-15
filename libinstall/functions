@@ -1837,7 +1837,7 @@ function check_centreon_user()
 		fi
 	fi
 	if [ -z "$CENTREON_USER" ] ; then
-		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
+		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER" "$groups" "$description" "$home"
 	fi
 	log "INFO" "$(gettext "Centreon user") : $CENTREON_USER"
 	return 0
