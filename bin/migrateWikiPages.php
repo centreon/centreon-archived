@@ -44,16 +44,16 @@ foreach ($pages as $page) {
     $newName = '';
     if (preg_match('/Host\:(.+)/', $page, $matches)) {
         $newName = 'Host : ' . $matches[1];
-    } elseif (preg_match('/Host-Template\:(.+)/', $page, $matches)){
+    } elseif (preg_match('/Host-Template\:(.+)/', $page, $matches)) {
         $newName = 'Host-Template : ' . $matches[1];
-    } elseif (preg_match('/Service\:(.+)/', $page, $matches)){
+    } elseif (preg_match('/Service\:(.+)/', $page, $matches) && !preg_match('/Service\:\s+\/\s+/', $page)) {
         $name = explode(' ', $matches[1]);
         if (count($name) > 1) {
             $hostName = array_shift($name);
             $serviceName = implode(' ', $name);
             $newName = 'Service : ' . $hostName . ' / ' . $serviceName;
         }
-    } elseif (preg_match('/Service-Template\:(.+)/', $page, $matches)){
+    } elseif (preg_match('/Service-Template\:(.+)/', $page, $matches)) {
         $newName = 'Service-Template : ' . $matches[1];
     }
 
