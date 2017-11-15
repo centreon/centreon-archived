@@ -447,7 +447,7 @@ class CentreonACLResource extends CentreonObject
                 . $aclResource['acl_res_name'] . $this->delim;
 
             if (!empty($aclResource['acl_res_comment'])) {
-                $exportLine .= 'comment' . $this->delim . $aclResource['acl_res_comment'] . $this->delim . "\n";
+                $exportLine .= 'comment' . $this->delim . $aclResource['acl_res_comment'] . $this->delim;
             }
 
             $exportLine .= 'activate' . $this->delim . $aclResource['acl_res_activate'] . $this->delim . "\n";
