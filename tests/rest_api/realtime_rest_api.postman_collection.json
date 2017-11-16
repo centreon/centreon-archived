@@ -2,12 +2,14 @@
 	"variables": [],
 	"info": {
 		"name": "Centreon Web Rest API realtime",
-		"_postman_id": "a3390387-9951-1ff9-b164-5ac10459ac21",
+		"_postman_id": "0b45c175-8d46-e2cb-4356-c359888c6a00",
+		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "00-Authenticate",
+			"description": "",
 			"item": [
 				{
 					"name": "Authenticate",
@@ -138,11 +140,33 @@
 						}
 					],
 					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=authenticate",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "authenticate",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
 							}
 						],
 						"body": {
@@ -160,25 +184,7 @@
 								}
 							]
 						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=authenticate",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "authenticate",
-									"equals": true
-								}
-							]
-						}
+						"description": ""
 					},
 					"response": []
 				}
@@ -186,9 +192,11 @@
 		},
 		{
 			"name": "01-Base configuration",
+			"description": "",
 			"item": [
 				{
 					"name": "10-Timeperiods",
+					"description": "",
 					"item": [
 						{
 							"name": "Add tp",
@@ -204,21 +212,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"tp\",\n  \"values\": \"{{tp_name}};{{tp_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -241,8 +234,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"tp\",\n  \"values\": \"{{tp_name}};{{tp_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -260,21 +270,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};sunday;{{tp_sunday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -295,8 +290,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};sunday;{{tp_sunday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -314,21 +326,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};monday;{{tp_monday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -349,8 +346,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};monday;{{tp_monday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -368,21 +382,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};tuesday;{{tp_tuesday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -403,8 +402,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};tuesday;{{tp_tuesday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -422,21 +438,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};wednesday;{{tp_wednesday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -457,8 +458,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};wednesday;{{tp_wednesday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -476,21 +494,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};thursday;{{tp_thursday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -511,8 +514,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};thursday;{{tp_thursday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -530,21 +550,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};friday;{{tp_friday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -565,8 +570,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};friday;{{tp_friday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -584,21 +606,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};saturday;{{tp_saturday}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -619,8 +626,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"tp\",\n  \"values\": \"{{tp_name}};saturday;{{tp_saturday}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -645,21 +669,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cmd\",\n  \"values\": \"{{command_name}};{{command_type}};{{command_line}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -682,8 +691,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cmd\",\n  \"values\": \"{{command_name}};{{command_type}};{{command_line}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -708,21 +734,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_name}};{{contact_alias}};test@localhost;{{contact_pwd}};0;0;en_US;Idap\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -745,8 +756,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_name}};{{contact_alias}};test@localhost;{{contact_pwd}};0;0;en_US;Idap\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -764,21 +792,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifcmd;{{command_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -801,8 +814,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifcmd;{{command_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -820,21 +850,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifcmd;{{command_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -857,8 +872,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifcmd;{{command_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -876,21 +908,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifperiod;{{tp_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -913,8 +930,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifperiod;{{tp_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -932,21 +966,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifperiod;{{tp_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -969,8 +988,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};svcnotifperiod;{{tp_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -988,21 +1024,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifopt;{{contact_hostnotifopt}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1023,8 +1044,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};hostnotifopt;{{contact_hostnotifopt}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1042,21 +1080,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};servicenotifopt;{{contact_svcnotifopt}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1077,8 +1100,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};servicenotifopt;{{contact_svcnotifopt}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -1103,21 +1143,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{cg_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1140,8 +1165,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{cg_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1159,21 +1201,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1196,8 +1223,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -1222,21 +1266,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hg\",\n  \"values\": \"{{hg_name}};{{hg_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1259,8 +1288,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hg\",\n  \"values\": \"{{hg_name}};{{hg_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -1285,21 +1331,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1320,8 +1351,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1339,21 +1387,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_severity_level}};{{hc_severity_icon}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1374,8 +1407,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"hc\",\n  \"values\": \"{{hc_name}};{{hc_severity_level}};{{hc_severity_icon}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -1400,21 +1450,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1437,8 +1472,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1456,21 +1508,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_severity_level}};{{sc_severity_image}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1493,8 +1530,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"sc\",\n  \"values\": \"{{sc_name}};{{sc_severity_level}};{{sc_severity_image}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -1519,6 +1573,31 @@
 								}
 							],
 							"request": {
+								"url": {
+									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"centreon",
+										"api",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "action",
+											"equals": true
+										},
+										{
+											"key": "object",
+											"value": "centreon_clapi",
+											"equals": true
+										}
+									],
+									"variable": []
+								},
 								"method": "POST",
 								"header": [
 									{
@@ -1534,30 +1613,7 @@
 									"mode": "raw",
 									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"sg\",\n  \"values\": \"{{sg_name}};{{sg_alias}}\"\n}"
 								},
-								"url": {
-									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-									"protocol": "http",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"centreon",
-										"api",
-										"index.php"
-									],
-									"query": [
-										{
-											"key": "action",
-											"value": "action",
-											"equals": true
-										},
-										{
-											"key": "object",
-											"value": "centreon_clapi",
-											"equals": true
-										}
-									]
-								}
+								"description": ""
 							},
 							"response": []
 						}
@@ -1566,6 +1622,7 @@
 				},
 				{
 					"name": "30-Hosts_Templates",
+					"description": "",
 					"item": [
 						{
 							"name": "Create host template",
@@ -1581,21 +1638,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{htpl_name}};{{host_address}};;central;\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1618,8 +1660,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{htpl_name}};{{host_address}};;central;\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1637,21 +1696,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_command;{{command_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1674,8 +1718,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1693,21 +1754,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_period;{{tp_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1730,8 +1776,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};check_period;{{tp_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1749,21 +1812,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};max_check_attempts;{{host_max_check_attempts}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1786,8 +1834,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};max_check_attempts;{{host_max_check_attempts}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1805,21 +1870,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_community;{{host_snmp_community}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1842,8 +1892,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_community;{{host_snmp_community}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1861,21 +1928,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_version;{{host_snmp_version}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1898,8 +1950,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};snmp_version;{{host_snmp_version}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1917,21 +1986,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"addcontactgroup\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{cg_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -1954,8 +2008,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"addcontactgroup\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{cg_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -1973,21 +2044,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{contact_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2010,8 +2066,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2029,21 +2102,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{hc_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2066,8 +2124,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"htpl\",\n  \"values\": \"{{htpl_name}};{{hc_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -2092,21 +2167,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{host_alias}};{{host_address}};{{htpl_name}};Central;\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2129,8 +2189,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{host_alias}};{{host_address}};{{htpl_name}};Central;\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2148,21 +2225,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};check_command;{{command_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2185,8 +2247,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2204,21 +2283,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"addtemplate\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};{{htpl_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2241,8 +2305,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"addtemplate\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};{{htpl_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2260,21 +2341,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\":\"applytpl\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2295,8 +2361,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\":\"applytpl\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2314,21 +2397,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{cg_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2351,8 +2419,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{cg_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2370,21 +2455,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{contact_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2407,8 +2477,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2426,21 +2513,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"sethostgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hg_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2463,8 +2535,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"sethostgroup\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hg_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2482,21 +2571,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hc_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2519,8 +2593,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name}};{{hc_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2538,21 +2629,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name2}};{{host_alias}};0.0.0.0;{{htpl_name}};Central;\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2575,8 +2651,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name2}};{{host_alias}};0.0.0.0;{{htpl_name}};Central;\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -2601,21 +2694,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{stpl_alias}};\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2638,8 +2716,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{stpl_alias}};\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2657,21 +2752,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_period;{{tp_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2694,8 +2774,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_period;{{tp_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2713,21 +2810,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_command;{{command_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2750,8 +2832,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};check_command;{{command_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2769,21 +2868,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};max_check_attempts;{{stpl_max_check}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2804,8 +2888,25 @@
 											"key": "object",
 											"value": "centreon_clapi"
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};max_check_attempts;{{stpl_max_check}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2823,21 +2924,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"sethosttemplate\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{htpl_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2860,8 +2946,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"sethosttemplate\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{htpl_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2879,21 +2982,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2916,8 +3004,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -2935,21 +3040,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{cg_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -2972,8 +3062,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"stpl\",\n  \"values\": \"{{stpl_description}};{{cg_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -2998,21 +3105,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{stpl_description}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3035,8 +3127,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"add\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{stpl_description}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3054,21 +3163,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};template;{{stpl_description}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3091,8 +3185,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};template;{{stpl_description}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3110,21 +3221,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{sc_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3147,8 +3243,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setseverity\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{sc_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3166,21 +3279,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{contact_alias}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3203,8 +3301,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{contact_alias}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3222,21 +3337,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{cg_name}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3259,8 +3359,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setcontactgroup\",\n  \"object\": \"service\",\n  \"values\": \"{{host_name}};{{service_description}};{{cg_name}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3278,21 +3395,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"setservice\",\n  \"object\": \"sg\",\n  \"values\": \"{{sg_name}};{{host_name}},{{service_description}}\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3315,8 +3417,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"setservice\",\n  \"object\": \"sg\",\n  \"values\": \"{{sg_name}};{{host_name}},{{service_description}}\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -3325,6 +3444,7 @@
 				},
 				{
 					"name": "99-Generate",
+					"description": "",
 					"item": [
 						{
 							"name": "Generate configuration",
@@ -3349,21 +3469,6 @@
 								}
 							],
 							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"action\": \"APPLYCFG\",\n  \"values\": \"Central\"\n}"
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 									"protocol": "http",
@@ -3386,8 +3491,25 @@
 											"value": "centreon_clapi",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"APPLYCFG\",\n  \"values\": \"Central\"\n}"
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -3398,9 +3520,11 @@
 		},
 		{
 			"name": "10-Host",
+			"description": "",
 			"item": [
 				{
 					"name": "host list without parameters",
+					"description": "",
 					"item": [
 						{
 							"name": "host list",
@@ -3417,21 +3541,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts",
 									"protocol": "http",
@@ -3454,8 +3563,25 @@
 											"value": "centreon_realtime_hosts",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -3464,6 +3590,7 @@
 				},
 				{
 					"name": "Host list with limit parameter",
+					"description": "",
 					"item": [
 						{
 							"name": "Limit",
@@ -3480,21 +3607,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}",
 									"protocol": "http",
@@ -3522,8 +3634,25 @@
 											"value": "{{my_limit}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3542,21 +3671,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit=2&fields=name",
 									"protocol": "http",
@@ -3589,8 +3703,25 @@
 											"value": "name",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3609,21 +3740,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit=2&fields=id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 									"protocol": "http",
@@ -3656,8 +3772,25 @@
 											"value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -3666,6 +3799,7 @@
 				},
 				{
 					"name": "Host list with viewType parameter",
+					"description": "",
 					"item": [
 						{
 							"name": "list with viewType",
@@ -3682,21 +3816,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all,unhandled,problems",
 									"protocol": "http",
@@ -3724,8 +3843,25 @@
 											"value": "all,unhandled,problems",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3744,21 +3880,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all",
 									"protocol": "http",
@@ -3786,8 +3907,25 @@
 											"value": "all",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3807,21 +3945,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=unhandled",
 									"protocol": "http",
@@ -3849,8 +3972,25 @@
 											"value": "unhandled",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3870,21 +4010,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=problems",
 									"protocol": "http",
@@ -3912,8 +4037,25 @@
 											"value": "problems",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3932,21 +4074,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=all,unhandled,problems",
 									"protocol": "http",
@@ -3979,8 +4106,25 @@
 											"value": "all,unhandled,problems",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -3999,21 +4143,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=all",
 									"protocol": "http",
@@ -4046,8 +4175,25 @@
 											"value": "all",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4067,21 +4213,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=unhandled",
 									"protocol": "http",
@@ -4114,8 +4245,25 @@
 											"value": "unhandled",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4135,21 +4283,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&viewType=problems",
 									"protocol": "http",
@@ -4182,8 +4315,25 @@
 											"value": "problems",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -4192,6 +4342,7 @@
 				},
 				{
 					"name": "Host list with status filter",
+					"description": "",
 					"item": [
 						{
 							"name": "status up with state and name",
@@ -4209,21 +4360,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=up&fields=name, state",
 									"protocol": "http",
@@ -4256,8 +4392,25 @@
 											"value": "name, state",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4277,21 +4430,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=down&fields=name, state",
 									"protocol": "http",
@@ -4324,8 +4462,25 @@
 											"value": "name, state",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4345,21 +4500,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=unreachable&fields=name, state",
 									"protocol": "http",
@@ -4392,8 +4532,25 @@
 											"value": "name, state",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4413,21 +4570,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&status=pending&fields=name, state",
 									"protocol": "http",
@@ -4460,8 +4602,25 @@
 											"value": "name, state",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4480,21 +4639,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&limit={{my_limit}}&status=all&fields=name, state",
 									"protocol": "http",
@@ -4532,8 +4676,25 @@
 											"value": "name, state",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -4542,6 +4703,7 @@
 				},
 				{
 					"name": "Host list by Host",
+					"description": "",
 					"item": [
 						{
 							"name": "search by host name",
@@ -4558,21 +4720,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}",
 									"protocol": "http",
@@ -4600,8 +4747,25 @@
 											"value": "{{host_name}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4621,21 +4785,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=up",
 									"protocol": "http",
@@ -4668,8 +4817,25 @@
 											"value": "up",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4689,21 +4855,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=down",
 									"protocol": "http",
@@ -4736,8 +4887,25 @@
 											"value": "down",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4757,21 +4925,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=pending",
 									"protocol": "http",
@@ -4804,8 +4957,25 @@
 											"value": "pending",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4825,21 +4995,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&status=unreachable",
 									"protocol": "http",
@@ -4872,8 +5027,25 @@
 											"value": "unreachable",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4892,21 +5064,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=id",
 									"protocol": "http",
@@ -4939,8 +5096,25 @@
 											"value": "id",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -4959,21 +5133,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_hosts&search={{host_name}}&fields=id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 									"protocol": "http",
@@ -5006,8 +5165,25 @@
 											"value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -5018,9 +5194,11 @@
 		},
 		{
 			"name": "20-Service",
+			"description": "",
 			"item": [
 				{
 					"name": "Service list without parameters",
+					"description": "",
 					"item": [
 						{
 							"name": "Service List",
@@ -5037,21 +5215,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services",
 									"protocol": "http",
@@ -5074,8 +5237,25 @@
 											"value": "centreon_realtime_services",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -5084,6 +5264,7 @@
 				},
 				{
 					"name": "Service list by host and service",
+					"description": "",
 					"item": [
 						{
 							"name": "Service List by host name",
@@ -5100,21 +5281,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
 									"protocol": "http",
@@ -5142,8 +5308,25 @@
 											"value": "{{host_name}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -5162,21 +5345,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
 									"protocol": "http",
@@ -5209,8 +5377,25 @@
 											"value": "{{service_description}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -5229,21 +5414,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
 									"protocol": "http",
@@ -5276,8 +5446,25 @@
 											"value": "{{service_description}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -5286,6 +5473,7 @@
 				},
 				{
 					"name": "Service list with limit parameter",
+					"description": "",
 					"item": [
 						{
 							"name": "Service List with limit",
@@ -5302,21 +5490,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}",
 									"protocol": "http",
@@ -5344,8 +5517,25 @@
 											"value": "{{my_limit}}",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -5364,21 +5554,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=id",
 									"protocol": "http",
@@ -5411,8 +5586,25 @@
 											"value": "id",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -5474,21 +5666,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
 									"protocol": "http",
@@ -5521,8 +5698,25 @@
 											"value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -5531,6 +5725,7 @@
 				},
 				{
 					"name": "Service list with viewType parameter",
+					"description": "",
 					"item": [
 						{
 							"name": "Service List with viewType problems",
@@ -5548,21 +5743,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&viewType=problems",
 									"protocol": "http",
@@ -5590,8 +5770,25 @@
 											"value": "problems",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						},
@@ -5611,21 +5808,6 @@
 								}
 							],
 							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "centreon-auth-token",
-										"value": "{{token}}"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://{{url}}/centreon/api/index.php?action=list&object=centreon_realtime_services&viewType=unhandled_critical",
 									"protocol": "http",
@@ -5653,8 +5835,25 @@
 											"value": "unhandled_critical",
 											"equals": true
 										}
-									]
-								}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "centreon-auth-token",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"description": ""
 							},
 							"response": []
 						}
@@ -5665,6 +5864,7 @@
 		},
 		{
 			"name": "50-Downtime Realtime",
+			"description": "",
 			"item": [
 				{
 					"name": "Addhost Realtime",
@@ -5691,21 +5891,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}\n"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -5728,8 +5913,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}\n"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -5767,21 +5969,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -5804,8 +5991,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -5842,21 +6046,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -5879,8 +6068,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -5917,21 +6123,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -5954,8 +6145,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -5992,21 +6200,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"INSTANCE;Central;{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -6029,8 +6222,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"INSTANCE;Central;{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -6099,21 +6309,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}}\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -6136,8 +6331,25 @@
 									"value": "centreon_clapi",
 									"equals": true
 								}
-							]
-						}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}}\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				},
@@ -6156,11 +6368,16 @@
 									"var jsonData = JSON.parse(responseBody);",
 									"var result = jsonData.result;",
 									"",
+									"postman.setEnvironmentVariable(\"rtdowntime_id\",result[0].id);",
+									"",
 									"var schema = {",
 									"    \"type\": \"array\",",
 									"    \"items\": {",
 									"        \"type\": \"object\",",
 									"        \"properties\": {",
+									"            \"id\": {",
+									"                \"type\": \"string\"",
+									"            },",
 									"            \"host_name\": {",
 									"                \"type\": \"string\"",
 									"            },",
@@ -6193,7 +6410,7 @@
 									"            }",
 									"        },",
 									"        \"additionalProperties\": false,",
-									"        \"required\": [\"host_name\", \"author\", \"actual_start_time\", \"actual_end_time\", \"start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
+									"        \"required\": [\"id\", \"host_name\", \"author\", \"actual_start_time\", \"actual_end_time\", \"start_time\", \"end_time\", \"comment_data\", \"duration\", \"fixed\", \"url\"]",
 									"    }",
 									"}",
 									"",
@@ -6203,21 +6420,6 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}}\"\n}"
-						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
 							"protocol": "http",
@@ -6233,15 +6435,101 @@
 								{
 									"key": "action",
 									"value": "action",
-									"equals": true
+									"equals": true,
+									"description": ""
 								},
 								{
 									"key": "object",
 									"value": "centreon_clapi",
-									"equals": true
+									"equals": true,
+									"description": ""
 								}
-							]
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel downtime",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var contentType = postman.getResponseHeader(\"Content-Type\");",
+									"tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+									""
+								]
+							}
 						}
+					],
+					"request": {
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"CANCEL\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"{{rtdowntime_id}}\"\n}"
+						},
+						"description": ""
 					},
 					"response": []
 				}
