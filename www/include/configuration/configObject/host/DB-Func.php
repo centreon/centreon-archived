@@ -857,18 +857,21 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         foreach ($ret['acl_groups'] as $groupId) {
             $sql = "SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = " . $groupId;
             $res = $pearDB->query($sql);
+
+            $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
+            $first = true;
+
             while ($aclRes = $res->fetchRow()) {
-                $sql = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
-                $first = true;
                 if (!$first) {
-                    $sql .= ", ";
+                    $query .= ", ";
                 } else {
                     $first = false;
                 }
-                $sql .= "(" . $aclRes['acl_res_id'] . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
-                if (!$first) {
-                    $pearDB->query($sql);
-                }
+                $query .= "(" . $aclRes['acl_res_id'] . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
+            }
+
+            if (!$first) {
+                $pearDB->query($query);
             }
         }
     }
