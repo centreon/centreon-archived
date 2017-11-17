@@ -14,14 +14,16 @@ In order to list available real time downtimes, use the **SHOW** action::
 You can use the value "HOST" to display all the downtimes::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a show -v "HOST;generic-host"
-  host_name;author;actual_start_time;actual_end_time;start_time;end_time;comment_data;duration;fixed
-  generic-host;admin;2017/09/28 14:21;N/A;2017/09/26 17:00;2017/09/30 19:00;'generic-comment';3600;1
+  id;host_name;author;actual_start_time;actual_end_time;start_time;end_time;comment_data;duration;fixed
+  6;generic-host;admin;2017/09/28 14:21;N/A;2017/09/26 17:00;2017/09/30 19:00;'generic-comment';3600;1
 
 Columns are the following :
 
 ================================= ===========================================================================
 Column	                          Description
 ================================= ===========================================================================
+id	                              Name of the downtime
+
 Host_name	                      Name of the host
 
 Author	                          Name of the author
@@ -49,14 +51,16 @@ In order to list available real time downtimes, use the **SHOW** action::
 You can use the value "SVC" to display all the downtimes::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a show -v "SVC;generic-host,generic-service"
-  host_name;service_name;author;start_time;end_time;comment_data;duration;fixed
-  generic-host;generic-service;admin;2017/09/28 14:21;N/A;2017/09/26 17:00;2017/09/30 19:00;'generic-comment';3600;1
+  id;host_name;service_name;author;start_time;end_time;comment_data;duration;fixed
+  42;generic-host;generic-service;admin;2017/09/28 14:21;N/A;2017/09/26 17:00;2017/09/30 19:00;'generic-comment';3600;1
 
 Columns are the following :
 
 ================================= ===========================================================================
 Column	                          Description
 ================================= ===========================================================================
+id	                              Name of the downtime
+
 Host_name	                      Name of the host
 
 Service_name	                  Name of the service
@@ -168,5 +172,23 @@ Order     Description
 6         Duration of downtime for flexible mode (seconds)
 
 7         Short description of the real time downtime
+
+========= ============================================
+
+
+Cancel a real time downtime
+------------------------------
+
+In order to cancel a real time downtime, use the **CANCEL** action::
+To get the value of the id, use the **SHOW** action::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTDOWNTIME -a CANCEL -v "6|42"
+
+The required parameters are the following :
+
+========= ============================================
+Order     Description
+========= ============================================
+1         Id of downtime
 
 ========= ============================================
