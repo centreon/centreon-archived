@@ -228,6 +228,7 @@ class CentreonRtDowntime extends CentreonObject
     public function showHost($hostList)
     {
         $fields = array(
+            'id',
             'host_name',
             'author',
             'actual_start_time',
@@ -323,6 +324,7 @@ class CentreonRtDowntime extends CentreonObject
         $existingService = array();
 
         $fields = array(
+            'id',
             'host_name',
             'service_name',
             'author',
@@ -727,6 +729,40 @@ class CentreonRtDowntime extends CentreonObject
 
         if (count($unknownPoller)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' INSTANCE : ' . implode('|', $unknownPoller));
+        }
+    }
+
+    /**
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function cancel($parameters = null)
+    {
+        if (empty($parameters) || is_null($parameters)) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $listDowntime = explode('|', $parameters);
+        $unknownDowntime = array();
+
+        foreach ($listDowntime as $downtime) {
+            $infoDowntime = $this->object->getCurrentDowntime($downtime);
+
+            if ($infoDowntime) {
+                $hostName = $this->hostObject->getHostName($infoDowntime['host_id']);
+                if (is_null($infoDowntime['service_id'])) {
+                    $this->externalCmdObj->deleteDowntime('HOST', array($hostName . ';' . $downtime => 'on'));
+                } else {
+                    $this->externalCmdObj->deleteDowntime('SVC', array($hostName . ';' . $downtime => 'on'));
+                }
+            } else {
+                $unknownDowntime[] = $downtime;
+            }
+        }
+
+        if (count($unknownDowntime)) {
+            throw new CentreonClapiException(
+                self::OBJECT_NOT_FOUND . ' DOWNTIME ID : ' . implode('|', $unknownDowntime)
+            );
         }
     }
 }
