@@ -670,10 +670,10 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
     if (!isset($server_id) || $server_id == "" || $server_id == 0) {
         $server_id = null;
     }
-    
+
     $host_id = insertHost($ret, $macro_on_demand, $server_id);
     updateHostHostParent($host_id, $ret);
-    updateHostHostChild($host_id, $ret);
+    updateHostHostChild($host_id);
     updateHostContactGroup($host_id, $ret);
     updateHostContact($host_id, $ret);
     updateHostNotifs($host_id, $ret);
@@ -682,7 +682,7 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
     updateHostNotifOptionFirstNotificationDelay($host_id, $ret);
     updateHostHostGroup($host_id, $ret);
     updateHostHostCategory($host_id, $ret);
-    updateHostTemplateService($host_id, $ret);
+    updateHostTemplateService($host_id);
     updateNagiosServerRelation($host_id, $ret);
     $ret = $form->getSubmitValues();
     if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
@@ -808,7 +808,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
      * Insert on demand macros
      * Keeping it just in case it could used somewhere else
      */
-  
+
     if (isset($macro_on_demand)) {
         $my_tab = $macro_on_demand;
         if (isset($my_tab['nbOfMacro'])) {
@@ -854,20 +854,25 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
     }
 
     if (isset($ret['acl_groups']) && count($ret['acl_groups'])) {
-        $sql = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
-        $first = true;
         foreach ($ret['acl_groups'] as $groupId) {
-            if (!$first) {
-                $sql .= ", ";
-            } else {
-                $first = false;
+            $sql = "SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = " . $groupId;
+            $res = $pearDB->query($sql);
+            while ($aclRes = $res->fetchRow()) {
+                $sql = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
+                $first = true;
+                if (!$first) {
+                    $sql .= ", ";
+                } else {
+                    $first = false;
+                }
+                $sql .= "(" . $aclRes['acl_res_id'] . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
+                if (!$first) {
+                    $pearDB->query($sql);
+                }
             }
-            $sql .= "(" . $pearDB->escape($groupId) . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
-        }
-        if (!$first) {
-            $pearDB->query($sql);
         }
     }
+
     /*
      *  Logs
      */
@@ -1060,7 +1065,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
     if (!isset($server_id) || $server_id == "" || $server_id == 0) {
         $server_id = null;
     }
-        
+
     if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null) {
         $ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
         $ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
@@ -2012,7 +2017,7 @@ function updateHostHostGroup($host_id, $ret = array())
             $hgSVS[$hg][$sv["service_service_id"]] = $sv["service_service_id"];
         }
     }
-    
+
     $rq = "DELETE FROM hostgroup_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -2026,7 +2031,7 @@ function updateHostHostGroup($host_id, $ret = array())
         $DBRESULT = $pearDB->query($rq);
         $hgsNEW[$ret[$i]] = $ret[$i];
     }
-    
+
     // Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
     if (count($hgSVS)) {
         foreach ($hgsOLD as $hg) {
@@ -2374,9 +2379,9 @@ function testCg($list)
 function applytpl($hosts)
 {
     global $pearDB;
-    
+
     $hostObj = new CentreonHost($pearDB);
-    
+
     foreach ($hosts as $key => $value) {
         $hostObj->deployServices($key);
     }
