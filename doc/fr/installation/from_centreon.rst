@@ -94,10 +94,10 @@ Il est possible de choisir différentes options à la question **Which server ty
 |
 
 
-*	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
-*	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
-*	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
-*	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
+* Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
+* Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
+* Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
+* Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
 
 Une fois toutes ces options choisies, l'installation démarre.
 
@@ -161,27 +161,27 @@ Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
 
-1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2.	Editez le fichier suivant
+1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+2. Editez le fichier suivant
 
 ::
 
 	/etc/my.cnf
 
-3.	Ajoutez la ligne suivante au fichier
+3. Ajoutez la ligne suivante au fichier
 
 ::
 
 	[mysqld]
 	innodb_file_per_table=1
 
-4.	Redémarrez le service mysql
+4. Redémarrez le service mysql
 
 ::
 
 	service mysql restart
 
-5.	Cliquez sur **Refresh**
+5. Cliquez sur **Refresh**
 
 L'assistant de fin d'installation configure les bases de données, cliquez sur **Next**.
 
@@ -208,17 +208,17 @@ Configuration de base
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
-1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2.	Installez le paquet de traduction en langue française avec la commande suivante
+1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+2. Installez le paquet de traduction en langue française avec la commande suivante
 
 ::
 
 	yum -y install centreon-lang-fr_FR
 
-3.	Rendez-vous dans le menu **Administration** ==> **Options**
-4.	Dans le menu de gauche cliquez sur **My Account**
-5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
-6.	Cliquez sur **Save**
+3. Rendez-vous dans le menu **Administration** ==> **Options**
+4. Dans le menu de gauche cliquez sur **My Account**
+5. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
+6. Cliquez sur **Save**
 
 .. image :: /images/guide_utilisateur/alanguage.png
    :align: center
@@ -228,25 +228,25 @@ Démarrer la supervision
 
 Pour démarrer l'ordonnanceur de supervision :
 
- 1.	Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
- 2.	Laissez les options par défaut, et cliquez sur **Exporter**
- 3.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- 4.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
- 5.	Cliquez à nouveau sur **Exporter**
- 6.     Connectez-vous avec l'utilisateur 'root' sur votre serveur
- 7.	Démarrez le composant Centreon Broker:
+ 1. Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
+ 2. Laissez les options par défaut, et cliquez sur **Exporter**
+ 3. Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+ 4. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+ 5. Cliquez à nouveau sur **Exporter**
+ 6. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+ 7. Démarrez le composant Centreon Broker:
 
-:: 
+::
 
 	service cbd start
-
- 8.   Démarrez Centreon Engine
+ 
+ 8. Démarrez Centreon Engine
 
 ::
 
    service centengine start
 
- 8.   Démarrez centcore
+ 9. Démarrez centcore
 
 ::
 
@@ -264,12 +264,12 @@ L'interface web de Centreon est composée de plusieurs menus, chaque menu à une
 
 |
 
-*	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
-*	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différé au travers de la visualisation des logs
-*	Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
-*	Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
-*	Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
-*	Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
+* Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
+* Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différé au travers de la visualisation des logs
+* Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
+* Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
+* Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
+* Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
 
 Avant d'aller plus loin
 =======================
