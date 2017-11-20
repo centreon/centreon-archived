@@ -251,10 +251,10 @@ $tpl->assign('poller_name', $pollerName);
 $queryStatName = "SELECT config_name, cache_directory "
     . "FROM cfg_centreonbroker "
     . "WHERE stats_activate='1' "
-    . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
+    . "AND ns_nagios_server = ?";
 try {
-    $res = $pearDB->query($queryStatName);
-
+    $stmt = $pearDB->prepare($queryStatName);
+    $res = $pearDB->exucute($stmt, array($queryStatName));
     if (!$res->rowCount()) {
         $tpl->assign('msg_err', _('No statistics file defined for this poller'));
     }
