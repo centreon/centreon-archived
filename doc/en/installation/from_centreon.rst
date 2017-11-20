@@ -96,10 +96,10 @@ It is possible to choose from different options to answer the question: **Which 
 
 |
 
-*	Central server with database : Install Centreon (web interface and database), monitoring engine and broker
-*	Central server without database : Install Centreon (web interface only), monitoring engine and broker
-*	Poller server : Install poller (monitoring engine and broker only)
-*	Database server : Install database server (use with **Central server without database** option)
+* Central server with database : Install Centreon (web interface and database), monitoring engine and broker
+* Central server without database : Install Centreon (web interface only), monitoring engine and broker
+* Poller server : Install poller (monitoring engine and broker only)
+* Database server : Install database server (use with **Central server without database** option)
 
 In our box, we shall choose the **Centreon Server with database** option.
 
@@ -164,15 +164,15 @@ By default, the ‘localhost’ server is defined and the root password is empty
 
 If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
 
-1.  Log-on to the ‘root’ user on your server
+1. Log-on to the ‘root’ user on your server
 
-2.  Modify this file
+2. Modify this file
 
 ::
 
   /etc/my.cnf
 
-3.  Add these lines to the file
+3. Add these lines to the file
 
 .. raw:: latex
 
@@ -181,13 +181,13 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
   [mysqld]
   innodb_file_per_table=1
 
-4.  Restart mysql service
+4. Restart mysql service
 
 ::
 
   service mysql restart
 
-5.  Click on **Refresh**
+5. Click on **Refresh**
 
 The End of installation wizard configures the databases, click on **Next**.
 
@@ -214,24 +214,24 @@ Start monitoring
 
 To start the monitoring engine :
 
- 1.	On the web interface, go to **Configuration** ==> **Monitoring engines**
- 2.	Leave the default options and click on **Export**
- 3.	Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4.	Check **Move Export Files** and **Restart Monitoring Engine**
- 5.	Click on **Export** again
- 6.   Log into the ‘root’ user on your server
- 7.	Start Centreon Broker
+ 1. On the web interface, go to **Configuration** ==> **Monitoring engines**
+ 2. Leave the default options and click on **Export**
+ 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 4. Check **Move Export Files** and **Restart Monitoring Engine**
+ 5. Click on **Export** again
+ 6. Log into the ‘root’ user on your server
+ 7. Start Centreon Broker
 
 ::
 
 	service cbd start
- 8.   Start Centreon Engine
+ 8. Start Centreon Engine
 
 ::
 
    service centengine start
 
- 8.   Start centcore
+ 9. Start centcore
 
 ::
 
@@ -250,11 +250,11 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 
 |
 
-*       The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
-*       The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
-*       The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
-*	     The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
-*       The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
+* The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+* The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
+* The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
+* The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
+* The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
 
 Before going further
 ====================
