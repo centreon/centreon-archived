@@ -2,8 +2,7 @@
   "variables": [],
   "info": {
     "name": "Centreon Web Rest API realtime",
-    "_postman_id": "c50667ee-6168-1692-3403-bd27f6a29213",
-    "description": "",
+    "_postman_id": "b115f003-c938-d5a5-884b-ffd54a3593c7",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
   "item": [
@@ -6173,6 +6172,14 @@
                   "",
                   "try {",
                   " var i = 0;",
+                  " ",
+                  "console.log(result.length);",
+                  "",
+                  " if ( result.length === 0) {",
+                  "  postman.setNextRequest('Show Host Realtime');",
+                  "}",
+                  " ",
+                  " ",
                   " while (i < result.length) {",
                   "    if (postman.getEnvironmentVariable(\"host_name\") == result[i].host_name) {",
                   "        postman.setEnvironmentVariable(\"rtdowntime_id\",result[i].id)",
@@ -6181,7 +6188,6 @@
                   " i++;",
                   " }",
                   "} catch (e) {}",
-                  "",
                   "",
                   "",
                   ""
@@ -6240,10 +6246,6 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (postman.getEnvironmentVariable(\"rtdowntime_id\") === null) {",
-                  "  postman.setNextRequest('50-Downtime Realtime');",
-                  "}",
-                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
