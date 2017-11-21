@@ -3398,388 +3398,6 @@
       ]
     },
     {
-      "name": "05-Add Downtime Realtime",
-      "item": [
-        {
-          "name": "Addhost Realtime",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
-                  ""
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}\n"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "equals": true,
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "equals": true,
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Addservice Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
-                  ""
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "equals": true,
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "equals": true,
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Addhostgroup Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "equals": true,
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "equals": true,
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Addservicegroup Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "equals": true,
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "equals": true,
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Addinstance Realtime",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
-                  "",
-                  "function wait(millis) {",
-                  "  var date = new Date();",
-                  "  var curDate = null;",
-                  "  do { curDate = new Date(); }",
-                  "  while(curDate-date < millis);",
-                  "}",
-                  "",
-                  "wait(20000);"
-                ]
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "postman.setGlobalVariable(\"fixed\", \"1\");",
-                  "",
-                  "var date = new Date();",
-                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
-                  "                     ('0' + date.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
-                  "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
-                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
-                  "('0' + dateEnd.getMinutes()).slice(-2);",
-                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"INSTANCE;Central;{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action",
-                  "equals": true
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "10-Host",
       "item": [
         {
@@ -6047,8 +5665,385 @@
       ]
     },
     {
-      "name": "50-Show Downtime Realtime",
+      "name": "50-Downtime Realtime",
       "item": [
+        {
+          "name": "Addhost Realtime",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "postman.setGlobalVariable(\"fixed\", \"1\");",
+                  "",
+                  "var date = new Date();",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+                  "                     ('0' + date.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
+                  "",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+                  "('0' + dateEnd.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HOST;{{host_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "equals": true,
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "equals": true,
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addservice Realtime",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "postman.setGlobalVariable(\"fixed\", \"1\");",
+                  "",
+                  "var date = new Date();",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+                  "                     ('0' + date.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
+                  "",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+                  "('0' + dateEnd.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SVC;{{host_name}},{{service_description}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "equals": true,
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "equals": true,
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addhostgroup Realtime",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "postman.setGlobalVariable(\"fixed\", \"1\");",
+                  "",
+                  "var date = new Date();",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+                  "                     ('0' + date.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
+                  "",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+                  "('0' + dateEnd.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"HG;{{hg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;0\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "equals": true,
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "equals": true,
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addservicegroup Realtime",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "postman.setGlobalVariable(\"fixed\", \"1\");",
+                  "",
+                  "var date = new Date();",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+                  "                     ('0' + date.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
+                  "",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+                  "('0' + dateEnd.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"SG;{{sg_name}};{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "equals": true,
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "equals": true,
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addinstance Realtime",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "function wait(millis) {",
+                  "  var date = new Date();",
+                  "  var curDate = null;",
+                  "  do { curDate = new Date(); }",
+                  "  while(curDate-date < millis);",
+                  "}",
+                  "",
+                  "wait(5000);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "postman.setGlobalVariable(\"fixed\", \"1\");",
+                  "",
+                  "var date = new Date();",
+                  "var datetime_start = date.getFullYear() + \"/\" + ('0' + (date.getMonth()+1)).slice(-2) + \"/\" + ('0' + date.getDate()).slice(-2) + \" \" + ('0' + date.getHours()).slice(-2) + \":\" + ",
+                  "                     ('0' + date.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
+                  "",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
+                  "('0' + dateEnd.getMinutes()).slice(-2);",
+                  "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"INSTANCE;Central;{{start_time}};{{end_time}};1;3600;Ceci est un commentaire;\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action",
+                  "equals": true
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi",
+                  "equals": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Show Service Realtime",
           "event": [
@@ -6143,6 +6138,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "postman.sendRequest;",
+                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
@@ -6174,17 +6171,8 @@
                   "",
                   "tests[\"Validate schema JSON\"] = tv4.validate(result, schema);",
                   "",
-                  "",
-                  "",
-                  "",
                   "try {",
-                  " tests[\"Body contains list of inputs\"] = result;",
                   " var i = 0;",
-                  " ",
-                  " if (0 == result.length){",
-                  "    postman.setNextRequest(\"Show Host Realtime\");",
-                  " }",
-                  " ",
                   " while (i < result.length) {",
                   "    if (postman.getEnvironmentVariable(\"host_name\") == result[i].host_name) {",
                   "        postman.setEnvironmentVariable(\"rtdowntime_id\",result[i].id)",
@@ -6192,8 +6180,8 @@
                   "       }",
                   " i++;",
                   " }",
-
                   "} catch (e) {}",
+                  "",
                   "",
                   "",
                   ""
@@ -6252,9 +6240,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "if (postman.getEnvironmentVariable(\"rtdowntime_id\") === null) {",
+                  "  postman.setNextRequest('50-Downtime Realtime');",
+                  "}",
+                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "console.log(postman.getEnvironmentVariable(\"rtdowntime_id\"));",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
                   ""
                 ]
