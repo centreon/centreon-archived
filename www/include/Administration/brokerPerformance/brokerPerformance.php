@@ -250,17 +250,18 @@ $tpl->assign('poller_name', $pollerName);
  */
 $queryStatName = "SELECT config_name, cache_directory "
     . "FROM cfg_centreonbroker "
-    . "WHERE stats_activate='1' "
-    . "AND ns_nagios_server = ?";
+    . "WHERE stats_activate = '1' "
+    . "AND ns_nagios_server = :id";
 try {
     $stmt = $pearDB->prepare($queryStatName);
-    $res = $pearDB->exucute($stmt, array($queryStatName));
-    if (!$res->rowCount()) {
+    $stmt->bindParam(':id', $selectedPoller, PDO::PARAM_STR);
+    $stmt->execute();
+    if (!$stmt->rowCount()) {
         $tpl->assign('msg_err', _('No statistics file defined for this poller'));
     }
     $perf_info = array();
     $perf_err = array();
-    while ($row = $res->fetchRow()) {
+    while ($row = $stmt->fetch()) {
         $statsfile = $row['cache_directory'] . '/' . $row['config_name'] . '-stats.json';
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
