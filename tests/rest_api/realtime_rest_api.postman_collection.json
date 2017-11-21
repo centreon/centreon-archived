@@ -5968,7 +5968,16 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "function wait(millis) {",
+                  "  var date = new Date();",
+                  "  var curDate = null;",
+                  "  do { curDate = new Date(); }",
+                  "  while(curDate-date < millis);",
+                  "}",
+                  "",
+                  "wait(10000);"
                 ]
               }
             },
@@ -6021,14 +6030,14 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
-                  "value": "action"
+                  "value": "action",
+                  "equals": true
                 },
                 {
-                  "equals": true,
                   "key": "object",
-                  "value": "centreon_clapi"
+                  "value": "centreon_clapi",
+                  "equals": true
                 }
               ]
             }
@@ -6043,15 +6052,6 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "function wait(millis) {",
-                  "  var date = new Date();",
-                  "  var curDate = null;",
-                  "  do { curDate = new Date(); }",
-                  "  while(curDate-date < millis);",
-                  "}",
-                  "",
-                  "wait(5000);",
-                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
@@ -6138,15 +6138,6 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "function wait(millis) {",
-                  "  var date = new Date();",
-                  "  var curDate = null;",
-                  "  do { curDate = new Date(); }",
-                  "  while(curDate-date < millis);",
-                  "}",
-                  "",
-                  "wait(5000);",
-                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
