@@ -234,23 +234,23 @@ Pour démarrer l'ordonnanceur de supervision :
  4. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
  5. Cliquez à nouveau sur **Exporter**
  6. Connectez-vous avec l'utilisateur 'root' sur votre serveur
- 7. Démarrez le composant Centreon Broker::
+ 7. Démarrez le composant Centreon Broker
 
-::
+  ::
 
-	service cbd start
- 
+    service cbd start
+
  8. Démarrez Centreon Engine
 
-::
+  ::
 
-   service centengine start
+    service centengine start
 
  9. Démarrez centcore
 
-::
+  ::
 
-   service centcore start
+    service centcore start
 
 La supervision est maintenant opérationnelle.
 

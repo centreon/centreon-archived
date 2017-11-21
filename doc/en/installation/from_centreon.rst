@@ -222,20 +222,21 @@ To start the monitoring engine :
  6. Log into the ‘root’ user on your server
  7. Start Centreon Broker
 
-::
+  ::
 
-	service cbd start
+    service cbd start
+
  8. Start Centreon Engine
 
-::
+  ::
 
-   service centengine start
+    service centengine start
 
  9. Start centcore
 
-::
+  ::
 
-   service centcore start
+    service centcore start
 
 Monitoring is now working. You can start to monitor your IT !
 
