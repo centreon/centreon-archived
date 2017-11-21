@@ -6137,8 +6137,6 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "postman.sendRequest;",
-                  "",
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
@@ -6172,23 +6170,17 @@
                   "",
                   "try {",
                   " var i = 0;",
-                  " ",
-                  "console.log(result.length);",
-                  "",
-                  " if ( result.length === 0) {",
-                  "  postman.setNextRequest('Show Host Realtime');",
-                  "}",
-                  " ",
-                  " ",
                   " while (i < result.length) {",
                   "    if (postman.getEnvironmentVariable(\"host_name\") == result[i].host_name) {",
                   "        postman.setEnvironmentVariable(\"rtdowntime_id\",result[i].id)",
-                  "         break;",
+                  "        break;",
                   "       }",
                   " i++;",
                   " }",
                   "} catch (e) {}",
                   "",
+                  "",
+                  "//postman.clearEnvironmentVariable(\"rtdowntime_id\");",
                   "",
                   ""
                 ]
@@ -6249,6 +6241,18 @@
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (postman.getEnvironmentVariable(\"rtdowntime_id\") == null) {",
+                  "  postman.setNextRequest('Addhost Realtime');",
+                  "}",
                   ""
                 ]
               }
