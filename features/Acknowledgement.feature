@@ -6,7 +6,6 @@ Feature: Meta-services acknowledgement
     Background:
         Given I am logged in a Centreon server
 
-    @critical
     Scenario: Acknowlegde normal services
         Given a non-OK service
         When I acknowledge the service
