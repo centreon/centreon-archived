@@ -251,8 +251,9 @@ $tpl->assign('poller_name', $pollerName);
 $queryStatName = "SELECT config_name, cache_directory "
     . "FROM cfg_centreonbroker "
     . "WHERE stats_activate='1' "
-    . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
-$res = $pearDB->query($queryStatName);
+    . "AND ns_nagios_server = ?";
+$stmt = $pearDB->prepare($queryStatName);
+$res = $pearDB->execute($stmt, array($selectedPoller));
 if (PEAR::isError($res)) {
     $tpl->assign('msg_err', _('Error in getting stats filename'));
 } else {
