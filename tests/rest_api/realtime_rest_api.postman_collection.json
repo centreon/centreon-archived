@@ -6178,10 +6178,6 @@
                   " i++;",
                   " }",
                   "} catch (e) {}",
-                  "",
-                  "",
-                  "//postman.clearEnvironmentVariable(\"rtdowntime_id\");",
-                  "",
                   ""
                 ]
               }
