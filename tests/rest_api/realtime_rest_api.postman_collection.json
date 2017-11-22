@@ -6167,17 +6167,6 @@
                   "}",
                   "",
                   "tests[\"Validate schema JSON\"] = tv4.validate(result, schema);",
-                  "",
-                  "try {",
-                  " var i = 0;",
-                  " while (i < result.length) {",
-                  "    if (postman.getEnvironmentVariable(\"host_name\") == result[i].host_name) {",
-                  "        postman.setEnvironmentVariable(\"rtdowntime_id\",result[i].id)",
-                  "        break;",
-                  "       }",
-                  " i++;",
-                  " }",
-                  "} catch (e) {}",
                   ""
                 ]
               }
@@ -6240,18 +6229,6 @@
                   ""
                 ]
               }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (postman.getEnvironmentVariable(\"rtdowntime_id\") == null) {",
-                  "  postman.setNextRequest('Addhost Realtime');",
-                  "}",
-                  ""
-                ]
-              }
             }
           ],
           "request": {
@@ -6268,7 +6245,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"CANCEL\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"{{rtdowntime_id}}\"\n}"
+              "raw": "{\n  \"action\": \"CANCEL\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"1\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
