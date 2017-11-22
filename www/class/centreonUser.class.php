@@ -431,26 +431,35 @@ class CentreonUser
         if (!count($parameters)) {
             return null;
         }
-
+        $queryValues = array();
         $keys = array_keys($parameters);
-
+        
         $deleteQuery = 'DELETE FROM contact_param '
-            . 'WHERE cp_contact_id = ' . $this->user_id . ' '
-            . 'AND  cp_key IN("'
-            . implode('","', $keys)
-            . '") ';
-        $db->query($deleteQuery);
-
-        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ';
-        $first = true;
-        foreach ($parameters as $key => $value) {
-            if (!$first) {
-                $insertQuery .= ',';
-            }
-            $insertQuery .= '("' . $key . '","' . $value . '", ' . $this->user_id . ')';
-            $first = false;
+            . 'WHERE cp_contact_id = ? '
+            . 'AND  cp_key IN( ';
+        $queryValues[] = (int)$this->user_id;
+        
+        $queryKey ='';
+        foreach ($keys as $key) {
+            $queryKey .=' ?,';
+            $queryValues[] = (string)$key;
         }
-        $db->query($insertQuery);
+        $queryKey = rtrim($queryKey, ',');
+        $deleteQuery .= $queryKey. ' )';
+        
+        $stmt = $db->prepare($deleteQuery);
+        $res = $db->execute($stmt, $queryValues);
+        
+        if (PEAR::isError($res)) {
+           throw new Exception('Bad Request');
+        }
+       
+        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES (?, ?, ?)';
+        $stmt = $db->prepare($insertQuery);
+        foreach ($parameters as $key => $value) {
+            $sqlParams = array($key, $value, $this->user_id);
+            $db->execute($stmt, $sqlParams);
+        }
     }
   
   /**
