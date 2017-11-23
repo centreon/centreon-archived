@@ -329,8 +329,8 @@ class CentreonHostgroups
             . "FROM hostgroup "
             . "WHERE hg_id IN (" . $explodedValues . ") "
             . "ORDER BY hg_name ";
-        $stmt = $this->db->prepare($query);
-        $resRetrieval = $this->db->execute($stmt, $queryValues);
+        $stmt = $this->DB->prepare($query);
+        $resRetrieval = $this->DB->execute($stmt, $queryValues);
 
         if (PEAR::isError($resRetrieval)) {
             throw new Exception('Bad host groups query params');

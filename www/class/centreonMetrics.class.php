@@ -72,8 +72,8 @@ class CentreonMetrics
             "AND h.host_id = i.host_id " .
             "AND   s.service_id = i.service_id " .
             "ORDER BY fullname COLLATE utf8_general_ci";
-        $stmt = $this->db->prepare($queryService);
-        $res = $this->db->execute($stmt, $queryValues);
+        $stmt = $this->dbo->prepare($queryService);
+        $res = $this->dbo->execute($stmt, $queryValues);
 
         if (PEAR::isError($res)) {
             return $metrics;
