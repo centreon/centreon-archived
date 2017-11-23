@@ -67,8 +67,7 @@ class Wiki
         if (!isset($options['kb_wiki_url']) || $options['kb_wiki_url'] == '') {
             throw new \Exception(
                 'Wiki is not configured. ' .
-                'You can disable cron in /etc/crond.d/centreon for wiki synchronization.'
-            );
+                'You can disable cron in /etc/cron.d/centreon for wiki synchronization.');
         }
 
         if (!preg_match('#^http://|https://#', $options['kb_wiki_url'])) {
