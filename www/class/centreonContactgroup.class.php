@@ -422,9 +422,16 @@ class CentreonContactgroup
             }
         }
 
-        $explodedValues = implode(',', $aElement);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($aElement)) {
+            foreach ($aElement as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected contactgroups
@@ -433,7 +440,13 @@ class CentreonContactgroup
             . "WHERE cg.cg_id IN (" . $explodedValues . ") "
             . "ORDER BY cg.cg_name ";
 
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad contact group query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
                 $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);

@@ -200,9 +200,16 @@ class CentreonServicegroups
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected servicegroups
@@ -210,8 +217,13 @@ class CentreonServicegroups
             . "FROM servicegroup "
             . "WHERE sg_id IN (" . $explodedValues . ") "
             . "ORDER BY sg_name ";
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->DB->query($query);
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad service group query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized servicegroups
             $hide = false;

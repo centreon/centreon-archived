@@ -312,9 +312,16 @@ class CentreonHostgroups
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         // get list of selected hostgroups
@@ -322,8 +329,13 @@ class CentreonHostgroups
             . "FROM hostgroup "
             . "WHERE hg_id IN (" . $explodedValues . ") "
             . "ORDER BY hg_name ";
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->DB->query($query);
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad host groups query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             // hide unauthorized hostgroups
             $hide = false;

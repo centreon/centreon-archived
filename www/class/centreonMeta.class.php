@@ -197,10 +197,17 @@ class CentreonMeta
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected meta
@@ -208,8 +215,13 @@ class CentreonMeta
             . "FROM meta_service "
             . "WHERE meta_id IN (" . $explodedValues . ") "
             . "ORDER BY meta_name ";
-        
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad meta id query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['meta_id'],

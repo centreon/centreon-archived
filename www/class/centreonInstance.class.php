@@ -207,33 +207,46 @@ class CentreonInstance
             }
         }
     }
-    
+
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
+     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
-         $selectedInstances = '';
-         $items= array();
-
-         $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $selectedInstances = '';
+        $items = array();
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+            $queryValues = array_merge($queryValues, $queryValues);
         } else {
-                $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+            $explodedValues .= '""';
         }
 
-         $query = "SELECT DISTINCT p.name as name, p.id  as id"
-             . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-             . " WHERE r.resource_id = rel.resource_id"
-             . " AND p.id = rel.instance_id "
-             . " AND p.id IN (" . $explodedValues . ")"
-             . $selectedInstances
-             . " ORDER BY p.name";
-         $DBRESULT = $this->db->query($query);
-        while ($data = $DBRESULT->fetchRow()) {
+        $query = "SELECT DISTINCT p.name as name, p.id  as id"
+            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+            . " WHERE r.resource_id = rel.resource_id"
+            . " AND p.id = rel.instance_id "
+            . " AND p.id IN (" . $explodedValues . ")"
+            . $selectedInstances
+            . " ORDER BY p.name";
+        $stmt = $this->db->prepare($query);
+        $dbResult = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($dbResult)) {
+            throw new Exception('Bad instance query params');
+        }
+
+        while ($data = $dbResult->fetchRow()) {
                 $items[] = array(
                         'id' => $data['id'],
                 'text' => $data['name']

@@ -136,7 +136,12 @@ class CentreonConfigurationObjects extends CentreonWebService
                 $options = $externalObject['objectOptions'];
             }
 
-            $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
+            try {
+                $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
+            } catch (\Exception $e) {
+                print $e->getMessage();
+            }
+
         } else {
             $explodedValues = '';
 
