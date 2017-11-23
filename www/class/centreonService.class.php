@@ -1081,7 +1081,7 @@ class CentreonService
         $explodedValues = '';
         if (!empty($serviceIdList)) {
             $selectedServices .= "AND hsr.service_service_id IN (";
-            foreach ($hostIdList as $k => $v) {
+            foreach ($serviceIdList as $k => $v) {
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
             }
