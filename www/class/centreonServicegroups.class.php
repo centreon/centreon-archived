@@ -217,8 +217,8 @@ class CentreonServicegroups
             . "FROM servicegroup "
             . "WHERE sg_id IN (" . $explodedValues . ") "
             . "ORDER BY sg_name ";
-        $stmt = $this->db->prepare($query);
-        $resRetrieval = $this->db->execute($stmt, $queryValues);
+        $stmt = $this->DB->prepare($query);
+        $resRetrieval = $this->DB->execute($stmt, $queryValues);
 
         if (PEAR::isError($resRetrieval)) {
             throw new Exception('Bad service group query params');
