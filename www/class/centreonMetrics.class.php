@@ -39,16 +39,24 @@ class CentreonMetrics
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @return array
      */
     public function getObjectForSelect2($values = array())
     {
         $metrics = array();
         $filters = '';
-        if (count($values) > 0) {
-            $filters = 'm.metric_id IN (' . join(', ', $values) . ') AND';
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':metric' . $v . ',';
+                $queryValues['metric' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+            $filters .= 'm.metric_id IN (' . $listValues . ') AND';
+        } else {
+            $filters .= '""';
         }
 
         $queryService = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(h.name,' - ', s.description,"
@@ -60,18 +68,21 @@ class CentreonMetrics
             . "h.host_id = i.host_id "
             . "AND   s.service_id = i.service_id "
             . "ORDER BY fullname COLLATE utf8_general_ci";
-        try {
-            $res = $this->dbo->query($queryService);
-        } catch (\PDOException $e) {
-            return $metrics;
+
+        $stmt = $this->dbo->prepare($queryService);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
         }
-        while ($row = $res->fetchRow()) {
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $metrics[] = array(
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
             );
         }
-
         return $metrics;
     }
 }

@@ -50,7 +50,7 @@ class CentreonGraphCurve
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -82,26 +82,38 @@ class CentreonGraphCurve
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
-        $aInstanceList = array();
-
-        $selectedGraphCurves = "";
-        if (count($values)) {
-            $selectedGraphCurves = "WHERE compo_id IN (" . implode(',', $values) . ") ";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':compo' . $v . ',';
+                $queryValues['compo' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+            $selectedGraphCurves = "WHERE compo_id IN (" . $listValues . ") ";
+        } else {
+            $selectedGraphCurves = '""';
         }
 
-        $queryGraphCurve = "SELECT DISTINCT compo_id as id, name"
-            . " FROM giv_components_template "
-            . $selectedGraphCurves
-            . " ORDER BY name";
+        $queryGraphCurve = "SELECT DISTINCT compo_id as id, name FROM giv_components_template " .
+            $selectedGraphCurves . " ORDER BY name";
 
-        $DBRESULT = $this->db->query($queryGraphCurve);
-        while ($data = $DBRESULT->fetchRow()) {
+        $stmt = $this->db->prepare($queryGraphCurve);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($data = $stmt->fetch()) {
             $graphCurveList[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']

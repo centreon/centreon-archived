@@ -43,39 +43,52 @@ class CentreonAclGroup
      * @var type
      */
     protected $db;
-    
+
     /**
      *  Constructor
      *
-     *  @param CentreonDB $db
+     * @param CentreonDB $db
      */
     public function __construct($db)
     {
         $this->db = $db;
     }
-    
+
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':group' . $v . ',';
+                $queryValues['group' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected timeperiods
-        $query = "SELECT acl_group_id, acl_group_name "
-            . "FROM acl_groups "
-            . "WHERE acl_group_id IN (" . $explodedValues . ") "
-            . "ORDER BY acl_group_name ";
-        
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $query = "SELECT acl_group_id, acl_group_name FROM acl_groups " .
+            "WHERE acl_group_id IN (" . $listValues . ") " .
+            "ORDER BY acl_group_name ";
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['acl_group_id'],
                 'text' => $row['acl_group_name']

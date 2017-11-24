@@ -50,7 +50,7 @@ class CentreonServicecategories
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -73,13 +73,13 @@ class CentreonServicecategories
                 $parameters['relationObject']['comparator'] = 'sc_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
@@ -92,19 +92,32 @@ class CentreonServicecategories
             $scAcl = $centreon->user->access->getServiceCategories();
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':sc' . $v . ',';
+                $queryValues['sc' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected service categories
-        $query = "SELECT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_id IN (" . $explodedValues . ") "
-            . "ORDER BY sc_name ";
+        $query = 'SELECT sc_id, sc_name FROM service_categories ' .
+            'WHERE sc_id IN (' . $listValues . ') ORDER BY sc_name ';
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             # hide unauthorized service categories
             $hide = false;
             if (!$centreon->user->access->admin && count($scAcl) && !in_array($row['sc_id'], array_keys($scAcl))) {

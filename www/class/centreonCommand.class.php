@@ -316,33 +316,35 @@ class CentreonCommand
      * @param array $values
      * @param array $options
      * @return array
-     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        $explodedValues = '';
+        $listValues = '';
         $queryValues = array();
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $explodedValues .= '?,';
-                $queryValues[] = (int)$v;
+                $listValues .= ':command' . $v . ',';
+                $queryValues['command' . $v] = (int)$v;
             }
-            $explodedValues = rtrim($explodedValues, ',');
+            $listValues = rtrim($listValues, ',');
         } else {
-            $explodedValues .= '""';
+            $listValues .= '""';
         }
 
         # get list of selected connectors
-        $query = 'SELECT command_id, command_name ' .
-            'FROM command ' .
-            'WHERE command_id IN (' . $explodedValues . ') ' .
+        $query = 'SELECT command_id, command_name FROM command ' .
+            'WHERE command_id IN (' . $listValues . ') ' .
             'ORDER BY command_name ';
         $stmt = $this->db->prepare($query);
-        $dbResult = $stmt->execute($queryValues);
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
         }
+        $stmt->execute();
+
         while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['command_id'],

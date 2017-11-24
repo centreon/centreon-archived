@@ -1035,9 +1035,10 @@ class CentreonService
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @param string $register
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
@@ -1060,28 +1061,31 @@ class CentreonService
 
         # Construct host filter for query
         $selectedHosts = '';
-        if (count($hostIdList) > 0) {
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($hostIdList)) {
             if ($hostgroup) {
                 $selectedHosts .= "AND hsr.hostgroup_hg_id IN (";
             } else {
                 $selectedHosts .= "AND hsr.host_host_id IN (";
             }
-            $implodedValues = implode(',', $hostIdList);
-            if (trim($implodedValues) != "") {
-                $selectedHosts .= $implodedValues;
-            } else {
-                $selectedHosts .= "''";
+            foreach ($hostIdList as $k => $v) {
+                $listValues .= ':host' . $v . ',';
+                $queryValues['host' . $v] = (int)$v;
             }
-            $selectedHosts .= ") ";
+            $selectedHosts .= rtrim($listValues, ',') . ") ";
         }
 
         # Construct service filter for query
         $selectedServices = '';
-        $implodedValues = implode(',', $serviceIdList);
-        if ((trim($implodedValues)) != "" && (trim($implodedValues) != "-")) {
+        $listValues = '';
+        if (!empty($serviceIdList)) {
             $selectedServices .= "AND hsr.service_service_id IN (";
-            $selectedServices .= $implodedValues;
-            $selectedServices .= ") ";
+            foreach ($serviceIdList as $k => $v) {
+                $listValues .= ':service' . $v . ',';
+                $queryValues['service' . $v] = (int)$v;
+            }
+            $selectedServices .= rtrim($listValues, ',') . ") ";
         }
 
         $serviceList = array();
@@ -1095,9 +1099,16 @@ class CentreonService
                     . $selectedHosts
                     . $selectedServices
                     . "ORDER BY hg.hg_name ";
+                $stmt = $this->db->prepare($queryService);
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                if (!empty($queryValues)) {
+                    foreach ($queryValues as $key => $id) {
+                        $stmt->bindParam(':' . $key, $id);
+                    }
+                }
+                $stmt->execute();
+
+                while ($data = $stmt->fetch()) {
                     $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
 
@@ -1113,8 +1124,16 @@ class CentreonService
                     . $selectedServices
                     . "ORDER BY h.host_name ";
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                $stmt = $this->db->prepare($queryService);
+
+                if (!empty($queryValues)) {
+                    foreach ($queryValues as $key => $id) {
+                        $stmt->bindParam(':' . $key, $id);
+                    }
+                }
+                $stmt->execute();
+
+                while ($data = $stmt->fetch()) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
 
@@ -1125,7 +1144,6 @@ class CentreonService
 
         return $serviceList;
     }
-
 
     private function comparaPriority($macroA, $macroB, $getFirst = true)
     {

@@ -43,7 +43,7 @@ class CentreonMeta
      * @var type
      */
     protected $db;
-    
+
     /**
      * Constructor
      * @param type $db
@@ -52,7 +52,7 @@ class CentreonMeta
     {
         $this->db = $db;
     }
-    
+
     /**
      * Return host id
      *
@@ -88,7 +88,7 @@ class CentreonMeta
 
         return $hostId;
     }
-    
+
     /**
      * Return service id
      *
@@ -101,7 +101,7 @@ class CentreonMeta
         if (isset($services[$metaId])) {
             return $services[$metaId];
         }
-        
+
         $sql = 'SELECT s.service_id '
             . 'FROM service s '
             . 'WHERE s.service_description = "meta_' . $metaId . '" ';
@@ -109,7 +109,7 @@ class CentreonMeta
         $res = $this->db->query($sql);
         if ($res->rowCount()) {
             while ($row = $res->fetchRow()) {
-                 $services[$metaId] = $row['service_id'];
+                $services[$metaId] = $row['service_id'];
             }
         }
 
@@ -141,7 +141,7 @@ class CentreonMeta
 
         return $metaId;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -185,38 +185,47 @@ class CentreonMeta
                 $parameters['relationObject']['comparator'] = 'meta_id';
                 break;
         }
-        
+
         return $parameters;
     }
-    
+
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':meta' . $v . ',';
+                $queryValues['meta' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected meta
-        $query = "SELECT meta_id, meta_name "
-            . "FROM meta_service "
-            . "WHERE meta_id IN (" . $explodedValues . ") "
-            . "ORDER BY meta_name ";
-        
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $query = 'SELECT meta_id, meta_name FROM meta_service ' .
+            'WHERE meta_id IN (' . $listValues . ') ORDER BY meta_name ';
+        $stmt = $this->db->prepare($query);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['meta_id'],
                 'text' => $row['meta_name']
             );
         }
-
         return $items;
     }
 

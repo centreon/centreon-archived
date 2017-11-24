@@ -548,27 +548,39 @@ class CentreonConnector
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':id' . $v . ',';
+                $queryValues['id' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected connectors
-        $query = "SELECT id, name "
-            . "FROM connector "
-            . "WHERE id IN (" . $explodedValues . ") "
-            . "ORDER BY name ";
+        $query = "SELECT id, name FROM connector " .
+            "WHERE id IN (" . $listValues . ") ORDER BY name ";
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['id'],
                 'text' => $row['name']

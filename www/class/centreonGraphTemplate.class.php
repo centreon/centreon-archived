@@ -51,43 +51,57 @@ class CentreonGraphTemplate
      * @var type
      */
     protected $db;
-    
+
     /**
      *
      * @var type
      */
     protected $instanceObj;
-    
+
     /**
-     * Constructor
-     *
-     * @param CentreonDB $db
-     * @return void
+     * CentreonGraphTemplate constructor.
+     * @param $db
      */
     public function __construct($db)
     {
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
-    
+
     /**
-     *
      * @param array $values
+     * @param array $options
+     * @param string $register
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':graph' . $v . ',';
+                $queryValues['graph' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
-        
+
         $query = "SELECT graph_id, name FROM giv_graphs_template
-            WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+            WHERE graph_id IN (" . $listValues . ") ORDER BY name";
+
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetchRow()) {
             $items[] = array(
                 'id' => $row['graph_id'],
                 'text' => $row['name']

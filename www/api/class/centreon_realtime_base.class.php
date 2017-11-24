@@ -141,8 +141,11 @@ class CentreonRealtimeBase extends CentreonWebService
             if (isset($externalObject['objectOptions'])) {
                 $options = $externalObject['objectOptions'];
             }
-
-            $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
+            try {
+                $tmpValues = $externalObjectInstance->getObjectForSelect2($values, $options);
+            } catch (\Exception $e) {
+                print $e->getMessage();
+            }
         } else {
             $explodedValues = '';
             $queryValues = array();

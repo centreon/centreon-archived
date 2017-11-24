@@ -36,7 +36,7 @@
 class CentreonContact
 {
     protected $db;
-    
+
     /**
      * Constructor
      */
@@ -44,7 +44,7 @@ class CentreonContact
     {
         $this->db = $db;
     }
-    
+
     /**
      * Get contact templates
      *
@@ -104,7 +104,7 @@ class CentreonContact
         }
         return $cgs;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -175,14 +175,14 @@ class CentreonContact
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
@@ -193,7 +193,7 @@ class CentreonContact
         if (!$centreon->user->access->admin) {
             $cAcl = $centreon->user->access->getContactAclConf(
                 array(
-                    'fields'  => array('contact_id'),
+                    'fields' => array('contact_id'),
                     'get_row' => 'contact_id',
                     'keys' => array('contact_id'),
                     'conditions' => array(
@@ -207,19 +207,32 @@ class CentreonContact
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':contact' . $v . ',';
+                $queryValues['contact' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected contacts
-        $query = "SELECT contact_id, contact_name "
-            . "FROM contact "
-            . "WHERE contact_id IN (" . $explodedValues. ") "
-            . "ORDER BY contact_name ";
+        $query = "SELECT contact_id, contact_name FROM contact " .
+            "WHERE contact_id IN (" . $listValues . ") ORDER BY contact_name ";
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             # hide unauthorized contacts
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['contact_id'], $cAcl)) {
