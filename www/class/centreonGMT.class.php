@@ -465,7 +465,7 @@ class CentreonGMT
         $query = "SELECT timezone_id, timezone_name FROM timezone "
             . "WHERE timezone_id IN (" . $listValues . ") ORDER BY timezone_name ";
 
-        $stmt = $this->db->prepare($query);
+        $stmt = CentreonDBInstance::getConfInstance()->prepare($query);
 
         if (!empty($queryValues)) {
             foreach ($queryValues as $key => $id) {
