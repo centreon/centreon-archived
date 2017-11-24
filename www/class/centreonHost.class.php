@@ -2308,7 +2308,6 @@ class CentreonHost
 
         $listValues = '';
         $queryValues = array();
-        $queryValues[] = (string)$register;
         if (!empty($values)) {
             foreach ($values as $k => $v) {
                 $listValues .= ':host' . $v . ',';
