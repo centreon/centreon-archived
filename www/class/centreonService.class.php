@@ -1042,6 +1042,7 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
+
         $hostgroup = false;
         if (isset($options['hostgroup']) && $options['hostgroup'] == true) {
             $hostgroup = true;
@@ -1101,9 +1102,13 @@ class CentreonService
                     . "ORDER BY hg.hg_name ";
                 $stmt = $this->db->prepare($queryService);
 
+
+                var_dump($queryService); exit;
+
+
                 if (!empty($queryValues)) {
                     foreach ($queryValues as $key => $id) {
-                        $stmt->bindParam(':' . $key, $id);
+                        $stmt->bindValue(':' . $key, $id);
                     }
                 }
                 $stmt->execute();
@@ -1128,15 +1133,13 @@ class CentreonService
 
                 if (!empty($queryValues)) {
                     foreach ($queryValues as $key => $id) {
-                        $stmt->bindParam(':' . $key, $id);
+                        $stmt->bindValue(':' . $key, $id);
                     }
                 }
                 $stmt->execute();
-
                 while ($data = $stmt->fetch()) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-
                     $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
                 }
             }
@@ -1145,6 +1148,12 @@ class CentreonService
         return $serviceList;
     }
 
+    /**
+     * @param $macroA
+     * @param $macroB
+     * @param bool $getFirst
+     * @return mixed
+     */
     private function comparaPriority($macroA, $macroB, $getFirst = true)
     {
 
