@@ -324,6 +324,50 @@ function answer_with_createdir() {
 }
 
 #----
+## print a message, create file if file not exists
+## Loop if not a valid file
+## @param       message
+## @param       default value (use "NO_DEFAULT" if not default value)
+## @param       global variable to set a result
+## @return 0    end
+#----
+function answer_with_createfile() {
+        local message=$1
+        local default=$2
+        local var_ref=$3
+        local res="not_define"
+        local first=0
+        while [ ! -f "$res" ] ; do
+                [ $first -eq 1 ] && echo_passed "$(gettext "File $res does not exists.")" "$critical"
+                echo -e "\n$message"
+                [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+                echo -en "> "
+                read res
+                if [ -z "$res" ] ; then
+                        [ "$default" != "NO_DEFAULT" ] && res=$default
+                fi
+                if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
+                        echo_passed  "$(gettext "You select slash...")"
+                        res="not_define"
+                else
+                        first=1
+                        [ -f "$res" ] && break
+                        yes_no_default "$(gettext "Do you want me to create this file ?") [$res]"
+                        if [ $? -eq 0 ] ; then
+                                touch $res
+                                if [ $? -ne 0 ] ; then
+                                        echo_passed "$(gettext "Could not create file.")" "$critical"
+                                        #continue
+                                fi
+                                log "INFO" "$(gettext "Creating") : $res"
+                        fi
+                fi
+        done
+        eval $var_ref=$res
+        return 0
+}
+
+#----
 ## print a message, test if file exists 
 ## Loop if not a valid file 
 ## @param	message
@@ -935,7 +979,7 @@ function locate_centreontrapd_bindir() {
 #----
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
-		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		answer_with_createfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
 	SUDO_FILE=`trim ${SUDO_FILE%/}`
@@ -1837,7 +1881,7 @@ function check_centreon_user()
 		fi
 	fi
 	if [ -z "$CENTREON_USER" ] ; then
-		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
+		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER" "$groups" "$description" "$home"
 	fi
 	log "INFO" "$(gettext "Centreon user") : $CENTREON_USER"
 	return 0
