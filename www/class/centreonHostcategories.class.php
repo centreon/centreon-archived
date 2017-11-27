@@ -47,7 +47,7 @@ class CentreonHostcategories
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -77,13 +77,13 @@ class CentreonHostcategories
                 $parameters['relationObject']['comparator'] = 'hostcategories_hc_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
@@ -96,19 +96,32 @@ class CentreonHostcategories
             $hcAcl = $centreon->user->access->getHostCategories();
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':hc' . $v . ',';
+                $queryValues['hc' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected host categories
-        $query = "SELECT hc_id, hc_name "
-            . "FROM hostcategories "
-            . "WHERE hc_id IN (" . $explodedValues . ") "
-            . "ORDER BY hc_name ";
+        $query = 'SELECT hc_id, hc_name FROM hostcategories ' .
+            'WHERE hc_id IN (' . $listValues . ') ORDER BY hc_name ';
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             # hide unauthorized host categories
             $hide = false;
             if (!$centreon->user->access->admin && count($hcAcl) && !in_array($row['hc_id'], array_keys($hcAcl))) {

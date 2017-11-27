@@ -45,7 +45,7 @@ class CentreonServicetemplates extends CentreonService
     /**
      *  Constructor
      *
-     *  @param CentreonDB $db
+     * @param CentreonDB $db
      */
     public function __construct($db)
     {
@@ -86,9 +86,9 @@ class CentreonServicetemplates extends CentreonService
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array|type
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
@@ -97,32 +97,41 @@ class CentreonServicetemplates extends CentreonService
             $serviceList = parent::getObjectForSelect2($values, $options, '0');
         } else {
             $selectedServices = '';
-            $explodedValues = implode(',', $values);
-            if (!empty($explodedValues)) {
-                $selectedServices .= "AND s.service_id IN ($explodedValues) ";
+            $listValues = '';
+            $queryValues = array();
+            if (!empty($values)) {
+                foreach ($values as $k => $v) {
+                    $listValues .= ':service' . $v . ',';
+                    $queryValues['service' . $v] = (int)$v;
+                }
+                $listValues = rtrim($listValues, ',');
+                $selectedServices .= "AND s.service_id IN ($listValues) ";
             }
 
-            $queryService = "SELECT DISTINCT s.service_id, s.service_description "
-                . "FROM service s "
-                . "WHERE s.service_register = '0' "
-                . $selectedServices
-                . "ORDER BY s.service_description ";
+            $queryService = 'SELECT DISTINCT s.service_id, s.service_description FROM service s ' .
+                'WHERE s.service_register = "0" ' . $selectedServices . 'ORDER BY s.service_description ';
 
-            $DBRESULT = $this->db->query($queryService);
+            $stmt = $this->db->prepare($queryService);
+            if (!empty($queryValues)) {
+                foreach ($queryValues as $key => $id) {
+                    $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+                }
+            }
+            $stmt->execute();
 
-
-            while ($data = $DBRESULT->fetchRow()) {
+            while ($data = $stmt->fetch()) {
                 $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
             }
         }
-        
+
         return $serviceList;
     }
-    
+
     /**
-     * Returns array of Service linked to the template
-     *
+     * @param $serviceTemplateName
+     * @param bool $checkTemplates
      * @return array
+     * @throws Exception
      */
     public function getLinkedServicesByName($serviceTemplateName, $checkTemplates = true)
     {

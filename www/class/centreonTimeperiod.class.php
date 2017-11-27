@@ -55,27 +55,38 @@ class CentreonTimeperiod
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':tp' . $v . ',';
+                $queryValues['tp' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected timeperiods
-        $query = "SELECT tp_id, tp_name "
-            . "FROM timeperiod "
-            . "WHERE tp_id IN (" . $explodedValues . ") "
-            . "ORDER BY tp_name ";
+        $query = 'SELECT tp_id, tp_name FROM timeperiod ' .
+            'WHERE tp_id IN (' . $listValues . ') ORDER BY tp_name ';
+        $stmt = $this->db->prepare($query);
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['tp_id'],
                 'text' => $row['tp_name']

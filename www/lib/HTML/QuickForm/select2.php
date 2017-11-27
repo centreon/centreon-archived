@@ -393,7 +393,11 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $objectFinalName = ucfirst($this->_linkedObject);
 
             $myObject = new $objectFinalName($pearDB);
-            $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
+            try {
+                $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
+            } catch (\Exception $e) {
+                print $e->getMessage();
+            }
 
             foreach ($finalDataset as $dataSet) {
                 $currentOption = '<option selected="selected" value="'

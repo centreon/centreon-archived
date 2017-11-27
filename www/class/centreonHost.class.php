@@ -2306,28 +2306,33 @@ class CentreonHost
             );
         }
 
-        $explodedValues = '';
+        $listValues = '';
         $queryValues = array();
-        $queryValues[] = (string)$register;
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $explodedValues .= '?,';
-                $queryValues[] = (int)$v;
+                $listValues .= ':host' . $v . ',';
+                $queryValues['host' . $v] = (int)$v;
             }
-            $explodedValues = rtrim($explodedValues, ',');
+            $listValues = rtrim($listValues, ',');
         } else {
-            $explodedValues .= "''";
+            $listValues .= "''";
         }
 
         # get list of selected hosts
-        $query = 'SELECT host_id, host_name ' .
-            'FROM host ' .
-            'WHERE host_register = ? ' .
-            'AND host_id IN (' . $explodedValues . ') ' .
+        $query = 'SELECT host_id, host_name FROM host ' .
+            'WHERE host_register = :register ' .
+            'AND host_id IN (' . $listValues . ') ' .
             'ORDER BY host_name ';
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute($queryValues);
+        $stmt->bindParam(':register', $register, PDO::PARAM_STR);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
 
         while ($row = $stmt->fetch()) {
             # hide unauthorized hosts

@@ -170,8 +170,8 @@ class CentreonServicegroups
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
@@ -200,32 +200,42 @@ class CentreonServicegroups
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':sg' . $v . ',';
+                $queryValues['sg' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected servicegroups
-        $query = "SELECT sg_id, sg_name "
-            . "FROM servicegroup "
-            . "WHERE sg_id IN (" . $explodedValues . ") "
-            . "ORDER BY sg_name ";
+        $query = 'SELECT sg_id, sg_name FROM servicegroup ' .
+            'WHERE sg_id IN (' . $listValues . ') ORDER BY sg_name ';
 
-        $resRetrieval = $this->DB->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->DB->prepare($query);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             # hide unauthorized servicegroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['sg_id'], $sgAcl)) {
                 $hide = true;
             }
-
             $items[] = array(
                 'id' => $row['sg_id'],
                 'text' => $row['sg_name'],
                 'hide' => $hide
             );
         }
-
         return $items;
     }
 

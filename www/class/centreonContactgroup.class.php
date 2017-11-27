@@ -229,7 +229,7 @@ class CentreonContactgroup
                     if ((empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn'])) &&
                         ldap_errno($ldapConn->getDs()) != 3) {
                         $dn = $ldapConn->findGroupDn($row['cg_name']);
-                        if (false === $dn  && ldap_errno($ldapConn->getDs()) != 3) {
+                        if (false === $dn && ldap_errno($ldapConn->getDs()) != 3) {
                             /*
                              * Delete the ldap group in contactgroup
                              */
@@ -394,9 +394,9 @@ class CentreonContactgroup
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
@@ -438,19 +438,33 @@ class CentreonContactgroup
             }
         }
 
-        $explodedValues = implode(',', $aElement);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($aElement)) {
+            foreach ($aElement as $k => $v) {
+                $listValues .= ':cg' . $v . ',';
+                $queryValues['cg' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected contactgroups
-        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_id, ar.ar_name FROM contactgroup cg "
-            . "LEFT JOIN auth_ressource ar ON cg.ar_id = ar.ar_id "
-            . "WHERE cg.cg_id IN (" . $explodedValues . ") "
-            . "ORDER BY cg.cg_name ";
+        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, ar.ar_id, ar.ar_name FROM contactgroup cg " .
+            "LEFT JOIN auth_ressource ar ON cg.ar_id = ar.ar_id " .
+            "WHERE cg.cg_id IN (" . $listValues . ") ORDER BY cg.cg_name ";
 
-        $resRetrieval = $this->db->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->db->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
                 $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);
             } else {
@@ -458,7 +472,7 @@ class CentreonContactgroup
             }
             $cgId = $row['cg_id'];
 
-            # hide unauthorized contactgroups
+# hide unauthorized contactgroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($cgId, $cgAcl)) {
                 $hide = true;

@@ -284,8 +284,8 @@ class CentreonHostgroups
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
@@ -314,19 +314,31 @@ class CentreonHostgroups
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':hg' . $v . ',';
+                $queryValues['hg' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         // get list of selected hostgroups
-        $query = "SELECT hg_id, hg_name "
-            . "FROM hostgroup "
-            . "WHERE hg_id IN (" . $explodedValues . ") "
-            . "ORDER BY hg_name ";
+        $query = 'SELECT hg_id, hg_name FROM hostgroup ' .
+            'WHERE hg_id IN (' . $listValues . ') ORDER BY hg_name ';
 
-        $resRetrieval = $this->DB->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->DB->prepare($query);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             // hide unauthorized hostgroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['hg_id'], $hgAcl)) {

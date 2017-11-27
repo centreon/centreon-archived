@@ -343,7 +343,7 @@ class CentreonGMT
         } else {
             $this->myGMT = 0;
         }
-        
+
         return $this->myGMT;
     }
 
@@ -441,27 +441,40 @@ class CentreonGMT
     }
 
     /**
-     *
-     * @param type $values
+     * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':timezone' . $v . ',';
+                $queryValues['timezone' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected timezones
-        $query = "SELECT timezone_id, timezone_name "
-            . "FROM timezone "
-            . "WHERE timezone_id IN (" . $explodedValues . ") "
-            . "ORDER BY timezone_name ";
+        $query = "SELECT timezone_id, timezone_name FROM timezone "
+            . "WHERE timezone_id IN (" . $listValues . ") ORDER BY timezone_name ";
 
-        $resRetrieval = CentreonDBInstance::getConfInstance()->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = CentreonDBInstance::getConfInstance()->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['timezone_id'],
                 'text' => $row['timezone_name']
@@ -517,7 +530,7 @@ class CentreonGMT
             'AND cfgn.nagios_server_id = ns.id ' .
             'AND cfgn.use_timezone = t.timezone_id ';
         try {
-            $res  = CentreonDBInstance::getConfInstance()->query($query);
+            $res = CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $res->fetchRow()) {
                 $this->pollerLocations[$row['id']] = $row['timezone_name'];
             }
@@ -527,7 +540,7 @@ class CentreonGMT
 
         return $this->pollerLocations;
     }
-    
+
     /**
      * Get default timezone setted in admintration/options
      *
