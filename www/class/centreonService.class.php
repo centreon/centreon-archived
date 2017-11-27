@@ -1102,10 +1102,6 @@ class CentreonService
                     . "ORDER BY hg.hg_name ";
                 $stmt = $this->db->prepare($queryService);
 
-
-                var_dump($queryService); exit;
-
-
                 if (!empty($queryValues)) {
                     foreach ($queryValues as $key => $id) {
                         $stmt->bindValue(':' . $key, $id);
