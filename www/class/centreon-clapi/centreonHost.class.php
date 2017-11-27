@@ -63,6 +63,7 @@ require_once "Centreon/Object/Relation/Contact/Host.php";
 require_once "Centreon/Object/Relation/Contact/Group/Host.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
+require_once "Centreon/Object/Media/Media.php";
 
 /**
  * Centreon Host objects
@@ -336,6 +337,97 @@ class CentreonHost extends CentreonObject
         $relationObj = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
         $relationObj->delete(null, $hostId);
         $relationObj->insert($instanceId, $hostId);
+    }
+
+    /**
+     * Get a parameter
+     *
+     * @param string $parameters
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $extended = false;
+            $field = $params[1];
+            switch ($params[1]) {
+                case "check_command":
+                    $field = "command_command_id";
+                    break;
+                case "check_command_arguments":
+                    $field = "command_command_id_arg1";
+                    break;
+                case "event_handler":
+                    $field = "command_command_id2";
+                    break;
+                case "event_handler_arguments":
+                    $field = "command_command_id_arg2";
+                    break;
+                case "check_period":
+                    $field = "timeperiod_tp_id";
+                    break;
+                case "notification_period":
+                    $field = "timeperiod_tp_id2";
+                    break;
+                case "notes":
+                case "notes_url":
+                case "action_url":
+                case "icon_image":
+                case "icon_image_alt":
+                case "vrml_image":
+                case "statusmap_image":
+                case "2d_coords":
+                case "3d_coords":
+                    $extended = true;
+                    break;
+                case self::HOST_LOCATION:
+                    $field = 'host_location';
+                    break;
+                default:
+                    if (!preg_match("/^host_/", $params[1])) {
+                        $field = "host_" . $params[1];
+                    }
+                    break;
+            }
+            if ($extended == false) {
+                $ret = $this->object->getParameters($objectId, $field);
+                $ret = $ret[$field];
+            } else {
+                $field = "ehi_" . $field;
+                $extended = new \Centreon_Object_Host_Extended($this->dependencyInjector);
+                $ret = $extended->getParameters($objectId, $field);
+                $ret = $ret[$field];
+            }
+            switch ($params[1]) {
+                case "check_command":
+                case "event_handler":
+                    $commandObject = new CentreonCommand($this->dependencyInjector);
+                    $field = $commandObject->object->getUniqueLabelField();
+                    $ret = $commandObject->object->getParameters($ret, $field);
+                    $ret = $ret[$field];
+                    break;
+                case "check_period":
+                case "notification_period":
+                    $tpObj = new CentreonTimePeriod($this->dependencyInjector);
+                    $field = $tpObj->object->getUniqueLabelField();
+                    $ret = $tpObj->object->getParameters($ret, $field);
+                    $ret = $ret[$field];
+                    break;
+                case self::HOST_LOCATION:
+                    $field = $this->timezoneObject->getUniqueLabelField();
+                    $ret = $this->timezoneObject->getParameters($ret, $field);
+                    $ret = $ret[$field];
+                    break;
+            }
+            echo $ret . "\n";
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
     }
 
     /**
@@ -918,7 +1010,7 @@ class CentreonHost extends CentreonObject
                 $parents = $parentShip[$hostId];
                 $parentExported = true;
                 foreach ($parents as $parentId) {
-                    if(!in_array($parentId, $sortedHosts)){
+                    if (!in_array($parentId, $sortedHosts)) {
                         $parentExported = false;
                         break;
                     }
