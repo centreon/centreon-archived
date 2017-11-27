@@ -86,9 +86,10 @@ class CentreonServicetemplates extends CentreonService
     }
 
     /**
-     *
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array|type
+     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
@@ -97,10 +98,14 @@ class CentreonServicetemplates extends CentreonService
             $serviceList = parent::getObjectForSelect2($values, $options, '0');
         } else {
             $selectedServices = '';
-            $explodedValues = implode(',', $values);
-            if (empty($explodedValues)) {
-                $explodedValues = "''";
-            } else {
+            $explodedValues = '';
+            $queryValues = array();
+            if (!empty($values)) {
+                foreach ($values as $k => $v) {
+                    $explodedValues .= '?,';
+                    $queryValues[] = (int)$v;
+                }
+                $explodedValues = rtrim($explodedValues, ',');
                 $selectedServices .= "AND s.service_id IN ($explodedValues) ";
             }
 
@@ -109,15 +114,17 @@ class CentreonServicetemplates extends CentreonService
                 . "WHERE s.service_register = '0' "
                 . $selectedServices
                 . "ORDER BY s.service_description ";
+            $stmt = $this->db->prepare($queryService);
+            $dbResult = $this->db->execute($stmt, $queryValues);
 
-            $DBRESULT = $this->db->query($queryService);
+            if (PEAR::isError($dbResult)) {
+                throw new Exception('Bad timezone query params');
+            }
 
-
-            while ($data = $DBRESULT->fetchRow()) {
+            while ($data = $dbResult->fetchRow()) {
                 $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
             }
         }
-        
         return $serviceList;
     }
     

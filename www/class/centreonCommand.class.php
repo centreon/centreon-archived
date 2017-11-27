@@ -333,6 +333,10 @@ class CentreonCommand
         $stmt = $this->db->prepare($query);
         $resRetrieval = $this->db->execute($stmt, $queryValues);
 
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad command query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['command_id'],

@@ -2259,6 +2259,10 @@ class CentreonHost
         $stmt = $this->db->prepare($query);
         $resRetrieval = $this->db->execute($stmt, $queryValues);
 
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad host query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized hosts
             $hide = false;

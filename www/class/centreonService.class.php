@@ -1045,6 +1045,7 @@ class CentreonService
 
         $hostIdList = array();
         $serviceIdList = array();
+
         if(!empty($values)){
             foreach ($values as $value) {
                 if (strpos($value, '-')) {
@@ -1059,30 +1060,35 @@ class CentreonService
 
         # Construct host filter for query
         $selectedHosts = '';
-        if (count($hostIdList) > 0) {
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($hostIdList)) {
             if ($hostgroup) {
                 $selectedHosts .= "AND hsr.hostgroup_hg_id IN (";
             } else {
                 $selectedHosts .= "AND hsr.host_host_id IN (";
             }
-            $implodedValues = implode(',', $hostIdList);
-            if (trim($implodedValues) != "") {
-                $selectedHosts .= $implodedValues;
-            } else {
-                $selectedHosts .= "''";
+            foreach ($hostIdList as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
             }
-            $selectedHosts .= ") ";
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedHosts .= $explodedValues . ") ";
         }
 
         # Construct service filter for query
         $selectedServices = '';
-        $implodedValues = implode(',', $serviceIdList);
-        if ((trim($implodedValues)) != "" && (trim($implodedValues) != "-")) {
+        $explodedValues = '';
+        if (!empty($serviceIdList)) {
             $selectedServices .= "AND hsr.service_service_id IN (";
-            $selectedServices .= $implodedValues;
-            $selectedServices .= ") ";
+            foreach ($serviceIdList as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedServices .= $explodedValues . ") ";
         }
-        
+
         $serviceList = array();
         if (!empty($selectedServices)) {
             if ($hostgroup) {
@@ -1094,12 +1100,16 @@ class CentreonService
                     . $selectedHosts
                     . $selectedServices
                     . "ORDER BY hg.hg_name ";
+                $stmt = $this->db->prepare($queryService);
+                $dbResult = $this->db->execute($stmt, $queryValues);
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                if (PEAR::isError($dbResult)) {
+                    throw new Exception('Bad service query params');
+                }
+
+                while ($data = $dbResult->fetchRow()) {
                     $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
-
                     $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
                 }
             } else {
@@ -1111,9 +1121,14 @@ class CentreonService
                     . $selectedHosts
                     . $selectedServices
                     . "ORDER BY h.host_name ";
+                $stmt = $this->db->prepare($queryService);
+                $dbResult = $this->db->execute($stmt, $queryValues);
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                if (PEAR::isError($dbResult)) {
+                    throw new Exception('Bad service query params');
+                }
+
+                while ($data = $dbResult->fetchRow()) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
 
@@ -1121,7 +1136,6 @@ class CentreonService
                 }
             }
         }
-
         return $serviceList;
     }
     
