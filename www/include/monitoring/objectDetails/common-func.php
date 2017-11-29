@@ -82,6 +82,9 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
         $arrMacroPassword = array_merge($arrMacroPassword, array($row['host_macro_name']));
     }
 
+    $commandWithoutArg = explode('!', $command_name);
+    $command_name = $commandWithoutArg[0];
+
     /* Get command line with macro */
     $query_command_line = "SELECT command_line FROM command WHERE command_name = '" .
         $pearDB->escape($command_name) . "'";
