@@ -35,7 +35,7 @@
 
 require_once $centreon_path . "www/class/centreonHost.class.php";
 
-function hidePasswordInCommand($command_name, $host_id, $service_id) 
+function hidePasswordInCommand($command_name, $host_id, $service_id)
 {
     global $pearDB;
 
@@ -81,6 +81,9 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     while($row = $res->fetchRow()) {
         $arrMacroPassword = array_merge ($arrMacroPassword, array($row['host_macro_name']));
     }
+
+    $commandWithoutArg = explode('!', $command_name);
+    $command_name = $commandWithoutArg[0];
 
     /* Get command line with macro */
     $query_command_line = "SELECT command_line FROM command WHERE command_name = '" .
