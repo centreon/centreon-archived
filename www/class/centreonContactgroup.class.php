@@ -459,7 +459,7 @@ class CentreonContactgroup
 
         if (!empty($queryValues)) {
             foreach ($queryValues as $key => $id) {
-                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
             }
         }
         $stmt->execute();

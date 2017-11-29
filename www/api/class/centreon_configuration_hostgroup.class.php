@@ -167,7 +167,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         $stmt = $this->pearDB->prepare($queryHostGroup);
 
         foreach ($queryValues["hgid"] as $k => $v) {
-            $stmt->bindParam(':hgid' . $k, $v, PDO::PARAM_INT);
+            $stmt->bindValue(':hgid' . $k, $v, PDO::PARAM_INT);
         }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);

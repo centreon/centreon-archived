@@ -437,7 +437,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         $stmt->bindParam(':searchAddress', $queryValues["searchAddress"], PDO::PARAM_STR);
         if (isset($queryValues['hostgroup'])) {
             foreach ($queryValues['hostgroup'] as $hgId => $hgValue) {
-                $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
+                $stmt->bindValue(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
         if (isset($queryValues['instanceId'])) {
