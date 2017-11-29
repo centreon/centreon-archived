@@ -539,13 +539,13 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
 
         if (isset($queryValues['hostgroup'])) {
             foreach ($queryValues['hostgroup'] as $hgId => $hgValue) {
-                $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
+                $stmt->bindValue(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
 
         if (isset($queryValues['servicegroup'])) {
             foreach ($queryValues['servicegroup'] as $hgId => $hgValue) {
-                $stmt->bindParam(':servicegroup' . $hgId, $hgValue, PDO::PARAM_INT);
+                $stmt->bindValue(':servicegroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
 

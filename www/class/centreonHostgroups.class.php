@@ -333,7 +333,7 @@ class CentreonHostgroups
         $stmt = $this->DB->prepare($query);
         if (!empty($queryValues)) {
             foreach ($queryValues as $key => $id) {
-                $stmt->bindParam(':' . $key, $id, PDO::PARAM_INT);
+                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
             }
         }
         $stmt->execute();

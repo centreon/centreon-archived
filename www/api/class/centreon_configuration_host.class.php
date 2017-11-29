@@ -135,13 +135,13 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 
         if (isset($queryValues['hostgroup'])) {
             foreach ($queryValues['hostgroup'] as $hgId => $hgValue) {
-                $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
+                $stmt->bindValue(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
         if (isset($queryValues['virtualHost'])) {
             foreach ($queryValues['virtualHost'] as $vhId => $vhValue) {
-                $stmt->bindParam(':hostNameTable' . $vhId, $vhValue, PDO::PARAM_STR);
-                $stmt->bindParam(':virtualHostId' . $vhId, $vhId, PDO::PARAM_INT);
+                $stmt->bindValue(':hostNameTable' . $vhId, $vhValue, PDO::PARAM_STR);
+                $stmt->bindValue(':virtualHostId' . $vhId, $vhId, PDO::PARAM_INT);
             }
         }
         if (isset($queryValues['offset'])) {

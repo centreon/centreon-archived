@@ -162,7 +162,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         }
         $stmt = $this->pearDB->prepare($queryContact);
         foreach ($queryValues["sgid"] as $k => $v) {
-            $stmt->bindParam(':sgid' . $k, $v, PDO::PARAM_INT);
+            $stmt->bindValue(':sgid' . $k, $v, PDO::PARAM_INT);
         }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);

@@ -507,7 +507,7 @@ class CentreonWidget
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
             foreach ($queryValues as $widgetId) {
-                $stmt->bindParam(':widgetId' . $widgetId, $widgetId, PDO::PARAM_INT);
+                $stmt->bindValue(':widgetId' . $widgetId, $widgetId, PDO::PARAM_INT);
             }
             $dbResult = $stmt->execute();
             if (!$dbResult) {
@@ -590,7 +590,7 @@ class CentreonWidget
         $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
         if (count($this->userGroups)) {
             foreach ($queryValues as $key => $userGroupId) {
-                $stmt->bindParam(':' . $key, $userGroupId, PDO::PARAM_INT);
+                $stmt->bindValue(':' . $key, $userGroupId, PDO::PARAM_INT);
             }
         }
         $dbResult = $stmt->execute();

@@ -166,7 +166,7 @@ class CentreonRealtimeBase extends CentreonWebService
 
             if (isset($queryValues['object'])) {
                 foreach ($queryValues['object'] as $key => $value) {
-                    $stmt->bindParam(':object' . $key, $value);
+                    $stmt->bindValue(':object' . $key, $value);
                 }
             }
             $stmt->execute();
