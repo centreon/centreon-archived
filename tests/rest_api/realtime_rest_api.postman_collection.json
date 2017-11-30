@@ -2,7 +2,7 @@
   "variables": [],
   "info": {
     "name": "Centreon Web Rest API realtime",
-    "_postman_id": "b115f003-c938-d5a5-884b-ffd54a3593c7",
+    "_postman_id": "fd65edd2-237b-e7c0-1623-430a15d0b0b7",
     "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
   },
   "item": [
@@ -5681,7 +5681,7 @@
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
                   "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+2));",
                   "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
@@ -5757,7 +5757,7 @@
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
                   "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+2));",
                   "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);",
@@ -5833,7 +5833,7 @@
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
                   "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+2));",
                   "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
@@ -5908,7 +5908,7 @@
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
                   "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+2));",
                   "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
@@ -5992,7 +5992,7 @@
                   "                     ('0' + date.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"start_time\", datetime_start);",
                   "",
-                  "var dateEnd = new Date(date.setHours(date.getHours()+1));",
+                  "var dateEnd = new Date(date.setHours(date.getHours()+2));",
                   "var datetime_end = dateEnd.getFullYear() + \"/\" + ('0' + (dateEnd.getMonth()+1)).slice(-2) + \"/\" + ('0' + dateEnd.getDate()).slice(-2) + \" \" + ('0' + dateEnd.getHours()).slice(-2) + \":\" + ",
                   "('0' + dateEnd.getMinutes()).slice(-2);",
                   "postman.setEnvironmentVariable(\"end_time\", datetime_end);"
@@ -6166,6 +6166,8 @@
                   "    }",
                   "}",
                   "",
+                  "postman.setEnvironmentVariable(\"rtdowntime_id\",result[0].id);",
+                  "",
                   "tests[\"Validate schema JSON\"] = tv4.validate(result, schema);",
                   ""
                 ]
@@ -6245,7 +6247,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"CANCEL\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"1\"\n}"
+              "raw": "{\n  \"action\": \"CANCEL\",\n  \"object\": \"RTDOWNTIME\",\n  \"values\": \"{{rtdowntime_id}}\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
