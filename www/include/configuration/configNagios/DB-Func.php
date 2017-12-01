@@ -343,9 +343,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         : $rq .= "NULL, ";
     isset($ret["retained_host_attribute_mask"]) && $ret["retained_host_attribute_mask"] != null ?
         $rq .= "'" . htmlentities($ret["retained_host_attribute_mask"], ENT_QUOTES, "UTF-8") . "',  " : $rq .= "NULL, ";
-    isset($ret["retained_service_attribute_mask"]) && $ret["retained_service_attribute_mask"] != null ?
-        $rq .= "'" . htmlentities($ret["retained_service_attribute_mask"], ENT_QUOTES,
-                "UTF-8") . "',  " : $rq .= "NULL, ";
+    isset($ret["retained_service_attribute_mask"]) && $ret["retained_service_attribute_mask"] != null
+        ? $rq .= "'" . htmlentities($ret["retained_service_attribute_mask"], ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "NULL, ";
     isset($ret["use_syslog"]["use_syslog"]) && $ret["use_syslog"]["use_syslog"] != 2 ?
         $rq .= "'" . $ret["use_syslog"]["use_syslog"] . "',  " : $rq .= "'2', ";
     isset($ret["log_notifications"]["log_notifications"]) && $ret["log_notifications"]["log_notifications"] != 2 ?
@@ -385,7 +385,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != null ?
         $rq .= "'" . htmlentities($ret["max_host_check_spread"], ENT_QUOTES, "UTF-8") . "',  " : $rq .= "NULL, ";
     isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != null
-        ? $rq .= "'" . htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES,"UTF-8") . "',  "
+        ? $rq .= "'" . htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
     isset($ret["max_check_result_reaper_time"]) && $ret["max_check_result_reaper_time"] != null ?
         $rq .= "'" . htmlentities($ret["max_check_result_reaper_time"], ENT_QUOTES, "UTF-8") . "',  " : $rq .= "NULL, ";
@@ -501,9 +501,9 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["check_host_freshness"]["check_host_freshness"])
     && $ret["check_host_freshness"]["check_host_freshness"] != 2 ?
         $rq .= "'" . $ret["check_host_freshness"]["check_host_freshness"] . "',  " : $rq .= "'2', ";
-    isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != null ?
-        $rq .= "'" . htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES,
-                "UTF-8") . "',  " : $rq .= "NULL, ";
+    isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != null
+        ? $rq .= "'" . htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "NULL, ";
     isset($ret["date_format"]) && $ret["date_format"] != null ?
         $rq .= "'" . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8") . "',  " : $rq .= "NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null
@@ -892,8 +892,8 @@ function updateNagios($nagios_id = null)
     isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"])
     && $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] != 2 ?
         $rq .= "enable_predictive_service_dependency_checks   = '"
-            . $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] . "',  "
-        : $rq .= "enable_predictive_service_dependency_checks   = '2', ";
+            . $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] .
+            "',  " : $rq .= "enable_predictive_service_dependency_checks   = '2', ";
     isset($ret["service_check_timeout"]) && $ret["service_check_timeout"] != null ?
         $rq .= "service_check_timeout = '"
             . htmlentities($ret["service_check_timeout"], ENT_QUOTES, "UTF-8") . "',  "
