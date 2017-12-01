@@ -94,7 +94,7 @@ $_SESSION['monitoring_service_groups'] = $sgSearch;
 $s_search = "";
 /* Display service problems */
 if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
-    $s_search .= " AND s.state != 0 AND s.state != 4 " ;
+    $s_search .= " AND s.state != 0 AND s.state != 4 ";
 }
 
 /* Display acknowledged services */
@@ -104,7 +104,7 @@ if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
 
 /* Display not acknowledged services */
 if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-    $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
+    $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
 
 $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
@@ -177,7 +177,8 @@ if ($numRows > 0) {
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" .
+            implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
@@ -185,10 +186,12 @@ if ($numRows > 0) {
         $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name, h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name," .
+        "h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
         . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
         . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id " .
+        "AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
@@ -208,11 +211,11 @@ if ($numRows > 0) {
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
-                'o'   => $ct,
+                'o' => $ct,
                 'host' => array()
             );
         }
-        
+
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]])) {
             $count++;
             if ($tab["icon_image"]) {
@@ -226,22 +229,22 @@ if ($numRows > 0) {
                 'hn' => CentreonUtils::escapeSecure($tab["host_name"]),
                 'hico' => $icone,
                 'hnl' => CentreonUtils::escapeSecure(urlencode($tab["host_name"])),
-                'hid' =>  $tab["host_id"],
+                'hid' => $tab["host_id"],
                 "hcount" => $count,
-                "hs" =>  _($obj->statusHost[$tab["host_state"]]),
+                "hs" => _($obj->statusHost[$tab["host_state"]]),
                 "hc" => $obj->colorHost[$tab["host_state"]],
                 'service' => array()
             );
         }
-        
+
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']])) {
-             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']] = array(
-                 
+            $aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']] = array(
+
                 "sn" => CentreonUtils::escapeSecure($tab['description']),
                 "snl" => CentreonUtils::escapeSecure(urlencode($tab['description'])),
                 "sc" => $obj->colorService[$tab['state']],
                 "svc_id" => $tab['service_id']
-             );
+            );
         }
         $ct++;
     }
@@ -249,8 +252,8 @@ if ($numRows > 0) {
 
 foreach ($aTab as $key => $element) {
     $obj->XML->startElement("sg");
-        $obj->XML->writeElement("sgn", $element['sgn']);
-        $obj->XML->writeElement("o", $element['o']);
+    $obj->XML->writeElement("sgn", $element['sgn']);
+    $obj->XML->writeElement("o", $element['o']);
 
     foreach ($element['host'] as $host) {
         $obj->XML->startElement("h");
@@ -273,7 +276,7 @@ foreach ($aTab as $key => $element) {
         $obj->XML->endElement();
         $count++;
     }
-    
+
     $obj->XML->endElement();
 }
 
