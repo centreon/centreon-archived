@@ -224,7 +224,9 @@ try {
         }
 
         if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-            if ($diff[$key] == 1 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
+            if ($diff[$key] == 1 ||
+                $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
+            ) {
                 $rows--;
                 unset($diff[$key]);
                 unset($serviceList[$key]);
@@ -247,7 +249,8 @@ try {
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;";
                 }
-                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service_:_$value1' target='_blank'>" . $value1 . "</a>";
+                $tplStr .= "<a href='" . $WikiURL . "/index.php?title=Service_:_$value1' target='_blank'>" .
+                    $value1 . "</a>";
             }
         }
         $templateHostArray[$key] = $tplStr;
