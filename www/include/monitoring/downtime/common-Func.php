@@ -42,7 +42,7 @@ function deleteDowntimeFromDb($centreon, $select = array())
     if (isset($select)) {
         $pearDBO = new CentreonDB("centstorage");
 
-        $dIds =  array();
+        $dIds = array();
         foreach ($select as $key => $val) {
             $tmp = explode(";", $key);
             if (isset($tmp[1])) {
@@ -51,7 +51,7 @@ function deleteDowntimeFromDb($centreon, $select = array())
         }
 
         if (count($dIds)) {
-            $request = "DELETE FROM downtimes WHERE internal_id IN (".implode(', ', $dIds).")";
+            $request = "DELETE FROM downtimes WHERE internal_id IN (" . implode(', ', $dIds) . ")";
             $pearDBO->query($request);
         }
     }
@@ -60,7 +60,8 @@ function deleteDowntimeFromDb($centreon, $select = array())
 function getDowntimes($internalId)
 {
     $pearDBO = new CentreonDB("centstorage");
-    $request = "Select host_id,service_id from downtimes WHERE internal_id = ".CentreonDB::escape($internalId)." ORDER BY downtime_id DESC LIMIT 0,1";
+    $request = "Select host_id,service_id from downtimes WHERE internal_id = " . CentreonDB::escape($internalId) .
+        " ORDER BY downtime_id DESC LIMIT 0,1";
     $res = $pearDBO->query($request);
     $row = $res->fetchRow();
     if (!empty($row)) {

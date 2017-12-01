@@ -67,7 +67,11 @@ if (!$is_admin) {
  */
 if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))) {
     ## Form begin
-    $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=".urlencode($host_name)."&service_description=".urlencode($service_description));
+    $form = new HTML_QuickForm(
+        'select_form',
+        'POST',
+        "?p=" . $p . "&host_name=" . urlencode($host_name) . "&service_description=" . urlencode($service_description)
+    );
     $form->addElement('header', 'title', _("Acknowledge a Service"));
 
     $tpl->assign('hostlabel', _("Host Name"));
@@ -108,7 +112,7 @@ if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))) {
 
     $form->applyFilter('__ALL__', 'myTrim');
 
-    $textarea = $form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
+    $textarea = $form->addElement('textarea', 'comment', _("comment"), array("rows" => "8", "cols" => "80"));
     $textarea->setValue(sprintf(_("Acknowledged by %s"), $centreon->user->get_alias()));
 
     $form->addRule('comment', _("Comment is required"), 'required', '', 'client');
