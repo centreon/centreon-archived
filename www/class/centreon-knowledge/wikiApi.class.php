@@ -240,7 +240,7 @@ class WikiApi
 
         $token = $this->getMethodToken('delete', $title);
 
-        if($token){
+        if ($token) {
             $postfields = array(
                 'action' => 'delete',
                 'title' => $title,
