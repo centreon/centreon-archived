@@ -95,6 +95,7 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     /* Replace password by stars */
     $command_line_with_macro = str_replace('/', '\/', $command_line_with_macro);
     $command_line_with_macro = str_replace('-', '\-', $command_line_with_macro);
+    $command_line_with_macro = str_replace('.', '\.', $command_line_with_macro);
     $command_line_with_macro = preg_replace('/\$USER\d+\$\\//', '.*', $command_line_with_macro);
     $command_line_with_macro = preg_replace('/\$CENTREONPLUGINS\$\\//', '.*', $command_line_with_macro);
 
