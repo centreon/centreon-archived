@@ -202,9 +202,11 @@ Getparam
 In order to get specific parameters on a host configuration, use the **GETPARAM** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias"
-  test
-  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;timezone"
-  Europe/Berlin
+  alias : test
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias|alia|timezone"
+  alias : test
+  timezone : Europe/Berlin
+  Object not found:alia
 
 You may edit the following parameters:
 
