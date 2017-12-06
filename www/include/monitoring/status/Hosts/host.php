@@ -68,9 +68,9 @@ if ($resetFilter) {
 foreach ($myinputsGet as $key => $value) {
     if (!empty($value)) {
         $filters[$key] = $value;
-    } else if (!empty($myinputsPost[$key])) {
+    } elseif (!empty($myinputsPost[$key])) {
         $filters[$key] = $myinputsPost[$key];
-    } else if ($resetFilter && isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
+    } elseif ($resetFilter && isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
         $filters[$key] = $_SESSION['filters'][$url][$key];
     } else {
         $filters[$key] = '';
@@ -213,12 +213,18 @@ $sDefaultOrder = "0";
 
 $form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
-$form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);"));
+$form->addElement(
+    'select',
+    'statusHost',
+    _('Host Status'),
+    $aStatusHost,
+    array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);")
+);
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
     $form->setDefaults(array('statusHost' => $_GET['o']));
-/* Get default host status in SESSION */
+    /* Get default host status in SESSION */
 } elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
     $sDefaultOrder = "1";
@@ -282,25 +288,29 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
-$attrs = array('onchange' => "javascript: ".
-    " var bChecked = isChecked(); ".
-    " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {".
-    " alert('"._("Please select one or more items")."'); return false;} " .
-    " if (this.form.elements['o1'].selectedIndex == 0) {".
-    " return false;} ".
-    "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
+$attrs = array(
+    'onchange' => "javascript: " .
+        " var bChecked = isChecked(); " .
+        " if (this.form.elements['o1'].selectedIndex != 0 && !bChecked) {" .
+        " alert('" . _("Please select one or more items") . "'); return false;} " .
+        " if (this.form.elements['o1'].selectedIndex == 0) {" .
+        " return false;} " .
+        "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }"
+);
 $form->addElement('select', 'o1', null, $action_list, $attrs);
 $form->setDefaults(array('o1' => null));
 $o1 = $form->getElement('o1');
 $o1->setValue(null);
 
-$attrs = array('onchange' => "javascript: ".
-    " var bChecked = isChecked(); ".
-    " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {".
-    " alert('"._("Please select one or more items")."'); return false;} ".
-    " if (this.form.elements['o2'].selectedIndex == 0) {".
-    " return false;} ".
-    "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
+$attrs = array(
+    'onchange' => "javascript: " .
+        " var bChecked = isChecked(); " .
+        " if (this.form.elements['o2'].selectedIndex != 0 && !bChecked) {" .
+        " alert('" . _("Please select one or more items") . "'); return false;} " .
+        " if (this.form.elements['o2'].selectedIndex == 0) {" .
+        " return false;} " .
+        "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }"
+);
 $form->addElement('select', 'o2', null, $action_list, $attrs);
 $form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
@@ -308,11 +318,13 @@ $o2->setValue(null);
 $o2->setSelected(null);
 
 $keyPrefix = "";
-$statusList = array("" => "",
+$statusList = array(
+    "" => "",
     "up" => _("Up"),
     "down" => _("Down"),
     "unreachable" => _("Unreachable"),
-    "pending" => _("Pending"));
+    "pending" => _("Pending")
+);
 if ($o == "h") {
     $keyPrefix = "h";
 } elseif ($o == "hpb") {
@@ -329,7 +341,13 @@ if ($o == "h") {
     }
 }
 
-$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
+$form->addElement(
+    'select',
+    'statusFilter',
+    _('Status'),
+    $statusList,
+    array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
+);
 if (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status_filter'])) {
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_host_status_filter']));
     $sDefaultOrder = "1";
@@ -341,7 +359,13 @@ $critArray = array(0 => "");
 foreach ($crits as $critId => $crit) {
     $critArray[$critId] = $crit['hc_name'] . " ({$crit['level']})";
 }
-$form->addElement('select', 'criticality', _('Severity'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+$form->addElement(
+    'select',
+    'criticality',
+    _('Severity'),
+    $critArray,
+    array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);")
+);
 $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
 
 $tpl->assign('limit', $limit);
@@ -362,22 +386,21 @@ $tpl->display("host.ihtml");
     tabSortPb['ordre'] = '<?php echo $problem_sort_order;?>';
 
     var tabSortAll = [];
-    tabSortAll['champ'] = '<?php echo $global_sort_type;?>'; 
+    tabSortAll['champ'] = '<?php echo $global_sort_type;?>';
     tabSortAll['ordre'] = '<?php echo $global_sort_order;?>';
-   
+
     var up = '<?php echo _("Up");?>';
     var down = '<?php echo _("Down");?>';
     var unreachable = '<?php echo _("Unreachable");?>';
     var pending = '<?php echo _("Pending");?>';
-    
+
     var _keyPrefix;
-    
-    jQuery('#statusHost').change(function() {
+
+    jQuery('#statusHost').change(function () {
         updateSelect();
     });
-    
-    function updateSelect()
-    {
+
+    function updateSelect() {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
         if (jQuery('#statusHost').val() == 'hpb' || jQuery('#statusHost').val() == 'h_unhandled') {
@@ -395,8 +418,8 @@ $tpl->display("host.ihtml");
             opts[opts.length] = new Option(pending, "pending");
             change_type_order(tabSortAll['champ']);
         }
-        if (jQuery("#statusFilter option[value='"+oldStatus+"']").length > 0) {
-            jQuery("#statusFilter option[value='"+oldStatus+"']").prop('selected', true);
+        if (jQuery("#statusFilter option[value='" + oldStatus + "']").length > 0) {
+            jQuery("#statusFilter option[value='" + oldStatus + "']").prop('selected', true);
         }
     }
 
@@ -404,15 +427,14 @@ $tpl->display("host.ihtml");
         preInit();
     });
 
-    function preInit()
-    {
+    function preInit() {
         _keyPrefix = '<?php echo $keyPrefix; ?>';
         _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
         _o = '<?php echo $o; ?>';
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
-        
+
         if (_sDefaultOrder == "0") {
             if (_o == 'h') {
                 jQuery("#statusHost option[value='h']").prop('selected', true);
@@ -440,8 +462,7 @@ $tpl->display("host.ihtml");
         initM(_tm, _sid, _o);
     }
 
-    function filterStatus(value, isInit)
-    {
+    function filterStatus(value, isInit) {
         _o = jQuery('#statusHost').val();
         if (value) {
             _o = _keyPrefix + '_' + value;
@@ -456,8 +477,8 @@ $tpl->display("host.ihtml");
         window.clearTimeout(_timeoutID);
         initM(_tm, _sid, _o);
     }
-    function statusHosts(value, isInit)
-    {
+
+    function statusHosts(value, isInit) {
         _o = value;
         window.clearTimeout(_timeoutID);
         initM(_tm, _sid, _o);

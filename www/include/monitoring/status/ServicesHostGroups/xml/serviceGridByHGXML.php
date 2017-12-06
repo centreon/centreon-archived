@@ -55,8 +55,8 @@ $svcObj = new CentreonService($obj->DB);
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
 } else {
-        print "Bad Session ID";
-        exit();
+    print "Bad Session ID";
+    exit();
 }
 
 /* Store in session the last type of call */
@@ -72,52 +72,55 @@ $obj->getDefaultFilters();
 /* **************************************************
  * Check Arguments From GET tab
  */
-$o      = $obj->checkArgument("o", $_GET, "h");
-$p      = $obj->checkArgument("p", $_GET, "2");
-$hg         = $obj->checkArgument("hg", $_GET, "");
-$num        = $obj->checkArgument("num", $_GET, 0);
-$limit      = $obj->checkArgument("limit", $_GET, 20);
-$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o = $obj->checkArgument("o", $_GET, "h");
+$p = $obj->checkArgument("p", $_GET, "2");
+$hg = $obj->checkArgument("hg", $_GET, "");
+$num = $obj->checkArgument("num", $_GET, 0);
+$limit = $obj->checkArgument("limit", $_GET, 20);
+$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search     = $obj->checkArgument("search", $_GET, "");
-$sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order      = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-$grouplistStr   = $obj->access->getAccessGroupsString();
+$search = $obj->checkArgument("search", $_GET, "");
+$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order = $obj->checkArgument("order", $_GET, "ASC");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$grouplistStr = $obj->access->getAccessGroupsString();
 
 /** **************************************
  * Get Host status
  *
  */
-$rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
-        " FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, " .
+    "h.state hs, h.icon_image " .
+    " FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-$rq1 .= " WHERE h.host_id = hgm.host_id".
-        " AND hgm.hostgroup_id = hg.hostgroup_id".
-        " AND h.enabled = '1' ".
-        " AND h.name not like '_Module_%'";
+$rq1 .= " WHERE h.host_id = hgm.host_id" .
+    " AND hgm.hostgroup_id = hg.hostgroup_id" .
+    " AND h.enabled = '1' " .
+    " AND h.name not like '_Module_%'";
 if (!$obj->is_admin) {
-    $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
+    $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+        $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " .
+        $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 }
 if ($instance != -1) {
-    $rq1 .=     " AND h.instance_id = ".$instance;
+    $rq1 .= " AND h.instance_id = " . $instance;
 }
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
     $rq1 .= " AND h.host_id IN (" .
-            " SELECT s.host_id FROM services s " .
-            " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_0") {
-    $rq1 .=     " AND h.host_id IN (" .
-                " SELECT s.host_id FROM services s " .
-                " WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+    $rq1 .= " AND h.host_id IN (" .
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_1") {
-    $rq1 .=     " AND h.host_id IN (" .
-                " SELECT s.host_id FROM services s " .
-                " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+    $rq1 .= " AND h.host_id IN (" .
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($search != "") {
     $rq1 .= " AND h.name like '%" . $search . "%' ";
@@ -127,7 +130,7 @@ if ($hostgroups) {
 }
 $rq1 .= " AND h.enabled = 1 ";
 $rq1 .= " ORDER BY $sort_type, hg.name $order ";
-$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+$rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
 
 $tabH = array();
 $tabHG = array();
@@ -152,17 +155,19 @@ $DBRESULT->closeCursor();
  * Get Services status
  *
  */
-$rq1 =  " SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs,"
-            . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
-        " FROM services s, hosts h ";
+$rq1 = " SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs,"
+    . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
+    " FROM services s, hosts h ";
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-$rq1 .=  " WHERE h.host_id = s.host_id ".
-         " AND h.name NOT LIKE '_Module_%' ".
-         " AND h.enabled = '1' " .
-         " AND s.enabled = '1' ";
-$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+$rq1 .= " WHERE h.host_id = s.host_id " .
+    " AND h.name NOT LIKE '_Module_%' " .
+    " AND h.enabled = '1' " .
+    " AND s.enabled = '1' ";
+$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+    $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
+    $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
     $rq1 .= " AND s.state != 0 AND s.state != 4 ";
 }
@@ -176,10 +181,10 @@ if ($search != "") {
     $rq1 .= " AND h.name like '%" . $search . "%' ";
 }
 if ($instance != -1) {
-    $rq1 .= " AND h.instance_id = ".$instance;
+    $rq1 .= " AND h.instance_id = " . $instance;
 }
 //$rq1 .= " ORDER BY s.description";
-    $rq1 .= " order by tri asc, s.description asc";
+$rq1 .= " order by tri asc, s.description asc";
 
 $tabService = array();
 $tabHost = array();
@@ -208,7 +213,7 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("host_name", _("Hosts"), 0);
 $obj->XML->writeElement("services", _("Services"), 0);
 $obj->XML->writeElement("p", $p);
-    $obj->XML->writeElement("s", "1");
+$obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
 $ct = 0;

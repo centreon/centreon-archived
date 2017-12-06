@@ -35,7 +35,7 @@
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
-require_once _CENTREON_PATH_."www/class/centreonXMLBGRequest.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 
 CentreonSession::start();
 $sid = session_id();
@@ -62,7 +62,7 @@ $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
         AND (description NOT LIKE 'meta_%%' AND description NOT LIKE 'ba_%%')
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refresh_rate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -71,7 +71,7 @@ $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
         AND description LIKE 'meta_%%'
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refresh_rate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -80,7 +80,7 @@ $sql = "SELECT name, description, s.state
         FROM services s, hosts h %s
         WHERE h.host_id = s.host_id
         AND description LIKE 'ba_%%'
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refresh_rate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -88,7 +88,7 @@ $sql = "SELECT name, description, s.state
         SELECT name, NULL, h.state
         FROM hosts h %s
         WHERE name NOT LIKE '_Module_%%'
-        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refresh_rate.")
+        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refresh_rate . ")
         AND h.scheduled_downtime_depth=0
         AND h.acknowledged=0
         %s";
@@ -98,11 +98,14 @@ if ($obj->is_admin) {
     $sql = sprintf(
         $sql,
         ", centreon_acl acl",
-        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
+        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " .
+        $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
         ", centreon_acl acl",
-        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
+        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " .
+        $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
         ", centreon_acl acl",
-        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
+        "AND acl.service_id = s.service_id AND acl.host_id = h.host_id " .
+        $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr),
         ", centreon_acl acl",
         "AND acl.host_id = h.host_id" . $obj->access->queryBuilder("AND", "acl.group_id", $obj->grouplistStr)
     );
@@ -110,23 +113,23 @@ if ($obj->is_admin) {
 $res = $obj->DBC->query($sql);
 $obj->XML->startElement("data");
 if (!isset($_SESSION['centreon_notification_preferences'])) {
-     $user_id = $centreon->user->get_id();
-     $res_pref = $obj->DB->query("SELECT cp_key, cp_value
+    $user_id = $centreon->user->get_id();
+    $res_pref = $obj->DB->query("SELECT cp_key, cp_value
          FROM contact_param 
          WHERE cp_key LIKE 'monitoring%notification%'
-         AND cp_contact_id = '".$obj->DB->escape($user_id)."'");
-     $notification_preferences = array();
+         AND cp_contact_id = '" . $obj->DB->escape($user_id) . "'");
+    $notification_preferences = array();
     while ($row_pref = $res_pref->fetchRow()) {
         $notification_preferences[$row_pref['cp_key']] = $row_pref['cp_value'];
     }
-     $_SESSION['centreon_notification_preferences'] = $notification_preferences;
+    $_SESSION['centreon_notification_preferences'] = $notification_preferences;
 } else {
     $notification_preferences = $_SESSION['centreon_notification_preferences'];
 }
 while ($row = $res->fetchRow()) {
     $obj->XML->startElement("message");
     if ($row['description']) {
-        if (isset($notification_preferences['monitoring_svc_notification_'.$row['state']])) {
+        if (isset($notification_preferences['monitoring_svc_notification_' . $row['state']])) {
             $obj->XML->writeAttribute(
                 "output",
                 sprintf(
@@ -138,12 +141,17 @@ while ($row = $res->fetchRow()) {
             );
             $obj->XML->writeAttribute("class", $service_class_label[$row['state']]);
         }
-        if (!isset($_SESSION['disable_sound']) && isset($notification_preferences['monitoring_sound_svc_notification_'.$row['state']]) &&
-            $notification_preferences['monitoring_sound_svc_notification_'.$row['state']]) {
-            $obj->XML->writeAttribute("sound", $notification_preferences['monitoring_sound_svc_notification_'.$row['state']]);
+        if (!isset($_SESSION['disable_sound']) &&
+            isset($notification_preferences['monitoring_sound_svc_notification_' . $row['state']]) &&
+            $notification_preferences['monitoring_sound_svc_notification_' . $row['state']]
+        ) {
+            $obj->XML->writeAttribute(
+                "sound",
+                $notification_preferences['monitoring_sound_svc_notification_' . $row['state']]
+            );
         }
     } else {
-        if (isset($notification_preferences['monitoring_host_notification_'.$row['state']])) {
+        if (isset($notification_preferences['monitoring_host_notification_' . $row['state']])) {
             $obj->XML->writeAttribute(
                 "output",
                 sprintf(
@@ -154,9 +162,14 @@ while ($row = $res->fetchRow()) {
             );
             $obj->XML->writeAttribute("class", $host_class_label[$row['state']]);
         }
-        if (!isset($_SESSION['disable_sound']) && isset($notification_preferences['monitoring_sound_host_notification_'.$row['state']]) &&
-            $notification_preferences['monitoring_sound_host_notification_'.$row['state']]) {
-            $obj->XML->writeAttribute("sound", $notification_preferences['monitoring_sound_host_notification_'.$row['state']]);
+        if (!isset($_SESSION['disable_sound']) &&
+            isset($notification_preferences['monitoring_sound_host_notification_' . $row['state']]) &&
+            $notification_preferences['monitoring_sound_host_notification_' . $row['state']]
+        ) {
+            $obj->XML->writeAttribute(
+                "sound",
+                $notification_preferences['monitoring_sound_host_notification_' . $row['state']]
+            );
         }
     }
     $obj->XML->endElement();

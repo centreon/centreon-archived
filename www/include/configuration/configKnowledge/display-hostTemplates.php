@@ -162,7 +162,9 @@ try {
         }
 
         if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-            if ($diff[$key] == 1 || $proc->hostTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
+            if ($diff[$key] == 1 ||
+                $proc->hostTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
+            ) {
                 $rows--;
                 unset($diff[$key]);
                 continue;
@@ -178,8 +180,8 @@ try {
             $firstTpl = 1;
             foreach ($tplArr as $key1 => $value1) {
                 if ($firstTpl) {
-                    $tplStr .= " <a href='" . $WikiURL . "/index.php?title=Host-Template:$value1' target = '_blank' > " .
-                        $value1 . "</a > ";
+                    $tplStr .= " <a href='" . $WikiURL .
+                        "/index.php?title=Host-Template:$value1' target = '_blank' > " . $value1 . "</a > ";
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href = '" . $WikiURL .

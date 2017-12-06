@@ -77,7 +77,7 @@ while ($d = $DBRESULT->fetchRow()) {
     if ($pollerList != "") {
         $pollerList .= ", ";
     }
-    $pollerList .= "'".$d["name"]."'";
+    $pollerList .= "'" . $d["name"] . "'";
 }
 
 $DBRESULT->closeCursor();
@@ -85,8 +85,8 @@ $DBRESULT->closeCursor();
 /* *********************************************
  * Get Host stats
  */
-$rq1 =  " SELECT count(DISTINCT name), state " .
-        " FROM hosts ";
+$rq1 = " SELECT count(DISTINCT name), state " .
+    " FROM hosts ";
 if (!$obj->is_admin) {
     $rq1 .= " , centreon_acl ";
 }
@@ -99,7 +99,7 @@ $rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->groupli
 $rq1 .= " GROUP BY state";
 
 $hostCounter = 0;
-$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
+$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0);
 $DBRESULT = $obj->DBC->query($rq1);
 while ($data = $DBRESULT->fetchRow()) {
     $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
@@ -130,16 +130,16 @@ $query_svc_status = "SELECT " .
     "AND h.host_id = s.host_id " .
     "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
 if (!$obj->is_admin) {
-	$query_svc_status .=  "AND s.service_id IN ( " .
-	"SELECT DISTINCT service_id " .
-	"FROM centreon_acl " .
-	"WHERE centreon_acl.group_id IN (" . $obj->grouplistStr . ")) ";
+    $query_svc_status .= "AND s.service_id IN ( " .
+        "SELECT DISTINCT service_id " .
+        "FROM centreon_acl " .
+        "WHERE centreon_acl.group_id IN (" . $obj->grouplistStr . ")) ";
 }
 $DBRESULT = $obj->DBC->query($query_svc_status);
 $svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
 $DBRESULT->free();
-$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"] 
-    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"] 
+$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"]
+    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"]
     + $svc_stat["PENDING_TOTAL"];
 
 /* ********************************************
@@ -166,7 +166,7 @@ if ($pollerList != "") {
         if ($pollerList != "") {
             $pollerList .= ", ";
         }
-        $pollerList .= "'".$data["instance_id"]."'";
+        $pollerList .= "'" . $data["instance_id"] . "'";
 
         /*
          * Running
@@ -193,13 +193,15 @@ if ($pollerList != "") {
             if ($inactivInstance != "") {
                 $inactivInstance .= ",";
             }
-            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
+            $inactivInstance .= $data["name"] . " [" . (time() - $data["last_update"]) . "s / " .
+                ($timeUnit * 5) . "s]";
         } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
             $activity = 1;
             if ($inactivInstance != "") {
                 $inactivInstance .= ",";
             }
-            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+            $inactivInstance .= $data["name"] . " [" . (time() - $data["last_update"]) .
+                "s / " . ($timeUnit * 10) . "s]";
         }
     }
 }
@@ -209,13 +211,13 @@ if ($pollerListInError != '') {
 }
 
 if ($pollerList != "") {
-    $request =  " SELECT stat_value, i.instance_id, name " .
-                " FROM `nagios_stats` ns, instances i " .
-                " WHERE ns.stat_label = 'Service Check Latency' " .
-                "	AND ns.stat_key LIKE 'Average' " .
-                "	AND ns.instance_id = i.instance_id" .
-                "	AND i.deleted = 0" .
-                "   AND i.instance_id IN ($pollerList)";
+    $request = " SELECT stat_value, i.instance_id, name " .
+        " FROM `nagios_stats` ns, instances i " .
+        " WHERE ns.stat_label = 'Service Check Latency' " .
+        "	AND ns.stat_key LIKE 'Average' " .
+        "	AND ns.instance_id = i.instance_id" .
+        "	AND i.deleted = 0" .
+        "   AND i.instance_id IN ($pollerList)";
     $DBRESULT = $obj->DBC->query($request);
     while ($data = $DBRESULT->fetchRow()) {
         if (!$latency && $data["stat_value"] >= 60) {
@@ -241,9 +243,12 @@ if ($status != 0) {
 }
 
 if ($latency && count($pollersWithLatency)) {
-        $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));
+    $errorLtc = sprintf(
+        _("Latency detected on %s; check configuration for better optimisation"),
+        implode(',', $pollersWithLatency)
+    );
 } else {
-        $errorLtc = _("OK: no latency detected on your platform");
+    $errorLtc = _("OK: no latency detected on your platform");
 }
 
 if ($activity != 0) {

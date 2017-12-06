@@ -45,8 +45,8 @@ if (isset($_POST['searchM']) && $_POST['searchM']) {
     $search = $_POST['searchM'];
     $res = $pearDB->query(
         "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' "
-        . "OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') "
+        . "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
+        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') "
         . "AND img_img_id = img_id AND dir_dir_parent_id = dir_id"
     );
 } else {
@@ -93,7 +93,7 @@ if ($search) {
 }
 $res = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
 /*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
@@ -101,31 +101,33 @@ $form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 $elemArr = array();
 for ($i = 0; $elem = $res->fetchRow(); $i++) {
     if (isset($elem['dir_id']) && !isset($elemArr[$elem['dir_id']])) {
-        $selectedDirElem = $form->addElement('checkbox', "select[".$elem['dir_id']."]");
-        $selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[".$elem['dir_id']."-')");
-        $rowOpt = array("RowMenu_select"=>$selectedDirElem->toHtml(),
-                "RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
-                "RowMenu_dir"=>$elem["dir_name"],
-                "RowMenu_dir_cmnt"=>$elem["dir_comment"],
-                "RowMenu_empty"=>_("Empty directory"),
-                "counter"=> 0   );
-        $elemArr[$elem['dir_id']] = array("head"=>$rowOpt, "elem"=>array());
+        $selectedDirElem = $form->addElement('checkbox', "select[" . $elem['dir_id'] . "]");
+        $selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[" . $elem['dir_id'] . "-')");
+        $rowOpt = array(
+            "RowMenu_select" => $selectedDirElem->toHtml(),
+            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
+            "RowMenu_dir" => $elem["dir_name"],
+            "RowMenu_dir_cmnt" => $elem["dir_comment"],
+            "RowMenu_empty" => _("Empty directory"),
+            "counter" => 0
+        );
+        $elemArr[$elem['dir_id']] = array("head" => $rowOpt, "elem" => array());
     }
 
     if ($elem['img_id']) {
         if (isset($search) && $search) {
-            $searchOpt = "&search=".$search;
+            $searchOpt = "&search=" . $search;
         } else {
             $searchOpt = "";
         }
-        $selectedImgElem = $form->addElement('checkbox', "select[".$elem['dir_id']."-".$elem['img_id']."]");
+        $selectedImgElem = $form->addElement('checkbox', "select[" . $elem['dir_id'] . "-" . $elem['img_id'] . "]");
         $rowOpt = array(
             "RowMenu_select" => $selectedImgElem->toHtml(),
-            "RowMenu_ImgLink" => "?p=".$p."&o=ci&img_id=".$elem['img_id'],
-            "RowMenu_DirLink" => "?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
+            "RowMenu_ImgLink" => "?p=" . $p . "&o=ci&img_id=" . $elem['img_id'],
+            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
             "RowMenu_dir" => $elem["dir_name"],
             "RowMenu_img" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["dir_alias"]."/".$elem["img_path"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["dir_alias"] . "/" . $elem["img_path"], ENT_QUOTES, "UTF-8")
             ),
             "RowMenu_name" => CentreonUtils::escapeSecure(
                 html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8")
@@ -153,45 +155,50 @@ $tpl->assign(
 );
 
 ?>
-<SCRIPT LANGUAGE="JavaScript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-function submitO(_i) {
-    if (document.forms['form'].elements[_i].selectedIndex == 1 && confirm('<?php print _("Do you confirm the deletion ?"); ?>')) {
-        setO(document.forms['form'].elements[_i].value); document.forms['form'].submit();
-    } else if (document.forms['form'].elements[_i].selectedIndex == 2) {
-        setO(document.forms['form'].elements[_i].value); document.forms['form'].submit();
-    }
-    document.forms['form'].elements[_i].selectedIndex = 0;
-}
+    <SCRIPT LANGUAGE="JavaScript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
 
-function setSubNodes(theElement, like) {
-    var theForm = theElement.form;
-    var z = 0;
-    for (z=0; z<theForm.length;z++) {
-    if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0' && theForm[z].name.indexOf(like)>=0 ){
-        if (theElement.checked && !theForm[z].checked) {
-                            theForm[z].checked = true;
-                            if (typeof(_selectedElem) != 'undefined') {
-                                    putInSelectedElem(theForm[z].id);
-                            }
-        } else if (!theElement.checked && theForm[z].checked) {
-                            theForm[z].checked = false;
-                            if (typeof(_selectedElem) != 'undefined') {
-                                    removeFromSelectedElem(theForm[z].id);
-                            }
+        function submitO(_i) {
+            if (document.forms['form'].elements[_i].selectedIndex == 1 &&
+                confirm('<?php print _("Do you confirm the deletion ?"); ?>')
+            ) {
+                setO(document.forms['form'].elements[_i].value);
+                document.forms['form'].submit();
+            } else if (document.forms['form'].elements[_i].selectedIndex == 2) {
+                setO(document.forms['form'].elements[_i].value);
+                document.forms['form'].submit();
+            }
+            document.forms['form'].elements[_i].selectedIndex = 0;
+        }
+
+        function setSubNodes(theElement, like) {
+            var theForm = theElement.form;
+            var z = 0;
+            for (z = 0; z < theForm.length; z++) {
+                if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0' && theForm[z].name.indexOf(like) >= 0) {
+                    if (theElement.checked && !theForm[z].checked) {
+                        theForm[z].checked = true;
+                        if (typeof(_selectedElem) != 'undefined') {
+                            putInSelectedElem(theForm[z].id);
+                        }
+                    } else if (!theElement.checked && theForm[z].checked) {
+                        theForm[z].checked = false;
+                        if (typeof(_selectedElem) != 'undefined') {
+                            removeFromSelectedElem(theForm[z].id);
+                        }
                     }
+                }
             }
         }
-}
 
 
-</SCRIPT>
+    </SCRIPT>
 <?php
-$actions = array(null=>_("More actions"), "d"=>_("Delete"), "m"=>_("Move images"));
-$form->addElement('select', 'o1', null, $actions, array('onchange'=>"javascript:submitO('o1');"));
-$form->addElement('select', 'o2', null, $actions, array('onchange'=>"javascript:submitO('o2');"));
+$actions = array(null => _("More actions"), "d" => _("Delete"), "m" => _("Move images"));
+$form->addElement('select', 'o1', null, $actions, array('onchange' => "javascript:submitO('o1');"));
+$form->addElement('select', 'o2', null, $actions, array('onchange' => "javascript:submitO('o2');"));
 $form->setDefaults(array('o1' => null));
 $form->setDefaults(array('o2' => null));
 

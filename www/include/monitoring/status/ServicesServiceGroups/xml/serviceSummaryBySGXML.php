@@ -91,7 +91,7 @@ $obj->setInstanceHistory($instance);
 $s_search = "";
 /* Display service problems */
 if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
-    $s_search .= " AND s.state != 0 AND s.state != 4 " ;
+    $s_search .= " AND s.state != 0 AND s.state != 4 ";
 }
 
 /* Display acknowledged services */
@@ -101,7 +101,7 @@ if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
 
 /* Display not acknowledged services */
 if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-    $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
+    $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
 
 $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
@@ -178,7 +178,8 @@ if ($numRows > 0) {
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" .
+            implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
@@ -187,16 +188,18 @@ if ($numRows > 0) {
     }
 
     $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, "
-            . "h.state as host_state, h.icon_image, h.host_id, s.state, (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  "
+        . "h.state as host_state, h.icon_image, h.host_id, s.state, " .
+        "(case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  "
         . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id "
+        . "AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
         . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
         . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
-    
+
     $DBRESULT = $obj->DBC->query($query2);
 
     $states = array(

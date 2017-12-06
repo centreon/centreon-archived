@@ -32,121 +32,126 @@
  * For more information : contact@centreon.com
  *
  */
-?><script type="text/javascript">
+?>
+<script type="text/javascript">
 
-var listArea;
-var macroSvc  = new Array();
-var macroHost = new Array();
+    var listArea;
+    var macroSvc = new Array();
+    var macroHost = new Array();
 
-function goPopup() {
-    var cmd_line;
-    var tmpStr;
-    var reg = new RegExp("(\n)", "g");
+    function goPopup() {
+        var cmd_line;
+        var tmpStr;
+        var reg = new RegExp("(\n)", "g");
 
-    listArea = document.getElementById('listOfArg');
-    tmpStr = listArea.value;
-    tmpStr = tmpStr.replace(reg, ";;;");
-    cmd_line = document.getElementById('command_line').value;
+        listArea = document.getElementById('listOfArg');
+        tmpStr = listArea.value;
+        tmpStr = tmpStr.replace(reg, ";;;");
+        cmd_line = document.getElementById('command_line').value;
 
-    var popin = jQuery('<div id="config-popin">');
-    popin.centreonPopin({
-        url: './include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr,
-        open: true,
-        ajaxDataType: 'html'
-    });
-}
-
-function setDescriptions() {
-    var i;
-    var tmpStr2;
-    var listDiv;
-
-    tmpStr2 = "";
-    listArea = document.getElementById('listOfArg');
-    listDiv = document.getElementById('listOfArgDiv');
-    for (i = 1; document.getElementById('desc_'+i); i++) {
-        tmpStr2 += "ARG" + document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
+        var popin = jQuery('<div id="config-popin">');
+        popin.centreonPopin({
+            url: './include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line +
+            '&textArea=' + tmpStr,
+            open: true,
+            ajaxDataType: 'html'
+        });
     }
-    listArea.cols=100;
-    listArea.rows=i;
-    listArea.value = tmpStr2;
-    listDiv.style.visibility = "visible";
-    jQuery('#config-popin').centreonPopin('close');
-}
 
-function closeBox() {
-    jQuery('#config-popin').centreonPopin('close');
-}
+    function setDescriptions() {
+        var i;
+        var tmpStr2;
+        var listDiv;
 
-function clearArgs() {
-    listArea = document.getElementById('listOfArg');
-    listArea.value = "";
-}
+        tmpStr2 = "";
+        listArea = document.getElementById('listOfArg');
+        listDiv = document.getElementById('listOfArgDiv');
+        for (i = 1; document.getElementById('desc_' + i); i++) {
+            tmpStr2 += "ARG" + document.getElementById('macro_' + i).value + " : " +
+                document.getElementById('desc_' + i).value + "\n";
+        }
+        listArea.cols = 100;
+        listArea.rows = i;
+        listArea.value = tmpStr2;
+        listDiv.style.visibility = "visible";
+        jQuery('#config-popin').centreonPopin('close');
+    }
 
-function manageMacros() {
-    var commandLine = document.Form.command_line.value;
-    var commandId = document.Form.command_id.value;
-    var tmpStr = "";
+    function closeBox() {
+        jQuery('#config-popin').centreonPopin('close');
+    }
 
-    var popin = jQuery('<div id="config-popin">');
-    popin.centreonPopin({
-        url: './include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine + '&cmdId=' + commandId + '&textArea=' + tmpStr,
-        open: true,
-        ajaxDataType: 'html'
-    });
-}
+    function clearArgs() {
+        listArea = document.getElementById('listOfArg');
+        listArea.value = "";
+    }
 
-function setMacrosDescriptions() {
-    var i;
-    var tmpStr2;
-    var listDiv;
+    function manageMacros() {
+        var commandLine = document.Form.command_line.value;
+        var commandId = document.Form.command_id.value;
+        var tmpStr = "";
 
-    tmpStr2 = "";
-    listArea = document.getElementById('listOfMacros');
-    listDiv = document.getElementById('listOfMacros');
-    for (i = 0; document.getElementById('desc_'+i); i++) {
+        var popin = jQuery('<div id="config-popin">');
+        popin.centreonPopin({
+            url: './include/configuration/configObject/command/formMacros.php?cmd_line=' + commandLine +
+            '&cmdId=' + commandId + '&textArea=' + tmpStr,
+            open: true,
+            ajaxDataType: 'html'
+        });
+    }
+
+    function setMacrosDescriptions() {
+        var i;
+        var tmpStr2;
+        var listDiv;
+
+        tmpStr2 = "";
+        listArea = document.getElementById('listOfMacros');
+        listDiv = document.getElementById('listOfMacros');
+        for (i = 0; document.getElementById('desc_' + i); i++) {
             var type = "HOST";
-            if (document.getElementById('type_'+i).value == 2) {
+            if (document.getElementById('type_' + i).value == 2) {
                 type = "SERVICE";
             }
-            tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
-    }
-        
-    listArea.cols= 100;
-    listArea.rows= i;
-        
-    listArea.value = tmpStr2;
-    listDiv.style.visibility = "visible";
-    jQuery('#config-popin').centreonPopin('close');
-}
+            tmpStr2 += "MACRO (" + type + ") " + document.getElementById('macro_' + i).value + " : " +
+                document.getElementById('desc_' + i).value + "\n";
+        }
 
-function checkType(value) {
-    var action = jQuery('form#Form').attr('action');
-    switch(value) {
-        case '1':
-            action = action.replace(/p=\d+/,'p=60802');
-            break;
-        case '2':
-            action = action.replace(/p=\d+/,'p=60801');
-            break;
-        case '3':
-            action = action.replace(/p=\d+/,'p=60803');
-            break;
-        case '4':
-            action = action.replace(/p=\d+/,'p=60807');
-            break;
-        default:
-            action = action.replace(/p=\d+/,'p=60801');
-            break;
+        listArea.cols = 100;
+        listArea.rows = i;
+
+        listArea.value = tmpStr2;
+        listDiv.style.visibility = "visible";
+        jQuery('#config-popin').centreonPopin('close');
     }
 
-    if (action.match(/&type=/)) {
-        action = action.replace(/&type=\d+/, '&type=' + value);
-    } else {
-        action += '&type=' + value;
-    }
+    function checkType(value) {
+        var action = jQuery('form#Form').attr('action');
+        switch (value) {
+            case '1':
+                action = action.replace(/p=\d+/, 'p=60802');
+                break;
+            case '2':
+                action = action.replace(/p=\d+/, 'p=60801');
+                break;
+            case '3':
+                action = action.replace(/p=\d+/, 'p=60803');
+                break;
+            case '4':
+                action = action.replace(/p=\d+/, 'p=60807');
+                break;
+            default:
+                action = action.replace(/p=\d+/, 'p=60801');
+                break;
+        }
 
-    jQuery('form#Form').attr('action', action);
-}
+        if (action.match(/&type=/)) {
+            action = action.replace(/&type=\d+/, '&type=' + value);
+        } else {
+            action += '&type=' + value;
+        }
+
+        jQuery('form#Form').attr('action', action);
+    }
 
 </script>

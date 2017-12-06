@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  * 
  */
-  
+
 if (!isset($centreon)) {
     exit();
 }
@@ -40,9 +40,10 @@ if (!isset($centreon)) {
 function getTopologyParent($p)
 {
     global $pearDB;
-    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
+    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` " .
+        "FROM `topology` WHERE `topology_page` = '" . $p . "' ORDER BY `topology_page`";
     $DBRESULT = $pearDB->query($rqPath);
-    
+
     $redirectPath = $DBRESULT->fetchRow();
     $DBRESULT->closeCursor();
     return $redirectPath;
@@ -51,7 +52,8 @@ function getTopologyParent($p)
 function getTopologyDataPage($p)
 {
     global $pearDB;
-    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
+    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` " .
+        "FROM `topology` WHERE `topology_page` = '" . $p . "' ORDER BY `topology_page`";
     $DBRESULT = $pearDB->query($rqPath);
     $redirectPath = $DBRESULT->fetchRow();
     $DBRESULT->closeCursor();
@@ -61,7 +63,7 @@ function getTopologyDataPage($p)
 function getTopologyParentPage($p)
 {
     global $pearDB;
-    $rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
+    $rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '" . $p . "'";
     $DBRESULT = $pearDB->query($rqPath);
     $redirectPath = $DBRESULT->fetchRow();
     $DBRESULT->closeCursor();
@@ -96,7 +98,8 @@ ksort($tabPath);
 $page = $p;
 if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
     while (1) {
-        $DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
+        $DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '" . $page .
+            "%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
         if (!$DBRESULT->rowCount()) {
             break;
         }
@@ -112,7 +115,7 @@ if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
         }
     }
 }
-    
+
 /*
  * Not displaying two entries in a row having the same name
  */
@@ -129,7 +132,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($tabPath as $cle => $valeur) {
         echo $flag;
         ?>
-        <a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay"><?php print $valeur["name"]; ?></a>
+        <a href="main.php?p=<?php echo $cle . $valeur["opt"]; ?>" class="pathWay"><?php print $valeur["name"]; ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }
