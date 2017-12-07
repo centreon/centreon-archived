@@ -50,48 +50,65 @@ isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
-#Pear library
+/* Pear library */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-#Path to the configuration dir
+/* Path to the configuration dir */
 $path = "./include/options/accessLists/resourcesACL/";
 
-#PHP functions
-require_once $path."DB-Func.php";
+/* PHP functions */
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
 
 switch ($o) {
     case "a":
-        require_once($path."formResourcesAccess.php");
+        require_once($path . "formResourcesAccess.php");
         break; #Add a LCA
     case "w":
-        require_once($path."formResourcesAccess.php");
+        require_once($path . "formResourcesAccess.php");
         break; #Watch a LCA
     case "c":
-        require_once($path."formResourcesAccess.php");
+        require_once($path . "formResourcesAccess.php");
         break; #Modify a LCA
     case "s":
         enableLCAInDB($acl_id);
-        require_once($path."listsResourcesAccess.php");
+        require_once($path . "listsResourcesAccess.php");
         break; #Activate a LCA
+    case "ms":
+        enableLCAInDB(null, isset($select) ? $select : array());
+        require_once($path . "listsResourcesAccess.php");
+        break; #Activate n LCA
     case "u":
         disableLCAInDB($acl_id);
-        require_once($path."listsResourcesAccess.php");
+        require_once($path . "listsResourcesAccess.php");
         break; #Desactivate a LCA
+    case "mu":
+        disableLCAInDB(null, isset($select) ? $select : array());
+        require_once($path . "listsResourcesAccess.php");
+        break; #Desactivate n LCA
     case "m":
         multipleLCAInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listsResourcesAccess.php");
+        require_once($path . "listsResourcesAccess.php");
         break; #Duplicate n LCAs
     case "d":
         deleteLCAInDB(isset($select) ? $select : array());
-        require_once($path."listsResourcesAccess.php");
+        require_once($path . "listsResourcesAccess.php");
         break; #Delete n LCAs
     case "t":
-        require_once($path."showUsersAccess.php");
+        require_once($path . "showUsersAccess.php");
         break;
     default:
-        require_once($path."listsResourcesAccess.php");
+        require_once($path . "listsResourcesAccess.php");
         break;
 }

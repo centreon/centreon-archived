@@ -39,7 +39,6 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-# QuickSearch
 $SearchStr = "";
 $search = '';
 if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
@@ -47,25 +46,30 @@ if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
     $SearchStr = " WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_action_description LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 }
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
+$dbResult = $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
 
-$tmp = $DBRESULT->fetchRow();
+$tmp = $dbResult->fetchRow();
 $rows = $tmp["COUNT(*)"];
+$dbResult->closeCursor();
 
 include("./include/common/checkPagination.php");
 
-# Smarty template Init
+/* Smarty template Init */
+
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
-# start header menu
+
+/* start header menu */
+
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_alias", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-# end header menu
+
+/* end header menu */
 
 $SearchStr = "";
-if ($search) {
+if (isset($search) && $search) {
     $SearchStr = "WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_action_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
@@ -76,10 +80,10 @@ $DBRESULT = $pearDB->query($rq);
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
-#Different style between each lines
+/* Different style between each lines */
 $style = "one";
 
-#Fill a tab with a mutlidimensionnal Array we put in $tpl
+/* Fill a tab with a mutlidimensionnal Array we put in $tpl */
 $elemArr = array();
 for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_action_id'] . "]");
@@ -117,71 +121,45 @@ for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
-#Different messages we put in the template
+/* Different messages we put in the template */
 $tpl->assign(
     'msg',
     array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
-#
-##Toolbar select 
-#
+/* Toolbar select */
+
 ?>
     <script type="text/javascript">
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
-$attrs1 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o1'].selectedIndex == 1 && confirm('" .
-        _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('" .
-        _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o1',
-    null,
-    array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete")),
-    $attrs1
-);
-$form->setDefaults(array('o1' => null));
 
-$attrs2 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o2'].selectedIndex == 1 && confirm('" .
-        _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('" .
-        _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o2',
-    null,
-    array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete")),
-    $attrs2
-);
-$form->setDefaults(array('o2' => null));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-$o1->setSelected(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
-$o2->setSelected(null);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange' => "javascript: "
+            . "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the duplication ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
+            . _("Do you confirm the deletion ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 3 || "
+            . "this.form.elements['$option'].selectedIndex == 4) {"
+            . "setO(this.form.elements['$option'].value); submit();}"
+    );
+    $form->addElement('select', $option, null, array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchACLA', $search);

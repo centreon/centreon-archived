@@ -67,32 +67,50 @@ $path = "./include/options/accessLists/groupsACL/";
  */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
+
 switch ($o) {
     case "a":
         require_once($path . "formGroupConfig.php");
-        break; #Add a contactgroup
+        break; #Add a  an access group
     case "w":
         require_once($path . "formGroupConfig.php");
-        break; #Watch a contactgroup
+        break; #Watch a  an access group
     case "c":
         require_once($path . "formGroupConfig.php");
-        break; #Modify a contactgroup
+        break; #Modify a  an access group
     case "s":
         enableGroupInDB($acl_group_id);
         require_once($path . "listGroupConfig.php");
         break; #Activate a contactgroup
+    case "ms":
+        enableGroupInDB(null, isset($select) ? $select : array());
+        require_once($path . "listGroupConfig.php");
+        break; #Activate n access group
     case "u":
         disableGroupInDB($acl_group_id);
         require_once($path . "listGroupConfig.php");
         break; #Desactivate a contactgroup
+    case "mu":
+        disableGroupInDB(null, isset($select) ? $select : array());
+        require_once($path . "listGroupConfig.php");
+        break; #Desactivate n access group
     case "m":
         multipleGroupInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listGroupConfig.php");
-        break; #Duplicate n contact grou
+        break; #Duplicate n access group
     case "d":
         deleteGroupInDB(isset($select) ? $select : array());
         require_once($path . "listGroupConfig.php");
-        break; #Delete n contact group
+        break; #Delete n access group
     default:
         require_once($path . "listGroupConfig.php");
         break;

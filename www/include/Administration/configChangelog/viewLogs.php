@@ -147,6 +147,7 @@ $tpl->assign("noModifLabel", _("No modification was made."));
 
 $objects_type_tab = array();
 $objects_type_tab = $centreon->CentreonLogAction->listObjecttype();
+sort($objects_type_tab);
 $options = "";
 foreach ($objects_type_tab as $key => $name) {
     $name = _("$name");

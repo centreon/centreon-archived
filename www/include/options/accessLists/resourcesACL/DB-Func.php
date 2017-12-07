@@ -34,9 +34,8 @@
  */
 
 /**
- *
- * Test resources ACL existence
- * @param $name
+ * @param null $name
+ * @return bool
  */
 function testExistence($name = null)
 {
@@ -59,45 +58,63 @@ function testExistence($name = null)
 }
 
 /**
- *
- * Enable ACL Entry in DB
- * @param $acl_id
+ * @param null $aclResId
+ * @param array $acls
  */
-function enableLCAInDB($acl_id = null)
+function enableLCAInDB($aclResId = null, $acls = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
-    if (!$acl_id) {
+    if (!$aclResId && !count($acls)) {
         return;
     }
-    $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
-        "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')";
-    $pearDB->query($query);
+    if ($aclResId) {
+        $acls = array($aclResId => "1");
+    }
 
-    $query = "UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' " .
-        "WHERE `acl_res_id` = '" . $acl_id . "'";
-    $pearDB->query($query);
+    foreach ($acls as $key => $value) {
+
+        $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
+            "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
+        $pearDB->query($query);
+        $query = "UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' " .
+            "WHERE `acl_res_id` = '" . $key . "'";
+        $pearDB->query($query);
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
+        $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "enable");
+    }
 }
 
 /**
- *
- * Disable ACL Entry in DB
- * @param $acl_id
+ * @param null $aclResId
+ * @param array $acls
  */
-function disableLCAInDB($acl_id = null)
+function disableLCAInDB($aclResId = null, $acls = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
-    if (!$acl_id) {
+    if (!$aclResId && !count($acls)) {
         return;
     }
-    $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
-        "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')";
-    $pearDB->query($query);
 
-    $query = "UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' " .
-        "WHERE `acl_res_id` = '" . $acl_id . "'";
-    $pearDB->query($query);
+    if ($aclResId) {
+        $acls = array($aclResId => "1");
+    }
+
+    foreach ($acls as $key => $value) {
+        $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
+            "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
+        $pearDB->query($query);
+        $query = "UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' " .
+            "WHERE `acl_res_id` = '" . $key . "'";
+        $pearDB->query($query);
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
+        $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "disable");
+    }
 }
 
 /**
@@ -107,14 +124,18 @@ function disableLCAInDB($acl_id = null)
  */
 function deleteLCAInDB($acls = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
     foreach ($acls as $key => $value) {
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
         $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
             "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
         $pearDB->query($query);
 
         $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '" . $key . "'");
+        $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "d");
     }
 }
 
@@ -126,7 +147,7 @@ function deleteLCAInDB($acls = array())
  */
 function multipleLCAInDB($lcas = array(), $nbrDup = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
     foreach ($lcas as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '" . $key . "' LIMIT 1");
@@ -137,9 +158,14 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "acl_res_name" ? ($acl_name = $value2 = $value2 . "_" . $i) : null;
-                $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                if ($key2 != "acl_res_id") {
+                    $fields[$key2] = $value2;
+                }
+                if (isset($acl_res_name)) {
+                    $fields["acl_res_name"] = $acl_res_name;
+                }
             }
 
             if (testExistence($acl_name)) {
@@ -152,6 +178,13 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);
+                    $centreon->CentreonLogAction->insertLog(
+                        "resource access",
+                        $maxId["MAX(acl_res_id)"],
+                        $acl_name,
+                        "a",
+                        $fields
+                    );
                 }
             }
         }
@@ -159,10 +192,9 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 }
 
 /**
- *
- * Duplicate Resources lists
- * @param $acl_group_id
- * @param $ret
+ * @param $idTD
+ * @param $acl_id
+ * @param $pearDB
  */
 function duplicateGroups($idTD, $acl_id, $pearDB)
 {
@@ -213,10 +245,9 @@ function duplicateGroups($idTD, $acl_id, $pearDB)
 }
 
 /**
- *
- * Duplicate Resources lists
- * @param $acl_group_id
- * @param $ret
+ * @param $idTD
+ * @param $acl_id
+ * @param $pearDB
  */
 function duplicateContactGroups($idTD, $acl_id, $pearDB)
 {
@@ -232,6 +263,8 @@ function duplicateContactGroups($idTD, $acl_id, $pearDB)
  */
 function updateLCAInDB($acl_id = null)
 {
+    global $form, $centreon;
+
     if (!$acl_id) {
         return;
     }
@@ -246,6 +279,10 @@ function updateLCAInDB($acl_id = null)
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
+
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "c", $fields);
 }
 
 /**
@@ -254,6 +291,8 @@ function updateLCAInDB($acl_id = null)
  */
 function insertLCAInDB()
 {
+    global $form, $centreon;
+
     $acl_id = insertLCA();
     updateGroups($acl_id);
     updateHosts($acl_id);
@@ -264,6 +303,11 @@ function insertLCAInDB()
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
+
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "a", $fields);
+
     return ($acl_id);
 }
 
