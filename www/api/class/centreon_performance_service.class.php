@@ -232,6 +232,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionalTables .
             'WHERE i.id = m.index_id ' .
             'AND s.enabled = 1 ' .
+            'AND s.description LIKE "meta_%" ' .
             $additionalCondition .
             $metaServiceCondition .
             'AND i.service_id = s.service_id ' .
