@@ -368,7 +368,7 @@ class CentreonService extends CentreonObject
         }
         $hostId = $tmp[0];
         $addParams = array();
-        $addParams['service_description'] = $params[self::ORDER_SVCDESC];
+        $addParams['service_description'] = $this->checkIllegalChar($params[self::ORDER_SVCDESC]);
         $template = $params[self::ORDER_SVCTPL];
         $tmp = $this->object->getList(
             $this->object->getPrimaryKey(),

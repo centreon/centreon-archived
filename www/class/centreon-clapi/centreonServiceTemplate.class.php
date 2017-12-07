@@ -229,7 +229,7 @@ class CentreonServiceTemplate extends CentreonObject
             throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
         }
         $addParams = array();
-        $addParams['service_description'] = $params[self::ORDER_SVCDESC];
+        $addParams['service_description'] = $this->checkIllegalChar($params[self::ORDER_SVCDESC]);
         $addParams['service_alias'] = $params[self::ORDER_SVCALIAS];
         $template = $params[self::ORDER_SVCTPL];
         if ($template) {

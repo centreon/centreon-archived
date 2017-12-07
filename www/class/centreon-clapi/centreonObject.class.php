@@ -518,4 +518,24 @@ abstract class CentreonObject
             }
         }
     }
+
+
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $dbResult->fetch()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $dbResult->closeCursor();
+        return $name;
+    }
 }

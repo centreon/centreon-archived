@@ -236,7 +236,7 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         $addParams['host_alias'] = $params[self::ORDER_ALIAS];
         $addParams['host_address'] = $params[self::ORDER_ADDRESS];
         $templates = explode("|", $params[self::ORDER_TEMPLATE]);

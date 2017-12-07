@@ -267,7 +267,7 @@ class CentreonContact extends CentreonObject
         $addParams = array();
         $params[self::ORDER_UNIQUENAME] = str_replace(" ", "_", $params[self::ORDER_UNIQUENAME]);
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
-        $addParams['contact_name'] = $params[self::ORDER_NAME];
+        $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
         $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
 

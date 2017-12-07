@@ -137,7 +137,7 @@ class CentreonTimePeriod extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         $addParams['tp_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
