@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$searchStr = "";
+$searchStr = '';
 $search = '';
 if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
     $search = $_POST['searchACLG'];
@@ -92,9 +92,8 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $group['acl_group_id'] . "]");
-
     if ($group["acl_group_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_group_id=" . $group['acl_group_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
