@@ -112,18 +112,18 @@ for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
 
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations " .
+    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations " .
         "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $dbResult = $pearDB->query($rq);
-    $ctNbr = $dbResult->fetchRow();
-    $dbResult->closeCursor();
+    $dbResult2 = $pearDB->query($rq2);
+    $ctNbr = $dbResult2->fetchRow();
+    $dbResult2->closeCursor();
 
     $cgNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations " .
+    $rq3 = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations " .
         "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $dbResult = $pearDB->query($rq);
-    $cgNbr = $dbResult->fetchRow();
-    $dbResult->closeCursor();
+    $dbResult3 = $pearDB->query($rq3);
+    $cgNbr = $dbResult3->fetchRow();
+    $dbResult3->closeCursor();
 
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
