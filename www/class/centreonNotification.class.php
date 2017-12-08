@@ -460,13 +460,11 @@ class CentreonNotification
             $this->svcBreak = array(1 => false, 2 => false);
             $flag = false;
             if ($this->getServiceTemplateNotifications($row['service_id'], $templates) === true ) {
-
                 if (array_key_exists($row['service_id'], $list)) {
                     $row3 = $list[$row['service_id']];
                     if (!isset($svcTab[$row3['host_id']])) {
                         $svcTab[$row3['host_id']] = array();
                     }
-
                     $svcTab[$row3['host_id']][$row['service_id']] = array();
                     $svcTab[$row3['host_id']][$row['service_id']]['host_name'] = $row3['host_name'];
                     $svcTab[$row3['host_id']][$row['service_id']]['service_description'] = $row['service_description'];
