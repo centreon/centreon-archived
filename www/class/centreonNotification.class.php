@@ -33,7 +33,7 @@
  *
  */
 
-class CentreonContact
+class CentreonNotification
 {
     protected $db;
     protected $svcTpl;
@@ -148,6 +148,7 @@ class CentreonContact
             return array();
         }
         $contactgroups = $this->getContactGroups($contactId);
+
         if ($notifType == self::HOST) {
             $resources = $this->getHostNotifications($contactId, $contactgroups);
         } elseif ($notifType == self::SVC) {
@@ -364,40 +365,43 @@ class CentreonContact
      * Get Service notifications
      *
      * @param int $contactId
-     * @param array $contactgroups
+     * @param array $contactGroups
      * @return array
      */
-    protected function getServiceNotifications($contactId, $contactgroups)
+    protected function getServiceNotifications($contactId, $contactGroups)
     {
+        $contactId = $this->db->escape($contactId);
         $sql = "SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register, 1 as notif_type
         		FROM contact_service_relation csr, service s
         		LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
         		LEFT JOIN host h ON h.host_id = hsr.host_host_id
-        		WHERE csr.contact_id = " . $this->db->escape($contactId) . "
+        		WHERE csr.contact_id = " . $contactId . "
         		AND csr.service_service_id = s.service_id
         		UNION
         		SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register, 1 as notif_type
         		FROM contact_service_relation csr, service s, host h, host_service_relation hsr, hostgroup_relation hgr
-        		WHERE csr.contact_id = " . $this->db->escape($contactId) . "
+        		WHERE csr.contact_id = " . $contactId . "
         		AND csr.service_service_id = s.service_id
         		AND s.service_id = hsr.service_service_id
         		AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
         		AND hgr.host_host_id = h.host_id ";
-        if (count($contactgroups)) {
+
+        if (count($contactGroups)) {
+            $contactGroups = implode(',', array_keys($contactGroups));
             $sql .= " UNION
         			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register,
                       2 as notif_type
         			  FROM contactgroup_service_relation csr, service s
         			  LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
         			  LEFT JOIN host h ON h.host_id = hsr.host_host_id
-        			  WHERE csr.contactgroup_cg_id IN (" . implode(',', array_keys($contactgroups)) . ")
+        			  WHERE csr.contactgroup_cg_id IN (" . $contactGroups . ")
         			  AND csr.service_service_id = s.service_id
         			  UNION
         			  SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register,
                       2 as notif_type
         			  FROM contactgroup_service_relation csr, service s, host h, host_service_relation hsr,
                       hostgroup_relation hgr
-        			  WHERE csr.contactgroup_cg_id IN (" . implode(',', array_keys($contactgroups)) . ")
+        			  WHERE csr.contactgroup_cg_id IN (" . $contactGroups . ")
         			  AND csr.service_service_id = s.service_id
         			  AND s.service_id = hsr.service_service_id
         			  AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
@@ -405,8 +409,10 @@ class CentreonContact
         }
         $res = $this->db->query($sql);
         $svcTab = array();
+        $svcList = array();
         $templates = array();
         while ($row = $res->fetchRow()) {
+            $svcList[$row['service_id']]=$row['service_id'];
             if ($row['service_register'] == 1) {
                 if (!isset($svcTab[$row['host_id']])) {
                     $svcTab[$row['host_id']] = array();
@@ -434,32 +440,40 @@ class CentreonContact
             		 FROM service
             		 WHERE service_register = '1'";
         }
-        $res2 = $this->db->query(trim($sql2));
+
+        $res2 = $this->db->query($sql2);
+
+        $sql3 = "SELECT h.host_id, h.host_name, hsr.service_service_id as service_id
+                    		 FROM host h, host_service_relation hsr
+                    		 WHERE h.host_id = hsr.host_host_id
+                    		 UNION
+                    		 SELECT h.host_id, h.host_name, hsr.service_service_id
+                    		 FROM host h, host_service_relation hsr, hostgroup_relation hgr
+                    		 WHERE h.host_id = hgr.host_host_id
+                    		 AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id";
+        $res3 = $this->db->query($sql3);
+        while ($row3 = $res3->fetchRow()) {
+            $list[$row3['service_id']] = $row3;
+        }
+
         while ($row = $res2->fetchRow()) {
             $this->svcBreak = array(1 => false, 2 => false);
             $flag = false;
-            if ($this->getServiceTemplateNotifications($row['service_id'], $templates) === true) {
-                $sql3 = "SELECT h.host_id, h.host_name
-                    		 FROM host h, host_service_relation hsr
-                    		 WHERE h.host_id = hsr.host_host_id
-                    		 AND hsr.service_service_id = " . $this->db->escape($row['service_id']) . "
-                    		 UNION
-                    		 SELECT h.host_id, h.host_name
-                    		 FROM host h, host_service_relation hsr, hostgroup_relation hgr
-                    		 WHERE h.host_id = hgr.host_host_id
-                    		 AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id
-                    		 AND hsr.service_service_id = " . $this->db->escape($row['service_id']);
-                $res3 = $this->db->query($sql3);
-                while ($row3 = $res3->fetchRow()) {
+            if ($this->getServiceTemplateNotifications($row['service_id'], $templates) === true ) {
+
+                if (array_key_exists($row['service_id'], $list)) {
+                    $row3 = $list[$row['service_id']];
                     if (!isset($svcTab[$row3['host_id']])) {
                         $svcTab[$row3['host_id']] = array();
                     }
+
                     $svcTab[$row3['host_id']][$row['service_id']] = array();
                     $svcTab[$row3['host_id']][$row['service_id']]['host_name'] = $row3['host_name'];
                     $svcTab[$row3['host_id']][$row['service_id']]['service_description'] = $row['service_description'];
                 }
             }
         }
+
         return $svcTab;
     }
 
