@@ -99,16 +99,22 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         } else {
             $this->number = 0;
         }
-        if(!is_numeric($this->number) || !is_numeric($this->limit)){
+        if (!is_numeric($this->number) || !is_numeric($this->limit)) {
             throw new \RestBadRequestException('400 Bad Request');
         }
 
         /* Filters */
         if (isset($this->arguments['status'])) {
-            $this->status = $this->arguments['status'];
+            $statusList = array('up', 'down', 'unreachable', 'pending', 'all');
+            if (in_array(strtolower($this->arguments['status']), $statusList)) {
+                $this->status = $this->arguments['status'];
+            } else {
+                throw new \RestBadRequestException('400 Bad Request');
+            }
         } else {
             $this->status = null;
         }
+
         if (isset($this->arguments['hostgroup'])) {
             $this->hostgroup = $this->arguments['hostgroup'];
         } else {
@@ -137,7 +143,12 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $this->viewType = null;
         }
         if (isset($this->arguments['sortType'])) {
-            $this->sortType = $this->arguments['sortType'];
+            if (strtolower($this->arguments['sortType']) == 'asc' ||
+                strtolower($this->arguments['sortType']) == 'desc') {
+                $this->sortType = $this->arguments['sortType'];
+            } else {
+                throw new \RestBadRequestException('400 Bad Request');
+            }
         } else {
             $this->sortType = null;
         }
@@ -295,6 +306,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getHostState()
     {
@@ -371,7 +383,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
         if ($this->hostgroup) {
             $explodedValues = '';
-            foreach ($this->hostgroup as $k => $v) {
+            foreach (explode(',',$this->hostgroup) as $k => $v) {
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
             }
@@ -382,6 +397,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
+            if(!is_numeric($this->instance)){
+                throw new \RestBadRequestException('400 Bad Request, instance id');
+            }
             $query .= " AND h.instance_id = ? ";
             $queryValues[] = (int)$this->instance;
         }
