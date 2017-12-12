@@ -117,9 +117,9 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $externalObject
-     * @param array $values
+     * @param $externalObject
+     * @param $values
+     * @return array
      */
     protected function retrieveExternalObjectDatas($externalObject, $values)
     {

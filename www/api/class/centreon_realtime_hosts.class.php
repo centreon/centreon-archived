@@ -99,6 +99,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         } else {
             $this->number = 0;
         }
+        if(!is_numeric($this->number) || !is_numeric($this->limit)){
+            throw new \RestBadRequestException('400 Bad Request');
+        }
 
         /* Filters */
         if (isset($this->arguments['status'])) {

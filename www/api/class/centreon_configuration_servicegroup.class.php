@@ -123,6 +123,9 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         $queryValues[] = (string)$sgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('400 Bad Request');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?, ?';
             $queryValues[] = (int)$limit;

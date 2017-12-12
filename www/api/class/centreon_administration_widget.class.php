@@ -63,6 +63,9 @@ class CentreonAdministrationWidget extends CentreonWebService
             $q = $this->arguments['q'];
         }
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('400 Bad Request');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = array($limit,$this->arguments['page_limit']);
         } else {
