@@ -60,10 +60,13 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
-        } else {
+        if (isset($this->arguments['t'])) {
+            if(!is_numeric($this->arguments['t'])){
+                throw new \RestBadRequestException('400 Bad Request');
+            }
             $t = $this->arguments['t'];
+        } else {
+            $t = '';
         }
 
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .

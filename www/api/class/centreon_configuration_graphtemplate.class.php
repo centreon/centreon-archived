@@ -47,8 +47,8 @@ class CentreonConfigurationGraphtemplate extends CentreonConfigurationObjects
     }
 
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
