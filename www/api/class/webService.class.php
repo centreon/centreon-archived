@@ -264,11 +264,7 @@ class CentreonWebService
         try {
             static::updateTokenTtl();
             $data = $wsObj->$action();
-            if ($wsObj::empty404($data)) {
-                $wsObj::sendJson('404 Object not found', 404);
-            } else {
-                $wsObj::sendJson($data);
-            }
+            $wsObj::sendJson($data);
         } catch (RestException $e) {
             $wsObj::sendJson($e->getMessage(), $e->getCode());
         } catch (Exception $e) {

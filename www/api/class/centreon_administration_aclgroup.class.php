@@ -38,8 +38,8 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 {
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {

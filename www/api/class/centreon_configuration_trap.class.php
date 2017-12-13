@@ -55,6 +55,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -97,7 +98,6 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $trapList[] = array('id' => htmlentities($trapCompleteId), 'text' => $trapCompleteName);
         }
 
-        
         return array(
             'items' => $trapList,
             'total' => $total

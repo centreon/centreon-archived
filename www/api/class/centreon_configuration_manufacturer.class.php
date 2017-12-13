@@ -48,6 +48,7 @@ class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {

@@ -133,7 +133,6 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-
         // Check for select2 'q' argument
         if (isset($this->arguments['hgid'])) {
             foreach(explode(',', $this->arguments['hgid']) as $k => $v){
