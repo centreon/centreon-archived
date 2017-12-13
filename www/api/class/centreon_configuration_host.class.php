@@ -58,9 +58,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
 
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -89,7 +88,10 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         if (isset($this->arguments['hostgroup'])) {
             $additionalTables .= ',hostgroup_relation hg ';
             $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
-            foreach ($this->arguments['hostgroup'] as $k => $v) {
+            foreach (explode(',',$this->arguments['hostgroup']) as $k => $v) {
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
             }

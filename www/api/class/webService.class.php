@@ -266,7 +266,7 @@ class CentreonWebService
             $data = $wsObj->$action();
             if ($wsObj::empty404($data)) {
                 $wsObj::sendJson('404 Object not found', 404);
-            }else {
+            } else {
                 $wsObj::sendJson($data);
             }
         } catch (RestException $e) {
@@ -280,12 +280,16 @@ class CentreonWebService
      * @param $array
      * @return bool
      */
-    protected static function empty404($array)
+    protected static function empty404($array = array())
     {
-        $key = array_keys($array);
-        if (empty($array[$key[0]])) {
+        if (!empty($array)) {
+            $key = array_keys($array);
+            if (empty($array[$key[0]])) {
+                return true;
+            }
+            return false;
+        } else {
             return true;
         }
-        return false;
     }
 }

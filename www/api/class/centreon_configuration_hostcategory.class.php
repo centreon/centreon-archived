@@ -53,7 +53,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
      *
      * @param array $args
@@ -67,7 +67,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostCategories = '';
-        
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
@@ -82,17 +82,22 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 		 * 'c' = catagory only
 		 * 's' = severity only
 		 */
-        if (false === isset($this->arguments['t'])) {
+        if (isset($this->arguments['t'])) {
+            $selectList = array('a', 'c', 's');
+            if (in_array(strtolower($this->arguments['t']), $selectList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('400 Bad Request');
+            }
+        } else {
             $t = '';
-        } else {
-            $t = $this->arguments['t'];
         }
-        
+
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
 
         $queryHostcategory = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id '
@@ -108,7 +113,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
                 throw new \RestBadRequestException('400 Bad Request');
             }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -119,7 +124,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             $range = '';
         }
 
-        $queryHostcategory .= 'ORDER BY hc.hc_name '. $range;
+        $queryHostcategory .= 'ORDER BY hc.hc_name ' . $range;
         $stmt = $this->pearDB->prepare($queryHostcategory);
         $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
@@ -131,7 +136,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
                 'text' => $data['hc_name']
             );
         }
-        
+
         return array(
             'items' => $hostcategoryList,
             'total' => $total

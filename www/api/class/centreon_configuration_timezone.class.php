@@ -55,10 +55,10 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = '%' . (string)$q . '%';
 

@@ -149,7 +149,7 @@ class CentreonConfigurationObjects extends CentreonWebService
                 for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                $explodedValues = substr($explodedValues, 0, -1);
+                $explodedValues = rtrim($explodedValues, ',');
             }
 
             $query = "SELECT $externalObject[id], $externalObject[name] " .

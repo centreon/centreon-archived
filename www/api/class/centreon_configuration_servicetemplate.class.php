@@ -55,16 +55,21 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     {
         $range = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
 
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
+        if (isset($this->arguments['l'])) {
+            $templateType = array('0','1');
+            if (in_array($this->arguments['l'], $templateType)) {
+                $l = $this->arguments['l'];
+            } else {
+                throw new \RestBadRequestException('400 Bad Request');
+            }
         } else {
-            $l = $this->arguments['l'];
+            $l = '0';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {

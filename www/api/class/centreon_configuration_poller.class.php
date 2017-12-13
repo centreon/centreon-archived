@@ -54,6 +54,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -69,12 +70,11 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
-
         $queryValues[] = (string)'%' . $q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){

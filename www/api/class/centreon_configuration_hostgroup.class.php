@@ -56,6 +56,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -73,10 +74,10 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = (string)'%' . $q . '%';
 
@@ -134,10 +135,15 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['hgid'])) {
-            $hgid = '';
-        } else {
+        if (isset($this->arguments['hgid'])) {
+            foreach(explode(',', $this->arguments['hgid']) as $k => $v){
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                }
+            }
             $hgid = $this->arguments['hgid'];
+        } else {
+            $hgid = '';
         }
         $queryValues[] = (string)$hgid;
 

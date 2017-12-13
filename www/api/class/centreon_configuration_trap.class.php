@@ -62,10 +62,10 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = '%' . (string)$q . '%';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {

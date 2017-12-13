@@ -49,15 +49,16 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         $queryValues = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = (string)'%' . $q . '%';
 
@@ -67,10 +68,15 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
 		 * 'c' = category only
 		 * 's' = severity only
 		 */
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
+        if (isset($this->arguments['t'])) {
+            $selectList = array('a', 'c', 's');
+            if (in_array(strtolower($this->arguments['t']), $selectList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('400 Bad Request');
+            }
         } else {
-            $t = $this->arguments['t'];
+            $t = '';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
@@ -88,6 +94,7 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
             'FROM service_categories ' .
             'WHERE sc_name LIKE ? ';
+
         if (!empty($t) && $t == 'c') {
             $queryContact .= "AND level IS NULL ";
         }

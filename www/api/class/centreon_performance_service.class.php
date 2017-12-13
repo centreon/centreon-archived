@@ -57,6 +57,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -80,7 +81,6 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
             'FROM ( ' .
@@ -111,6 +111,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND hg.hostgroup_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['hostgroup'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new RestBadRequestException("Bad parameters, host group id");
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -124,6 +127,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND sg.servicegroup_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['servicegroup'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new RestBadRequestException("Bad parameters, service group id");
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -136,6 +142,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionalCondition .= 'AND i.host_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['host'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new RestBadRequestException("Bad parameters, host id");
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -198,7 +207,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
      * @param $additionalCondition
      * @param $additionalValues
      * @param null $aclObj
-     * @return string
+     * @return array
+     * @throws RestBadRequestException
      */
     private function getVirtualServicesCondition(
         $additionalTables,
@@ -258,6 +268,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
                     $explodedValues = '';
                     foreach ($virtualServiceIds as $k => $v) {
+                        if (false === is_numeric($v)) {
+                            throw new RestBadRequestException("Bad parameters, virtual service id");
+                        }
                         $explodedValues .= '?,';
                         $metaValues[] = (int)$v;
                     }
