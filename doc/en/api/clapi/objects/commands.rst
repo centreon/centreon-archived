@@ -94,3 +94,11 @@ comment     Comments regarding the command
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+
+Describe_Args
+-------------
+
+If you want to change all arguments descriptions for a command, use the **DESCRIBE_ARGS** command::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a describe_args -v 'check_centreon_ping;ARG1:count;ARG2:warning;ARG3:critical'
+
