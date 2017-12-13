@@ -188,6 +188,36 @@ class CentreonCommand extends CentreonObject
         }
     }
 
+
+    /**
+     * Set command arguments descriptions
+     *
+     * @param string $descriptions
+     * @throws CentreonClapiException
+     */
+    public function describe_args($descriptions)
+    {
+        $data = explode($this->delim, $descriptions);
+        if (count($data) < 1) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $objUniqueName = array_shift($data);
+        if (($objectId = $this->getObjectId($objUniqueName)) != 0) {
+
+            $sql = "DELETE FROM command_arg_description WHERE cmd_id = ?";
+            $this->db->query($sql, array($objectId));
+
+            foreach ($data as $description) {
+                list($arg, $desc) = explode(':', $description, 2);
+                $sql = "INSERT INTO command_arg_description (cmd_id, macro_name, macro_description) VALUES (?,?,?)";
+                $this->db->query($sql, array($objectId, $arg, $desc));
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objUniqueName);
+        }
+    }
+
+
     /**
      * Returns command id
      *
@@ -270,8 +300,14 @@ class CentreonCommand extends CentreonObject
                         . $v . "\n";
                 }
             }
+
+            echo $this->action . $this->delim
+                . "DESCRIBE_ARGS" . $this->delim
+                . $element[$this->object->getUniqueLabelField()] . $this->delim
+                . implode(';', $this->getArgsDescriptions($element['command_id'])) . "\n";
         }
     }
+
 
     /**
      * Get clapi action name from db column name
@@ -293,7 +329,7 @@ class CentreonCommand extends CentreonObject
     }
 
 
-        /**
+    /**
      * This method gat the list of command containt a specific macro
      * @param int $iIdCommand
      * @param string $sType
@@ -372,5 +408,26 @@ class CentreonCommand extends CentreonObject
             $aReturn[$row['command_macro_name']] = $arr;
         }
         return $aReturn;
+    }
+
+
+    /**
+     * Export command_arg_description
+     * @param int $command_id
+     *
+     * @return array
+     */
+    protected function getArgsDescriptions($command_id)
+    {
+        $sql = "SELECT macro_name, macro_description
+        		FROM command_arg_description
+        		WHERE cmd_id = ?
+        		ORDER BY macro_name";
+        $res = $this->db->query($sql, array($command_id));
+
+        $args_desc = array();
+        while ($row = $res->fetch()) $args_desc[] = $row['macro_name'] . ':' . trim($row['macro_description']);
+        unset($res);
+        return $args_desc;
     }
 }
