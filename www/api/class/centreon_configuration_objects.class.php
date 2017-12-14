@@ -203,6 +203,10 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
     {
+        if(!is_numeric($id)){
+            throw new \RestBadRequestException('400 Bad Request, id');
+        }
+
         $tmpValues = array();
 
         $fields = array();
