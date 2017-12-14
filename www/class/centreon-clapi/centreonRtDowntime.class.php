@@ -746,6 +746,9 @@ class CentreonRtDowntime extends CentreonObject
         $unknownDowntime = array();
 
         foreach ($listDowntime as $downtime) {
+            if (!is_numeric($downtime)) {
+                throw new CentreonClapiException('Incorrect id parameters');
+            }
             $infoDowntime = $this->object->getCurrentDowntime($downtime);
 
             if ($infoDowntime) {
