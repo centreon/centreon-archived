@@ -204,9 +204,6 @@ class CentreonEngineCfg extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-
-            var_dump($objectId);
-
             $commandColumns = array(
                 'global_host_event_handler',
                 'global_service_event_handler',
