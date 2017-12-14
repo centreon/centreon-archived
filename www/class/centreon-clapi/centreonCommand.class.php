@@ -197,7 +197,7 @@ class CentreonCommand extends CentreonObject
      */
     public function describe_args($descriptions)
     {
-        $data = explode($this->delim, $descriptions);
+        $data = explode($this->delim, trim($descriptions, $this->delim));
         if (count($data) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
