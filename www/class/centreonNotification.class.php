@@ -85,7 +85,7 @@ class CentreonNotification
      */
     protected function isNotificationEnabled($contactId)
     {
-        $sql = "SELECT contact_enable_notifications FROM contact WHERE contact_id = " . $this->db->escape($contactId);
+        $sql = "SELECT contact_enable_notifications FROM contact WHERE contact_id = " . $contactId;
         $res = $this->db->query($sql);
         if ($res->numRows()) {
             $row = $res->fetchRow();
@@ -126,7 +126,7 @@ class CentreonNotification
         $sql = "SELECT cg_id, cg_name
         		FROM contactgroup cg, contactgroup_contact_relation ccr
         		WHERE cg.cg_id = ccr.contactgroup_cg_id
-        		AND ccr.contact_contact_id = " . $this->db->escape($contactId);
+        		AND ccr.contact_contact_id = " . $contactId;
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
@@ -144,6 +144,7 @@ class CentreonNotification
      */
     public function getNotifications($notifType, $contactId)
     {
+        $contactId = $this->db->escape($contactId);
         if (false === $this->isNotificationEnabled($contactId)) {
             return array();
         }
@@ -193,16 +194,17 @@ class CentreonNotification
      */
     protected function getHostEscalations($escalations)
     {
+        $escalations = implode(array_keys($escalations));
         $sql = "SELECT h.host_id, h.host_name
         		FROM escalation_host_relation ehr, host h
         		WHERE h.host_id = ehr.host_host_id
-        		AND ehr.escalation_esc_id IN (".implode(array_keys($escalations)).")
+        		AND ehr.escalation_esc_id IN (" . $escalations . ")
         		UNION
         		SELECT h.host_id, h.host_name
         		FROM escalation_hostgroup_relation ehr, hostgroup_relation hgr, host h
         		WHERE ehr.hostgroup_hg_id = hgr.hostgroup_hg_id
         		AND hgr.host_host_id = h.host_id
-        		AND ehr.escalation_esc_id IN (".implode(array_keys($escalations)).")";
+        		AND ehr.escalation_esc_id IN (" . $escalations . ")";
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
@@ -219,18 +221,19 @@ class CentreonNotification
      */
     protected function getServiceEscalations($escalations)
     {
+        $escalationsList = implode(array_keys($escalations));
         $sql = "SELECT h.host_id, h.host_name, s.service_id, s.service_description
         		FROM escalation_service_relation esr, host h, service s
         		WHERE h.host_id = esr.host_host_id
         		AND esr.service_service_id = s.service_id
-        		AND esr.escalation_esc_id IN (".implode(array_keys($escalations)).")
+        		AND esr.escalation_esc_id IN (" . $escalationsList . ")
         		UNION
         		SELECT h.host_id, h.host_name, s.service_id, s.service_description
         		FROM escalation_servicegroup_relation esr, servicegroup_relation sgr, host h, service s
         		WHERE esr.servicegroup_sg_id = sgr.servicegroup_sg_id
         		AND sgr.host_host_id = h.host_id
         		AND sgr.service_service_id = s.service_id
-        		AND esr.escalation_esc_id IN (".implode(array_keys($escalations)).")";
+        		AND esr.escalation_esc_id IN (" . $escalationsList . ")";
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
@@ -285,7 +288,7 @@ class CentreonNotification
     {
         $sql = "SELECT host_id, host_name, host_register, 1 as notif_type
         		FROM contact_host_relation chr, host h
-        		WHERE chr.contact_id = " . $this->db->escape($contactId) . "
+        		WHERE chr.contact_id = " . $contactId . "
         		AND chr.host_host_id = h.host_id ";
         if (count($contactgroups)) {
             $sql .= " UNION
@@ -337,7 +340,7 @@ class CentreonNotification
         		FROM host_template_relation htr
         		LEFT JOIN contact_host_relation ctr ON htr.host_host_id = ctr.host_host_id
         		LEFT JOIN contactgroup_host_relation ctr2 ON htr.host_host_id = ctr2.host_host_id
-        		WHERE htr.host_host_id = ".$this->db->escape($hostId)."
+        		WHERE htr.host_host_id = " . $hostId . "
         		ORDER BY `order`";
         $res = $this->db->query($sql);
         while ($row = $res->fetchRow()) {
@@ -370,7 +373,6 @@ class CentreonNotification
      */
     protected function getServiceNotifications($contactId, $contactGroups)
     {
-        $contactId = $this->db->escape($contactId);
         $sql = "SELECT h.host_id, h.host_name, s.service_id, s.service_description, s.service_register, 1 as notif_type
         		FROM contact_service_relation csr, service s
         		LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
