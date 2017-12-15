@@ -62,9 +62,9 @@ $DBRESULT->free();
 /*
  * Object init
  */
-$mediaObj       = new CentreonMedia($pearDB);
-$host_method    = new CentreonHost($pearDB);
-$contactObj     = new CentreonContact($pearDB);
+$mediaObj = new CentreonMedia($pearDB);
+$host_method = new CentreonHost($pearDB);
+$oNotification = new CentreonNotification($pearDB);
 
 /*
  * Smarty template Init
@@ -108,7 +108,7 @@ $form->setDefaults($formData);
  */
 $elemArrHostEsc = array();
 if ($contactgroup_id) {
-    $hostEscResources = $contactObj->getNotificationsContactGroup(2, $contactgroup_id);
+    $hostEscResources = $oNotification->getNotificationsContactGroup(2, $contactgroup_id);
 }
 if (isset($hostEscResources)) {
     foreach ($hostEscResources as $hostId => $hostName) {
@@ -134,7 +134,7 @@ $tpl->assign("elemArrHostEsc", $elemArrHostEsc);
  */
 $elemArrSvcEsc = array();
 if ($contactgroup_id) {
-    $svcEscResources = $contactObj->getNotificationsContactGroup(3, $contactgroup_id);
+    $svcEscResources = $oNotification->getNotificationsContactGroup(3, $contactgroup_id);
 }
 if (isset($svcEscResources)) {
     foreach ($svcEscResources as $hostId => $hostTab) {
@@ -162,7 +162,7 @@ $tpl->assign("elemArrSvcEsc", $elemArrSvcEsc);
  */
 $elemArrHost = array();
 if ($contactgroup_id) {
-    $hostResources = $contactObj->getNotificationsContactGroup(0, $contactgroup_id);
+    $hostResources = $oNotification->getNotificationsContactGroup(0, $contactgroup_id);
 }
 if (isset($hostResources)) {
     foreach ($hostResources as $hostId => $hostName) {
@@ -187,7 +187,7 @@ $tpl->assign("elemArrHost", $elemArrHost);
  */
 $elemArrSvc = array();
 if ($contactgroup_id) {
-    $svcResources = $contactObj->getNotificationsContactGroup(1, $contactgroup_id);
+    $svcResources = $oNotification->getNotificationsContactGroup(1, $contactgroup_id);
 }
 if (isset($svcResources)) {
     foreach ($svcResources as $hostId => $hostTab) {
