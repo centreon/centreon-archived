@@ -45,16 +45,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
 $pearDBO = new CentreonDB("centstorage");
 
 /**
- * Get host icones
- */
-$ehiCache = array();
-$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
-    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
-}
-$DBRESULT->free();
-
-/**
  * Get user list
  */
 $contact = array("" => null);
@@ -117,18 +107,9 @@ if ($contact_id) {
 }
 if (isset($hostEscResources)) {
     foreach ($hostEscResources as $hostId => $hostName) {
-        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString($hostId,
-            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-            $host_icone = "./img/media/" . $icone;
-        } else {
-            $host_icone = "./img/icons/host.png";
-        }
-        $moptions = "";
         $elemArrHostEsc[] = array(
             "MenuClass" => "list_" . $style,
-            "RowMenu_hico" => $host_icone,
+            "RowMenu_hico" => "./img/icons/host.png",
             "RowMenu_host" => myDecode($hostName)
         );
         $style != "two" ? $style = "two" : $style = "one";
@@ -147,18 +128,9 @@ if ($contact_id) {
 if (isset($svcEscResources)) {
     foreach ($svcEscResources as $hostId => $hostTab) {
         foreach ($hostTab as $serviceId => $tab) {
-            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString($hostId,
-                getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-                $host_icone = "./img/media/" . $icone;
-            } else {
-                $host_icone = "./img/icons/host.png";
-            }
-            $moptions = "";
             $elemArrSvcEsc[] = array(
                 "MenuClass" => "list_" . $style,
-                "RowMenu_hico" => $host_icone,
+                "RowMenu_hico" => "./img/icons/host.png",
                 "RowMenu_host" => myDecode($tab['host_name']),
                 "RowMenu_service" => myDecode($tab['service_description'])
             );
@@ -177,18 +149,9 @@ if ($contact_id) {
 }
 if (isset($hostResources)) {
     foreach ($hostResources as $hostId => $hostName) {
-        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString($hostId,
-            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-            $host_icone = "./img/media/" . $icone;
-        } else {
-            $host_icone = "./img/icons/host.png";
-        }
-        $moptions = "";
         $elemArrHost[] = array(
             "MenuClass" => "list_" . $style,
-            "RowMenu_hico" => $host_icone,
+            "RowMenu_hico" => "./img/icons/host.png",
             "RowMenu_host" => myDecode($hostName)
         );
         $style != "two" ? $style = "two" : $style = "one";
@@ -206,18 +169,12 @@ if ($contact_id) {
 if (isset($svcResources)) {
     foreach ($svcResources as $hostId => $hostTab) {
         foreach ($hostTab as $serviceId => $tab) {
-            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString($hostId, getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1))) {
-                $host_icone = "./img/media/" . $icone;
-            } else {
-                $host_icone = "./img/icons/host.png";
-            }
-            $moptions = "";
-            $elemArrSvc[] = array("MenuClass"       => "list_".$style,
-                                  "RowMenu_hico"    => $host_icone,
-                                  "RowMenu_host"    => myDecode($tab['host_name']),
-                                  "RowMenu_service" => myDecode($tab['service_description']));
+            $elemArrSvc[] = array(
+                "MenuClass" => "list_" . $style,
+                "RowMenu_hico" => "./img/icons/host.png",
+                "RowMenu_host" => myDecode($tab['host_name']),
+                "RowMenu_service" => myDecode($tab['service_description'])
+            );
             $style != "two" ? $style = "two" : $style = "one";
         }
     }
