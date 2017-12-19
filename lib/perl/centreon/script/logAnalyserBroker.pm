@@ -255,8 +255,8 @@ sub parseArchive {
 
     my @files;
     opendir (DIR, $archives) or $self->{logger}->writeLogError("Can't find $archives directory") and return;
-    while (readdir(DIR)) {
-        push(@files, $_) if ($_ !~ m/^\.|\.gz$/msi);
+    while (my $file = readdir(DIR)) {
+        push(@files, $file) if ($file !~ m/^\.|\.gz$/msi);
     }
     closedir DIR;
 
