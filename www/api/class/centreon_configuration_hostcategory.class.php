@@ -86,7 +86,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             if (in_array(strtolower($this->arguments['t']), $selectList)) {
                 $t = $this->arguments['t'];
             } else {
-                throw new \RestBadRequestException('400 Bad Request, \'t\' argument');
+                throw new \RestBadRequestException('Error, type must be numerical');
             }
         } else {
             $t = '';
@@ -113,7 +113,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('400 Bad Request, limit error');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryHostCategory .= 'LIMIT :offset, :limit';

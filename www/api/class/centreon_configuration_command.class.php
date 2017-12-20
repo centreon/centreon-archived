@@ -64,7 +64,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         if (isset($this->arguments['t'])) {
             if (!is_numeric($this->arguments['t'])) {
-                throw new \RestBadRequestException('400 Bad Request');
+                throw new \RestBadRequestException('Error, command type must be numerical');
             }
             $queryCommandType = 'AND command_type = :commandType ';
             $queryValues['commandType'] = (int)$this->arguments['t'];
@@ -80,7 +80,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('400 Bad Request, limit error');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryCommand .= 'LIMIT :offset, :limit';

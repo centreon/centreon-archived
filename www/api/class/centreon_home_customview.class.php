@@ -93,7 +93,7 @@ class CentreonHomeCustomview extends CentreonWebService
         // Check for select2 'q' argument
         if (isset($this->arguments['q'])) {
             if (!is_numeric($this->arguments['q'])) {
-                throw new \RestBadRequestException('400 Bad Request, custom view id');
+                throw new \RestBadRequestException('Error, custom view id must be numerical');
             }
             $customViewId = $this->arguments['q'];
         } else {
@@ -115,7 +115,7 @@ class CentreonHomeCustomview extends CentreonWebService
         // Check for select2 'q' argument
         if (isset($this->arguments['q'])) {
             if (!is_numeric($this->arguments['q'])) {
-                throw new \RestBadRequestException('400 Bad Request, custom view id');
+                throw new \RestBadRequestException('Error, custom view id must be numerical');
             }
             $customViewId = $this->arguments['q'];
         } else {

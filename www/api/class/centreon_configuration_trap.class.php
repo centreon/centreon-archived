@@ -73,7 +73,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             'ORDER BY m.name, t.traps_name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('400 Bad Request, limit error');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryTraps .= 'LIMIT :offset,:limit';

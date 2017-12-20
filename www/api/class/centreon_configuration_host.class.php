@@ -90,7 +90,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
             foreach (explode(',', $this->arguments['hostgroup']) as $hgId => $hgValue) {
                 if (!is_numeric($hgValue)) {
-                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
                 }
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
@@ -127,7 +127,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('400 Bad Request, limit error');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';
