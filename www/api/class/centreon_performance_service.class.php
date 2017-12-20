@@ -222,9 +222,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 $explodedValues = rtrim($explodedValues, ',');
                 $metaServiceCondition .= $explodedValues . ') ';
             }
-        } else {
-            $metaServiceCondition = 'AND s.description LIKE "meta_%" ';
         }
+
+        $metaServiceCondition .= 'AND s.description LIKE "meta_%" ';
 
         $virtualServicesCondition = 'UNION ALL (' .
             'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id ' .
