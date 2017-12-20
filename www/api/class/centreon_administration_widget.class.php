@@ -73,7 +73,8 @@ class CentreonAdministrationWidget extends CentreonWebService
     }
 
     /**
-     * Get the list of installed widgets
+     * @return array
+     * @throws RestBadRequestException
      */
     public function getListInstalled()
     {
@@ -87,6 +88,9 @@ class CentreonAdministrationWidget extends CentreonWebService
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('400 Bad Request, limit error');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = array((int)$limit, (int)$this->arguments['page_limit']);
         } else {

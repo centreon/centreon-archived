@@ -61,9 +61,8 @@ class CentreonCentbrokerCfg extends CentreonObject
     );
 
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonCentbrokerCfg constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -82,10 +81,8 @@ class CentreonCentbrokerCfg extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function add($parameters)
     {
@@ -102,11 +99,8 @@ class CentreonCentbrokerCfg extends CentreonObject
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setparam($parameters)
     {
@@ -206,6 +200,9 @@ class CentreonCentbrokerCfg extends CentreonObject
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
             $args = explode($this->delim, $arg[0]);
+            if (!is_numeric($args[1])) {
+                throw new CentreonClapiException(self::UNKNOWNPARAMETER . ":" . $args[1]);
+            }
             $configIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($configIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
