@@ -90,14 +90,18 @@ class CentreonHomeCustomview extends CentreonWebService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getLinkedUsers()
     {
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $customViewId = 0;
-        } else {
+        if (isset($this->arguments['q'])) {
+            if(!is_numeric($this->arguments['q'])){
+                throw new \RestBadRequestException('400 Bad Request, custom view id');
+            }
             $customViewId = $this->arguments['q'];
+        } else {
+            $customViewId = 0;
         }
 
         global $centreon;
@@ -108,14 +112,18 @@ class CentreonHomeCustomview extends CentreonWebService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getLinkedUsergroups()
     {
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $customViewId = 0;
-        } else {
+        if (isset($this->arguments['q'])) {
+            if(!is_numeric($this->arguments['q'])){
+                throw new \RestBadRequestException('400 Bad Request, custom view id');
+            }
             $customViewId = $this->arguments['q'];
+        } else {
+            $customViewId = 0;
         }
 
         global $centreon;
