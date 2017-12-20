@@ -118,7 +118,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $this->number = 0;
         }
         if(!is_numeric($this->number) || !is_numeric($this->limit)){
-            throw new \RestBadRequestException('400 Bad Request');
+            throw new \RestBadRequestException('Error, limit must be numerical');
         }
 
         /* Filters */
@@ -127,7 +127,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             if (in_array(strtolower($this->arguments['status']), $statusList)) {
                 $this->status = $this->arguments['status'];
             } else {
-                throw new \RestBadRequestException('400 Bad Request');
+                throw new \RestBadRequestException('Error, bad status parameter');
             }
         } else {
             $this->status = null;
@@ -420,7 +420,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
 
         if ($this->instance != -1 && !empty($this->instance)) {
             if(!is_numeric($this->instance)){
-                throw new \RestBadRequestException('400 Bad Request, instance id');
+                throw new \RestBadRequestException('Error, instance id must be numerical');
             }
             $query .= " AND h.instance_id = ? ";
             $queryValues[] = (int)$this->instance;
@@ -485,7 +485,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $explodedValues = '';
             foreach (explode(',',$this->hostgroup) as $k => $v) {
                 if(!is_numeric($v)){
-                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
                 }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
@@ -501,7 +501,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $explodedValues = '';
             foreach (explode(',' , $this->servicegroup) as $k => $v) {
                 if(!is_numeric($v)){
-                    throw new \RestBadRequestException('400 Bad Request, service group id');
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
                 }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;

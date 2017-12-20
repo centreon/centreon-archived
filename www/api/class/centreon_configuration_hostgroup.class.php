@@ -83,7 +83,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
-                throw new \RestBadRequestException('400 Bad Request');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
@@ -137,7 +137,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         if (isset($this->arguments['hgid'])) {
             foreach(explode(',', $this->arguments['hgid']) as $k => $v){
                 if(!is_numeric($v)){
-                    throw new \RestBadRequestException('400 Bad Request, host group id');
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
                 }
             }
             $hgid = $this->arguments['hgid'];

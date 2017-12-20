@@ -91,7 +91,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             if (in_array(strtolower($this->arguments['e']), $enableList)){
                 $e = $this->arguments['e'];
             } else {
-                throw new \RestBadRequestException('400 Bad Request, enable status');
+                throw new \RestBadRequestException('Error, bad enable parameter');
             }
         } else {
             $e = 'enable';
@@ -103,7 +103,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             if (in_array(strtolower($this->arguments['t']), $typeList)){
                 $t = $this->arguments['t'];
             } else {
-                throw new \RestBadRequestException('400 Bad Request, service type');
+                throw new \RestBadRequestException('Error, bad type parameter');
             }
         } else {
             $t = 'host';
@@ -124,7 +124,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             if (in_array(strtolower($this->arguments['s']), $sTypeList)) {
                 $s = $this->arguments['s'];;
             } else {
-                throw new \RestBadRequestException('400 Bad Request, service type');
+                throw new \RestBadRequestException('Error, bad service type');
             }
         } else {
             $s = 'all';
@@ -132,7 +132,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('400 Bad Request');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range[] = (int)$offset;

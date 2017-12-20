@@ -747,19 +747,19 @@ class CentreonRtDowntime extends CentreonObject
 
         foreach ($listDowntime as $downtime) {
             if (!is_numeric($downtime)) {
-                throw new CentreonClapiException('Incorrect id parameters');
-            }
-            $infoDowntime = $this->object->getCurrentDowntime($downtime);
-
-            if ($infoDowntime) {
-                $hostName = $this->hostObject->getHostName($infoDowntime['host_id']);
-                if (is_null($infoDowntime['service_id'])) {
-                    $this->externalCmdObj->deleteDowntime('HOST', array($hostName . ';' . $downtime => 'on'));
-                } else {
-                    $this->externalCmdObj->deleteDowntime('SVC', array($hostName . ';' . $downtime => 'on'));
-                }
-            } else {
                 $unknownDowntime[] = $downtime;
+            } else {
+                $infoDowntime = $this->object->getCurrentDowntime($downtime);
+                if ($infoDowntime) {
+                    $hostName = $this->hostObject->getHostName($infoDowntime['host_id']);
+                    if (is_null($infoDowntime['service_id'])) {
+                        $this->externalCmdObj->deleteDowntime('HOST', array($hostName . ';' . $downtime => 'on'));
+                    } else {
+                        $this->externalCmdObj->deleteDowntime('SVC', array($hostName . ';' . $downtime => 'on'));
+                    }
+                } else {
+                    $unknownDowntime[] = $downtime;
+                }
             }
         }
 
