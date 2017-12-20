@@ -22,7 +22,7 @@ Bug Fixes
 * [Documentation] Correct API documentation for host/service relation #5854
 * [Documentation] Improve documentation install using ISO #5772 PR #5851 
 * [Install] Script install.sh - Could not create user #5785 PR #5890
-* [Knowledge Base] Xorrect typo of error message PR #5917
+* [Knowledge Base] Correct typo of error message PR #5917
 * [Monitoring] fix macro password with arguments in object details page PR #5928 #5881
 
 Security
