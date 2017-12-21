@@ -112,7 +112,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $explodedValues = '';
             foreach ($this->arguments['hostgroup'] as $k => $v) {
                 if (false === is_numeric($v)) {
-                    throw new RestBadRequestException("Bad parameters, host group id");
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
                 }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
@@ -128,7 +128,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $explodedValues = '';
             foreach ($this->arguments['servicegroup'] as $k => $v) {
                 if (false === is_numeric($v)) {
-                    throw new RestBadRequestException("Bad parameters, service group id");
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
                 }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
@@ -143,7 +143,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $explodedValues = '';
             foreach ($this->arguments['host'] as $k => $v) {
                 if (false === is_numeric($v)) {
-                    throw new RestBadRequestException("Bad parameters, host id");
+                    throw new \RestBadRequestException('Error, host id must be numerical');
                 }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
@@ -180,7 +180,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
-                throw new \RestBadRequestException('400 Bad Request');
+                throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT ?, ?';
@@ -269,7 +269,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                     $explodedValues = '';
                     foreach ($virtualServiceIds as $k => $v) {
                         if (false === is_numeric($v)) {
-                            throw new RestBadRequestException("Bad parameters, virtual service id");
+                            throw new \RestBadRequestException('Error, virtual service id must be numerical');
                         }
                         $explodedValues .= '?,';
                         $metaValues[] = (int)$v;
