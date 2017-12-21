@@ -88,13 +88,13 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         // Check for service enable
         if (isset($this->arguments['e'])) {
             $enableList = array('enable', 'disable');
-            if (in_array(strtolower($this->arguments['e']), $enableList)){
+            if (in_array(strtolower($this->arguments['e']), $enableList)) {
                 $e = $this->arguments['e'];
             } else {
                 throw new \RestBadRequestException('Error, bad enable parameter');
             }
         } else {
-            $e = 'enable';
+            $e = '';
         }
 
         // Check for service type
