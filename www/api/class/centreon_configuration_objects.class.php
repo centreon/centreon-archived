@@ -148,7 +148,7 @@ class CentreonConfigurationObjects extends CentreonWebService
                 for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                $explodedValues = substr($explodedValues, 0, -1);
+                $explodedValues = rtrim($explodedValues, ',');
             }
 
             $query = "SELECT $externalObject[id], $externalObject[name] " .
@@ -200,12 +200,14 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param $id
      * @param $field
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
     {
+        if (!is_numeric($id)) {
+            throw new \RestBadRequestException('Error, id must be numerical');
+        }
         $tmpValues = array();
-
         $fields = array();
         $fields[] = $field;
         if (isset($currentObject['additionalField'])) {
@@ -219,11 +221,7 @@ class CentreonConfigurationObjects extends CentreonWebService
 
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         while ($row = $stmt->fetch()) {
             $tmpValue = $row[$field];
             if (isset($currentObject['additionalField'])) {
@@ -239,7 +237,6 @@ class CentreonConfigurationObjects extends CentreonWebService
      * @param $relationObject
      * @param $id
      * @return array
-     * @throws Exception
      */
     protected function retrieveRelatedValues($relationObject, $id)
     {
@@ -256,10 +253,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             "WHERE " . $relationObject['comparator'] . " = :id";
         $stmt = $this->pearDB->prepare($queryValuesRetrieval);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+        $stmt->execute();
         while ($row = $stmt->fetch()) {
             if (!empty($row[$relationObject['field']])) {
                 $tmpValue = $row[$relationObject['field']];

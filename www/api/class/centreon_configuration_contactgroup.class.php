@@ -50,12 +50,16 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         global $centreon;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $offset = $this->arguments['page_limit'];
             $range = $limit . ',' . $offset;

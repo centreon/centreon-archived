@@ -49,24 +49,33 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         $range = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = (string)$this->arguments['q'];
+        } else {
+            $q = '';
         }
 
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
+        if (isset($this->arguments['l'])) {
+            $templateType = array('0', '1');
+            if (in_array($this->arguments['l'], $templateType)) {
+                $l = $this->arguments['l'];
+            } else {
+                throw new \RestBadRequestException('Error, bad list parameter');
+            }
         } else {
-            $l = $this->arguments['l'];
+            $l = '0';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range[] = (int)$offset;
             $range[] = (int)$this->arguments['page_limit'];
@@ -84,7 +93,6 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      * @param $q
      * @param array $range
      * @return array
-     * @throws Exception
      */
     private function listClassic($q, $range = array())
     {
@@ -108,11 +116,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         while ($data = $stmt->fetch()) {
             $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
         }
@@ -126,7 +130,6 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
      * @param string $q
      * @param array $range
      * @return array
-     * @throws Exception
      */
     private function listWithHostTemplate($q = '', $range = array())
     {
@@ -152,11 +155,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];

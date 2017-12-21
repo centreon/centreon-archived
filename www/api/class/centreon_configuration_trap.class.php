@@ -55,16 +55,16 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         $queryValues = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
         $queryTraps = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT t.traps_name, t.traps_id, m.name ' .
             'FROM traps t, traps_vendor m ' .
@@ -72,6 +72,9 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             'AND CONCAT(m.name, " - ", t.traps_name) LIKE :name ' .
             'ORDER BY m.name, t.traps_name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryTraps .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;
@@ -83,12 +86,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $trapList = array();
         while ($data = $stmt->fetch()) {
             $trapCompleteName = $data['name'] . ' - ' . $data['traps_name'];
@@ -106,14 +104,14 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         $finalDatas = parent::getDefaultValues();
         foreach ($finalDatas as &$trap) {
             $queryTraps = 'SELECT m.name ' .
-            'FROM traps t, traps_vendor m ' .
-            'WHERE t.manufacturer_id = m.id ' .
-            'AND traps_id = :id';
+                'FROM traps t, traps_vendor m ' .
+                'WHERE t.manufacturer_id = m.id ' .
+                'AND traps_id = :id';
             $stmt = $this->pearDB->prepare($queryTraps);
             $stmt->bindParam(':id', $trap['id'], PDO::PARAM_INT);
             $stmt->execute();
             $vendor = $stmt->fetch();
-            $trap['text'] = $vendor['name'].' - '.$trap['text'];
+            $trap['text'] = $vendor['name'] . ' - ' . $trap['text'];
         }
         return $finalDatas;
     }

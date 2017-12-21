@@ -269,25 +269,24 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Delete matching rule
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function delmatching($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        if (!is_numeric($parameters)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $matchObj->delete($parameters);
     }
 
     /**
-     * Update matching rules
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function updatematching($parameters = null)
     {
@@ -299,6 +298,9 @@ class CentreonTrap extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $matchingId = $params[0];
+        if (!is_numeric($matchingId)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $key = $params[1];
         $value = $params[2];
         if ($key == 'trap_id') {

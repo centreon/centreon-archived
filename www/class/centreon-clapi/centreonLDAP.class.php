@@ -245,6 +245,16 @@ class CentreonLDAP extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         list($arName, $address, $port, $ssl, $tls) = $params;
+        if (!is_numeric($port)) {
+            throw new CentreonClapiException('Incorrect port parameters');
+        }
+        if (!is_numeric($ssl)) {
+            throw new CentreonClapiException('Incorrect ssl parameters');
+        }
+        if (!is_numeric($tls)) {
+            throw new CentreonClapiException('Incorrect tls parameters');
+        }
+
         $arId = $this->getLdapId($arName);
 
         if (is_null($arId)) {
@@ -289,16 +299,18 @@ class CentreonLDAP extends CentreonObject
     }
 
     /**
-     * Delete server
-     *
-     * @param int $serverId
-     * @return void
+     * @param $serverId
+     * @throws CentreonClapiException
      */
     public function delserver($serverId)
     {
         if (!isset($serverId)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        if (!is_numeric($serverId)) {
+            throw new CentreonClapiException('Incorrect server id parameters');
+        }
+
         $this->db->query("DELETE FROM auth_ressource_host WHERE ldap_host_id = ?", array($serverId));
     }
 

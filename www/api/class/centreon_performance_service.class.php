@@ -57,7 +57,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -111,6 +111,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND hg.hostgroup_id IN (';
             $params = array();
             foreach ($this->arguments['hostgroup'] as $k => $v) {
+                if (!is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $params[':hgId' . $v] = (int)$v;
             }
             $bindParams = array_merge($bindParams, $params);
@@ -122,6 +125,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND sg.servicegroup_id IN (';
             $params = array();
             foreach ($this->arguments['servicegroup'] as $k => $v) {
+                if (!is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
+                }
                 $params[':sgId' . $v] = (int)$v;
             }
             $bindParams = array_merge($bindParams, $params);
@@ -132,14 +138,15 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionalCondition .= 'AND i.host_id IN (';
             $params = array();
             foreach ($this->arguments['host'] as $k => $v) {
+                if (!is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, host id must be numerical');
+                }
                 $params[':hostId' . $v] = (int)$v;
             }
             $bindParams = array_merge($bindParams, $params);
             $additionalCondition .= implode(',', array_keys($params)) . ') ';
         }
-
         $query .= $additionalCondition . ') ';
-
         if (isset($acl)) {
             $virtualObject = $this->getVirtualServicesCondition(
                 $additionalTables,
@@ -165,6 +172,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             'ORDER BY fullname ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';
             $bindParams[':offset'] = (int)$offset;
@@ -188,9 +198,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 $stmt->bindValue(':' . $k, $v, PDO::PARAM_INT);
             }
         }
-
         $stmt->execute();
-
         $serviceList = array();
         while ($data = $stmt->fetch()) {
             $serviceCompleteName = $data['fullname'];
@@ -208,7 +216,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
      * @param $additionalCondition
      * @param $additionalValues
      * @param null $aclObj
-     * @return string
+     * @return array
+     * @throws RestBadRequestException
      */
     private function getVirtualServicesCondition(
         $additionalTables,
@@ -267,6 +276,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
                     $explodedValues = '';
                     foreach ($virtualServiceIds as $k => $v) {
+                        if (!is_numeric($v)) {
+                            throw new \RestBadRequestException('Error, virtual service id must be numerical');
+                        }
                         $explodedValues .= ':vService' . $v . ',';
                         $metaValues['virtualService']['vService' . $v] = (int)$v;
                     }

@@ -55,7 +55,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -65,23 +65,25 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
         $aclServicegroups = "";
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServicegroups .= ' AND sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
         }
-        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name ' .
-            'FROM servicegroup ' .
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name FROM servicegroup ' .
             'WHERE sg_name LIKE :name ' .
             $aclServicegroups .
             'ORDER BY sg_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryContact .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;
@@ -94,11 +96,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
             $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
@@ -111,7 +109,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getServiceList()
     {
@@ -121,16 +119,19 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         $sgIdList = '';
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['sgid'])) {
-            $queryValues['sgid'][0] = '""';
-            $sgIdList .= ':sgid0';
-        } else {
+        if (isset($this->arguments['sgid'])) {
             $listId = explode(',', $this->arguments['sgid']);
             foreach ($listId as $key => $idSg) {
+                if (!is_numeric($idSg)) {
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
+                }
                 $sgIdList .= ':sgid' . $idSg . ',';
                 $queryValues['sgid'][$idSg] = (int)$idSg;
             }
             $sgIdList = rtrim($sgIdList, ',');
+        } else {
+            $queryValues['sgid'][0] = '""';
+            $sgIdList .= ':sgid0';
         }
         $isAdmin = $centreon->user->admin;
         $userId = $centreon->user->user_id;
@@ -155,6 +156,9 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $aclServicegroups . $aclServices;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryContact .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -168,11 +172,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
             $serviceList[] = array(

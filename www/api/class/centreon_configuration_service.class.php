@@ -57,6 +57,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -78,24 +79,34 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = (string)$this->arguments['q'];
+        } else {
+            $q = '';
         }
 
         // Check for service enable
-        if (false === isset($this->arguments['e'])) {
-            $e = '';
+        if (isset($this->arguments['e'])) {
+            $enableList = array('enable', 'disable');
+            if (in_array(strtolower($this->arguments['e']), $enableList)) {
+                $e = $this->arguments['e'];
+            } else {
+                throw new \RestBadRequestException('Error, bad enable status');
+            }
         } else {
-            $e = $this->arguments['e'];
+            $e = 'enable';
         }
 
         // Check for service type
-        if (false === isset($this->arguments['t'])) {
-            $t = 'host';
+        if (isset($this->arguments['t'])) {
+            $typeList = array('hostgroup', 'host');
+            if (in_array(strtolower($this->arguments['t']), $typeList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('Error, bad service type');
+            }
         } else {
-            $t = $this->arguments['t'];
+            $t = 'host';
         }
 
         // Check for service type
@@ -108,15 +119,21 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         }
 
         // Check for service type
-        if (isset($this->arguments['s']) && ('s' === $this->arguments['s'])) {
-            $s = $this->arguments['s'];
-        } elseif (isset($this->arguments['s']) && ('m' === $this->arguments['s'])) {
-            $s = $this->arguments['s'];
+        if (isset($this->arguments['s'])) {
+            $sTypeList = array('s', 'm', 'all');
+            if (in_array(strtolower($this->arguments['s']), $sTypeList)) {
+                $s = $this->arguments['s'];;
+            } else {
+                throw new \RestBadRequestException('Error, bad service type');
+            }
         } else {
             $s = 'all';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range[] = (int)$offset;
             $range[] = (int)$this->arguments['page_limit'];

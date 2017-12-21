@@ -84,7 +84,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
     /**
      * Set a list of filters send by the request
-     *
+     * @throws RestBadRequestException
      */
     protected function setHostFilters()
     {
@@ -95,14 +95,23 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $this->limit = 30;
         }
         if (isset($this->arguments['number'])) {
+
             $this->number = $this->arguments['number'];
         } else {
             $this->number = 0;
         }
+        if (!is_numeric($this->number) || !is_numeric($this->limit)) {
+            throw new \RestBadRequestException('Error, limit must be numerical');
+        }
 
         /* Filters */
         if (isset($this->arguments['status'])) {
-            $this->status = $this->arguments['status'];
+            $statusList = array('up', 'down', 'unreachable', 'pending', 'all');
+            if (in_array(strtolower($this->arguments['status']), $statusList)) {
+                $this->status = $this->arguments['status'];
+            } else {
+                throw new \RestBadRequestException('Bad status parameter');
+            }
         } else {
             $this->status = null;
         }
@@ -134,7 +143,12 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $this->viewType = null;
         }
         if (isset($this->arguments['sortType'])) {
-            $this->sortType = $this->arguments['sortType'];
+            if (strtolower($this->arguments['sortType']) === 'asc' ||
+                strtolower($this->arguments['sortType']) === 'desc') {
+                $this->sortType = $this->arguments['sortType'];
+            } else {
+                throw new \RestBadRequestException('Bad sort type parameter');
+            }
         } else {
             $this->sortType = null;
         }
@@ -290,8 +304,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
     }
 
+
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getHostState()
     {
@@ -369,6 +385,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         if ($this->hostgroup) {
             $explodedValues = '';
             foreach (explode(',', $this->hostgroup) as $hgId => $hgValue) {
+                if (!is_numeric($hgValue)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
@@ -379,6 +398,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
 
         if ($this->instance != -1 && !empty($this->instance)) {
+            if (!is_numeric($this->instance)) {
+                throw new \RestBadRequestException('Error, instance id must be numerical');
+            }
             $query .= " AND h.instance_id = :instanceId ";
             $queryValues['instanceId'] = (int)$this->instance;
         }

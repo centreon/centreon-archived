@@ -87,9 +87,9 @@ You can pass a list of parameters in order to select the data you want.
 |                | separated by a ","                         |
 +----------------+--------------------------------------------+
 | status         | the status of hosts that you want to get   |
-|                | (up, down, unreachable, pending)           |
+|                | (up, down, unreachable, pending, all)      |
 +----------------+--------------------------------------------+
-| hostgroup      | hostgroup filter                           |
+| hostgroup      | hostgroup id filter                        |
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+
@@ -203,11 +203,11 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | status         | the status of services that you want to    |
 |                | get (ok, warning, critical, unknown,       |
-|                | pending)                                   |
+|                | pending, all)                              |
 +----------------+--------------------------------------------+
-| hostgroup      | hostgroup filter                           |
+| hostgroup      | hostgroup id filter                        |
 +----------------+--------------------------------------------+
-| servicegroup   | servicegroup filter                        |
+| servicegroup   | servicegroup id filter                     |
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+

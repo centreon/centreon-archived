@@ -39,7 +39,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 {
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -57,11 +57,13 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 
         if (isset($this->arguments['q'])) {
             $filterAclgroup[] = " (acl_group_name LIKE :aclGroup OR acl_group_alias LIKE :aclGroup) ";
-            $queryValues['aclGroup'] = '%' .(string)$this->arguments['q'] . '%';
+            $queryValues['aclGroup'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
-
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $limit = $this->arguments['page_limit'];
             $range = 'LIMIT :offset,:limit';
@@ -86,10 +88,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+        $stmt->execute();
         $aclGroupList = array();
         while ($data = $stmt->fetch()) {
             $aclGroupList[] = array(

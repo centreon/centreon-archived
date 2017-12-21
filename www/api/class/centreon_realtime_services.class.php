@@ -117,10 +117,18 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         } else {
             $this->number = 0;
         }
+        if (!is_numeric($this->number) || !is_numeric($this->limit)) {
+            throw new \RestBadRequestException('Error, limit must be numerical');
+        }
 
         /* Filters */
         if (isset($this->arguments['status'])) {
-            $this->status = $this->arguments['status'];
+            $statusList = array('up', 'down', 'unreachable', 'pending', 'all');
+            if (in_array(strtolower($this->arguments['status']), $statusList)) {
+                $this->status = $this->arguments['status'];
+            } else {
+                throw new \RestBadRequestException('Error, bad status parameter');
+            }
         } else {
             $this->status = null;
         }
@@ -473,6 +481,9 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if (isset($this->hostgroup) && $this->hostgroup != 0) {
             $explodedValues = '';
             foreach (explode(',', $this->hostgroup) as $hgId => $hgValue) {
+                if (!is_numeric($hgValue)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
@@ -488,6 +499,9 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             $explodedValues = '';
 
             foreach (explode(',', $this->servicegroup) as $sgId => $sgValue) {
+                if (!is_numeric($sgValue)) {
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
+                }
                 $explodedValues .= ':servicegroup' . $sgId . ',';
                 $queryValues['servicegroup'][$sgId] = (int)$sgValue;
             }

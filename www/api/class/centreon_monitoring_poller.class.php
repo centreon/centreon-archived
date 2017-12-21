@@ -61,17 +61,19 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
 
-        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
-            'FROM instances ' .
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name FROM instances ' .
             'WHERE name LIKE :name AND deleted=0 ' .
             'ORDER BY name ';
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryPoller .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;

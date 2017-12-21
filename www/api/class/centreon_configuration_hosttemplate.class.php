@@ -54,25 +54,28 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['hostName'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['hostName'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['hostName'] = '%%';
         }
 
-        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id ' .
-            'FROM host h ' .
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name, h.host_id FROM host h ' .
             'WHERE h.host_register = "0" ' .
             'AND h.host_name LIKE :hostName ' .
             'ORDER BY h.host_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -85,11 +88,7 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $hostList = array();
         while ($data = $stmt->fetch()) {
             $hostList[] = array(

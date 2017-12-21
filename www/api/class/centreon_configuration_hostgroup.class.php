@@ -74,19 +74,19 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['hgName'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['hgName'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['hgName'] = '%%';
         }
 
-        $queryHostGroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
-            . "FROM hostgroup hg "
-            . "WHERE hg.hg_name LIKE :hgName "
-            . $aclHostGroups
-            . "ORDER BY hg.hg_name ";
+        $queryHostGroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id FROM hostgroup hg " .
+            "WHERE hg.hg_name LIKE :hgName " . $aclHostGroups . "ORDER BY hg.hg_name ";
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryHostGroup .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -116,7 +116,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getHostList()
     {
@@ -138,20 +138,22 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['hgid'])) {
-            $queryValues['hgid'][0] = '""';
-            $hgIdList .= ':hgid0';
-        } else {
+        if (isset($this->arguments['hgid'])) {
             $listId = explode(',', $this->arguments['hgid']);
             foreach ($listId as $key => $idHg) {
+                if (!is_numeric($idHg)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $hgIdList .= ':hgid' . $idHg . ',';
                 $queryValues['hgid'][$idHg] = (int)$idHg;
             }
             $hgIdList = rtrim($hgIdList, ',');
+        } else {
+            $queryValues['hgid'][0] = '""';
+            $hgIdList .= ':hgid0';
         }
 
-        $queryHostGroup = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id ' .
-            'FROM hostgroup hg ' .
+        $queryHostGroup = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id FROM hostgroup hg ' .
             'INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id ' .
             'INNER JOIN host h ON  h.host_id = hgr.host_host_id ' .
             'WHERE hg.hg_id IN (' . $hgIdList . ') ' .
@@ -159,6 +161,9 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $aclHosts;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryHostGroup .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -173,11 +178,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $hostList = array();
         while ($data = $stmt->fetch()) {
             $hostList[] = array(

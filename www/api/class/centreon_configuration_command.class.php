@@ -50,6 +50,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
     /**
      * @return array
      * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -61,11 +62,14 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             $queryValues['commandName'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
-        if (false === isset($this->arguments['t'])) {
-            $queryCommandType = '';
-        } else {
+        if (isset($this->arguments['t'])) {
+            if (!is_numeric($this->arguments['t'])) {
+                throw new \RestBadRequestException('Error, command type must be numerical');
+            }
             $queryCommandType = 'AND command_type = :commandType ';
             $queryValues['commandType'] = (int)$this->arguments['t'];
+        } else {
+            $queryCommandType = '';
         }
 
         $queryCommand = 'SELECT SQL_CALC_FOUND_ROWS command_id, command_name ' .
@@ -75,6 +79,9 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             'ORDER BY command_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryCommand .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -90,12 +97,8 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
+        $stmt->execute();
 
-        $dbResult = $stmt->execute();
-
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
         $commandList = array();
         while ($data = $stmt->fetch()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
