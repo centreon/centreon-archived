@@ -200,9 +200,6 @@ class CentreonCentbrokerCfg extends CentreonObject
                 throw new CentreonClapiException(self::MISSINGPARAMETER);
             }
             $args = explode($this->delim, $arg[0]);
-            if (!is_numeric($args[1])) {
-                throw new CentreonClapiException(self::UNKNOWNPARAMETER . ":" . $args[1]);
-            }
             $configIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($configIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
