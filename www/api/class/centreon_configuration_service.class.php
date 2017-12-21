@@ -94,7 +94,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 throw new \RestBadRequestException('Error, bad enable status');
             }
         } else {
-            $e = 'enable';
+            $e = '';
         }
 
         // Check for service type
