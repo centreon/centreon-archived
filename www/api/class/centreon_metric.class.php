@@ -421,6 +421,7 @@ class CentreonMetric extends CentreonWebService
 
 
         /* Replace NaN */
+        $times = null;
         for ($i = 0; $i < count($serviceData); $i++) {
             if (isset($serviceData[$i]['data'])) {
                 $times = array_keys($serviceData[$i]['data']);

@@ -226,24 +226,26 @@ class CentreonGraphService extends CentreonGraph
         }
 
         /* Transform XML to values */
-        $xml = simplexml_load_string($str);
-        if (false === $xml) {
-            throw new RuntimeException();
-        }
-        $rows = $xml->xpath("//xport/data/row");
-        foreach ($rows as $row) {
-            $time = null;
-            $i = 0;
-            foreach ($row->children() as $info) {
-                if (is_null($time)) {
-                    $time = (string)$info;
-                } else {
-                    if (strtolower($info) === "nan" || is_null($info)) {
-                        $metrics[$i++]['data'][$time] = $info;
-                    } elseif ($metrics[$i]['negative']) {
-                        $metrics[$i++]['data'][$time] = floatval((string)$info) * -1;
+        if (!preg_match('/^ERROR/', $str)) {
+            $xml = simplexml_load_string($str);
+            if (false === $xml) {
+                throw new RuntimeException();
+            }
+            $rows = $xml->xpath("//xport/data/row");
+            foreach ($rows as $row) {
+                $time = null;
+                $i = 0;
+                foreach ($row->children() as $info) {
+                    if (is_null($time)) {
+                        $time = (string)$info;
                     } else {
-                        $metrics[$i++]['data'][$time] = floatval((string)$info);
+                        if (strtolower($info) === "nan" || is_null($info)) {
+                            $metrics[$i++]['data'][$time] = $info;
+                        } elseif ($metrics[$i]['negative']) {
+                            $metrics[$i++]['data'][$time] = floatval((string)$info) * -1;
+                        } else {
+                            $metrics[$i++]['data'][$time] = floatval((string)$info);
+                        }
                     }
                 }
             }
