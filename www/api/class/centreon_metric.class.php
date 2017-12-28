@@ -66,14 +66,13 @@ class CentreonMetric extends CentreonWebService
     public function getList()
     {
         $queryValues = array();
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
 
-        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
-            'FROM `metrics` ' .
+        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" FROM `metrics` ' .
             'WHERE metric_name LIKE :name ' .
             'ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
@@ -96,15 +95,15 @@ class CentreonMetric extends CentreonWebService
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     protected function getListByService()
     {
         $queryValues = array();
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id, ' .
@@ -119,6 +118,9 @@ class CentreonMetric extends CentreonWebService
             'ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('400 Bad Request, limit error');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;
@@ -130,11 +132,7 @@ class CentreonMetric extends CentreonWebService
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $metrics = array();
         while ($row = $stmt->fetch()) {
             $metrics[] = array(

@@ -72,7 +72,7 @@ class Centreon_Object_Service_Extended extends Centreon_Object
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
             $this->db->query($sql, $sqlParams);
-            return $this->db->lastInsertId($this->table, $this->primaryKey);
+            return $this->db->lastInsertId();
         }
         return null;
     }

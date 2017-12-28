@@ -45,16 +45,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonNotification.class.php';
 $pearDBO = new CentreonDB("centstorage");
 
 /**
- * Get host icones
- */
-$ehiCache = array();
-$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
-    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
-}
-$DBRESULT->closeCursor();
-
-/**
  * Get user list
  */
 $contact = array("" => null);
@@ -67,9 +57,9 @@ $DBRESULT->closeCursor();
 /*
  * Object init
  */
-$mediaObj = new CentreonMedia($pearDB);
-$host_method = new CentreonHost($pearDB);
-$contactObj = new CentreonContact($pearDB);
+$mediaObj       = new CentreonMedia($pearDB);
+$host_method    = new CentreonHost($pearDB);
+$oNotification     = new CentreonNotification($pearDB);
 
 /*
  * Smarty template Init
@@ -113,25 +103,13 @@ $form->setDefaults($formData);
  */
 $elemArrHostEsc = array();
 if ($contact_id) {
-    $hostEscResources = $contactObj->getNotifications(2, $contact_id);
+    $hostEscResources = $oNotification->getNotifications(2, $contact_id);
 }
 if (isset($hostEscResources)) {
     foreach ($hostEscResources as $hostId => $hostName) {
-        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString(
-            $hostId,
-            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
-        )
-        ) {
-            $host_icone = "./img/media/" . $icone;
-        } else {
-            $host_icone = "./img/icons/host.png";
-        }
-        $moptions = "";
         $elemArrHostEsc[] = array(
             "MenuClass" => "list_" . $style,
-            "RowMenu_hico" => $host_icone,
+            "RowMenu_hico" => "./img/icons/host.png",
             "RowMenu_host" => myDecode($hostName)
         );
         $style != "two" ? $style = "two" : $style = "one";
@@ -145,26 +123,14 @@ $tpl->assign("elemArrHostEsc", $elemArrHostEsc);
  */
 $elemArrSvcEsc = array();
 if ($contact_id) {
-    $svcEscResources = $contactObj->getNotifications(3, $contact_id);
+    $svcEscResources = $oNotification->getNotifications(3, $contact_id);
 }
 if (isset($svcEscResources)) {
     foreach ($svcEscResources as $hostId => $hostTab) {
         foreach ($hostTab as $serviceId => $tab) {
-            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString(
-                $hostId,
-                getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
-            )
-            ) {
-                $host_icone = "./img/media/" . $icone;
-            } else {
-                $host_icone = "./img/icons/host.png";
-            }
-            $moptions = "";
             $elemArrSvcEsc[] = array(
                 "MenuClass" => "list_" . $style,
-                "RowMenu_hico" => $host_icone,
+                "RowMenu_hico" => "./img/icons/host.png",
                 "RowMenu_host" => myDecode($tab['host_name']),
                 "RowMenu_service" => myDecode($tab['service_description'])
             );
@@ -179,25 +145,13 @@ $tpl->assign("elemArrSvcEsc", $elemArrSvcEsc);
  */
 $elemArrHost = array();
 if ($contact_id) {
-    $hostResources = $contactObj->getNotifications(0, $contact_id);
+    $hostResources = $oNotification->getNotifications(0, $contact_id);
 }
 if (isset($hostResources)) {
     foreach ($hostResources as $hostId => $hostName) {
-        if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-            $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-        } elseif ($icone = $host_method->replaceMacroInString(
-            $hostId,
-            getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
-        )
-        ) {
-            $host_icone = "./img/media/" . $icone;
-        } else {
-            $host_icone = "./img/icons/host.png";
-        }
-        $moptions = "";
         $elemArrHost[] = array(
             "MenuClass" => "list_" . $style,
-            "RowMenu_hico" => $host_icone,
+            "RowMenu_hico" => "./img/icons/host.png",
             "RowMenu_host" => myDecode($hostName)
         );
         $style != "two" ? $style = "two" : $style = "one";
@@ -210,26 +164,14 @@ $tpl->assign("elemArrHost", $elemArrHost);
  */
 $elemArrSvc = array();
 if ($contact_id) {
-    $svcResources = $contactObj->getNotifications(1, $contact_id);
+    $svcResources = $oNotification->getNotifications(1, $contact_id);
 }
 if (isset($svcResources)) {
     foreach ($svcResources as $hostId => $hostTab) {
         foreach ($hostTab as $serviceId => $tab) {
-            if ((isset($ehiCache[$hostId]) && $ehiCache[$hostId])) {
-                $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$hostId]);
-            } elseif ($icone = $host_method->replaceMacroInString(
-                $hostId,
-                getMyHostExtendedInfoImage($hostId, "ehi_icon_image", 1)
-            )
-            ) {
-                $host_icone = "./img/media/" . $icone;
-            } else {
-                $host_icone = "./img/icons/host.png";
-            }
-            $moptions = "";
             $elemArrSvc[] = array(
                 "MenuClass" => "list_" . $style,
-                "RowMenu_hico" => $host_icone,
+                "RowMenu_hico" => "./img/icons/host.png",
                 "RowMenu_host" => myDecode($tab['host_name']),
                 "RowMenu_service" => myDecode($tab['service_description'])
             );

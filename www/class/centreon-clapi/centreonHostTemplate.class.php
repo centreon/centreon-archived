@@ -51,9 +51,9 @@ class CentreonHostTemplate extends CentreonHost
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
+        parent::__construct($dependencyInjector);
         $this->params['host_register'] = '0';
         $this->register = 0;
         $this->action = "HTPL";

@@ -48,10 +48,10 @@ class Centreon_Object_Relation_Dependency_Parent_Host extends Centreon_Object_Re
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Dependency();
-        $this->secondObject = new Centreon_Object_Host();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Dependency($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Host($dependencyInjector);
     }
 }

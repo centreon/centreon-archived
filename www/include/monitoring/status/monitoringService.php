@@ -65,7 +65,12 @@ if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
     $param = $_GET;
 }
 
-if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1) {
+if (isset($param["cmd"]) &&
+    $param["cmd"] == 15 &&
+    isset($param["author"]) &&
+    isset($param["en"]) &&
+    $param["en"] == 1
+) {
     if (!isset($param["sticky"]) || !in_array($param["sticky"], array('0', '1'))) {
         $param["sticky"] = '0';
     }
@@ -76,7 +81,12 @@ if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && is
         $param["persistent"] = '0';
     }
     acknowledgeService($param);
-} elseif (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0) {
+} elseif (isset($param["cmd"]) &&
+    $param["cmd"] == 15 &&
+    isset($param["author"]) &&
+    isset($param["en"]) &&
+    $param["en"] == 0
+) {
     acknowledgeServiceDisable();
 }
 

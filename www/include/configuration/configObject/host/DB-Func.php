@@ -138,6 +138,7 @@ function testHostExistence($name = null)
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('host_id');
+        ;
     }
     $DBRESULT = $pearDB->query("SELECT host_name, host_id 
                               FROM host 
@@ -757,7 +758,7 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
 
     $host_id = insertHost($ret, $macro_on_demand, $server_id);
     updateHostHostParent($host_id, $ret);
-    updateHostHostChild($host_id, $ret);
+    updateHostHostChild($host_id);
     updateHostContactGroup($host_id, $ret);
     updateHostContact($host_id, $ret);
     updateHostNotifs($host_id, $ret);
@@ -766,7 +767,7 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
     updateHostNotifOptionFirstNotificationDelay($host_id, $ret);
     updateHostHostGroup($host_id, $ret);
     updateHostHostCategory($host_id, $ret);
-    updateHostTemplateService($host_id, $ret);
+    updateHostTemplateService($host_id);
     updateNagiosServerRelation($host_id, $ret);
     $ret = $form->getSubmitValues();
     if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
@@ -1043,18 +1044,25 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
     }
 
     if (isset($ret['acl_groups']) && count($ret['acl_groups'])) {
-        $sql = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
-        $first = true;
         foreach ($ret['acl_groups'] as $groupId) {
-            if (!$first) {
-                $sql .= ", ";
-            } else {
-                $first = false;
+            $sql = "SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = " . $groupId;
+            $res = $pearDB->query($sql);
+
+            $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
+            $first = true;
+
+            while ($aclRes = $res->fetchRow()) {
+                if (!$first) {
+                    $query .= ", ";
+                } else {
+                    $first = false;
+                }
+                $query .= "(" . $aclRes['acl_res_id'] . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
             }
-            $sql .= "(" . $pearDB->escape($groupId) . ", " . $pearDB->escape($host_id['MAX(host_id)']) . ")";
-        }
-        if (!$first) {
-            $pearDB->query($sql);
+
+            if (!$first) {
+                $pearDB->query($query);
+            }
         }
     }
     /*

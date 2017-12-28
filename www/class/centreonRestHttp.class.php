@@ -81,9 +81,10 @@ class CentreonRestHttp
      * @param string $method The HTTP method
      * @param array|null $data The data to send on the request
      * @param array $headers The extra headers without Content-Type
+     * @param bool $throwContent
      * @return array The result content
      */
-    public function call($url, $method = 'GET', $data = null, $headers = array())
+    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false)
     {
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
@@ -167,7 +168,13 @@ class CentreonRestHttp
         }
 
         if (!is_null($exceptionClass)) {
-            $message = isset($decodedContent['message']) ? $decodedContent['message'] : $logMessage;
+            if ($throwContent && is_array($decodedContent)) {
+                $message = json_encode($decodedContent);
+            } elseif (isset($decodedContent['message'])) {
+                $message = $decodedContent['message'];
+            } else {
+                $message = $logMessage;
+            }
             $this->insertLog($message, $url, $exceptionClass);
             throw new $exceptionClass($message);
         }

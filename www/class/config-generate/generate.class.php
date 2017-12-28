@@ -93,8 +93,8 @@ class Generate
             $this->backend_instance->db_cs->beginTransaction();
             foreach ($services as $host_id => &$values) {
                 foreach ($values as $service_id) {
-                    $stmt->bindParam(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
-                    $stmt->bindParam(
+                    $stmt->bindValue(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
+                    $stmt->bindValue(
                         ':service_description',
                         $service_instance->getString($service_id, 'service_description'),
                         PDO::PARAM_STR

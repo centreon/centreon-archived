@@ -56,7 +56,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -81,17 +81,22 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 		 * 'c' = catagory only
 		 * 's' = severity only
 		 */
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
+        if (isset($this->arguments['t'])) {
+            $selectList = array('a', 'c', 's');
+            if (in_array(strtolower($this->arguments['t']), $selectList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('Error, type must be numerical');
+            }
         } else {
-            $t = $this->arguments['t'];
+            $t = '';
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['hcName'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['hcName'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['hcName'] = '%%';
         }
 
         $queryHostCategory = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hc.hc_name, hc.hc_id ' .
@@ -107,6 +112,9 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
         $queryHostCategory .= 'ORDER BY hc.hc_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryHostCategory .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -119,11 +127,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $hostCategoryList = array();
         while ($data = $stmt->fetch()) {
             $hostCategoryList[] = array(

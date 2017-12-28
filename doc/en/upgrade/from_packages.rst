@@ -4,7 +4,7 @@
 From Packages
 =============
 
-Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
 It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
@@ -276,8 +276,7 @@ Please check this points during and after your upgrade.
 Known issues
 ************
 
-* Not compatible with most commercial products : Centreon MBI, Centreon BAM and Centreon Map are not yet compatible with Centreon Web 2.8.
-* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
+* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.8) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
 * Scales in peformance graphs display too many steps
 * PHP Warning issues when user access to performance graphs menu in Centreon Web

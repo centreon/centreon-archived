@@ -58,13 +58,13 @@ class CentreonLDAP extends CentreonObject
 
 
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonLDAP constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Ldap($dependencyInjector);
         $this->baseParams = array(
             'alias' => '',
             'bind_dn' => '',
@@ -91,7 +91,6 @@ class CentreonLDAP extends CentreonObject
             'user_pager' => '',
             'user_group' => ''
         );
-        $this->object = new \Centreon_Object_Ldap();
         $this->serverParams = array('host_address', 'host_port', 'host_order', 'use_ssl', 'use_tls');
         $this->action = "LDAP";
     }
@@ -133,6 +132,18 @@ class CentreonLDAP extends CentreonObject
         $ldapId = $row['ar_id'];
         unset($res);
         return $ldapId;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getLdapServers($id)
+    {
+        $query = "SELECT host_address, host_port FROM auth_ressource_host  WHERE auth_ressource_id = ?";
+        $res = $this->db->query($query, array($id));
+        $row = $res->fetchAll();
+        return $row;
     }
 
     /**
@@ -234,10 +245,28 @@ class CentreonLDAP extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         list($arName, $address, $port, $ssl, $tls) = $params;
+        if (!is_numeric($port)) {
+            throw new CentreonClapiException('Incorrect port parameters');
+        }
+        if (!is_numeric($ssl)) {
+            throw new CentreonClapiException('Incorrect ssl parameters');
+        }
+        if (!is_numeric($tls)) {
+            throw new CentreonClapiException('Incorrect tls parameters');
+        }
+
         $arId = $this->getLdapId($arName);
+
         if (is_null($arId)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ' ' . $arName);
         }
+
+        $serverList = $this->getLdapServers($arId);
+        $newServer = array('host_address' => $address, 'host_port' => $port);
+        if (in_array($newServer, $serverList)) {
+            throw new CentreonClapiException(self::OBJECTALREADYEXISTS . ' ' . $address);
+        }
+
         $this->db->query(
             "INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls)
              VALUES (:arId, :address, :port, :ssl, :tls)",
@@ -270,16 +299,18 @@ class CentreonLDAP extends CentreonObject
     }
 
     /**
-     * Delete server
-     *
-     * @param int $serverId
-     * @return void
+     * @param $serverId
+     * @throws CentreonClapiException
      */
     public function delserver($serverId)
     {
         if (!isset($serverId)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        if (!is_numeric($serverId)) {
+            throw new CentreonClapiException('Incorrect server id parameters');
+        }
+
         $this->db->query("DELETE FROM auth_ressource_host WHERE ldap_host_id = ?", array($serverId));
     }
 
@@ -305,7 +336,7 @@ class CentreonLDAP extends CentreonObject
         if (in_array(strtolower($params[1]), array('name', 'description', 'enable'))) {
             if (strtolower($params[1]) == 'name') {
                 if (!$this->isUnique($params[2], $arId)) {
-                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $name . ')');
+                    throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $params[2] . ')');
                 }
             }
             $this->db->query(
@@ -314,7 +345,7 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
-                $contactObj = new CentreonContact($this->db);
+                $contactObj = new CentreonContact($this->dependencyInjector);
                 $params[2] = $contactObj->getContactID($params[2]);
             }
             $this->db->query(
@@ -366,8 +397,8 @@ class CentreonLDAP extends CentreonObject
      */
     public function export($filters = null)
     {
-        $configurationLdapObj = new \Centreon_Object_Configuration_Ldap();
-        $serverLdapObj = new \Centreon_Object_Server_Ldap();
+        $configurationLdapObj = new \Centreon_Object_Configuration_Ldap($this->dependencyInjector);
+        $serverLdapObj = new \Centreon_Object_Server_Ldap($this->dependencyInjector);
         $ldapList = $this->object->getList('*', -1, 0, null, null, $filters);
 
         foreach ($ldapList as $ldap) {
@@ -402,7 +433,7 @@ class CentreonLDAP extends CentreonObject
                     $configuration['ari_name'] != 'ldap_dns_use_tls'
                 ) {
                     if ($configuration['ari_name'] == 'ldap_contact_tmpl') {
-                        $contactObj = new \Centreon_Object_Contact();
+                        $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
                         $contactName = $contactObj->getParameters($configuration['ari_value'], 'contact_name');
                         $configuration['ari_value'] = $contactName['contact_name'];
                     }

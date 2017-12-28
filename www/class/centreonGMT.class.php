@@ -61,6 +61,12 @@ class CentreonGMT
     protected $hostLocations = array();
 
     /**
+     *
+     * @param array $pollerLocations
+     */
+    protected $pollerLocations = array();
+
+    /**
      * Default timezone setted in adminstration/options
      * @var string $sDefaultTimezone
      */
@@ -337,6 +343,8 @@ class CentreonGMT
         } else {
             $this->myGMT = 0;
         }
+
+        return $this->myGMT;
     }
 
     /**
@@ -433,27 +441,40 @@ class CentreonGMT
     }
 
     /**
-     *
-     * @param type $values
+     * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':timezone' . $v . ',';
+                $queryValues['timezone' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected timezones
-        $query = "SELECT timezone_id, timezone_name "
-            . "FROM timezone "
-            . "WHERE timezone_id IN (" . $explodedValues . ") "
-            . "ORDER BY timezone_name ";
+        $query = "SELECT timezone_id, timezone_name FROM timezone "
+            . "WHERE timezone_id IN (" . $listValues . ") ORDER BY timezone_name ";
 
-        $resRetrieval = CentreonDBInstance::getConfInstance()->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = CentreonDBInstance::getConfInstance()->prepare($query);
+
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             $items[] = array(
                 'id' => $row['timezone_id'],
                 'text' => $row['timezone_name']
@@ -473,18 +494,51 @@ class CentreonGMT
             return $this->hostLocations;
         }
 
+        $this->getPollerLocations();
+
         $this->hostLocations = array();
 
-        $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
+        $query = 'SELECT host_id, instance_id, timezone FROM hosts WHERE enabled = 1 ';
         try {
             $res = CentreonDBInstance::getMonInstance()->query($query);
             while ($row = $res->fetchRow()) {
-                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                if ($row['timezone'] == "" && isset($this->pollerLocations[$row['instance_id']])) {
+                    $this->hostLocations[$row['host_id']] = $this->pollerLocations[$row['instance_id']];
+                } else {
+                    $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                }
             }
         } catch (\PDOException $e) {
             // Nothing to do
         }
         return $this->hostLocations;
+    }
+
+    /**
+     * Get list of timezone of pollers
+     * @return array
+     */
+    public function getPollerLocations()
+    {
+        if (count($this->pollerLocations)) {
+            return $this->pollerLocations;
+        }
+
+        $query = 'SELECT ns.id, t.timezone_name ' .
+            'FROM cfg_nagios cfgn, nagios_server ns, timezone t ' .
+            'WHERE cfgn.nagios_activate = "1" ' .
+            'AND cfgn.nagios_server_id = ns.id ' .
+            'AND cfgn.use_timezone = t.timezone_id ';
+        try {
+            $res = CentreonDBInstance::getConfInstance()->query($query);
+            while ($row = $res->fetchRow()) {
+                $this->pollerLocations[$row['id']] = $row['timezone_name'];
+            }
+        } catch (\Exception $e) {
+            // Nothing to do
+        }
+
+        return $this->pollerLocations;
     }
 
     /**
@@ -517,7 +571,7 @@ class CentreonGMT
      * @param string $gmt
      * @return string timezone
      */
-    private function getActiveTimezone($gmt)
+    public function getActiveTimezone($gmt)
     {
         $sTimezone = "";
         if (count($this->timezones) == 0) {

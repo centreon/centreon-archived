@@ -121,9 +121,10 @@ abstract class CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = \Centreon_Db_Manager::factory('centreon');
+        $this->db = $dependencyInjector['configuration_db'];
+        $this->dependencyInjector = $dependencyInjector;
         $res = $this->db->query("SELECT `value` FROM informations WHERE `key` = 'version'");
         $row = $res->fetch();
         $this->version = $row['value'];
@@ -222,6 +223,28 @@ abstract class CentreonObject
         return "";
     }
 
+    /**
+     * Catch the beginning of the URL
+     *
+     * @return string
+     *
+     */
+    public function getBaseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https" : "http";
+        $port = '';
+        if (($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80) ||
+            ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
+        ) {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        }
+        $uri = 'centreon';
+        if (preg_match('/^(.+)\/api/', $_SERVER['REQUEST_URI'], $matches)) {
+            $uri = $matches[1];
+        }
+
+        return $protocol . '://' . $_SERVER['HTTP_HOST'] . $port . $uri;
+    }
 
     /**
      * Checks if parameters are correct
@@ -277,10 +300,28 @@ abstract class CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param string $parameters
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $p = $this->object->getParameters($params[0], $params[1]);
+        print $p[$params[1]] . "\n";
+    }
+
+    /**
      * Set Param
      *
-     * @param int $objectId
+     * @param $objectId
      * @param array $params
+     * @throws CentreonClapiException
      */
     public function setparam($objectId, $params = array())
     {
@@ -425,11 +466,11 @@ abstract class CentreonObject
         }
         $objType = $objectTypes[$objType];
 
-        $contactObj = new \Centreon_Object_Contact();
+        $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
 
-        $dbstorage = \Centreon_Db_Manager::factory('storage');
+        $dbstorage = $this->dependencyInjector['realtime_db'];
         $query = 'INSERT INTO log_action
             (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
             VALUES (?, ?, ?, ?, ?, ?)';
@@ -476,5 +517,25 @@ abstract class CentreonObject
                 throw $e;
             }
         }
+    }
+
+
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $dbResult->fetch()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $dbResult->closeCursor();
+        return $name;
     }
 }

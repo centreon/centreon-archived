@@ -56,13 +56,10 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     $executed_check_command = $row['command_line'];
     $host_id = $row['host_id'];
 
-    /* Get custom macros from service and templates */
-    $objHost = new CentreonHost($pearDB);
-    $arrtSvcTpl = $objHost->getServicesTemplates($service_id);
-
+    $arrtSvcTpl = getListTemplates($pearDB, $service_id);
     $arrSvcTplID = array($service_id);
     foreach ($arrtSvcTpl as $svc) {
-        $arrSvcTplID = array_merge($arrSvcTplID, $svc['service_id']);
+        $arrSvcTplID[] = $svc['service_id'];
     }
 
     $query_custom_macro_svc = "SELECT svc_macro_name "
@@ -85,6 +82,9 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
         $arrMacroPassword = array_merge($arrMacroPassword, array($row['host_macro_name']));
     }
 
+    $commandWithoutArg = explode('!', $command_name);
+    $command_name = $commandWithoutArg[0];
+
     /* Get command line with macro */
     $query_command_line = "SELECT command_line FROM command WHERE command_name = '" .
         $pearDB->escape($command_name) . "'";
@@ -95,6 +95,7 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     /* Replace password by stars */
     $command_line_with_macro = str_replace('/', '\/', $command_line_with_macro);
     $command_line_with_macro = str_replace('-', '\-', $command_line_with_macro);
+    $command_line_with_macro = str_replace('.', '\.', $command_line_with_macro);
     $command_line_with_macro = preg_replace('/\$USER\d+\$\\//', '.*', $command_line_with_macro);
     $command_line_with_macro = preg_replace('/\$CENTREONPLUGINS\$\\//', '.*', $command_line_with_macro);
 

@@ -60,10 +60,10 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Host_Category();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Host_Category($dependencyInjector);
         $this->params = array('hc_activate' => '1');
         $this->insertParams = array('hc_name', 'hc_alias');
         $this->exportExcludedParams = array_merge(
@@ -173,8 +173,8 @@ class CentreonHostCategory extends CentreonSeverityAbstract
         $name = strtolower($name);
         /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)member$/", $name, $matches)) {
-            $relobj = new \Centreon_Object_Relation_Host_Category_Host();
-            $obj = new \Centreon_Object_Host();
+            $relobj = new \Centreon_Object_Relation_Host_Category_Host($this->dependencyInjector);
+            $obj = new \Centreon_Object_Host($this->dependencyInjector);
 
             /* Parse arguments */
             if (!isset($arg[0])) {
@@ -225,7 +225,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
@@ -241,7 +241,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     public function export($filters = null)
     {
         parent::export($filters);
-        $relobj = new \Centreon_Object_Relation_Host_Category_Host();
+        $relobj = new \Centreon_Object_Relation_Host_Category_Host($this->dependencyInjector);
         $elements = $relobj->getMergedParameters(
             array($this->object->getUniqueLabelField()),
             array("host_name")

@@ -295,6 +295,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $timestamp;
     }
 
+    private function manageSummerToWinterTimestamp($timestamp, $timezone)
+    {
+        $dstDate = new DateTime('now', $timezone);
+        $dstDate->setTimestamp($timestamp);
+        $dateTime2 = clone $dstDate;
+        $dateTime2->setTimestamp($timestamp - 3600);
+
+        if ($dateTime2->getTimestamp() == $dstDate->getTimestamp()) {
+            $timestamp = $timestamp - 3600;
+        }
+
+        return $timestamp;
+    }
+
     public function getApproachingDowntimes($delay)
     {
         $approachingDowntimes = array();
@@ -330,17 +344,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
             $endTimestamp = $endTime->getTimestamp();
 
-            # Check if HH:mm time is approaching
-            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
-                continue;
-            }
-
             # Check if we jump an hour
             $startTimestamp = $this->manageWinterToSummerTimestamp($startTime, $startTimestamp, $timezone);
             $endTimestamp = $this->manageWinterToSummerTimestamp($endTime, $endTimestamp, $timezone);
             if ($startTimestamp == $endTimestamp) {
                 continue;
             }
+
+            # Check if HH:mm time is approaching
+            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
+                continue;
+            }
+
+            # check backward of one hour
+            $startTimestamp = $this->manageSummerToWinterTimestamp($startTimestamp, $timezone);
 
             $approaching = false;
             if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week'])

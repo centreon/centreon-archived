@@ -49,9 +49,9 @@ class CentreonContactTemplate extends CentreonContact
      *
      * @return void
      */
-    public function __construct($db)
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct($db);
+        parent::__construct($dependencyInjector);
         $this->params['contact_register'] = 0;
         $this->register = 0;
         $this->action = "CONTACTTPL";

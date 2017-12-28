@@ -86,14 +86,18 @@ class CentreonHomeCustomview extends CentreonWebService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getLinkedUsers()
     {
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $customViewId = 0;
-        } else {
+        if (isset($this->arguments['q'])) {
+            if (!is_numeric($this->arguments['q'])) {
+                throw new \RestBadRequestException('Error, custom view id must be numerical');
+            }
             $customViewId = $this->arguments['q'];
+        } else {
+            $customViewId = 0;
         }
 
         global $centreon;
@@ -104,14 +108,18 @@ class CentreonHomeCustomview extends CentreonWebService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getLinkedUsergroups()
     {
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $customViewId = 0;
-        } else {
+        if (isset($this->arguments['q'])) {
+            if (!is_numeric($this->arguments['q'])) {
+                throw new \RestBadRequestException('Error, custom view id must be numerical');
+            }
             $customViewId = $this->arguments['q'];
+        } else {
+            $customViewId = 0;
         }
 
         global $centreon;
@@ -207,7 +215,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->compile_dir = $libDir . '/SmartyCache/compile';
         $tpl->config_dir = $libDir . '/SmartyCache/config';
         $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir =  _CENTREON_PATH_ . '/www/include/home/customViews/';
+        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/home/customViews/';
         $tpl->caching = 0;
         $tpl->compile_check = true;
         $tpl->force_compile = true;

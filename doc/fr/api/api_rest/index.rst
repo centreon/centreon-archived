@@ -7,26 +7,26 @@ API Rest
 Introduction
 ------------
 
-Welcome to the Centreon API rest documentation. This documentation is for devlopers familiar with HTTP requests and JSON. It  explains various API operations, related request and response structure, and error code.
-If you are not familiar with the JSON API, we recommand you to use the Centreon command line API documentation which suits better on your needs.
+Welcome to the Centreon API rest documentation. This documentation is for developers familiar with HTTP requests and JSON. It explains various API operations, related request and response structure, and error codes.
+If you are not familiar with the JSON API, we recommend you to use the Centreon command line API documentation.
 
-This documentation is available only in english. 
+This documentation is available in english only.
 
 
 Permissions
 -----------
 
-To do API calls from a specific Centreon user, you need to have permission on the API.
+To perform API calls using a specific Centreon user, you need permissions to do so.
 You have to edit user settings on the menu **Configuration > Users > Contacts/Users**,
 edit user and on second tab check box **Reach API**.
 
 
-Authentification
+Authentication
 ----------------
 
-Using POST methode and the URL below: ::
+Using POST method and the URL below: ::
 
- api.domain.tld/api/index.php?action=authenticate
+ api.domain.tld/centreon/api/index.php?action=authenticate
 
 Body form-data:
 
@@ -42,7 +42,7 @@ Body form-data:
 |                 |                  |                     |
 +-----------------+------------------+---------------------+
 
-The response is a json flow getting back the authentification token  ::
+The response is a json flow getting back the authentication token  ::
 
   {
   "authToken": "NTc1MDU3MGE3M2JiODIuMjA4OTA2OTc="
@@ -50,17 +50,567 @@ The response is a json flow getting back the authentification token  ::
 
 This token will be used later on the other API actions.
 
+Realtime information
+====================
+
+Host Status
+-----------
+
+All monitoring information regarding hosts are available in throw the Centreon API.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/centreon/api/index.php?object=centreon_realtime_hosts&action=list
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of hosts that you want to get   |
+|                | (up, down, unreachable, pending, all)      |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup id filter                        |
++----------------+--------------------------------------------+
+| instance       | instance id filter                         |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on host name        |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| id                       | host id                                  |
++--------------------------+------------------------------------------±
+| name                     | host name                                |
++--------------------------+------------------------------------------±
+| alias                    | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| address                  | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| state                    | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| state_type               | host state type (SOFT = 0, HARD = 1)     |
++--------------------------+------------------------------------------±
+| output                   | Plugin output - state message            |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts                   |
++--------------------------+------------------------------------------±
+| check_attempt            | current attempts                         |
++--------------------------+------------------------------------------±
+| last_check               | last check time                          |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this host                 |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | note                                     |
++--------------------------+------------------------------------------±
+| icon_image               | icone image for this host                |
++--------------------------+------------------------------------------±
+| icon_image_alt           | title of the image                       |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/centreon/api/index.php?object=centreon_realtime_hosts&action=list&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+
+Service Status
+--------------
+
+All monitoring information regarding services are available in throw the Centreon API. With this call, you can also get host informations in the same time that service information. This web service provide the same possibility that the service monitoring view.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/centreon/api/index.php?object=centreon_realtime_services&action=list
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of services that you want to    |
+|                | get (ok, warning, critical, unknown,       |
+|                | pending, all)                              |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup id filter                        |
++----------------+--------------------------------------------+
+| servicegroup   | servicegroup id filter                     |
++----------------+--------------------------------------------+
+| instance       | instance id filter                         |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on service          |
++----------------+--------------------------------------------+
+| searchHost     | search pattern applyed on host             |
++----------------+--------------------------------------------+
+| searchOutput   | search pattern applyed on output           |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| host_id                  | host id                                  |
++--------------------------+------------------------------------------±
+| host_name                | host name                                |
++--------------------------+------------------------------------------±
+| host_alias               | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| host_address             | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| host_state               | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| host_state_type          | host state type (SOFT = 0, HARD = 1)     |
++--------------------------+------------------------------------------±
+| host_output              | Plugin output - state message            |
++--------------------------+------------------------------------------+
+| host_max_check_attempts  | maximum check attempts for host          |
++--------------------------+------------------------------------------+
+| host_check_attempt       | current attempts                         |
++--------------------------+------------------------------------------±
+| host_last_check          | last check time                          |
++--------------------------+------------------------------------------±
+| host_acknowledged        | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| host_action_url          | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| host_notes_url           | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| host_notes               | note                                     |
++--------------------------+------------------------------------------±
+| description              | service description - service name       |
++--------------------------+------------------------------------------±
+| display_name             | service display name                     |
++--------------------------+------------------------------------------±
+| service_id               | service id                               |
++--------------------------+------------------------------------------±
+| state                    | service state                            |
++--------------------------+------------------------------------------±
+| state_type               | service state type (SOFT = 0, HARD = 1)  |
++--------------------------+------------------------------------------±
+| output                   | service output returned by plugins       |
++--------------------------+------------------------------------------±
+| perfdata                 | service perfdata returned by plugins     |
++--------------------------+------------------------------------------±
+| current_attempt          | maximum check attempts for the service   |
++--------------------------+------------------------------------------±
+| last_update              | last update date for service             |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| next_check               | next check time for service              |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts for service       |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | notes                                    |
++--------------------------+------------------------------------------±
+| icone_image              | icone image for service                  |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+| event_handler_enabled    | is the event-handfler enabled            |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this service              |
++--------------------------+------------------------------------------±
+
+Example:
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/centreon/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
+
+
+Configuration
+-------------
+
+Realtime information
+====================
+
+Host Status
+-----------
+
+All monitoring information regarding hosts are available in throw the Centreon API.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/api/action=list&object=centreon_realtime_hosts
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of services that you want to    |
+|                | get                                        |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup filter                           |
++----------------+--------------------------------------------+
+| instance       | instance name filter                       |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on host name        |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| id                       | host id                                  |
++--------------------------+------------------------------------------±
+| name                     | host name                                |
++--------------------------+------------------------------------------±
+| alias                    | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| address                  | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| state                    | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| state_type               | host state type (SOFT / HARD)            |
++--------------------------+------------------------------------------±
+| output                   | Plugin output - state message            |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts                   |
++--------------------------+------------------------------------------±
+| check_attempt            | current attempts                         |
++--------------------------+------------------------------------------±
+| last_check               | last check time                          |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this host                 |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | note                                     |
++--------------------------+------------------------------------------±
+| icon_image               | icone image for this host                |
++--------------------------+------------------------------------------±
+| icon_image_alt           | title of the image                       |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
+
+Service Status
+--------------
+
+All monitoring information regarding services are available in throw the Centreon API. With this call, you can also get host informations in the same time that service information. This web service provide the same possibility that the service monitoring view.
+
+Using GET method and the URL below:  ::
+
+ api.domain.tld/api/action=list&object=centreon_realtime_services
+
+**Header:**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
++=====================+=================================+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Parameters**
+
+You can pass a list of parameters in order to select the data you want.
+
++----------------+--------------------------------------------+
+|  Parameters    |   values                                   |
++================+============================================+
+| viewType       | select the predefined filter like in the   |
+|                | monitoring view: all, unhandled, problems  |
++----------------+--------------------------------------------+
+| fields         | the fields list that you want to get       |
+|                | separated by a ","                         |
++----------------+--------------------------------------------+
+| status         | the status of services that you want to    |
+|                | get                                        |
++----------------+--------------------------------------------+
+| hostgroup      | hostgroup filter                           |
++----------------+--------------------------------------------+
+| servicegroup   | servicegroup filter                        |
++----------------+--------------------------------------------+
+| instance       | instance name filter                       |
++----------------+--------------------------------------------+
+| search         | search pattern applyed on service          |
++----------------+--------------------------------------------+
+| searchHost     | search pattern applyed on host             |
++----------------+--------------------------------------------+
+| searchOutput   | search pattern applyed on output           |
++----------------+--------------------------------------------+
+| criticality    | a specific criticity                       |
++----------------+--------------------------------------------+
+| sortType       | ASC ou DESC                                |
++----------------+--------------------------------------------+
+| limit          | number of line you want                    |
++----------------+--------------------------------------------+
+| number         | page number                                |
++----------------+--------------------------------------------+
+| order          | the order type (selected in the field list)|
++----------------+--------------------------------------------+
+
+Field list :
+
++--------------------------+------------------------------------------+
+| Fields                   | Description                              |
++==========================+==========================================+
+| host_id                  | host id                                  |
++--------------------------+------------------------------------------±
+| host_name                | host name                                |
++--------------------------+------------------------------------------±
+| host_alias               | host alias (description of the host)     |
++--------------------------+------------------------------------------±
+| host_address             | host address (domain name or ip)         |
++--------------------------+------------------------------------------±
+| host_state               | host state (UP = 0, DOWN = 2, UNREA = 3) |
++--------------------------+------------------------------------------±
+| host_state_type          | host state type (SOFT / HARD)            |
++--------------------------+------------------------------------------±
+| host_output              | Plugin output - state message            |
++--------------------------+------------------------------------------+
+| host_max_check_attempts  | maximum check attempts for host          |
++--------------------------+------------------------------------------+
+| host_check_attempt       | current attempts                         |
++--------------------------+------------------------------------------±
+| host_last_check          | last check time                          |
++--------------------------+------------------------------------------±
+| host_acknowledged        | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| instance                 | name of the instance who check this host |
++--------------------------+------------------------------------------±
+| instance_id              | id of the instance who check this host   |
++--------------------------+------------------------------------------±
+| host_action_url          | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| host_notes_url           | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| host_notes               | note                                     |
++--------------------------+------------------------------------------±
+| description              | service description - service name       |
++--------------------------+------------------------------------------±
+| display_name             | service display name                     |
++--------------------------+------------------------------------------±
+| service_id               | service id                               |
++--------------------------+------------------------------------------±
+| state                    | service state                            |
++--------------------------+------------------------------------------±
+| state_type               | service state type (HARD = 1, SOFT = 0)  |
++--------------------------+------------------------------------------±
+| output                   | service output returned by plugins       |
++--------------------------+------------------------------------------±
+| perfdata                 | service perfdata returned by plugins     |
++--------------------------+------------------------------------------±
+| current_attempt          | maximum check attempts for the service   |
++--------------------------+------------------------------------------±
+| last_update              | last update date for service             |
++--------------------------+------------------------------------------±
+| last_state_change        | last time the state change               |
++--------------------------+------------------------------------------±
+| last_hard_state_change   | last time the state change in hard type  |
++--------------------------+------------------------------------------±
+| next_check               | next check time for service              |
++--------------------------+------------------------------------------±
+| max_check_attempts       | maximum check attempts for service       |
++--------------------------+------------------------------------------±
+| action_url               | shortcut for action URL                  |
++--------------------------+------------------------------------------±
+| notes_url                | shortcut for note URL                    |
++--------------------------+------------------------------------------±
+| notes                    | notes                                    |
++--------------------------+------------------------------------------±
+| icone_image              | icone image for service                  |
++--------------------------+------------------------------------------±
+| passive_checks           | accept passive results                   |
++--------------------------+------------------------------------------±
+| active_checks            | active checks are enabled                |
++--------------------------+------------------------------------------±
+| acknowledged             | acknowledged flag                        |
++--------------------------+------------------------------------------±
+| notify                   | notification is enabled                  |
++--------------------------+------------------------------------------±
+| scheduled_downtime_depth | scheduled_downtime_depth                 |
++--------------------------+------------------------------------------±
+| flapping                 | is the host flapping ?                   |
++--------------------------+------------------------------------------±
+| event_handler_enabled    | is the event-handfler enabled            |
++--------------------------+------------------------------------------±
+| criticality              | criticality fo this service              |
++--------------------------+------------------------------------------±
+
+Example:
+
+Using GET method and the URL below:  ::
+
+  api.domain.tld/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
+
+
+Configuration
+-------------
 
 Getting started
-----------------
+---------------
 
-95% of actions you can do using Centreon command line API are available with the API rest.
+Most of the actions available (about 95%) in the command line API is available in the rest API.
 
-Here is an axample about listing hosts using rest API.
+Here is an example for listing hosts using rest API.
 
-Using POST methode and the URL below:  ::
+Using POST method and the URL below:  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 **Header:**
 
@@ -71,7 +621,7 @@ Using POST methode and the URL below:  ::
 | Content-Type        | application/json                |
 +---------------------+---------------------------------+
 | centreon-auth-token | the value of authToken you got  |
-|                     | on the authentification response|
+|                     | on the authentication response  |
 +---------------------+---------------------------------+
 
 **Body:** ::
@@ -79,7 +629,7 @@ Using POST methode and the URL below:  ::
   {
     "action": "show",
     "object": "HOST"
-  }  
+  }
 
 * The key **action** corresponds to the option **-a** in Centreon CLAPI, the value **show** corresponds to the **-a** option value.
 * The key **object** corresponds to the option **-o** in Centreon CLAPI, the value **HOST** corresponds to the **-o** option value.
@@ -87,7 +637,7 @@ Using POST methode and the URL below:  ::
 The equivalent action using Centreon CLAPI is: ::
 
    [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a show
-  
+
 
 **Response:**
 The response is a json flow listing all hosts and formated as below: ::
@@ -107,7 +657,7 @@ The response is a json flow listing all hosts and formated as below: ::
       "alias": "mail-neptune-frontend",
       "address": "mail-neptune-frontend",
       "activate": "1"
-    },    
+    },
     {
       "id": "14",
       "name": "srvi-mysql01",
@@ -123,9 +673,9 @@ The response is a json flow listing all hosts and formated as below: ::
 API Calls
 ----------
 
-All API calls you can do on objects are desribed below. Note that you need to be authentify before each call. 
+All API calls you can do on objects are described below. Note that you need to be authenticate before each call.
 
-API calls on the Host object are fully-detailed below. For the next objets, only the actions available are listed, so just follow the same approach as for the host object for an API call.
+API calls on the Host object are fully-detailed below. For the next objects, only the actions available are listed, so just follow the same approach as for the host object for an API call.
 
 Host
 ~~~~
@@ -136,7 +686,7 @@ List hosts
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -148,7 +698,7 @@ List hosts
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -197,7 +747,7 @@ Add host
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -209,7 +759,7 @@ Add host
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -235,7 +785,7 @@ Delete host
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -247,7 +797,7 @@ Delete host
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -274,7 +824,7 @@ Set parameters
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -286,7 +836,7 @@ Set parameters
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -405,7 +955,7 @@ Set instance poller
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -417,7 +967,7 @@ Set instance poller
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -438,12 +988,12 @@ Set instance poller
    }
 
 
-Get macro 
+Get macro
 ##########
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -455,7 +1005,7 @@ Get macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -469,7 +1019,7 @@ Get macro
 
 
 
-**Response** 
+**Response**
 Here is a response example ::
 
    {
@@ -504,7 +1054,7 @@ Set macro
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -516,7 +1066,7 @@ Set macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -531,7 +1081,7 @@ Set macro
 To edit an existing custom marco, The MacroName used on the body should be defined on the Custom Marco of the choosen host. If the marco doesn't exist, it will be created.
 
 **Response** ::
- 
+
  {
   "result": []
  }
@@ -542,7 +1092,7 @@ Delete macro
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -554,7 +1104,7 @@ Delete macro
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -566,7 +1116,7 @@ Delete macro
     "values": "mail-uranus-frontend;MacroName"
   }
 
-The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host. 
+The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host.
 
 **Response** ::
 
@@ -580,7 +1130,7 @@ Get template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -592,7 +1142,7 @@ Get template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -608,7 +1158,7 @@ Get template
 
 **Response**
 Here is a response example ::
- 
+
  {
   "result": [
     {
@@ -633,7 +1183,7 @@ Set template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -645,7 +1195,7 @@ Set template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -662,7 +1212,7 @@ The MyHostTemplate used on the body should exist as a host template. The new tem
 **Response** ::
   {
   "result": []
-  } 
+  }
 
 
 
@@ -671,7 +1221,7 @@ Add template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -683,7 +1233,7 @@ Add template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -695,7 +1245,7 @@ Add template
     "values": "mail-uranus-frontend;MyHostTemplate"
   }
 
-The MyHostTemplate used on the body should exist as a host template. The new template is added without erasing template already linked 
+The MyHostTemplate used on the body should exist as a host template. The new template is added without erasing template already linked
 
 **Response** ::
   {
@@ -708,7 +1258,7 @@ Delete template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -720,7 +1270,7 @@ Delete template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -732,7 +1282,7 @@ Delete template
     "values": "mail-uranus-frontend;MyHostTemplate"
   }
 
-The MyHostTemplate used on the body should exist as a host template. 
+The MyHostTemplate used on the body should exist as a host template.
 
 **Response** ::
   {
@@ -745,7 +1295,7 @@ Apply template
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -757,7 +1307,7 @@ Apply template
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -781,7 +1331,7 @@ Get parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -793,7 +1343,7 @@ Get parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -807,7 +1357,7 @@ Get parent
 
 
 **Response** ::
-  
+
  {
   "result": [
     {
@@ -816,14 +1366,14 @@ Get parent
     }
   ]
  }
- 
+
 
 Add parent
 ##########
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -835,7 +1385,7 @@ Add parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -865,7 +1415,7 @@ Set parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -877,7 +1427,7 @@ Set parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -908,7 +1458,7 @@ Delete parent
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -920,7 +1470,7 @@ Delete parent
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -950,7 +1500,7 @@ Get contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -962,7 +1512,7 @@ Get contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -985,7 +1535,7 @@ Get contact group
     }
   ]
   }
-  
+
 
 
 
@@ -994,7 +1544,7 @@ Add contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1006,7 +1556,7 @@ Add contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1037,7 +1587,7 @@ Set contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1049,7 +1599,7 @@ Set contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1080,7 +1630,7 @@ Delete contact group
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1092,7 +1642,7 @@ Delete contact group
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1121,7 +1671,7 @@ Get contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1133,7 +1683,7 @@ Get contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1155,7 +1705,7 @@ Get contact
       "name": "user-mail"
     }
   ]
-  } 
+  }
 
 
 Add contact
@@ -1163,7 +1713,7 @@ Add contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1175,7 +1725,7 @@ Add contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1206,7 +1756,7 @@ Set contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1218,7 +1768,7 @@ Set contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1250,7 +1800,7 @@ Delete contact
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1262,7 +1812,7 @@ Delete contact
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1291,7 +1841,7 @@ Get hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1303,7 +1853,7 @@ Get hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1336,7 +1886,7 @@ Add hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1348,7 +1898,7 @@ Add hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1380,7 +1930,7 @@ Set hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1392,7 +1942,7 @@ Set hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1424,7 +1974,7 @@ Delete hostgroup
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1436,7 +1986,7 @@ Delete hostgroup
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1475,7 +2025,7 @@ Enable
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1487,7 +2037,7 @@ Enable
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 
@@ -1513,7 +2063,7 @@ Disable
 
 **POST**  ::
 
- api.domain.tld/api/index.php?action=action&object=centreon_clapi
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
 
 
 **Header**
@@ -1525,7 +2075,7 @@ Disable
 | Content-Type        | application/json                               |
 +---------------------+------------------------------------------------+
 | centreon_auth_token | the value of authToken you got                 |
-|                     | on the response of the authentification part   |
+|                     | on the response of the authentication part     |
 +---------------------+------------------------------------------------+
 
 

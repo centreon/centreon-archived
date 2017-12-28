@@ -433,26 +433,29 @@ class CentreonUser
         if (!count($parameters)) {
             return null;
         }
-
+        $queryValues = array();
         $keys = array_keys($parameters);
-
-        $deleteQuery = 'DELETE FROM contact_param '
-            . 'WHERE cp_contact_id = ' . $this->user_id . ' '
-            . 'AND  cp_key IN("'
-            . implode('","', $keys)
-            . '") ';
-        $db->query($deleteQuery);
-
-        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES ';
-        $first = true;
-        foreach ($parameters as $key => $value) {
-            if (!$first) {
-                $insertQuery .= ',';
-            }
-            $insertQuery .= '("' . $key . '","' . $value . '", ' . $this->user_id . ')';
-            $first = false;
+        $deleteQuery = 'DELETE FROM contact_param WHERE cp_contact_id = :cp_contact_id AND cp_key IN( ';
+        $queryValues[':cp_contact_id'] = $this->user_id;
+        $queryKey ='';
+        foreach ($keys as $key) {
+            $queryKey .=' :cp_key'.$key.',';
+            $queryValues[':cp_key'.$key] = $key;
         }
-        $db->query($insertQuery);
+        $queryKey = rtrim($queryKey, ',');
+        $deleteQuery .= $queryKey .' )';
+        $stmt = $db->prepare($deleteQuery);
+        $stmt->execute($queryValues);
+
+        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES '
+            . '(:cp_key, :cp_value, :cp_contact_id)';
+        $sth = $db->prepare($insertQuery);
+        foreach ($parameters as $key => $value) {
+            $sth->bindParam(':cp_key', $key, PDO::PARAM_STR);
+            $sth->bindParam(':cp_value', $value, PDO::PARAM_STR);
+            $sth->bindParam(':cp_contact_id', $this->user_id, PDO::PARAM_INT);
+            $sth->execute();
+        }
     }
 
     /**

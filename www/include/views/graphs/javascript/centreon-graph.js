@@ -30,10 +30,6 @@
       });
     }
 
-    /* Prepare extra legends */
-    this.legendDiv = jQuery('<div>').addClass('chart-legends');
-    this.$elem.after(this.legendDiv);
-
     this.timeFormat = this.getTimeFormat();
 
     /* Color for status graph */
@@ -50,6 +46,10 @@
     ]);
 
     this.loadGraphId();
+
+    /* Prepare extra legends */
+    this.legendDiv = jQuery('<div>').addClass('chart-legends').attr('id', 'chart-legends-' + this.id);
+    this.$elem.after(this.legendDiv);
 
     /* Get start time and end time */
     times = this.getTimes();
@@ -275,7 +275,7 @@
           } else {
               self.chart.load(self.buildMetricData(data[0]).data);
               self.chart.regions(self.buildRegions(data[0]));
-              self.buildExtraLegend(data[0].legends);
+              self.buildExtraLegend(data[0].legends, data[0].service_id);
           }
         }
       });
@@ -314,7 +314,7 @@
       var column;
       var name;
       var legend;
-      var axesName;
+      var axesName = 'y';
       var unit;
       var times = dataRaw.times;
       var thresholdData;
@@ -338,6 +338,9 @@
             units[dataRaw.data[i].unit] = [];
           }
           units[dataRaw.data[i].unit].push(name);
+          axis[axesName] = {
+            label: dataRaw.data[i].unit
+          };
         }
         data.names[name] = legend;
         data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
@@ -346,7 +349,6 @@
       }
 
       if (Object.keys(units).length === 2) {
-        axesName = 'y';
         data.axes = {};
         for (unit in units) {
           if (units.hasOwnProperty(unit)) {
@@ -806,12 +808,13 @@
      * Build for display the extra legends
      *
      * @param {String[]} legends - The list of legends to display
+     * @param {String} service_id - The host id and service id
      */
-    buildExtraLegend: function (legends) {
+    buildExtraLegend: function (legends, service_id) {
       var self = this;
       var i;
 
-      jQuery('.chart-legend').each(function (idx, el) {
+      jQuery('#chart-legends-' + service_id + ' .chart-legend').each(function (idx, el) {
         var legendName = jQuery(el).data('legend');
         if (!self.ids.hasOwnProperty(legendName)) {
           return true;

@@ -70,9 +70,9 @@ class Centreon_Object_Host_Extended extends Centreon_Object
             $sqlParams[] = $value;
         }
         if ($sqlFields && $sqlValues) {
-            $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
+            $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
             $this->db->query($sql, $sqlParams);
-            return $this->db->lastInsertId($this->table, $this->primaryKey);
+            return $this->db->lastInsertId();
         }
         return null;
     }
@@ -97,7 +97,7 @@ class Centreon_Object_Host_Extended extends Centreon_Object
                         WHERE img_id = ?";
                 $res = $this->getResult($sql, array($params[$image]), "fetch");
                 if (is_array($res)) {
-                    $params[$image] = $res["dir_name"]."/".$res["img_path"];
+                    $params[$image] = $res["dir_name"] . "/" . $res["img_path"];
                 }
             }
         }

@@ -240,7 +240,7 @@ class WikiApi
 
         $token = $this->getMethodToken('delete', $title);
 
-        if($token){
+        if ($token) {
             $postfields = array(
                 'action' => 'delete',
                 'title' => $title,
@@ -261,17 +261,25 @@ class WikiApi
         $postfields = array(
             'format' => 'json',
             'action' => 'query',
-            'list' => 'allpages'
+            'list' => 'allpages',
+            'aplimit' => '10'
         );
 
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
-        $result = curl_exec($this->curl);
-        $result = json_decode($result);
-
         $pages = array();
-        foreach ($result->query->allpages as $page) {
-            $pages[] = $page->title;
-        }
+        do {
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+            $result = curl_exec($this->curl);
+            $result = json_decode($result);
+
+            foreach ($result->query->allpages as $page) {
+                $pages[] = $page->title;
+            }
+
+            // Get next page if exists
+            if (isset($result->{'query-continue'}->allpages->apcontinue)) {
+                $postfields['apfrom'] = $result->{'query-continue'}->allpages->apcontinue;
+            }
+        } while (isset($result->{'query-continue'}->allpages->apcontinue));
 
         return $pages;
     }

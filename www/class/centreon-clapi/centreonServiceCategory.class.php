@@ -59,10 +59,10 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Service_Category();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Service_Category($dependencyInjector);
         $this->params = array('sc_activate' => '1');
         $this->insertParams = array('sc_name', 'sc_description');
         $this->exportExcludedParams = array_merge(
@@ -162,9 +162,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             }
             $categoryId = $hcIds[0];
 
-            $obj = new \Centreon_Object_Service();
-            $relobj = new \Centreon_Object_Relation_Service_Category_Service();
-            $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
+            $obj = new \Centreon_Object_Service($this->dependencyInjector);
+            $relobj = new \Centreon_Object_Relation_Service_Category_Service($this->dependencyInjector);
+            $hostServiceRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
                 if ($matches[2] == "servicetemplate") {
@@ -261,7 +261,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
@@ -331,7 +331,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         foreach ($relationTable as $relationId) {
             $relobj->insert($categoryId, $relationId);
         }
-        $acl = new CentreonACL();
+        $acl = new CentreonACL($this->dependencyInjector);
         $acl->reload(true);
     }
 
@@ -390,7 +390,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         foreach ($relationTable as $relationId) {
             $relobj->insert($categoryId, $relationId);
         }
-        $acl = new CentreonACL();
+        $acl = new CentreonACL($this->dependencyInjector);
         $acl->reload(true);
     }
 
@@ -409,9 +409,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             null,
             $filters
         );
-        $relobj = new \Centreon_Object_Relation_Service_Category_Service();
-        $hostServiceRel = new \Centreon_Object_Relation_Host_Service();
-        $svcObj = new \Centreon_Object_Service();
+        $relobj = new \Centreon_Object_Relation_Service_Category_Service($this->dependencyInjector);
+        $hostServiceRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
+        $svcObj = new \Centreon_Object_Service($this->dependencyInjector);
         foreach ($scs as $sc) {
             $scId = $sc[$this->object->getPrimaryKey()];
             $scName = $sc[$this->object->getUniqueLabelField()];

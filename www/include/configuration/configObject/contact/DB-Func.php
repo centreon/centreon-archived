@@ -545,11 +545,14 @@ function insertContact($ret = array())
 
     if (isset($ret["contact_passwd"])) {
         if ($encryptType == 1) {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
         } else {
-            $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
         }
     }
 
@@ -720,12 +723,17 @@ function updateContact($contact_id = null, $from_MC = false)
         $centreon->user->set_lang($ret["contact_lang"]);
     }
 
-    if ($encryptType == 1) {
-        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-    } elseif ($encryptType == 2) {
-        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
-    } elseif (isset($ret['contact_passwd'])) {
-        $ret["contact_passwd"] = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+    if (isset($ret["contact_passwd"])) {
+        if ($encryptType == 1) {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+        } elseif ($encryptType == 2) {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
+        } elseif (isset($ret['contact_passwd'])) {
+            $ret["contact_passwd"] = $ret["contact_passwd2"] =
+                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+        }
     }
 
     /* Prepare value for changelog */

@@ -209,31 +209,43 @@ class CentreonInstance
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $selectedInstances = '';
         $items = array();
-
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':instance' . $v . ',';
+                $queryValues['instance' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+            $selectedInstances .= "AND rel.instance_id IN ($listValues) ";
         } else {
-            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+            $listValues .= '""';
         }
 
-        $query = "SELECT DISTINCT p.name as name, p.id  as id"
-            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-            . " WHERE r.resource_id = rel.resource_id"
-            . " AND p.id = rel.instance_id "
-            . " AND p.id IN (" . $explodedValues . ")"
-            . $selectedInstances
-            . " ORDER BY p.name";
-        $DBRESULT = $this->db->query($query);
-        while ($data = $DBRESULT->fetchRow()) {
+        $query = 'SELECT DISTINCT p.name as name, p.id  as id FROM cfg_resource r, nagios_server p, ' .
+            'cfg_resource_instance_relations rel ' .
+            ' WHERE r.resource_id = rel.resource_id' .
+            ' AND p.id = rel.instance_id ' .
+            ' AND p.id IN (' . $listValues . ')' . $selectedInstances .
+            ' ORDER BY p.name';
+
+        $stmt = $this->db->prepare($query);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($data = $stmt->fetch()) {
             $items[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']
@@ -241,5 +253,40 @@ class CentreonInstance
         }
 
         return $items;
+    }
+
+    /**
+     * @param $instanceName
+     * @return array
+     */
+    public function getHostsByInstance($instanceName)
+    {
+        $instanceList = array();
+
+        $query = "SELECT host_name, name " .
+            " FROM host h, nagios_server ns, ns_host_relation nshr " .
+            " WHERE ns.name = '" . $this->db->escape($instanceName) . "'" .
+            " AND nshr.host_host_id = h.host_id " .
+            " AND h.host_activate = '1' " .
+            " ORDER BY h.host_name";
+        $result = $this->db->query($query);
+
+        while ($elem = $result->fetchrow()) {
+            $instanceList[] = array(
+                'host' => $elem['host_name'],
+                'name' => $elem['instance_name']
+            );
+        }
+        return $instanceList;
+    }
+
+    public function getInstanceId($instanceName)
+    {
+        $query = "SELECT ns.id " .
+            " FROM nagios_server ns " .
+            " WHERE ns.name = '" . $this->db->escape($instanceName) . "'";
+        $result = $this->db->query($query);
+
+        return $result->fetchrow();
     }
 }

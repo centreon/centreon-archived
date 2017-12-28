@@ -54,10 +54,10 @@ class CentreonManufacturer extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Manufacturer();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Manufacturer($dependencyInjector);
         $this->params = array();
         $this->insertParams = array('name', 'alias');
         $this->action = "VENDOR";

@@ -41,7 +41,7 @@ if (!isset($centreon)) {
  * Init Centcore Pipe
  */
 if (defined('_CENTREON_VARLIB_')) {
-    $centcore_pipe = _CENTREON_VARLIB_."/centcore.cmd";
+    $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
 } else {
     $centcore_pipe = "/var/lib/centreon/centcore.cmd";
 }
@@ -80,7 +80,7 @@ if ($n > 1) {
  */
 $attrSelect = array("style" => "width: 220px;");
 
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 /*
  * Init Header for tables in template
  */
@@ -89,19 +89,20 @@ $form->addElement('header', 'opt', _("Export Options"));
 $form->addElement('header', 'result', _("Actions"));
 $form->addElement('header', 'infos', _("Implied Server"));
 $form->addElement('select', 'host', _("Poller"), $tab_nagios_server, $attrSelect);
-    
+
 /*
  * Add checkbox for enable restart
  */
 $form->addElement('checkbox', 'generate', _("Generate trap database "));
 $form->addElement('checkbox', 'apply', _("Apply configurations"));
 
-$options = array(null => null,
-                'RELOADCENTREONTRAPD' => _('Reload'),
-                'RESTARTCENTREONTRAPD' => _('Restart')
-                );
+$options = array(
+    null => null,
+    'RELOADCENTREONTRAPD' => _('Reload'),
+    'RESTARTCENTREONTRAPD' => _('Restart')
+);
 $form->addElement('select', 'signal', _('Send signal'), $options);
-    
+
 /*
  * Set checkbox checked.
  */
@@ -135,10 +136,16 @@ if ($form->validate()) {
          * Create Server List to snmptt generation file
          */
         $tab_server = array();
-        $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `snmp_trapd_path_conf`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+        $query = "SELECT `name`, `id`, `snmp_trapd_path_conf`, `localhost` FROM `nagios_server` " .
+            "WHERE `ns_activate` = '1' ORDER BY `localhost` DESC";
+        $DBRESULT_Servers = $pearDB->query($query);
         while ($tab = $DBRESULT_Servers->fetchRow()) {
             if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
-                $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+                $tab_server[$tab["id"]] = array(
+                    "id" => $tab["id"],
+                    "name" => $tab["name"],
+                    "localhost" => $tab["localhost"]
+                );
             }
             if ($tab['localhost'] && $tab['snmp_trapd_path_conf']) {
                 $trapdPath = $tab['snmp_trapd_path_conf'];
@@ -154,18 +161,18 @@ if ($form->validate()) {
                 $filename = "{$trapdPath}/{$host['id']}/centreontrapd.sdb";
                 $output = array();
                 $returnVal = 0;
-                exec(_CENTREON_PATH_."/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
-                $stdout .= implode("<br/>", $output)."<br/>";
+                exec(_CENTREON_PATH_ . "/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
+                $stdout .= implode("<br/>", $output) . "<br/>";
                 if ($returnVal != 0) {
                     break;
                 }
             }
-            $msg_generate .= str_replace("\n", "<br/>", $stdout)."<br/>";
+            $msg_generate .= str_replace("\n", "<br/>", $stdout) . "<br/>";
         }
         if (isset($ret["apply"]) && $ret["apply"] && $returnVal == 0) {
             $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
             foreach ($tab_server as $host) {
-                passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
+                passthru("echo 'SYNCTRAP:" . $host['id'] . "' >> $centcore_pipe", $return);
                 if ($return) {
                     $msg_generate .= "Error while writing into $centcore_pipe<br/>";
                 } else {
@@ -175,11 +182,11 @@ if ($form->validate()) {
         }
         if (isset($ret['signal']) && in_array($ret['signal'], array('RELOADCENTREONTRAPD', 'RESTARTCENTREONTRAPD'))) {
             foreach ($tab_server as $host) {
-                passthru("echo '".$ret['signal'].":".$host['id']."' >> $centcore_pipe", $return);
+                passthru("echo '" . $ret['signal'] . ":" . $host['id'] . "' >> $centcore_pipe", $return);
                 if ($return) {
                     $msg_generate .= "Error while writing into $centcore_pipe<br/>";
                 } else {
-                    $msg_generate .= "Poller (id:{$host['id']}): ".$ret['signal']." sent to centcore.cmd<br/>";
+                    $msg_generate .= "Poller (id:{$host['id']}): " . $ret['signal'] . " sent to centcore.cmd<br/>";
                 }
             }
         }
@@ -200,13 +207,18 @@ if (isset($host_list) && $host_list) {
     $tpl->assign('host_list', $host_list);
 }
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
+$tpl->assign(
+    "helpattr",
+    'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, ' .
+    '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],' .
+    'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
+);
 $helptext = "";
 
 include_once("help.php");
 
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 

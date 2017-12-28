@@ -59,7 +59,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -88,8 +88,10 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         if (isset($this->arguments['hostgroup'])) {
             $additionalTables .= ',hostgroup_relation hg ';
             $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
-
-            foreach ($this->arguments['hostgroup'] as $hgId => $hgValue) {
+            foreach (explode(',', $this->arguments['hostgroup']) as $hgId => $hgValue) {
+                if (!is_numeric($hgValue)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $explodedValues .= ':hostgroup' . $hgId . ',';
                 $queryValues['hostgroup'][$hgId] = (int)$hgValue;
             }
@@ -124,6 +126,9 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             'ORDER BY host_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
@@ -135,24 +140,20 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 
         if (isset($queryValues['hostgroup'])) {
             foreach ($queryValues['hostgroup'] as $hgId => $hgValue) {
-                $stmt->bindParam(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
+                $stmt->bindValue(':hostgroup' . $hgId, $hgValue, PDO::PARAM_INT);
             }
         }
         if (isset($queryValues['virtualHost'])) {
             foreach ($queryValues['virtualHost'] as $vhId => $vhValue) {
-                $stmt->bindParam(':hostNameTable' . $vhId, $vhValue, PDO::PARAM_STR);
-                $stmt->bindParam(':virtualHostId' . $vhId, $vhId, PDO::PARAM_INT);
+                $stmt->bindValue(':hostNameTable' . $vhId, $vhValue, PDO::PARAM_STR);
+                $stmt->bindValue(':virtualHostId' . $vhId, $vhId, PDO::PARAM_INT);
             }
         }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $hostList = array();
         while ($data = $stmt->fetch()) {
             $hostList[] = array(

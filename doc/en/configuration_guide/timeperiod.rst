@@ -6,7 +6,7 @@ Time periods
 Definition
 **********
 
-A time period is the definition of a time interval for every day of the week. These time periods serve to enable the functionalities of the scheduler on a given period.
+A time period is the definition of a time interval for each day of the week. These time periods enable the functionalities of the scheduler over a given period of time.
 
 Time periods apply to two types of actions:
 
@@ -33,12 +33,12 @@ When creating a time period, the following characters serve to define the time p
 
 * The character “:” separates the hours from the minutes. E.g.: HH:MM
 * The character “-” indicates continuity between two time periods
-* The character ”,” serve s to separate two time periods
+* The character ”,” serves to separate two time periods
 
 Here are a few examples:
 
 * 24 hours a day and 7 days a week: 00:00-24:00 (to be applied on every day of the week).
-* From 08h00 to 12h00 and from 14h00 to 18h45 (to be applied on weekdays only).
+* From 08h00 to 12h00 and from 14h00 to 18h45 on weekdays: 08:00-12:00,14:00-18:45 (to be applied on weekdays only).
 
 .. image :: /images/user/configuration/05timeperiod.png
       :align: center
@@ -61,19 +61,19 @@ For each exceptional day, you will need to define a time period. The table below
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 |         Day(s)        |       Time period       |                            Meaning                              |
 +=======================+=========================+=================================================================+
-|     january 1         |       00:00-24:00       |   First day of January, every year.                             |
+|     january 1         |       00:00-24:00       |   All day on the 1st of January, every year.                    |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 |     2014-02-10        |       00:00-24:00       |   All day on 10 February 2014                                   |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
-|  july 1 - august 1    |       00:00-24:00       |   Every day from July 1 to August 1, every year                 |
+|  july 1 - august 1    |       00:00-24:00       |   All day, every day from July 1 to August 1, every year        |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 |     november 30       |       08:00-19:00       |   From 08h00 to 19h00 every November 30, every year             |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
-|      day 1 - 20       |       00:00-24:00       |   All day from 1 to 20 of every month                           |
+|      day 1 - 20       |       00:00-24:00       |   All day from the 1st to 20th of every month                   |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 |     saturday -1       | 08:00-12:00,14:00-18:45 |   Every last Saturday of the month during opening hours         |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
-|     monday -2         |       00:00-24:00       |   Every last but one Monday of the month during all day         |
+|     monday -2         |       00:00-24:00       |   All day every second to the last Monday of the month          |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 
 Extended Settings

@@ -57,9 +57,9 @@ class CentreonSettings extends CentreonObject
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
+        parent::__construct($dependencyInjector);
 
         $this->authorizedOptions = array(
             'broker' => array('values' => array('ndo', 'broker')),
@@ -190,7 +190,7 @@ class CentreonSettings extends CentreonObject
      */
     private function getTimezoneIdFromName($value)
     {
-        $timezone = new \Centreon_Object_Timezone();
+        $timezone = new \Centreon_Object_Timezone($this->dependencyInjector);
         $timezoneId = $timezone->getIdByParameter('timezone_name', $value);
         if (!isset($timezoneId[0])) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND);
@@ -205,7 +205,7 @@ class CentreonSettings extends CentreonObject
      */
     private function getTimezonenameFromId($value)
     {
-        $timezone = new \Centreon_Object_Timezone();
+        $timezone = new \Centreon_Object_Timezone($this->dependencyInjector);
         $timezoneName = $timezone->getParameters($value, array('timezone_name'));
         if (!isset($timezoneName['timezone_name'])) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND);

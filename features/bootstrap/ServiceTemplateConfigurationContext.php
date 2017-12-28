@@ -123,7 +123,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
         'host_template' => 'Router-Cisco',
-        'trap_relations' => 'coldStart',
+        'trap_relations' => 'Generic - coldStart',
         'obsess_over_service' => 2,
         'acknowledgement_timeout' => 34,
         'check_freshness' => 1,
@@ -245,7 +245,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'recovery_notification_delay' => 9,
         'host_template' => 'generic-host',
         'trap_relations' => array(
-            'snTrapL4GslbRemoteControllerUp'
+            'HP - snTrapL4GslbRemoteControllerUp'
         ),
         'obsess_over_service' => 0,
         'acknowledgement_timeout' => 28,

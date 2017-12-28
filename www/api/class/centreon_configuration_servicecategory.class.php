@@ -56,9 +56,9 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
 
         /*
@@ -67,14 +67,18 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
 		 * 'c' = category only
 		 * 's' = severity only
 		 */
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
+        if (isset($this->arguments['t'])) {
+            $selectList = array('a', 'c', 's');
+            if (in_array(strtolower($this->arguments['t']), $selectList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('Error, Bad type');
+            }
         } else {
-            $t = $this->arguments['t'];
+            $t = '';
         }
 
-        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
-            'FROM service_categories ' .
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name FROM service_categories ' .
             'WHERE sc_name LIKE :name ';
         if ($t == 'c') {
             $queryContact .= "AND level IS NULL ";
@@ -85,6 +89,9 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         $queryContact .= 'ORDER BY sc_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryContact .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;
@@ -96,11 +103,7 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);

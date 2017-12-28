@@ -63,7 +63,9 @@ $DBRESULT->closeCursor();
 
 if (isset($_POST["searchH"])) {
     $search = $_POST["searchH"];
-    $_POST["search"] = $_POST["searchH"];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET["searchH"])) {
+    $search = $_GET["searchH"];
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];

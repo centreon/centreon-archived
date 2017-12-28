@@ -33,7 +33,6 @@
  *
  */
 
-require_once "Centreon/Db/Manager/Manager.php";
 require_once "Centreon/Cache/Manager/Manager.php";
 
 /**
@@ -78,9 +77,9 @@ abstract class Centreon_Object
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->db = Centreon_Db_Manager::factory('centreon');
+        $this->db = $dependencyInjector['configuration_db'];
         $this->cache = Centreon_Cache_Manager::factory('centreonObjects', 60, '/tmp/');
         $this->useCache = false;
     }
@@ -133,9 +132,9 @@ abstract class Centreon_Object
             $sqlParams[] = trim($value);
         }
         if ($sqlFields && $sqlValues) {
-            $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
+            $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
             $this->db->query($sql, $sqlParams);
-            return $this->db->lastInsertId($this->table, $this->primaryKey);
+            return $this->db->lastInsertId();
         }
         return null;
     }
@@ -260,8 +259,15 @@ abstract class Centreon_Object
      * @return array
      * @throws Exception
      */
-    public function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
         }

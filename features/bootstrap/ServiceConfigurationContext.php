@@ -138,7 +138,7 @@ class ServiceConfigurationContext extends CentreonContext
         'first_notification_delay' => 4,
         'recovery_notification_delay' => 3,
         'service_groups' => 'serviceGroup1Name',
-        'trap_relations' => 'coldStart',
+        'trap_relations' => 'Generic - coldStart',
         'obsess_over_service' => 2,
         'acknowledgement_timeout' => 34,
         'check_freshness' => 1,
@@ -259,9 +259,7 @@ class ServiceConfigurationContext extends CentreonContext
         'first_notification_delay' => 8,
         'recovery_notification_delay' => 9,
         'service_groups' => 'serviceGroup2Name',
-        'trap_relations' => array(
-            'snTrapL4GslbRemoteControllerUp'
-        ),
+        'trap_relations' => 'HP - snTrapL4GslbRemoteControllerUp',
         'obsess_over_service' => 0,
         'acknowledgement_timeout' => 28,
         'check_freshness' => 2,

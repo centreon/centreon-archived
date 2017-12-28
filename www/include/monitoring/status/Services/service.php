@@ -74,6 +74,10 @@ if ($resetFilter) {
     $_SESSION['criticality_id'] = '';
 }
 
+if (!isset($o) || empty($o)) {
+    $o = $_SESSION['monitoring_service_status'];
+}
+
 foreach ($myinputsGet as $key => $value) {
     if (!empty($value)) {
         $filters[$key] = $value;
@@ -168,7 +172,7 @@ if (!empty($centreon->optGen["global_sort_order"])) {
     $global_sort_order = $centreon->optGen["global_sort_order"];
 }
 
-if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
+if ($o == "svcpb" || $o == "svc_unhandled") {
     if (!empty($filters["sort_type"])) {
         $sort_type = $filters["sort_type"];
     } else {
@@ -180,15 +184,14 @@ if ($o == "svcpb" || $o == "svc_unhandled" || empty($o)) {
         $order = $centreon->optGen["problem_sort_order"];
     }
 } else {
-    if (empty($filters["sort_type"])) {
+    if (!empty($filters["sort_type"])) {
         $sort_type = $filters["sort_type"];
     } elseif (isset($centreon->optGen["global_sort_type"])) {
         $sort_type = CentreonDB::escape($centreon->optGen["global_sort_type"]);
     } else {
         $sort_type = "host_name";
     }
-
-    if (empty($filters["order"])) {
+    if (!empty($filters["order"])) {
         $order = $filters["order"];
     } elseif (isset($centreon->optGen["global_sort_order"]) &&
         $centreon->optGen["global_sort_order"] != ""

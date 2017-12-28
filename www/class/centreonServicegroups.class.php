@@ -33,11 +33,11 @@
  *
  */
 
- /**
-  *
-  * Servicegroups objects
-  *
-  */
+/**
+ *
+ * Servicegroups objects
+ *
+ */
 class CentreonServicegroups
 {
     /**
@@ -45,13 +45,13 @@ class CentreonServicegroups
      * @var type
      */
     private $DB;
-    
+
     /**
      *
      * @var type
      */
     private $relationCache;
-    
+
     /**
      *
      * @var type
@@ -69,25 +69,24 @@ class CentreonServicegroups
     }
 
     /**
-     *
-     * Enter description here ...
-     * @param unknown_type $sg_id
+     * @param null $sgId
+     * @return array|void
      */
-    public function getServiceGroupServices($sg_id = null)
+    public function getServiceGroupServices($sgId = null)
     {
-        if (!$sg_id) {
+        if (!$sgId) {
             return;
         }
 
         $services = array();
         $query = "SELECT host_host_id, service_service_id "
             . "FROM servicegroup_relation "
-            . "WHERE servicegroup_sg_id = " . $sg_id . " "
+            . "WHERE servicegroup_sg_id = " . $sgId . " "
             . "AND host_host_id IS NOT NULL "
             . "UNION "
             . "SELECT hgr.host_host_id, hsr.service_service_id "
             . "FROM servicegroup_relation sgr, host_service_relation hsr, hostgroup_relation hgr "
-            . "WHERE sgr.servicegroup_sg_id = " . $sg_id . " "
+            . "WHERE sgr.servicegroup_sg_id = " . $sgId . " "
             . "AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id "
             . "AND hsr.service_service_id = sgr.service_service_id "
             . "AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id ";
@@ -100,15 +99,19 @@ class CentreonServicegroups
 
         return $services;
     }
-    
-    public function getServicesGroups($sg_id = array())
+
+    /**
+     * @param array $sgId
+     * @return array
+     */
+    public function getServicesGroups($sgId = array())
     {
         $arrayReturn = array();
 
-        if (!empty($sg_id)) {
+        if (!empty($sgId)) {
             $query = "SELECT sg_id, sg_name "
                 . "FROM servicegroup "
-                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sg_id))." ) ";
+                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sgId)) . " ) ";
             $res = $this->DB->query($query);
             while ($row = $res->fetchRow()) {
                 $arrayReturn[] = array(
@@ -120,8 +123,8 @@ class CentreonServicegroups
 
         return $arrayReturn;
     }
-    
-    
+
+
     /**
      *
      * @param type $field
@@ -162,13 +165,13 @@ class CentreonServicegroups
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
@@ -183,7 +186,7 @@ class CentreonServicegroups
                 'broker',
                 array(
                     'distinct' => true,
-                    'fields'  => array('servicegroup.sg_id'),
+                    'fields' => array('servicegroup.sg_id'),
                     'get_row' => 'sg_id',
                     'keys' => array('sg_id'),
                     'conditions' => array(
@@ -197,32 +200,90 @@ class CentreonServicegroups
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $listValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $listValues .= ':sg' . $v . ',';
+                $queryValues['sg' . $v] = (int)$v;
+            }
+            $listValues = rtrim($listValues, ',');
+        } else {
+            $listValues .= '""';
         }
 
         # get list of selected servicegroups
-        $query = "SELECT sg_id, sg_name "
-            . "FROM servicegroup "
-            . "WHERE sg_id IN (" . $explodedValues . ") "
-            . "ORDER BY sg_name ";
+        $query = 'SELECT sg_id, sg_name FROM servicegroup ' .
+            'WHERE sg_id IN (' . $listValues . ') ORDER BY sg_name ';
 
-        $resRetrieval = $this->DB->query($query);
-        while ($row = $resRetrieval->fetchRow()) {
+        $stmt = $this->DB->prepare($query);
+        if (!empty($queryValues)) {
+            foreach ($queryValues as $key => $id) {
+                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             # hide unauthorized servicegroups
             $hide = false;
             if (!$centreon->user->access->admin && !in_array($row['sg_id'], $sgAcl)) {
                 $hide = true;
             }
-
             $items[] = array(
                 'id' => $row['sg_id'],
                 'text' => $row['sg_name'],
                 'hide' => $hide
             );
         }
-
         return $items;
+    }
+
+    /**
+     * @param $sgName
+     * @return array
+     */
+    public function getServicesByServicegroupName($sgName)
+    {
+        $serviceList = array();
+        $query = "SELECT service_description, service_id, host_name " .
+            "FROM servicegroup_relation sgr, service s, servicegroup sg, host h " .
+            "WHERE sgr.service_service_id = s.service_id " .
+            "AND sgr.servicegroup_sg_id = sg.sg_id " .
+            "AND s.service_activate = '1' " .
+            "AND sgr.host_host_id = h.host_id " .
+            "AND sg.sg_name = '" . $this->DB->escape($sgName) . "'";
+        $result = $this->DB->query($query);
+        while ($elem = $result->fetchrow()) {
+            $serviceList[] = array(
+                'service' => $elem['service_description'],
+                'service_id' => $elem['service_id'],
+                'host' => $elem['host_name'],
+                'sg_name' => $elem[$sgName]
+            );
+        }
+        return $serviceList;
+    }
+
+    /**
+     * @param $sgName
+     * @return int|mixed
+     */
+    public function getServicesGroupId($sgName)
+    {
+        static $ids = array();
+
+        if (!isset($ids[$sgName])) {
+            $query = "SELECT sg_id FROM servicegroup WHERE sg_name = '" . $this->DB->escape($sgName) . "'";
+            $res = $this->DB->query($query);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $ids[$sgName] = $row['sg_id'];
+            }
+        }
+        if (isset($ids[$sgName])) {
+            return $ids[$sgName];
+        }
+        return 0;
     }
 }

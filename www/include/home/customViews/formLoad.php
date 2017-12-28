@@ -75,10 +75,11 @@ $template = initSmartyTpl($path, $template, "./");
 /**
  * Field templates
  */
-$attrsText      = array("size"=>"30");
+$attrsText = array("size" => "30");
 $attrsAdvSelect = array("style" => "width: 200px; height: 150px;");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea = array("rows" => "5", "cols" => "40");
+$eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
+    '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 /**
  * Quickform
@@ -115,32 +116,30 @@ $template->assign('form', $renderer->toArray());
 $template->display("formLoad.ihtml");
 ?>
 <script type="text/javascript">
-jQuery(function()
-{
-    jQuery("input[type=text]").keypress(function(e) {
-        var code = null;
-        code =  (e.keyCode ? e.keyCode : e.which);
-        return (code == 13) ? false : true;
-    } );
-});
-
-function submitData()
-{
-    jQuery.ajax({
-            type    :   "POST",
-            dataType:   "xml",
-            url     :   "./include/home/customViews/action.php",
-            data    :   jQuery("#Form").serialize(),
-            success :   function(response) {
-                            var view = response.getElementsByTagName('custom_view_id');
-                            var error = response.getElementsByTagName('error');
-                            if (typeof(view) != 'undefined') {
-                                var viewId = view.item(0).firstChild.data;
-                                window.top.location = './main.php?p=103&currentView='+viewId;
-                            } else if (typeof(error) != 'undefined') {
-                                var errorMsg = error.item(0).firstChild.data;
-                            }
-                        }
+    jQuery(function () {
+        jQuery("input[type=text]").keypress(function (e) {
+            var code = null;
+            code = (e.keyCode ? e.keyCode : e.which);
+            return (code == 13) ? false : true;
+        });
     });
-}
+
+    function submitData() {
+        jQuery.ajax({
+            type: "POST",
+            dataType: "xml",
+            url: "./include/home/customViews/action.php",
+            data: jQuery("#Form").serialize(),
+            success: function (response) {
+                var view = response.getElementsByTagName('custom_view_id');
+                var error = response.getElementsByTagName('error');
+                if (typeof(view) != 'undefined') {
+                    var viewId = view.item(0).firstChild.data;
+                    window.top.location = './main.php?p=103&currentView=' + viewId;
+                } else if (typeof(error) != 'undefined') {
+                    var errorMsg = error.item(0).firstChild.data;
+                }
+            }
+        });
+    }
 </script>

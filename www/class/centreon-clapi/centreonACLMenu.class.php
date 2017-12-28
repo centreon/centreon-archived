@@ -60,21 +60,20 @@ class CentreonACLMenu extends CentreonObject
     protected $topologyObj;
 
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonACLMenu constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Acl_Menu();
-        $this->aclGroupObj = new \Centreon_Object_Acl_Group();
-        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Menu();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Acl_Menu($dependencyInjector);
+        $this->aclGroupObj = new \Centreon_Object_Acl_Group($dependencyInjector);
+        $this->relObject = new \Centreon_Object_Relation_Acl_Group_Menu($dependencyInjector);
         $this->params = array('acl_topo_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_topo_activate";
         $this->action = "ACLMENU";
-        $this->topologyObj = new \CentreonTopology(new \CentreonDB());
+        $this->topologyObj = new \CentreonTopology($dependencyInjector['configuration_db']);
     }
 
     /**
@@ -174,13 +173,13 @@ class CentreonACLMenu extends CentreonObject
         $menus = array();
         $topologies = array();
         $levels[self::LEVEL_1] = $params[2];
-        if (isset($params[2])) {
+        if (isset($params[3])) {
             $levels[self::LEVEL_2] = $params[3];
         }
-        if (isset($params[3])) {
+        if (isset($params[4])) {
             $levels[self::LEVEL_3] = $params[4];
         }
-        if (isset($params[4])) {
+        if (isset($params[5])) {
             $levels[self::LEVEL_4] = $params[5];
         }
         foreach ($levels as $level => $menu) {
@@ -401,7 +400,7 @@ class CentreonACLMenu extends CentreonObject
                 $aclMenu['acl_topo_name'] . $this->delim;
 
             if (!empty($aclMenu['acl_comments'])) {
-                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim . "\n";
+                $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim;
             }
 
 
@@ -438,22 +437,26 @@ class CentreonACLMenu extends CentreonObject
             'FROM acl_topology_relations atr, topology t ' .
             'WHERE atr.topology_topology_id = t.topology_id ' .
             "AND atr.access_right <> '0' " .
-            'AND atr.acl_topo_id = ?';
+            'AND atr.acl_topo_id = :topoId';
+        $stmt = $this->db->prepare($queryAclMenuRelations);
+        $stmt->bindParam(':topoId', $aclTopoId);
+        $stmt->execute();
+        $grantedTopologyList = $stmt->fetchAll();
 
-        $grantedTopologyList = $this->db->fetchAll($queryAclMenuRelations, array($aclTopoId));
-
-        foreach ($grantedTopologyList as $grantedTopology) {
-            $grantedTopologyBreadCrumb = $this->topologyObj->getBreadCrumbFromTopology(
-                $grantedTopology['topology_page'],
-                $grantedTopology['topology_name'],
-                ';'
-            );
-            $grantedMenu .= sprintf(
-                $grantedMenuTpl,
-                $grantedPossibilities[$grantedTopology['access_right']],
-                '0',
-                $grantedTopologyBreadCrumb
-            );
+        if (!empty($grantedTopologyList) && isset($grantedTopologyList)){
+            foreach ($grantedTopologyList as $grantedTopology) {
+                $grantedTopologyBreadCrumb = $this->topologyObj->getBreadCrumbFromTopology(
+                    $grantedTopology['topology_page'],
+                    $grantedTopology['topology_name'],
+                    ';'
+                );
+                $grantedMenu .= sprintf(
+                    $grantedMenuTpl,
+                    $grantedPossibilities[$grantedTopology['access_right']],
+                    '0',
+                    $grantedTopologyBreadCrumb
+                );
+            }
         }
 
         return $grantedMenu;

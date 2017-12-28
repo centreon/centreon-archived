@@ -59,15 +59,14 @@ class CentreonTrap extends CentreonObject
     );
 
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonTrap constructor.
+     * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Trap();
-        $this->manufacturerObj = new CentreonManufacturer();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Trap($dependencyInjector);
+        $this->manufacturerObj = new CentreonManufacturer($dependencyInjector);
         $this->params = array();
         $this->insertParams = array('traps_name', 'traps_oid');
         $this->action = "TRAP";
@@ -204,7 +203,7 @@ class CentreonTrap extends CentreonObject
         if (!$trapId) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $parameters);
         }
-        $matchObj = new \Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $params = array('tmo_id', 'tmo_string', 'tmo_regexp', 'tmo_status', 'tmo_order');
         $elements = $matchObj->getList($params, -1, 0, 'tmo_order', 'ASC', array('trap_id' => $trapId));
         $status = array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
@@ -241,7 +240,7 @@ class CentreonTrap extends CentreonObject
         $string = $params[1];
         $regexp = $params[2];
         $status = $this->getStatusInt($params[3]);
-        $matchObj = new \Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $elements = $matchObj->getList(
             "*",
             -1,
@@ -270,25 +269,24 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Delete matching rule
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function delmatching($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $matchObj = new \Centreon_Object_Trap_Matching();
+        if (!is_numeric($parameters)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
+        $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $matchObj->delete($parameters);
     }
 
     /**
-     * Update matching rules
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function updatematching($parameters = null)
     {
@@ -300,6 +298,9 @@ class CentreonTrap extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $matchingId = $params[0];
+        if (!is_numeric($matchingId)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $key = $params[1];
         $value = $params[2];
         if ($key == 'trap_id') {
@@ -311,7 +312,7 @@ class CentreonTrap extends CentreonObject
         if ($key == 'tmo_status') {
             $value = $this->getStatusInt($value);
         }
-        $matchObj = new \Centreon_Object_Trap_Matching();
+        $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $matchObj->update($matchingId, array($key => $value));
     }
 
@@ -347,7 +348,7 @@ class CentreonTrap extends CentreonObject
                     }
                 }
             }
-            $matchingObj = new \Centreon_Object_Trap_Matching();
+            $matchingObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
             $matchingProps = $matchingObj->getList("*", -1, 0, null, null, array('trap_id' => $element['traps_id']));
             foreach ($matchingProps as $prop) {
                 echo $this->action . $this->delim .

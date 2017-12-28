@@ -33,7 +33,6 @@
  *
  */
 
-
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
@@ -49,7 +48,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
 
     /**
      * @return array
-     * @throws Exception
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -67,19 +66,21 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $queryValues['name'] = '%%';
-        } else {
+        if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
+        } else {
+            $queryValues['name'] = '%%';
         }
 
-        $queryMeta = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name ' .
-            'FROM meta_service ' .
+        $queryMeta = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name FROM meta_service ' .
             'WHERE meta_name LIKE :name ' .
             $aclMetaServices .
             'ORDER BY meta_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryMeta .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = (int)$offset;
@@ -92,14 +93,9 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
-
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-
+        $stmt->execute();
         $metaList = array();
-        while ($data =  $stmt->fetch()) {
+        while ($data = $stmt->fetch()) {
             $metaList[] = array(
                 'id' => $data['meta_id'],
                 'text' => $data['meta_name']

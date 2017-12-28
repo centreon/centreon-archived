@@ -46,10 +46,10 @@ class Centreon_Object_Relation_Service_Category_Service extends Centreon_Object_
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->firstObject = new Centreon_Object_Service_Category();
-        $this->secondObject = new Centreon_Object_Service();
+        parent::__construct($dependencyInjector);
+        $this->firstObject = new Centreon_Object_Service_Category($dependencyInjector);
+        $this->secondObject = new Centreon_Object_Service($dependencyInjector);
     }
 }

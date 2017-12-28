@@ -101,6 +101,10 @@ default:
       paths: [ %paths.base%/features/DowntimeStartAndStop.feature ]
       contexts: [ DowntimeStartAndStopContext ]
 
+    downtime_dst:
+      paths: [ %paths.base%/features/DowntimeDST.feature ]
+      contexts: [ DowntimeDSTContext ]
+
     command_arguments:
       paths: [ %paths.base%/features/CommandArguments.feature ]
       contexts: [ CommandArgumentsContext ]
@@ -244,6 +248,10 @@ default:
       contexts: [ HostGroupServiceConfigurationContext ]
 
     service_template_configuration:
+      paths: [ %paths.base%/features/ServiceTemplateConfiguration.feature ]
+      contexts: [ ServiceTemplateConfigurationContext ]
+
+    contact_template_configuration:
       paths: [ %paths.base%/features/ContactTemplateConfiguration.feature ]
       contexts: [ ContactTemplateConfigurationContext ]
 
@@ -294,7 +302,15 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
-    
+
     test_proxy_configuration:
       paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
       contexts: [ TestProxyConfigurationContext ]
+
+    test_clapi:
+      paths: [ %paths.base%/features/Clapi.feature ]
+      contexts: [ ClapiContext ]
+
+    traps_snmp_group_configuration:
+      paths: [ %paths.base%/features/TrapsSNMPGroupConfiguration.feature ]
+      contexts: [ TrapsSNMPGroupConfigurationContext ]
