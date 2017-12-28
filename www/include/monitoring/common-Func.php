@@ -136,8 +136,15 @@ function get_notified_infos_for_host($hostId)
 
         $stack = array_merge($hostsTpl, $stack);
     }
-    asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
-    asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
+
+    if (version_compare(phpversion(), '5.4.0') >= 0){
+        asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
+        asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
+    } else {
+        natcasesort($results['contacts']);
+        natcasesort($results['contactGroups']);
+    }
+
     return $results;
 }
 
@@ -228,8 +235,15 @@ function get_notified_infos_for_service($serviceId, $hostId)
         (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0)) {
         return get_notified_infos_for_host($hostId);
     }
-    asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
-    asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
+
+    if (version_compare(phpversion(), '5.4.0') >= 0){
+        asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
+        asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
+    } else {
+        natcasesort($results['contacts']);
+        natcasesort($results['contactGroups']);
+    }
+
     return $results;
 }
 
