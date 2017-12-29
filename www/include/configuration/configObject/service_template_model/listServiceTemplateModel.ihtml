@@ -1,0 +1,99 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/resize_td.js"></script>
+<form name='form' method='POST'>
+    <table class="ajaxOption table">
+      <tbody>
+      <tr>
+        <th><h5>{t}Filters{/t}</h5></th>
+      </tr>
+      <tr>
+        <td><h4>{t}Service template{/t}</h4></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="searchST" value="{$searchST}"></td>
+        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+      </tr>
+      </tbody>
+    </table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			{ if $mode_access == 'w' }
+			<td>
+				{$msg.options} {$form.o1.html}
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_alias}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_retry}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderRight">{$headerMenu_options}</td>
+		</tr>
+		{assign var=pattern_mode value=0}
+		{section name=elem loop=$elemArr}
+			{if $elemArr[elem].pattern != $pattern_value}
+				{assign var=pattern_mode value="0}
+			{/if}
+			{if $elemArr[elem].pattern && $pattern_mode == 0}
+				<tr class="list_lvl_1">
+					<td class="ListColLeft" colspan="7"><b>{$elemArr[elem].pattern}</b></td>
+				</tr>
+				{assign var=pattern_mode value=1}
+				{assign var=pattern_value value=$elemArr[elem].pattern}
+			{/if}
+			<tr class={$elemArr[elem].MenuClass}>
+				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+				<td class="ListColLeft">
+					{if $elemArr[elem].pattern}
+					{/if}
+					{if $elemArr[elem].RowMenu_icon != ""}<img src="{$elemArr[elem].RowMenu_icon}" class="ico-14" style="padding-right:4px;" />{/if}<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>
+				</td>
+				<td class="ListColLeft resizeTitle"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
+				<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
+				<td class="ListColRight">{$elemArr[elem].RowMenu_parent}</td>
+				<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+			</tr>
+		{/section}	
+	</table>
+
+	<table class="ToolbarTable ToolbarTR table">
+		<tr>
+			{ if $mode_access == 'w' }
+			<td class="Toolbar_TDSelectAction_Bottom">
+				{$msg.options} {$form.o2.html}
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			{ else }
+			<td>&nbsp;</td>
+			{ /if }
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+
+<input type='hidden' name='o' id='o' value='42'>
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
+</form>
+{literal}
+<script type='text/javascript'>
+    setDisabledRowStyle();
+    setOverflowDivToTitle(('.resizeTitle'));
+</script>
+{/literal}

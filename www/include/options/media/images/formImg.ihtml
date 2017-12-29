@@ -1,0 +1,63 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+		{if $o == "w"}
+			{assign var=cols value=3}
+		{else}
+			{assign var=cols value=2}
+		{/if}
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="{$cols}">
+            <h4>{$form.header.title}</h4>
+          </td>
+        </tr>
+		{if $o == "ci" || $o == "w"}
+			<tr class="list_one">
+				{if $o == "w"}
+					<td class="ListColCenter" rowspan="4"><img src='{$form.img_path.label}'></td>
+				{/if}
+				<td class="FormRowField"><img class="helpTooltip" name="img_name"> {$form.img_name.label}</td>
+				<td class="FormRowValue">{$form.img_name.html}</td>
+			</tr>
+		{/if}		
+		<tr class="list_two">
+			<td class="FormRowField"><img class="helpTooltip" name="img_dir"> {$form.directories.label}</td>
+			<td class="FormRowValue">{$form.directories.html}&nbsp;
+			{ if $o == "ci" || $o == "a" }{$form.list_dir.html}{ /if }
+			</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="img_file"> {$form.filename.label}</td>
+			<td class="FormRowValue">
+				{if $o == "a" || $o == "ci"}
+					{$form.filename.html}
+				{else if $o == "w"}
+					{$form.img_path.html}
+				{/if}
+				&nbsp;&nbsp;(Max file size {$max_uploader_file})
+			</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.img_comment.label}</td>
+			<td class="FormRowValue">{$form.img_comment.html}</td>
+		</tr>
+		
+		{if $o == "a" || $o == "ci"}
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a"}
+		<p>{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
+	{elseif $o == "ci"}
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
+	{elseif $o == "w"}
+		<p>{$form.change.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}
+

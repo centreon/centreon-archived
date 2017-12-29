@@ -1,0 +1,36 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$genOpt_debug_options}</h3>
+      </td>
+    </tr>
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.debug}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_logs_directory">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_authentication_debug">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_nagios_import_debug">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_debug">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_ldap_user_import_debug">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_sql_debug">{$form.debug_sql.label}</td><td class="FormRowValue">{$form.debug_sql.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_debug">{$form.debug_centcore.label}</td><td class="FormRowValue">{$form.debug_centcore.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreontrapd_debug">{$form.debug_centreontrapd.label}</td><td class="FormRowValue">{$form.debug_centreontrapd.html}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+</table>
+{if !$valid}
+	<div id="validForm" class="oreonbutton">
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+{else}
+	<div id="validForm" class="oreonbutton">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>
+{$helptext}

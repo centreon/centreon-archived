@@ -1,0 +1,42 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.dep_name.label}</td><td class="FormRowValue">{$form.dep_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="description"> {$form.dep_description.label}</td><td class="FormRowValue">{$form.dep_description.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="inherits_parent"> {$form.inherits_parent.label}</td><td class="FormRowValue">{$form.inherits_parent.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="execution_failure_criteria"> {$form.execution_failure_criteria.label}</td><td class="FormRowValue">{$form.execution_failure_criteria.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_failure_criteria"> {$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.dep_hgParents.label}</td><td class="FormRowValue">{$form.dep_hgParents.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="dependent_hostgroup_name"> {$form.dep_hgChilds.label}</td><td class="FormRowValue">{$form.dep_hgChilds.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+{$form.hidden}
+</form>
+{$helptext}
+

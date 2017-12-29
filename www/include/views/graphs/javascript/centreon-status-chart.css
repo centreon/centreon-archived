@@ -1,0 +1,34 @@
+.cc3-tooltip {
+  background-color: #fff;
+  box-shadow: 7px 7px 12px -9px #777777;
+  opacity: 0.9;
+  z-index: 10;
+  border: 1px solid #ccc;
+}
+
+.cc3-tooltip .cc3-tooltip-title {
+  padding: 3px;
+  border-bottom: 1px solid #ccc;
+  font-size: 13px;
+}
+
+.cc3-tooltip .cc3-tooltip-body {
+  padding: 3px;
+  font-size: 10px;
+}
+
+.detail_button, .performance_button {
+    left: 48%;
+    z-index: 10;
+    display: none;
+}
+
+.detail_button {
+    position: relative;
+    top: 52%;
+}
+
+.performance_button {
+    position: absolute;
+    top: 48%;
+}

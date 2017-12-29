@@ -1,0 +1,29 @@
+<form action="main.php" method=get>
+	<table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {t}Skin Menu Selection{/t}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          	<td class="FormRowField">{$elemArr[elem].menuName}</td>
+			<td class="ListColLeft">{$elemArr[elem].select}</td>
+        </tr>
+        <tr class="list_lvl_1">
+	      <td class="ListColLvl1_name" colspan="2">
+	        <h4>{t}CSS configuration{/t}</h4>
+	      </td>
+	    </tr>
+        {section name=elem loop=$elemArr}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="FormRowField">{$elemArr[elem].menuName}</td>
+			<td class="FormRowValue">{$elemArr[elem].select}</td>
+		</tr>
+		{/section}
+    </table>
+	<div id="validForm" class="oreonbutton">
+		<input type=submit class="btc bt_success" value="{$submitTitle}">
+	</div>
+<input type=hidden name=p value={$p}>
+<input type=hidden name=o value={$o}>
+</form>

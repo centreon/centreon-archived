@@ -1,0 +1,68 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method='POST'>
+  <table class="ajaxOption table">
+  <tbody>
+    <tr>
+      <th><h5>{t}Filters{/t}</h5></th>
+    </tr>
+    <tr>
+      <td><h4>{t}LDAP Server{/t}</h4></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="searchLdap" value="{$searchLdap}"></td>
+      <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+    </tr>
+  </tbody>
+  </table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
+				{$msg.options} {$form.o1.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">&nbsp;{$labels.name}</td>
+			<td class="ListColHeaderLeft">&nbsp;{$labels.description}</td>
+			<td class="ListColHeaderLeft">&nbsp;{$labels.status}</td>
+		</tr>
+		{section name=elem loop=$list}
+                <tr class="{cycle values='list_one,list_two'}">
+			<td class="ListColPicker"><input type='checkbox' name='select[{$list[elem].ar_id}]' value='{$list[elem].ar_id}' /></td>
+			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_name}</a></td>
+			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_description}</a></td>
+			<td class="ListColLeft">
+                            {if $list[elem].ar_enable == 1}
+                                {$labels.enabled}
+                            {else}
+                                {$labels.disabled}
+                            {/if}
+                        </td>			
+		</tr>
+		{/section}	
+	</table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
+				{$msg.options} {$form.o2.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+<input type='hidden' name='a' id='a' value='42'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
+{$form.hidden}
+</form>

@@ -1,0 +1,59 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form'>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="svc" type="hidden">
+<table class="ajaxOption table">
+    <tbody>
+        <tr>
+            <th><h5>Filters</h5></th>
+        </tr>
+        <tr>
+            <td><h4>Hostgroup</h4></td>
+            {if $poller_listing}
+            <td><h4>{t}Poller{/t}</h4></td>
+            {/if}
+        </tr>
+        <tr>
+            <td><input name="searchHG" value="{$searchHG}"></td>
+            {if $poller_listing}
+            <td><span id="instance_selected"></span></td>
+            {/if}
+        </tr>
+    </tbody>
+</table>
+<table class="ToolbarTable table">
+    <tbody>
+        <tr class="ToolbarTR">
+            <td width="330">
+                <span class="consol_button" id="instance_selected"></span>
+                <input name="p" value="{$p}" type="hidden">
+                <div class="Toolbar_TDSelectAction_Top">
+                    <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></a></span>
+                    <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></a></span>
+                    <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
+                    <span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></a></span>
+                    <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
+                </div>
+            </td>
+            <td id="pagination1" class="ToolbarPagination"></td>
+            <td id="sel1" class="Toolbar_pagelimit"></td>
+        </tr>
+    </tbody>
+</table>
+<div id="forAjax"></div>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td width="330">&nbsp;</td>
+        <td id="pagination2" class="ToolbarPagination"></td>
+        <td id="sel2" class="Toolbar_pagelimit"></td>
+    </tr>
+</table>
+{if $host_name}
+<input type='hidden' name='host_name' value='{$host_name}'>
+{/if}
+<input name="p" value="{$p}" type="hidden">
+<input name='cmd' id='cmd' value='42' type='hidden'>
+<input name='o' value='{$o}' type='hidden'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+{$form.hidden}
+</form>

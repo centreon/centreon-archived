@@ -1,0 +1,178 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+<ul id="mainnav">
+    <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
+    <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$form.header.centreon}</a></li>
+    <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$form.header.additional}</a></li>
+</ul>
+<div id="validFormTop">
+  {if $o == "a" || $o == "c" || $o == "mc"}
+      <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+  {else if $o == "w"}
+      <p class="oreonbutton">{$form.change.html}</p>
+  {/if}
+</div>
+</div>
+    <div id='tab1' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.information}</h4>
+            </td>
+        </tr>
+        {if $o != "mc"}
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+        {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
+        
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.groupLinks}</h4>
+            </td>
+        </tr>
+        {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
+        {if $o != "mc" and isset($ldapGroups)}
+            <tr class="list_two">
+                <td class="FormRowField"><img class="helpTooltip" name="ldap_group"> {$ldap_group}</td>
+                <td class="FormRowValue">
+                {foreach item=group from=$ldapGroups}&nbsp;{$group}<br/>{/foreach}
+                </td>
+            </tr>
+        {/if}
+
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.notification}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_enable_notifications"> {$form.contact_enable_notifications.label}</td><td class="FormRowValue">{$form.contact_enable_notifications.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.hostNotification}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_options"> {$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_notification_period"> {$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+        {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hcmds.label}</td><td class="FormRowValue">{$form.mc_mod_hcmds.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_notification_commands"> {$form.contact_hostNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_hostNotifCmds.html}</p></td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.serviceNotification}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_options"> {$form.contact_svNotifOpts.label}</td><td class="FormRowValue">{$form.contact_svNotifOpts.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+        {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_svcmds.label}</td><td class="FormRowValue">{$form.mc_mod_svcmds.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_commands"> {$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_1"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id='tab2' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.oreon}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreon_login"> {$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
+        {if $auth_type != 'ldap'}
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.contact_passwd.label}</td>
+            <td class="FormRowValue">{$form.contact_passwd.html} {$form.contact_gen_passwd.html}</td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="password2"> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+        {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="language"> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="location"> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="autologin_key"> {$form.contact_autologin_key.label}</td>
+            <td class="FormRowValue">{$form.contact_autologin_key.html} {$form.contact_gen_akey.html}</td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="auth_type"> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
+        {if $ldap == "1" }
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
+        {/if}
+        {if $displayAdminFlag == 1}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin"> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="reach_api"> {$form.reach_api.label}</td><td class="FormRowValue">{$form.reach_api.html}</td></tr>
+        {/if}
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.acl}</h4>
+            </td>
+        </tr>
+        {if $o == "mc"}
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="aclgroups"> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id='tab3' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.furtherAddress}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address1.label}</td><td class="FormRowValue">{$form.contact_address1.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address2.label}</td><td class="FormRowValue">{$form.contact_address2.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address3.label}</td><td class="FormRowValue">{$form.contact_address3.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address4.label}</td><td class="FormRowValue">{$form.contact_address4.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address5.label}</td><td class="FormRowValue">{$form.contact_address5.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.furtherInfos}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id="validForm">
+    {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{$form.change.html}</p>
+    {/if}
+    </div>
+    {$form.hidden}
+</form>
+{$helptext}

@@ -1,0 +1,153 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name="form" action="" method='POST'>
+<hidden name="p" value='{$p}'>
+<table class="ajaxOption table">
+  <tbody>
+    <tr>
+      <th colspan="4"><h5>{t}Filters{/t}</h5></th>
+    </tr>
+	<tr>
+		<td><h4>{$Host}</h4></td>
+		<td><h4>{$Service}</h4></td>
+		<td><h4>{$Output}</h4></td>
+		<td><h4>{$Author}</h4></td>
+	</tr>
+    <tr>
+        <td><input type='text' name='search_host' value="{$search_host}" /></td>
+        <td><input type='text' name='search_service' value="{$search_service}" /></td>
+        <td><input type='text' name='search_output' value="{$search_output}" /></td>
+        <td><input type='text' name='search_author' value="{$search_author}" /></td>
+    </tr>
+	<tr>
+        <td class="checkbox"><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /> <h4>{$ViewAll}</h4></td>
+        <td class="checkbox"><input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /> <h4>{$ViewDowntimeCycle}</h4></td>
+        <td colspan="2" class="actions"><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success" /></td>
+	</tr>
+  </tbody>
+</table>
+<hidden name="p" value='{$p}'>	
+<table class="ToolbarTable table">
+	<tr class="ToolbarTR">
+        <td>
+            {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
+            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
+        </td>
+        {php}
+        include('./include/common/pagination.php');
+        {/php}
+	</tr>
+</table>
+<table class="ListTable">
+    <tr class='ListHeader'>
+        <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+    	<td class="ListColHeaderCenter">{t}Host Name{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Services{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Start Time{/t}</td>
+    	<td class="ListColHeaderCenter">{t}End Time{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Duration{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Author{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Comments{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Started{/t}</td>
+    	<td class="ListColHeaderCenter">{t}Fixed{/t}</td>
+    	{if $view_all == '1'}
+        <td class="ListColHeaderCenter">{t}Cancelled{/t}</td>
+        <td class="ListColHeaderCenter">{t}Actual End{/t}</td>
+        {/if}
+    </tr>
+    {if $nb_downtime_svc}
+	{foreach item=tds from=$tab_downtime_svc}
+	<tr class={cycle values="list_two, list_one"}>
+		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_name_link};{$tds.internal_downtime_id}]'></td>
+		<td class="ListColLeft" width="150">
+                    {if $tds.service_name_link}
+                    <a href='./main.php?{$tds.host_name_link}'>
+                    {else}
+                    <a href='./main.php?p=20202&o=hd&host_name={$tds.host_name_link}'>
+                    {/if}
+                    {$tds.host_name}
+                    </a>
+                </td>
+		<td class="ListColLeft" width="150">
+                    {if $tds.service_name_link}
+                    <a href='./main.php?{$tds.host_name_link}'>
+                    {else}
+                    <a href='./main.php?p=202&o=svcd&host_name={$tds.host_name_link}&service_description={$tds.service_description}'>
+                    {/if}
+                    {$tds.service_description}
+                    </a>
+                </td>
+		<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
+		<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
+		<td class="ListColRight" width="120">{$tds.duration}{if $tds.service_name_link} {$secondes}{/if}</td>
+		<td class="ListColCenter" width="150">{$tds.author_name}</td>
+		<td class="ListColLeft">{$tds.comment_data}</td>
+		<td class="ListColCenter" width="50">{$tds.was_started}</td>
+		<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
+		{if $view_all == '1'}
+		<td class="ListColCenter" width="50">{$tds.was_cancelled}</td>
+		<td class="ListColRight" width="100">{$tds.actual_end_time}</td>
+		{/if}
+	</tr>
+	{/foreach}
+    {else}
+        <tr>
+            {if $view_all == '1'}
+                {assign var='nbcol' value=12}
+            {else}
+                {assign var='nbcol' value=10}
+            {/if}
+            <td colspan={$nbcol} style='text-align:center;'>
+                <b>{t}No downtime scheduled{/t}</b>
+            </td>
+        </tr>
+    {/if}
+</table>
+<table class="ToolbarTable table">
+    <tr class="ToolbarTR">
+        <td>
+            {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
+            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
+        </td>
+	{php}
+	   include('./include/common/pagination.php');
+	{/php}
+    </tr>
+</table>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
+<input type='hidden' name='o'>
+{$form.hidden}	
+</form>
+
+{literal}
+<script language=javascript>
+    function doAction(slt, act, msg) {
+        var bChecked = isChecked();
+        if (slt.selectedIndex != 0 && !bChecked) {
+            alert('Please select one or more items');
+            return false;
+        }
+        if (slt.selectedIndex == 0) {
+            return false;
+        } else {
+            if (confirm(msg)) {
+                jQuery('input[name=o]').attr('value', act);
+                document.form.submit();
+            } else {
+                slt.value = 0;
+            }
+        }
+    }
+</script>
+{/literal}
+
+
+
+
+
+
+
+
+
+
+
+

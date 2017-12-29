@@ -1,0 +1,46 @@
+{$form.javascript}
+{$insertValueQuery}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.mnftr.label}</td><td class="FormRowValue">{$form.mnftr.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="filename"> {$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+	</table>
+	</div>
+	<div id="validForm">
+		<p>{$form.generate.html}</p>
+		<p class="oreonbutton">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+	{if $msg}
+		<br /><br /><br /><br />
+		<div>
+	 <table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2">
+	 			<img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}
+	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">
+	 			{$msg}
+	 		</td>
+	 	</tr>	 
+	 </table>
+	 </div>
+	 {/if}	
+         {$form.hidden}
+</form>
+{$helptext}
+

@@ -1,0 +1,55 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroup_name"> {$form.sg_name.label}</td><td class="FormRowValue">{$form.sg_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.sg_alias.label}</td><td class="FormRowValue">{$form.sg_alias.html}</td></tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.relation}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="members"> {$form.sg_hServices.label}</td><td class="FormRowValue">{$form.sg_hServices.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hg_members"> {$form.sg_hgServices.label}</td><td class="FormRowValue">{$form.sg_hgServices.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="st_members"> {$form.sg_tServices.label}</td><td class="FormRowValue">{$form.sg_tServices.html}</td></tr> 
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.sg_activate.label}</td><td class="FormRowValue">{$form.sg_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.sg_comment.label}</td><td class="FormRowValue">{$form.sg_comment.html}</td></tr>
+		
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

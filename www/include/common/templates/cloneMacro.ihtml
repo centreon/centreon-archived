@@ -1,0 +1,50 @@
+<div id="{$cloneId}_controls">
+    <div id="{$cloneId}_add">
+        <p style="cursor:pointer; color: #4ccaff;">
+            {assign var=isFrozen value=0}
+            {foreach from=$cloneSet item=v}
+                {if $v->isFrozen()}
+                    {assign var=isFrozen value=1}
+                {/if}
+            {/foreach}
+            {if $isFrozen == 0}
+                {t} + Add a new entry{/t}
+            {/if}
+        </p>
+    </div>
+</div>
+<ul id="{$cloneId}" class="macroclone no-deco-list">
+    <li class="clone_template onemacro" id="{$cloneId}_template">
+        <hr style='margin:2;'/>
+        <div class="clone-cell">
+            {foreach from=$cloneSet item=v}
+                <span>
+                {if $v->isFrozen()}
+                    {$v->getLabel()} : {$v->unfreeze()}{$v->setAttribute('disabled', 'disabled')}{$v->toHtml()}
+                {else}
+                    {$v->getLabel()}  {$v->toHtml()}
+                {/if}
+                </span>
+            {/foreach}
+            <input type='hidden' id='macroTplValue_#index#' name='macroTplValue_#index#' value="" />
+            <input type='hidden' id='macroTplValToDisplay_#index#' name='macroTplValToDisplay_#index#' value="0" />
+            <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
+            <input type='hidden' id='macroTpl_#index#' name='macroTpl_#index#' value="" />
+            <input type='hidden' id='macroOldValue_#index#' name='macroOldValue_#index#' value="" />
+            <input type='hidden' id='isFrozen_#index#' name='isFrozen_#index#' value="{$isFrozen}" />
+            <img src="./img/icons/description.png" style='vertical-align: middle;cursor:pointer;' class="ico-14" onclick='javascript:loadDescription(#index#)' />
+            {if $isFrozen == 0}
+            <span style="cursor:pointer;" class="clonehandle">
+                <img src="./img/icons/move.png" class="ico-14" style="vertical-align:middle;">
+            </span>
+            <span id="{$cloneId}_remove_current" style=''>
+                <img src="./img/icons/circle-cross.png" class='ico-14' style="vertical-align:middle;">
+            </span>
+            {/if}
+        </div>
+        <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />
+    </li>
+    <li id="{$cloneId}_noforms_template">
+        <p class="muted">{t}Nothing here, use the "Add" button{/t}</p>
+    </li>
+</ul>

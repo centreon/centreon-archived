@@ -1,0 +1,79 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	<table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.meta_name.label}</td><td class="FormRowValue">{$form.meta_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="display"> {$form.meta_display.label}</td><td class="FormRowValue">{$form.meta_display.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="warning"> {$form.warning.label}</td><td class="FormRowValue">{$form.warning.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="critical"> {$form.critical.label}</td><td class="FormRowValue">{$form.critical.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="calcul_type"> {$form.calcul_type.label}</td><td class="FormRowValue">{$form.calcul_type.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="data_source_type"> {$form.data_source_type.label}</td><td class="FormRowValue">{$form.data_source_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="select_mode"> {$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="regexp"> {$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="metric"> {$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
+
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.check}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_period"> {$form.check_period.label}</td><td class="FormRowValue">{$form.check_period.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_attempts"> {$form.max_check_attempts.label}</td><td class="FormRowValue">{$form.max_check_attempts.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_interval"> {$form.normal_check_interval.label}</td><td class="FormRowValue">{$form.normal_check_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retry_interval"> {$form.retry_check_interval.label}</td><td class="FormRowValue">{$form.retry_check_interval.html}{$time_unit}</td></tr>
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.notification}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.notifications_enabled.label}</td><td class="FormRowValue">{$form.notifications_enabled.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.ms_cs.label}</td><td class="FormRowValue">{$form.ms_cs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.ms_cgs.label}</td><td class="FormRowValue">{$form.ms_cgs.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.notification_period.label}</td><td class="FormRowValue">{$form.notification_period.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.ms_notifOpts.label}</td><td class="FormRowValue">{$form.ms_notifOpts.html}</td></tr>
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.furtherInfos}</h4>
+          </td>
+        </tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.meta_activate.label}</td><td class="FormRowValue">{$form.meta_activate.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.meta_comment.label}</td><td class="FormRowValue">{$form.meta_comment.html}</td></tr>
+		
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+{$form.hidden}	
+</form>
+{$helptext}

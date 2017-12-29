@@ -1,0 +1,46 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div align='center'>
+	 <table class="ListTableMedium">
+	 	<tr class="ListHeader">
+		 	<td class="FormHeader" colspan="2">&nbsp;<img src="./img/icones/16x16/flag_red.gif">&nbsp;{$form.header.title}</td>
+	 	</tr>
+	 	<tr class="list_one">
+        	<td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+        	<td class="FormRowValue"><b>{$hostname} / {$servicedescription}</b></td>
+        </tr>
+		{if $en == 1}
+		<tr class="list_two">
+			<td class="FormRowField">{$form.notify.label}</td>
+			<td class="FormRowValue">{$form.notify.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.sticky.label}</td>
+			<td class="FormRowValue">{$form.sticky.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.persistent.label}</td>
+			<td class="FormRowValue">{$form.persistent.html}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$authorlabel}</td>
+			<td class="FormRowValue">{$authoralias}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.comment.label}</td>
+			<td class="FormRowValue">{$form.comment.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.force_check.label}</td>
+			<td class="FormRowValue">{$form.force_check.html}</td>
+		</tr>
+		{/if}
+	</table>
+	<div id="validForm">
+		<p>{$form.action.html}</p>
+		<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+</div>
+{$form.hidden}
+<input name="o" type="hidden" value="svcd" />
+</form>

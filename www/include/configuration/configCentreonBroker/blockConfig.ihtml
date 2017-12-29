@@ -1,0 +1,45 @@
+<tr class="list_lvl_1 close">
+  <td class="ListColLvl1_name">
+      <span class="expand"></span>
+      {$tagBlock|capitalize} {$posBlock} - {$formBlock.header.typeName}
+  </td>
+  <td class="ListColLvl1_name" style="text-align: right;">
+      <a href="javascript:deleteRow('{$tagBlock}', {$posBlock});">
+          <img class="ico-14" src="./img/icons/circle-cross.png" style="vertical-align:middle;"/>
+      </a>
+  </td>
+</tr>
+{foreach from=$formBlock key=tagKey item=tagEl}
+    {if $tagKey == $tagBlock}
+        {foreach from=$tagEl key=posKey item=posEl}
+            {foreach from=$posEl item=element name=elementFor}
+            {if $smarty.foreach.elementFor.index % 2 == 0}
+            {assign var='classEl' value='list_one'}
+            {else}
+            {assign var='classEl' value='list_two'}
+            {/if}
+            <tr class="{$classEl}">
+                <td class="FormRowField">
+                    <img class="helpTooltip" name="{$element.name}" />
+                        <label for="{$element.name}">
+                            {if $element.label|is_array}
+                            {t}{$element.label[0]}{/t}
+                            {else}
+                            {t}{$element.label}{/t}
+                            {/if}
+                        </label>
+                </td>
+                <td class="FormRowValue">
+                    {$element.html}
+                </td>
+            </tr>
+            {/foreach}
+        {/foreach}
+    {/if}
+{/foreach}
+{$formBlock.hidden}
+{foreach from=$helps item=help}
+<span style="display: none;" id="help:{$help.name}">
+    {t}{$help.desc}{/t}
+</span>
+{/foreach}

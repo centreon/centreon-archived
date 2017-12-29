@@ -1,0 +1,89 @@
+{$form.javascript}
+<div id ="testConnection"><p id="msg-wrapper"></p></div>
+<form {$form.attributes}>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {t}Knowledge base{/t}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Knowledge base configuration{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_name">&nbsp;{$form.kb_db_name.label}</td>
+            <td class="FormRowValue">{$form.kb_db_name.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_user">&nbsp;{$form.kb_db_user.label}</td>
+            <td class="FormRowValue">{$form.kb_db_user.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_password">&nbsp;{$form.kb_db_password.label}</td>
+            <td class="FormRowValue">{$form.kb_db_password.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_host">&nbsp;{$form.kb_db_host.label}</td>
+            <td class="FormRowValue">
+                {$form.kb_db_host.html}
+                {if not $form.frozen}{$form.test_connection.html}{/if}
+            </td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_database_prefix">&nbsp;{$form.kb_db_prefix.label}</td>
+            <td class="FormRowValue">{$form.kb_db_prefix.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_url">&nbsp;{$form.kb_wiki_url.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_url.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_account">&nbsp;{$form.kb_wiki_account.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_account.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="tip_knowledge_wiki_account_password">&nbsp;{$form.kb_wiki_password.label}</td>
+            <td class="FormRowValue">{$form.kb_wiki_password.html}</td>
+        </tr>
+    </table>
+    {if !$valid}
+    <div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+    {else}
+    <div id="validForm"><p>{$form.change.html}</p></div>
+    {/if}
+    {$form.hidden}
+</form>
+{$helptext}
+
+{literal}
+<script type="text/javascript">
+
+function checkWikiConnection() {
+    jQuery.ajax({
+        type : "POST",
+        url : "./include/common/webServices/rest/internal.php?object=centreon_wiki&action=checkConnection",
+        data : JSON.stringify({
+            name: jQuery( "input[name='kb_db_name']" ).val(),
+            user: jQuery( "input[name='kb_db_user']" ).val(),
+            pwd:  jQuery( "input[name='kb_db_password']" ).val(),
+            host: jQuery( "input[name='kb_db_host']" ).val()
+        }),
+        success : function(data) {
+            var classpopin = 'success2';
+            var msg = data.message;
+
+            if (!data.outcome) {
+                classpopin ='error';
+            }
+
+            var span = '<span class="msg-field ' + classpopin + '">' + msg + '</span>';
+            jQuery('#msg-wrapper').html(span);
+            jQuery('#testConnection').centreonPopin("open");
+        }
+    });
+}
+
+</script>
+{/literal}

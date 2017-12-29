@@ -1,0 +1,63 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method='POST'>
+	<input name="o" type="hidden">
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
+				{$msg.options} {$form.o1.html}
+				&nbsp;&nbsp;&nbsp;
+				<!-- <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a> -->
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	<table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+	 		<td class="ListColLeft">{t}Metric Name{/t}</td>
+	 		<td class="ListColCenter">{t}Unit{/t}</td>
+	 		<td class="ListColCenter">{t}Warning{/t}</td>
+	 		<td class="ListColCenter">{t}Critical{/t}</td>
+	 		<td class="ListColCenter">{t}Min{/t}</td>
+	 		<td class="ListColCenter">{t}Max{/t}</td>
+			<td class="ListColCenter">{t}File Path{/t}</td>
+			<td class="ListColCenter">{t}Data Source Type{/t}</td>
+	 		<td class="ListColCenter">{t}Hidden{/t}</td>
+	 		<td class="ListColCenter">{t}Locked{/t}</td>
+	 	</tr>
+		{foreach item=d from=$data}
+		<tr class="{$d.class}">
+		 	<td class="ListColCenter"><input name="select[{$d.metric_id}]" value="1" type="checkbox"></td>
+			<td class="ListColLeft">{$d.metric_name}</td>
+	 		<td class="ListColCenter">{$d.unit_name}</td>
+	 		<td class="ListColCenter">{$d.warn}</td>
+	 		<td class="ListColCenter">{$d.crit}</td>
+	 		<td class="ListColCenter">{$d.min}</td>
+	 		<td class="ListColCenter">{$d.max}</td>
+	 		<td class="ListColCenter">{$d.path}</td>
+			<td class="ListColCenter">{$d.data_source_type}</td>
+	 		<td class="ListColCenter">{$d.hidden}</td>
+	 		<td class="ListColCenter">{$d.locked}</td>
+		</tr>
+		{/foreach}
+	</table>
+	<table class="ToolbarTable table">
+		<tr class="ToolbarTR">
+			<td>
+				{$msg.options} {$form.o2.html}
+				&nbsp;&nbsp;&nbsp;
+				<!-- <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a> -->
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			<input name="o" value="{$o}" type="hidden">		
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
+</form>

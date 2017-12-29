@@ -1,0 +1,81 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c" || $o == "mc"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	<table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.sc_name.label}</td><td class="FormRowValue">{$form.sc_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="description"> {$form.sc_description.label}</td><td class="FormRowValue">{$form.sc_description.html}</td></tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.links}</h4>
+          </td>
+        </tr>
+		<!--<tr class="list_one"><td class="FormRowField">{$form.sc_svc.label}</td><td class="FormRowValue">{$form.sc_svc.html}</td></tr>-->
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_template"> {$form.sc_svcTpl.label}</td><td class="FormRowValue">{$form.sc_svcTpl.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sc_type"> {$form.sc_type.label}</td><td class="FormRowValue">{$form.sc_type.html}</td></tr>
+                <tr class="list_two" id="severity_level">
+                    <td class="FormRowField"><img class="helpTooltip" name="sc_severity_level">  {$form.sc_severity_level.label}</td>
+                    <td class="FormRowValue">{$form.sc_severity_level.html}</td>
+                </tr>
+                <tr class="list_one" id="severity_icon">
+                    <td class="FormRowField"><img class="helpTooltip" name="sc_severity_icon"> {$form.sc_severity_icon.label}</td>
+                    <td class="FormRowValue">
+                        {$form.sc_severity_icon.html}&nbsp;<img id='icon_id_ctn' src='./img/blank.gif' height='16' width='16'>
+                    </td>
+                </tr>
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$form.header.information}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sc_activate"> {$form.sc_activate.label}</td><td class="FormRowValue">{$form.sc_activate.html}</td></tr>
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c" || $o == "mc"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}
+{literal}
+<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>
+<script type='text/javascript'>
+jQuery(function() {
+    showLogo('icon_id_ctn', document.getElementById('icon_id').value);
+    jQuery('#sc_type').click(function() {
+        toggleSeverityFields();
+    });
+    toggleSeverityFields();
+});
+	
+function toggleSeverityFields() {
+    if (jQuery('#sc_type').prop('checked')) {
+        jQuery('#severity_level').show();
+        jQuery('#severity_icon').show();
+    } else {
+        jQuery('#severity_level').hide();
+        jQuery('#severity_icon').hide();
+    }
+}
+</script>
+{/literal}

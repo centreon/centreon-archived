@@ -1,0 +1,131 @@
+{literal}
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type='text/javascript'>
+
+    function applyConfiguration() {
+        var pollers = [];
+        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
+            pollers.push(this.id.substr(7));
+        });
+        window.location.href = "?p=60902&poller=" + pollers.join(',');
+    }
+
+</script>
+{/literal}
+<form name='form' method='POST'>
+    <table class="ajaxOption table">
+    <tbody>
+      <tr>
+        <th><h5>{t}Filters{/t}</h5></th>
+      </tr>
+      <tr>
+        <td><h4>{t}Poller{/t}</h4></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="searchP" value="{$searchP}"></td>
+        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+      </tr>
+    </tbody>
+    </table>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            <td>
+                {if $mode_access == 'w'}
+                {$msg.options} {$form.o1.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                {else}
+                &nbsp;
+                {/if}
+                {if $is_admin == 1 || $can_generate == 1}
+                    {$form.apply_configuration.html}
+                {/if}
+            </td>
+            <input name="p" value="{$p}" type="hidden">
+            {php}
+               include('./include/common/pagination.php');
+            {/php}
+        </tr>
+    </table>
+    <table class="ListTable">
+        <tr class="ListHeader">
+            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td class="ListColHeaderLeft">{$headerMenu_name}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_localisation}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_hasChanged}<font color='red' style='padding-left:3px;'>*</font></td>
+            <td class="ListColHeaderCenter">{$headerMenu_pid}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_startTime}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_lastUpdateTime}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_version}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_default}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_status}</td>
+            <td class="ListColHeaderCenter">{t}Actions{/t}</td>
+            <td class="ListColHeaderRight">{$headerMenu_options}</td>
+        </tr>
+        {section name=elem loop=$elemArr}
+        <tr class={$elemArr[elem].MenuClass}>
+            <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+            <td class="ListColLeft">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == w}</a>{/if}</td>
+            <td class="ListColCenter">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == w}</a>{/if}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
+            <td class="ListColCenter">
+              <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
+                {$elemArr[elem].RowMenu_is_running}
+              </span>
+            </td>
+            <td class="ListColCenter">
+                <span class="badge {if $elemArr[elem].RowMenu_hasChangedFlag == 0}service_ok{else}service_critical{/if}">
+                    {$elemArr[elem].RowMenu_hasChanged}
+                </span>
+            </td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
+            <td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
+            <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+            <td class="ListColCenter">
+              {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
+              <!-- Link for edit poller monitoring engine configuration -->
+              <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
+                <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
+              </a>
+              {/if}
+            </td>
+            <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+        </tr>
+        {/section}
+    </table>
+    <table class="ToolbarTable table">
+        <tr class="ToolbarTR">
+            { if $mode_access == 'w' }
+            <td>
+                {$msg.options} {$form.o2.html}
+                &nbsp;&nbsp;&nbsp;
+                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+            </td>
+            { else }
+            <td>&nbsp;</td>
+            { /if }
+            <input name="p" value="{$p}" type="hidden">
+            {php}
+               include('./include/common/pagination.php');
+            {/php}
+        </tr>
+        <tr>
+            <td colspan='3' style='text-align:right;vertical-align:bottom; height: 50px;'><font color='red'>*</font>&nbsp;{$notice}</td>
+        </tr>
+    </table>
+<input type='hidden' name='o' id='o' value='42'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+{$form.hidden}
+</form>
+{literal}
+<script type='text/javascript'>
+
+    setDisabledRowStyle();
+
+</script>
+{/literal}

@@ -77,17 +77,17 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Centreon-GLPI.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Centreon.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Centreon-GLPI.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Centreon.qhc"
 
 devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/Centreon-GLPI"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Centreon-GLPI"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/Centreon"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Centreon"
 	@echo "# devhelp"
 
 epub:

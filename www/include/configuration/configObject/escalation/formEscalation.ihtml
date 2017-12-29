@@ -1,0 +1,83 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{t}Informations{/t}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Impacted Resources{/t}</a></li>
+</ul>
+<div id="validFormTop">
+{if $o == "a" || $o == "c"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+</div>
+<div id='tab1' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2"><h4>{$form.header.information}</h4></td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name">{$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias">{$form.esc_alias.label}</td><td class="FormRowValue">{$form.esc_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="first_notification">{$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="last_notification">{$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="escalation_period">{$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_escalation_options">{$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_escalation_options">{$form.escalation_options2.label}</td><td class="FormRowValue">{$form.escalation_options2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_groups">{$form.esc_cgs.label}</td><td class="FormRowValue">{$form.esc_cgs.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.esc_comment.label}</td><td class="FormRowValue">{$form.esc_comment.html}</td></tr>
+	</table>
+</div>
+<div id='tab2' class="tab">
+	 <table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$form.header.title}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Resources{/t}</h4>
+          </td>
+        </tr>
+		<tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="host_name">{$form.esc_hosts.label}</td>
+                    <td class="FormRowValue">
+                        <p style='margin-bottom : 6px;'>
+                            {$form.host_inheritance_to_services.html} {$form.host_inheritance_to_services.label}
+                        </p>
+                        {$form.esc_hosts.html}
+                    </td>
+                </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_description">{$form.esc_hServices.label}</td><td class="FormRowValue">{$form.esc_hServices.html}</td></tr>
+		<tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="hostgroup_name">{$form.esc_hgs.label}</td>
+                    <td class="FormRowValue">
+                        <p style='margin-bottom : 6px;'>
+                            {$form.hostgroup_inheritance_to_services.html} {$form.hostgroup_inheritance_to_services.label}
+                        </p>
+                        {$form.esc_hgs.html}
+                    </td>
+                </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroup_name">{$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="metaservice_name">{$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}
+

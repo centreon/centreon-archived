@@ -1,0 +1,42 @@
+span.v_required_star {
+    font-size: 12px;
+    padding-left: 5px;
+    color: red;
+}
+
+.collapse-wrapper .list_lvl_1 .ListColLvl1_name {
+    padding: 6px;
+}
+
+/* collapse */
+.header-collapse:hover td{
+    background-color: #e4e4e4 !important;
+    cursor: pointer;
+}
+.collapse-wrapper .elem-toCollapse {
+    display: none;
+    position: relative;
+}
+.elem-toCollapse .FormRowValue input {
+    position: relative;
+}
+.elem-header {
+    cursor: pointer;
+}
+.elem-header:hover td {
+    background: #e7e7e8 !important;
+}
+.elem-header td:first-child {
+    position: relative;
+    padding-left: 20px !important;
+}
+.elem-header td:first-child:before {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    width: 16px;
+    height: 16px;
+    color: #231f20;
+    font-size: 12px;
+    font-weight: bold;
+}

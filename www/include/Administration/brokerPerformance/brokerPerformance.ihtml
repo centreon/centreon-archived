@@ -1,0 +1,105 @@
+<form {$form.attributes}>
+<table class="ajaxOption table">
+  <tr>
+    <td><h4>{$form.pollers.label}</h4></td>
+  </tr>
+  <tr>
+    <td>{$form.pollers.html}</td>
+  </tr>
+</table>
+</form>
+{if $msg_err}
+<div class="update" style='text-align:center;'>{$msg_err}</div>
+{else}
+<table class="ListTable broker_stats_cntr">
+    <tr class="ListHeader">
+        <td class="FormHeader" colspan="2">&nbsp;{$poller_name}</td>
+    </tr>
+    {foreach from=$perf_info_array item=perf_info key=conf_name}
+    <tr>
+        <td class='list_lvl_1' colspan='2'>
+            <p>{$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span></p>
+        </td>
+    </tr>
+    <tr>
+        {if $perf_err.conf_name}
+        <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
+        {else}
+        <td style="vertical-align: top;" id="modules" class="broker_stats">
+            <p class="title">{$lang.modules}</p>
+            <ul class="module_list">
+            {foreach from=$perf_info.modules key=m_name item=m_status}
+                <li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$m_status}</span></li>
+            {/foreach}
+            </ul>
+        </td>
+        <td style="vertical-align: top;">
+        {foreach from=$perf_info.io key=io_name item=io_infos}
+            <div class="broker_stats {$io_infos.class}">
+                <p class="title {$io_infos.id}" onclick="toggleInfoBlock('{$io_infos.id}')"><span class="expand" ></span>{$io_name} - {$lang[$io_infos.type]}</p>
+                <div class="informations_header" id="{$io_infos.id}">
+                    {foreach from=$io_infos key=info_key item=info_value}
+                    {if $info_key == 'State'}
+                    <div class="informations">
+                        <p class="info_name">{$info_key}</p>
+                        <p class="info_value"><span class='{$info_value.class}'>{$info_value.value}</span></p>
+                    </div>
+                    {/if}
+                        {if $info_key != 'State' && $info_key != 'type' && $info_key != 'peers' && $info_key != 'filters' && $info_key != 'class' && $info_key != 'state_style' && $info_key != 'id'}
+                        <div class="informations">
+                            <p class="info_name">{$info_key}</p>
+                            <p class="info_value">{$info_value}</p>
+                        </div>
+                        {/if}
+                    {/foreach}
+                    {if count($io_infos.filters)}
+                    <div class="informations">
+                        <span class="info_name">{$lang.filters}</span>
+                        <p class="info_name" id="filters_{$io_name}">
+                            {foreach from=$io_infos.filters item=filter}
+                                <li>{$filter}</li>
+                            {/foreach}
+                        </p>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        {/foreach}
+    </td>
+    {/if}
+    </tr>
+{/foreach}
+ </table>
+{/if}
+{literal}
+<script type="text/javascript">
+    var elem = jQuery('.informations_header');
+
+    elem.each(function() {
+        var id = jQuery(this).attr('id');
+        var failover = id.indexOf('-failover');
+        var peers = id.indexOf('-peers');
+
+        var expand = jQuery('.title.' + id + ' .expand');
+
+        if(failover !== -1) {
+            jQuery('#' + id).hide();
+            expand.addClass('expand-icon');
+         }
+        if(peers !== -1) {
+            jQuery('#' + id).hide();
+            expand.addClass('expand-icon');
+        }
+    });
+
+    var link = jQuery('.informations').find('a');
+
+    function toggleInfoBlock(id) {
+        var elem = jQuery('#' + id);
+        elem.slideToggle( 'slow', function() {
+            expand = jQuery('.title.' + id + ' .expand');
+            expand.toggleClass('expand-icon');
+        });
+    }
+</script>
+{/literal}

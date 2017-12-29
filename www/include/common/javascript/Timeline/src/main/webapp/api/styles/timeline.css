@@ -1,0 +1,36 @@
+.timeline-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.timeline-copyright {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.timeline-band {
+    position: absolute;
+    background: #eee;
+}
+
+.timeline-band-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.timeline-band-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.timeline-band-layer-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+

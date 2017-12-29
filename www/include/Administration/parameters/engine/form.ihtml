@@ -1,0 +1,70 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+	<table class="formTable table">
+	 	<tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {$genOpt_monitoring_properties}</h3>
+          </td>
+        </tr>
+	 	<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$genOpt_nagios_version}</h4>
+          </td>
+        </tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_interval_length">&nbsp;{$form.interval_length.label}</td><td class="FormRowValue">{$form.interval_length.html}&nbsp;{$seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
+				
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$genOpt_Correlation_script}</h4>
+          </td>
+        </tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_start_script_for_correlator_engine">&nbsp;{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$genOpt_mailer_path}</h4>
+          </td>
+        </tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+mailer_binary">&nbsp;{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$tacticalOverviewOptions}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_hosts_to_show">&nbsp;{$form.tactical_host_limit.label}</td><td class="FormRowValue">{$form.tactical_host_limit.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_services_to_show">&nbsp;{$form.tactical_service_limit.label}</td><td class="FormRowValue">{$form.tactical_service_limit.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_page_refresh_interval">&nbsp;{$form.tactical_refresh_interval.label}</td><td class="FormRowValue">{$form.tactical_refresh_interval.html}&nbsp;{$seconds}</td></tr>		
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$acknowledgement_default_settings}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sticky">&nbsp;{$form.monitoring_ack_sticky.label}</td><td class="FormRowValue">{$form.monitoring_ack_sticky.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_notify">&nbsp;{$form.monitoring_ack_notify.label}</td><td class="FormRowValue">{$form.monitoring_ack_notify.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_persistent">&nbsp;{$form.monitoring_ack_persistent.label}</td><td class="FormRowValue">{$form.monitoring_ack_persistent.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_services_attached_to_hosts">&nbsp;{$form.monitoring_ack_svc.label}</td><td class="FormRowValue">{$form.monitoring_ack_svc.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_force_active_checks">&nbsp;{$form.monitoring_ack_active_checks.label}</td><td class="FormRowValue">{$form.monitoring_ack_active_checks.html}</td></tr>
+		
+		<tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$downtime_default_settings}</h4>
+          </td>
+        </tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_fixed">&nbsp;{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_set_downtimes_on_services_attached_to_hosts">&nbsp;{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">&nbsp;{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$form.monitoring_dwt_duration_scale.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+	{if !$valid}
+		<div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+	{else}
+		<div id="validForm" class="oreonbutton"><p>{$form.change.html}</p></div>
+	{/if}
+{$form.hidden}
+</form>
+{$helptext}

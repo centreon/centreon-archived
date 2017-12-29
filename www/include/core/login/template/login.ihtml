@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>Centreon - IT & Network Monitoring</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved." />
+        <meta name="robots" content="index, nofollow" />
+        <meta http-equiv="refresh" content="840">
+        <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="./img/favicon.ico">
+    </head>
+    <body OnLoad="document.login.useralias.focus();">
+        <form action="./index.php" method="post" name="login" style="height: 100%;">
+            {if $redirect != ''}
+            <input type='hidden' value='{$redirect}' name='redirect'>
+            {/if}
+            <div class="login_wrapper">
+                <div class="LoginInvitLogo">
+                    {foreach from=$loginMessages item=message}
+                        <div class="error_msg"><span class='msg'>{$message}</span></div>
+                    {/foreach}
+                   <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
+                </div>
+                <div class="logintab">
+                    <table id="logintab1" style="text-align:center;" align="center">
+                       <tr>
+                            <td align='right'>{$form.useralias.label}</td>
+                            <td>{$form.useralias.html}</td>
+                        </tr>
+                        <tr>
+                            <td align='right'>{$form.password.label}</td>
+                            <td>{$form.password.html}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align='center'>{$form.submitLogin.html}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="LoginInvitVersion">
+                    <span id="LoginInvitcpy">
+                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2017
+                    </span>
+                    <br>
+                    <span>
+                        {$centreonVersion}
+                    </span>
+                </div>
+            </div>
+        {$form.hidden}
+        </form>
+    </body>
+</html>

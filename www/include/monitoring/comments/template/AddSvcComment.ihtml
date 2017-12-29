@@ -1,0 +1,37 @@
+{$form.javascript}
+<div align=center>
+	<form {$form.attributes}>
+		<table class="formTable table">
+			<tr class="ListHeader">
+				<td class="FormHeader" colspan="2">
+                  <h3>| {$form.header.title}</h3>
+              </td>
+			<tr>
+			{if isset($host_name) && isset($service_description)}
+			<tr class="list_one">
+            	<td class="ListColLeft">{t}Host{/t} / {t}Service{/t}</td>
+            	<td class="ListColLeft"><b>{$host_name} / {$service_description}</b></td>
+            </tr>
+            {else}
+			<tr class="list_one" id="service_input">
+				<td  class="ListColLeft">{$form.service_id.label}</td>
+				<td  class="ListColLeft">{$form.service_id.html}</td>
+			</tr>
+			{/if}
+			<tr class="list_two">
+				<td class="ListColLeft">{$form.persistant.label}</td>
+				<td class="ListColLeft">{$form.persistant.html}</td>
+			</tr>
+			<tr class="list_one">
+				<td class="ListColLeft">{$form.comment.label}</td>
+				<td class="ListColLeft">{$form.comment.html}</td>
+			</tr>
+		</table>		
+		<div id="validForm">
+			<p>{$form.action.html}</p>
+			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		</div>
+		{$form.hidden}
+	</form>
+</div>
+

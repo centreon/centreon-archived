@@ -1,0 +1,25 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+    <table class="formTable table">
+        <tr class="ListHeader">
+          <td class="FormHeader" colspan="2">
+            <h3>| {t}Centcore properties{/t}</h3>
+          </td>
+        </tr>
+        <tr class="list_lvl_1">
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{t}Centcore Options{/t}</h4>
+          </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_broker_stats">&nbsp;{$form.enable_broker_stats.label}</td><td class="FormRowValue">{$form.enable_broker_stats.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_cmd_timeout">&nbsp;{$form.centcore_cmd_timeout.label}</td><td class="FormRowValue">{$form.centcore_cmd_timeout.html}&nbsp;{t}seconds{/t}</td></tr>
+    </table>
+    {if !$valid}
+        <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+    {else}
+        <div id="validForm" class="oreonbutton"><p>{$form.change.html}</p></div>
+    {/if}
+{$form.hidden}
+</form>
+{$helptext}

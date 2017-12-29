@@ -1,0 +1,12 @@
+PEAR::1.4.9
+DB::1.7.6
+DB_DataObject::1.8.4
+DB_DataObject_FormBuilder::1.0.0RC4::beta
+MDB2::2.0.0
+Date::1.4.6	
+Archive_Tar::1.1
+Auth_SASL::1.0.1
+Console_Getopt::1.2
+Validate::0.6.2::beta
+Log::1.9.11
+Archive_Zip::0.1.2::beta
