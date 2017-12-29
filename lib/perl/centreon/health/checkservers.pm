@@ -1,41 +1,29 @@
-################################################################################
-# Copyright 2005-2013 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
-# GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation ; either version 2 of the License.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-# PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
-# General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
-# exception to your version of the program, but you are not obliged to do so. If you
-# do not wish to do so, delete this exception statement from your version.
-# 
 #
-####################################################################################
+# Copyright 2017 Centreon (http://www.centreon.com/)
+#
+# Centreon is a full-fledged industry-strength solution that meets
+# the needs in IT infrastructure and application monitoring for
+# service performance.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 package centreon::health::checkservers;
 
 use strict;
 use warnings;
 use integer;
+use POSIX qw(strftime);
 
 sub new {
     my $class = shift;
@@ -62,7 +50,7 @@ sub get_servers_informations {
                                    FROM nagios_server");
     while (my $row = $sth->fetchrow_hashref()) {
         $self->{output}->{poller}->{$row->{id}}{name} = $row->{name};
-        $self->{output}->{poller}->{$row->{id}}{localhost} = $row->{localhost};
+        $self->{output}->{poller}->{$row->{id}}{localhost} = ($row->{localhost} == 1) ? "YES" : "NO";
         $self->{output}->{poller}->{$row->{id}}{address} = $row->{ns_ip_address};
         $self->{output}->{poller}->{$row->{id}}{ssh_port} = $row->{ssh_port};
     }
@@ -95,12 +83,20 @@ sub get_servers_informations {
 
         while (my $row = $sth->fetchrow_hashref()) {
             $self->{output}->{poller}{$row->{instance_id}}{uptime} = centreon::health::misc::change_seconds(value => $row->{last_alive} - $row->{start_time});
-            $self->{output}->{poller}{$row->{instance_id}}{running} = $row->{running};
-            $self->{output}->{poller}{$row->{instance_id}}{start_time} = $row->{start_time};
-            $self->{output}->{poller}{$row->{instance_id}}{last_alive} = $row->{last_alive};
-            $self->{output}->{poller}{$row->{instance_id}}{last_command_check} = $row->{last_command_check};
+            $self->{output}->{poller}{$row->{instance_id}}{running} = ($row->{running} == 1) ? "YES" : "NO";
+            $self->{output}->{poller}{$row->{instance_id}}{start_time} = strftime("%m/%d/%Y %H:%M:%S",localtime($row->{start_time}));
+            $self->{output}->{poller}{$row->{instance_id}}{last_alive} = strftime("%m/%d/%Y %H:%M:%S",localtime($row->{last_alive}));
+            $self->{output}->{poller}{$row->{instance_id}}{last_command_check} = strftime("%m/%d/%Y %H:%M:%S",localtime($row->{last_command_check}));
             $self->{output}->{poller}{$row->{instance_id}}{engine} = $row->{engine};
             $self->{output}->{poller}{$row->{instance_id}}{version} = $row->{version};
+        }
+
+        $sth = $options{csdb}->query("SELECT stat_key, stat_value, stat_label 
+					FROM nagios_stats
+                                     	WHERE instance_id = " . $options{cdb}->quote($id) . "");
+
+        while (my $row = $sth->fetchrow_hashref()) {
+	    $self->{output}->{poller}->{$id}->{engine_stats}->{$row->{stat_label}}->{$row->{stat_key}} = $row->{stat_value}; 
         }
 
 	$self->{output}->{global}->{hosts_by_poller_avg} = $self->{output}->{global}->{count_hosts}/$self->{output}->{global}->{count_poller};
