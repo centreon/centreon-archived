@@ -29,8 +29,8 @@ use centreon::health::checkrrd;
 use centreon::health::checkdb;
 use centreon::health::checkmodules;
 use centreon::health::checksystems;
-#use centreon::health::checkbroker;
-#use centreon::health::checklogs;
+use centreon::health::checkbroker;
+use centreon::health::checklogs;
 
 use JSON;
 use Data::Dumper;
@@ -53,11 +53,11 @@ sub new {
 	"snmp-community=s"	=> \$self->{opt_community},
 	"skip-rrd"		=> \$self->{opt_skiprrd},
 	"skip-db"		=> \$self->{opt_skipdb},
+	"skip-logs"		=> \$self->{opt_skiplogs},
 	"anonymous"		=> \$self->{opt_anonymous}
     );
 	
     $self->{global_output} = {};
-
     $self->{opt_checkprotocol} = 'snmp';
     $self->{opt_community} = 'public' if (!defined $self->{opt_community});
     $self->{opt_csdb} = 'centreon_storage' if (!defined $self->{opt_csdb});
@@ -70,19 +70,17 @@ sub run {
     my $self = shift;
     $self->SUPER::run();
 
-    $self->{logger}->writeLogDebug("[INFO] Starting centreon_health check");
-    $self->{global_output}->{rrd} = centreon::health::checkrrd->new->run($self->{csdb}, defined($self->{opt_skiprrd}), $self->{logger});
-    $self->{global_output}->{database} = centreon::health::checkdb->new->run($self->{cdb}, $self->{csdb}, $self->{opt_csdb}, defined($self->{opt_skipdb}), $self->{logger});    
-    $self->{global_output}->{module} = centreon::health::checkmodules->new->run($self->{cdb}, $self->{logger});
-    $self->{global_output}->{server} = centreon::health::checkservers->new->run($self->{cdb}, $self->{csdb}, $self->{opt_majorversion}, $self->{logger});
-    $self->{global_output}->{systems} = centreon::health::checksystems->new->run($self->{global_output}->{server}->{poller}, $self->{opt_checkprotocol}, $self->{opt_community}, $self->{logger});
-    
-    
-   #print Dumper($self->{global_output});
+    $self->{global_output}->{rrd} = centreon::health::checkrrd->new->run($self->{csdb}) if (!defined($self->{opt_skiprrd}));
+    $self->{global_output}->{database} = centreon::health::checkdb->new->run($self->{cdb}, $self->{csdb}, $self->{opt_csdb}) if (!defined($self->{opt_skipdb}));    
+    $self->{global_output}->{module} = centreon::health::checkmodules->new->run($self->{cdb});
+    $self->{global_output}->{server} = centreon::health::checkservers->new->run($self->{cdb}, $self->{csdb}, $self->{opt_majorversion});
+    $self->{global_output}->{systems} = centreon::health::checksystems->new->run($self->{global_output}->{server}->{poller}, $self->{opt_checkprotocol}, $self->{opt_community});
+    $self->{global_output}->{broker} = centreon::health::checkbroker->new->run($self->{cdb}, $self->{global_output}->{server}->{poller}, $self->{opt_majorversion});
+    $self->{global_output}->{logs} = centreon::health::checklogs->new->run($self->{cdb}, $self->{global_output}->{server}->{poller}) if (!defined($self->{opt_skiplogs}));
+
+    #print Dumper($self->{global_output}->{broker});
     my $json = JSON->new->encode($self->{global_output});
     print $json ;
 }
-
-
 
 1;

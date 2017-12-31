@@ -39,8 +39,6 @@ sub run {
     my $size = 0;
     my ($sth, $status);
 
-    $logger->writeLogDebug("[INFO] Gathering Modules informations");
-
     $sth = $centreon_db->query("SELECT name, rname, author, mod_release FROM  modules_informations");
     while (my $row = $sth->fetchrow_hashref) {
         $self->{output}->{$row->{name}}{full_name} = $row->{rname};

@@ -44,9 +44,9 @@ sub ssh_callback {
 
     if ($options{exit} == SSH_OK || $options{exit} == SSH_AGAIN) { # AGAIN means timeout
 	chomp($options{stdout});
-        $command_results->{$options{userdata}} = $options{stdout};
+        $command_results->{multiple}->{$options{userdata}} = $options{stdout};
     } else {
-        $command_results->{$options{userdata}} = "Failed action on ssh or plugin";
+        $command_results->{multiple}->{$options{userdata}} = "Failed action on ssh or plugin";
 	return -1
     }
     return 0
@@ -80,11 +80,13 @@ sub main {
     $self->create_ssh_channel(host => $options{host}, port => $options{port}, user => 'centreon');
     if (defined($options{command_pool})) {
         $self->{session}->execute(commands => $options{command_pool}, timeout => 5000, timeout_nodata => 10, parallel => 5);
+	 $self->{data} = $command_results->{multiple};
     } else {
-    	my $return = $self->{session}->execute_simple(cmd => $options{command_simple}, timeout => 10, timeout_nodata => 5);
-	$command_results->{$return->{userdata}} = defined($return->{stderr}) ? $return->{stderr} : $return->{stdout};
+    	my $return = $self->{session}->execute_simple(cmd => $options{command}, userdata => $options{userdata}, timeout => 10, timeout_nodata => 5);
+	$command_results->{simple} = $return->{stdout};
+	$self->{data} = $command_results->{simple};
     }
-    $self->{data} = $command_results;
+
     return $self->{data}
 }
         

@@ -71,12 +71,6 @@ sub run {
     my $self = shift;
     my ($centstorage_db, $flag, $logger) = @_;
  
-    if ($flag == 1) {
-	$logger->writeLogDebug("[INFO] Skipping RRD checks");
-	return 0
-    }
-    
-    $logger->writeLogDebug("[INFO] Gathering RRD informations");   
     $self->get_rrd_path(csdb => $centstorage_db);
     $self->get_rrd_infos();
 

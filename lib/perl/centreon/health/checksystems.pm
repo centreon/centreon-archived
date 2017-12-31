@@ -31,8 +31,6 @@ sub new {
     $self->{cmd_system_health} = [];
     $self->{output} = {};
 
-    $self->{cmd_system_health} = [];
-
     bless $self, $class;
     return $self;
 }

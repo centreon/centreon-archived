@@ -40,14 +40,6 @@ sub run {
     my $size = 0;
     my ($sth, $status);
 
-    if ($flag == 1) {
-        $logger->writeLogDebug("[INFO] Skipping Database checks");
-        return 0
-    }
-
-    $logger->writeLogDebug("[INFO] Gathering Databases informations");
-
-
     foreach my $db_name ('centreon', $centstorage_db_name) {
         $sth = $centreon_db->query("SELECT table_schema AS db_name, SUM(data_length+index_length) AS db_size 
                                     FROM information_schema.tables
