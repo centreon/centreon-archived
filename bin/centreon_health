@@ -19,12 +19,6 @@ centreon_health [options]
 
 =over 8
 
-        "skip-rrd"              => \$self->{opt_skiprrd},
-        "skip-db"               => \$self->{opt_skipdb},
-        "skip-logs"             => \$self->{opt_skiplogs},
-        "anonymous"             => \$self->{opt_anonymous}
-
-
 =item B<--centstorage-db> <value>
 
 Specify the name of your centstorage db if not standard
