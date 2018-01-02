@@ -78,7 +78,6 @@ sub new {
        date_format => "",
        time_format => "",
        date_time_format => "",
-       cache_unknown_traps_enable => 1,
        cache_unknown_traps_retention => 600,
        # secure mode: 1 => cannot use customcode option for traps
        secure_mode => 1,
@@ -474,7 +473,7 @@ sub set_current_values {
     $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
     $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
     $self->{current_service_notes} = defined($self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes}) ?
-        $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes} : '';
+    $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{esi_notes} : '';
     $self->{current_user_arg1} = defined($self->{user_arg1}) ? $self->{user_arg1} : '';
     $self->{current_user_arg2} = defined($self->{user_arg2}) ? $self->{user_arg2} : '';
 }
@@ -1027,10 +1026,11 @@ sub executeCommand {
 #
 sub getTrapsInfos {
     my $self = shift;
+    my $ids = $_[0];
     my ($fstatus);
     
     ### Get OIDS 
-    ($fstatus, $self->{trap_data}->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, ${$self->{trap_data}->{var}}[3]);
+    ($fstatus, $self->{trap_data}->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, $ids);
     return 0 if ($fstatus == -1);
     foreach my $trap_id (keys %{$self->{trap_data}->{ref_oids}}) {
         $self->{trap_data}->{current_trap_id} = $trap_id;
@@ -1216,7 +1216,7 @@ sub run {
                                                                      entvarname => \@{$self->{trap_data}->{entvarname}});
                 
                 if ($readtrap_result == 1) {
-                    my ($status) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                    my (@return) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                                           logger_unknown => $self->{logger_unknown},
                                                                           config => $self->{centreontrapd_config},
                                                                           trap_data => $self->{trap_data},
@@ -1224,9 +1224,9 @@ sub run {
                                                                           cdb => $self->{cdb},
                                                                           last_cache_time => \$self->{last_cache_time},
                                                                           oids_cache => \$self->{oids_cache});
-                    if ($status == 1) {
-                        $unlink_trap = $self->getTrapsInfos();
-                    } elsif ($status == -1) {
+                    if ($return[0] == 1) {
+                        $unlink_trap = $self->getTrapsInfos($return[1]);
+                    } elsif ($return[0] == -1) {
                         # DB deconnection. Need to keep the file. Not deleted it.
                         $unlink_trap = 0;
                     }

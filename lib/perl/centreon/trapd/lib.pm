@@ -126,11 +126,11 @@ sub manage_params_conf {
 
 # We get All datas for a TRAP
 sub get_oids {
-    my ($cdb, $oid) = @_;
+    my ($cdb, $ids) = @_;
     my $ref_result;
     
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
-                                        traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
+                                        traps_oid, traps_name, traps_mode, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type,
                                         traps_routing_mode, traps_routing_value, traps_routing_filter_services,
                                         traps_exec_method, traps_downtime, traps_output_transform,
@@ -138,7 +138,7 @@ sub get_oids {
                                         FROM traps
                                         LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
                                         LEFT JOIN service_categories ON (service_categories.sc_id = traps.severity_id)
-                                        WHERE traps_oid = " . $cdb->quote($oid));
+                                        WHERE traps_id IN (" . join(',', @$ids) . ")");
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('traps_id');
     
@@ -492,11 +492,13 @@ sub get_cache_oids {
     # oids_cache => ref
     my %args = @_;
 
-    my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps");
+    my ($status, $sth) = $args{cdb}->query("SELECT traps_oid, traps_id, traps_mode FROM traps");
     return -1 if ($status == -1);
-    ${$args{oids_cache}} = $sth->fetchall_hashref("traps_oid");
+    my $ids = $sth->fetchall_hashref("traps_id");
+    foreach my $id (keys $ids) {
+        push @{${$args{oids_cache}}->{$ids->{$id}->{traps_mode}}->{$ids->{$id}->{traps_oid}}}, $id;
+    }
     ${$args{last_cache_time}} = time();
-    return 0;
 }
 
 sub display_unknown_traps {
@@ -538,33 +540,33 @@ sub check_known_trap {
     # oids_cache => ref
     my %args = @_;
     my $oid2verif = $args{oid2verif};
-
-    if ($args{config}->{cache_unknown_traps_enable} == 1) {
-        if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
-            if (get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time}) == -1) {
-                $args{logger}->writeLogError("Cant load cache trap oids.");
-                return -1;
-            }
-        }
-        if (defined(${$args{oids_cache}}->{$oid2verif})) {
-            return 1;
-        } else {
-            display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown}, 
-                                  config => $args{config}, trap_data => $args{trap_data});
-            return 0;
-        }
-    } else {
-        # Read db
-        my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
-        return 0 if ($status == -1);
-        if (!$sth->fetchrow_hashref()) {
-            display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown},
-                                  config => $args{config}, trap_data => $args{trap_data});
-            return 0;
+    
+    if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
+        if (get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time}) == -1) {
+            $args{logger}->writeLogError("Cant load cache trap oids.");
+            return -1;
         }
     }
 
-    return 1;
+    my @traps_ids;
+    # Uniq
+    if (defined(${$args{oids_cache}}->{0}->{$oid2verif})) {
+        push @traps_ids, ${$args{oids_cache}}->{0}->{$oid2verif};
+        return 1, @traps_ids;
+    }
+    # Regexp
+    foreach my $oid (keys ${$args{oids_cache}}->{1}) {
+        if ($oid2verif =~ m/$oid/) {
+            push @traps_ids, ${$args{oids_cache}}->{1}->{$oid};
+        }
+    }
+    if (scalar(@traps_ids > 0)) {
+        return 1, @traps_ids;
+    }
+    
+    display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown}, 
+                          config => $args{config}, trap_data => $args{trap_data});
+    return 0;
 }
 
 

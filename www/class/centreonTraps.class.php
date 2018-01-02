@@ -259,9 +259,13 @@ class CentreonTraps
         if (!isset($ret['severity']) || $ret['severity'] == "") {
             $ret['severity'] = "NULL";
         }
+        if (isset($ret['traps_mode']['traps_mode'])) {
+            $ret['traps_mode'] = $ret['traps_mode']['traps_mode'];
+        }
 
         $rq = "UPDATE traps ";
         $rq .= "SET `traps_name` = '" . $this->db->escape($ret["traps_name"]) . "', ";
+        $rq .= "`traps_mode` = '" . $this->db->escape($ret["traps_mode"]) . "', ";
         $rq .= "`traps_oid` = '" . $this->db->escape($ret["traps_oid"]) . "', ";
         $rq .= "`traps_args` = '" . $this->db->escape($ret["traps_args"]) . "', ";
         $rq .= "`traps_status` = '" . $this->db->escape($ret["traps_status"]) . "', ";
@@ -436,9 +440,12 @@ class CentreonTraps
         if (!isset($ret['severity']) || $ret['severity'] == "") {
             $ret['severity'] = "NULL";
         }
+        if (isset($ret['traps_mode']['traps_mode'])) {
+            $ret['traps_mode'] = $ret['traps_mode']['traps_mode'];
+        }
 
         $rq = "INSERT INTO traps ";
-        $rq .= "(traps_name, traps_oid, traps_args, 
+        $rq .= "(traps_name, traps_mode, traps_oid, traps_args, 
             traps_status, severity_id, traps_submit_result_enable, 
             traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
             traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value,
@@ -447,6 +454,7 @@ class CentreonTraps
             traps_timeout, traps_customcode) ";
         $rq .= "VALUES ";
         $rq .= "('" . $this->db->escape($ret["traps_name"]) . "',";
+        $rq .= "'" . $this->db->escape($ret["traps_mode"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_oid"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_args"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_status"]) . "', ";

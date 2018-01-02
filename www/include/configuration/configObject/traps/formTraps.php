@@ -170,6 +170,10 @@ $attrManufacturer1 = array_merge(
 );
 $form->addElement('select2', 'manufacturer_id', _("Vendor Name"), array(), $attrManufacturer1);
 $form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
+$traps_mode[] = HTML_QuickForm::createElement('radio', 'traps_mode', null, _("Unique"), '0');
+$traps_mode[] = HTML_QuickForm::createElement('radio', 'traps_mode', null, _("Regexp"), '1');
+$form->addGroup($traps_mode, 'traps_mode', _("Mode"), '&nbsp;');
+$form->setDefaults(array('traps_mode' => '0'));
 
 /**
  * Generic fields
@@ -359,15 +363,18 @@ $excecution_type[] = HTML_QuickForm::createElement(
     '2'
 );
 $form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
+$form->setDefaults(array('traps_exec_interval_type' => '0'));
 
 $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
 $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
 $form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
+$form->setDefaults(array('traps_exec_method' => '0'));
 
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("None"), '0');
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("History"), '2');
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
+$form->setDefaults(array('traps_downtime' => '0'));
 
 /*
  * Pre exec 

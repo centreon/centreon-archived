@@ -37,3 +37,5 @@ ALTER TABLE `custom_view_user_relation`
         FOREIGN KEY (`custom_view_id`)
         REFERENCES `centreon`.`custom_views` (`custom_view_id`)
         ON DELETE CASCADE;
+
+ALTER TABLE `traps` ADD `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
