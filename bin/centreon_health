@@ -31,7 +31,7 @@ Specify centreon version (X.Y format) if older than 2.8
 
 =item B<--check-protocol> <value>
 
-Specify favorite check protocol (will be implemented later, 'snmp' is forced for now)
+Specify favorite check protocol (will be implemented later, 'snmp' is the only one available for now)
 
 =item B<--snmp-community> <value>
 
@@ -39,11 +39,11 @@ Specify snmp community to execute plugins
 
 =item B<--output-type> <value>
 
-Specify output type (will be implemented soon and will offer json, xml at least)
+Specify output type. Can be: 'TEXT', 'JSON' or 'DUMPER' (last if for debugging only, raw perl struct)
 
 =item B<--skip-*>
 
-Skip check that might be long (rrd and db e.g) on large setup. 
+Skip check that might be long (rrd and db e.g) on large setup or overkill in some situation
 Can be : --skip-rrd, --skip-db, --skip-logs
 
 =item B<--anonymous>
