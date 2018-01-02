@@ -548,20 +548,19 @@ sub check_known_trap {
         }
     }
 
-    my @traps_ids;
     # Uniq
     if (defined(${$args{oids_cache}}->{0}->{$oid2verif})) {
-        push @traps_ids, ${$args{oids_cache}}->{0}->{$oid2verif};
-        return 1, @traps_ids;
+        return 1, ${$args{oids_cache}}->{0}->{$oid2verif};
     }
     # Regexp
+    my @traps_ids;
     foreach my $oid (keys ${$args{oids_cache}}->{1}) {
         if ($oid2verif =~ m/$oid/) {
-            push @traps_ids, ${$args{oids_cache}}->{1}->{$oid};
+            push @traps_ids, @{${$args{oids_cache}}->{1}->{$oid}};
         }
     }
     if (scalar(@traps_ids > 0)) {
-        return 1, @traps_ids;
+        return 1, \@traps_ids;
     }
     
     display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown}, 
