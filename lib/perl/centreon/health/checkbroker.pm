@@ -40,9 +40,9 @@ sub json_parsing {
     my ($self, %options) = @_;
     
     my $json_content = JSON->new->decode($options{json_content});
-    foreach my $key (keys $json_content) {
+    foreach my $key (keys %$json_content) {
 	if ($key =~ m/^endpoint/) {
-	    foreach my $broker_metric (keys $json_content->{$key}) {
+	foreach my $broker_metric (keys %{$json_content->{$key}}) {
 		next if ($broker_metric !~ m/version|event_processing|last_connection|queued|state/);
 		$self->{output}->{$options{poller_name}}->{$options{file_name}}->{$broker_metric} = ($broker_metric =~ m/^last_connection/ && $json_content->{$key}->{$broker_metric} != -1) 
 										? strftime("%m/%d/%Y %H:%M:%S",localtime($json_content->{$key}->{$broker_metric}))
@@ -60,11 +60,12 @@ sub json_parsing {
 
 sub run {
     my $self = shift;
-    my ($centreon_db, $server_list, $centreon_version, $logger) = @_;
+    my ($centreon_db, $server_list, $centreon_version) = @_;
 
     my $sth;
 
-    foreach my $server (keys $server_list) {
+    return if ($centreon_version ne "2.8");
+    foreach my $server (keys %$server_list) {
 	$sth = $centreon_db->query("SELECT config_name, cache_directory 
 					FROM cfg_centreonbroker 
 					WHERE stats_activate='1' 
@@ -74,8 +75,8 @@ sub run {
             while (my $row = $sth->fetchrow_hashref()) {
 	        my ($lerror, $stdout) = centreon::common::misc::backtick(command => "cat " . $row->{cache_directory} . "/" . $row->{config_name} . "-stats.json");
 		$self->{output} = $self->json_parsing(json_content => $stdout,
-										     poller_name => $server_list->{$server}->{name},
-										     file_name => $row->{config_name}. "-stats.json");
+						      poller_name => $server_list->{$server}->{name},
+						      file_name => $row->{config_name}. "-stats.json");
 	    }
 	} else {
             while (my $row = $sth->fetchrow_hashref()) {
@@ -84,8 +85,8 @@ sub run {
                                                               userdata => $row->{cache_directory} . "/" . $row->{config_name} . "-stats.json",
                                                               command => "cat " . $row->{cache_directory} . "/" . $row->{config_name} . "-stats.json");
                 $self->{output} = $self->json_parsing(json_content => $stdout,
-                                                                                     poller_name => $server_list->{$server}->{name},
-                                                                                       file_name => $row->{config_name}. "-stats.json");
+                                                      poller_name => $server_list->{$server}->{name},
+                                                      file_name => $row->{config_name}. "-stats.json");
 
             }
         }

@@ -75,7 +75,7 @@ sub run {
     $self->{data}->{database} = centreon::health::checkdb->new->run($self->{cdb}, $self->{csdb}, $self->{opt_csdb}) if (!defined($self->{opt_skipdb}));    
     $self->{data}->{module} = centreon::health::checkmodules->new->run($self->{cdb});
     $self->{data}->{server} = centreon::health::checkservers->new->run($self->{cdb}, $self->{csdb}, $self->{opt_majorversion});
-    $self->{data}->{systems} = centreon::health::checksystems->new->run($self->{data}->{server}->{poller}, $self->{opt_checkprotocol}, $self->{opt_community});
+    $self->{data}->{systems} = centreon::health::checksystems->new->run($self->{data}->{server}->{poller}, $self->{opt_checkprotocol}, $self->{opt_community}, $self->{opt_majorversion});
     $self->{data}->{broker} = centreon::health::checkbroker->new->run($self->{cdb}, $self->{data}->{server}->{poller}, $self->{opt_majorversion});
     $self->{data}->{logs} = centreon::health::checklogs->new->run($self->{cdb}, $self->{data}->{server}->{poller}) if (!defined($self->{opt_skiplogs}));
 

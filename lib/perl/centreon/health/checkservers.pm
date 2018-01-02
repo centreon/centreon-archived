@@ -47,12 +47,13 @@ sub get_servers_informations {
     my ($self, %options) = @_;
 
     my $sth = $options{cdb}->query("SELECT id, name, localhost, ns_ip_address, ssh_port
-                                   FROM nagios_server");
+                                   FROM nagios_server WHERE ns_activate='1'");
     while (my $row = $sth->fetchrow_hashref()) {
         $self->{output}->{poller}->{$row->{id}}{name} = $row->{name};
         $self->{output}->{poller}->{$row->{id}}{localhost} = ($row->{localhost} == 1) ? "YES" : "NO";
         $self->{output}->{poller}->{$row->{id}}{address} = $row->{ns_ip_address};
         $self->{output}->{poller}->{$row->{id}}{ssh_port} = $row->{ssh_port};
+        $self->{output}->{poller}->{$row->{id}}{id} = $row->{id};
     }
 
     foreach my $id (keys %{$self->{output}->{poller}}) {
@@ -118,7 +119,7 @@ sub run {
                          centreon_version => [$centreon_db, "SELECT value FROM informations LIMIT 1"],
                          count_metrics => [$centstorage_db, "SELECT count(*) FROM metrics"] };
 
-    foreach my $info (keys $query_misc) {
+    foreach my $info (keys %$query_misc) {
         my $result = $self->query_misc(cdb => $query_misc->{$info}[0],
                                        query => $query_misc->{$info}[1] );
         $self->{output}->{global}->{$info} = $result;

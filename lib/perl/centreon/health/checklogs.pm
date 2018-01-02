@@ -44,7 +44,7 @@ sub run {
     my $sth;
     my ($lerror, $stdout);
 
-    foreach my $server (keys $server_list) {
+    foreach my $server (keys %$server_list) {
         $sth = $centreon_db->query("SELECT log_file
                                      FROM cfg_nagios
                                      WHERE nagios_id=" . $centreon_db->quote($server));

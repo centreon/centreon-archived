@@ -52,45 +52,45 @@ sub output_text {
     $output .=  "Service / host (avg): " . $options{data}->{server}->{global}->{services_by_host_avg} . "\n";
     $output .=  "Metrics / service (avg): " . $options{data}->{server}->{global}->{metrics_by_service_avg} . "\n\n";
 
-    if ($options{flag_rrd} != 1 || $options{flag_db} ne "") {
+    if ($options{flag_rrd} != 1 || $options{flag_db} eq "") {
         $output .=  "\t\t RRD INFORMATIONS\n\n";
         $output .= "RRD not updated since more than 180 days: " .  $options{data}->{rrd}->{rrd_not_updated_since_180d} . "\n";
         $output .= "RRD written during last 5 five minutes: " .  $options{data}->{rrd}->{rrd_written_last_5m} . "\n";
-        foreach my $key (sort keys $options{data}->{rrd}) {
+        foreach my $key (sort keys %{$options{data}->{rrd}}) {
 	    next if ($key =~ m/^rrd_/);
             $output .= "RRD files Count/Size in " . $key . " directory: " . $options{data}->{rrd}->{$key}->{count} . "/" . $options{data}->{rrd}->{$key}->{size} . "\n";
         }
 	$output .= "\n";
     }
 
-    if ($options{flag_db} != 1 || $options{flag_db} ne "") {
+    if ($options{flag_db} != 1 || $options{flag_db} eq "") {
         $output .=  "\t\t DATABASES INFORMATIONS\n\n";
         $output .= "\tDatabases size\n\n";
-        foreach my $database (keys $options{data}->{database}->{db_size}) { 
+        foreach my $database (keys %{$options{data}->{database}->{db_size}}) { 
 	    $output .= "Size of " . $database . " database: " . $options{data}->{database}->{db_size}->{$database} . "\n";
         }
         $output .= "\n";
         $output .= "\tTables size (centreon_storage db)\n\n";
-        foreach my $database (keys $options{data}->{database}->{table_size}) {
+        foreach my $database (keys %{$options{data}->{database}->{table_size}}) {
             $output .= "Size of " . $database . " table: " . $options{data}->{database}->{table_size}->{$database} . "\n";
         }
         $output .= "\n";
         $output .= "\tPartitioning check\n\n";
-        foreach my $table (keys $options{data}->{database}->{partitioning_last_part}) {
+        foreach my $table (keys %{$options{data}->{database}->{partitioning_last_part}}) {
             $output .= "Last partition date for " . $table . " table: " . $options{data}->{database}->{partitioning_last_part}->{$table} . "\n";
         }
         $output .= "\n";
     }
    
     $output .= "\t\t MODULE INFORMATIONS\n\n";
-    foreach my $module_key (keys $options{data}->{module}) {
+    foreach my $module_key (keys %{$options{data}->{module}}) {
 	$output .= "Module " . $options{data}->{module}->{$module_key}->{full_name} . " is installed. (Author: " . $options{data}->{module}->{$module_key}->{author} . " # Codename: " . $module_key . " # Version: " . $options{data}->{module}->{$module_key}->{version} . ")\n";
     }
     $output .= "\n";
 
     $output .= "\t\t CENTREON NODES INFORMATIONS\n\n";
     
-    foreach my $poller_id (keys $options{data}->{server}->{poller}) {
+    foreach my $poller_id (keys %{$options{data}->{server}->{poller}}) {
         $output .= "\t" . $options{data}->{server}->{poller}->{$poller_id}->{name} . "\n\n";
 	$output .= "Identity: \n";
 	$output .= "    Engine (version): " . $options{data}->{server}->{poller}->{$poller_id}->{engine} . " (" . $options{data}->{server}->{poller}->{$poller_id}->{version} . ")\n";
@@ -103,15 +103,15 @@ sub output_text {
 	$output .= "    Count Hosts/Services - (Last command check): " . $options{data}->{server}->{poller}->{$poller_id}->{hosts} . "/" . $options{data}->{server}->{poller}->{$poller_id}->{services} . " - (" . $options{data}->{server}->{poller}->{$poller_id}->{last_command_check} . ")\n\n";
 
         $output .= "Engine stats: \n";
-	foreach my $stat_key (sort keys $options{data}->{server}->{poller}->{$poller_id}->{engine_stats}) {
-	    foreach my $stat_value (sort keys $options{data}->{server}->{poller}->{$poller_id}->{engine_stats}->{$stat_key}) {
+	foreach my $stat_key (sort keys %{$options{data}->{server}->{poller}->{$poller_id}->{engine_stats}}) {
+	    foreach my $stat_value (sort keys %{$options{data}->{server}->{poller}->{$poller_id}->{engine_stats}->{$stat_key}}) {
             $output .= "    " . $stat_key . "(" . $stat_value . "): " . $options{data}->{server}->{poller}->{$poller_id}->{engine_stats}->{$stat_key}->{$stat_value} . "\n";
 	    }
 	}
 	$output .= "\n";
 
         $output .= "Broker stats: \n";
-        foreach my $broker_stat_file (sort keys $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}) {
+        foreach my $broker_stat_file (sort keys %{$options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}}) {
    	    $output .= "    \tFile: " . $broker_stat_file . "\n";
             $output .= "    Version: " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{version} . "\n";
 	    $output .= "    State: " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{state} . "\n";
@@ -130,8 +130,8 @@ sub output_text {
 
 	if ($options{flag_logs} != 1 || $options{flag_logs} eq "") {
             $output .= "\t\t LOGS LAST LINES: \n\n";
-            foreach my $log_topic (sort keys $options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}) {
-	        foreach my $log_file (keys $options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$log_topic}) {
+            foreach my $log_topic (sort keys %{$options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}}) {
+	        foreach my $log_file (keys %{$options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$log_topic}}) {
 	            $output .= "    " . $log_file . " (" . $log_topic . ")\n\n";
 		    $output .= $options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$log_topic}->{$log_file} . "\n\n"; 
 	        }

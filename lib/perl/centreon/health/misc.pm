@@ -22,6 +22,33 @@ package centreon::health::misc;
 
 use strict;
 use warnings;
+use Libssh::Session qw(:all);
+
+sub get_ssh_connection {
+    my %options = @_;
+
+    my $session = Libssh::Session->new();
+    if ($session->options(host => $options{host}, port => $options{port}, user => $options{user}) != SSH_OK) {
+        print $session->error() . "\n";
+        return 1
+    }
+
+    if ($session->connect() != SSH_OK) {
+        print $session->error() . "\n";
+        return 1
+    }
+
+    if ($session->auth_publickey_auto() != SSH_AUTH_SUCCESS) {
+        printf("auth issue pubkey: %s\n", $session->error(GetErrorSession => 1));
+        if ($session->auth_password(password => $options{password}) != SSH_AUTH_SUCCESS) {
+            printf("auth issue: %s\n", $session->error(GetErrorSession => 1));
+            return 1
+        }
+    }
+
+    return $session
+
+}
 
 sub change_seconds {
     my %options = @_;

@@ -39,32 +39,32 @@ sub build_command_hash {
     my ($self, %options) = @_;
 
     if ($options{medium} eq "snmp") {
-        $self->{cmd_system_health} = [ { cmd => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin os::linux::snmp::plugin --mode cpu-detailed \\
+        $self->{cmd_system_health} = [ { cmd => "/usr/lib/" . $options{plugin_path} . "/plugins/" . $options{plugins} . " --plugin os::linux::snmp::plugin --mode cpu-detailed \\
 							 --hostname localhost \\
 							 --statefile-suffix='_diag-cpu' \\
 							 --filter-perfdata='^(?!(wait|guest|user|softirq|kernel|interrupt|guestnice|idle|steal|system|nice))' \\
 							 --snmp-community " . $options{community} ,
                                          callback => \&centreon::health::ssh::ssh_callback,
 					 userdata => "cpu_usage" },
-                                       { cmd => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin os::linux::snmp::plugin --mode load \\
+                                       { cmd => "/usr/lib/" . $options{plugin_path} . "/plugins/" . $options{plugins} . " --plugin os::linux::snmp::plugin --mode load \\
 							 --hostname localhost \\
 							 --filter-perfdata='^(?!(load))' \\
 							 --snmp-community " . $options{community},
                                          callback => \&centreon::health::ssh::ssh_callback,
                                          userdata => "load" },
-                                       { cmd => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin os::linux::snmp::plugin --mode memory \\
+                                       { cmd => "/usr/lib/" . $options{plugin_path} . "/plugins/" . $options{plugins} . " --plugin os::linux::snmp::plugin --mode memory \\
 							 --hostname localhost \\
 							 --filter-perfdata='^(?!(cached|buffer|used))' \\
 							 --snmp-community " . $options{community},
                                          callback => \&centreon::health::ssh::ssh_callback,
                                          userdata => "mem_usage" },
-                                       { cmd => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin os::linux::snmp::plugin --mode swap \\
+                                       { cmd => "/usr/lib/" . $options{plugin_path} . "/plugins/" . $options{plugins} . " --plugin os::linux::snmp::plugin --mode swap \\
 							 --hostname localhost \\
 							 --filter-perfdata='^(?!(used))' \\
 							 --snmp-community " . $options{community},
                                          callback => \&centreon::health::ssh::ssh_callback,
                                          userdata => "swap_usage" },
-                                       { cmd => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin os::linux::snmp::plugin --mode storage \\
+                                       { cmd => "/usr/lib/" . $options{plugin_path} . "/plugins/" . $options{plugins} . " --plugin os::linux::snmp::plugin --mode storage \\
 							 --hostname localhost \\
 							 --storage='^(?!(/dev/shm|/sys/fs/cgroup|/boot|/run.*))' --name --regexp \\
 							 --filter-perfdata='^(?!(used))' --statefile-suffix='_diag-storage' \\
@@ -110,12 +110,14 @@ sub get_local_infos {
 
 sub run {
     my $self = shift;
-    my ($server_list, $medium, $community, $logger) = @_;
+    my ($server_list, $medium, $community, $centreon_ver) = @_;
 
     $self->build_command_hash(medium => $medium,
+			      plugins => ($centreon_ver eq 2.8) ? 'centreon_linux_snmp.pl' : 'centreon_plugins.pl',
+			      plugin_path => ($centreon_ver eq 2.8) ? 'centreon' : 'nagios',
 			      community => $community);
 
-    foreach my $server (keys $server_list) {
+    foreach my $server (keys %$server_list) {
 	my $name = $server_list->{$server}->{name};
 	if ($server_list->{$server}->{localhost} eq "NO") {
 	    $self->{output}->{$name} = $self->get_remote_infos(host => $server_list->{$server}->{address}, ssh_port => $server_list->{$server}->{ssh_port});
