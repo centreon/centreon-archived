@@ -303,12 +303,15 @@ class CentreonMeta
         $queryService = 'SELECT service_id '
             . 'FROM service '
             . 'WHERE service_register = "2" '
-            . 'AND service_description = "' . $composedName . '" '
-            . 'AND display_name = "' . $metaName . '" ';
+            . 'AND service_description = "' . $composedName . '" ';
         $res = $this->db->query($queryService);
+
         if ($res->numRows()) {
             $row = $res->fetchRow();
             $serviceId = $row['service_id'];
+            $query = 'UPDATE service SET service_description = "' . $composedName . '", ' .
+                'display_name = "' . $metaName . '", service_register = "2" WHERE service_id = ' . $serviceId;
+            $this->db->query($query);
         } else {
             $query = 'INSERT INTO service (service_description, display_name, service_register) '
                 . 'VALUES '
