@@ -141,7 +141,7 @@ function get_notified_infos_for_host($hostId)
         $stack = array_merge($hostsTpl, $stack);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0){
+    if (version_compare(phpversion(), '5.4.0') >= 0) {
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {
@@ -204,7 +204,9 @@ function get_notified_infos_for_service($serviceId, $hostId)
             || $service['service_template_model_stm_id'] == '') {
             break;
         }
-        if (!is_null($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+        if (!is_null($service['service_use_only_contacts_from_host']) &&
+            $service['service_use_only_contacts_from_host'] == 1
+        ) {
             $useOnlyContactsFromHost = 1;
             break;
         }
@@ -237,12 +239,12 @@ function get_notified_infos_for_service($serviceId, $hostId)
         $serviceId = $service['service_template_model_stm_id'];
     }
 
-     if ($useOnlyContactsFromHost ||
+    if ($useOnlyContactsFromHost ||
         (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0)) {
         return get_notified_infos_for_host($hostId);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0){
+    if (version_compare(phpversion(), '5.4.0') >= 0) {
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {
