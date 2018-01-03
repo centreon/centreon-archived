@@ -89,9 +89,9 @@ class CentreonLogAction
         if (($auditLog) && ($auditLog['audit_log_option'] == '1')) {
             $str_query = "INSERT INTO `log_action`
                 (action_log_date, object_type, object_id, object_name, action_type, log_contact_id)
-                VALUES ('".time()."', '" . CentreonDB::escape($object_type) . "', '" .
+                VALUES ('" . time() . "', '" . CentreonDB::escape($object_type) . "', '" .
                 CentreonDB::escape($object_id) . "', '" . CentreonDB::escape($object_name) . "', '" .
-                    CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
+                CentreonDB::escape($action_type) . "', '" . CentreonDB::escape($this->logUser->user_id) . "')";
             $pearDBO->query($str_query);
 
             $DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
@@ -161,7 +161,7 @@ class CentreonLogAction
     public function getHostId($service_id)
     {
         global $pearDBO;
-        
+
         /* Get Hosts */
         $query = "SELECT a.action_log_id, field_value 
                     FROM log_action a, log_action_modification m 
@@ -199,8 +199,8 @@ class CentreonLogAction
     public function getHostName($host_id)
     {
         global $pearDB, $pearDBO;
-        
-        $query = "SELECT host_name FROM host WHERE host_register = '1' AND host_id = ".$host_id;
+
+        $query = "SELECT host_name FROM host WHERE host_register = '1' AND host_id = " . $host_id;
         $DBRESULT2 = $pearDB->query($query);
         $info = $DBRESULT2->fetchRow();
         if (isset($info['host_name'])) {
@@ -219,8 +219,8 @@ class CentreonLogAction
     public function getHostGroupName($hg_id)
     {
         global $pearDB, $pearDBO;
-        
-        $query = "SELECT hg_name FROM hostgroup WHERE hg_id = ".$hg_id;
+
+        $query = "SELECT hg_name FROM hostgroup WHERE hg_id = " . $hg_id;
         $DBRESULT2 = $pearDB->query($query);
         $info = $DBRESULT2->fetchRow();
         if (isset($info['hg_name'])) {
@@ -246,13 +246,11 @@ class CentreonLogAction
         $ref = array();
         $i = 0;
 
-        $DBRESULT = $pearDBO->query(
-            "SELECT action_log_id, action_log_date, action_type
-                FROM log_action
-                WHERE object_id = '" . CentreonDB::escape($id) . "'
-                    AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC"
-        );
-        while ($row = $DBRESULT->fetchRow()) {
+        $query = "SELECT action_log_id, action_log_date, action_type FROM log_action" .
+            " WHERE object_id = '" . CentreonDB::escape($id) . "'" .
+            " AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC";
+        $dbResult = $pearDBO->query($query);
+        while ($row = $dbResult->fetchRow()) {
             $DBRESULT2 = $pearDBO->query(
                 "SELECT action_log_id,field_name,field_value
                     FROM `log_action_modification`
@@ -314,7 +312,7 @@ class CentreonLogAction
         $object_type_tab[6] = "hostgroup";
         $object_type_tab[7] = "service";
         $object_type_tab[8] = "servicegroup";
-        $object_type_tab[9] = "snmp traps";
+        $object_type_tab[9] = "traps";
         $object_type_tab[10] = "escalation";
         $object_type_tab[11] = "host dependency";
         $object_type_tab[12] = "hostgroup dependency";
@@ -325,6 +323,12 @@ class CentreonLogAction
         $object_type_tab[17] = "broker";
         $object_type_tab[18] = "resources";
         $object_type_tab[19] = "meta";
+        $object_type_tab[20] = "access group";
+        $object_type_tab[21] = "menu access";
+        $object_type_tab[22] = "resource access";
+        $object_type_tab[23] = "action access";
+        $object_type_tab[24] = "manufacturer";
+        $object_type_tab[25] = "hostcategories";
 
         return $object_type_tab;
     }
