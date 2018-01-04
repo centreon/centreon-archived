@@ -64,6 +64,11 @@ sub run {
 
     my $sth;
 
+    if ($centreon_version ne "2.8") {
+	$self->{output}->{not_compliant} = "Incompatible file format, work only with JSON format";
+	return $self->{output}
+    }
+
     return if ($centreon_version ne "2.8");
     foreach my $server (keys %$server_list) {
 	$sth = $centreon_db->query("SELECT config_name, cache_directory 

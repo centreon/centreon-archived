@@ -39,7 +39,7 @@ Specify snmp community to execute plugins
 
 =item B<--output-type> <value>
 
-Specify output type. Can be: 'TEXT', 'JSON' or 'DUMPER' (last if for debugging only, raw perl struct)
+Specify output type. Can be: 'MARKDOWN', 'JSON', 'TEXT' or 'DUMPER' (last if for debugging only, raw perl struct)
 
 =item B<--skip-*>
 

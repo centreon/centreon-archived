@@ -46,7 +46,7 @@ sub ssh_callback {
 	chomp($options{stdout});
         $command_results->{multiple}->{$options{userdata}} = $options{stdout};
     } else {
-        $command_results->{multiple}->{$options{userdata}} = "Failed action on ssh or plugin";
+        $command_results->{multiple}->{failed_action} = "Failed action on ssh or plugin";
 	return -1
     }
     return 0

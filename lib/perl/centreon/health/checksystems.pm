@@ -82,7 +82,8 @@ sub build_command_hash {
 
 sub get_remote_infos {
     my ($self, %options) = @_;
-   
+  
+    
     return centreon::health::ssh::new->main(host => $options{host}, port => $options{ssh_port}, command_pool => $self->{cmd_system_health}); 
     
 }
