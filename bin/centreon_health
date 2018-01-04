@@ -46,10 +46,6 @@ Specify output type. Can be: 'MARKDOWN', 'JSON', 'TEXT' or 'DUMPER' (last if for
 Skip check that might be long (rrd and db e.g) on large setup or overkill in some situation
 Can be : --skip-rrd, --skip-db, --skip-logs
 
-=item B<--anonymous>
-
-Anonymize sensitive information from output for easier sharing (to implement - no effect for now)
-
 =head1 DESCRIPTION
 
 B<centreon_health> will gather some informations about centreon global metrics
