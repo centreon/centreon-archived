@@ -163,8 +163,8 @@ sub output_markdown {
 
     my $output;
 
-    $output = "#CENTREON_HEALTH TEXT OUTPUT\n";
-    $output .=  "##CENTREON OVERVIEW\n\n";
+    $output = "# CENTREON_HEALTH TEXT OUTPUT\n";
+    $output .=  "## CENTREON OVERVIEW\n\n";
     $output .=  "  + Centreon Version: " . $options{data}->{server}->{global}->{centreon_version} . "\n";
     $output .=  "  + Number of pollers: " . $options{data}->{server}->{global}->{count_poller} . "\n";
     $output .=  "  + Number of hosts: " . $options{data}->{server}->{global}->{count_hosts} . "\n";
@@ -173,14 +173,14 @@ sub output_markdown {
     $output .=  "  + Number of modules: " . $options{data}->{server}->{global}->{count_modules} . "\n";
     $output .=  defined($options{data}->{server}->{global}->{count_pp}) ? "  + Number of plugin-packs: " . $options{data}->{server}->{global}->{count_pp} . "\n" : "  + Number of plugin-packs: N/A\n";
     $output .=  "  + Number of recurrent downtimes: " . $options{data}->{server}->{global}->{count_downtime} . "\n\n";
-    $output .=  "##AVERAGE METRICS\n\n";
+    $output .=  "## AVERAGE METRICS\n\n";
     $output .=  "  + Host / poller (avg): " . $options{data}->{server}->{global}->{hosts_by_poller_avg} . "\n";
     $output .=  "  + Service / poller (avg): " . $options{data}->{server}->{global}->{services_by_poller_avg} . "\n";
     $output .=  "  + Service / host (avg): " . $options{data}->{server}->{global}->{services_by_host_avg} . "\n";
     $output .=  "  + Metrics / service (avg): " . $options{data}->{server}->{global}->{metrics_by_service_avg} . "\n\n";
 
     if ($options{flag_rrd} != 1 || $options{flag_db} eq "") {
-        $output .=  "##RRD INFORMATIONS\n\n";
+        $output .=  "## RRD INFORMATIONS\n\n";
         $output .= "  + RRD not updated since more than 180 days: " .  $options{data}->{rrd}->{rrd_not_updated_since_180d} . "\n";
         $output .= "  + RRD written during last 5 five minutes: " .  $options{data}->{rrd}->{rrd_written_last_5m} . "\n";
         foreach my $key (sort keys %{$options{data}->{rrd}}) {
@@ -191,35 +191,35 @@ sub output_markdown {
     }
 
     if ($options{flag_db} != 1 || $options{flag_db} eq "") {
-        $output .=  "##DATABASES INFORMATIONS\n\n";
-        $output .= "###Databases size\n\n";
+        $output .=  "## DATABASES INFORMATIONS\n\n";
+        $output .= "### Databases size\n\n";
         foreach my $database (keys %{$options{data}->{database}->{db_size}}) {
             $output .= "  + Size of " . $database . " database: " . $options{data}->{database}->{db_size}->{$database} . "\n";
         }
         $output .= "\n";
-        $output .= "###Tables size (centreon_storage db)\n\n";
+        $output .= "### Tables size (centreon_storage db)\n\n";
         foreach my $database (keys %{$options{data}->{database}->{table_size}}) {
             $output .= "  + Size of " . $database . " table: " . $options{data}->{database}->{table_size}->{$database} . "\n";
         }
         $output .= "\n";
-        $output .= "###Partitioning check\n\n";
+        $output .= "### Partitioning check\n\n";
         foreach my $table (keys %{$options{data}->{database}->{partitioning_last_part}}) {
             $output .= "  + Last partition date for " . $table . " table: " . $options{data}->{database}->{partitioning_last_part}->{$table} . "\n";
         }
         $output .= "\n";
     }
 
-    $output .= "##MODULE INFORMATIONS\n\n";
+    $output .= "## MODULE INFORMATIONS\n\n";
     foreach my $module_key (keys %{$options{data}->{module}}) {
         $output .= "  + Module " . $options{data}->{module}->{$module_key}->{full_name} . " is installed. (Author: " . $options{data}->{module}->{$module_key}->{author} . " # Codename: " . $module_key . " # Version: " . $options{data}->{module}->{$module_key}->{version} . ")\n";
     }
     $output .= "\n";
 
-    $output .= "##CENTREON NODES INFORMATIONS\n\n";
+    $output .= "## CENTREON NODES INFORMATIONS\n\n";
 
     foreach my $poller_id (keys %{$options{data}->{server}->{poller}}) {
-        $output .= "###" . $options{data}->{server}->{poller}->{$poller_id}->{name} . "\n\n";
-        $output .= "####Identity: \n";
+        $output .= "### " . $options{data}->{server}->{poller}->{$poller_id}->{name} . "\n\n";
+        $output .= "#### Identity: \n";
         if (defined($options{data}->{server}->{poller}->{$poller_id}->{engine}) && defined($options{data}->{server}->{poller}->{$poller_id}->{version})) {
             $output .= "  + Engine (version): " . $options{data}->{server}->{poller}->{$poller_id}->{engine} . " (" . $options{data}->{server}->{poller}->{$poller_id}->{version} . ")\n";
             $output .= "  + IP Address (SSH port): " . $options{data}->{server}->{poller}->{$poller_id}->{address} . " (" . $options{data}->{server}->{poller}->{$poller_id}->{ssh_port} . ")\n";
@@ -234,7 +234,7 @@ sub output_markdown {
             $output .= "  + SKIP Identity for this poller, enabled but does not seems to work correctly ! \n\n";
         }
 
-        $output .= "####Engine stats: \n";
+        $output .= "#### Engine stats: \n";
         foreach my $stat_key (sort keys %{$options{data}->{server}->{poller}->{$poller_id}->{engine_stats}}) {
             foreach my $stat_value (sort keys %{$options{data}->{server}->{poller}->{$poller_id}->{engine_stats}->{$stat_key}}) {
             $output .= "  + " . $stat_key . "(" . $stat_value . "): " . $options{data}->{server}->{poller}->{$poller_id}->{engine_stats}->{$stat_key}->{$stat_value} . "\n";
@@ -242,9 +242,9 @@ sub output_markdown {
         }
         $output .= "\n";
 
-        $output .= "####Broker stats: \n";
+        $output .= "#### Broker stats: \n";
         foreach my $broker_stat_file (sort keys %{$options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}}) {
-            $output .= "#####File: " . $broker_stat_file . "\n";
+            $output .= "##### File: " . $broker_stat_file . "\n";
             $output .= "  + Version: " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{version} . "\n";
             $output .= "  + State: " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{state} . "\n";
             $output .= "  + Event proecessing speed " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{event_processing_speed} . "\n";
@@ -253,7 +253,7 @@ sub output_markdown {
             $output .= "  + Last connection success: " . $options{data}->{broker}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$broker_stat_file}->{last_connection_success} . "\n\n";
         }
 
-        $output .= "####System stats: \n";
+        $output .= "#### System stats: \n";
         $output .= defined($options{data}->{systems}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{cpu_usage}) ?
                         "  + CPU => " . $options{data}->{systems}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{cpu_usage} . "\n" :
                         "  + CPU => Could not gather data \n";
@@ -271,7 +271,7 @@ sub output_markdown {
                         "  + STORAGE => Could not gather data \n\n";
 
         if ($options{flag_logs} != 1 || $options{flag_logs} eq "") {
-            $output .= "##LOGS LAST LINES: \n\n";
+            $output .= "## LOGS LAST LINES: \n\n";
             foreach my $log_topic (sort keys %{$options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}}) {
                 foreach my $log_file (keys %{$options{data}->{logs}->{$options{data}->{server}->{poller}->{$poller_id}->{name}}->{$log_topic}}) {
                     $output .= "  + " . $log_file . " (" . $log_topic . ")\n\n";
