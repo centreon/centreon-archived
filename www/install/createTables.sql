@@ -2031,6 +2031,7 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_name` varchar(255) DEFAULT NULL,
   `traps_oid` varchar(255) DEFAULT NULL,
+  `traps_mode` enum('0','1') DEFAULT '0',
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
   `severity_id` int(11) DEFAULT NULL,
