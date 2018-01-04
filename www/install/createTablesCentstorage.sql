@@ -15,7 +15,8 @@ CREATE TABLE `centreon_acl` (
   `host_id` int(11) DEFAULT NULL,
   `service_id` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
-  KEY `index1` (`group_id`,`host_id`,`service_id`)
+  KEY `index1` (`group_id`,`host_id`,`service_id`),
+  KEY `index2` (`host_id`,`service_id`,`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
