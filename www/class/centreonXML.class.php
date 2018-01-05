@@ -41,10 +41,11 @@ class CentreonXML
 {
     public $buffer;
 
-    /*
-     *  Constructor
+    /**
+     * CentreonXML constructor.
+     * @param bool $indent
      */
-    public function CentreonXML($indent = false)
+    public function __construct($indent = false)
     {
         $this->buffer = new XMLWriter();
         $this->buffer->openMemory();
