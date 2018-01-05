@@ -244,7 +244,7 @@ $form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
 /*
  * Init QuickForm
  */
-$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
 isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = null;
