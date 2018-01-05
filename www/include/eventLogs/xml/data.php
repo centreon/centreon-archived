@@ -238,12 +238,12 @@ if ($EndDate != "" && $EndTime == "") {
 if ($StartDate != "") {
     preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
     preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
-    $start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+    $start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 if ($EndDate != "") {
     preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
     preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
-    $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+    $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 
 $period = 86400;
