@@ -383,7 +383,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             }
 
             foreach ($_POST["service_id"] as $value) {
-                $info = split('-', $value);
+                $info = explode('-', $value);
                 if ($centreon->user->access->admin || in_array($info[0], $host_acl_id)) {
                     $ecObj->addSvcDowntime(
                         $info[0],
