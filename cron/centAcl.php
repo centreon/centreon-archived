@@ -585,7 +585,8 @@ try {
                             $str .= "('" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
                             $i++;
                             if ($i >= 1000) {
-                                $pearDBO->query($strBegin . $str);
+                                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $acl_group_id";
+                                $pearDBO->query($strBegin . $str . $strEnd);
                                 $str = "";
                                 $i = 0;
                             }
@@ -596,7 +597,8 @@ try {
                      * Insert datas
                      */
                     if ($str != "") {
-                        $pearDBO->query($strBegin . $str);
+                        $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $acl_group_id";
+                        $pearDBO->query($strBegin . $str . $strEnd);
                         $str = "";
                     }
                 }
