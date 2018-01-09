@@ -101,4 +101,24 @@ class CentreonVersion
         }
         return $data;
     }
+
+    /**
+     * Get versions of the system processus
+     *
+     * @return array
+     */
+    public function getSystem()
+    {
+        $data = array(
+            'OS' => php_uname()
+        );
+
+        $query = 'SHOW VARIABLES LIKE "version"';
+        $result = $this->db->query($query);
+        if ($row = $result->fetchRow()) {
+            $data['mysql'] = $row['Value'];
+        }
+
+        return $data;
+    }
 }
