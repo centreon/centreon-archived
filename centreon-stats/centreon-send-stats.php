@@ -95,46 +95,50 @@ foreach ($files as $f) {
   }
 }
 
-foreach ($types as $type) {
-  $aggregation[$type] /= $total_up;
-  $retval['jwtToken'] = $UUID;
+if ($total != 0) {
+  if ($total_up != 0) {
+    foreach ($types as $type) {
+      $aggregation[$type] /= $total_up;
+      $retval['jwtToken'] = $UUID;
+      $retval['metrics'][] = array(
+          'host' => $UUID,
+          'what' => $type,
+          'unit' => '',
+          'result' => $aggregation[$type],
+          'mtype' => 'gauge',
+          'timestamp' => $timestamp
+      );
+    }
+  }
+
   $retval['metrics'][] = array(
       'host' => $UUID,
-      'what' => $type,
-      'unit' => '',
-      'result' => $aggregation[$type],
+      'what' => 'alive',
+      'unit' => '%',
+      'result' => $alive * 100 / $total,
       'mtype' => 'gauge',
       'timestamp' => $timestamp
   );
-}
 
-$retval['metrics'][] = array(
-    'host' => $UUID,
-    'what' => 'alive',
-    'unit' => '%',
-    'result' => $alive * 100 / $total,
-    'mtype' => 'gauge',
-    'timestamp' => $timestamp
-);
+  // Open connection
+  $ch = curl_init();
 
-// Open connection
-$ch = curl_init();
+  // Set the url
+  curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
+  curl_setopt($ch, CURLOPT_HEADER, "Content-type: application/json");
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($retval));
 
-// Set the url
-curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
-curl_setopt($ch, CURLOPT_HEADER, "Content-type: application/json");
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($retval));
+  if (curl_exec($ch) === false) {
+    die('ERROR: centreon-send-stats.php --- ' . curl_error($ch));
+  }
 
-if (curl_exec($ch) === false) {
-  die('ERROR: centreon-send-stats.php --- ' . curl_error($ch));
-}
+  curl_close($ch);
 
-curl_close($ch);
-
-/* We just have to remove parsed files */
-foreach ($to_unlink as $f) {
-  unlink($f);
+  /* We just have to remove parsed files */
+  foreach ($to_unlink as $f) {
+    unlink($f);
+  }
 }
 
 ?>

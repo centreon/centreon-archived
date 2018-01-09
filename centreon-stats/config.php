@@ -18,5 +18,5 @@ const VERSIONNING_RESOURCE = 'version';
 const UUID_RESOURCE = 'CentreonUUID';
 
 // Url where the stats are sent.
-const CENTREON_STATS_URL = 'http://statistics.centreon.com';
+const CENTREON_STATS_URL = 'https://statistics.centreon.com';
 ?>
