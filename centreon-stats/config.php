@@ -7,10 +7,10 @@ const USERNAME = 'admin';
 const PASSWORD = 'centreon';
 
 // Sub route to authenticate
-const AUTH_URL = 'http://10.30.2.85/centreon/api/index.php?action=authenticate';
+const AUTH_URL = 'http://127.0.0.1/centreon/api/index.php?action=authenticate';
 
 // Route of the webservices
-const WS_ROUTE = 'http://10.30.2.85/centreon/api/index.php?object=centreon_statistics&action=';
+const WS_ROUTE = 'http://127.0.0.1/centreon/api/index.php?object=centreon_statistics&action=';
 
 // webservices
 const INFOS_RESOURCE = 'PlatformInfo';
