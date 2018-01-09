@@ -75,8 +75,8 @@ foreach ($files as $f) {
       }
     }
 
-    if (isset($json['versionning'])) {
-      $versionning = $json['versionning'];
+    if (isset($json['versions'])) {
+      $versionning = $json['versions'];
       foreach ($versionning as $k => $v) {
         $meta = &$retval['meta'];
         foreach ($v as $k1 => $value) {
@@ -85,8 +85,8 @@ foreach ($files as $f) {
       }
     }
 
-    if (isset($json['UUID']) && isset($json['UUID']['plateform-uuid'])) {
-      $UUID = $json['UUID']['plateform-uuid'];
+    if (isset($json['UUID']) && isset($json['UUID']['CentreonUUID'])) {
+      $UUID = $json['UUID']['CentreonUUID'];
     }
     else {
       error_log("No UUID specified");
@@ -123,11 +123,14 @@ if ($total != 0) {
   // Open connection
   $ch = curl_init();
 
+  $stats_url = CENTREON_STATS_URL . '/instances/' . $UUID . '/metrics';
   // Set the url
-  curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
-  curl_setopt($ch, CURLOPT_HEADER, "Content-type: application/json");
+  curl_setopt($ch, CURLOPT_URL, $stats_url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
   curl_setopt($ch, CURLOPT_POST, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($retval));
+
+  print(json_encode($retval, JSON_PRETTY_PRINT));
 
   if (curl_exec($ch) === false) {
     die('ERROR: centreon-send-stats.php --- ' . curl_error($ch));
