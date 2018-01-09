@@ -1,0 +1,3 @@
+0 12 * * * centreon /usr/bin/php /usr/share/centreon/cron/centreon-retrieve-stats.php /var/log/centreon/stats.log 2>&1  
+0 0 * * 2 centreon /usr/bin/php /usr/share/centreon/cron/centreon-send-stats.php
+0 0 1 * * centreon /usr/bin/php /usr/share/centreon/cron/centreon-send-stats.php
