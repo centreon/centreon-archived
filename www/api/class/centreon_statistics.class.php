@@ -35,6 +35,7 @@
 
 require_once dirname(__FILE__) . "/webService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGMT.class.php";
 
 class CentreonStatistics extends CentreonWebService
 {
@@ -83,4 +84,27 @@ class CentreonStatistics extends CentreonWebService
 
         return $data;
     }
+
+    /**
+     * get Centreon timezone
+     *
+     * @return array
+     */
+    public function getPlatformTimezone()
+    {
+        $oTimezone = new CentreonGMT($this->pearDB);
+        $sDefaultTimezone = $oTimezone->getCentreonTimezone();
+
+        if (empty($sDefaultTimezone)) {
+            $sDefaultTimezone = date_default_timezone_get();
+        }
+
+        return array(
+            'timezone' => $sDefaultTimezone
+        );
+    }
+
+
+
+
 }
