@@ -63,9 +63,9 @@ class CentreonStatistics extends CentreonWebService
     {
         $query = "SELECT COUNT(host_id) as nb_hosts, " .
             "(SELECT COUNT(service_id) FROM service " .
-            "WHERE service_activate = 1 AND service_register = 1) as nb_services, " .
-            "(SELECT COUNT(id) FROM nagios_server WHERE ns_activate = 1) as nb_pollers " .
-            "FROM host WHERE host_activate = 1 AND host_register = 1";
+            "WHERE service_activate = '1' AND service_register = '1') as nb_services, " .
+            "(SELECT COUNT(id) FROM nagios_server WHERE ns_activate = '1') as nb_pollers " .
+            "FROM host WHERE host_activate = '1' AND host_register = '1'";
         $dbResult = $this->pearDB->query($query);
         $data = $dbResult->fetchRow();
 
