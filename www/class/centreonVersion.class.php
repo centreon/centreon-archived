@@ -37,34 +37,58 @@ class CentreonVersion
 {
     /**
      * @var CentreonDB
+     * @var CentreonDBStorage
      */
     private $db;
+    private $dbStorage;
 
     /**
      * Constructor
      *
      * @param CentreonDB $db
+     * @param CentreonDBStorage $dbStorage
      */
-    public function __construct($db)
+    public function __construct($db, $dbStorage = null)
     {
         $this->db = $db;
+
+        if (!is_null($dbStorage)) {
+            $this->dbStorage = $dbStorage;
+        }
     }
 
     /**
-     * Get Centreon web version
+     * Get Centreon core version
      *
-     * @return string
+     * @return array
      */
-    public function getVersion()
+    public function getCore()
     {
-        $data = '';
+        $data = array();
 
+        // Get version of the centreon-web
         $query = 'SELECT i.value FROM informations i ' .
             'WHERE i.key = "version"';
         $result = $this->db->query($query);
         if ($row = $result->fetchRow()) {
-            $data = $row['value'];
+            $data['centreon-web'] = $row['value'];
         }
+
+        // Get version of the centreon-broker
+        $cmd = shell_exec("cbd -v");
+
+        if (preg_match('/^.*(\d+\.\d+\.\d+)$/', $cmd, $matches)) {
+            $data['centreon-broker'] = $matches[1];
+        }
+
+        // Get version of the centreon-engine
+        $queryProgram = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ";
+        $result = $this->dbStorage->query($queryProgram);
+
+        while ($info = $result->fetchRow()) {
+            $data['centreon-engine'] = $info["program_version"];
+        }
+
         return $data;
     }
 

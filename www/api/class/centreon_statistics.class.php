@@ -37,6 +37,7 @@ require_once dirname(__FILE__) . "/webService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGMT.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonVersion.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class CentreonStatistics extends CentreonWebService
 {
@@ -78,11 +79,10 @@ class CentreonStatistics extends CentreonWebService
      */
     public function getVersion()
     {
-        $centreonVersion = new CentreonVersion($this->pearDB);
+        $dbStorage = new CentreonDB("centstorage");
+        $centreonVersion = new CentreonVersion($this->pearDB, $dbStorage);
         return array(
-            'core' => array(
-                'centreon-web' => $centreonVersion->getVersion()
-            ),
+            'core' => $centreonVersion->getCore(),
             'modules' => $centreonVersion->getModules(),
             'widgets' => $centreonVersion->getWidgets(),
             'system' => $centreonVersion->getSystem(),
