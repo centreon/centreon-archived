@@ -130,8 +130,6 @@ if ($total != 0) {
   curl_setopt($ch, CURLOPT_POST, true);
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($retval));
 
-  print(json_encode($retval, JSON_PRETTY_PRINT));
-
   if (curl_exec($ch) === false) {
     die('ERROR: centreon-send-stats.php --- ' . curl_error($ch));
   }
