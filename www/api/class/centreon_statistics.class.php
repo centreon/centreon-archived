@@ -78,7 +78,7 @@ class CentreonStatistics extends CentreonWebService
     public function getVersion()
     {
         $query = 'SELECT i.value as "centreon-web" FROM informations i ' .
-                'WHERE i.key = "version"';
+            'WHERE i.key = "version"';
         $dbResult = $this->pearDB->query($query);
         $data = $dbResult->fetchRow();
 
@@ -93,18 +93,17 @@ class CentreonStatistics extends CentreonWebService
     public function getPlatformTimezone()
     {
         $oTimezone = new CentreonGMT($this->pearDB);
-        $sDefaultTimezone = $oTimezone->getCentreonTimezone();
+        $defaultTimezone = $oTimezone->getCentreonTimezone();
+        $timezoneById = $oTimezone->getList();
 
-        if (empty($sDefaultTimezone)) {
-            $sDefaultTimezone = date_default_timezone_get();
+        if (!empty($defaultTimezone) && !empty($timezoneById[$defaultTimezone])) {
+            $timezone = $timezoneById[$defaultTimezone];
+        } else {
+            $timezone = date_default_timezone_get();
         }
 
         return array(
-            'timezone' => $sDefaultTimezone
+            'timezone' => $timezone
         );
     }
-
-
-
-
 }
