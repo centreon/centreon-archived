@@ -130,10 +130,13 @@ $query_svc_status = "SELECT " .
     "AND h.host_id = s.host_id " .
     "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
 if (!$obj->is_admin) {
-    $query_svc_status .= "AND s.service_id IN ( " .
-        "SELECT DISTINCT service_id " .
+    $query_svc_status .=  "AND EXISTS (" .
+        "SELECT service_id " .
         "FROM centreon_acl " .
-        "WHERE centreon_acl.group_id IN (" . $obj->grouplistStr . ")) ";
+        "WHERE centreon_acl.host_id = h.host_id " .
+        "AND centreon_acl.service_id = s.service_id " .
+        "AND centreon_acl.group_id IN (" . $obj->grouplistStr . ")" .
+        ") ";
 }
 $DBRESULT = $obj->DBC->query($query_svc_status);
 $svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
