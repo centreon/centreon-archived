@@ -228,21 +228,6 @@ while ($checkCmd = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->free();
 
-# Contact Groups comes from DB -> Store in $notifCcts Array
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-$notifCgs = $cg->getListContactgroup(true);
-
-/*
-* Contacts come from DB -> Store in $notifCs Array
-*/
-$notifCs = array();
-$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name");
-while ($notifC = $DBRESULT->fetchRow()) {
-    $notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
-}
-$DBRESULT->free();
-
 /*
 * Host Categories comes from DB -> Store in $hcs Array
 */

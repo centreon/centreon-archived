@@ -243,19 +243,6 @@ while ($checkCmd = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->free();
 
-# Contact Groups comes from DB -> Store in $notifCcts Array
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-$notifCgs = $cg->getListContactgroup(true);
-
-# Contact comes from DB -> Store in $notifCcts Array
-$notifCs = array();
-$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name");
-while ($notifC = $DBRESULT->fetchRow()) {
-    $notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
-}
-$DBRESULT->free();
-
 # Service Groups comes from DB -> Store in $hgs Array
 $sgs = array();
 $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
