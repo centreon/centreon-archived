@@ -14,7 +14,6 @@ VALUES ('metrics_lua', 'metrics Lua', 1, NULL);
 INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`)
 VALUES
 ('path', 'Path', 'Path of the lua script.', 'text', NULL, NULL),
-('filter', 'Filter', 'Filter of the metric.', 'select', NULL, NULL),
 ('type', 'Type', 'Type of the metric.', 'select', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'metrics_lua')),
 ('name', 'Name', 'Name of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'metrics_lua')),
 ('value', 'Value', 'Value of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'metrics_lua'));
@@ -24,9 +23,6 @@ VALUES (
 (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Path of the lua script.'),
 1, 1),
-((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
-(SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Filter of the metric.'),
-0, 2),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'),
 0, 3),
