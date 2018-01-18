@@ -816,9 +816,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 74, 0, 1),
 (33, 75, 1, 2);
 
-
-(`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)
-
 --
 -- Contenu de la table `widget_parameters_field_type`
 --
