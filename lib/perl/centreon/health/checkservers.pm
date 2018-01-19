@@ -38,13 +38,14 @@ sub query_misc {
     my ($self, %options) = @_;
     my ($sth, $status);
 
+    ($status, $sth) = $options{cdb}->query($options{query});
+
     if ($status == -1) {
         return "Query error - information is not available\n";
     } else {
        return $sth->fetchrow()
     }
 
-    return $sth->fetchrow()
 }
 
 sub get_servers_informations {
