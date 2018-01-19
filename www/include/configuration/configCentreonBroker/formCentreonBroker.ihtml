@@ -207,10 +207,10 @@ function loadedConfiguration() {
 function changeTab(tab) {
     jQuery('#Form').centreonValidate('validate');
     purgeHideInput(tab);
-    initCollapsebyTab(tab);
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
+    initCollapsebyTab(tab);
 }
 
 function purgeHideInput(tab) {
