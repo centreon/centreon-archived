@@ -41,7 +41,7 @@ function clonifyTableFields(attributeName,displayName){
         table1.append(clone_template).append(jQuery('<tr>').attr('id',obj +"_noforms_template" ));
         var img = jQuery('<img>').attr('src','./img/icons/circle-cross.png').addClass('ico-14').css('vertical-align','middle');
         var remove = jQuery('<span>').css({'cursor': 'pointer', 'position': 'absolute', 'top': '56px', 'right': '-17px'}).attr('id', obj+'_remove_current').append(img);
-        table2.append(jQuery('<tr>').addClass('elem-toCollapse').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
+        table2.append(jQuery('<tr>').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
 
         if(GroupArray.hasOwnProperty(obj)){
             var firstPosition = false;
