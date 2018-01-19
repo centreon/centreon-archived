@@ -82,7 +82,7 @@ sub run {
                      'read_rnd_buffer_size' => 1,
                      'max_allowed_packet' => 1 };
 
-    foreach my $var (keys $var_list) {
+    foreach my $var (keys %{$var_list}) {
 	my $sth = $centreon_db->query("SHOW GLOBAL VARIABLES LIKE " . $centreon_db->quote($var));
 	my $value = $sth->fetchrow();
 	$self->{output}->{interesting_variables}->{$var} = ($var_list->{$var} == 1) ? centreon::health::misc::format_bytes(bytes_value => $value) : $value;
