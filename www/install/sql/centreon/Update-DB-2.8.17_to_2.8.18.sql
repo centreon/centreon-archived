@@ -25,13 +25,13 @@ VALUES (
 1, 1),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'),
-0, 3),
+0, 5),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Name of the metric.'),
 0, 4),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Value of the metric.'),
-0, 5);
+0, 3);
 
 INSERT INTO `cb_list` (`cb_field_id`, `default_value`)
 VALUES((SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'), 'string');

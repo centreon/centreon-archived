@@ -809,9 +809,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 62, 0, 16),
 (32, 29, 1, 1),
 (32, 70, 0, 2),
-(33, 71, 0, 5),
+(33, 71, 0, 3),
 (33, 72, 0, 4),
-(33, 73, 0, 3),
+(33, 73, 0, 5),
 (33, 74, 0, 1);
 --
 -- Contenu de la table `widget_parameters_field_type`
