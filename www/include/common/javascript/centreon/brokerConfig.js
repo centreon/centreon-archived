@@ -83,9 +83,12 @@ function clonifyTableFields(attributeName,displayName){
     });
 }
 
-function addCollapse() {
-    var tbody = jQuery(".collapse-wrapper");
-
+function addCollapse(id_name = 'init') {
+    if(id_name === 'init'){
+        var tbody = jQuery(".collapse-wrapper");
+    } else {
+        var tbody = jQuery("#" + id_name + ".collapse-wrapper");
+    }
     tbody.find(".list_one").addClass("elem-toCollapse");
     tbody.find(".list_two").addClass("elem-toCollapse");
 }

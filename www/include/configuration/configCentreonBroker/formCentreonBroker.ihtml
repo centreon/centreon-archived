@@ -162,7 +162,7 @@ function addInfo(type) {
                     checkTypeValidity('block_' + type);
                     jQuery("#"+id_name).centreonValidate();
                     clonifyTableFields('parentGroup','displaynamegroup');
-                    addCollapse();
+                    addCollapse(id_name);
                     openNewElem(id_name);
                 }
             }
