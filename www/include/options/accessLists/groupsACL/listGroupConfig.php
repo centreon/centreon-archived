@@ -39,18 +39,18 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchStr = "";
+$searchStr = '';
 $search = '';
 if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
     $search = $_POST['searchACLG'];
-    $SearchStr = "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
-$DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
+$rq = "SELECT COUNT(*) FROM acl_groups $searchStr ORDER BY acl_group_name";
+$dbResult = $pearDB->query($rq);
+$tmp = $dbResult->fetchRow();
 $rows = $tmp["COUNT(*)"];
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 include("./include/common/checkPagination.php");
 
@@ -60,6 +60,9 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+/*
+ * start header menu
+ */
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_contacts", _("Contacts"));
@@ -67,14 +70,14 @@ $tpl->assign("headerMenu_contactgroups", _("Contact Groups"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$SearchStr = "";
+$searchStr = "";
 if (isset($search) && $search) {
-    $SearchStr = "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $SearchStr " .
+$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $searchStr " .
     "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -89,9 +92,8 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $group['acl_group_id'] . "]");
-
     if ($group["acl_group_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_group_id=" . $group['acl_group_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
@@ -110,18 +112,18 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
 
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations " .
+    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations " .
         "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
-    $ctNbr = $DBRESULT2->fetchRow();
-    $DBRESULT2->closeCursor();
+    $dbResult2 = $pearDB->query($rq2);
+    $ctNbr = $dbResult2->fetchRow();
+    $dbResult2->closeCursor();
 
     $cgNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations " .
+    $rq3 = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations " .
         "WHERE acl_group_id = '" . $group['acl_group_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
-    $cgNbr = $DBRESULT2->fetchRow();
-    $DBRESULT2->closeCursor();
+    $dbResult3 = $pearDB->query($rq3);
+    $cgNbr = $dbResult3->fetchRow();
+    $dbResult3->closeCursor();
 
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
@@ -156,57 +158,32 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
-$attrs1 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o1'].selectedIndex == 1 && confirm('" .
-        _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('" .
-        _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o1'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o1',
-    null,
-    array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete")),
-    $attrs1
-);
-$form->setDefaults(array('o1' => null));
 
-$attrs2 = array(
-    'onchange' => "javascript: " .
-        "if (this.form.elements['o2'].selectedIndex == 1 && confirm('" .
-        _("Do you confirm the duplication ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('" .
-        _("Do you confirm the deletion ?") . "')) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-        " 	setO(this.form.elements['o2'].value); submit();} " .
-        ""
-);
-$form->addElement(
-    'select',
-    'o2',
-    null,
-    array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete")),
-    $attrs2
-);
-$form->setDefaults(array('o2' => null));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-$o1->setSelected(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
-$o2->setSelected(null);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange' => "javascript: "
+            . "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the duplication ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
+            . _("Do you confirm the deletion ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 3 || "
+            . "this.form.elements['$option'].selectedIndex == 4) {"
+            . "setO(this.form.elements['$option'].value); submit();}"
+    );
+    $form->addElement('select', $option, null, array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchACLG', $search);

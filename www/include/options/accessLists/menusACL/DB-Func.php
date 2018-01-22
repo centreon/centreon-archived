@@ -36,6 +36,10 @@
  *
  */
 
+if (!isset($centreon)) {
+    exit();
+}
+
 function testExistence($name = null)
 {
     global $pearDB, $form;
@@ -57,35 +61,75 @@ function testExistence($name = null)
     }
 }
 
-function enableLCAInDB($acl_id = null)
+/**
+ * @param null $acl_topo_id
+ * @param array $acls
+ */
+function enableLCAInDB($acl_topo_id = null, $acls = array())
 {
-    global $pearDB;
-    if (!$acl_id) {
+    global $pearDB, $centreon;
+    if (!$acl_topo_id && !count($acls)) {
         return;
     }
-    $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '" . $acl_id . "'");
+    if ($acl_topo_id) {
+        $acls = array($acl_topo_id => "1");
+    }
+
+    foreach ($acls as $key => $value) {
+        $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '" . $key . "'");
+        $query = "SELECT acl_topo_name FROM `acl_topology` WHERE acl_topo_id = '" . intval($key) . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
+        $centreon->CentreonLogAction->insertLog("menu access", $key, $row['acl_topo_name'], "enable");
+    }
 }
 
-function disableLCAInDB($acl_id = null)
+/**
+ * @param null $acl_topo_id
+ * @param array $acls
+ */
+function disableLCAInDB($acl_topo_id = null, $acls = array())
 {
-    global $pearDB;
-    if (!$acl_id) {
+    global $pearDB, $centreon;
+    if (!$acl_topo_id && !count($acls)) {
         return;
     }
-    $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '" . $acl_id . "'");
+
+    if ($acl_topo_id) {
+        $acls = array($acl_topo_id => "1");
+    }
+
+    foreach ($acls as $key => $value) {
+        $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '" . $key . "'");
+        $query = "SELECT acl_topo_name FROM `acl_topology` WHERE acl_topo_id = '" . intval($key) . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
+        $centreon->CentreonLogAction->insertLog("menu access", $key, $row['acl_topo_name'], "disable");
+    }
 }
 
+/**
+ * @param array $acls
+ */
 function deleteLCAInDB($acls = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
     foreach ($acls as $key => $value) {
+        $query = "SELECT acl_topo_name FROM `acl_topology` WHERE acl_topo_id = '" . intval($key) . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetchRow();
         $pearDB->query("DELETE FROM `acl_topology` WHERE acl_topo_id = '" . $key . "'");
+        $centreon->CentreonLogAction->insertLog("menu access", $key, $row['acl_topo_name'], "d");
     }
 }
 
+/**
+ * @param array $lcas
+ * @param array $nbrDup
+ */
 function multipleLCAInDB($lcas = array(), $nbrDup = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
     foreach ($lcas as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `acl_topology` WHERE acl_topo_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
@@ -94,9 +138,14 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "acl_topo_name" ? ($acl_name = $value2 = $value2 . "_" . $i) : null;
-                $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                if ($key2 != "acl_topo_id") {
+                    $fields[$key2] = $value2;
+                }
+                if (isset($acl_topo_name)) {
+                    $fields["acl_topo_name"] = $acl_topo_name;
+                }
             }
             if (testExistence($acl_name)) {
                 $val ? $rq = "INSERT INTO acl_topology VALUES (" . $val . ")" : $rq = null;
@@ -116,30 +165,57 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                         "(SELECT $maxTopoId, acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = " .
                         $pearDB->escape($key) . ")";
                     $pearDB->query($query);
+
+                    $centreon->CentreonLogAction->insertLog(
+                        "menu access",
+                        $maxId["MAX(acl_topo_id)"],
+                        $acl_name,
+                        "a",
+                        $fields
+                    );
                 }
             }
         }
     }
 }
 
+/**
+ * @param null $acl_id
+ */
 function updateLCAInDB($acl_id = null)
 {
+    global $form, $centreon;
     if (!$acl_id) {
         return;
     }
     updateLCA($acl_id);
     updateLCATopology($acl_id);
     updateGroups($acl_id);
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("menu access", $acl_id, $ret['acl_topo_name'], "c", $fields);
 }
 
+/**
+ * @return mixed
+ */
 function insertLCAInDB()
 {
+    global $form, $centreon;
+
     $acl_id = insertLCA();
     updateLCATopology($acl_id);
     updateGroups($acl_id);
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("menu access", $acl_id, $ret['acl_topo_name'], "a", $fields);
+
     return ($acl_id);
 }
 
+/**
+ * @return mixed
+ */
 function insertLCA()
 {
     global $form, $pearDB;

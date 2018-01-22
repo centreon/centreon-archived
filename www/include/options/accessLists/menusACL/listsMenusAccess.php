@@ -33,23 +33,25 @@
  * 
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
 include("./include/common/autoNumLimit.php");
 
-$SearchStr = "";
+$searchStr = "";
 $search = '';
 if (isset($_POST['searchACLM']) && $_POST['searchACLM']) {
     $search = $_POST['searchACLM'];
+    $searchStr .= " WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+        "%' OR acl_topo_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 }
-$SearchStr = " WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-    "%' OR acl_topo_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
 
-$tmp = $DBRESULT->fetchRow();
+$dbResult = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $searchStr);
+
+$tmp = $dbResult->fetchRow();
 $rows = $tmp["COUNT(*)"];
+$dbResult->closeCursor();
 
 include("./include/common/checkPagination.php");
 
@@ -66,16 +68,17 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_alias", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-# end header menu
 
-$SearchStr = "";
+/* end header menu */
+
+$searchStr = "";
 if (isset($search) && $search) {
-    $SearchStr = "WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $searchStr = "WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_topo_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
 $rq = "SELECT acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate " .
-    "FROM acl_topology $SearchStr ORDER BY acl_topo_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
+    "FROM acl_topology $searchStr ORDER BY acl_topo_name LIMIT " . $num * $limit . ", " . $limit;
+$dbResult = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -90,7 +93,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $topo = $dbResult->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_topo_id'] . "]");
     if ($topo["acl_topo_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=u&limit=" . $limit .
@@ -108,9 +111,9 @@ for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
         $topo['acl_topo_id'] . "]' />";
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '" . $topo['acl_topo_id'] . "'";
-    $DBRESULT2 = $pearDB->query($rq);
-    $ctNbr = $DBRESULT2->fetchRow();
+    $rq2 = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '" . $topo['acl_topo_id'] . "'";
+    $dbResult2 = $pearDB->query($rq2);
+    $ctNbr = $dbResult2->fetchRow();
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
@@ -139,36 +142,32 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
-        'onchange' => "javascript: " .
-            "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
-            _("Do you confirm the duplication ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
-            _("Do you confirm the deletion ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            ""
+        'onchange' => "javascript: "
+            . "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the duplication ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
+            . _("Do you confirm the deletion ?") . "')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 3 || "
+            . "this.form.elements['$option'].selectedIndex == 4) {"
+            . "setO(this.form.elements['$option'].value); submit();}"
     );
-    $form->addElement(
-        'select',
-        $option,
-        null,
-        array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete")
-        ),
-        $attrs1
-    );
+    $form->addElement('select', $option, null, array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ), $attrs1);
+
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
-    $o1->setSelected(null);
 }
 
 $tpl->assign('limit', $limit);

@@ -37,8 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["acl_action_id"]) ? $acl_action_id = $_GET["acl_action_id"] : $acl_action_id = null;
+isset($_GET["acl_action_id"]) ? $cG = $_GET["acl_action_id"] : $cG = null;
 isset($_POST["acl_action_id"]) ? $cP = $_POST["acl_action_id"] : $cP = null;
+$cG ? $acl_action_id = $cG : $acl_action_id = $cP;
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
@@ -48,7 +49,7 @@ isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
 isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-    
+
 /*
  * Pear library
  */
@@ -64,36 +65,53 @@ $path = "./include/options/accessLists/actionsACL/";
 /*
  * PHP functions 
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
 
 switch ($o) {
     case "a":
-        require_once($path."formActionsAccess.php");
+        require_once($path . "formActionsAccess.php");
         break; #Add an Actions Access
     case "w":
-        require_once($path."formActionsAccess.php");
+        require_once($path . "formActionsAccess.php");
         break; #Watch an Actions Access
     case "c":
-        require_once($path."formActionsAccess.php");
+        require_once($path . "formActionsAccess.php");
         break; #Modify an Actions Access
     case "s":
         enableActionInDB($acl_action_id);
-        require_once($path."listsActionsAccess.php");
+        require_once($path . "listsActionsAccess.php");
+        break; #Activate an Actions Access
+    case "ms":
+        enableActionInDB(null, isset($select) ? $select : array());
+        require_once($path . "listsActionsAccess.php");
         break; #Activate an Actions Access
     case "u":
         disableActionInDB($acl_action_id);
-        require_once($path."listsActionsAccess.php");
+        require_once($path . "listsActionsAccess.php");
         break; #Desactivate an an Actions Access
+    case "mu":
+        disableActionInDB(null, isset($select) ? $select : array());
+        require_once($path . "listsActionsAccess.php");
+        break; #Desactivate n Actions Access
     case "m":
         multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listsActionsAccess.php");
-        break; #Duplicate n LCAs
+        require_once($path . "listsActionsAccess.php");
+        break; #Duplicate n Actions Access
     case "d":
         deleteActionInDB(isset($select) ? $select : array());
-        require_once($path."listsActionsAccess.php");
-        break; #Delete n LCAs
+        require_once($path . "listsActionsAccess.php");
+        break; #Delete n Actions Access
     default:
-        require_once($path."listsActionsAccess.php");
+        require_once($path . "listsActionsAccess.php");
         break;
 }
