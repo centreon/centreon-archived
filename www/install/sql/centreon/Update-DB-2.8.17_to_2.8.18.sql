@@ -3,6 +3,10 @@ UPDATE `informations` SET `value` = '2.8.18' WHERE CONVERT( `informations`.`key`
 
 
 -- lua custom output for centreon-broker
+ALTER TABLE `cb_type_field_relation` ADD COLUMN `jshook_name` VARCHAR(255) DEFAULT NULL;
+ALTER TABLE `cb_type_field_relation` ADD COLUMN `jshook_arguments` VARCHAR(255) DEFAULT NULL;
+
+
 INSERT INTO `cb_module` (`name`, `libname`, `loading_pos`, `is_activated`) VALUES ('Lua', 'lua.so', 40,1);
 
 INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
@@ -18,20 +22,20 @@ VALUES
 ('name', 'Name', 'Name of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'metrics_lua')),
 ('value', 'Value', 'Value of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'metrics_lua'));
 
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`)
 VALUES (
 (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Path of the lua script.'),
-1, 1),
+1, 1, NULL, NULL),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'),
-0, 3),
+0, 3, 'luaArguments', '{"target": "metrics_lua__value_%d"}'),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Name of the metric.'),
-0, 4),
+0, 4, NULL, NULL),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Value of the metric.'),
-0, 5);
+0, 5, NULL, NULL);
 
 INSERT INTO `cb_list` (`cb_field_id`, `default_value`)
 VALUES((SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'), 'string');

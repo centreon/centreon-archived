@@ -138,3 +138,57 @@ jQuery(function () {
        }
    });
 });
+
+/* Hooks for some fields */
+var luaArguments = {
+    /* Hook on load tab */
+    onLoad: function (element, argument) {
+        return function () {
+            var type = jQuery(element).val();
+            luaArguments.changeInput(type, argument.target)
+        }
+    },
+    /* Hook on change the target */
+    onChange: function (argument) {
+        return function () {
+            var type = jQuery(this).val();
+            luaArguments.changeInput(type, argument.target)
+        }
+    },
+    /* Internal function for apply the input change */
+    changeInput: function (type, name) {
+        /* Get all attributes */
+        var attrs = {};
+        jQuery.each(jQuery(name)[0].attributes, function (idx, attr) {
+            attrs[attr.name] = attr.value;
+        });
+        delete(attrs.type);
+        delete(attrs.size);
+        delete(attrs.class);
+        var $elParent = jQuery(name).parent();
+        var value = jQuery(name).val();
+        jQuery(name).remove();
+        /* Find the good input for the type by default text => string */
+        if (type === 'number') {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 10)
+                .attr('type', 'text')
+                .addClass('v_number')
+                .val(value);
+        } else if (type === 'password') {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 120)
+                .attr('type', 'password')
+                .val(value);
+        } else {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 120)
+                .attr('type', 'text')
+                .val(value);
+        }
+        $elParent.append(newEl);
+    }
+}
