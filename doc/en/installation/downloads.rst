@@ -12,7 +12,7 @@ Open Source software supplied by Centreon is generally available in 4 formats:
 
 * ISO Linux based on CentOS v7 distribution (recommended)
 * RPM packages available for CentOS v6 and 7 distribution (recommended)
-* virtual machin, based on CentOS v6 and 7 distribution, with OVA format
+* virtual machines, based on CentOS v6 and 7 distribution, with OVA format
 * Archives containing the sources
 
 RPM packages and ISO linux are the best format to obtain our software. They are packaged by Centreon experts and relieve you of any concern over the installation process.

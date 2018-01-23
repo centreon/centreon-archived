@@ -64,7 +64,7 @@ Click on **Installation Destination** menu:
    :align: center
    :scale: 65%
 
-Select the hard disk drive and the **I will configure partitioning** then click **Done**:
+Select the hard disk drive and the **I will configure partitioning** option, then click **Done**:
 
 .. image :: /images/user/06_select_disk.png
    :align: center
