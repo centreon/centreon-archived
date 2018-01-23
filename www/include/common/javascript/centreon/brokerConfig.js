@@ -146,22 +146,32 @@ jQuery(function () {
 var luaArguments = {
     /* Hook on load tab */
     onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
         return function () {
             var type = jQuery(element).val();
-            luaArguments.changeInput(type, argument.target)
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var block = entry[3].split('_');
+            var name = argument.target.replace("%d", block[block.length - 1]);
+            var target = entry[1]+entry[2]+'['+name+']';
+            luaArguments.changeInput(type, target)
         }
     },
     /* Hook on change the target */
     onChange: function (argument) {
-        return function () {
-            var type = jQuery(this).val();
-            luaArguments.changeInput(type, argument.target)
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var block = entry[3].split('_');
+            var name = argument.target.replace("%d", block[block.length - 1]);
+            var target = entry[1]+entry[2]+'['+name+']';
+            var type = jQuery(self).val();
+            luaArguments.changeInput(type,target)
         }
     },
     /* Internal function for apply the input change */
     changeInput: function (type, name) {
         /* Get all attributes */
         var attrs = {};
+        name = '[name="' + name + '"]:input';
         jQuery.each(jQuery(name)[0].attributes, function (idx, attr) {
             attrs[attr.name] = attr.value;
         });
@@ -185,6 +195,30 @@ var luaArguments = {
                 .attr('size', 120)
                 .attr('type', 'password')
                 .val(value);
+        } else if (type === 'hostgroup') {
+            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
+            var newEl = jQuery('<select />')
+                .attr(attrs)
+                .append('<option>Loading...</option>')
+                .attr('disabled', true)
+                .val(value);
+            this.loadObject(objectUrl,newEl,[]);
+        } else if (type === 'servicegroup') {
+            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list';
+            var newEl = jQuery('<select />')
+                .attr(attrs)
+                .append('<option>Loading...</option>')
+                .attr('disabled', true)
+                .val(value);
+            this.loadObject(objectUrl, newEl, []);
+        } else if (type === 'timeperiod') {
+            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
+            var newEl = jQuery('<select />')
+                .attr(attrs)
+                .append('<option>Loading...</option>')
+                .attr('disabled', true)
+                .val(value);
+            this.loadObject(objectUrl,newEl,[]);
         } else {
             var newEl = jQuery('<input />')
                 .attr(attrs)
@@ -193,5 +227,27 @@ var luaArguments = {
                 .val(value);
         }
         $elParent.append(newEl);
+    },
+    limitElement:60,
+    loadObject: function (url,el,options, page) {
+        page = page === undefined ? 1 : page;
+        jQuery.ajax({
+            url:url + '&page_limit=' + this.limitElement + '&page=' + page,
+            success:function (data) {
+                options = options.concat(data.items)
+                console.log(options);
+                if(options.length < data.total){
+                    return luaArguments.loadObject(url,el,options, page+1)
+                }
+                el.empty();
+                el.attr('disabled', false)
+                options.map(function (option) {
+                    jQuery('<option />')
+                        .attr('value',option.text)
+                        .text(option.text)
+                        .appendTo(jQuery(el))
+                })
+            }
+        })
     }
 }

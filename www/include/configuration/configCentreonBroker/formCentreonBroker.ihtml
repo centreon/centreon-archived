@@ -210,6 +210,11 @@ function changeTab(tab) {
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
+    jQuery(function() {
+        jQuery.each(jQuery('[data-ontab-fn]'), function () {
+            window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+        });
+    });
     initCollapsebyTab(tab);
 }
 
