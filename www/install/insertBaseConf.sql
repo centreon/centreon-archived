@@ -558,7 +558,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (59, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 3),
 (60, 'value', 'Value', 'Value of the column (macros accepted)', 'text', NULL, 3),
 (61, 'type', 'Type', 'Type of the column', 'select', NULL, 3),
-(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3);
+(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3),
 (71, 'name', 'Name', 'Name of the metric.', 'text', NULL, 4),
 (72, 'value', 'Value', 'Value of the metric.', 'text', NULL, 4),
 (73, 'type', 'Type', 'Type of the metric.', 'select', NULL, 4);
