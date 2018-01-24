@@ -334,7 +334,8 @@ class CentreonConfigCentreonBroker
                 $this->attrText,
                 array(
                     'id' => $tag . '[' . $formId . '][name]',
-                    'class' => 'v_required'
+                    'class' => 'v_required',
+                    'onBlur' =>"this.value = this.value.replace(/ /g, '_')"
                 )
             )
         );
