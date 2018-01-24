@@ -629,11 +629,7 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (10, 'False', 'false'),
 (11, 'String', 'string'),
 (11, 'Number', 'number'),
-(11, 'Password', 'password'),
-(11, 'Timeperiod', 'timeperiod'),
-(11, 'Hostgroup', 'hostgroup'),
-(11, 'Servicegroup', 'servicegroup'),
-(11, 'Ba', 'ba');
+(11, 'Password', 'password');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -809,10 +805,17 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 62, 0, 16),
 (32, 29, 1, 1),
 (32, 70, 0, 2),
-(33, 71, 0, 3),
-(33, 72, 0, 4),
-(33, 73, 0, 5),
-(33, 74, 0, 1);
+(33, 74, 0, 1),
+(33, 47, 0, 2),
+(33, 72, 0, 3),
+(33, 71, 0, 4);
+
+--
+-- Contenu de la table `cb_type_field_relation`
+--
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
+(33, 73, 0, 5, 'luaArguments', '{"target": "metrics_lua__value_%d"}');
+
 --
 -- Contenu de la table `widget_parameters_field_type`
 --

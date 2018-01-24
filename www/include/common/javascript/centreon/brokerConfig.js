@@ -83,8 +83,8 @@ function clonifyTableFields(attributeName,displayName){
     });
 }
 
-function addCollapse(id_name = 'init') {
-    if(id_name === 'init'){
+function addCollapse(id_name) {
+    if(id_name === undefined){
         var tbody = jQuery(".collapse-wrapper");
     } else {
         var tbody = jQuery("#" + id_name + ".collapse-wrapper");
@@ -195,30 +195,6 @@ var luaArguments = {
                 .attr('size', 120)
                 .attr('type', 'password')
                 .val(value);
-        } else if (type === 'hostgroup') {
-            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
-            var newEl = jQuery('<select />')
-                .attr(attrs)
-                .append('<option>Loading...</option>')
-                .attr('disabled', true)
-                .val(value);
-            this.loadObject(objectUrl,newEl,[]);
-        } else if (type === 'servicegroup') {
-            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=list';
-            var newEl = jQuery('<select />')
-                .attr(attrs)
-                .append('<option>Loading...</option>')
-                .attr('disabled', true)
-                .val(value);
-            this.loadObject(objectUrl, newEl, []);
-        } else if (type === 'timeperiod') {
-            objectUrl = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
-            var newEl = jQuery('<select />')
-                .attr(attrs)
-                .append('<option>Loading...</option>')
-                .attr('disabled', true)
-                .val(value);
-            this.loadObject(objectUrl,newEl,[]);
         } else {
             var newEl = jQuery('<input />')
                 .attr(attrs)
@@ -227,27 +203,5 @@ var luaArguments = {
                 .val(value);
         }
         $elParent.append(newEl);
-    },
-    limitElement:60,
-    loadObject: function (url,el,options, page) {
-        page = page === undefined ? 1 : page;
-        jQuery.ajax({
-            url:url + '&page_limit=' + this.limitElement + '&page=' + page,
-            success:function (data) {
-                options = options.concat(data.items)
-                console.log(options);
-                if(options.length < data.total){
-                    return luaArguments.loadObject(url,el,options, page+1)
-                }
-                el.empty();
-                el.attr('disabled', false)
-                options.map(function (option) {
-                    jQuery('<option />')
-                        .attr('value',option.text)
-                        .text(option.text)
-                        .appendTo(jQuery(el))
-                })
-            }
-        })
-    }
+     }
 }

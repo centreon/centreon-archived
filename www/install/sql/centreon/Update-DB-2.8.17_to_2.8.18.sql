@@ -28,6 +28,9 @@ VALUES (
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Path of the lua script.'),
 1, 1, NULL, NULL),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
+(SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Category filter for flux in output'),
+0, 2, NULL, NULL),
+((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'),
 0, 5, 'luaArguments', '{"target": "metrics_lua__value_%d"}'),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'custom'),
@@ -50,18 +53,6 @@ VALUES
 ),
 ((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
   (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.')), 'Password', 'password'
-),
-((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.')), 'Hostgroup', 'hostgroup'
-),
-((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.')), 'Servicegroup', 'servicegroup'
-),
-((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.')), 'Ba', 'ba'
-),
-((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.')), 'Timeperiod', 'timeperiod'
 );
 
 INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
