@@ -356,7 +356,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             foreach ($_POST['hostgroup_id'] as $hg_id) {
                 $hostlist = $hg->getHostGroupHosts($hg_id);
                 foreach ($hostlist as $host_id) {
-                    if ($centreon->user->access->admin || isset($host_acl_id[$host_id])) {
+                    if ($centreon->user->access->admin || in_array($host_id, $host_acl_id)) {
                         $ecObj->addHostDowntime(
                             $host_id,
                             $_POST["comment"],
