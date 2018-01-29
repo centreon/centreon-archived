@@ -544,6 +544,28 @@ Instance timeout
   'unresponding' and all of its hosts and services marked as 'unknown'.
   Default is 300 seconds.
 
+===========
+LUA Outputs
+===========
+
+LUA *Outputs* send metrics information into a script by a key-value system. The LUA script should be
+ on your server.
+
+Path
+  The path of the lua script in your server.
+Filter category
+  The categories of events accepted by this Output. If empty, no restriction on events accepted.
+  If filled, only events of the given type will be processed. Output that accept data from
+  Centreon Engines’ Broker module should be set to accept only ‘Neb’ events.
+
+*metric lua
+Type
+  Type of the value of the metric.
+Name/Key
+  Name of the value of the metric.
+Value
+  Value of the metric.
+
 ====================
 Dumper Reader/Writer
 ====================
