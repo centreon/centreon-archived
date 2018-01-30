@@ -1,8 +1,8 @@
-.. _firststepsces3:
+.. _installisoel6:
 
-==============
-Using Centreon
-==============
+======================
+Using Centreon el6 ISO
+======================
 
 ************
 Installation
@@ -119,8 +119,6 @@ When the installation is finished, click on **Restart**.
 *************
 Configuration
 *************
-
-.. _installation_web_ces:
 
 Via the web interface
 =====================
@@ -271,8 +269,6 @@ it is necessary update the server. To do this:
 
 Allow the update to run fully and then restart the server in case of a kernel update.
 
-.. _installation_ppm:
-
 *****************************
 Easy monitoring configuration
 *****************************
@@ -288,7 +284,7 @@ Centreon IMP needs the technical components: Centreon License Manager
 and Centreon Plugin Pack Manager to work.
 
 Install packages
-----------------
+================
 
 When using Centreon ISO, the installation of Centreon Plugin Pack Manager is very
 easy. You'll see that Centreon License Manager will be installed too
@@ -299,7 +295,7 @@ as a dependency.
    $ yum install centreon-pp-manager
 
 Web install
------------
+===========
 
 Once the packages are installed, you need to enable the module in Centreon.
 So go to the Administration -> Extensions -> Modules page.
