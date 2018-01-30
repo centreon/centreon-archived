@@ -72,6 +72,7 @@ $form->addElement('text', 'kb_wiki_account', _("Knowledge wiki account (with del
 $form->addRule('kb_wiki_account', _("Mandatory field"), 'required');
 $form->addElement('password', 'kb_wiki_password', _("Knowledge wiki account password"));
 $form->addRule('kb_wiki_password', _("Mandatory field"), 'required');
+$form->addElement('checkbox', 'kb_wiki_certificate', 'ssl certificate', _("Ignore ssl certificate"));
 
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
