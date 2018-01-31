@@ -152,7 +152,7 @@ var luaArguments = {
             var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
             var block = entry[3].split('_');
             var name = argument.target.replace("%d", block[block.length - 1]);
-            var target = entry[1]+entry[2]+'['+name+']';
+            var target = entry[1] + entry[2] + '[' + name + ']';
             luaArguments.changeInput(type, target)
         }
     },
@@ -162,7 +162,7 @@ var luaArguments = {
             var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
             var block = entry[3].split('_');
             var name = argument.target.replace("%d", block[block.length - 1]);
-            var target = entry[1]+entry[2]+'['+name+']';
+            var target = entry[1] + entry[2] + '[' + name + ']';
             var type = jQuery(self).val();
             luaArguments.changeInput(type,target)
         }
