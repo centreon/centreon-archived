@@ -335,7 +335,7 @@ class CentreonConfigCentreonBroker
                 array(
                     'id' => $tag . '[' . $formId . '][name]',
                     'class' => 'v_required',
-                    'onBlur' =>"this.value = this.value.replace(/ /g, '_')"
+                    'onBlur' => "this.value = this.value.replace(/ /g, '_')"
                 )
             )
         );
