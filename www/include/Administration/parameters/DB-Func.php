@@ -168,7 +168,7 @@ function updateNagiosConfigData($gopt_id = null)
         $pearDB,
         "broker",
         isset($ret["broker"]) && $ret["broker"] != null
-            ?$pearDB->escape($ret['broker']) : "broker"
+            ? $pearDB->escape($ret['broker']) : "broker"
     );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
     
