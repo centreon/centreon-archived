@@ -445,7 +445,7 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
 (19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
 (20, 'Correlation', 'correlation.so', 30, 0, 1),
-(21, 'Lua', 'lua.so', 40, 0, 1);
+(21, 'Generic', 'lua.so', 40, 0, 1);
 
 
 --
@@ -470,7 +470,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
 (32, 'Correlation', 'correlation', 20),
-(33, 'Lua script', 'custom', 21);
+(33, 'Stream connector', 'lua', 21);
 
 --
 -- Contenu de la table `cb_field`
@@ -542,7 +542,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (1, 'filters', '', 0, NULL),
 (2, 'metrics_column', 'Metrics column', 1, NULL),
 (3, 'status_column', 'Status column', 1, NULL),
-(4, 'metrics_lua', 'metrics Lua', 1, NULL);
+(4, 'lua_parameters', 'lua parameters', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
 (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
@@ -811,7 +811,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "metrics_lua__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameters__value_%d"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
