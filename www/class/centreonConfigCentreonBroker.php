@@ -339,7 +339,8 @@ class CentreonConfigCentreonBroker
                 $this->attrText,
                 array(
                     'id' => $tag . '[' . $formId . '][name]',
-                    'class' => 'v_required'
+                    'class' => 'v_required',
+                    'onBlur' => "this.value = this.value.replace(/ /g, '_')"
                 )
             )
         );
@@ -447,11 +448,28 @@ class CentreonConfigCentreonBroker
             if ($isMultiple && $parentGroup != "") {
                 if ($elementType != 'select') {
                     $elementAttr = array_merge($elementAttr, array(
-                                               'parentGroup' => $parentGroup,
-                                               'displayNameGroup' => $displayNameGroup
-                                               ));
+                        'parentGroup' => $parentGroup,
+                        'displayNameGroup' => $displayNameGroup
+                    ));
+                    if ($field['hook_name'] != '') {
+                        $elementAttr = array_merge($elementAttr, array(
+                            'onchange' => $field['hook_name'] . '.onChange(' . $field['hook_arguments'] . ')(this)',
+                            'data-ontab-fn' => $field['hook_name'],
+                            'data-ontab-arg' => $field['hook_arguments']
+                        ));
+                    }
                 } else {
-                    $elementAttrSelect = array('parentGroup' => $parentGroup , 'displayNameGroup' => $displayNameGroup);
+                    $elementAttrSelect = array(
+                        'parentGroup' => $parentGroup ,
+                        'displayNameGroup' => $displayNameGroup
+                    );
+                    if ($field['hook_name'] != '') {
+                        $elementAttrSelect = array_merge($elementAttrSelect, array(
+                            'onchange' => $field['hook_name'] . '.onChange(' . $field['hook_arguments'] . ')(this)',
+                            'data-ontab-fn' => $field['hook_name'],
+                            'data-ontab-arg' => $field['hook_arguments']
+                        ));
+                    }
                 }
             }
 
@@ -530,7 +548,7 @@ class CentreonConfigCentreonBroker
          */
         $fields = array();
         $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external,
-            tfr.is_required, tfr.order_display, f.cb_fieldgroup_id
+            tfr.is_required, tfr.order_display, tfr.jshook_name, tfr.jshook_arguments, f.cb_fieldgroup_id
             FROM cb_field f, cb_type_field_relation tfr
                 WHERE f.cb_field_id = tfr.cb_field_id AND (tfr.cb_type_id = %d
                     OR tfr.cb_type_id IN (SELECT t.cb_type_id
@@ -555,6 +573,8 @@ class CentreonConfigCentreonBroker
             $field['required'] = $row['is_required'];
             $field['order'] = $row['order_display'];
             $field['group'] = $row['cb_fieldgroup_id'];
+            $field['hook_name'] = $row['jshook_name'];
+            $field['hook_arguments'] = $row['jshook_arguments'];
             if (!is_null($row['external']) && $row['external'] != '') {
                 $field['value'] = $row['external'];
             } else {

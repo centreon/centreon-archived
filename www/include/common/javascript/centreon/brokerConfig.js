@@ -41,7 +41,7 @@ function clonifyTableFields(attributeName,displayName){
         table1.append(clone_template).append(jQuery('<tr>').attr('id',obj +"_noforms_template" ));
         var img = jQuery('<img>').attr('src','./img/icons/circle-cross.png').addClass('ico-14').css('vertical-align','middle');
         var remove = jQuery('<span>').css({'cursor': 'pointer', 'position': 'absolute', 'top': '56px', 'right': '-17px'}).attr('id', obj+'_remove_current').append(img);
-        table2.append(jQuery('<tr>').addClass('elem-toCollapse').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
+        table2.append(jQuery('<tr>').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
 
         if(GroupArray.hasOwnProperty(obj)){
             var firstPosition = false;
@@ -83,9 +83,12 @@ function clonifyTableFields(attributeName,displayName){
     });
 }
 
-function addCollapse() {
-    var tbody = jQuery(".collapse-wrapper");
-
+function addCollapse(id_name) {
+    if(id_name === undefined){
+        var tbody = jQuery(".collapse-wrapper");
+    } else {
+        var tbody = jQuery("#" + id_name + ".collapse-wrapper");
+    }
     tbody.find(".list_one").addClass("elem-toCollapse");
     tbody.find(".list_two").addClass("elem-toCollapse");
 }
@@ -137,3 +140,67 @@ jQuery(function () {
        }
    });
 });
+
+/* Hooks for some fields */
+var luaArguments = {
+    /* Hook on load tab */
+    onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
+        return function () {
+            var type = jQuery(element).val();
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var block = entry[3].split('_');
+            var name = argument.target.replace("%d", block[block.length - 1]);
+            var target = entry[1] + entry[2] + '[' + name + ']';
+            luaArguments.changeInput(type, target)
+        }
+    },
+    /* Hook on change the target */
+    onChange: function (argument) {
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var block = entry[3].split('_');
+            var name = argument.target.replace("%d", block[block.length - 1]);
+            var target = entry[1] + entry[2] + '[' + name + ']';
+            var type = jQuery(self).val();
+            luaArguments.changeInput(type,target)
+        }
+    },
+    /* Internal function for apply the input change */
+    changeInput: function (type, name) {
+        /* Get all attributes */
+        var attrs = {};
+        name = '[name="' + name + '"]:input';
+        jQuery.each(jQuery(name)[0].attributes, function (idx, attr) {
+            attrs[attr.name] = attr.value;
+        });
+        delete(attrs.type);
+        delete(attrs.size);
+        delete(attrs.class);
+        var $elParent = jQuery(name).parent();
+        var value = jQuery(name).val();
+        jQuery(name).remove();
+        /* Find the good input for the type by default text => string */
+        if (type === 'number') {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 10)
+                .attr('type', 'text')
+                .addClass('v_number')
+                .val(value);
+        } else if (type === 'password') {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 120)
+                .attr('type', 'password')
+                .val(value);
+        } else {
+            var newEl = jQuery('<input />')
+                .attr(attrs)
+                .attr('size', 120)
+                .attr('type', 'text')
+                .val(value);
+        }
+        $elParent.append(newEl);
+     }
+}

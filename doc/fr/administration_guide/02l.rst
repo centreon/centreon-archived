@@ -150,7 +150,7 @@ Enable TLS encryption
   Enable the encryption of the flux. For the encryption
   to work, the private key file, the public certificate and the trusted CA's
   certificate need to be set on both end. Default to 'auto', i.e 'no' unless
-  TCP negotiation has been activated and the remote endpoint has activated
+  TCP negociation has been activated and the remote endpoint has activated
   encryption.
 Private Key File
   The private key file used for the encryption.
@@ -158,9 +158,9 @@ Public certificate
   The public certificate used for the encryption.
 Trusted CA's certificate
   The trused CA certificate used for the encryption.
-Enable negotiation
-  Enable negotiation. If 'yes', this *Intput* will try
-  to negotiate encryption and compression with the remote endpoint.
+Enable negociation
+  Enable negociation. If 'yes', this *Intput* will try
+  to negociate encryption and compression with the remote endpoint.
 One peer retention mode
   By default, a listening input will accept any
   number of incoming connections. In 'one peer retention' mode only one
@@ -336,9 +336,9 @@ Serialization protocol
   is a next-gen binary protocol that is performant and secure. NDO is
   deprecated. It should never be used in new installation.
   Best practice is 'BBDO'.
-Enable negotiation
-  Enable negotiation. If 'yes', this *Output* will try
-  to negotiate encryption and compression with the remote endpoint.
+Enable negociation
+  Enable negociation. If 'yes', this *Output* will try
+  to negociate encryption and compression with the remote endpoint.
 Connection Port
   Which port will be used for the connection. Mandatory.
 Host to connect to
@@ -350,7 +350,7 @@ Enable TLS encryption
   Enable the encryption of the flux. For the encryption
   to work, the private key file, the public certificate and the trusted CA's
   certificate need to be set on both end. Default to 'auto', i.e 'no' unless
-  TCP negotiation has been activated and the remote endpoint has activated
+  TCP negociation has been activated and the remote endpoint has activated
   encryption.
 Private Key File
   The private key file used for the encryption.
@@ -367,7 +367,7 @@ Compression
   If compression should be used to serialize the data.
   Can be 'auto', 'yes', or 'no'. If left on 'auto' Centreon Broker
   will detect if compression is supported by the endpoint during a TCP
-  negotiation. Default to 'auto' for TCP.
+  negociation. Default to 'auto' for TCP.
 Compression Level
   The level of compression that should be used, from 1 to 9.
   Default (or if not filled) is 6. The higher the compression level is,

@@ -444,7 +444,8 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (17, 'Dumper', 'dumper.so', 20, 0, 1),
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
 (19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
-(20, 'Correlation', 'correlation.so', 30, 0, 1);
+(20, 'Correlation', 'correlation.so', 30, 0, 1),
+(21, 'Lua', 'lua.so', 40, 0, 1);
 
 
 --
@@ -468,7 +469,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
-(32, 'Correlation', 'correlation', 20);
+(32, 'Correlation', 'correlation', 20),
+(33, 'Lua script', 'custom', 21);
 
 --
 -- Contenu de la table `cb_field`
@@ -533,12 +535,14 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
-(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL);
+(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
+(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
 (2, 'metrics_column', 'Metrics column', 1, NULL),
-(3, 'status_column', 'Status column', 1, NULL);
+(3, 'status_column', 'Status column', 1, NULL),
+(4, 'metrics_lua', 'metrics Lua', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
 (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
@@ -551,7 +555,10 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (59, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 3),
 (60, 'value', 'Value', 'Value of the column (macros accepted)', 'text', NULL, 3),
 (61, 'type', 'Type', 'Type of the column', 'select', NULL, 3),
-(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3);
+(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3),
+(71, 'name', 'Name', 'Name of the metric.', 'text', NULL, 4),
+(72, 'value', 'Value', 'Value of the metric.', 'text', NULL, 4),
+(73, 'type', 'Type', 'Type of the metric.', 'select', NULL, 4);
 
 --
 -- Contenu de la table `cb_list`
@@ -580,7 +587,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (9, 61, 'string'),
 (10, 62, 'false'),
 (1, 63, 'yes'),
-(1, 70, 'no');
+(1, 70, 'no'),
+(11, 73, 'string');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -615,7 +623,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (9, 'String', 'string'),
 (9, 'Number', 'number'),
 (10, 'True', 'true'),
-(10, 'False', 'false');
+(10, 'False', 'false'),
+(11, 'String', 'string'),
+(11, 'Number', 'number'),
+(11, 'Password', 'password');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -656,7 +667,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 29, 1),
 (1, 30, 0),
 (1, 31, 0),
-(1, 32, 1);
+(1, 32, 1),
+(1, 33, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -789,7 +801,17 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 61, 0, 15),
 (31, 62, 0, 16),
 (32, 29, 1, 1),
-(32, 70, 0, 2);
+(32, 70, 0, 2),
+(33, 74, 0, 1),
+(33, 47, 0, 2),
+(33, 72, 0, 3),
+(33, 71, 0, 4);
+
+--
+-- Contenu de la table `cb_type_field_relation`
+--
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
+(33, 73, 0, 5, 'luaArguments', '{"target": "metrics_lua__value_%d"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
