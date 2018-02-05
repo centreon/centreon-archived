@@ -925,7 +925,9 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-
+    if (!isset($ret['kb_wiki_certificate'])){
+        $ret['kb_wiki_certificate'] = 0;
+    }
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
                 updateOption($db, $key, $value);
