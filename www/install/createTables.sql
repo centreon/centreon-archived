@@ -427,6 +427,8 @@ CREATE TABLE `cb_type_field_relation` (
   `cb_fieldset_id` INT,
   `is_required` int(11) NOT NULL DEFAULT '0',
   `order_display` int(11) NOT NULL DEFAULT '0',
+  `jshook_name` VARCHAR(255) DEFAULT NULL,
+  `jshook_arguments` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`cb_type_id`,`cb_field_id`),
   KEY `fk_cb_type_field_relation_1` (`cb_type_id`),
   KEY `fk_cb_type_field_relation_2` (`cb_field_id`),
