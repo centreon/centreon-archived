@@ -41,12 +41,13 @@ require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonCommand.class.php";
 
-
 session_start();
+session_write_close();
 
 $centreon = $_SESSION['centreon'];
-if (!isset($centreon))
+if (!isset($centreon)) {
     exit();
+}
 
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
@@ -57,7 +58,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 if (!isset($pearDB) || is_null($pearDB)) {
     $pearDB = new CentreonDB();
     global $pearDB;
-
 }
 
 $macros = array();
@@ -72,8 +72,8 @@ if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     
     $oCommande = new CentreonCommand($pearDB);
     
-    $macrosHostDesc = $oCommande->match_object($iIdCmd, $str, '1');
-    $macrosServiceDesc = $oCommande->match_object($iIdCmd, $str, '2');
+    $macrosHostDesc = $oCommande->matchObject($iIdCmd, $str, '1');
+    $macrosServiceDesc = $oCommande->matchObject($iIdCmd, $str, '2');
     
     $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
     
@@ -94,8 +94,12 @@ $form->addElement('header', 'title', _("Macro Descriptions"));
 $form->addElement('header', 'information', _("Macros"));
 
 
-$subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick" => "setMacrosDescriptions();"));
-$subS = $form->addElement('button', 'close', _("Close"), array("onClick" => "closeBox();"));
+$subS = $form->addElement(
+    'button', 'submitSaveAdd', _("Save"), array("onClick" => "setMacrosDescriptions();", "class" => "btc bt_success")
+);
+$subS = $form->addElement(
+    'button', 'close', _("Close"), array("onClick" => "closeBox();", "class" => "btc bt_default")
+);
 
 /*
  *  Smarty template

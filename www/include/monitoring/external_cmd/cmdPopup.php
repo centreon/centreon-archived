@@ -31,54 +31,57 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-	require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
-	session_start();
-	$oreon = $_SESSION['centreon'];
+/*
+ * Connect to DB
+ */
+$pearDB = new CentreonDB();
 
-	global $oreon, $pearDB;
+session_start();
+session_write_close();
 
-	/*
-	 * Connect to DB
-	 */
-	$pearDB = new CentreonDB();
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    exit();
+}
+$centreon = $_SESSION['centreon'];
 
-	/*
-	 * GMT management
-	 */
-	$centreonGMT = new CentreonGMT($pearDB);
-    $sid = session_id();
-	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
+/*
+ * GMT management
+ */
+$centreonGMT = new CentreonGMT($pearDB);
+$sid = session_id();
+$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 
-	require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
-	require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
+require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
+include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
 
-	if (!isset($oreon))
-		exit();
-
-	include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
-
-	if (isset($_GET["select"]) && isset($sid)) {
-		$is_admin = isUserAdmin($sid);
-		foreach ($_GET["select"] as $key => $value){
-			if (isset($_GET["cmd"])) {
-				switch ($_GET["cmd"]) {
-					case 70:	massiveServiceAck($key); break;
-					case 72:	massiveHostAck($key); break;
-					case 74:	massiveServiceDowntime($key); break;
-					case 75:	massiveHostDowntime($key); break;
-				}
-			}
-		}
-	}
-?>
+if (isset($_GET["select"]) && isset($sid)) {
+    $is_admin = isUserAdmin($sid);
+    foreach ($_GET["select"] as $key => $value) {
+        if (isset($_GET["cmd"])) {
+            switch ($_GET["cmd"]) {
+                case 70:
+                    massiveServiceAck($key);
+                    break;
+                case 72:
+                    massiveHostAck($key);
+                    break;
+                case 74:
+                    massiveServiceDowntime($key);
+                    break;
+                case 75:
+                    massiveHostDowntime($key);
+                    break;
+            }
+        }
+    }
+}

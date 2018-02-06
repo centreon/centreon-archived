@@ -31,11 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
+require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once "centreonUtils.class.php";
 
 /**
@@ -45,19 +45,19 @@ require_once "centreonUtils.class.php";
  */
 class CentreonACL
 {
- 	protected $db;
+    protected $db;
     // hack to get rid of warning messages
     public $topology = array();
     public $topologyStr = "";
 
- 	/**
+    /**
      * Constructor
      *
      * @return void
      */
     public function __construct()
     {
-        $this->db = Centreon_Db_Manager::factory('centreon');
+        $this->db = \Centreon_Db_Manager::factory('centreon');
     }
 
     /**

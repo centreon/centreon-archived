@@ -34,10 +34,10 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
-if (!$oreon->user->admin && $cg_id) {
+if (!$centreon->user->admin && $cg_id) {
     $aclOptions = array('fields'     => array('cg_id','cg_name'),
                         'keys'       => array('cg_id'),
                         'get_row'    => 'cg_name',
@@ -58,44 +58,44 @@ $initialValues = array();
  * Database retrieve information for Contact
  */
 $cg = array();
-if (($o == "c" || $o == "w") && $cg_id)	{
-	/*
-	 * Get host Group information
-	 */
-	$DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+if (($o == "c" || $o == "w") && $cg_id) {
+    /*
+     * Get host Group information
+     */
+    $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
 
-	/*
-	 * Set base value
-	 */
-	$cg = array_map("myDecode", $DBRESULT->fetchRow());
+    /*
+     * Set base value
+     */
+    $cg = array_map("myDecode", $DBRESULT->fetchRow());
 
-	/*
-	 * Set Contact Childs
-	 */
-	$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
-	for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
-                if (!$oreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
-                    $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
-                } else {
-                    $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
-                }
-            }
-	$DBRESULT->free();
+    /*
+     * Set Contact Childs
+     */
+    $DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
+    for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
+        if (!$centreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
+            $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
+        } else {
+            $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
+        }
+    }
+    $DBRESULT->free();
 
-	/*
-	 * Get acl group
-	 */
-	$sql = "SELECT acl_group_id 
-		FROM acl_group_contactgroups_relations 
-		WHERE cg_cg_id = " .$pearDB->escape($cg_id);
-	$res = $pearDB->query($sql);
-	for ($i = 0; $aclgroup = $res->fetchRow(); $i++) {
-    	if (!$oreon->user->admin && !isset($allowedAclGroups[$aclgroup['acl_group_id']])) {
-        	$initialValues['cg_acl_groups'][] = $aclgroup["acl_group_id"];
+    /*
+     * Get acl group
+     */
+    $sql = "SELECT acl_group_id 
+        FROM acl_group_contactgroups_relations 
+        WHERE cg_cg_id = " .$pearDB->escape($cg_id);
+    $res = $pearDB->query($sql);
+    for ($i = 0; $aclgroup = $res->fetchRow(); $i++) {
+        if (!$centreon->user->admin && !isset($allowedAclGroups[$aclgroup['acl_group_id']])) {
+            $initialValues['cg_acl_groups'][] = $aclgroup["acl_group_id"];
         } else {
             $cg["cg_acl_groups"][$i] = $aclgroup["acl_group_id"];
         }
-	}
+    }
 }
 
 /*
@@ -107,32 +107,32 @@ $DBRESULT = $pearDB->query("SELECT DISTINCT `contact_id`, `contact_name`, `conta
                                $acl->queryBuilder('WHERE', 'contact_id', $contactstring).
                                " ORDER BY `contact_name`");
 while ($contact = $DBRESULT->fetchRow()) {
-	$contacts[$contact["contact_id"]] = $contact["contact_name"];
-	if ($contact['contact_register'] == 0) {
-	    $contacts[$contact["contact_id"]] .= "(Template)";
-	}
+    $contacts[$contact["contact_id"]] = $contact["contact_name"];
+    if ($contact['contact_register'] == 0) {
+        $contacts[$contact["contact_id"]] .= "(Template)";
+    }
 }
 unset($contact);
 $DBRESULT->free();
 
 $aclgroups = array();
 $aclCondition = "";
-if (!$oreon->user->admin) {
-	$aclCondition = " WHERE acl_group_id IN (".$acl->getAccessGroupsString().") ";
+if (!$centreon->user->admin) {
+    $aclCondition = " WHERE acl_group_id IN (".$acl->getAccessGroupsString().") ";
 }
 $sql = "SELECT acl_group_id, acl_group_name
-	FROM acl_groups
-	{$aclCondition}
-	ORDER BY acl_group_name";
+    FROM acl_groups
+    {$aclCondition}
+    ORDER BY acl_group_name";
 $res = $pearDB->query($sql);
 while ($aclg = $res->fetchRow()) {
-	$aclgroups[$aclg['acl_group_id']] = $aclg['acl_group_name'];
+    $aclgroups[$aclg['acl_group_id']] = $aclg['acl_group_name'];
 }
 
-$attrsText 		= array("size"=>"30");
+$attrsText      = array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"5", "cols"=>"60");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list',
@@ -150,12 +150,13 @@ $attrAclgroups = array(
  * form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a")
-	$form->addElement('header', 'title', _("Add a Contact Group"));
-else if ($o == "c")
-	$form->addElement('header', 'title', _("Modify a Contact Group"));
-else if ($o == "w")
-	$form->addElement('header', 'title', _("View a Contact Group"));
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add a Contact Group"));
+} elseif ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Contact Group"));
+} elseif ($o == "w") {
+    $form->addElement('header', 'title', _("View a Contact Group"));
+}
 
 /*
  * Contact basic information
@@ -211,8 +212,8 @@ $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('cg_name', _("Compulsory Name"), 'required');
 $form->addRule('cg_alias', _("Compulsory Alias"), 'required');
 
-if(!$oreon->user->admin) {
-	$form->addRule('cg_acl_groups', _('Compulsory field'), 'required');
+if (!$centreon->user->admin) {
+    $form->addRule('cg_acl_groups', _('Compulsory field'), 'required');
 }
 
 $form->registerRule('exist', 'callback', 'testContactGroupExistence');
@@ -225,60 +226,60 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")	{
-	/*
-	 * Just watch a Contact Group information
-	 */
-	if ($centreon->user->access->page($p) != 2)
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+if ($o == "w") {
+    /*
+     * Just watch a Contact Group information
+     */
+    if ($centreon->user->access->page($p) != 2) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+    }
     $form->setDefaults($cg);
-	$form->freeze();
-} else if ($o == "c")	{
-	/*
-	 * Modify a Contact Group information
-	 */
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->freeze();
+} elseif ($o == "c") {
+    /*
+     * Modify a Contact Group information
+     */
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cg);
-} else if ($o == "a")	{
-	/*
-	 * Add a Contact Group information
-	 */
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+} elseif ($o == "a") {
+    /*
+     * Add a Contact Group information
+     */
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
-if ($form->validate())	{
+if ($form->validate()) {
+    $cgObj = $form->getElement('cg_id');
 
-	$cgObj = $form->getElement('cg_id');
+    if ($form->getSubmitValue("submitA")) {
+        $cgObj->setValue(insertContactGroupInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateContactGroupInDB($cgObj->getValue());
+    }
 
-	if ($form->getSubmitValue("submitA"))
-		$cgObj->setValue(insertContactGroupInDB());
-	else if ($form->getSubmitValue("submitC"))
-		updateContactGroupInDB($cgObj->getValue());
-
-	$o = NULL;
-	$valid = true;
+    $o = null;
+    $valid = true;
 }
 if ($valid) {
-	require_once($path."listContactGroup.php");
+    require_once($path."listContactGroup.php");
 } else {
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-
-	$tpl->display("formContactGroup.ihtml");
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formContactGroup.ihtml");
 }

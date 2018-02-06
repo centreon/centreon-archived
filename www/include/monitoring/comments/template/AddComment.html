@@ -1,0 +1,81 @@
+{$form.javascript}{literal}
+<script type="text/javascript">
+    function toggleParams(type) {
+        if (type == 'host') {
+            Effect.Fade('service_input', {duration: 0});
+            Effect.Appear('host_input', {duration: 0});
+        } else if (type == 'service') {
+            Effect.Fade('host_input', {duration: 0});
+            Effect.Appear('service_input', {duration: 0});
+        }
+    }
+    Event.observe(window, "load", function () {
+        toggleParams('{/literal}{$focus}{literal}');
+    });
+
+</script>
+{/literal}
+<div align=center>
+    <form {$form.attributes}>
+        <table class="ListTableMedium">
+            <tr class="ListHeader">
+                <td class="FormHeader" colspan="2">{t}Add comment{/t}</td>
+            <tr>
+
+            {if isset($service_description)}
+            <tr class="list_one">
+                <td class="FormRowField">{t}Type{/t}</td>
+                <td class="FormRowValue"><b>Service</b></td>
+            </tr>
+            {elseif isset($host_name)}
+            <tr class="list_one">
+                <td class="FormRowField">{t}Type{/t}</td>
+                <td class="FormRowValue"><b>Host</b></td>
+            </tr>
+            {else}
+            <tr class="list_one">
+                <td class="ListColLeft">{$form.commentType.label}</td>
+                <td class="ListColLeft">{$form.commentType.html}</td>
+            </tr>
+            {/if}
+
+            <!-- Object choice -->
+            <tr class="list_two" id="host_input">
+                <td class="ListColLeft">{$form.host_id.label}</td>
+                <td class="ListColLeft">{$form.host_id.html}</td>
+            </tr>
+
+            {if isset($service_description)}
+            <tr class="list_two">
+                <td class="FormRowField">{t}Host{/t} / {t}Service{/t}</td>
+                <td class="FormRowValue"><b>{$host_name} / {$service_description}</b></td>
+            </tr>
+            {elseif isset($host_name)}
+            <tr class="list_two">
+                <td class="FormRowField">{t}Host{/t}</td>
+                <td class="FormRowValue"><b>{$host_name}</b></td>
+            </tr>
+            {else}
+            <tr class="list_two" id="service_input">
+                <td class="ListColLeft">{$form.service_id.label}</td>
+                <td class="ListColLeft">{$form.service_id.html}</td>
+            </tr>
+            {/if}
+
+            <!-- End Object Choice -->
+            <tr class="list_one">
+                <td class="ListColLeft">{$form.persistant.label}</td>
+                <td class="ListColLeft">{$form.persistant.html}</td>
+            </tr>
+            <tr class="list_two">
+                <td class="ListColLeft">{$form.comment.label}</td>
+                <td class="ListColLeft">{$form.comment.html}</td>
+            </tr>
+        </table>
+        <div id="validForm">
+            <p>{$form.action.html}</p>
+            <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        </div>
+        {$form.hidden}
+    </form>
+</div>

@@ -34,31 +34,31 @@
  */
  
 if (!isset($centreon)) {
-	exit ();		
+    exit();
 }
 
-isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = NULL;
-isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
+isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = null;
+isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = null;
 $hG ? $host_id = $hG : $host_id = $hP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-#Pear library
+/* Pear library */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-#Path to the configuration dir
+/* Path to the configuration dir */
 $path = "./include/configuration/configObject/host_template_model/";
 $path2 = "./include/configuration/configObject/host/";
 
-#PHP functions
+/* PHP functions */
 require_once $path2."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
@@ -66,19 +66,48 @@ $hostObj = new CentreonHost($pearDB);
 $lockedElements = $hostObj->getLockedHostTemplates();
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path."formHostTemplateModel.php"); break; #Add a host template model
-	case "w" : require_once($path."formHostTemplateModel.php"); break; #Watch a host template model
-	case "c" : require_once($path."formHostTemplateModel.php"); break; #Modify a host template model
-	case "mc" : require_once($path."formHostTemplateModel.php"); break; #Massive change
-	case "s" : enableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Activate a host template model
-	case "ms" : enableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break;
-	case "u" : disableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Desactivate a host template model
-	case "mu" : disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break;
-	case "m" : multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostTemplateModel.php"); break; #Duplicate n host template model
-	case "d" : deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break; #Delete n host template models
-	default : require_once($path."listHostTemplateModel.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formHostTemplateModel.php");
+        break; #Add a host template model
+    case "w":
+        require_once($path."formHostTemplateModel.php");
+        break; #Watch a host template model
+    case "c":
+        require_once($path."formHostTemplateModel.php");
+        break; #Modify a host template model
+    case "mc":
+        require_once($path."formHostTemplateModel.php");
+        break; #Massive change
+    case "s":
+        enableHostInDB($host_id);
+        require_once($path."listHostTemplateModel.php");
+        break; #Activate a host template model
+    case "ms":
+        enableHostInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostTemplateModel.php");
+        break;
+    case "u":
+        disableHostInDB($host_id);
+        require_once($path."listHostTemplateModel.php");
+        break; #Desactivate a host template model
+    case "mu":
+        disableHostInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostTemplateModel.php");
+        break;
+    case "m":
+        multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listHostTemplateModel.php");
+        break; #Duplicate n host template model
+    case "d":
+        deleteHostInDB(isset($select) ? $select : array());
+        require_once($path."listHostTemplateModel.php");
+        break; #Delete n host template models
+    default:
+        require_once($path."listHostTemplateModel.php");
+        break;
 }

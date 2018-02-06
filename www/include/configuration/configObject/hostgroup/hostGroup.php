@@ -34,19 +34,19 @@
  */
 
 if (!isset($centreon)) {
-	exit();
+    exit();
 }
 
-isset($_GET["hg_id"]) ? $hG = $_GET["hg_id"] : $hG = NULL;
-isset($_POST["hg_id"]) ? $hP = $_POST["hg_id"] : $hP = NULL;
+isset($_GET["hg_id"]) ? $hG = $_GET["hg_id"] : $hG = null;
+isset($_POST["hg_id"]) ? $hP = $_POST["hg_id"] : $hP = null;
 $hG ? $hg_id = $hG : $hg_id = $hP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
@@ -69,29 +69,57 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
-$hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+$hgs = $acl->getHostGroupAclConf(null, 'broker');
 
-function mywrap ($el) {
+function mywrap($el)
+{
     return "'".$el."'";
 }
 $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
 $hoststring = $acl->getHostsString('ID', $dbmon);
 
-switch ($o)	{
-	case "a" : require_once($path."formHostGroup.php"); break; #Add a Hostgroup
-	case "w" : require_once($path."formHostGroup.php"); break; #Watch a Hostgroup
-	case "c" : require_once($path."formHostGroup.php"); break; #Modify a Hostgroup
-	case "s" : enableHostGroupInDB($hg_id); require_once($path."listHostGroup.php"); break; #Activate a Hostgroup
-	case "ms" : enableHostGroupInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break;
-	case "u" : disableHostGroupInDB($hg_id); require_once($path."listHostGroup.php"); break; #Desactivate a Hostgroup
-	case "mu" : disableHostGroupInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break;
-	case "m" : multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostGroup.php"); break; #Duplicate n Host grou
-	case "d" : deleteHostGroupInDB(isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break; #Delete n Host group
-	default : require_once($path."listHostGroup.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formHostGroup.php");
+        break; #Add a Hostgroup
+    case "w":
+        require_once($path."formHostGroup.php");
+        break; #Watch a Hostgroup
+    case "c":
+        require_once($path."formHostGroup.php");
+        break; #Modify a Hostgroup
+    case "s":
+        enableHostGroupInDB($hg_id);
+        require_once($path."listHostGroup.php");
+        break; #Activate a Hostgroup
+    case "ms":
+        enableHostGroupInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostGroup.php");
+        break;
+    case "u":
+        disableHostGroupInDB($hg_id);
+        require_once($path."listHostGroup.php");
+        break; #Desactivate a Hostgroup
+    case "mu":
+        disableHostGroupInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostGroup.php");
+        break;
+    case "m":
+        multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listHostGroup.php");
+        break; #Duplicate n Host grou
+    case "d":
+        deleteHostGroupInDB(isset($select) ? $select : array());
+        require_once($path."listHostGroup.php");
+        break; #Delete n Host group
+    default:
+        require_once($path."listHostGroup.php");
+        break;
 }

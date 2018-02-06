@@ -1,4 +1,37 @@
 <?php
+/*
+ * Copyright 2005-2015 CENTREON
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give CENTREON
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
 
 require_once "Centreon/Db/Manager/Manager.php";
 require_once "Centreon/Cache/Manager/Manager.php";
@@ -102,6 +135,20 @@ abstract class Centreon_Object_Relation
     }
 
     /**
+     * Get relation Ids
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getRelations()
+    {
+        $sql = 'SELECT ' . $this->firstKey . ',' . $this->secondKey . ' ' .
+            'FROM ' . $this->relationTable;
+
+        return $this->getResult($sql);
+    }
+
+    /**
      * Get Merged Parameters from seperate tables
      *
      * @param array $firstTableParams
@@ -115,6 +162,7 @@ abstract class Centreon_Object_Relation
      */
     public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
+
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
@@ -140,7 +188,7 @@ abstract class Centreon_Object_Relation
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 $sql .= " $filterType $key LIKE ? ";
-                $value = trim ($rawvalue);
+                $value = trim($rawvalue);
                 $value = str_replace("\\", "\\\\", $value);
                 $value = str_replace("_", "\_", $value);
                 $value = str_replace(" ", "\ ", $value);
@@ -150,6 +198,7 @@ abstract class Centreon_Object_Relation
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
             $sql .= " ORDER BY $order $sort ";
         }
+
         if (isset($count) && $count != -1) {
             $sql = $this->db->limit($sql, $count, $offset);
         }
@@ -198,7 +247,6 @@ abstract class Centreon_Object_Relation
             throw new Exception("Not a relation table");
         }
         if (preg_match('/^get([a-zA-Z0-9_]+)From([a-zA-Z0-9_]+)/', $name, $matches)) {
-
             if (($matches[1] != $this->firstKey && $matches[1] != $this->secondKey) ||
                 ($matches[2] != $this->firstKey && $matches[2] != $this->secondKey)) {
                 throw new Exception('Unknown field');
@@ -212,7 +260,6 @@ abstract class Centreon_Object_Relation
             } else {
                 throw new Exception('Unknown field');
             }
-
         } else {
             throw new Exception('Unknown method');
         }

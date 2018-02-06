@@ -31,16 +31,11 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL
- * SVN : $Id
- * 
  */
 
-	$tabCommandType = array();
+$tabCommandType = array();
 
-	$tabCommandType[1] = _("Notification");
-	$tabCommandType[2] = _("Check");
-	$tabCommandType[3] = _("Misc");
-	$tabCommandType[4] = _("Discovery");
-		
-?>
+$tabCommandType[1] = _("Notification");
+$tabCommandType[2] = _("Check");
+$tabCommandType[3] = _("Misc");
+$tabCommandType[4] = _("Discovery");

@@ -15,7 +15,7 @@ In order to list available recurring downtimes, use the **SHOW** action::
   [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a show
   id;name;description;activate
   1;mail-backup;sunday backup;1
-  1;my downtime;a description;1
+  2;my downtime;a description;1
 
 Columns are the following:
 
@@ -32,6 +32,21 @@ Activate     					  Whether or not the downtime is activated
 
 ================================= ===========================================================================
 
+
+In order to show resources of a downtime, use the **Show** action with parameters::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DOWNTIME -a show -v "mail-backup;host"
+
+The parameters are the following:
+
+========= ============================================
+Order     Description
+========= ============================================
+1         Name of the downtime
+
+2         (optional) Object type (host, hg, service, sg)
+
+========= ============================================
 
 Add
 ---

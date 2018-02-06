@@ -1,9 +1,13 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 {$javascript}
 {$form.javascript}
- 	<table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
+ 	<table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2"><h3>| {$form.header.title}</h3></td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2"><h4>{$form.header.options}</h4></td>
+        </tr>
 		<tr class='list_one'>
 			<td class='FormRowField'>{$ldapServers}</td>
 			<td class='FormRowValue'>{$ldapConfList}</td>
@@ -19,7 +23,9 @@
 	</table>
 <form {$form.attributes}>
 	<table class="ListTable">		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icons/view.png'>&nbsp;&nbsp;{$form.header.result}</td></tr>
+		<tr class="list_lvl_1">
+            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.result}</h4></td>
+        </tr>
 		<tr class="list_one"><td class="ListColLvl1_name" colspan="2" style="text-align: center;" id='ldap_search_result_output' ></td></tr>
 	</table>
 	<input type='hidden' name='o' value='{$o}'>

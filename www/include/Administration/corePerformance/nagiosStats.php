@@ -36,109 +36,180 @@
  *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($oreon)) {
+    exit();
+}
 
-	require_once "./include/monitoring/common-Func.php";
+    require_once "./include/monitoring/common-Func.php";
 
-	require_once 'HTML/QuickForm.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+    require_once 'HTML/QuickForm.php';
+    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	unset($tpl);
-	unset($path);
+    unset($tpl);
+    unset($path);
 
-	/*
+    /*
 	 * Time period select
 	 */
-	$form = new HTML_QuickForm('form', 'post', "?p=".$p);
+    $form = new HTML_QuickForm('form', 'post', "?p=".$p);
 
-	/*
+    /*
 	 * Get Poller List
 	 */
-	$pollerList = array();
-	$defaultPoller = null;
-	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `name`");
-	while ($data = $DBRESULT->fetchRow()) {
-		if ($data['localhost']) {
-		    $defaultPoller = $data['id'];
-		}
-	    $pollerList[$data["id"]] = $data["name"];
-	}
-	$DBRESULT->free();
-	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
-	$form->addElement('select', 'pollers', _("Poller"), $pollerList, array("onChange" =>"this.form.submit();"));
-	if (isset($selectedPoller) && $selectedPoller) {
-		$form->setDefaults(array('pollers' => $selectedPoller));
-		$host_list[$selectedPoller] = $pollerList[$selectedPoller];
-		$tab_server[$selectedPoller] = $pollerList[$selectedPoller];
-		$pollerName = $pollerList[$selectedPoller];
-	} else {
-		$form->setDefaults(array('pollers' => null));
-	}
+    $pollerList = array();
+    $defaultPoller = array();
+    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `name`");
 
-	/*
-	 * Get Periode
+    while ($data = $DBRESULT->fetchRow()) {
+        if (isset($_POST['pollers']) && $_POST['pollers'] != "") {
+            if ($_POST['pollers'] == $data['id']) {
+                $defaultPoller[$data['name']] = $data['id'];
+                $pollerId = $data['id'];
+            }
+        } elseif ($data['localhost']) {
+            $defaultPoller[$data['name']] = $data['id'];
+            $pollerId = $data['id'];
+        }
+    }
+    $DBRESULT->free();
+
+    isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
+
+    $attrPollers = array(
+        'datasourceOrigin' => 'ajax',
+        'allowClear' => false,
+        'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list',
+        'multiple' => false,
+        'defaultDataset' => $defaultPoller,
+        'linkedObject' => 'centreonInstance'
+    );
+    $form->addElement('select2', 'pollers', _("Poller"), array(), $attrPollers);
+
+    /*
+	 * Get Period
 	 */
-	$time_period = array("last3hours"	=> _("Last 3 hours"),
-						"today" 		=> _("Today"),
-						"yesterday" 	=> _("Yesterday"),
-						"last4days" 	=> _("Last 4 days"),
-						"lastweek" 		=> _("Last week"),
-						"lastmonth" 	=> _("Last month"),
-						"last6month" 	=> _("Last 6 months"),
-						"lastyear" 		=> _("Last year"));
+    $time_period = array(
+        "last3hours"  => _("Last 3 hours"),
+        "today" => _("Today"),
+        "yesterday" => _("Yesterday"),
+        "last4days" => _("Last 4 days"),
+        "lastweek" => _("Last week"),
+        "lastmonth" => _("Last month"),
+        "last6month" => _("Last 6 months"),
+        "lastyear" => _("Last year")
+    );
 
-	$selTP = $form->addElement('select', 'start', _("Period"), $time_period, array("onChange" =>"this.form.submit();"));
-	if (isset($_POST["start"])) {
-		$form->setDefaults(array('start' => $_POST["start"]));
-	} else {
-		$form->setDefaults(array('start' => "today"));
-	}
+    $defaultPeriod = array();
+    $currentPeriod = '';
+    if (isset($_POST['start']) && ($_POST != '')) {
+        $defaultPeriod[$time_period[$_POST['start']]] = $_POST['start'];
+        $currentPeriod .= $_POST['start'];
+    } else {
+        $defaultPeriod[$time_period['today']] = 'today';
+        $currentPeriod .= 'today';
+    }
 
-	$options = array(	"active_host_check" => "nagios_active_host_execution.rrd",
-						"active_service_check" => "nagios_active_service_execution.rrd",
-						"active_host_last" => "nagios_active_host_last.rrd",
-						"active_service_last" => "nagios_active_service_last.rrd",
-						"host_latency" => "nagios_active_host_latency.rrd",
-						"service_latency" => "nagios_active_service_latency.rrd",
-						"host_states" => "nagios_hosts_states.rrd",
-						"service_states" => "nagios_services_states.rrd",
-						"cmd_buffer" => "nagios_cmd_buffer.rrd");
+    switch ($currentPeriod) {
+        case "last3hours":
+            $start = time() - (60*60*3);
+            break;
+        case "today":
+            $start = time() - (60*60*24);
+            break;
+        case "yesterday":
+            $start = time() - (60*60*48);
+            break;
+        case "last4days":
+            $start = time() - (60*60*96);
+            break;
+        case "lastweek":
+            $start = time() - (60*60*168);
+            break;
+        case "lastmonth":
+            $start = time() - (60*60*24*30);
+            break;
+        case "last6month":
+            $start = time() - (60*60*24*30*6);
+            break;
+        case "lastyear":
+            $start = time() - (60*60*24*30*12);
+            break;
+    }
 
-	$path = "./include/Administration/corePerformance/";
+    /*
+    * Get end values
+    */
+    $end = time();
 
-	/*
+
+
+    $periodSelect = array(
+        'allowClear' => false,
+        'multiple' => false,
+        'defaultDataset' => $defaultPeriod
+    );
+
+    $selTP = $form->addElement('select2', 'start', _("Period"), $time_period, $periodSelect);
+
+    $options = array(   "active_host_check" => "nagios_active_host_execution.rrd",
+                        "active_service_check" => "nagios_active_service_execution.rrd",
+                        "active_host_last" => "nagios_active_host_last.rrd",
+                        "active_service_last" => "nagios_active_service_last.rrd",
+                        "host_latency" => "nagios_active_host_latency.rrd",
+                        "service_latency" => "nagios_active_service_latency.rrd",
+                        "host_states" => "nagios_hosts_states.rrd",
+                        "service_states" => "nagios_services_states.rrd",
+                        "cmd_buffer" => "nagios_cmd_buffer.rrd");
+    
+    $title = array(
+            "active_host_check" => _("Host Check Execution Time"),
+            "active_host_last" => _("Hosts Actively Checked"),
+            "host_latency" => _("Host check latency"),
+            "active_service_check" => _("Service Check Execution Time"),
+            "active_service_last" => _("Services Actively Checked"),
+            "service_latency" => _("Service check latency"),
+            "cmd_buffer" => _("Commands in buffer"),
+            "host_states" => _("Host status"),
+            "service_states" => _("Service status")
+        );
+
+    $path = "./include/Administration/corePerformance/";
+
+    /*
 	 * Smarty template Init
 	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, "./");
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl, "./");
 
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $form->accept($renderer);
 
-	/*
+    /*
 	 * Assign values
 	 */
 
-	$tpl->assign('form', $renderer->toArray());
+    $tpl->assign('form', $renderer->toArray());
 
-	if (isset($_POST["start"])) {
-		$tpl->assign('startPeriod', $_POST["start"]);
-	} else {
-	    $tpl->assign('startPeriod', 'today');
-	}
-	if (isset($host_list) && $host_list) {
-		$tpl->assign('host_list', $host_list);
-	}
-	if (isset($tab_server) && $tab_server) {
-		$tpl->assign('tab_server', $tab_server);
-	}
+    if (isset($_POST["start"])) {
+        $tpl->assign('startPeriod', $_POST["start"]);
+    } else {
+        $tpl->assign('startPeriod', 'today');
+    }
+    if (isset($host_list) && $host_list) {
+        $tpl->assign('host_list', $host_list);
+    }
+    if (isset($tab_server) && $tab_server) {
+        $tpl->assign('tab_server', $tab_server);
+    }
 
-	$tpl->assign("p", $p);
-	if (isset($pollerName)) {
-		$tpl->assign("pollerName", $pollerName);
-	}
-	$tpl->assign("options", $options);
-	$tpl->assign("session_id", session_id());
-	$tpl->display("nagiosStats.ihtml");
-?>
+    $tpl->assign("p", $p);
+    if (isset($pollerName)) {
+        $tpl->assign("pollerName", $pollerName);
+    }
+    $tpl->assign("options", $options);
+    $tpl->assign("startTime", $start);
+    $tpl->assign("endTime", $end);
+    $tpl->assign("pollerId", $pollerId);
+    $tpl->assign("title", $title);
+    $tpl->assign("session_id", session_id());
+    $tpl->display("nagiosStats.html");

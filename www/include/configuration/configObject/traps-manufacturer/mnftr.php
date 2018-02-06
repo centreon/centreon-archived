@@ -33,19 +33,20 @@
  * 
  */
 
-if (!isset($centreon))
-	exit ();
+if (!isset($centreon)) {
+    exit();
+}
 
-isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = NULL;
-isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
+isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = null;
+isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = null;
 $mnftrG ? $id = $mnftrG : $id = $mnftrP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 #Pear library
@@ -60,15 +61,29 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
-
-switch ($o)	{
-	case "a" : require_once($path."formMnftr.php"); break; #Add a Trap
-	case "w" : require_once($path."formMnftr.php"); break; #Watch a Trap
-	case "c" : require_once($path."formMnftr.php"); break; #Modify a Trap
-	case "m" : multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMnftr.php"); break; #Duplicate n Traps
-	case "d" : deleteMnftrInDB(isset($select) ? $select : array()); require_once($path."listMnftr.php"); break; #Delete n Traps
-	default : require_once($path."listMnftr.php"); break;
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
 }
-?>
+
+switch ($o) {
+    case "a":
+        require_once($path."formMnftr.php");
+        break; #Add a Trap
+    case "w":
+        require_once($path."formMnftr.php");
+        break; #Watch a Trap
+    case "c":
+        require_once($path."formMnftr.php");
+        break; #Modify a Trap
+    case "m":
+        multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listMnftr.php");
+        break; #Duplicate n Traps
+    case "d":
+        deleteMnftrInDB(isset($select) ? $select : array());
+        require_once($path."listMnftr.php");
+        break; #Delete n Traps
+    default:
+        require_once($path."listMnftr.php");
+        break;
+}

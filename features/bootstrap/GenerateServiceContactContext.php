@@ -1,25 +1,12 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
 
 /**
  * Defines application features from the specific context.
  */
 class GenerateServiceContactContext extends CentreonContext
 {
-
-    private $pollers_page;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
-    }
-
     /**
      * @Given a one service associated on host
      */
@@ -62,7 +49,7 @@ class GenerateServiceContactContext extends CentreonContext
             if ($radio->getAttribute('value') == 1) {
                 $radio->click();
                 if (!$radio->isChecked()) {
-                    throw new Exception("Radio for $name not checked");
+                    throw new \Exception("Radio for $name not checked");
                 }
             }
         }
@@ -73,11 +60,11 @@ class GenerateServiceContactContext extends CentreonContext
      */
     public function aCheckboxInhertAreDisabled()
     {
-        $sName = "service_inherit_contacts_from_host[service_inherit_contacts_from_host]";        
+        $sName = "service_inherit_contacts_from_host[service_inherit_contacts_from_host]";
         $radio_button = $this->getSession()->getPage()->findAll('named', array('radio', $sName));
-        foreach ($radio_button as $radio) {            
+        foreach ($radio_button as $radio) {
             if (!$radio->getAttribute('disabled')) {
-                throw new Exception("The case Inherit contacts are disabled");
+                throw new \Exception("The case Inherit contacts are disabled");
             }
         }
     }
@@ -91,7 +78,7 @@ class GenerateServiceContactContext extends CentreonContext
             "return jQuery('#service_cs').prop('disabled').toString();"
         );
         if ($sChecked != "true") {
-            throw new Exception("The field contact service are not disabled");
+            throw new \Exception("The field contact service are not disabled");
         }
     }
 
@@ -104,7 +91,7 @@ class GenerateServiceContactContext extends CentreonContext
             "return jQuery('#service_cgs').prop('disabled').toString();"
         );
         if ($sChecked != "true") {
-            throw new Exception("The checkbox Inherit contacts group from host are not disabled");
+            throw new \Exception("The checkbox Inherit contacts group from host are not disabled");
         }
     }
 }

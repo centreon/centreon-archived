@@ -31,98 +31,98 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	$o = "svcd";
+$o = "svcd";
 
-	if (!isset ($oreon))
-		exit ();
+if (!isset($centreon)) {
+    exit();
+}
 
-	require_once (_CENTREON_PATH_ . "www/class/centreonHost.class.php");
-	require_once (_CENTREON_PATH_ . "www/class/centreonDB.class.php");
+require_once(_CENTREON_PATH_ . "www/class/centreonHost.class.php");
+require_once(_CENTREON_PATH_ . "www/class/centreonService.class.php");
+include_once(_CENTREON_PATH_ . "www/class/centreonMeta.class.php");
+require_once(_CENTREON_PATH_ . "www/class/centreonDB.class.php");
 
-	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
-	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
-	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
+$host_name = isset($_GET["host_name"]) ? $_GET["host_name"] : null;
+$service_description = isset($_GET["service_description"]) ? $_GET["service_description"] : null;
+$cmd = isset($_GET["cmd"]) ? $_GET["cmd"] : null;
+$is_meta = isset($_GET["is_meta"]) && $_GET["is_meta"] == 'true' ? $_GET["is_meta"] : 'false';
 
-	$hObj = new CentreonHost($pearDB);
-	$path = "./include/monitoring/submitPassivResults/";
-	$broker = $oreon->broker->getBroker();
-	if ($broker == "ndo") {
-	    $pearDBndo = new CentreonDB("ndo");
-	} elseif ($broker == "broker") {
-        $pearDBndo = new CentreonDB("centstorage");
-	}
+$hObj = new CentreonHost($pearDB);
+$serviceObj = new CentreonService($pearDB);
+$metaObj = new CentreonMeta($pearDB);
+$path = "./include/monitoring/submitPassivResults/";
 
-	# HOST LCA
-	if (!$is_admin){
-		$host_id = $hObj->getHostId($host_name);
-		$serviceTab = $oreon->user->access->getHostServices($pearDBndo, $host_id);
-		foreach ($serviceTab as $value) {
-			if ($value == $service_description)
-				$flag_acl = 1;
-		}
-	}
+$pearDBndo = new CentreonDB("centstorage");
 
-	if ($is_admin || ($flag_acl && !$is_admin)){
+$host_id = $hObj->getHostId($host_name);
+$hostDisplayName = $host_name;
+$serviceDisplayName = $service_description;
 
-		#Pear library
-		require_once "HTML/QuickForm.php";
-		require_once 'HTML/QuickForm/advmultiselect.php';
-		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+if ($is_meta == 'true') {
+    $metaId = null;
+    if (preg_match('/meta_(\d+)/', $service_description, $matches)) {
+        $metaId = $matches[1];
+    }
+    $hostDisplayName = 'Meta';
+    $serviceId = $metaObj->getRealServiceId($metaId);
+    $serviceParameters = $serviceObj->getParameters($serviceId, array('display_name'));
+    $serviceDisplayName = $serviceParameters['display_name'];
+}
 
-		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		$form->addElement('header', 'title', _("Command Options"));
 
-		$hosts = array($host_name=>$host_name);
+if (!$is_admin && $host_id) {
+    $flag_acl = 0;
+    if ($is_meta == 'true') {
+        $aclMetaServices = $centreon->user->access->getMetaServices();
+        $aclMetaIds = array_keys($aclMetaServices);
+        if (in_array($metaId, $aclMetaIds)) {
+            $flag_acl = 1;
+        }
+    } else {
+        $serviceTab = $centreon->user->access->getHostServices($pearDBndo, $host_id);
+        if (in_array($service_description, $serviceTab)) {
+            $flag_acl = 1;
+        }
+    }
+}
 
-		$DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
-		$host = $DBRESULT->fetchRow();
-		$host_id = $host["host_id"];
+if (($is_admin || $flag_acl) && $host_id) {
+    #Pear library
+    require_once "HTML/QuickForm.php";
+    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-		$services = array();
-		if (isset($host_id))
-			$services_id = getMyHostServices($host_id);
+    $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+    $form->addElement('header', 'title', _("Command Options"));
 
-		$services = array();
-		foreach ($services_id as $id => $value){
-			$svc_desc = getMyServiceName($id);
-			$services[$svc_desc] = $svc_desc;
-		}
+    $return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 
-		$form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-		$form->addElement('select', 'service_description', _("Service"), $services);
+    $form->addElement('select', 'return_code', _("Check result"), $return_code);
+    $form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
+    $form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
 
-		$form->addRule('host_name', _("Required Field"), 'required');
-		$form->addRule('service_description', _("Required Field"), 'required');
+    $form->addElement('hidden', 'host_name', $host_name);
+    $form->addElement('hidden', 'service_description', $service_description);
+    $form->addElement('hidden', 'author', $centreon->user->get_alias());
+    $form->addElement('hidden', 'cmd', $cmd);
+    $form->addElement('hidden', 'p', $p);
 
-		$return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
+    $form->addElement('submit', 'submit', _("Save"), array("class" => "btc bt_success"));
+    $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
-		$form->addElement('select', 'return_code', _("Check result"),$return_code);
-		$form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
-		$form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
+    # Smarty template Init
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl);
 
-		$form->addElement('hidden', 'author', $oreon->user->get_alias());
-		$form->addElement('hidden', 'cmd', $cmd);
-		$form->addElement('hidden', 'p', $p);
+    #Apply a template definition
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
 
-		$form->addElement('submit', 'submit', _("Save"));
-		$form->addElement('reset', 'reset', _("Reset"));
-
-		# Smarty template Init
-		$tpl = new Smarty();
-		$tpl = initSmartyTpl($path, $tpl);
-
-		#Apply a template definition
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
-
-		$tpl->assign('form', $renderer->toArray());
-		$tpl->display("servicePassiveCheck.ihtml");
-	}
-?>
+    $tpl->assign('host_name', $hostDisplayName);
+    $tpl->assign('service_description', $serviceDisplayName);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->display("servicePassiveCheck.ihtml");
+}

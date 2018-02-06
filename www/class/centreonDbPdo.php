@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonDbPdo extends CentreonDB
@@ -48,7 +45,7 @@ class CentreonDbPdo extends CentreonDB
         parent::__construct($dbname, $retry);
     }
 
-	/**
+    /**
      *  The connection is established here
      *
      *  @return void
@@ -56,12 +53,14 @@ class CentreonDbPdo extends CentreonDB
     public function connect()
     {
         try {
-            $this->db = new CentreonPdo($this->dsn['phptype'].":"."dbname=".$this->dsn['database'] . ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
-                                $this->dsn['username'],
-                                $this->dsn['password'],
-                                $this->options);
-        }
-        catch (PDOException $e) {
+            $this->db = new CentreonPdo(
+                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
+                    ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
+                $this->dsn['username'],
+                $this->dsn['password'],
+                $this->options
+            );
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }
@@ -70,69 +69,71 @@ class CentreonDbPdo extends CentreonDB
      * estrablish centreon DB connector
      *
      * @access protected
-	 * @return	void
+     * @return  void
      */
-	protected function connectToCentreon($conf_centreon)
-	{
-		if (!isset($conf_centreon["port"])) {
-			$conf_centreon["port"] = "3306";
-		}
+    protected function connectToCentreon($conf_centreon)
+    {
+        if (!isset($conf_centreon["port"])) {
+            $conf_centreon["port"] = "3306";
+        }
 
-		$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $conf_centreon["user"],
-	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentreon"],
-		    'port'	   => $conf_centreon["port"],
-	    	'database' => $conf_centreon["db"],
-		);
+        $this->dsn = array(
+            'phptype'  => $this->db_type,
+            'username' => $conf_centreon["user"],
+            'password' => $conf_centreon["password"],
+            'hostspec' => $conf_centreon["hostCentreon"],
+            'port'     => $conf_centreon["port"],
+            'database' => $conf_centreon["db"],
+        );
     }
 
     /**
      * estrablish Centstorage DB connector
      *
      * @access protected
-	 * @return	void
+     * @return  void
      */
-	protected function connectToCentstorage($conf_centreon)
-	{
-    	if (!isset($conf_centreon["port"])) {
-			$conf_centreon["port"] = "3306";
-		}
+    protected function connectToCentstorage($conf_centreon)
+    {
+        if (!isset($conf_centreon["port"])) {
+            $conf_centreon["port"] = "3306";
+        }
 
-    	$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $conf_centreon["user"],
-	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentstorage"],
-    		'port'	   => $conf_centreon["port"],
-	    	'database' => $conf_centreon["dbcstg"],
-		);
+        $this->dsn = array(
+            'phptype'  => $this->db_type,
+            'username' => $conf_centreon["user"],
+            'password' => $conf_centreon["password"],
+            'hostspec' => $conf_centreon["hostCentstorage"],
+            'port'     => $conf_centreon["port"],
+            'database' => $conf_centreon["dbcstg"],
+        );
     }
 
 
-	/**
+    /**
      *  Get info to connect to NDO DB
      *
      *  @return void
      */
     protected function connectToNDO($conf_centreon)
     {
-		$DBRESULT = $this->db->query("SELECT db_port, db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
-		$confNDO = $DBRESULT->fetchRow();
+        $DBRESULT = $this->db->query(
+            "SELECT db_port, db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;"
+        );
+        $confNDO = $DBRESULT->fetchRow();
 
         if (!isset($confNDO["db_port"]) || !$confNDO["db_port"]) {
-			$confNDO["db_port"] = "3306";
-		}
+            $confNDO["db_port"] = "3306";
+        }
 
-		$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $confNDO['db_user'],
-	    	'password' => $confNDO['db_pass'],
-	    	'hostspec' => $confNDO['db_host'],
-			'port'     => $confNDO['db_port'],
-	    	'database' => $confNDO['db_name'],
-		);
+        $this->dsn = array(
+            'phptype'  => $this->db_type,
+            'username' => $confNDO['db_user'],
+            'password' => $confNDO['db_pass'],
+            'hostspec' => $confNDO['db_host'],
+            'port'     => $confNDO['db_port'],
+            'database' => $confNDO['db_name'],
+        );
     }
 
     /**
@@ -145,34 +146,33 @@ class CentreonDbPdo extends CentreonDB
         return $this->db->quote($str);
     }
 
-	/**
+    /**
      *  Query
      *
      *  @return void
      */
-    public function query($queryString = NULL)
+    public function query($queryString = null)
     {
-    	/*
+        /*
     	 * LOG all request
     	 */
-    	if ($this->debug) {
-	    	$string = str_replace("`", "", $queryString);
-	    	$string = str_replace('*', "\*", $string);
-	    	$this->log->insertLog(2, " QUERY : " . $string);
-    	}
+        if ($this->debug) {
+            $string = str_replace("`", "", $queryString);
+            $string = str_replace('*', "\*", $string);
+            $this->log->insertLog(2, " QUERY : " . $string);
+        }
 
-    	/*
+        /*
     	 * Launch request
     	 */
-    	try {
+        try {
             $this->db->query("SET NAMES 'utf8'");
-    	    $dbres = $this->db->query($queryString);
-    	    $this->queryNumber++;
-    	    $this->successQueryNumber++;
-    	}
-    	catch (PDOException $e) {
-    	    echo $e->getMessage();
-    	}
-    	return $dbres;
+            $dbres = $this->db->query($queryString);
+            $this->queryNumber++;
+            $this->successQueryNumber++;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $dbres;
     }
 }

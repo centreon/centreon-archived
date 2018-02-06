@@ -47,7 +47,7 @@ class CentreonWidgetParamsConnectorHostCategory extends CentreonWidgetParamsList
         static $tab;
 
         if (!isset($tab)) {
-            $query = "SELECT hc_id AS id, hs_name AS name
+            $query = "SELECT hc_id AS id, hc_name AS name
                       FROM hostcategories
                       WHERE hc_activate = '1' ";
             $query .= " ORDER BY name";

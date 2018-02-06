@@ -31,45 +31,43 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
-	require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
-	require_once ("../../$classdir/centreonSession.class.php");
-	require_once ("../../$classdir/centreon.class.php");
-	require_once ("../../$classdir/centreonDB.class.php");
-	
-	$pearDB = new CentreonDB();
-	CentreonSession::start();
-	$centreon= $_SESSION["centreon"];
-	
-	$session = $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
-	if (!$session->numRows())
-		exit;
-	
-	$logos_path = "../../img/media/";
 
-	if (isset($_GET["id"]) && $_GET["id"] && is_numeric($_GET["id"])) {
-	    $result = $pearDB->query("SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = '".$pearDB->escape($_GET["id"])."'");
-	    while ($img = $result->fetchRow() ) {
-			$imgpath = $logos_path . $img["dir_name"] ."/". $img["img_path"];
-	        if (!is_file($imgpath)) {
-		        $imgpath = _CENTREON_PATH_ . 'www/img/media/' . $img["dir_name"] ."/". $img["img_path"];
-		    }
-			if (is_file($imgpath)) {
-			    $fd = fopen($imgpath, "r");
-			    $buffer = NULL;
-			    while (!feof($fd)) {
-				    $buffer .= fgets($fd, 4096);
-			    }
-			    fclose ($fd);
-			    print $buffer;
-			    break;
-			}
-			else {
-				print "File not found";
-			}
-	    }	
-	}
-?>
+require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once("../../$classdir/centreonSession.class.php");
+require_once("../../$classdir/centreon.class.php");
+require_once("../../$classdir/centreonDB.class.php");
+
+CentreonSession::start();
+
+$pearDB = new CentreonDB();
+
+$session = $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
+if (!$session->numRows()) {
+    exit;
+}
+
+$logos_path = "../../img/media/";
+
+if (isset($_GET["id"]) && $_GET["id"] && is_numeric($_GET["id"])) {
+    $result = $pearDB->query("SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = '".$pearDB->escape($_GET["id"])."'");
+    while ($img = $result->fetchRow()) {
+        $imgpath = $logos_path . $img["dir_name"] ."/". $img["img_path"];
+        if (!is_file($imgpath)) {
+            $imgpath = _CENTREON_PATH_ . 'www/img/media/' . $img["dir_name"] ."/". $img["img_path"];
+        }
+
+        if (is_file($imgpath)) {
+            $fd = fopen($imgpath, "r");
+            $buffer = null;
+            while (!feof($fd)) {
+                $buffer .= fgets($fd, 4096);
+            }
+            fclose($fd);
+            print $buffer;
+            break;
+        } else {
+            print "File not found";
+        }
+    }
+}

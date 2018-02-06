@@ -14,7 +14,6 @@
                     <xsl:attribute name="class">
                         <xsl:value-of select="@class" />
                     </xsl:attribute>
-
                     <td class="ListColLeft">
                         <xsl:element name="a">						  	
                             <xsl:attribute name="class">pop</xsl:attribute>

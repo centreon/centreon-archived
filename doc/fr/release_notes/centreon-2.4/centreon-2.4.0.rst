@@ -37,7 +37,7 @@ Support for multiple LDAP servers
 =================================
 
 The LDAP authentication system is much more robust than before.
-Indeed, it is now possible to have :ref:`multiple LDAP configurations <ldap>` on
+Indeed, it is now possible to have :ref:`multiple LDAP configurations <ldapconfiguration>` on
 top of the failover system. The LDAP import form will let you choose the
 LDAP server to import from.
 
@@ -70,7 +70,7 @@ Communication with pollers
 
 The default system user used by *Centcore* to communicate with pollers
 has changed from ``nagios`` to ``centreon``. See
-:ref:`ces:pollers_basic_conf` for more information.
+:ref:`pollers_basic_conf` for more information.
 
 
 Plugins

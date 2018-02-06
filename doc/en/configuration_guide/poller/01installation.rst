@@ -13,10 +13,10 @@ Their function is to monitor the equipment and send the results to the Centreon 
 Installation
 ************
 
-The installation process is identical to a Centreon central server installed from the iso file of CES.
+The installation process is identical to a Centreon central server installed from the ISO file of Centreon.
 
 .. note::
-   Refer to the documentation: :ref:`first steps with CES 3.0<firststepsces3>`
+   Refer to the documentation: :ref:`first steps with Centreon 3.4<firststepsces3>`
 
 For the question **Which server type would you like to install?** choose the option **Poller server**.
 

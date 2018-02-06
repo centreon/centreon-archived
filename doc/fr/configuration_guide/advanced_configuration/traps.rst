@@ -185,6 +185,10 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
 Configuration de la connexion à la base de données
 --------------------------------------------------
 
+.. note::
+    Sur un collecteur distant (satellite), la configuration de l'accès à la base de données
+    est à réaliser dans le fichier **/etc/centreon/centreontrapd.pm**.
+
 Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux manières :
 
 * Conserver la connexion au serveur de base de données MySQL (nécessaire pour le serveur central et possible pour les serveurs satellites). Contenu du fichier :

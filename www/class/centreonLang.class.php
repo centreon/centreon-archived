@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
  /*
@@ -43,27 +40,27 @@ class CentreonLang
 {
     /**
      *
-     * @var string 
+     * @var string
      */
-    protected $_charset;
+    protected $charset;
     
     /**
      *
-     * @var string 
+     * @var string
      */
-    protected $_lang;
+    protected $lang;
     
     /**
      *
-     * @var string 
+     * @var string
      */
-    protected $_path;
+    protected $path;
     
     /**
      *
-     * @var array 
+     * @var array
      */
-    protected $_charsetList;
+    protected $charsetList;
 
     /**
      *  Constructor
@@ -74,19 +71,19 @@ class CentreonLang
      */
     public function __construct($centreon_path, $centreon = null)
     {
-        $this->_charset = "UTF-8";
+        $this->charset = "UTF-8";
         if (!is_null($centreon) && isset($centreon->user->charset)) {
-            $this->_charset = $centreon->user->charset;
+            $this->charset = $centreon->user->charset;
         }
         
-        $this->_lang = $this->getBrowserDefaultLanguage() . '.' . $this->_charset;
+        $this->lang = $this->getBrowserDefaultLanguage() . '.' . $this->charset;
         if (!is_null($centreon) && isset($centreon->user->lang)) {
             if ($centreon->user->lang !== 'browser') {
-                $this->_lang = $centreon->user->lang;
+                $this->lang = $centreon->user->lang;
             }
         }
         
-        $this->_path = $centreon_path;
+        $this->path = $centreon_path;
         $this->setCharsetList();
     }
     
@@ -96,7 +93,11 @@ class CentreonLang
 
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             // break up string into pieces (languages and q factors)
-            preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
+            preg_match_all(
+                '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+                $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+                $lang_parse
+            );
 
             if (count($lang_parse[1])) {
                 // create a list like "en" => 0.8
@@ -104,10 +105,12 @@ class CentreonLang
 
                 // set default to 1 for any without q factor
                 foreach ($langs as $lang => $val) {
-                    if ($val === '') $langs[$lang] = 1;
+                    if ($val === '') {
+                        $langs[$lang] = 1;
+                    }
                 }
 
-                // sort list based on value	
+                // sort list based on value
                 arsort($langs, SORT_NUMERIC);
             }
         }
@@ -121,7 +124,7 @@ class CentreonLang
     }
 
     /**
-     * 
+     *
      * @return type
      */
     private function getBrowserDefaultLanguage()
@@ -139,7 +142,7 @@ class CentreonLang
     }
 
     /**
-     * 
+     *
      * @param type $shortLocale
      * @return string
      */
@@ -171,7 +174,7 @@ class CentreonLang
      */
     private function setCharsetList()
     {
-        $this->_charsetList = array(
+        $this->charsetList = array(
             "ISO-8859-1",
             "ISO-8859-2",
             "ISO-8859-3",
@@ -216,7 +219,7 @@ class CentreonLang
             "ISO-10646-UCS-4",
             "SHIFT_JIS"
         );
-        sort($this->_charsetList);
+        sort($this->charsetList);
     }
 
     /**
@@ -226,10 +229,10 @@ class CentreonLang
      */
     public function bindLang($domain = "messages", $path = "www/locale/")
     {
-        putenv("LANG=$this->_lang");
-        setlocale(LC_ALL, $this->_lang);
-        bindtextdomain($domain, $this->_path.$path);
-        bind_textdomain_codeset($domain, $this->_charset);
+        putenv("LANG=$this->lang");
+        setlocale(LC_ALL, $this->lang);
+        bindtextdomain($domain, $this->path.$path);
+        bind_textdomain_codeset($domain, $this->charset);
         textdomain('messages');
     }
 
@@ -241,7 +244,7 @@ class CentreonLang
      */
     public function setLang($newLang)
     {
-        $this->_lang = $newLang;
+        $this->lang = $newLang;
     }
 
     /**
@@ -251,17 +254,18 @@ class CentreonLang
      */
     public function getLang()
     {
-        return $this->_lang;
+        return $this->lang;
     }
 
     /**
      *  Charset Setter
+     *
      *  @param string $newCharset
      *  @return void
      */
     public function setCharset($newCharset)
     {
-        $this->_charset = $newCharset;
+        $this->charset = $newCharset;
     }
 
     /**
@@ -271,7 +275,7 @@ class CentreonLang
      */
     public function getCharset()
     {
-        return $this->_charset;
+        return $this->charset;
     }
 
     /**
@@ -281,6 +285,6 @@ class CentreonLang
      */
     public function getCharsetList()
     {
-        return $this->_charsetList;
+        return $this->charsetList;
     }
 }

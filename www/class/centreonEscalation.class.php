@@ -31,28 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
- * 
+ *
  */
 class CentreonEscalation
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -128,9 +125,16 @@ class CentreonEscalation
             $hcAcl = $centreon->user->access->getHostCategories();
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected host categories
@@ -138,8 +142,13 @@ class CentreonEscalation
             . "FROM hostcategories "
             . "WHERE hc_id IN (" . $explodedValues . ") "
             . "ORDER BY hc_name ";
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->_db->query($query);
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad escalation query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized host categories
             $hide = false;
@@ -157,4 +166,3 @@ class CentreonEscalation
         return $items;
     }
 }
-?>

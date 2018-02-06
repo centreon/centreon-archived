@@ -130,6 +130,7 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
         } else {
             $label = '<label for="' . $this->getAttribute('id') . '">' . $this->_text . '</label>';
         }
+
         return HTML_QuickForm_input::toHtml() . $label;
     } //end func toHtml
     
@@ -146,10 +147,9 @@ class HTML_QuickForm_checkbox extends HTML_QuickForm_input
     function getFrozenHtml()
     {
         if ($this->getChecked()) {
-            return '<tt>[x]</tt>' .
-                   $this->_getPersistantData();
+            return $str = '[x]' . $this->_getPersistantData();
         } else {
-            return '<tt>[ ]</tt>';
+            return $str = '[ ]';
         }
     } //end func getFrozenHtml
 

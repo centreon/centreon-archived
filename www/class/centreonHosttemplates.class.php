@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -45,12 +44,47 @@ require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
 class CentreonHosttemplates extends CentreonHost
 {
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         return parent::getObjectForSelect2($values, $options, '0');
+    }
+    
+    /**
+     * Returns array of host linked to the template
+     *
+     * @return array
+     */
+    public function getLinkedHostsByName($hostTemplateName, $checkTemplates = true)
+    {
+        if ($checkTemplates) {
+            $register = 0;
+        } else {
+            $register = 1;
+        }
+
+        $linkedHosts = array();
+        $query = 'SELECT DISTINCT h.host_name '
+            . 'FROM host_template_relation htr, host h, host ht '
+            . 'WHERE htr.host_tpl_id = ht.host_id '
+            . 'AND htr.host_host_id = h.host_id '
+            . 'AND ht.host_register = "0" '
+            . 'AND h.host_register = "' . $register . '" '
+            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
+ 
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked hosts of ' . $hostTemplateName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedHosts[] = $row['host_name'];
+        }
+
+        return $linkedHosts;
     }
 }

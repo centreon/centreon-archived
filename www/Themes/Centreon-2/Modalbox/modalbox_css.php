@@ -31,27 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL:  $
- * SVN : $Id:  $
- *
  */
 
 ?>
 #MB_header {
-	background-color: #BFD0E2;
+    background-color: #BFD0E2;
 }
 #MB_caption {
-	background-image: url(<?php print $bg_image_header; ?>);
-	padding: 0.2em 2em 0.2em 0.75em;
-	font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-	color: #555555;
-	font-size: 12px;
-	font-weight: 700;
-	text-shadow: 0 0px 0 #FFFFFF;
-    	background-position: left top;
-    	background-repeat: repeat-x;
+    background-image: url(<?php print $bg_image_header; ?>);
+    padding: 0.2em 2em 0.2em 0.75em;
+    font-family:'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+    color: #555555;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 0px 0 #FFFFFF;
+        background-position: left top;
+        background-repeat: repeat-x;
 }
 #MB_close {
-	top: 2px;
-	padding: 0px;
+    top: 2px;
+    padding: 0px;
 }

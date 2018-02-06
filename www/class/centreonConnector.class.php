@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
@@ -79,7 +76,7 @@ class CentreonConnector
 {
     /**
      * The database connection
-     * @var CentreonDB 
+     * @var CentreonDB
      */
     protected $dbConnection;
 
@@ -96,7 +93,7 @@ class CentreonConnector
 
     /**
      * Adds a connector to the database
-     * 
+     *
      * @param array $connector
      * @param boolean $returnId
      * @return CentreonConnector|integer
@@ -154,7 +151,10 @@ class CentreonConnector
          * in case last inserted id needed
          */
         if ($returnId) {
-            $lastIdQueryResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($connector['name']));
+            $lastIdQueryResult = $this->dbConnection->query(
+                'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
+                array($connector['name'])
+            );
             if (PEAR::isError($lastIdQueryResult)) {
                 throw new RuntimeException('Cannot get last insert ID');
             }
@@ -164,7 +164,10 @@ class CentreonConnector
             } else {
                 if (isset($connector["command_id"])) {
                     foreach ($connector["command_id"] as $key => $value) {
-                        $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'");
+                        $updateResult = $this->dbConnection->query(
+                            "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' " .
+                            "WHERE `command_id` = '" . $value . "'"
+                        );
                         if (PEAR::isError($updateResult)) {
                             throw new RuntimeException('Cannot update connector');
                         }
@@ -178,7 +181,7 @@ class CentreonConnector
 
     /**
      * Reads the connector
-     * 
+     *
      * @param int $id
      * @return array
      */
@@ -225,7 +228,7 @@ class CentreonConnector
 
     /**
      * Updates connector
-     * 
+     *
      * @param int $id
      * @return CentreonConnector
      */
@@ -268,32 +271,40 @@ class CentreonConnector
             }
             $sqlParts = implode(', ', $sqlParts);
             $values[] = $id;
-            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ? LIMIT 1", $values);
+            $updateResult = $this->dbConnection->query(
+                "UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ? LIMIT 1",
+                $values
+            );
             if (PEAR::isError($updateResult)) {
                 throw new RuntimeException('Cannot update connector');
             }
         }
 
-        $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = NULL WHERE `connector_id` = $id");
+        $updateResult = $this->dbConnection->query(
+            "UPDATE `command` SET connector_id = NULL WHERE `connector_id` = $id"
+        );
         if (PEAR::isError($updateResult)) {
             throw new RuntimeException('Cannot update connector');
         }
         
         if (isset($connector["command_id"])) {
             foreach ($connector["command_id"] as $key => $value) {
-                $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'");
+                $updateResult = $this->dbConnection->query(
+                    "UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'"
+                );
                 if (PEAR::isError($updateResult)) {
                     throw new RuntimeException('Cannot update connector');
                 }
             }
         }
         
+        
         return $this;
     }
 
     /**
      * Deletes connector
-     * 
+     *
      * @param int $id
      * @return CentreonConnector
      */
@@ -311,7 +322,7 @@ class CentreonConnector
 
     /**
      * Gets list of connectors
-     * 
+     *
      * @param boolean $onlyEnabled
      * @param int|boolean $page When false all connectors are returned
      * @param int $perPage Ignored if $page == false
@@ -385,7 +396,7 @@ class CentreonConnector
 
     /**
      * Copies existing connector
-     * 
+     *
      * @param inr $id
      * @param inr $numberOfcopies
      * @param boolean $returnIds
@@ -431,7 +442,7 @@ class CentreonConnector
 
     /**
      * Counts total number of connectors
-     * 
+     *
      * @param boolean $onlyEnabled
      * @return int
      * @throws InvalidArgumentException
@@ -443,7 +454,9 @@ class CentreonConnector
             throw new InvalidArgumentException('Parameter "onlyEnabled" should be boolean');
         }
         if ($onlyEnabled) {
-            $countResult = $this->dbConnection->query('SELECT COUNT(*) AS \'count\' FROM `connector` WHERE `enabled` = 1');
+            $countResult = $this->dbConnection->query(
+                'SELECT COUNT(*) AS \'count\' FROM `connector` WHERE `enabled` = 1'
+            );
         } else {
             $countResult = $this->dbConnection->query('SELECT COUNT(*) \'count\' FROM `connector`');
         }
@@ -457,7 +470,7 @@ class CentreonConnector
 
     /**
      * Verifies if connector exists by name
-     * 
+     *
      * @param string $name
      * @return boolean
      * @throws RuntimeException
@@ -471,21 +484,29 @@ class CentreonConnector
             if (!is_numeric($connectorId)) {
                 throw new InvalidArgumentException('Id is not an integer');
             }
-            $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `id` = ? AND `name` = ? LIMIT 1', array($connectorId, $name));
+            $existsResult = $this->dbConnection->query(
+                'SELECT `id` FROM `connector` WHERE `id` = ? AND `name` = ? LIMIT 1',
+                array($connectorId, $name)
+            );
             if ((boolean) $existsResult->fetchRow()) {
                 return true;
             }
         }
 
-        $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($name));
+        $existsResult = $this->dbConnection->query(
+            'SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1',
+            array($name)
+        );
         if (PEAR::isError($existsResult)) {
-            throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
+            throw new RuntimeException(
+                'Cannot verify if connector name already in use; Query not valid; Check the database schema'
+            );
         }
         return !((boolean) $existsResult->fetchRow());
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -513,17 +534,23 @@ class CentreonConnector
     }
     
     /**
-     * 
+     *
      * @param array $values
      * @return array
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected connectors
@@ -531,8 +558,13 @@ class CentreonConnector
             . "FROM connector "
             . "WHERE id IN (" . $explodedValues . ") "
             . "ORDER BY name ";
-        
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad connector query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['id'],

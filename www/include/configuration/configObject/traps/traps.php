@@ -34,50 +34,85 @@
  */
  
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
-    
-isset($_GET["traps_id"]) ? $trapG = $_GET["traps_id"] : $trapG = NULL;
-isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = NULL;
-$trapG ? $traps_id = $trapG : $traps_id = $trapP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-$cG ? $select = $cG : $select = $cP;
+$inputArguments = array(
+    'traps_id' => FILTER_SANITIZE_STRING,
+    'select' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags' => FILTER_REQUIRE_ARRAY
+    ),
+    'dupNbr' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'flags' => FILTER_REQUIRE_ARRAY
+    ),
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName])) {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
 
-#Pear library
+$traps_id = $inputs["traps_id"];
+$select = $inputs["select"];
+$dupNbr = $inputs["dupNbr"];
+
+/* Pear library */
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/select2.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-#Path to the configuration dir
+/* Path to the configuration dir */
 $path = "./include/configuration/configObject/traps/";
 
-#PHP functions
-//require_once $path."DB-Func.php";
+/* PHP functions */
 require_once './class/centreonTraps.class.php';
 require_once "./include/common/common-Func.php";
 
 $trapObj = new CentreonTraps($pearDB, $oreon);
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 $dbmon = new CentreonDB('centstorage');
-$sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+$sgs = $acl->getServiceGroupAclConf(null, 'broker');
 $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path."formTraps.php"); break; #Add a Trap
-	case "w" : require_once($path."formTraps.php"); break; #Watch a Trap
-	case "c" : require_once($path."formTraps.php"); break; #Modify a Trap
-	case "m" : $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listTraps.php"); break; #Duplicate n Traps
-	case "d" : $trapObj->delete(isset($select) ? $select : array()); require_once($path."listTraps.php"); break; #Delete n Traps
-	default : require_once($path."listTraps.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formTraps.php");
+        break; #Add a Trap
+    case "w":
+        require_once($path."formTraps.php");
+        break; #Watch a Trap
+    case "c":
+        require_once($path."formTraps.php");
+        break; #Modify a Trap
+    case "m":
+        $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listTraps.php");
+        break; #Duplicate n Traps
+    case "d":
+        $trapObj->delete(isset($select) ? $select : array());
+        require_once($path."listTraps.php");
+        break; #Delete n Traps
+    default:
+        require_once($path."listTraps.php");
+        break;
 }

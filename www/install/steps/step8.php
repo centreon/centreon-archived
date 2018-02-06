@@ -31,9 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
 session_start();
@@ -45,15 +42,7 @@ $template = getTemplate('./templates');
 
 $title = _('Installation finished');
 
-$contents = '<div>'._('The installation is now finished. To get further information regarding Centreon please visit the following links').':</div>';
-$contents .= '
-    <ul>
-        <li>'._('Official website').': <a href="http://www.centreon.com">www.centreon.com</a></li>
-        <li>'._('Forum').': <a href="http://forum.centreon.com">forum.centreon.com</a></li>
-        <li>'._('Documentation').': <a href="http://documentation.centreon.com">documentation.centreon.com</a></li>
-        <li>'._('Bug Tracker').': <a href="https://github.com/centreon/centreon/issues">github.com/centreon/centreon</a></li>
-    </ul>';
-$contents .= _('For professional support subscription please contact the <a href="http://support.centreon.com">Centreon Support Center</a>.');
+$contents = '<div>'._('Congratulations, you have successfully installed Centreon!').'</div>';
 
 $centreon_path = realpath(dirname(__FILE__) . '/../../../');
 
@@ -72,4 +61,4 @@ $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
-?>
+

@@ -12,8 +12,10 @@ Features and Bug Fixes
 * Changing the graphic charter to be consistent with the new logo Centreon
 * Flat design (CSS and icons)
 * Custom view improvement
+
  * Adding an editing or visualization mode
  * Graphic widgets relief to be able to put more on a page
+
 * Adding a fullscreen mode
 * Menu Review for improved navigation and simplified user actions
 * Review og pages dedicated hosts and services pages in monitoring to include more informations.
@@ -26,16 +28,19 @@ Features and Bug Fixes
 * Integration of a graphics module to replace a non-performing component QuickForm (Improved forms on multi element selection)
 * Simplifying the configuration of Centreon Broker (Temporary and Failover are automatically configured + enhanced best practices)
 * Ergonomic improvement of the configurations objects:
+
  * Improved hosts form
  * Improved services form
  * Improved management macros: dynamic form system that provides the necessary inherited macros templates for proper operation of the configuration
  * Added ability to set a description of each macro used in commands
  * Review of the pathway for the generation of the configuration
  * Automatic creation of a configuration file for the poller when it is created
+
 * Deleting configuration options in the Administration section, now automatically configured. This simplifies the handling of Centreon
 * Improved ACL system (Improved performances)
 * Native integration of Centreon CLAPI
 * Improved documentation
+
  * Redesign Configuration part
  * Redesign Exploitation part
  * Integration of the API part
@@ -76,20 +81,20 @@ Removed Features
 Known Bugs
 ----------
 * ACL of pages is not fully updated during the upgrade process. So please check all your ACL pages after the migration. You may have problems with the followings pages:
+
  * Monitoring > Hosts
  * Monitoring > Services
  * Monitoring > Performances (new page)
  * Monitoring > Downtimes
  * Monitoring > Comments
  * Monitoring > Eventlogs > System logs
+
 * Graph slip not working
 * Pagination is broker when you go on the last page, change the number of line to the Max. Page become empty.
-* If you have timeperiods used in exception or inclusion of timeperiod and now deleted, their ids stays in the database in relation table. During the sql update process, this blocks an addition of constraint on this relation table. To fix it, you have to remove old timeperiod id.
-  ::
+* If you have timeperiods used in exception or inclusion of timeperiod and now deleted, their ids stays in the database in relation table. During the sql update process, this blocks an addition of constraint on this relation table. To fix it, you have to remove old timeperiod id.::
 
-  mysql> DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
-  mysql> DELETE FROM timeperiod_include_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
-
+    mysql> DELETE FROM timeperiod_exclude_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
+    mysql> DELETE FROM timeperiod_include_relations WHERE timeperiod_id NOT IN (SELECT tp_id FROM timeperiod) OR timeperiod_exclude_id NOT IN (SELECT tp_id FROM timeperiod);
 
 How to Install ?
 ----------------

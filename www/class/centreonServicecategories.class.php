@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -44,18 +41,18 @@
  */
 class CentreonServicecategories
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -70,10 +67,7 @@ class CentreonServicecategories
         switch ($field) {
             case 'sc_svcTpl':
                 $parameters['type'] = 'relation';
-                $parameters['externalObject']['table'] = 'service';
-                $parameters['externalObject']['id'] = 'service_id';
-                $parameters['externalObject']['name'] = 'service_description';
-                $parameters['externalObject']['comparator'] = 'service_id';
+                $parameters['externalObject']['object'] = 'centreonServicetemplates';
                 $parameters['relationObject']['table'] = 'service_categories_relation';
                 $parameters['relationObject']['field'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'sc_id';
@@ -98,9 +92,16 @@ class CentreonServicecategories
             $scAcl = $centreon->user->access->getServiceCategories();
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected service categories
@@ -108,8 +109,13 @@ class CentreonServicecategories
             . "FROM service_categories "
             . "WHERE sc_id IN (" . $explodedValues . ") "
             . "ORDER BY sc_name ";
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->_db->query($query);
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad service categories query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized service categories
             $hide = false;
@@ -127,4 +133,3 @@ class CentreonServicecategories
         return $items;
     }
 }
-?>

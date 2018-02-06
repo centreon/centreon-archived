@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
@@ -44,31 +40,37 @@ require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
  *  This class allows the user to send external commands to Nagios
  */
 
-class CentreonExternalCommand {
-
-    var $DB;
-    var $cmd_tab;
-    var $poller_tab;
-    var $localhost_tab = array();
-    var $actions = array();
-    var $GMT;
-    var $obj; // Centreon Obj
-    var $debug = 0;
+class CentreonExternalCommand
+{
+    protected $DB;
+    protected $DBC;
+    protected $cmdTab = array();
+    protected $pollerTab;
+    public $localhostTab = array();
+    protected $actions = array();
+    protected $GMT;
+    protected $obj; // Centreon Obj
+    public $debug = 0;
+    protected $userAlias;
+    protected $userId;
 
     /*
      *  Constructor
      */
 
-    public function __construct($oreon) {
+    public function __construct($oreon = null)
+    {
         global $oreon;
+        global $centreon;
 
         $this->obj = $oreon;
         $this->DB = new CentreonDB();
+        $this->DBC = new CentreonDB('centstorage');
 
         $rq = "SELECT id FROM `nagios_server` WHERE localhost = '1'";
         $DBRES = $this->DB->query($rq);
         while ($row = $DBRES->fetchRow()) {
-            $this->localhost_tab[$row['id']] = "1";
+            $this->localhostTab[$row['id']] = "1";
         }
         $DBRES->free();
 
@@ -79,13 +81,29 @@ class CentreonExternalCommand {
          */
         $this->GMT = new CentreonGMT($this->DB);
         $this->GMT->getMyGMTFromSession(session_id(), $this->DB);
+
+        if (!is_null($centreon)) {
+            $this->userId = $centreon->user->get_id();
+            $this->userAlias = $centreon->user->get_alias();
+        }
+    }
+
+    public function setUserId($newUserId)
+    {
+        $this->userId = $newUserId;
+    }
+
+    public function setUserAlias($newUserAlias)
+    {
+        $this->userAlias = $newUserAlias;
     }
 
     /**
      *
      * Write command in Nagios or Centcore Pipe.
      */
-    public function write() {
+    public function write()
+    {
         global $centreon;
 
         if (!defined('_CENTREON_VARLIB_')) {
@@ -94,61 +112,50 @@ class CentreonExternalCommand {
             $varlib = _CENTREON_VARLIB_;
         }
 
-        $str_local = "";
         $str_remote = "";
-        $return_local = 0;
         $return_remote = 0;
 
-        if (count($this->cmd_tab)) {
-            foreach ($this->cmd_tab as $key => $cmd) {
-                $cmd = str_replace("\"", "", $cmd);
-                $cmd = str_replace("\n", "<br>", $cmd);
-                if (isset($this->localhost_tab[$this->poller_tab[$key]])) {
-                    $str_local .= "\"[" . time() . "] " . $cmd . "\n\"";
-                } else {
-                    $str_remote .= "\"EXTERNALCMD:" . $this->poller_tab[$key] . ":[" . time() . "] " . $cmd . "\n\"";
-                }
-            }
+        foreach ($this->cmdTab as $key => $cmd) {
+            $cmd = str_replace("\"", "", $cmd);
+            $cmd = str_replace("\n", "<br>", $cmd);
+            $cmd = "[" . time() . "] " . $cmd . "\n";
+            $str_remote .= "EXTERNALCMD:" . $this->pollerTab[$key] . ":" . $cmd;
         }
 
-        if ($str_local != "") {
-            $str_local = "echo " . $str_local . " >> " . $centreon->Nagioscfg["command_file"];
-            if ($this->debug) {
-                print "COMMAND BEFORE SEND: $str_local";
-            }
-            passthru(trim($str_local), $return_local);
-        }
         if ($str_remote != "") {
-            $str_remote = "echo " . $str_remote . " >> $varlib/centcore.cmd";
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_remote";
             }
-            passthru($str_remote, $return_remote);
+            $result = file_put_contents($varlib . '/centcore.cmd', $str_remote, FILE_APPEND);
+            $return_remote = ($result !== false) ? 0 : 1;
         }
-        $this->cmd_tab = array();
-        $this->poller_tab = array();
-        return ($return_local + $return_remote);
+
+        $this->cmdTab = array();
+        $this->pollerTab = array();
+
+        return $return_remote;
     }
 
     /*
      *  set basic process commands
      */
-
-    public function set_process_command($command, $poller) {
+    public function setProcessCommand($command, $poller)
+    {
         if ($this->debug) {
             print "POLLER: $poller<br>";
             print "COMMAND: $command<br>";
         }
 
-        $this->cmd_tab[] = $command;
-        $this->poller_tab[] = $poller;
+        $this->cmdTab[] = $command;
+        $this->pollerTab[] = $poller;
     }
 
     /*
      *  set list of external commands
      */
 
-    private function setExternalCommandList() {
+    private function setExternalCommandList()
+    {
         # Services Actions
         $this->actions["service_checks"][0] = "ENABLE_SVC_CHECK";
         $this->actions["service_checks"][1] = "DISABLE_SVC_CHECK";
@@ -256,10 +263,13 @@ class CentreonExternalCommand {
     /**
      *
      * Get poller id where the host is hosted
-     * @param $pearDB
-     * @param $host_name
+     * @param null $host
+     * @return int
+     * @internal param $pearDB
+     * @internal param $host_name
      */
-    public function getPollerID($host = null) {
+    public function getPollerID($host = null)
+    {
         if (!isset($host)) {
             return 0;
         }
@@ -268,13 +278,15 @@ class CentreonExternalCommand {
          * Check if $host is an id or a name
          */
         if (preg_match("/^[0-9]*$/", $host)) {
-            $DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE ns_host_relation.host_host_id = '" . CentreonDB::escape($host) . "' AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.host_id = '" . 
+                CentreonDB::escape($host) . "' AND hosts.enabled = '1'");
         } else {
-            $DBRESULT = $this->DB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '" . CentreonDB::escape($host) . "' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+            $DBRESULT = $this->DBC->query("SELECT instance_id FROM hosts WHERE hosts.name = '" . 
+                CentreonDB::escape($host) . "' AND hosts.enabled = '1' LIMIT 1");
         }
-        $nagios_server = $DBRESULT->fetchRow();
-        if (isset($nagios_server['id'])) {
-            return $nagios_server['id'];
+        $row = $DBRESULT->fetchRow();
+        if (isset($row['instance_id'])) {
+            return $row['instance_id'];
         }
         return 0;
     }
@@ -283,13 +295,147 @@ class CentreonExternalCommand {
      *
      * get list of external commands
      */
-    public function getExternalCommandList() {
+    public function getExternalCommandList()
+    {
         return $this->actions;
     }
 
-    /**     * ****************************************************
-     * Downtime
+    /****************
+     * Schedule check
+     ***************/
+
+    /**
+     * @param $hostName
      */
+    public function scheduleForcedCheckHost($hostName)
+    {
+        $pollerId = $this->getPollerID($hostName);
+
+        $this->setProcessCommand(
+            "SCHEDULE_FORCED_HOST_CHECK;" . $hostName . ";" . time(),
+            $pollerId
+        );
+
+        $this->write();
+    }
+
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     */
+    public function scheduleForcedCheckService($hostName, $serviceDescription)
+    {
+        $pollerId = $this->getPollerID($hostName);
+
+        $this->setProcessCommand(
+            "SCHEDULE_FORCED_SVC_CHECK;" . $hostName . ";" . $serviceDescription . ";" . time(),
+            $pollerId
+        );
+
+        $this->write();
+    }
+
+    /*****************
+     * Acknowledgement
+     ****************/
+
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     * @param $sticky
+     * @param $notify
+     * @param $persistent
+     * @param $author
+     * @param $comment
+     */
+    public function acknowledgeHost(
+        $hostName,
+        $sticky,
+        $notify,
+        $persistent,
+        $author,
+        $comment
+    ) {
+        $pollerId = $this->getPollerID($hostName);
+
+        $this->setProcessCommand(
+            "ACKNOWLEDGE_HOST_PROBLEM;" . $hostName . ";" .
+            $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
+            $pollerId
+        );
+
+        $this->write();
+    }
+
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     * @param $sticky
+     * @param $notify
+     * @param $persistent
+     * @param $author
+     * @param $comment
+     */
+    public function acknowledgeService(
+        $hostName,
+        $serviceDescription,
+        $sticky,
+        $notify,
+        $persistent,
+        $author,
+        $comment
+    ) {
+        $pollerId = $this->getPollerID($hostName);
+
+        $this->setProcessCommand(
+            "ACKNOWLEDGE_SVC_PROBLEM;" . $hostName . ";" . $serviceDescription . ";" .
+                $sticky . ";" . $notify . ";" . $persistent . ";" . $author . ";" . $comment,
+            $pollerId
+        );
+
+        $this->write();
+    }
+
+    /************
+     * Downtime
+     ***********/
+
+    private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
+    {
+        $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
+
+        // Winter to summer dst
+        $dateTime2 = clone $dateTime;
+        $dateTime2->setTimestamp($dateTime2->getTimestamp());
+        if ($dateTime2->format("H") != $dateTime->format("H")) {
+            $hour = $dateTime->format('H');
+            $dateTime->setTime($hour, '00');
+            return $dateTime->getTimestamp();
+        }
+
+        // Summer to winter dst
+        $dateTime3 = clone $dateTime;
+        $dateTime3 = $dateTime3->setTimestamp($dateTime3->getTimestamp() - 3600);
+        if ($dateTime3->getTimestamp() == $dateTime->getTimestamp()) {
+            if ($start) {
+                return $dateTime3->getTimestamp() - 3600;
+            } else {
+                return $dateTime3->getTimestamp();
+            }
+        }
+
+        $dateTime4 = clone $dateTime;
+        $dateTime4 = $dateTime3->setTimestamp($dateTime4->getTimestamp() + 3600);
+        if ($dateTime4->getTimestamp() == $dateTime->getTimestamp()) {
+            if ($start) {
+                return $dateTime->getTimestamp();
+            } else {
+                return $dateTime4->getTimestamp() + 3600;
+            }
+        }
+
+        return $dateTime->getTimestamp();
+    }
 
     /**
      *
@@ -297,29 +443,14 @@ class CentreonExternalCommand {
      * @param string $type
      * @param array $hosts
      */
-    public function DeleteDowntime($type, $hosts = array()) {
+    public function deleteDowntime($type, $hosts = array())
+    {
         foreach ($hosts as $key => $value) {
             $res = preg_split("/\;/", $key);
             $poller_id = $this->getPollerID($res[0]);
-            $this->set_process_command("DEL_" . $type . "_DOWNTIME;" . $res[1], $poller_id);
+            $this->setProcessCommand("DEL_" . $type . "_DOWNTIME;" . $res[1], $poller_id);
         }
         $this->write();
-    }
-
-    /**
-     *
-     * Get date from string
-     * 
-     * date format: m/d/Y H:i
-     * @param string $string
-     */
-    private function getDate($string) {
-        $res = preg_split("/ /", $string);
-        $res3 = preg_split("/\//", $res[0]);
-        $res4 = preg_split("/:/", $res[1]);
-        $end_time = mktime($res4[0], $res4[1], "0", $res3[0], $res3[1], $res3[2]);
-        unset($res);
-        return $end_time;
     }
 
     /**
@@ -331,7 +462,16 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false, $host_or_centreon_time = "0") {
+    public function addHostDowntime(
+        $host,
+        $comment,
+        $start,
+        $end,
+        $persistant,
+        $duration = null,
+        $withServices = false,
+        $hostOrCentreonTime = "0"
+    ) {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -343,13 +483,18 @@ class CentreonExternalCommand {
             $persistant = '0';
         }
 
-        if($host_or_centreon_time == "0"){
-            $start_time = $this->GMT->getUTCDateFromString($start);
-            $end_time = $this->GMT->getUTCDateFromString($end);
-        }else{
-            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
-        }    
+        if ($hostOrCentreonTime == "0") {
+            $timezoneId = $this->GMT->getMyGTMFromUser($this->userId);
+        } else {
+            $timezoneId = $this->GMT->getUTCLocationHost($host);
+        }
+        $timezone = $this->GMT->getActiveTimezone($timezoneId);
+        $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
+        $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
+
+        if ($end_time == $start_time) {
+            return;
+        }
 
         /*
          * Get poller for this host
@@ -360,11 +505,25 @@ class CentreonExternalCommand {
          * Send command
          */
         if (!isset($duration)) {
-            $duration = $start_time - $end_time;
+            $duration = $end_time - $start_time;
         }
-        $this->set_process_command("SCHEDULE_HOST_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
-        if ($with_services === true) {
-            $this->set_process_command("SCHEDULE_HOST_SVC_DOWNTIME;" . getMyHostName($host) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
+        $finalHostName = '';
+        if (!is_numeric($host)) {
+            $finalHostName .= $host;
+        } else {
+            $finalHostName .= getMyHostName($host);
+        }
+        $this->setProcessCommand(
+            "SCHEDULE_HOST_DOWNTIME;" . $finalHostName . ";" . $start_time . ";" . $end_time .
+            ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias . ";" . $comment,
+            $poller_id
+        );
+        if ($withServices === true) {
+            $this->setProcessCommand(
+                "SCHEDULE_HOST_SVC_DOWNTIME;" . $finalHostName . ";" . $start_time . ";" . $end_time .
+                ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias . ";" . $comment,
+                $poller_id
+            );
         }
         $this->write();
     }
@@ -379,7 +538,16 @@ class CentreonExternalCommand {
      * @param string $end
      * @param int $persistant
      */
-    public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null, $host_or_centreon_time = "0") {
+    public function addSvcDowntime(
+        $host,
+        $service,
+        $comment,
+        $start,
+        $end,
+        $persistant,
+        $duration = null,
+        $hostOrCentreonTime = "0"
+    ) {
         global $centreon;
 
         if (is_null($centreon)) {
@@ -387,18 +555,23 @@ class CentreonExternalCommand {
             $centreon = $oreon;
         }
 
-
         if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
             $persistant = '0';
         }
 
-        if($host_or_centreon_time == "0"){
-            $start_time = $this->GMT->getUTCDateFromString($start);
-            $end_time = $this->GMT->getUTCDateFromString($end);
-        }else{
-            $start_time = $this->GMT->getUTCDateFromString($start, $this->GMT->getUTCLocationHost($host));
-            $end_time = $this->GMT->getUTCDateFromString($end, $this->GMT->getUTCLocationHost($host));
-        }   
+        if ($hostOrCentreonTime == "0") {
+            $timezoneId = $this->GMT->getMyGTMFromUser($this->userId);
+        } else {
+            $timezoneId = $this->GMT->getUTCLocationHost($host);
+        }
+
+        $timezone = $this->GMT->getActiveTimezone($timezoneId);
+        $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
+        $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
+
+        if ($end_time == $start_time) {
+            return;
+        }
 
         /*
          * Get poller for this host
@@ -409,12 +582,27 @@ class CentreonExternalCommand {
          * Send command
          */
         if (!isset($duration)) {
-            $duration = $start_time - $end_time;
+            $duration = $end_time - $start_time;
         }
-        $this->set_process_command("SCHEDULE_SVC_DOWNTIME;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $start_time . ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $centreon->user->get_alias() . ";" . $comment, $poller_id);
+        $finalHostName = '';
+        if (!is_numeric($host)) {
+            $finalHostName .= $host;
+        } else {
+            $finalHostName .= getMyHostName($host);
+        }
+        $finalServiceName ='';
+        if (!is_numeric($service)) {
+            $finalServiceName .= $service;
+        } else {
+            $finalServiceName .= getMyServiceName($service);
+        }
+        $this->setProcessCommand(
+            "SCHEDULE_SVC_DOWNTIME;" . $finalHostName . ";" . $finalServiceName . ";" . $start_time .
+            ";" . $end_time . ";" . $persistant . ";0;" . $duration . ";" . $this->userAlias .
+            ";" . $comment,
+            $poller_id
+        );
+
         $this->write();
     }
-
 }
-
-?>

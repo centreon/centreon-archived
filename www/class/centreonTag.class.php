@@ -31,24 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonTag
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
-    
-    
 
     /**
      *
@@ -57,22 +52,32 @@ class CentreonTag
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
-        global $centreon;
         $items = array();
 
-        $explodedValues = '"';
-        $explodedValues .= implode('", "', $values);
-        $explodedValues .= '"';
-
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
+        }
         # get list of selected service categories
         $query = "SELECT tags_id, tags_name "
             . "FROM mod_export_tags "
             . "WHERE tags_id IN (" . $explodedValues . ") "
             . "ORDER BY tags_name ";
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
 
-        $resRetrieval = $this->_db->query($query);
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad tag query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
-
             $items[] = array(
                 'id' => $row['tags_id'],
                 'text' => $row['tags_name']
@@ -82,4 +87,3 @@ class CentreonTag
         return $items;
     }
 }
-?>

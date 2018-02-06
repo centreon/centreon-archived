@@ -31,75 +31,100 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonSession
 {
-	/*
+    /*
 	 * Constructor class
 	 *
 	 * @access public
 	 * @return 	object	object session
 	 */
-	public function __construct() {
+    public function __construct()
+    {
 
-	}
+    }
 
-	function start() {
-		session_start();
-	}
-
-	function stop() {
-		session_unset();
-		session_destroy();
-	}
-
-	function restart() {
-		self::stop();
-		self::start();
-        session_regenerate_id(true);
-	}
-
-	function s_unset() {
-		session_unset();
-	}
-
-	function unregister_var($register_var) {
-		unset($_SESSION[$register_var]);
-	}
-
-	function register_var($register_var) {
-		if (!isset($_SESSION[$register_var])) {
-            $_SESSION[$register_var] = $$register_var;
-		}
-	}
-
-	function checkSession($session_id, $pearDB) {
-		$DBRESULT = $pearDB->query("SELECT id, user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($session_id), ENT_QUOTES, "UTF-8")."'");
-        $i = 0;
-        while ($a = $DBRESULT->fetchRow()) {
-        	$i++;
+    public function start($flag = 0)
+    {
+        session_start();
+        if ($flag) {
+            session_write_close();
         }
+    }
 
-        if ($i) {
-        	return 1;
+    public function stop()
+    {
+        session_unset();
+        session_destroy();
+    }
+
+    public function restart()
+    {
+        self::stop();
+        self::start();
+        session_regenerate_id(true);
+    }
+
+    public function s_unset()
+    {
+        session_unset();
+    }
+
+    public function unregisterVar($registerVar)
+    {
+        unset($_SESSION[$registerVar]);
+    }
+
+    public function registerVar($registerVar)
+    {
+        if (!isset($_SESSION[$registerVar])) {
+            $_SESSION[$registerVar] = $$registerVar;
+        }
+    }
+
+    public function checkSession($sessionId, $pearDB)
+    {
+        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
+        $DBRESULT = $pearDB->query(
+            "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
+        );
+        if ($DBRESULT->numRows()) {
+            return 1;
         } else {
-        	return 0;
-       	}
-	}
-    
+            return 0;
+        }
+    }
+
+    /**
+     * Update session to keep alive
+     *
+     * @param \CentreonDB $pearDB
+     */
+    public function updateSession($pearDB)
+    {
+        session_start();
+
+        /* Update last_reload parameter */
+        $query = 'UPDATE `session` '
+            . 'SET `last_reload` = "' . time() . '", '
+            . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
+            . 'WHERE `session_id` = "' . session_id() . '" ';
+        $pearDB->query($query);
+    }
+
     public static function getUser($sessionId, $pearDB)
     {
-        $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE `session_id` LIKE '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'");
+        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
+        $DBRESULT = $pearDB->query(
+            "SELECT user_id FROM session
+                WHERE `session_id` = '".htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8")."'"
+        );
         $row = $DBRESULT->fetchRow();
         if (!$row) {
             return 0;
         }
         return $row['user_id'];
     }
-
-} /* end class Session */
-?>
+}

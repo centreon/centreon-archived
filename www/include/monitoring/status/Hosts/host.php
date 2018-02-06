@@ -37,11 +37,57 @@ if (!isset($centreon)) {
     exit();
 }
 
+$filterParameters = array(
+    'sort_types' => FILTER_SANITIZE_STRING,
+    'order' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_STRING,
+    'host_search' => FILTER_SANITIZE_STRING,
+    'sort_type' => FILTER_SANITIZE_STRING,
+    'hostgroups' => FILTER_SANITIZE_STRING,
+    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
+    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
+);
+
+$myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
+$myinputsPost = filter_input_array(INPUT_POST, $filterParameters);
+
+$resetFilter = (isset($myinputsGet['reset_filter']) && $myinputsGet['reset_filter'] == 1) ? true : false;
+
+if ($resetFilter) {
+    $centreon->historySearch[$url] = '';
+    $centreon->historySearchService[$url] = '';
+    $centreon->historySearchOutput[$url] = '';
+    $_SESSION['filters'][$url] = array();
+    $_SESSION['monitoring_default_hostgroups'] = '';
+    $_SESSION['monitoring_default_poller'] = '';
+    $_SESSION['monitoring_host_status'] = '';
+    $_SESSION['monitoring_host_status_filter'] = '';
+    $_SESSION['criticality_id'] = '';
+}
+
+foreach ($myinputsGet as $key => $value) {
+    if (!empty($value)) {
+        $filters[$key] = $value;
+    } else if (!empty($myinputsPost[$key])) {
+        $filters[$key] = $myinputsPost[$key];
+    } else if ($resetFilter && isset($_SESSION['filters'][$url][$key]) && !empty($_SESSION['filters'][$url][$key])) {
+        $filters[$key] = $_SESSION['filters'][$url][$key];
+    } else {
+        $filters[$key] = '';
+    }
+}
+
+if (empty($filters['host_search']) && isset($centreon->historySearch[$url])) {
+    $filters['host_search'] = $centreon->historySearch[$url];
+} else {
+    $centreon->historySearch[$url] = $filters['host_search'];
+}
+
 /*
  * ACL Actions
  */
 $GroupListofUser = array();
-$GroupListofUser = $oreon->user->access->getAccessGroups();
+$GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
 /*
@@ -49,7 +95,7 @@ $allActions = false;
  */
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
-    $authorized_actions = $oreon->user->access->getActions();
+    $authorized_actions = $centreon->user->access->getActions();
 } else {
     /*
      * if user is admin, or without ACL, he cans perform all actions
@@ -59,71 +105,68 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
 
 include("./include/common/autoNumLimit.php");
 
-!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
-!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
+$sort_types = empty($filters["sort_types"]) ? 0 : $filters["sort_types"];
+$order = empty($filters["order"]) ? 'ASC' : $filters["order"];
+$num = empty($filters["num"]) ? 0 : $filters["num"];
+$search_host = empty($filters["host_search"]) ? "" : $filters["host_search"];
+$sort_type = empty($filters["sort_type"]) ? "" : $filters["sort_type"];
 
-if (isset($_GET["hostgroups"]) && is_numeric($_GET["hostgroups"])) {
-    $_SESSION['monitoring_default_hostgroups'] = $_GET["hostgroups"];
+if (!empty($filters['hostgroups'])) {
+    $_SESSION['monitoring_default_hostgroups'] = $filters['hostgroups'];
+}
+
+if (!empty($filters['criticality_id'])) {
+    $_SESSION['criticality_id'] = $filters['criticality_id'];
 }
 
 $problem_sort_type = 'host_name';
-if (!empty($oreon->optGen["problem_sort_type"])) {
-    $problem_sort_type = $oreon->optGen["problem_sort_type"];
+if (!empty($centreon->optGen["problem_sort_type"])) {
+    $problem_sort_type = $centreon->optGen["problem_sort_type"];
 }
 $problem_sort_order = 'asc';
-if (!empty($oreon->optGen["problem_sort_type"])) {
-    $problem_sort_order = $oreon->optGen["problem_sort_order"];
+if (!empty($centreon->optGen["problem_sort_type"])) {
+    $problem_sort_order = $centreon->optGen["problem_sort_order"];
 }
 $global_sort_type = 'host_name';
-if (!empty($_SESSION['centreon']->optGen["global_sort_type"])) {
-    $global_sort_type = $_SESSION['centreon']->optGen["global_sort_type"];
+if (!empty($centreon->optGen["global_sort_type"])) {
+    $global_sort_type = $centreon->optGen["global_sort_type"];
 }
 $global_sort_order = 'asc';
-if (!empty($_SESSION['centreon']->optGen["global_sort_order"])) {
-    $global_sort_order = $_SESSION['centreon']->optGen["global_sort_order"];
+if (!empty($centreon->optGen["global_sort_order"])) {
+    $global_sort_order = $centreon->optGen["global_sort_order"];
 }
 
 
 if ($o == "hpb" || $o == "h_unhandled" || empty($o)) {
-    if (!isset($_GET["sort_type"])) {
-        $sort_type = $oreon->optGen["problem_sort_type"];
+    if (!isset($filters["sort_type"])) {
+        $sort_type = $centreon->optGen["problem_sort_type"];
     } else {
-        $sort_type = $_GET["sort_type"];
+        $sort_type = $filters["sort_type"];
     }
-    if (!isset($_GET["order"])) {
-        $order = $oreon->optGen["problem_sort_order"];
+    if (!isset($filters["order"])) {
+        $order = $centreon->optGen["problem_sort_order"];
     } else {
-        $order = $_GET["order"];
+        $order = $filters["order"];
     }
 } else {
-    if (!isset($_GET["sort_type"])) {
-        if (isset($_SESSION['centreon']->optGen["global_sort_type"]) && $_SESSION['centreon']->optGen["global_sort_type"] != "host_name") {
-            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["global_sort_type"]);
+    if (!isset($filters["sort_type"])) {
+        if (isset($centreon->optGen["global_sort_type"]) && $centreon->optGen["global_sort_type"] != "host_name") {
+            $sort_type = CentreonDB::escape($centreon->optGen["global_sort_type"]);
         } else {
             $sort_type = "host_name";
         }
     } else {
-        $sort_type = $_GET["sort_type"];
+        $sort_type = $filters["sort_type"];
     }
-    if (!isset($_GET["order"])) {
-        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+    if (!isset($filters["order"])) {
+        if (isset($centreon->optGen["global_sort_order"]) && $centreon->optGen["global_sort_order"] == "") {
             $order = "ASC";
         } else {
-            $order = $_SESSION['centreon']->optGen["global_sort_order"];
+            $order = $centreon->optGen["global_sort_order"];
         }
     } else {
-        $order = $_GET["order"];
+        $order = $filters["order"];
     }
-}
-
-/*
- * Check search value in Host search field
- */
-if (isset($_GET["host_search"])) {
-    $centreon->historySearch[$url] = $_GET["host_search"];
 }
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
@@ -200,21 +243,36 @@ $action_list[] = _("More actions...");
  * Showing actions allowed for current user
  */
 if (isset($authorized_actions) && $allActions == false) {
-	if (isset($authorized_actions["host_acknowledgement"]))
-		$action_list[72] = _("Hosts : Acknowledge");
-    if (isset($authorized_actions["host_disacknowledgement"]))
+    if (isset($authorized_actions) && $allActions == false) {
+        $action_list[94] = _("Hosts : Schedule immediate check");
+    }
+    if (isset($authorized_actions["host_schedule_forced_check"])) {
+        $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
+    }
+    if (isset($authorized_actions["host_acknowledgement"])) {
+        $action_list[72] = _("Hosts : Acknowledge");
+    }
+    if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
-    if (isset($authorized_actions["host_notifications"]))
+    }
+    if (isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
-    if (isset($authorized_actions["host_notifications"]))
+    }
+    if (isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
-    if (isset($authorized_actions["host_checks"]))
+    }
+    if (isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
-    if (isset($authorized_actions["host_checks"]))
+    }
+    if (isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
-    if (isset($authorized_actions["host_schedule_downtime"]))
+    }
+    if (isset($authorized_actions["host_schedule_downtime"])) {
         $action_list[75] = _("Hosts : Set Downtime");
+    }
 } else {
+    $action_list[94] = _("Hosts : Schedule immediate check");
+    $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
     $action_list[82] = _("Hosts : Enable Notification");
@@ -231,10 +289,10 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o1'].selectedIndex == 0) {".
     " return false;} ".
     "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o1', NULL, $action_list, $attrs);
-$form->setDefaults(array('o1' => NULL));
+$form->addElement('select', 'o1', null, $action_list, $attrs);
+$form->setDefaults(array('o1' => null));
 $o1 = $form->getElement('o1');
-$o1->setValue(NULL);
+$o1->setValue(null);
 
 $attrs = array('onchange' => "javascript: ".
     " var bChecked = isChecked(); ".
@@ -243,11 +301,11 @@ $attrs = array('onchange' => "javascript: ".
     " if (this.form.elements['o2'].selectedIndex == 0) {".
     " return false;} ".
     "if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
-$form->addElement('select', 'o2', NULL, $action_list, $attrs);
-$form->setDefaults(array('o2' => NULL));
+$form->addElement('select', 'o2', null, $action_list, $attrs);
+$form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
-$o2->setValue(NULL);
-$o2->setSelected(NULL);
+$o2->setValue(null);
+$o2->setSelected(null);
 
 $keyPrefix = "";
 $statusList = array("" => "",
@@ -289,7 +347,7 @@ $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $
 $tpl->assign('limit', $limit);
 $tpl->assign('hostStr', _('Host'));
 $tpl->assign('pollerStr', _('Poller'));
-$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
+$tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_listing'));
 $tpl->assign('hgStr', _('Hostgroup'));
 $criticality = new CentreonCriticality($pearDB);
 $tpl->assign('criticalityUsed', count($criticality->getList()));
@@ -344,7 +402,6 @@ $tpl->display("host.ihtml");
 
     jQuery(function () {
         preInit();
-        updateSelect();
     });
 
     function preInit()

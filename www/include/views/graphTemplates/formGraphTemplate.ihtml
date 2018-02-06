@@ -1,0 +1,47 @@
+{$colorJS}
+{$form.javascript}
+<form {$form.attributes}>
+
+ <table class="formTable table">
+ 	<tr class="ListHeader">
+      <td class="FormHeader" colspan="2">
+        <h3>| {$form.header.ftitle}</h3>
+      </td>
+    </tr>
+
+ 	<tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$form.header.information}</h4>
+      </td>
+    </tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_template_name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_vertical_label">{$form.vertical_label.label}</td><td class="FormRowValue">{$form.vertical_label.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_width">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}&nbsp;px</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_height">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}&nbsp;px</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_lower_limit">{$form.lower_limit.label}</td><td class="FormRowValue">{$form.lower_limit.html}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField"><img class="helpTooltip" name="tip_upper_limit">{$form.upper_limit.label}</td>
+		<td class="FormRowValue">
+			{$form.upper_limit.html}&nbsp;
+			{$form.size_to_max.label}&nbsp;
+			{$form.size_to_max.html}
+		</td>
+	</tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_base">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_scale_graph_values">{$form.scaled.label}</td><td class="FormRowValue">{$form.scaled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_centreon_graph_template">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	{/if}
+</table>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+{$helptext}

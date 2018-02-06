@@ -427,6 +427,13 @@ try {
                     $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
                     $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
                     $stmt->execute();
+                    
+                    $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
+                    :service_service_id, :esi_notes)");
+                    $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
+                    $stmt->execute();
+                
                     $insertedServices[$value['service_id']] = true;
                 }
 
@@ -440,12 +447,6 @@ try {
                     :service_service_id, :hostgroup_hg_id)");
                 $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':hostgroup_hg_id', $value['hostgroup_hg_id'], PDO::PARAM_INT);
-                $stmt->execute();
-                
-                $stmt = $dbh_sqlite->prepare("INSERT INTO extended_service_information (service_service_id, esi_notes) VALUES (
-                    :service_service_id, :esi_notes)");
-                $stmt->bindParam(':service_service_id', $value['service_id'], PDO::PARAM_INT);
-                $stmt->bindParam(':esi_notes', $value['esi_notes'], PDO::PARAM_STR);
                 $stmt->execute();
             }
             // Insert service templates
@@ -560,6 +561,6 @@ try {
             exit(OK);
 } catch (PDOException $e ) {
     $dbh_sqlite->rollback();
-    echo "Error on poller (id:$server_id): " . $e->getMessage() . "\n";
+    echo "Error on poller (id:$server_id): " . $e->getMessage() . " (file: " . $e->getFile() . ", line: " . $e->getLine() . ")\n";
     exit(NOK);
 }

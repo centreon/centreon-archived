@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -52,13 +49,30 @@ if (false === $link) {
 if (!isset($_SESSION['CONFIGURATION_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
 }
-// checks for innodb engine
-$res = mysql_query("SHOW VARIABLES LIKE 'innodb_file_per_table'");
-$row = mysql_fetch_assoc($res);
-mysql_free_result($res);
-if (strtolower($row['Value']) == 'off') {
-    exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
+
+/* Check if MySQL innodb_file_perf_table is enabled */
+$innodb_file_per_table = getDatabaseVariable('innodb_file_per_table');
+if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'off') {
+    exitProcess(
+        PROCESS_ID,
+        1,
+        _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.')
+    );
 }
+
+/* Check if MySQL open_files_limit parameter is higher than 32000 */
+$open_files_limit = getDatabaseVariable('open_files_limit');
+if (is_null($open_files_limit)) {
+    $open_files_limit = 0;
+}
+if ($open_files_limit < 32000) {
+    $exitMessage = 'If your operating system is based on SystemV (CentOS 6), ' .
+        'add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.<br/>' .
+        'If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the ' .
+        'service file /etc/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).';
+    exitProcess(PROCESS_ID, 1, _($exitMessage));
+}
+
 if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }

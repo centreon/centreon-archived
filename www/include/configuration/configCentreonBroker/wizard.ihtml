@@ -1,12 +1,10 @@
-<link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
-<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <div id="wizard">
 <div id="frames">
 </div>
 <div class="buttonbar">
-<span class="button" style="display: none;" id="button_previous">{t}Previous{/t}</span>&nbsp;
-<span class="button" id="button_next">{t}Next{/t}</span>&nbsp;
-<span class="button" style="display: none;" id="button_finish">{t}Finish{/t}</span>
+<span class="btc bt_success" style="display: none;" id="button_previous">{t}Previous{/t}</span>&nbsp;
+<span class="btc bt_success" id="button_next">{t}Next{/t}</span>&nbsp;
+<span class="btc bt_default" style="display: none;" id="button_finish">{t}Finish{/t}</span>
 </div>
 </div>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>

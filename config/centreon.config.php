@@ -4,13 +4,13 @@
  */
 
 /* MySQL configuration file */
-define('_CENTREON_ETC_', '/etc/centreon');
+define('_CENTREON_ETC_', '@CENTREON_ETC@');
 
 if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
     include_once _CENTREON_ETC_ . '/centreon.conf.php';
 
     define('_CENTREON_PATH_', $centreon_path);
-    define('_CENTREON_LOG_', '/var/log/centreon');
+    define('_CENTREON_LOG_', '@CENTREON_LOG@');
     define('_CENTREON_VARLIB_', '@CENTREON_VARLIB@');
 
     define('hostCentreon', $conf_centreon['hostCentreon']);

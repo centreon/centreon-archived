@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,11 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
+require_once "centreonAPI.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
@@ -52,6 +52,8 @@ abstract class CentreonObject
     const UNKNOWNPARAMETER = "Unknown parameter";
     const OBJECTALREADYLINKED = "Objects already linked";
     const OBJECTNOTLINKED = "Objects are not linked";
+
+    private $centreon_api = null;
 
     /**
      * Db adapter
@@ -124,6 +126,12 @@ abstract class CentreonObject
         $this->exportExcludedParams = array();
         $this->action = "";
         $this->delim = ";";
+        $this->api = CentreonAPI::getInstance();
+    }
+
+    public function getObject()
+    {
+        return $this->object;
     }
 
     /**
@@ -145,14 +153,14 @@ abstract class CentreonObject
     protected function objectExists($name, $updateId = null)
     {
         $ids = $this->object->getList(
-            $this->object->getPrimaryKey(), 
-            -1, 
-            0, 
-            null, 
-            null, 
+            $this->object->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
             array(
                 $this->object->getUniqueLabelField() => $name
-            ), 
+            ),
             "AND"
         );
         if (isset($updateId) && count($ids)) {
@@ -197,6 +205,29 @@ abstract class CentreonObject
         return "";
     }
 
+    /**
+     * Catch the beginning of the URL
+     *
+     * @return string
+     *
+     */
+    public function getBaseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https" : "http";
+        $port = '';
+        if (($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80) ||
+            ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
+        ) {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        }
+        $uri = 'centreon';
+        if (preg_match('/^(.+)\/api/', $_SERVER['REQUEST_URI'], $matches)) {
+            $uri = $matches[1];
+        }
+
+        return $protocol . '://' . $_SERVER['HTTP_HOST'] . $port . $uri;
+    }
+
 
     /**
      * Checks if parameters are correct
@@ -209,7 +240,10 @@ abstract class CentreonObject
             throw new CentreonClapiException(self::MISSINGNAMEPARAMETER);
         }
         if ($this->objectExists($this->params[$this->object->getUniqueLabelField()]) === true) {
-            throw new CentreonClapiException(self::OBJECTALREADYEXISTS." (".$this->params[$this->object->getUniqueLabelField()].")");
+            throw new CentreonClapiException(
+                self::OBJECTALREADYEXISTS . " ("
+                . $this->params[$this->object->getUniqueLabelField()] . ")"
+            );
         }
     }
 
@@ -222,9 +256,9 @@ abstract class CentreonObject
     {
         $id = $this->object->insert($this->params);
         $this->addAuditLog(
-            'a', 
-            $id, 
-            $this->params[$this->object->getUniqueLabelField()], 
+            'a',
+            $id,
+            $this->params[$this->object->getUniqueLabelField()],
             $this->params
         );
         return $id;
@@ -249,6 +283,23 @@ abstract class CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param string $parameters
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $p = $this->object->getParameters($params[0], $params[1]);
+        print $p[$params[1]] . "\n";
+    }
+
+    /**
      * Set Param
      *
      * @param int $objectId
@@ -256,7 +307,8 @@ abstract class CentreonObject
      */
     public function setparam($objectId, $params = array())
     {
-        if (isset($params[$this->object->getUniqueLabelField()]) && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true) {
+        if (isset($params[$this->object->getUniqueLabelField()])
+            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true) {
             throw new CentreonClapiException(self::NAMEALREADYINUSE);
         }
         $this->object->update($objectId, $params);
@@ -264,9 +316,9 @@ abstract class CentreonObject
         $p = $this->object->getParameters($objectId, $uniqueField);
         if (isset($p[$uniqueField])) {
             $this->addAuditLog(
-                'c', 
-                $objectId, 
-                $p[$uniqueField], 
+                'c',
+                $objectId,
+                $p[$uniqueField],
                 $params
             );
         }
@@ -333,32 +385,36 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-	/**
-	 * Export data
-	 *
-	 * @param string $parameters
-	 * @return void
-	 */
-	public function export()
-	{
-            $elements = $this->object->getList("*", -1, 0);
-            foreach ($elements as $element) {
-                $addStr = $this->action.$this->delim."ADD";
-                foreach ($this->insertParams as $param) {
-                    $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
-                    $addStr .= $this->delim.$element[$param];
-                }
-                $addStr .= "\n";
-                echo $addStr;
-                foreach ($element as $parameter => $value) {
-                    if (!in_array($parameter, $this->exportExcludedParams)) {
-                        if (!is_null($value) && $value != "") {
-                            $value = CentreonUtils::convertLineBreak($value);
-                            echo $this->action.$this->delim."setparam".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$parameter.$this->delim.$value."\n";
-                        }
+    /**
+     * Export data
+     *
+     * @param string $filters
+     * @return void
+     */
+    public function export($filters = null)
+    {
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        foreach ($elements as $element) {
+            $addStr = $this->action.$this->delim."ADD";
+            foreach ($this->insertParams as $param) {
+                $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
+                $addStr .= $this->delim.$element[$param];
+            }
+            $addStr .= "\n";
+            echo $addStr;
+            foreach ($element as $parameter => $value) {
+                if (!in_array($parameter, $this->exportExcludedParams)) {
+                    if (!is_null($value) && $value != "") {
+                        $value = CentreonUtils::convertLineBreak($value);
+                        echo $this->action . $this->delim
+                            . "setparam" . $this->delim
+                            . $element[$this->object->getUniqueLabelField()] . $this->delim
+                            . $parameter . $this->delim
+                            . $value . "\n";
                     }
                 }
             }
+        }
     }
 
     /**
@@ -390,7 +446,7 @@ abstract class CentreonObject
             return null;
         }
         $objType = $objectTypes[$objType];
-        
+
         $contactObj = new \Centreon_Object_Contact();
         $contact = $contactObj->getIdByParameter('contact_alias', CentreonUtils::getUserName());
         $userId = $contact[0];
@@ -410,10 +466,8 @@ abstract class CentreonObject
             $userId
         ));
 
-        $query = 'SELECT MAX(action_log_id) as action_log_id
-            FROM log_action
-            WHERE action_log_date = ?';
-        $stmt = $dbstorage->query($query, array($time));
+        $query = 'SELECT LAST_INSERT_ID() as action_log_id';
+        $stmt = $dbstorage->query($query);
         $row = $stmt->fetch();
         if (false === $row) {
             throw new CentreonClapiException("Error while inserting log action");
@@ -433,7 +487,7 @@ abstract class CentreonObject
                     $value = '';
                 }
                 $dbstorage->query(
-                    $query, 
+                    $query,
                     array(
                         $name,
                         $value,
@@ -444,5 +498,25 @@ abstract class CentreonObject
                 throw $e;
             }
         }
+    }
+
+
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $dbResult->fetch()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $dbResult->closeCursor();
+        return $name;
     }
 }

@@ -34,36 +34,36 @@
  */
 
 if (!isset($centreon)) {
-	exit();		
+    exit();
 }
 
 if (isset($_POST["limit"]) && $_POST["limit"]) {
-	$limit = $_POST["limit"];
-} else if (isset($_GET["limit"])) {
-	$limit = $_GET["limit"];
-} else if (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
-	$limit = $centreon->historyLimit[$url];
+    $limit = $_POST["limit"];
+} elseif (isset($_GET["limit"])) {
+    $limit = $_GET["limit"];
+} elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
+    $limit = $centreon->historyLimit[$url];
 } else {
-	if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)){
-		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-		$gopt = $DBRESULT->fetchRow();		
-		$limit = myDecode($gopt["value"]);
-	} else {
-		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-		$gopt = $DBRESULT->fetchRow();		
-		$limit = myDecode($gopt["value"]);
-	}
+    if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
+        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
+        $gopt = $DBRESULT->fetchRow();
+        $limit = myDecode($gopt["value"]);
+    } else {
+        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
+        $gopt = $DBRESULT->fetchRow();
+        $limit = myDecode($gopt["value"]);
+    }
 }
 if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && $limit != $centreon->historyLimit[$url]) {
     $num = 0;
-} else if (isset($_POST["num"]) && $_POST["num"]) {
-	$num = $_POST["num"];
-} else if (isset($_GET["num"]) && $_GET["num"]) {
-	$num = $_GET["num"];
-} else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
+} elseif (isset($_POST["num"]) && $_POST["num"]) {
+    $num = $_POST["num"];
+} elseif (isset($_GET["num"]) && $_GET["num"]) {
+    $num = $_GET["num"];
+} elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
     $num = $centreon->historyPage[$url];
 } else {
-	$num = 0;
-} 
+    $num = 0;
+}
 
 global $search;

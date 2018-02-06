@@ -32,10 +32,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 
@@ -88,9 +86,10 @@ class CentreonServicetemplates extends CentreonService
     }
 
     /**
-     * 
-     * @param type $values
-     * @return type
+     * @param array $values
+     * @param array $options
+     * @return array|type
+     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
@@ -99,10 +98,14 @@ class CentreonServicetemplates extends CentreonService
             $serviceList = parent::getObjectForSelect2($values, $options, '0');
         } else {
             $selectedServices = '';
-            $explodedValues = implode(',', $values);
-            if (empty($explodedValues)) {
-                $explodedValues = "''";
-            } else {
+            $explodedValues = '';
+            $queryValues = array();
+            if (!empty($values)) {
+                foreach ($values as $k => $v) {
+                    $explodedValues .= '?,';
+                    $queryValues[] = (int)$v;
+                }
+                $explodedValues = rtrim($explodedValues, ',');
                 $selectedServices .= "AND s.service_id IN ($explodedValues) ";
             }
 
@@ -111,17 +114,114 @@ class CentreonServicetemplates extends CentreonService
                 . "WHERE s.service_register = '0' "
                 . $selectedServices
                 . "ORDER BY s.service_description ";
+            $stmt = $this->db->prepare($queryService);
+            $dbResult = $this->db->execute($stmt, $queryValues);
 
-            $DBRESULT = $this->db->query($queryService);
+            if (PEAR::isError($dbResult)) {
+                throw new Exception('Bad timezone query params');
+            }
 
-
-            while ($data = $DBRESULT->fetchRow()) {
+            while ($data = $dbResult->fetchRow()) {
                 $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
             }
         }
-        
         return $serviceList;
     }
-}
+    
+    /**
+     * Returns array of Service linked to the template
+     *
+     * @return array
+     */
+    public function getLinkedServicesByName($serviceTemplateName, $checkTemplates = true)
+    {
+        if ($checkTemplates) {
+            $register = 0;
+        } else {
+            $register = 1;
+        }
 
-?>
+        $linkedServices = array();
+        $query = 'SELECT DISTINCT s.service_description '
+            . 'FROM service s, service st '
+            . 'WHERE s.service_template_model_stm_id = st.service_id '
+            . 'AND st.service_register = "0" '
+            . 'AND s.service_register = "' . $register . '" '
+            . 'AND st.service_description = "' . $this->db->escape($serviceTemplateName) . '" ';
+
+        $result = $this->db->query($query);
+
+        if (PEAR::isError($result)) {
+            throw new \Exception('Error while getting linked services of ' . $serviceTemplateName);
+        }
+
+        while ($row = $result->fetchRow()) {
+            $linkedServices[] = $row['service_description'];
+        }
+
+        return $linkedServices;
+    }
+
+    /**
+     * @param string $serviceTemplateName linked service template
+     * @param string $hostTemplateName linked host template
+     *
+     * @return array service ids
+     */
+    public function getServiceIdsLinkedToSTAndCreatedByHT($serviceTemplateName, $hostTemplateName)
+    {
+        $serviceIds = array();
+
+        $query = 'SELECT DISTINCT(s.service_id) '
+            . 'FROM service s, service st, host h, host ht, host_service_relation hsr, host_service_relation hsrt,'
+            . ' host_template_relation htr '
+            . 'WHERE st.service_description = "' . $this->db->escape($serviceTemplateName) . '" '
+            . 'AND s.service_template_model_stm_id = st.service_id '
+            . 'AND st.service_id = hsrt.service_service_id '
+            . 'AND hsrt.host_host_id = ht.host_id '
+            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" '
+            . 'AND ht.host_id = htr.host_tpl_id '
+            . 'AND htr.host_host_id = h.host_id '
+            . 'AND h.host_id = hsr.host_host_id '
+            . 'AND hsr.service_service_id = s.service_id '
+            . 'AND s.service_register = "1" ';
+        $result = $this->db->query($query);
+        while ($row = $result->fetchRow()) {
+            $serviceIds[] = $row['service_id'];
+        }
+
+        return $serviceIds;
+    }
+
+    /**
+     *
+     * @param string $q
+     * @return array
+     */
+    public function getList($enable = false)
+    {
+        $serviceTemplates = array();
+
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
+            . "FROM service "
+            . "WHERE service_register = '0' ";
+
+        if ($enable) {
+            $query .= "AND service_activate = '1' ";
+        }
+
+        $query .= "ORDER BY service_description ";
+
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+
+        $serviceTemplates = array();
+        while ($row = $res->fetchRow()) {
+            $serviceTemplates[$row['service_id']] = $row['service_description'];
+        }
+
+        return $serviceTemplates;
+    }
+}

@@ -1,6 +1,8 @@
-=====
-CLAPI
-=====
+.. _clapi-documentation:
+
+================
+Command Line API
+================
 
 Centreon CLAPI is a Centreon API that enables users to configure their monitoring system through command lines.
 

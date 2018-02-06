@@ -31,50 +31,57 @@
  *
  * For more information : command@centreon.com
  *
- * SVN : $URL: http://svn.modules.centreon.com/centreon-clapi/trunk/www/modules/centreon-clapi/core/class/centreonHost.class.php $
- * SVN : $Id: centreonHost.class.php 25 2010-03-30 05:52:19Z jmathis $
- *
  */
+
 namespace CentreonClapi;
 
-class CentreonACLResources {
-	private $DB;
+class CentreonACLResources
+{
+    private $DB;
 
-	public function __construct($DB) {
-		$this->_DB = $DB;
-	}
+    public function __construct($DB)
+    {
+        $this->_DB = $DB;
+    }
 
-	public function getACLResourceID($name) {
-		$request = "SELECT acl_group_id FROM acl_groups WHERE acl_group_name LIKE '".htmlentities($name, ENT_QUOTES)."'";
-		$DBRESULT = $this->_DB->query($request);
-		$data = $DBRESULT->fetchRow();
-		if ($data["acl_group_id"]) {
-			return $data["acl_group_id"];
-		} else {
-			return 0;
-		}
-	}
+    public function getACLResourceID($name)
+    {
+        $request = "SELECT acl_group_id FROM acl_groups WHERE acl_group_name LIKE '"
+            . htmlentities($name, ENT_QUOTES) . "'";
+        $DBRESULT = $this->_DB->query($request);
+        $data = $DBRESULT->fetchRow();
+        if ($data["acl_group_id"]) {
+            return $data["acl_group_id"];
+        } else {
+            return 0;
+        }
+    }
 
-	public function addContact($contact_id, $aclid) {
-		$request = "DELETE FROM acl_group_contacts_relations WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
-		$DBRESULT = $this->_DB->query($request);
+    public function addContact($contact_id, $aclid)
+    {
+        $request = "DELETE FROM acl_group_contacts_relations "
+            . "WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
+        $DBRESULT = $this->_DB->query($request);
 
-		$request = "INSERT INTO acl_group_contacts_relations (acl_group_id, contact_contact_id) VALUES ('".$aclid."', '".$contact_id."')";
-		$DBRESULT = $this->_DB->query($request);
-		return 0;
-	}
+        $request = "INSERT INTO acl_group_contacts_relations "
+            . "(acl_group_id, contact_contact_id) "
+            . "VALUES ('" . $aclid . "', '" . $contact_id . "')";
+        $DBRESULT = $this->_DB->query($request);
+        return 0;
+    }
 
-	public function delContact($contact_id, $aclid) {
-		$request = "DELETE FROM acl_group_contacts_relations WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
-		$DBRESULT = $this->_DB->query($request);
-		return 0;
-	}
+    public function delContact($contact_id, $aclid)
+    {
+        $request = "DELETE FROM acl_group_contacts_relations "
+            . "WHERE acl_group_id = '$aclid' AND contact_contact_id = '$contact_id'";
+        $DBRESULT = $this->_DB->query($request);
+        return 0;
+    }
 
-	public function updateACL() {
-		$request = "UPDATE `acl_resources` SET `changed` = '1'";
-		$DBRESULT = $this->_DB->query($request);
-		return 0;
-	}
+    public function updateACL()
+    {
+        $request = "UPDATE `acl_resources` SET `changed` = '1'";
+        $DBRESULT = $this->_DB->query($request);
+        return 0;
+    }
 }
-
-?>

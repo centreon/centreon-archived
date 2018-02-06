@@ -31,137 +31,123 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
-	/*
-	 * Connect to Database
-	 */
-	$broker = $oreon->broker->getBroker();
-	if ($broker == "broker") {
-	    $pearDBNdo = new CentreonDB("centstorage");
-	} elseif ($broker == "ndo") {
-        $pearDBNdo = new CentreonDB("ndo");
-	}
+/**
+ * Get host icones
+ */
+$ehiCache = array();
+$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+while ($ehi = $DBRESULT->fetchRow()) {
+    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
+}
+$DBRESULT->free();
 
-	/**
-	 * Get host icones
-	 */
-	$ehiCache = array();
-	$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-	while ($ehi = $DBRESULT->fetchRow()) {
-		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
-	}
-	$DBRESULT->free();
+/**
+ * Get user list
+ */
+$contact = array("" => null);
+$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_alias");
+while ($ct = $DBRESULT->fetchRow()) {
+    $contact[$ct["contact_id"]] = $ct["contact_alias"];
+}
+$DBRESULT->free();
 
-	/**
-	 * Get user list
-	 */
-	$contact = array("" => null);
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_alias");
-	while ($ct = $DBRESULT->fetchRow()) {
-		$contact[$ct["contact_id"]] = $ct["contact_alias"];
-	}
-	$DBRESULT->free();
+/*
+ * Object init
+ */
+$mediaObj       = new CentreonMedia($pearDB);
+$host_method    = new CentreonHost($pearDB);
 
-	/*
-	 * Object init
-	 */
-    $mediaObj 		= new CentreonMedia($pearDB);
-    $host_method 	= new CentreonHost($pearDB);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * start header menu
+ */
+$tpl->assign("headerMenu_host", _("Host Name"));
+$tpl->assign("headerMenu_service", _("Service Description"));
 
-	/*
-	 * start header menu
-	 */
-	$tpl->assign("headerMenu_host", _("Host Name"));
-	$tpl->assign("headerMenu_service", _("Service Description"));
+/*
+ * Different style between each lines
+ */
+$style = "one";
 
-	/*
-	 * Different style between each lines
-	 */
-	$style = "one";
+$groups = "''";
+if (isset($_POST["contact"])) {
+    $contact_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
+    $access = new CentreonACL($contact_id, 0);
+    $groupList = $access->getAccessGroups();
+    if (isset($groupList) && count($groupList)) {
+        foreach ($groupList as $key => $value) {
+            if ($groups != "") {
+                $groups .= ",";
+            }
+            $groups .= "'".$key."'";
+        }
+    }
+} else {
+    $contact_id = 0;
+    $formData = array('contact' => $contact_id);
+    $groups = "''";
+}
 
-	$groups = "''";
-	if (isset($_POST["contact"])) {
-		$contact_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
-		$access = new CentreonACL($contact_id, 0);
-		$groupList = $access->getAccessGroups();
-		if (isset($groupList) && count($groupList)) {
-			foreach ($groupList as $key => $value) {
-				if ($groups != "") {
-					$groups .= ",";
-				}
-				$groups .= "'".$key."'";
-			}
-		}
-	} else {
-		$contact_id = 0;
-		$formData = array('contact' => $contact_id);
-		$groups = "''";
-	}
+$formData = array('contact' => $contact_id);
 
-	$formData = array('contact' => $contact_id);
+/*
+ * Create select form
+ */
+$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-	/*
-	 * Create select form
-	 */
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form->addElement('select', 'contact', _("Centreon Users"), $contact, array('id'=>'contact', 'onChange'=>'submit();'));
+$form->setDefaults($formData);
 
-	$form->addElement('select', 'contact', _("Centreon Users"), $contact, array('id'=>'contact', 'onChange'=>'submit();'));
-	$form->setDefaults($formData);
+/*
+ * Fill a tab with a mutlidimensionnal Array we put in $tpl
+ */
+$elemArr = array();
+$query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
+        . "FROM centreon_acl acl "
+        . "LEFT JOIN hosts h on acl.host_id = h.host_id "
+        . "LEFT JOIN services s on s.service_id = acl.service_id "
+        . "WHERE acl.group_id IN ($groups) ORDER BY h.name, s.description";
+     $DBRESULT = $pearDBO->query($query);
 
-	/*
-	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */
-	$elemArr = array();
-	$query = "SELECT DISTINCT h.name, s.description, acl.host_id, acl.service_id "
-            . "FROM centreon_acl acl "
-            . "LEFT JOIN hosts h on acl.host_id = h.host_id "
-            . "LEFT JOIN services s on s.service_id = acl.service_id "
-            . "WHERE acl.group_id IN ($groups) ORDER BY h.name, s.description";
-         $DBRESULT = $pearDBNdo->query($query);
+for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
+    if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
+        $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
+    } elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
+        $host_icone = "./img/media/" . $icone;
+    } else {
+        $host_icone = "./img/icons/host.png";
+    }
+    $moptions = "";
+    $elemArr[$i] = array("MenuClass"=>"list_".$style,
+                    "RowMenu_hico" => $host_icone,
+                    "RowMenu_host" => myDecode($resources["name"]),
+                    "RowMenu_service" => myDecode($resources["description"]),
+                    );
+    $style != "two" ? $style = "two" : $style = "one";
+}
+$tpl->assign("elemArr", $elemArr);
 
-	for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
-
-		if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
-		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
-		} elseif ($icone = $host_method->replaceMacroInString($resources["host_id"], getMyHostExtendedInfoImage($resources["host_id"], "ehi_icon_image", 1))) {
-			$host_icone = "./img/media/" . $icone;
-		} else {
-			$host_icone = "./img/icons/host.png";
-		}
-		$moptions = "";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_hico" => $host_icone,
-						"RowMenu_host" => myDecode($resources["name"]),
-						"RowMenu_service" => myDecode($resources["description"]),
-						);
-		$style != "two" ? $style = "two" : $style = "one";
-	}
-	$tpl->assign("elemArr", $elemArr);
-
-	/*
-	 * Apply a template definition
-	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('msg', _("The selected user didn't see any resources"));
-	$tpl->assign('msgSelect', _("Please select an user in order to display resources"));
-	$tpl->assign('msgdisable', _("The selected user is not enable."));
-	$tpl->assign('p', $p);
-	$tpl->assign('i', $i);
-	$tpl->assign('contact', $contact_id);
-	$tpl->display("showUsersAccess.ihtml");
-?>
+/*
+ * Apply a template definition
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('form', $renderer->toArray());
+$tpl->assign('msg', _("The selected user didn't see any resources"));
+$tpl->assign('msgSelect', _("Please select an user in order to display resources"));
+$tpl->assign('msgdisable', _("The selected user is not enable."));
+$tpl->assign('p', $p);
+$tpl->assign('i', $i);
+$tpl->assign('contact', $contact_id);
+$tpl->display("showUsersAccess.ihtml");

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once ("centreonACL.class.php");
@@ -61,6 +58,7 @@ class CentreonUser
 	var $log;
 	var $userCrypted;
     protected $token;
+    public $default_page;
         
 	# User LCA
 	# Array with elements ID for loop test
@@ -88,6 +86,7 @@ class CentreonUser
         $this->token = $user['contact_autologin_key'];
         $this->admin = $user["contact_admin"];
         $this->version = 3;
+        $this->default_page = $user["default_page"];
         $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
         $this->is_admin = NULL;
@@ -388,6 +387,79 @@ class CentreonUser
         }
         return null;
     }
+
+    /**
+     * Get Contact Parameters
+     *
+     * @param CentreonDB $db
+     * @param array $parameters
+     * @return array
+     */
+    public function getContactParameters($db, $parameters = array())
+    {
+        $values = array();
+
+        $queryParameters = '';
+        if (is_array($parameters) && count($parameters)) {
+            $queryParameters = 'AND cp_key IN ("';
+            $queryParameters .= implode('","', $parameters);
+            $queryParameters .= '") ';
+        }
+
+        $query = 'SELECT cp_key, cp_value '
+            . 'FROM contact_param '
+            . 'WHERE cp_contact_id = ' . $this->user_id . ' '
+            . $queryParameters;
+
+        $res = $db->query($query);
+        while ($row = $res->fetchRow()) {
+            $values[$row['cp_key']] = $row['cp_value'];
+        }
+
+        return $values;
+    }
+
+    /**
+     * Set Contact Parameters
+     *
+     * @param CentreonDB $db
+     * @param array $parameters
+     * @return null
+     */
+    public function setContactParameters($db, $parameters = array())
+    {
+        if (!count($parameters)) {
+            return null;
+        }
+        $queryValues = array();
+        $keys = array_keys($parameters);
+        $deleteQuery = 'DELETE FROM contact_param '
+            . 'WHERE cp_contact_id = ? '
+            . 'AND  cp_key IN( ';
+        $queryValues[] = $this->user_id;
+        
+        $queryKey ='';
+        foreach ($keys as $key) {
+            $queryKey .=' ?,';
+            $queryValues[] = $key;
+        }
+        $queryKey = rtrim($queryKey, ',');
+        $deleteQuery .= $queryKey. ' )';
+        
+        $stmt = $db->prepare($deleteQuery);
+        $res = $db->execute($stmt, $queryValues);
+        
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+       
+        $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES (?, ?, ?)';
+        $stmt = $db->prepare($insertQuery);
+        foreach ($parameters as $key => $value) {
+            $sqlParams = array($key, $value, $this->user_id);
+            $db->execute($stmt, $sqlParams);
+        }
+    }
   
   /**
    * Get token
@@ -410,4 +482,3 @@ class CentreonUser
         $this->token = $token;
     }
 }
-?>

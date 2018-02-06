@@ -89,5 +89,3 @@ echo _("Store performance data in data_bin");
 echo _("Insert in index data");
 echo _("File for Centreon Broker statistics");
 echo _("Store in performance data in data_bin");
-
-?>

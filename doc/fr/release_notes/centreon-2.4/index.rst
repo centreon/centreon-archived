@@ -9,7 +9,6 @@ Vous trouverez ici la liste des notes de versions pour les versions 2.4.x
 
     centreon-2.4.5
     centreon-2.4.4
-    centreon-2.4.2
     centreon-2.4.1
     centreon-2.4.0
 

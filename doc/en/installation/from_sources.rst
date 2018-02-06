@@ -16,12 +16,20 @@ Most CentOS users will find easier to install Centreon Web by using
 
 CentOS and RHEL environments do not possess as standard on archives all the dependencies necessary for the installation of Centreon. You should add the *RPM Forge* archive
 
-64-bit system:
+el6 system:
 
  ::
 
-  $ wget http://apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
-  $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
+    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+
+el7 system:
+
+ ::
+
+    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+
 
 Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt file. The first line should contain:
 
@@ -34,7 +42,7 @@ Then perform the following commands:
  ::
 
   $ rpm --import RPM-GPG-KEY.dag.txt
-  $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+  $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm (you can adapt for el7 system)
 
 You can now install the necessary prerequisites::
 
@@ -140,7 +148,7 @@ Install this Stream Multiplexers before continuing with the installation.
 Centreon
 ********
 
-Download the latest version of Centreon :ref:`here <https://download.centreon.com>`.
+Download the latest version of Centreon `here <https://download.centreon.com>`_.
 
 
 Shell Installation
@@ -174,7 +182,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.7.0                                   #
+  #                                    v2.8.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -230,7 +238,7 @@ Answer [y] to all the questions.
 
 
   Definition of installation paths
---------------------------------
+  --------------------------------
 
 ::
 
@@ -315,7 +323,7 @@ Monitoring user
 ---------------
 
 This is the user used to run the monitoring engine (Centreon Engine). If you followed the
-`official installation procedure <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
+`Centreon Engine official installation procedure <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 the user will likely be *centreon-engine*.
 
  ::
@@ -325,7 +333,7 @@ the user will likely be *centreon-engine*.
   >
 
 This is the user used to run the stream broker (Centreon Broker). If you followed the
-`official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/2.11/installation/index.html#using-sources>`_
+`Centreon Broker official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 the user will likely be *centreon-broker*.
 
  ::
@@ -673,13 +681,15 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
  ::
 
- SELINUX=disabled
+    SELINUX=disabled
+
+After saving the file, please reboot your operating system to apply the changes.
 
 PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
 
  ::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 After saving the file, please don't forget to restart apache server.
 

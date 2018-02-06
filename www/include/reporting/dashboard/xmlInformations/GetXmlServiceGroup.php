@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2016 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -31,73 +31,46 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
-  	
-	require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-	
-	require_once _CENTREON_PATH_."www/include/reporting/dashboard/common-Func.php";
-    require_once _CENTREON_PATH_."www/include/reporting/dashboard/DB-Func.php";
-	require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
-	require_once _CENTREON_PATH_."www/class/centreonXML.class.php";
-	require_once _CENTREON_PATH_."www/class/centreonDB.class.php";
-	require_once _CENTREON_PATH_."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-		
-	$buffer = new CentreonXML();
-	$buffer->startElement("data");	
+$stateType = 'service';
+require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
-	$pearDB 	= new CentreonDB();
-	$pearDBO 	= new CentreonDB("centstorage");
+if (isset($_GET["id"]) && isset($_GET["color"])) {
+    $color = array();
+    foreach ($_GET["color"] as $key => $value) {
+        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+    }
     
-    $sid = session_id();
-	$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
-	if (!$DBRESULT->numRows())
-		exit();
-	
+    $services = getServiceGroupActivateServices($_GET["id"]);
+    if (count($services) > 0) {
+        $host_ids = array();
+        $service_ids = array();
+        foreach ($services as $host_service_id => $host_service_name) {
+            $res = explode("_", $host_service_id);
+            $host_ids[$res[0]] = 1;
+            $service_ids[$res[1]] = 1;
+        }
 
-	/*
-	 * Initiate Table
-	 */
-	$state 		= array("OK" => _("OK"), "WARNING" => _("WARNING"), "CRITICAL" => _("CRITICAL"), "UNKNOWN" => _("UNKNOWN"), "UNDETERMINED" => _("UNDETERMINED"));
-	$statesTab 	= array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-	
-	if (isset($_GET["id"]) && isset($_GET["color"])){
-		$color = array();
-		foreach ($_GET["color"] as $key => $value) {
-			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-		}
-		
-		$services = getServiceGroupActivateServices($_GET["id"]);
-        if (count($services) > 0) {
-            $host_ids = array();
-            $service_ids = array();
-            foreach ($services as $host_service_id => $host_service_name) {
-                $res = explode("_", $host_service_id);
-                $host_ids[$res[0]] = 1;
-                $service_ids[$res[1]] = 1;
-            }
+        $request =  'SELECT ' .
+            'date_start, date_end, OKnbEvent, CRITICALnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, ' .
+            'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
+            'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
+            'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
+            'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
+            'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
+            'FROM `log_archive_service` WHERE `host_id` IN (' .
+                implode(',', array_keys($host_ids)) . ') AND `service_id` IN (' .
+                implode(',', array_keys($service_ids)) . ') group by date_end, date_start order by date_start desc';
+        $res = $pearDBO->query($request);
+        while ($row = $res->fetchRow()) {
+            fillBuffer($statesTab, $row, $color);
+        }
+        $DBRESULT->free();
+    }
+} else {
+    $buffer->writeElement("error", "error");
+}
+$buffer->endElement();
 
-            $request =  'SELECT ' .
-                            'date_start, date_end, OKnbEvent, CRITICALnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, ' .
-                            'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
-                            'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
-                            'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
-                            'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
-                            'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
-                            'FROM `log_archive_service` WHERE `host_id` IN (' . implode(',', array_keys($host_ids)) . ') AND `service_id` IN (' . implode(',', array_keys($service_ids)) . ') group by date_end, date_start order by date_start desc';
-            $res = $pearDBO->query($request);
-            while ($row = $res->fetchRow()) {
-                fillBuffer($statesTab, $row, $color);
-            }
-            $DBRESULT->free();
-		}
-	} else {
-		$buffer->writeElement("error", "error");		
-	}
-	$buffer->endElement();	
-
-	header('Content-Type: text/xml');
-	$buffer->output();
-?>
+header('Content-Type: text/xml');
+$buffer->output();

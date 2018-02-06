@@ -31,82 +31,49 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
-    if (!isset($oreon)) {
-        exit();
-    }
 
-    function getLocalRequester() {
-        global $pearDB;
-        $query = 'SELECT id, name
-        	FROM nagios_server
-        	WHERE localhost = "1"
-        		AND ns_activate = "1"';
-        $res = $pearDB->query($query);
-        if (PEAR::isError($res)) {
-            return array();
-        }
-        $row = $res->fetchRow();
-        return $row;
-    }
+require_once dirname(__FILE__) . "/step2Function.php";
 
-    function getListRequester($withLocal = false) {
-        global $pearDB;
-        $query = 'SELECT id, name
-        	FROM nagios_server
-        	WHERE ns_activate = "1"';
-        if ($withLocal === false) {
-            $query .= ' AND localhost != "1"';
-        }
-        $res = $pearDB->query($query);
-        if (PEAR::isError($res)) {
-            return array();
-        }
-        $list = array();
-        while ($row = $res->fetchRow()) {
-            $list[] = $row;
-        }
-        return $list;
-    }
+if (!isset($centreon)) {
+    exit();
+}
 
-    if ($wizard->getValue(1, 'configtype') == 'central') {
-        $requester = getLocalRequester();
-        if (count($requester) != 0) {
-            $lang['central_configuration'] = _('Central configuration');
-            $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Information');
-            $lang['configuration_name'] = _('Configuration name');
-            $lang['additional_daemon'] = _('Additional daemon');
-            $lang['protocol'] = _('Serialization protocol');
-            $lang['none'] = _('None');
-            $tpl->assign('requester', $requester['name']);
-            $tpl->assign('requester_id', $requester['id']);
-            $page = 'step2_central.ihtml';
-        } else {
-            $tpl->assign('strerr', _('Error while getting the local requester.'));
-            $page = 'error.ihtml';
-        }
-    } elseif ($wizard->getValue(1, 'configtype') == 'poller') {
-        $requester_list = getListRequester();
-        if (count($requester_list) == 0) {
-            $tpl->assign('strerr', _('No active poller is defined in Centreon.'));
-            $page = 'error.ihtml';
-        } else {
-            $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Information');
-            $lang['configuration_name'] = _('Configuration name');
-            $lang['central_address'] = _('Central address');
-            $lang['additional_daemon'] = _('Additional daemon');
-            $lang['communication_port'] = _('Communication port');
-            $lang['protocol'] = _('Serialization protocol');
-            $lang['none'] = _('None');
-            $tpl->assign('requesters', $requester_list);
-            $page = 'step2_poller.ihtml';
-        }
+if ($wizard->getValue(1, 'configtype') == 'central') {
+    $requester = getLocalRequester();
+    if (count($requester) != 0) {
+        $lang['central_configuration'] = _('Central configuration');
+        $lang['requester'] = _('Requester');
+        $lang['informations'] = _('Information');
+        $lang['configuration_name'] = _('Configuration name');
+        $lang['additional_daemon'] = _('Additional daemon');
+        $lang['protocol'] = _('Serialization protocol');
+        $lang['none'] = _('None');
+        $tpl->assign('requester', $requester['name']);
+        $tpl->assign('requester_id', $requester['id']);
+        $page = 'step2_central.ihtml';
     } else {
-        $tpl->assign('strerr', _('Bad configuration type'));
+        $tpl->assign('strerr', _('Error while getting the local requester.'));
         $page = 'error.ihtml';
     }
+} elseif ($wizard->getValue(1, 'configtype') == 'poller') {
+    $requester_list = getListRequester();
+    if (count($requester_list) == 0) {
+        $tpl->assign('strerr', _('No active poller is defined in Centreon.'));
+        $page = 'error.ihtml';
+    } else {
+        $lang['requester'] = _('Requester');
+        $lang['informations'] = _('Information');
+        $lang['configuration_name'] = _('Configuration name');
+        $lang['central_address'] = _('Central address');
+        $lang['additional_daemon'] = _('Additional daemon');
+        $lang['communication_port'] = _('Communication port');
+        $lang['protocol'] = _('Serialization protocol');
+        $lang['none'] = _('None');
+        $tpl->assign('requesters', $requester_list);
+        $page = 'step2_poller.ihtml';
+    }
+} else {
+    $tpl->assign('strerr', _('Bad configuration type'));
+    $page = 'error.ihtml';
+}

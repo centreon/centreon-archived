@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php $
- * SVN : $Id: makeXMLForOneHost.php 12188 2011-05-04 15:45:01Z shotamchay $
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
@@ -47,6 +44,8 @@ include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 session_start();
+session_write_close();
+
 $oreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
@@ -56,7 +55,7 @@ $dbb = new CentreonDB("centstorage");
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
 $sid = session_id();
-if (isset($sid)){
+if (isset($sid)) {
     //$sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
@@ -93,34 +92,37 @@ $xml->endElement();
  * Retrieve info
  */
 if (!$service_id) {
-    $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed
-    		  FROM downtimes
-    		  WHERE host_id = " . $dbb->escape($host_id) . "
-    		  AND service_id IS NULL
-    		  AND cancelled = 0
-    		  AND end_time > UNIX_TIMESTAMP(NOW())
-    		  ORDER BY actual_start_time";
+    $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
+        "FROM downtimes " .
+        "WHERE host_id = ? " .
+        "AND service_id IS NULL " .
+        "AND cancelled = 0 " .
+        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
+        "ORDER BY actual_start_time";
+    $stmt = $dbb->prepare($query);
+    $res = $dbb->execute($stmt, array($dbb->escape($host_id)));
 } else {
-    $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed
-    		  FROM downtimes
-    		  WHERE host_id = " . $dbb->escape($host_id) . "
-    		  AND service_id = " . $dbb->escape($service_id) . "
-    		  AND cancelled = 0
-    		  AND end_time > UNIX_TIMESTAMP(NOW())
-    		  ORDER BY actual_start_time";
+    $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed " .
+        "FROM downtimes " .
+        "WHERE host_id = ? " .
+        "AND service_id = ? " .
+        "AND cancelled = 0 " .
+        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
+        "ORDER BY actual_start_time";
+    $stmt = $dbb->prepare($query);
+    $res = $dbb->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }
-$res = $dbb->query($query);
 $rowClass = "list_one";
 while ($row = $res->fetchRow()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
-    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['actual_start_time']));
+    $xml->writeElement('start', $centreonGMT->getDate('Y/m/d H:i:s', $row['actual_start_time']));
     if (!$row['fixed']) {
         $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
     }
-    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['end_time']));
+    $xml->writeElement('end', $centreonGMT->getDate('Y/m/d H:i:s', $row['end_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
@@ -139,4 +141,3 @@ header('Cache-Control: no-cache, must-revalidate');
  * Print Buffer
  */
 $xml->output();
-?>

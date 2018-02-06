@@ -18,12 +18,20 @@ Les environnements CentOS et RHEL ne possèdent pas en standard sur
 dépôts l'intégralité des dépendances nécessaires à l'installation
 de Centreon. Vous devez ajouter le dépôt *RPM Forge*
 
-Système 64-bits :
+Système el6 :
 
   ::
 
-    $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
-    $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
+    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+
+Système el7 :
+
+ ::
+
+    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+
 
 Utilisez votre éditeur de texte favori et supprimez la première
 ligne du fichier *RPM-GPG-KEY.dag.txt*. La première ligne doit
@@ -38,7 +46,7 @@ Puis exécutez les commandes suivantes :
   ::
 
     $ rpm --import RPM-GPG-KEY.dag.txt
-    $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
+    $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm (vous pouvez adapter la commande pour les systèmes el7)
 
 Vous pouvez maintenant installer les dépendances nécessaires :
 
@@ -194,7 +202,7 @@ d'installation des prérequis :
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.7.0                                   #
+  #                                    v2.8.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -334,7 +342,7 @@ Utilisateur de la supervision
 -----------------------------
 
 Cet utilisateur exécute le moteur de supervision Centreon Engine. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Engine <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-engine*.
 
 ::
@@ -344,7 +352,7 @@ l'utilisateur sera vraisemblablement *centreon-engine*.
   >
 
 Cet utilisateur exécute le multiplexeur de flux Centreon Broker. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-broker/en/2.11/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Broker <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-broker*.
 
 ::
@@ -689,15 +697,17 @@ Pour tous les OS
 
 SELinux doit être désactivé. Pour cela, vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
- ::
+  ::
 
- SELINUX=disabled
+    SELINUX=disabled
+
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
 
 La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant la ligne suivante :
 
- ::
+  ::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
 

@@ -75,8 +75,8 @@
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_address}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_poller}</td>
 		<td class="ListColCenter resizeTitle">{$elemArr[elem].RowMenu_parent}</td>
-		<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
-		<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+		<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+		<td class="ListColRight" style="white-space: nowrap;">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 	</tr>
 	{/section}
 </table>

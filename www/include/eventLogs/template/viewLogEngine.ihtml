@@ -1,0 +1,41 @@
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
+<div id="div1" style="position:relative;">
+<table class="ajaxOption table">
+    <tr>
+        <th><h5>{t}Filters{/t}</h5>
+    </tr>
+    <tr>
+        <td><h4>{$form.poller_filter.label}</h4></td>
+        <td><h4>{$form.output.label}</h4></td>
+    </tr>
+    <tr>
+        <td class="log-select">{$form.poller_filter.html}</td>
+        <td class="log-select">{$form.output.html}</td>
+    </tr>
+    <tr>
+        <td class="divider" colspan="3"><hr></td>
+    </tr>
+    <form {$form.attributes}>
+        <tr>
+            <td><h4>{$form.period.label}</h4></td>
+        </tr>
+        <tr>
+            <td>{$form.period.html}</td>
+            <td>
+                <h4>{t}From{/t}</h4>
+                {$form.StartDate.html}
+                {$form.StartTime.html} 
+                <h4>{t}To{/t}</h4>
+                {$form.EndDate.html}
+                {$form.EndTime.html}
+            </td>			
+            <td style='white-space:nowrap;'>{$form.graph.html}</td>
+        </tr>
+    </form>
+</table>
+</div>
+<div id="logView4xml"></div>
+<div style="display:none; ">
+    <div id="openid">
+    </div>
+</div>

@@ -35,19 +35,21 @@
 
         $name = "";
 
-        function filter_get($str){
-                if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
-                        return $matches[1];
-                return NULL;
-        }
+function filter_get($str)
+{
+    if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches)) {
+        return $matches[1];
+    }
+    return null;
+}
 
-        if (function_exists("filter_var")){
-                $name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
-        } else {
-                $name = htmlentities($_GET["name"], ENT_QUOTES, "UTF-8");
-        }
+if (function_exists("filter_var")) {
+    $name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+    $name = htmlentities($_GET["name"], ENT_QUOTES, "UTF-8");
+}
 
-	$l_slice = 100;
+    $l_slice = 100;
 ?>
 <html>
 <head>
@@ -55,46 +57,46 @@
 </head>
 <body id="colpick_body">
 <form name="colpick_form" action="#" method="post">
-	<div id="colpick_page">
-		<div id="colpick_subtitle">
-			<?php echo $name; ?>
-		</div>
-		<div id="colpick_color">
-			<img id="colpick_color_img" src="./include/common/javascript/colpick.jpg" 
-				onclick="compute_color(event, <?php echo $l_slice; ?>)"
-				onmousedown="cp_imd = true; return false;"
-				onmouseup="cp_imd = false;"
-				onmousemove="if (cp_imd && cp_imo) compute_color(event, <?php echo $l_slice; ?>); return false;"
-				onmouseover="cp_imo = true;"
-				onmouseout="cp_imo = false;">
-		</div>
-		<div id="colpick_gradiant" 
+    <div id="colpick_page">
+        <div id="colpick_subtitle">
+            <?php echo $name; ?>
+        </div>
+        <div id="colpick_color">
+            <img id="colpick_color_img" src="./include/common/javascript/colpick.jpg" 
+                onclick="compute_color(event, <?php echo $l_slice; ?>)"
+                onmousedown="cp_imd = true; return false;"
+                onmouseup="cp_imd = false;"
+                onmousemove="if (cp_imd && cp_imo) compute_color(event, <?php echo $l_slice; ?>); return false;"
+                onmouseover="cp_imo = true;"
+                onmouseout="cp_imo = false;">
+        </div>
+        <div id="colpick_gradiant" 
                                 onclick="compute_gradiant(event)"
                                 onmousedown="cp_imd = true; return false;"
                                 onmouseup="cp_imd = false;"
                                 onmousemove="if (cp_imd && cp_imo) compute_gradiant(event); return false;"
                                 onmouseover="cp_imo = true;"
                                 onmouseout="cp_imo = false;">
-<?php		$l_mid = $l_slice/2;
-		for ($l_i = 0; $l_i < $l_slice; $l_i++) {?>
-		<div id="cg_<?php echo $l_i; ?>" class="cg_slice"></div>
-<?php		}?>
-		</div>
-		<div id="colpick_subtitle" style="float: left;width: 49%; margin-top: 4px"><?php _("Active Color") ?></div>
-		<div id="colpick_subtitle" style="float: right;width: 49%; margin-top: 4px;"><?php _("New Color") ?></div>
-		<div id="colpick_acolor" style="float: left;"></div>
-		<div id="colpick_ncolor" style="float: right;"></div>
-		<div id="colpick_button" style="float: left;">
-			<div id="colpick_cancel" style="float: right;">
-				<input type="button" id="colpick_close" value="Close" onclick="Modalbox.hide();">
-			</div>
-		</div>
-		<div id="colpick_button" style="float: right;">
-			<div id="colpick_save" style="float: left;">
-				<input type="button" id="colpick_submit" value="Save" onclick="exportColor();">
-			</div>
-		</div>
-	</div>
+<?php	  $l_mid = $l_slice/2;
+for ($l_i = 0; $l_i < $l_slice; $l_i++) {?>
+        <div id="cg_<?php echo $l_i; ?>" class="cg_slice"></div>
+<?php	          }?>
+        </div>
+        <div id="colpick_subtitle" style="float: left;width: 49%; margin-top: 4px"><?php _("Active Color") ?></div>
+        <div id="colpick_subtitle" style="float: right;width: 49%; margin-top: 4px;"><?php _("New Color") ?></div>
+        <div id="colpick_acolor" style="float: left;"></div>
+        <div id="colpick_ncolor" style="float: right;"></div>
+        <div id="colpick_button" style="float: left;">
+            <div id="colpick_cancel" style="float: right;">
+                <input type="button" id="colpick_close" value="Close" onclick="Modalbox.hide();">
+            </div>
+        </div>
+        <div id="colpick_button" style="float: right;">
+            <div id="colpick_save" style="float: left;">
+                <input type="button" id="colpick_submit" value="Save" onclick="exportColor();">
+            </div>
+        </div>
+    </div>
 </form>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -49,6 +49,7 @@ class HostTemplate extends AbstractHost {
         command_command_id_arg2 as event_handler_arg,
         host_name as name,
         host_alias as alias,
+        host_location,
         display_name,
         host_max_check_attempts as max_check_attempts,
         host_check_interval as check_interval,
@@ -73,6 +74,7 @@ class HostTemplate extends AbstractHost {
         contact_additive_inheritance,
         cg_additive_inheritance,
         host_first_notification_delay as first_notification_delay,
+        host_recovery_notification_delay as recovery_notification_delay,
         host_stalking_options as stalking_options,
         host_snmp_community,
         host_snmp_version,
@@ -85,12 +87,14 @@ class HostTemplate extends AbstractHost {
         ehi_vrml_image as vrml_image_id,
         ehi_statusmap_image as statusmap_image_id,
         ehi_2d_coords as 2d_coords,
-        ehi_3d_coords as 3d_coords
+        ehi_3d_coords as 3d_coords,
+        host_acknowledgement_timeout as acknowledgement_timeout
     ';
     protected $attributes_write = array(
         'name',
         'alias',
         'display_name',
+        'timezone',
         'contacts',
         'contact_groups',
         'check_command',
@@ -108,6 +112,7 @@ class HostTemplate extends AbstractHost {
         'notification_interval',
         'notification_options',
         'first_notification_delay',
+        'recovery_notification_delay',
         'stalking_options',
         'register',
         'notes',
@@ -118,7 +123,8 @@ class HostTemplate extends AbstractHost {
         'vrml_image',
         'statusmap_image',
         '2d_coords',
-        '3d_coords'
+        '3d_coords',
+        'acknowledgement_timeout'
     );
     protected $attributes_array = array(
         'use'
@@ -159,7 +165,7 @@ class HostTemplate extends AbstractHost {
         if ($this->checkGenerate($host_id)) {
             return $this->hosts[$host_id]['name'];
         }
-        
+
         # Avoid infinite loop!
         if (isset($this->loop_htpl[$host_id])) {
             return $this->hosts[$host_id]['name'];
@@ -169,6 +175,7 @@ class HostTemplate extends AbstractHost {
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);
+        $this->getHostTimezone($this->hosts[$host_id]);
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);

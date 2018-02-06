@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -47,39 +44,42 @@ class CentreonConfigEngine
     
     /**
      * Constructor
-     * 
+     *
      * @param CentreonDB $db
      */
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
     
     /**
      * Insert one or multiple broker directives
-     * 
+     *
      * @param int $serverId | id of monitoring server
      * @param array $directives | event broker directives
      * @return void
      */
-    public function insertBrokerDirectives($serverId, $directives = array()) {
+    public function insertBrokerDirectives($serverId, $directives = array())
+    {
         $this->db->query("DELETE FROM cfg_nagios_broker_module
                 WHERE cfg_nagios_id = ".$this->db->escape($serverId));
                     
         foreach ($directives as $value) {
-                if ($value != "") {
-                    $this->db->query("INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) 
+            if ($value != "") {
+                $this->db->query("INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) 
                                 VALUES ('". $this->db->escape($value) ."', ". $this->db->escape($serverId) .")");
-                }
+            }
         }
     }
     
     /**
      * Used by form only
-     * 
+     *
      * @param int $serverId
      * @return array
      */
-    public function getBrokerDirectives($serverId = null) {
+    public function getBrokerDirectives($serverId = null)
+    {
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['in_broker']) && $serverId) {
@@ -91,11 +91,38 @@ class CentreonConfigEngine
                 $i++;
             }
         } elseif (isset($_REQUEST['in_broker'])) {
-            foreach($_REQUEST['in_broker'] as $val) {
+            foreach ($_REQUEST['in_broker'] as $val) {
                 $arr[$i]['in_broker_#index#'] = $val;
                 $i++;
             }
         }
         return $arr;
+    }
+
+    public function getTimezone($engineId = null)
+    {
+        $timezone = null;
+
+        if (is_null($engineId) || empty($engineId)) {
+            return $timezone;
+        }
+
+        $query = "SELECT timezone FROM (" .
+            "SELECT timezone_name as timezone " .
+            "FROM cfg_nagios, timezone " .
+            "WHERE nagios_id = " . $this->db->escape($engineId) . " " .
+            "AND use_timezone = timezone_id " .
+            "UNION " .
+            "SELECT timezone_name as timezone " .
+            "FROM options, timezone " .
+            "WHERE options.key = 'gmt' " .
+            "AND options.value = timezone_id " .
+            ") as t LIMIT 1";
+        $result = $this->db->query($query);
+        if ($row = $result->fetchRow()) {
+            $timezone = $row['timezone'];
+        }
+
+        return $timezone;
     }
 }

@@ -33,8 +33,9 @@
  *
  */
 
-if (!isset($centreon))
-	exit();
+if (!isset($centreon)) {
+    exit();
+}
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
@@ -62,67 +63,71 @@ if ($oreon->user->admin) {
 
 $initialValues = array();
 $ms = array();
-if (($o == "c" || $o == "w") && $meta_id)	{
-	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-	// Set base value
-	$ms = array_map("myDecode", $DBRESULT->fetchRow());
+if (($o == "c" || $o == "w") && $meta_id) {
+    $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+    // Set base value
+    $ms = array_map("myDecode", $DBRESULT->fetchRow());
 
-	// Set Service Notification Options
-	$tmp = explode(',', $ms["notification_options"]);
-	foreach ($tmp as $key => $value)
-		$ms["ms_notifOpts"][trim($value)] = 1;
+    // Set Service Notification Options
+    $tmp = explode(',', $ms["notification_options"]);
+    foreach ($tmp as $key => $value) {
+        $ms["ms_notifOpts"][trim($value)] = 1;
+    }
     
     /*
 	 * Set Contacts
 	 */
-	$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = " . $meta_id);
-	for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
+    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = " . $meta_id);
+    for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
         if (!isset($notifCs[$notifC['contact_id']])) {
             $initialValues['ms_cs'][] = $notifC['contact_id'];
         } else {
-			$ms["ms_cs"][$i] = $notifC["contact_id"];
+            $ms["ms_cs"][$i] = $notifC["contact_id"];
         }
-	}
-	$DBRESULT->free();
+    }
+    $DBRESULT->free();
 
-	/*
+    /*
 	 * Set Contact Group
 	 */
-	$DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-	for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
+    $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
+    for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
         if (!$oreon->user->admin && !isset($notifCgs[$notifCg['cg_cg_id']])) {
             $initialValues['ms_cgs'][] = $notifCg["cg_cg_id"];
         } else {
-			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
+            $ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
         }
     }
-	$DBRESULT->free();
+    $DBRESULT->free();
 }
 
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
-$metrics = array(NULL=>NULL);
+$metrics = array(null=>null);
 $DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
-while ($metric = $DBRESULT->fetchRow())
-	$metrics[$metric["metric_name"]] = $metric["metric_name"];
+while ($metric = $DBRESULT->fetchRow()) {
+    $metrics[$metric["metric_name"]] = $metric["metric_name"];
+}
 $DBRESULT->free();
 
 /*
  * Timeperiods comes from DB -> Store in $tps Array
  */
 $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-while ($tp = $DBRESULT->fetchRow())
-	$tps[$tp["tp_id"]] = $tp["tp_name"];
+while ($tp = $DBRESULT->fetchRow()) {
+    $tps[$tp["tp_id"]] = $tp["tp_name"];
+}
 $DBRESULT->free();
 
 /*
  * Check commands comes from DB -> Store in $checkCmds Array
  */
-$checkCmds = array(NULL=>NULL);
+$checkCmds = array(null=>null);
 $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-while($checkCmd = $DBRESULT->fetchRow())
-	$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
+while ($checkCmd = $DBRESULT->fetchRow()) {
+    $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
+}
 $DBRESULT->free();
 
 /*
@@ -130,8 +135,9 @@ $DBRESULT->free();
  */
 $escs = array();
 $DBRESULT = $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
-while($esc = $DBRESULT->fetchRow())
-	$escs[$esc["esc_id"]] = $esc["esc_name"];
+while ($esc = $DBRESULT->fetchRow()) {
+    $escs[$esc["esc_id"]] = $esc["esc_name"];
+}
 $DBRESULT->free();
 
 /*
@@ -139,8 +145,9 @@ $DBRESULT->free();
  */
 $deps = array();
 $DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
-while($dep = $DBRESULT->fetchRow())
-	$deps[$dep["meta_id"]] = $dep["meta_name"];
+while ($dep = $DBRESULT->fetchRow()) {
+    $deps[$dep["meta_id"]] = $dep["meta_name"];
+}
 $DBRESULT->free();
 
 /*
@@ -156,21 +163,21 @@ $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 /*
  * Graphs Template comes from DB -> Store in $graphTpls Array
  */
-$graphTpls = array(NULL=>NULL);
+$graphTpls = array(null=>null);
 $DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-while($graphTpl = $DBRESULT->fetchRow()) {
-	$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+while ($graphTpl = $DBRESULT->fetchRow()) {
+    $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 }
 $DBRESULT->free();
 
 /*
  * Init Styles
  */
-$attrsText 		= array("size"=>"30");
-$attrsText2		= array("size"=>"6");
+$attrsText      = array("size"=>"30");
+$attrsText2         = array("size"=>"6");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list',
@@ -195,11 +202,11 @@ $attrContactgroups = array(
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
-	$form->addElement('header', 'title', _("Add a Meta Service"));
+    $form->addElement('header', 'title', _("Add a Meta Service"));
 } elseif ($o == "c") {
-	$form->addElement('header', 'title', _("Modify a Meta Service"));
+    $form->addElement('header', 'title', _("Modify a Meta Service"));
 } elseif ($o == "w") {
-	$form->addElement('header', 'title', _("View a Meta Service"));
+    $form->addElement('header', 'title', _("View a Meta Service"));
 }
 
 /*
@@ -207,7 +214,7 @@ if ($o == "a") {
  */
 $form->addElement('header', 'information', _("General Information"));
 
-$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
+$form->addElement('text', 'meta_name', _("Name"), $attrsText);
 $form->addElement('text', 'meta_display', _("Output format string (printf-style)"), $attrsText);
 $form->addElement('text', 'warning', _("Warning Level"), $attrsText2);
 $form->addElement('text', 'critical', _("Critical Level"), $attrsText2);
@@ -291,6 +298,8 @@ $form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('meta_activate' => '1'));
 $form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
 
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+
 $form->addElement('hidden', 'meta_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -301,9 +310,10 @@ $init->setValue(serialize($initialValues));
 /*
  * Form Rules
  */
-function myReplace()	{
-	global $form;
-	return (str_replace(" ", "_", $form->getSubmitValue("meta_name")));
+function myReplace()
+{
+    global $form;
+    return (str_replace(" ", "_", $form->getSubmitValue("meta_name")));
 }
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('meta_name', 'myReplace');
@@ -311,15 +321,6 @@ $form->addRule('meta_name', _("Compulsory Name"), 'required');
 $form->addRule('max_check_attempts', _("Required Field"), 'required');
 $form->addRule('calcul_type', _("Required Field"), 'required');
 $form->addRule('meta_select_mode', _("Required Field"), 'required');
-$form->addRule('normal_check_interval', _("Required Field"), 'required');
-$form->addRule('retry_check_interval', _("Required Field"), 'required');
-$form->addRule('check_period', _("Compulsory Period"), 'required');
-$form->addRule('ms_cgs', _("Compulsory Contact Group"), 'required');
-$form->addRule('notification_interval', _("Required Field"), 'required');
-$form->addRule('notification_period', _("Compulsory Period"), 'required');
-$form->addRule('notifications_enabled', _("Required Field"), 'required');
-$form->addRule('ms_notifOpts', _("Required Field"), 'required');
-$form->addRule('notifOpts', _("Compulsory Option"), 'required');
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('meta_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
@@ -330,63 +331,65 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required f
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w")	{
-	/*
+if ($o == "w") {
+    /*
 	 * Just watch a host information
 	 */
-	if (!$min && $centreon->user->access->page($p) != 2)
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
+    if (!$min && $centreon->user->access->page($p) != 2) {
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
+    }
     $form->setDefaults($ms);
-	$form->freeze();
-} else if ($o == "c")	{
-	/*
+    $form->freeze();
+} elseif ($o == "c") {
+    /*
 	 * Modify a service information
 	 */
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($ms);
-} else if ($o == "a")	{
-	/*
+} elseif ($o == "a") {
+    /*
 	 * Add a service information
 	 */
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
 $tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 
 $valid = false;
-if ($form->validate())	{
-	$msObj = $form->getElement('meta_id');
-	if ($form->getSubmitValue("submitA"))
-		$msObj->setValue(insertMetaServiceInDB());
-	else if ($form->getSubmitValue("submitC"))
-		updateMetaServiceInDB($msObj->getValue());
-	$o = NULL;
-	$valid = true;
+if ($form->validate()) {
+    $msObj = $form->getElement('meta_id');
+    if ($form->getSubmitValue("submitA")) {
+        $msObj->setValue(insertMetaServiceInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateMetaServiceInDB($msObj->getValue());
+    }
+    $o = null;
+    $valid = true;
 }
 
-if ($valid)
-	require_once($path."listMetaService.php");
-else	{
-	/*
+if ($valid) {
+    require_once($path."listMetaService.php");
+} else {
+    /*
 	 * Apply a template definition
 	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->display("formMetaService.ihtml");
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formMetaService.ihtml");
 }

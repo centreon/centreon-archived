@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -55,10 +52,10 @@ foreach ($defaults as $k => $v) {
         $defaults[$k] = $_SESSION[$k];
     }
 }
-$star = "<span style='color:#f91e05'> *</span>";
+$star = "<span style='color:#e00b3d'> *</span>";
 $contents = " 
     <form id='form_step".STEP_NUMBER."'>
-        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
             <tr>
                 <th colspan='2'>"._('Admin information')."</th>

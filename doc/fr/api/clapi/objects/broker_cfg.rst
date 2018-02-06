@@ -92,23 +92,21 @@ instance                 Instance that is linked to Centreon Broker CFG
 event_queue_max_size     Event queue max size (when number is reached,
                          temporary output will be used).
 
-retention_path           Path for retention and temporary files
+cache_directory          Path for cache files
 
-stats_activate           Enable statistics (0 or 1)
+daemon                   Link this configuration to cbd service (0 or 1)
 
 correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 
-Listinput, Listoutput, Listlogger, Listcorrelation, Listtemporary and Liststats
+Listinput, Listoutput and Listlogger
 ----------------------------------------------------------------------------------
 
 If you want to list specific input output types of Centreon Broker, use one of the following commands:
 listinput
 listoutput
 listlogger
-listcorrelation
-liststats
 
 Example::
 
@@ -127,15 +125,13 @@ ID	    I/O ID
 Name	I/O Name
 ======= ============
 
-Getinput, Getoutput, Getlogger, Getcorrelation, Gettemporary and Getstats
--------------------------------------------------------------------------
+Getinput, Getoutput and Getlogger
+-----------------------------------------------------------
 
 In order to get parameters of a specific I/O object, use one of the following commands:
  - getinput
  - getoutput
  - getlogger
- - getcorrelation
- - getstats
 
 Example::
 
@@ -147,7 +143,6 @@ Example::
    db_port;3306
    db_type;mysql
    db_user;centreon
-   failover;15552000
    interval;60
    length;
    name;PerfData
@@ -166,16 +161,13 @@ Order	 Description
 ======== ===========================
 
 
-Addinput, Addoutput, Addlogger, Addcorrelation, Addtemporary and Addstats
--------------------------------------------------------------------------
+Addinput, Addoutput and Addlogger
+-----------------------------------------------------------
 
 In order to add a new I/O object, use one of the following commands:
  - **ADDINPUT**
  - **ADDOUTPUT**
  - **ADDLOGGER**
- - **ADDCORRELATION**
- - **ADDTEMPORARY**
- - **ADDSTATS**
 
 Example::
 
@@ -198,16 +190,13 @@ Order	 Column description
 ======== ============================
 
 
-Delinput, Deloutput, Dellogger, Delcorrelation, Deltemporary and Delstats
--------------------------------------------------------------------------
+Delinput, Deloutput and Dellogger
+-----------------------------------------------------------
 
 In order to remove an I/O object from the Centreon Broker configuration, use one of the following commands:
  - **DELINPUT**
  - **DELOUTPUT**
  - **DELLOGGER**
- - **DELCORRELATION**
- - **DELTEMPORARY**
- - **DELSTATS**
 
 Example::
 
@@ -216,20 +205,17 @@ Example::
 The I/O ID is used for identifying the object to delete.
 
 
-Setintput, Setoutput, Setlogger, Setcorrelation, Settemporary and Setstats
---------------------------------------------------------------------------
+Setintput, Setoutput and Setlogger
+------------------------------------------------------------
 
 In order to set parameters of an I/O object, use one of the following commands:
  - **SETINPUT**
  - **SETOUTPUT**
  - **SETLOGGER**
- - **SETCORRELATION**
- - **SETTEMPORARY**
- - **SETSTATS**
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setcorrelation -v "broker cfg for poller test;1;file;/etc/centreon-broker/correlation.xml" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setlogger -v "broker cfg for poller test;1;debug;no" 
 
 Arguments are composed of the following columns:
 
@@ -254,14 +240,19 @@ Example::
 
   [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a gettypelist -v "output" 
   type id;short name;name
+  27;bam_bi;BI engine (BAM)
   16;sql;Broker SQL Database
+  32;correlation;correlation
+  28;db_cfg_reader;Database configuration reader
+  29;db_cfg_writer;Database configuration writer
   11;file;File
   3;ipv4;IPv4
   10;ipv6;IPv6
-  15;local_client;Local Client Socket
-  12;local_server;Local Server Socket
+  26;bam;Monitoring engine (BAM)
   14;storage;Perfdata Generator (Centreon Storage)
   13;rrd;RRD File Generator
+  30;graphite;Storage - Graphite
+  31;influxdb;Storage - InfluxDB
 
   [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getfieldlist -v "ipv4" 
   field id;short name;name
@@ -288,24 +279,6 @@ This is how you get the list of possible values of a given field::
 The following chapters describes the parameters of each Object type
 
 
-correlation
-~~~~~~~~~~~
-
-correlation:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-file                           Correlation file                                             Path to the correlation file which holds host, services, 
-                                                                                            dependencies and parenting definitions.                      -                                                          
-
-retention                      Retention file                                               File where correlation state will be stored during 
-                                                                                            correlation engine restart                                   -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-
 input
 ~~~~~
 
@@ -323,10 +296,7 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -368,10 +338,7 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -413,10 +380,7 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -427,63 +391,6 @@ path                           File path                                        
 protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
 
 ============================== ============================================================ ============================================================ ===========================================================
-
-
-local_server:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-local_client:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
 
 
 logger
@@ -590,10 +497,9 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -635,10 +541,9 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
@@ -680,42 +585,15 @@ compression_buffer             Compression buffer size                          
                                                                                             Use with caution.                                            -                                                          
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
-                                                                                            Default is -1 (zlib compression)                             -                                                          
+                                                                                            Default is -1 (zlib compression)                             -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+
+category                       Filter category                                              Category filter for flux in output.                                       -                                                          
 
 max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-local_server:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
 
 path                           File path                                                    Path to the file.                                            -                                                          
 
@@ -729,12 +607,13 @@ rrd:
 ============================== ============================================================ ============================================================ ===========================================================
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+
+category                       Filter category                                              Category filter for flux in output.                                 -                                                          
 
 metrics_path                   RRD file directory for metrics                               RRD file directory, for example /var/lib/centreon/metrics    -                                                          
 
@@ -748,6 +627,12 @@ port                           TCP port                                         
 
 status_path                    RRD file directory for statuses                              RRD file directory, for example /var/lib/centreon/status     -                                                          
 
+write_metrics                  Enable write_metrics                                         Enable or not write_metrics.                                 -                                                          
+
+write_status                   Enable write_status                                          Enable or not write_status.                                  -                                                          
+
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -                                                          
+
 ============================== ============================================================ ============================================================ ===========================================================
 
 
@@ -756,12 +641,13 @@ storage:
 ============================== ============================================================ ============================================================ ===========================================================
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+
+category                       Filter category                                              Category filter for flux in output.                                 -                                                          
 
 check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not 
                                                                                             the replication is up to date before attempting to 
@@ -790,33 +676,7 @@ read_timeout                   Transaction commit timeout                       
 rebuild_check_interval         Rebuild check interval in seconds                            The interval between check if some metrics must be rebuild. 
                                                                                             The default value is 300s                                    -                                                          
 
-============================== ============================================================ ============================================================ ===========================================================
-
-
-local_client:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
-
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-failover                       Failover name                                                Name of the input or output object that 
-                                                                                            will act as failover.                                        -                                                          
-
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -                                                          
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -826,12 +686,13 @@ sql:
 ============================== ============================================================ ============================================================ ===========================================================
 ID                             Label                                                        Description                                                  Possible values                                            
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-failover                       Failover name                                                Name of the input or output object that will act as 
-                                                                                            failover.                                                    -                                                          
+failover                       Failover name                                                Name of the output which will act as failover                -
 
 retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+
+category                       Filter category                                              Category filter for flux in output.                                 -                                                          
 
 check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not 
                                                                                             the replication is up to date before attempting to 
@@ -852,47 +713,6 @@ db_user                        DB user                                          
 queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -                                                          
 
 read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-
-stats
-~~~~~
-
-stats:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-fifo                           File for Centreon Broker statistics                          File where Centreon Broker statistics will be stored         -                                                          
-
-============================== ============================================================ ============================================================ ===========================================================
-
-
-
-temporary
-~~~~~~~~~
-
-file:
-
-============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
-============================== ============================================================ ============================================================ ===========================================================
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
-
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
-
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
-                                                                                            Default is -1 (zlib compression)                             -                                                          
-
-max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
-
-path                           File path                                                    Path to the file.                                            -                                                          
-
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
 
 ============================== ============================================================ ============================================================ ===========================================================
 

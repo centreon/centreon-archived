@@ -56,7 +56,7 @@ $widgets = array();
 
 # Retrive widget directories
 $widgetDirs = array();
-while (($currentDir = readdir($handle)) != false){
+while (($currentDir = readdir($handle)) != false) {
     if ($currentDir != "." && $currentDir != ".." && $currentDir != ".SVN" && $currentDir != ".svn" && $currentDir != ".CSV") {
         $widgetDirs[] = $currentDir;
     }
@@ -94,41 +94,41 @@ var upgradeConfirmMsg = '<?php echo _('Would you like to upgrade this widget?');
 var p = '<?php echo $p;?>';
 
 jQuery(function() {
-	jQuery('.installBtn').click(function() {
-		forwardAction(installConfirmMsg, 'install', jQuery(this).parent('td').attr('id'));
-	});
+    jQuery('.installBtn').click(function() {
+        forwardAction(installConfirmMsg, 'install', jQuery(this).parent('td').attr('id'));
+    });
 
-	jQuery('.upgradeBtn').click(function() {
-		forwardAction(upgradeConfirmMsg, 'upgrade', jQuery(this).parent('td').attr('id'));
-	});
+    jQuery('.upgradeBtn').click(function() {
+        forwardAction(upgradeConfirmMsg, 'upgrade', jQuery(this).parent('td').attr('id'));
+    });
 
-	jQuery('.uninstallBtn').click(function() {
-		forwardAction(uninstallConfirmMsg, 'uninstall', jQuery(this).parent('td').attr('id'));
-	});
+    jQuery('.uninstallBtn').click(function() {
+        forwardAction(uninstallConfirmMsg, 'uninstall', jQuery(this).parent('td').attr('id'));
+    });
 });
 
 function forwardAction(confirmMsg, action, data)
 {
-	var tab = data.split('widget_');
-	if (typeof(tab[1]) != 'undefined') {
-		var directory = tab[1];
-    	if (confirm(confirmMsg)) {
-    		jQuery.ajax({
-    			type	:	"POST",
-    			dataType:	"xml",
-    			url 	:	"./include/options/oreon/widgets/action.php",
-    			data	:   {
-    							action  	:	action,
-    							directory	:	directory
-    						},
-    			success :	function(response) {
-    							var result = response.getElementsByTagName('result');
-    							if (typeof(result) != 'undefined') {
-    								window.location = './main.php?p='+p;
-    							}
-    						}
-    		});
-    	}
-	}
+    var tab = data.split('widget_');
+    if (typeof(tab[1]) != 'undefined') {
+        var directory = tab[1];
+        if (confirm(confirmMsg)) {
+            jQuery.ajax({
+                type    :   "POST",
+                dataType:   "xml",
+                url     :   "./include/options/oreon/widgets/action.php",
+                data    :   {
+                                action      :   action,
+                                directory   :   directory
+                            },
+                success :   function(response) {
+                                var result = response.getElementsByTagName('result');
+                                if (typeof(result) != 'undefined') {
+                                    window.location = './main.php?p='+p;
+                                }
+                            }
+            });
+        }
+    }
 }
 </script>

@@ -71,7 +71,6 @@ sub new {
     $self->{nagiosLog} = undef;
     $self->{service} = undef;
     $self->{host} = undef;
-    $self->{dbLayer} = undef;
     return $self;
 }
 
@@ -83,54 +82,25 @@ sub exit_pgr() {
     exit (0);
 }
 
-# get db layer
-sub getDbLayer() {
-    my $self = shift;
-
-    my ($status, $res) = $self->{cdb}->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-    if (my $row = $res->fetchrow_hashref()) { 
-        return $row->{'value'};
-    }
-    return "ndo";
-}
-
 # Initialize objects for program
 sub initVars {
     my $self = shift;
     my $centstatus;
     
     # Getting centstatus database name
-    $self->{dbLayer} = $self->getDbLayer();
-    if ($self->{dbLayer} eq "ndo") {
-        my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-        if (my $row = $sth->fetchrow_hashref()) {
-            #connecting to censtatus
-            $centstatus = centreon::common::db->new(db => $row->{db_name},
-                                                    host => $row->{db_host},
-                                                    port => $row->{db_port},
-                                                    user => $row->{db_user},
-                                                    password => $row->{db_pass},
-                                                    force => 0,
-                                                    logger => $self->{logger});
-        }
-    } elsif ($self->{dbLayer} eq "broker") {
-        $centstatus = $self->{csdb};
-    } else {
-        $self->{logger}->writeLogError("Unsupported database layer: " . $self->{dbLayer});
-        $self->exit_pgr();
-    }
+    $centstatus = $self->{csdb};
     
     # classes to query database tables 
     $self->{host} = centreon::reporting::CentreonHost->new($self->{logger}, $self->{cdb});
     $self->{service} = centreon::reporting::CentreonService->new($self->{logger}, $self->{cdb});
-    $self->{nagiosLog} = centreon::reporting::CentreonLog->new($self->{logger}, $self->{csdb}, $self->{dbLayer});
-    my $centreonDownTime = centreon::reporting::CentreonDownTime->new($self->{logger}, $centstatus, $self->{dbLayer});
-    my $centreonAck = centreon::reporting::CentreonAck->new($self->{logger}, $centstatus, $self->{dbLayer});
+    $self->{nagiosLog} = centreon::reporting::CentreonLog->new($self->{logger}, $self->{csdb});
+    my $centreonDownTime = centreon::reporting::CentreonDownTime->new($self->{logger}, $centstatus);
+    my $centreonAck = centreon::reporting::CentreonAck->new($self->{logger}, $centstatus);
     $self->{serviceEvents} = centreon::reporting::CentreonServiceStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
     $self->{hostEvents} = centreon::reporting::CentreonHostStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
     
     # Class that builds events
-    $self->{processEvents} = centreon::reporting::CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime, $self->{dbLayer});
+    $self->{processEvents} = centreon::reporting::CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime);
 }
 
 # For a given period returns in a table each    

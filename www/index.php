@@ -55,8 +55,6 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
         $freeze = 0;
     } else {
         $freeze = 0;
-        //require_once ("../centreon.conf.php");
-       // $msg = _("You have to move centreon configuration file from temporary directory to final directory");
     }
 }
 
@@ -80,16 +78,12 @@ while ($generalOption = $DBRESULT->fetchRow()) {
 $DBRESULT->free();
 
 /*
- * Set Skin For CSS properties
- */
-$skin = "./Themes/".$generalOptions["template"]."/";
-
-/*
  * detect installation dir
  */
 $file_install_acces = 0;
 if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
+    $error_msg = "Installation Directory '". getcwd() .
+        "/install/' is accessible. Delete this directory to prevent security problem.";
     $file_install_acces = 1;
 }
 
@@ -117,11 +111,10 @@ if (isset($_GET["disconnect"])) {
 }
 
 /*
- * already connected
+ * Already connected
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = & $_SESSION["centreon"];
-
     header('Location: main.php');
 }
 
@@ -134,5 +127,5 @@ if (isset($_SESSION["centreon"])) {
 if (version_compare(phpversion(), '5.3') < 0) {
     echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
-    include_once("./login.php");
+    include_once("./include/core/login/login.php");
 }

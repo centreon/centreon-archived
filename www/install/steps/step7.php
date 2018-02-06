@@ -29,10 +29,7 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  * 
- * For more information : contact@centreon.com
- * 
- * SVN : $URL$
- * SVN : $Id$
+ * For more information : contact@centreon.com 
  * 
  */
 
@@ -47,7 +44,7 @@ $title = _('Installation');
 
 $contents = _('Currently installing database... please do not interrupt this process.<br/><br/>');
 
-$contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+$contents .= '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr" align="center">
                 <thead>
                     <tr>
                         <th>'._('Step').'</th>
@@ -61,10 +58,10 @@ $contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" clas
 $map = "{            
             'dbconf'     : './steps/process/installConfigurationDb.php',
             'dbstorage'  : './steps/process/installStorageDb.php',
-            'dbutils'    : './steps/process/installUtilsDb.php',
             'createuser' : './steps/process/createDbUser.php',
             'baseconf'   : './steps/process/insertBaseConf.php',
-            'configfile' : './steps/process/configFileSetup.php'
+            'configfile' : './steps/process/configFileSetup.php',
+            'dbpartitioning' : './steps/process/partitionTables.php'
         }";
 
 $labels = "{
@@ -73,7 +70,8 @@ $labels = "{
             'dbutils'   : '"._('Utils database')."',
             'createuser': '"._('Creating database user')."',
             'baseconf'  : '"._('Setting up basic configuration')."',
-            'configfile': '"._('Setting up configuration file')."'
+            'configfile': '"._('Setting up configuration file')."',
+            'dbpartitioning': '"._('Partitioning database tables')."'
            }";
 
 $template->assign('step', STEP_NUMBER);
@@ -102,7 +100,7 @@ $template->display('content.tpl');
        doProcess(true, map[key], new Array, function(response) {
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {
-                jQuery('#'+data['id']).html('<span style="color:#10CA31;">OK</span>');
+                jQuery('#'+data['id']).html('<span style="color:#88b917;">OK</span>');
                 if (key == 'dbconf') {
                     nextStep('dbstorage');   
                 } else if (key == 'dbstorage') {
@@ -111,7 +109,9 @@ $template->display('content.tpl');
                     nextStep('baseconf');
                 } else if (key == 'baseconf') {
                     nextStep('configfile');
-                } else if ('configfile') {
+                } else if (key == 'configfile') {
+                    nextStep('dbpartitioning');
+                } else if (key == 'dbpartitioning') {
                     processStatus = true;
                     jQuery("#next").show();
                 }

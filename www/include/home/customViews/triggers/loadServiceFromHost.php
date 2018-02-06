@@ -42,6 +42,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
+session_write_close();
 
 if (!isset($_POST['data']) || !isset($_SESSION['centreon'])) {
     exit;
@@ -51,15 +52,12 @@ $centreon = $_SESSION['centreon'];
 $data = $_POST['data'];
 $db = new CentreonDB();
 $pearDB = $db;
+
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
-    exit;
+    exit();
 }
 $brk = new CentreonBroker($db);
-if ($brk->getBroker() == 'broker') {
-    $monitoringDb = new CentreonDB('centstorage');
-} else {
-    $monitoringDb = new CentreonDB('ndo');
-}
+$monitoringDb = new CentreonDB('centstorage');
 
 $xml = new CentreonXML();
 
@@ -67,9 +65,11 @@ $xml->startElement('response');
 try {
     $xml->startElement('options');
     if ($data) {
-        $aclString = $centreon->user->access->queryBuilder('AND', 
-                                                      's.service_id',
-                                                      $centreon->user->access->getServicesString('ID', $monitoringDb));
+        $aclString = $centreon->user->access->queryBuilder(
+            'AND',
+            's.service_id',
+            $centreon->user->access->getServicesString('ID', $monitoringDb)
+        );
         $sql = "SELECT service_id, service_description
         		FROM service s, host_service_relation hsr
         		WHERE hsr.host_host_id = " . $db->escape($data) . "
@@ -98,9 +98,10 @@ try {
     $xml->writeElement('error', $e->getMessage());
 }
 $xml->endElement();
+
 header('Content-Type: text/xml');
 header('Pragma: no-cache');
 header('Expires: 0');
 header('Cache-Control: no-cache, must-revalidate');
+
 $xml->output();
-?>

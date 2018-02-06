@@ -1,4 +1,5 @@
 .. _centreon_login:
+
 =====
 Login
 =====

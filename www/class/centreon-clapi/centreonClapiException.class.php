@@ -31,10 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 namespace CentreonClapi;
 
 /**
@@ -42,5 +40,4 @@ namespace CentreonClapi;
  */
 class CentreonClapiException extends \Exception
 {
-
 }

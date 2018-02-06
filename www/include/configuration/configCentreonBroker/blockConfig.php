@@ -33,13 +33,13 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
- }
+}
 
 if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
     exit();
- }
+}
 
 /*
  * Cast the block id in int
@@ -54,7 +54,7 @@ try {
 
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-$form = $cbObj->quickFormById($id, $_GET['p'], $pos, "new_".rand(100,1000));
+$form = $cbObj->quickFormById($id, $_GET['p'], $pos, "new_".rand(100, 1000));
 
 $helps = array();
 list($tagId, $typeId) = explode('_', $id);
@@ -94,4 +94,3 @@ $tpl->assign('posBlock', $pos);
 $tpl->assign('helps', $helps);
 
 $tpl->display("blockConfig.ihtml");
-?>

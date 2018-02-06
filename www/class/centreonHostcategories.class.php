@@ -31,28 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
- * 
+ *
  */
 class CentreonHostcategories
 {
-    protected $_db;
+    protected $db;
 
     /*
      * constructor
      */
     public function __construct($pearDB)
     {
-        $this->_db = $pearDB;
+        $this->db = $pearDB;
     }
     
     /**
-     * 
+     *
      * @param integer $field
      * @return array
      */
@@ -99,9 +96,16 @@ class CentreonHostcategories
             $hcAcl = $centreon->user->access->getHostCategories();
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected host categories
@@ -110,7 +114,13 @@ class CentreonHostcategories
             . "WHERE hc_id IN (" . $explodedValues . ") "
             . "ORDER BY hc_name ";
 
-        $resRetrieval = $this->_db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad host categories query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized host categories
             $hide = false;
@@ -128,4 +138,3 @@ class CentreonHostcategories
         return $items;
     }
 }
-?>

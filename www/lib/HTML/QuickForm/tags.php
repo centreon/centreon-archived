@@ -84,76 +84,34 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
      */
     function getJsInit()
     {
-        $jsPre = '<script type="text/javascript">';
-        $additionnalJs = '';
-        $jsPost = '</script>';
-        $strJsInitBegining = '$currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").select2({';
-        
-        $mainJsInit = 'tags: true,';
-        $mainJsInit .= 'allowClear: true,';
-        
-        $label = $this->getLabel();
-        if (!empty($label)) {
-            $mainJsInit .= 'placeholder: "' . $this->getLabel() . '",';
+
+        $allowClear = 'true';
+        if (false === $this->_allowClear || $this->_flagFrozen) {
+            $allowClear = 'false';
         }
-        
+
+        $disabled = 'false';
         if ($this->_flagFrozen) {
-             $mainJsInit .= 'disabled: true,';
+            $disabled = 'true';
         }
-        
+
+        $ajaxOption = '';
+        $defaultData = '';
         if ($this->_ajaxSource) {
-            $mainJsInit .= $this->setAjaxSource() . ',';
+            $ajaxOption = 'ajax: {
+                url: "' . $this->_availableDatasetRoute . '"
+            },';
+
             if ($this->_defaultDatasetRoute && (count($this->_defaultDataset) == 0)) {
-                $additionnalJs .= $this->setDefaultAjaxDatas();
+                $additionnalJs = $this->setDefaultAjaxDatas();
             } else {
                 $this->setDefaultFixedDatas();
             }
         } else {
-            $mainJsInit .= $this->setFixedDatas() . ',';
-        }
-        
-        $mainJsInit .= 'multiple: ';
-        $scroll = "";
-        if ($this->_multiple) {
-            $mainJsInit .= 'true,';
-            $scroll = '$currentSelect2Object'. $this->getName() . '.next(".select2-container").find("ul.select2-selection__rendered").niceScroll({
-            	cursorcolor:"#818285",
-            	cursoropacitymax: 0.6,
-            	cursorwidth:3,
-            	horizrailenabled:false
-            	});';
-
-                $mainJsInit .= 'templateSelection: function (data, container) {
-                    if (data.element.hidden === true) {
-                        $(container).hide();
-                    }
-                    return data.text;
-                },';
-        } else {
-            $mainJsInit .= 'false,';
-        }
-        //$mainJsInit .= 'minimumInputLength: 1,';
-        
-        $mainJsInit .= 'allowClear: ';
-        if ($this->_allowClear) {
-            $mainJsInit .= 'true,';
-        } else {
-            $mainJsInit .= 'false,';
+            $defaultData = $this->setFixedDatas() . ',';
         }
 
-        $strJsInitEnding = '});';
-        
-        if (!$this->_allowClear) {
-            $strJsInitEnding .= 'jQuery("#' . $this->getName() . '").prevAll(".clearAllSelect2").on("click",function(){ '
-                . '$currentValues = jQuery("#' . $this->getName() . '").val(); '
-                . 'jQuery("#' . $this->getName() . '").val("");'
-                . 'jQuery("#' . $this->getName() . '").empty().append(jQuery("<option>"));'
-                . 'jQuery("#' . $this->getName() . '").trigger("change", $currentValues);'
-                . ' }); ';
-        }
-        
-        
-        $additionnalJs .= ' jQuery(".select2-selection").each(function(){'
+        $additionnalJs = ' jQuery(".select2-selection").each(function(){'
             . ' if(typeof this.isResiable == "undefined" || this.isResiable){'
             . ' jQuery(this).resizable({ maxWidth: 500, '
             . ' minWidth : jQuery(this).width() != 0 ? jQuery(this).width() : 200, '
@@ -161,10 +119,28 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
             . ' this.isResiable = true; '
             . ' }'
             . ' }); ';
-        
-        $finalJs = $jsPre . $strJsInitBegining . $mainJsInit . $strJsInitEnding . $scroll . $additionnalJs . $this->_jsCallback . $jsPost;
-        
-        return $finalJs;
+
+
+
+        $javascriptString = '<script>
+            jQuery(function () {
+                var $currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
+                    allowClear: ' . $allowClear .',
+                    pageLimit: ' . $this->_pagination . ',
+                    select2: {
+                        tags: true,
+                        ' . $ajaxOption . '
+                        ' . $defaultData . '
+                        placeholder: "' . $this->getLabel() . '",
+                        disabled: ' . $disabled . '
+                    }
+                });
+                
+                ' . $additionnalJs . '
+            });
+         </script>';
+
+        return $javascriptString;
     }
     
 }

@@ -4,14 +4,15 @@
 Mise à jour
 ###########
 
-Ce chapitre décrit es procédures de mise à jour d'une plate-forme de supervision Centreon.
+Ce chapitre décrit le processus de mise à jour d'une plate-forme Centreon.
 
-La procédure à suivre dépend de votre installation initial. Si vous avez utilisé CES lors de l'installation, vous devrez alors utiliser les RPMs. Si vous avez installé par les sources, la mise à jour se fera alors de cette maniére.
-
-Pensez à réaliser une sauvegarde compléte avant de mettre à jour.
+La procédure dépend de la méthode d'installation de votre plate-forme Centreon.
+Sélectionner **Mise à jour RPM** si vous avez installé Centreon à partir de l'ISO
+ou des RPMS, sinon sélectionner **A partir des sources**. Avant de mettre à jour
+réaliser une sauvegarde.
 
 .. toctree::
     :maxdepth: 2
 
-   from_packages
-   from_sources
+    from_packages
+    from_sources

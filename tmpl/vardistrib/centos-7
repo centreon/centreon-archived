@@ -4,7 +4,4 @@
 . "$BASE_DIR/tmpl/vardistrib/defaults"
 
 # Set platform-specific directories.
-PEAR_PATH="/usr/share/pear"
 PLUGIN_DIR="/usr/lib64/nagios/plugins"
-SUDO_FILE="/etc/sudoers.d/centreon"
-SNMP_ETC="/etc/snmp"

@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -59,7 +58,15 @@ class CentreonACLGroup extends CentreonObject
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
 
- 	/**
+    public $aDepends = array(
+        'CONTACT',
+        'CG',
+        'ACLMENU',
+        'ACLACTION',
+        'ACLRESOURCE'
+    );
+
+    /**
      * Constructor
      *
      * @return void
@@ -68,11 +75,13 @@ class CentreonACLGroup extends CentreonObject
     {
         parent::__construct();
         $this->object = new \Centreon_Object_Acl_Group();
-        $this->params = array(  'acl_group_changed'                         => '1',
-                                'acl_group_activate'	                    => '1'
-                            );
+        $this->params = array(
+            'acl_group_changed' => '1',
+            'acl_group_activate' => '1'
+        );
         $this->nbOfCompulsoryParams = 2;
         $this->activateField = "acl_group_activate";
+        $this->action = "ACLGROUP";
     }
 
     /**
@@ -153,16 +162,9 @@ class CentreonACLGroup extends CentreonObject
      */
     public function __call($name, $arg)
     {
+        /* Get the method name */
         $name = strtolower($name);
-        if (!isset($arg[0])) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $args = explode($this->delim, $arg[0]);
-        $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
-        if (!count($groupIds)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
-        }
-        $groupId = $groupIds[0];
+        /* Get the action and the object */
         if (preg_match("/^(get|set|add|del)([a-zA-Z_]+)/", $name, $matches)) {
             $relclass = "Centreon_Object_Relation_Acl_Group_".ucwords($matches[2]);
             if (class_exists("Centreon_Object_Acl_".ucwords($matches[2]))) {
@@ -174,12 +176,23 @@ class CentreonACLGroup extends CentreonObject
                 $class = "Centreon_Object_".ucwords($matches[2]);
             }
             if (class_exists($relclass) && class_exists($class)) {
+                /* Parse arguments */
+                if (!isset($arg[0])) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
+                $args = explode($this->delim, $arg[0]);
+                $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+                if (!count($groupIds)) {
+                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                }
+                $groupId = $groupIds[0];
+
                 $relobj = new $relclass();
                 $obj = new $class();
                 if ($matches[1] == "get") {
                     $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $groupIds);
                     echo "id".$this->delim."name"."\n";
-                    foreach($tab as $value) {
+                    foreach ($tab as $value) {
                         $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                         echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
                     }
@@ -190,7 +203,7 @@ class CentreonACLGroup extends CentreonObject
                     $relation = $args[1];
                     $relations = explode("|", $relation);
                     $relationTable = array();
-                    foreach($relations as $rel) {
+                    foreach ($relations as $rel) {
                         $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                         if (!count($tab)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
@@ -200,8 +213,12 @@ class CentreonACLGroup extends CentreonObject
                     if ($matches[1] == "set") {
                         $relobj->delete($groupId);
                     }
-                    $existingRelationIds = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), array($groupId));
-                    foreach($relationTable as $relationId) {
+                    $existingRelationIds = $relobj->getTargetIdFromSourceId(
+                        $relobj->getSecondKey(),
+                        $relobj->getFirstKey(),
+                        array($groupId)
+                    );
+                    foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {
                             $relobj->delete($groupId, $relationId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {
@@ -218,5 +235,122 @@ class CentreonACLGroup extends CentreonObject
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
+    }
+
+    /**
+     * @param null $filters
+     */
+    public function export($filters = null)
+    {
+        $aclGroupList = $this->object->getList('*', -1, 0, null, null, $filters);
+
+        $exportLine = '';
+        foreach ($aclGroupList as $aclGroup) {
+            $exportLine .= $this->action . $this->delim . "ADD" . $this->delim
+                . $aclGroup['acl_group_name'] . $this->delim
+                . $aclGroup['acl_group_alias'] . $this->delim . "\n";
+
+            $exportLine .= $this->action . $this->delim . "SETPARAM" . $this->delim
+                . $aclGroup['acl_group_name'] . $this->delim
+                . 'activate' . $this->delim
+                . $aclGroup['acl_group_activate'] . $this->delim . "\n";
+
+            $exportLine .= $this->exportLinkedObjects($aclGroup['acl_group_id'], $aclGroup['acl_group_name']);
+
+            echo $exportLine;
+            $exportLine = '';
+        }
+    }
+
+    /**
+     * @param $aclGroupId
+     * @param $aclGroupName
+     * @return string
+     */
+    private function exportLinkedObjects($aclGroupId, $aclGroupName)
+    {
+        $objectList = array(
+            array(
+                'object' => 'MENU',
+                'relClass' => 'Centreon_Object_Relation_Acl_Group_Menu',
+                'objectFieldName' => 'acl_topo_name'
+            ),
+            array(
+                'object' => 'ACTION',
+                'relClass' => 'Centreon_Object_Relation_Acl_Group_Action',
+                'objectFieldName' => 'acl_action_name'
+            ),
+            array(
+                'object' => 'RESOURCE',
+                'relClass' => 'Centreon_Object_Relation_Acl_Group_Resource',
+                'objectFieldName' => 'acl_res_name'
+            ),
+            array(
+                'object' => 'CONTACT',
+                'relClass' => 'Centreon_Object_Relation_Acl_Group_Contact',
+                'objectFieldName' => 'contact_name'
+            ),
+            array(
+                'object' => 'CONTACTGROUP',
+                'relClass' => 'Centreon_Object_Relation_Acl_Group_Contact_Group',
+                'objectFieldName' => 'cg_name'
+            ),
+        );
+
+        $linkedObjectsSetter = $this->action . $this->delim . 'SET%s' . $this->delim .
+            $aclGroupName . $this->delim .
+            '%s' . $this->delim . "\n";
+
+        $linkedObjectsStr = '';
+
+        foreach ($objectList as $currentObject) {
+            $linkedObjects = $this->getLinkedObject(
+                $aclGroupId,
+                $currentObject['relClass'],
+                $currentObject['objectFieldName']
+            );
+            if (!empty($linkedObjects)) {
+                $linkedObjectsStr .= sprintf($linkedObjectsSetter, $currentObject['object'], $linkedObjects);
+            }
+        }
+
+        return $linkedObjectsStr;
+    }
+
+    /**
+     * @param $aclGroupId
+     * @param $relClass
+     * @param $objectFieldName
+     * @return string
+     * @throws CentreonClapiException
+     */
+    private function getLinkedObject($aclGroupId, $relClass, $objectFieldName)
+    {
+        if (!class_exists($relClass)) {
+            throw  new CentreonClapiException('Unsupported relation object : ' . $relClass);
+        }
+
+        $relObj = new $relClass();
+
+        $comparisonKey1 = $this->object->getTableName() . '.' . $this->object->getPrimaryKey();
+
+        $links = $relObj->getMergedParameters(
+            array(),
+            array($objectFieldName),
+            -1,
+            0,
+            null,
+            'ASC',
+            array($comparisonKey1 => $aclGroupId),
+            'AND'
+        );
+
+        $linkedObjects = '';
+
+        foreach ($links as $link) {
+            $linkedObjects .= $link[$objectFieldName] . '|';
+        }
+
+        return trim($linkedObjects, '|');
     }
 }

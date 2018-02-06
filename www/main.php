@@ -39,54 +39,58 @@ if (defined("E_DEPRECATED")) {
 } else {
     ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT);
 }
-    
-/*
- * Define Local Functions
- *   - remove SQL Injection : Thanks to Julien CAYSSOL
- */
-
-function getParameters($str)
-{
-    $var = null;
-    if (isset($_GET[$str])) {
-        $var = $_GET[$str];
-    }
-    if (isset($_POST[$str])) {
-        $var = $_POST[$str];
-    }
-    if ($var == "") {
-        $var = null;
-    }
-    return htmlentities($var, ENT_QUOTES, "UTF-8");
-}
 
 /*
  * Purge Values
  */
-if (function_exists('filter_var')) {
-    foreach ($_GET as $key => $value) {
-        if (!is_array($value)) {
-            $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-            $_GET[$key] = $value;
+if (function_exists('filter_var')){
+    foreach ($_GET as $key => $value){
+        if (!is_array($value)){
+            $_GET[$key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         }
     }
 }
 
-$p = getParameters("p");
-$o = getParameters("o");
-$min = getParameters("min");
-$type = getParameters("type");
-$search = getParameters("search");
-$limit = getParameters("limit");
-$num = getParameters("num");
+$inputArguments = array(
+    'p' => FILTER_SANITIZE_NUMBER_INT,
+    'o' => FILTER_SANITIZE_STRING,
+    'min' => FILTER_SANITIZE_STRING,
+    'type' => FILTER_SANITIZE_STRING,
+    'search' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_NUMBER_INT
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
+$inputs = array();
+foreach ($inputArguments as $argumentName => $argumentValue) {
+    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
+        $inputs[$argumentName] = $inputGet[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputPost[$argumentName];
+    }
+}
+
+$p = $inputs["p"];
+$o = $inputs["o"];
+$min = $inputs["min"];
+$type = $inputs["type"];
+$search = $inputs["search"];
+$limit = $inputs["limit"];
+$num = $inputs["num"];
 
 /*
  * Include all func
  */
-
-include_once("./basic-functions.php");
 include_once("./include/common/common-Func.php");
-include_once("./header.php");
+include_once("./include/core/header/header.php");
 
 require_once _CENTREON_PATH_ . "www/autoloader.php";
 
@@ -96,7 +100,9 @@ require_once _CENTREON_PATH_ . "www/autoloader.php";
 global $is_admin;
 $is_admin = $centreon->user->admin;
 
-$DBRESULT = $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
+$query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page " .
+            " FROM topology WHERE topology_page = '".$p."'";
+$DBRESULT = $pearDB->query($query);
 $redirect = $DBRESULT->fetchRow();
 
 /*
@@ -112,7 +118,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
@@ -133,7 +139,7 @@ if ($acl_page == 1 || $acl_page == 2) {
             } elseif ($ret['topology_url']) {
                 $url = $ret['topology_url'];
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         }
     } elseif ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
@@ -143,7 +149,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         } else {
             if ($ret["topology_url_opt"]) {
@@ -157,7 +163,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $ret["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         }
     } elseif ($redirect["topology_page"] >= 1000) {
@@ -167,14 +173,14 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         } else {
             if (file_exists($redirect["topology_url"]) && $ret['topology_page']) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./alt_error.php";
+                $url = "./include/core/errors/alt_error.php";
             }
         }
     }
@@ -182,40 +188,48 @@ if ($acl_page == 1 || $acl_page == 2) {
         if ($o == 'c') {
             $o = 'w';
         } elseif ($o == 'a') {
-            $url = "./alt_error.php";
+            $url = "./include/core/errors/alt_error.php";
         }
     }
 } else {
-    $url = "./alt_error.php";
+    $url = "./include/core/errors/alt_error.php";
 }
 
-    /*
-	 *  Header HTML
-	 */
-    include_once "./htmlHeader.php";
+/*
+ *  Header HTML
+ */
+include_once "./include/core/header/htmlHeader.php";
 
-    /*
-	 * Display Menu
-	 */
+/*
+ * Display Menu
+ */
 if (!$min) {
-    include_once "menu/Menu.php";
+    include_once "./include/core/menu/menu.php";
 }
 
 if (!$centreon->user->showDiv("header")) {
-?> <script type="text/javascript">new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { setQuickSearchPosition(); } });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { 
+        setQuickSearchPosition(); } 
+    });
+</script> <?php
 }
 if (!$centreon->user->showDiv("menu_3")) {
-?> <script type="text/javascript">new Effect.toggle('menu_3', 'appear', { duration : 0 });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('menu_3', 'appear', { duration : 0 });
+</script> <?php
 }
 if (!$centreon->user->showDiv("menu_2")) {
-?> <script type="text/javascript">new Effect.toggle('menu_2', 'appear', { duration : 0 });</script> <?php
+?><script type="text/javascript">
+    new Effect.toggle('menu_2', 'appear', { duration : 0 });
+</script> <?php
 }
 
 /*
  * Display PathWay
  */
 if ($min != 1) {
-    include_once "pathWay.php";
+    include_once "./include/core/pathway/pathway.php";
 }
 
 /*
@@ -243,30 +257,65 @@ if (!isset($centreon->historyPage)) {
 /*
  * Keep in memory all informations about pagination, keyword for search...
  */
+$inputArguments = array(
+    'num' => FILTER_SANITIZE_NUMBER_INT,
+    'search' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_NUMBER_INT
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
+
 if (isset($url) && $url) {
-    if (isset($_GET["num"])) {
-        $centreon->historyPage[$url] = $_GET["num"];
-    }
-    if (isset($_POST["num"])) {
-        $centreon->historyPage[$url] = $_POST["num"];
-    }
-    if (isset($_GET["search"])) {
-        $centreon->historySearch[$url] = $_GET["search"];
-    }
-    if (isset($_POST["search"])) {
-        $centreon->historySearch[$url] = $_POST["search"];
-    }
-    if (isset($_GET["search_service"])) {
-        $centreon->historySearchService[$url] = $_GET["search_service"];
-    }
-    if (isset($_POST["search_service"])) {
-        $centreon->historySearchService[$url] = $_POST["search_service"];
-    }
-    if (isset($_GET["limit"])) {
-        $centreon->historyLimit[$url] = $_GET["limit"];
-    }
-    if (isset($_POST["limit"])) {
-        $centreon->historyLimit[$url] = $_POST["limit"];
+    foreach ($inputArguments as $argumentName => $argumentFlag) {
+        switch ($argumentName) {
+            case 'limit':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyLimit[$url] = 30;
+                }
+                break;
+            case 'num':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyPage[$url] = 0;
+                }
+                break;
+            case 'search':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearch[$url] = '';
+                }
+                break;
+            case 'search_service':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearchService[$url] = '';
+                }
+                break;
+            default:
+                continue;
+                break;
+        }
+
     }
 }
 
@@ -277,12 +326,8 @@ if (!$min) {
     print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 }
 
-print "<!-- Footer -->";
-include_once "footer.php";
+/*
+ * Include Footer 
+ */
+include_once "./include/core/footer/footer.php";
 
-?>
-<script type='text/javascript'>
-var centreonTooltip = new CentreonToolTip();
-centreonTooltip.setTitle('<?php echo _("Help"); ?>');
-centreonTooltip.render();
-</script>

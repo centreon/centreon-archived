@@ -31,34 +31,31 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
-	if (!isset ($oreon))
-		exit ();
-	
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
-	/*
-	 * Path to the option dir
-	 */
-	$path = "./include/configuration/configGenerateTraps/";
-	
-	/*
-	 * PHP functions
-	 */
-	require_once "./include/common/common-Func.php";
-	
-	switch ($o)	{
-		default : 
-			require_once($path."formGenerateTraps.php"); 
-			break;
-	}
-?>
+if (!isset($centreon)) {
+    exit();
+}
+
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+/*
+ * Path to the option dir
+ */
+$path = "./include/configuration/configGenerateTraps/";
+
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+
+switch ($o) {
+    default:
+        require_once($path."formGenerateTraps.php");
+        break;
+}

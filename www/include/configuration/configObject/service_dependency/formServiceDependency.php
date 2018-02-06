@@ -40,33 +40,33 @@ $parentServices = array();
 $childServices = array();
 
 $initialValues = array();
-if (($o == "c" || $o == "w") && $dep_id)	{
-	$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+if (($o == "c" || $o == "w") && $dep_id) {
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
-	// Set base value
-	$dep = array_map("myDecode", $DBRESULT->fetchRow());
+    // Set base value
+    $dep = array_map("myDecode", $DBRESULT->fetchRow());
 
-	// Set Notification Failure Criteria
-	$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
-	foreach ($dep["notification_failure_criteria"] as $key => $value) {
-		$dep["notification_failure_criteria"][trim($value)] = 1;
-	}
+    // Set Notification Failure Criteria
+    $dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
+    foreach ($dep["notification_failure_criteria"] as $key => $value) {
+        $dep["notification_failure_criteria"][trim($value)] = 1;
+    }
 
-	// Set Execution Failure Criteria
-	$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
-	foreach ($dep["execution_failure_criteria"] as $key => $value) {
-		$dep["execution_failure_criteria"][trim($value)] = 1;
-	}
+    // Set Execution Failure Criteria
+    $dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
+    foreach ($dep["execution_failure_criteria"] as $key => $value) {
+        $dep["execution_failure_criteria"][trim($value)] = 1;
+    }
 
         $DBRESULT->free();
 }
 
 # Var information to format the element
-$attrsText 		= array("size"=>"30");
-$attrsText2 	= array("size"=>"10");
+$attrsText      = array("size"=>"30");
+$attrsText2     = array("size"=>"10");
 $attrsAdvSelect = array("style" => "width: 400px; height: 200px;");
-$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsTextarea  = array("rows"=>"3", "cols"=>"30");
+$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
@@ -83,11 +83,11 @@ $attrServices = array(
 # Form begin
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
-	$form->addElement('header', 'title', _("Add a Dependency"));
+    $form->addElement('header', 'title', _("Add a Dependency"));
 } elseif ($o == "c") {
-	$form->addElement('header', 'title', _("Modify a Dependency"));
+    $form->addElement('header', 'title', _("Modify a Dependency"));
 } elseif ($o == "w") {
-	$form->addElement('header', 'title', _("View a Dependency"));
+    $form->addElement('header', 'title', _("View a Dependency"));
 }
 
 # Dependency basic information
@@ -166,169 +166,169 @@ $tpl = initSmartyTpl($path, $tpl);
 $tpl->assign("sort1", _("Information"));
 $tpl->assign("sort2", _("Service Description"));
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 
 // prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
 // Just watch a Dependency information
 if ($o == "w") {
-	if ($centreon->user->access->page($p) != 2) {
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
-	}
+    }
     $form->setDefaults($dep);
-	$form->freeze();
+    $form->freeze();
 } elseif ($o == "c") {
-	$subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
 } elseif ($o == "a") {
-	$subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-	$res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-	$form->setDefaults(array('inherits_parent', '0'));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->setDefaults(array('inherits_parent', '0'));
 }
 $tpl->assign("nagios", $oreon->user->get_version());
 
 $valid = false;
-if ($form->validate())	{
-	$depObj = $form->getElement('dep_id');
-	if ($form->getSubmitValue("submitA")) {
-		$depObj->setValue(insertServiceDependencyInDB());
-	} elseif ($form->getSubmitValue("submitC")) {
-		updateServiceDependencyInDB($depObj->getValue("dep_id"));
-	}
-	$o = NULL;
-	$valid = true;
+if ($form->validate()) {
+    $depObj = $form->getElement('dep_id');
+    if ($form->getSubmitValue("submitA")) {
+        $depObj->setValue(insertServiceDependencyInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateServiceDependencyInDB($depObj->getValue("dep_id"));
+    }
+    $o = null;
+    $valid = true;
 }
 
-if ($valid){
-	require_once("listServiceDependency.php");
+if ($valid) {
+    require_once("listServiceDependency.php");
 } else {
-	/*
+    /*
 	 * Apply a template definition
 	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->display("formServiceDependency.ihtml");
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('o', $o);
+    $tpl->display("formServiceDependency.ihtml");
 }
 ?>
 <script type="text/javascript">
 function uncheckAllS(object)
 {
-	if (object.id == "sNone" && object.checked) {
-		document.getElementById('sOk').checked = false;
-		document.getElementById('sWarning').checked = false;
-		document.getElementById('sUnknown').checked = false;
-		document.getElementById('sCritical').checked = false;
-		document.getElementById('sPending').checked = false;
-	} else {
-		document.getElementById('sNone').checked = false;
-	}
+    if (object.id == "sNone" && object.checked) {
+        document.getElementById('sOk').checked = false;
+        document.getElementById('sWarning').checked = false;
+        document.getElementById('sUnknown').checked = false;
+        document.getElementById('sCritical').checked = false;
+        document.getElementById('sPending').checked = false;
+    } else {
+        document.getElementById('sNone').checked = false;
+    }
 }
 
 function uncheckAllS2(object)
 {
-	if (object.id == "sNone2" && object.checked) {
-		document.getElementById('sOk2').checked = false;
-		document.getElementById('sWarning2').checked = false;
-		document.getElementById('sUnknown2').checked = false;
-		document.getElementById('sCritical2').checked = false;
-		document.getElementById('sPending2').checked = false;
-	} else {
-		document.getElementById('sNone2').checked = false;
-	}
+    if (object.id == "sNone2" && object.checked) {
+        document.getElementById('sOk2').checked = false;
+        document.getElementById('sWarning2').checked = false;
+        document.getElementById('sUnknown2').checked = false;
+        document.getElementById('sCritical2').checked = false;
+        document.getElementById('sPending2').checked = false;
+    } else {
+        document.getElementById('sNone2').checked = false;
+    }
 }
 
 function hostFilterSelect(type, elem)
 {
-	var arg = 'host_id='+elem.value;
+    var arg = 'host_id='+elem.value;
 
-	if (window.XMLHttpRequest) {
-		var xhr = new XMLHttpRequest();
-	} else if(window.ActiveXObject){r
-    	try {
-    		var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-    	} catch (e) {
-    		var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    	}
-	} else {
-	   var xhr = false;
-	}
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else if(window.ActiveXObject){r
+        try {
+            var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+    } else {
+       var xhr = false;
+    }
 
-	var mselect1;
-	var mselect2;
-	if (type == "parent") {
-		mselect1 = "dep_hSvPar-f";
-		mselect2 = "__dep_hSvPar";
-	} else {
-		mselect1 = "dep_hSvChi-f";
-		mselect2 = "__dep_hSvChi";
-	}
+    var mselect1;
+    var mselect2;
+    if (type == "parent") {
+        mselect1 = "dep_hSvPar-f";
+        mselect2 = "__dep_hSvPar";
+    } else {
+        mselect1 = "dep_hSvChi-f";
+        mselect2 = "__dep_hSvChi";
+    }
 
-	xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
-	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhr.send(arg);
+    xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send(arg);
 
-	xhr.onreadystatechange = function()
-	{
-		if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
-			var response = xhr.responseXML.documentElement;
-			var _services = response.getElementsByTagName("services");
-			var _selbox;
+    xhr.onreadystatechange = function()
+    {
+        if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
+            var response = xhr.responseXML.documentElement;
+            var _services = response.getElementsByTagName("services");
+            var _selbox;
 
-			if (document.getElementById(mselect1)) {
-				_selbox = document.getElementById(mselect1);
-				if (type == "parent") {
-					_selected = document.getElementById("dep_hSvPar-t");
-				} else {
-					_selected = document.getElementById("dep_hSvChi-t");
-				}
-			} else if (document.getElementById(mselect2)) {
-				_selbox = document.getElementById(mselect2);
-				if (type == "parent") {
-					_selected = document.getElementById("_dep_hSvPar");
-				} else {
-					_selected = document.getElementById("_dep_hSvChi");
-				}
-			}
+            if (document.getElementById(mselect1)) {
+                _selbox = document.getElementById(mselect1);
+                if (type == "parent") {
+                    _selected = document.getElementById("dep_hSvPar-t");
+                } else {
+                    _selected = document.getElementById("dep_hSvChi-t");
+                }
+            } else if (document.getElementById(mselect2)) {
+                _selbox = document.getElementById(mselect2);
+                if (type == "parent") {
+                    _selected = document.getElementById("_dep_hSvPar");
+                } else {
+                    _selected = document.getElementById("_dep_hSvChi");
+                }
+            }
 
-			while ( _selbox.options.length > 0 ){
-				_selbox.options[0] = null;
-			}
+            while ( _selbox.options.length > 0 ){
+                _selbox.options[0] = null;
+            }
 
-			if (_services.length == 0) {
-				_selbox.setAttribute('disabled', 'disabled');
-			} else {
-				_selbox.removeAttribute('disabled');
-			}
+            if (_services.length == 0) {
+                _selbox.setAttribute('disabled', 'disabled');
+            } else {
+                _selbox.removeAttribute('disabled');
+            }
 
-			for (var i = 0 ; i < _services.length ; i++) {
-				var _svc 		 = _services[i];
-				var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-				var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-				var validFlag = true;
+            for (var i = 0 ; i < _services.length ; i++) {
+                var _svc         = _services[i];
+                var _id          = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+                var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+                var validFlag = true;
 
-				for (var j = 0; j < _selected.length; j++) {
-					if (_id == _selected.options[j].value) {
-						validFlag = false;
-					}
-				}
+                for (var j = 0; j < _selected.length; j++) {
+                    if (_id == _selected.options[j].value) {
+                        validFlag = false;
+                    }
+                }
 
-				if (validFlag == true) {
-    				new_elem = new Option(_description,_id);
-    				_selbox.options[_selbox.length] = new_elem;
-				}
-			}
-		}
-	}
+                if (validFlag == true) {
+                    new_elem = new Option(_description,_id);
+                    _selbox.options[_selbox.length] = new_elem;
+                }
+            }
+        }
+    }
 }
 </script>

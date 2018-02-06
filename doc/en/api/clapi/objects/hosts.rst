@@ -83,6 +83,7 @@ In order to delete one host, use the **DEL** action. You have to list the availa
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+.. _clapi-hosts-setparam:
 
 Setparam
 --------
@@ -120,11 +121,9 @@ check_command_arguments	             Check command arguments
 
 check_interval	                     Normal check interval
 
-check_freshness	                     Check freshness (in seconds)
+check_freshness	                     Enables check freshness
 
 check_period	                     Check period
-
-checks_enabled	                     Whether or not checks are enabled
 
 contact_additive_inheritance         Enables contact additive inheritance
 
@@ -140,7 +139,11 @@ first_notification_delay	     First notification delay (in seconds)
 
 flap_detection_enabled	             Whether or not flap detection is enabled
 
-flap_detection_options	             Flap detection options
+flap_detection_options	             Flap detection options 'o' for Up, 'd' for Down, 'u' for Unreachable
+
+host_high_flap_threshold             High flap threshold
+
+host_low_flap_threshold              Low flap threshold
 
 icon_image	                     Icon image
 
@@ -149,8 +152,6 @@ icon_image_alt	                     Icon image text
 max_check_attempts                   Maximum number of attempt before a HARD state is declared
 
 name	                             Host name
-
-normal_check_interval                value in minutes
 
 notes	                             Notes
 
@@ -163,6 +164,8 @@ notification_interval	             Notification interval
 notification_options	             Notification options
 
 notification_period	             Notification period
+
+recovery_notification_delay          Recovery notification delay
 
 obsess_over_host	             Whether or not obsess over host option is enabled
 
@@ -184,16 +187,122 @@ stalking_options	             Comma separated options: 'o' for OK, 'd' for Down,
 
 statusmap_image	                     Status map image (used by statusmap
 
-vrml_image	                     VRML image
-
 host_notification_options            Notification options (d,u,r,f,s)
 
-timezone                   Timezone
+timezone                             Timezone
 ==================================== =================================================================================
 
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
+
+Getparam
+--------
+
+In order to get specific parameters on a host configuration, use the **GETPARAM** action::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias"
+  alias : test
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias|alia|timezone"
+  alias : test
+  timezone : Europe/Berlin
+  Object not found:alia
+
+You may edit the following parameters:
+
+==================================== =================================================================================
+Parameter	                     Description
+==================================== =================================================================================
+2d_coords	                     2D coordinates (used by statusmap)
+
+3d_coords	                     3D coordinates (used by statusmap)
+
+action_url	                     Action URL
+
+activate	                     Whether or not host is enabled
+
+active_checks_enabled	             Whether or not active checks are enabled
+
+address	                             Host IP Address
+
+alias	                             Alias
+
+check_command	                     Check command
+
+check_command_arguments	             Check command arguments
+
+check_interval	                     Normal check interval
+
+check_freshness	                     Enables check freshness
+
+check_period	                     Check period
+
+contact_additive_inheritance         Enables contact additive inheritance
+
+cg_additive_inheritance              Enables contactgroup additive inheritance
+
+event_handler	                     Event handler command
+
+event_handler_arguments	             Event handler command arguments
+
+event_handler_enabled	             Whether or not event handler is enabled
+
+first_notification_delay	     First notification delay (in seconds)
+
+flap_detection_enabled	             Whether or not flap detection is enabled
+
+flap_detection_options	             Flap detection options 'o' for Up, 'd' for Down, 'u' for Unreachable
+
+host_high_flap_threshold             High flap threshold
+
+host_low_flap_threshold              Low flap threshold
+
+icon_image	                     Icon image
+
+icon_image_alt	                     Icon image text
+
+max_check_attempts                   Maximum number of attempt before a HARD state is declared
+
+name	                             Host name
+
+notes	                             Notes
+
+notes_url	                     Notes URL
+
+notifications_enabled	             Whether or not notification is enabled
+
+notification_interval	             Notification interval
+
+notification_options	             Notification options
+
+notification_period	             Notification period
+
+recovery_notification_delay          Recovery notification delay
+
+obsess_over_host	             Whether or not obsess over host option is enabled
+
+passive_checks_enabled	             Whether or not passive checks are enabled
+
+process_perf_data	             Process performance data command
+
+retain_nonstatus_information         Whether or not there is non-status retention
+
+retain_status_information	     Whether or not there is status retention
+
+retry_check_interval                 Retry check interval
+
+snmp_community                       Snmp Community
+
+snmp_version                         Snmp version
+
+stalking_options	             Comma separated options: 'o' for OK, 'd' for Down, 'u' for Unreachable
+
+statusmap_image	                     Status map image (used by statusmap
+
+host_notification_options            Notification options (d,u,r,f,s)
+
+timezone                             Timezone
+==================================== =================================================================================
 
 
 Setinstance

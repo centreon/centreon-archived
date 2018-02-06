@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,9 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  */
+
 namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
@@ -141,7 +140,7 @@ class CentreonTrap extends CentreonObject
             if ($params[1] == "manufacturer" || $params[1] == "vendor") {
                 $params[1] = "manufacturer_id";
                 $params[2] = $this->manufacturerObj->getId($params[2]);
-            } elseif ($params[1] == "status"){
+            } elseif ($params[1] == "status") {
                 $params[1] = "traps_status";
                 $params[2] = $this->getStatusInt($params[2]);
             } elseif ($params[1] == "output") {
@@ -242,15 +241,29 @@ class CentreonTrap extends CentreonObject
         $regexp = $params[2];
         $status = $this->getStatusInt($params[3]);
         $matchObj = new \Centreon_Object_Trap_Matching();
-        $elements = $matchObj->getList("*", -1, 0, null, null, array('trap_id' => $trapId, 'tmo_regexp' => $regexp, 'tmo_string' => $string, 'tmo_status' => $status), 'AND');
+        $elements = $matchObj->getList(
+            "*",
+            -1,
+            0,
+            null,
+            null,
+            array(
+                'trap_id' => $trapId,
+                'tmo_regexp' => $regexp,
+                'tmo_string' => $string,
+                'tmo_status' => $status),
+            'AND'
+        );
         if (!count($elements)) {
             $elements = $matchObj->getList("*", -1, 0, null, null, array('trap_id' => $trapId));
             $order = count($elements)+1;
-            $matchObj->insert(array('trap_id'    => $trapId,
-        			    'tmo_regexp' => $regexp,
-        			    'tmo_string' => $string,
-        			    'tmo_status' => $status,
-        			    'tmo_order'  => $order));
+            $matchObj->insert(array(
+                'trap_id'    => $trapId,
+                'tmo_regexp' => $regexp,
+                'tmo_string' => $string,
+                'tmo_status' => $status,
+                'tmo_order'  => $order
+            ));
         }
     }
 
@@ -264,6 +277,9 @@ class CentreonTrap extends CentreonObject
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (!is_numeric($parameters)) {
+            throw new CentreonClapiException('Incorrect id parameters');
         }
         $matchObj = new \Centreon_Object_Trap_Matching();
         $matchObj->delete($parameters);
@@ -285,6 +301,9 @@ class CentreonTrap extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $matchingId = $params[0];
+        if (!is_numeric($matchingId)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $key = $params[1];
         $value = $params[2];
         if ($key == 'trap_id') {
@@ -305,10 +324,9 @@ class CentreonTrap extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filters = null)
     {
-        $matchingObj = new \Centreon_Object_Trap_Matching();
-        $elements = $this->object->getList("*", -1, 0);
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";
             foreach ($this->insertParams as $param) {
@@ -325,14 +343,19 @@ class CentreonTrap extends CentreonObject
                             $value = $this->manufacturerObj->getName($value);
                         }
                         $value = CentreonUtils::convertLineBreak($value);
-                        echo $this->action.$this->delim."setparam".$this->delim.$element[$this->object->getUniqueLabelField()].$this->delim.$parameter.$this->delim.$value."\n";
+                        echo $this->action . $this->delim
+                            . "setparam" . $this->delim
+                            . $element[$this->object->getUniqueLabelField()] . $this->delim
+                            . $parameter . $this->delim
+                            . $value . "\n";
                     }
                 }
             }
+            $matchingObj = new \Centreon_Object_Trap_Matching();
             $matchingProps = $matchingObj->getList("*", -1, 0, null, null, array('trap_id' => $element['traps_id']));
             foreach ($matchingProps as $prop) {
                 echo $this->action.$this->delim.
-                	 "addmatching".$this->delim.
+                     "addmatching".$this->delim.
                      $element['traps_name'].$this->delim.
                      $prop['tmo_string'].$this->delim.
                      $prop['tmo_regexp'].$this->delim.

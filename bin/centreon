@@ -67,7 +67,13 @@ $shortopts .= "a:"; /* Action */
 $shortopts .= "i:"; /* Import Massive data */
 $shortopts .= "e"; /* Export all configuration */
 
-$options = getopt($shortopts);
+$longopts  = array(
+    "select:",
+    "filter-type:",
+    "filter-ariane:"
+);
+
+$options = getopt($shortopts, $longopts);
 if (isset($options['d'])) {
     $debug = 1;
 }
@@ -86,10 +92,9 @@ if ($debug) {
 	}
 }
 
-
-
 require_once _CENTREON_ETC_."/centreon.conf.php";
 require_once _CLAPI_CLASS_."/centreonAPI.class.php";
+require_once _CLAPI_CLASS_."/centreonUtils.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 
 $dbConfig['host'] = $conf_centreon['hostCentreon'];
@@ -105,6 +110,7 @@ if (isset($conf_centreon['port'])) {
     }
 }
 $db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+$db->query('SET NAMES utf8');
 $dbConfig['dbname'] = $conf_centreon['dbcstg'];
 $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
 try {
@@ -122,8 +128,13 @@ try {
  * Create Centreon API object
  */
 CentreonClapi\CentreonUtils::setUserName($options['u']);
-$api = new CentreonClapi\CentreonAPI((isset($options["u"]) ? $options["u"] : "") , (isset($options["p"]) ? $options["p"] : ""), (isset($options["a"]) ? $options["a"] : ""), $centreon_path, $options);
-
+$api = CentreonClapi\CentreonAPI::getInstance(
+    (isset($options["u"]) ? $options["u"] : ""), 
+    (isset($options["p"]) ? $options["p"] : ""), 
+    (isset($options["a"]) ? $options["a"] : ""), 
+    $centreon_path, 
+    $options
+);
 if (isset($options["h"])) {
     $api->printHelp();
 }
@@ -177,7 +188,7 @@ if ($api->login == "" || $api->password == "") {
     } else if (isset($api->options["a"])) {
         try {
             $api->launchAction();
-        } catch (CentreonClapiException $e) {
+        } catch (\CentreonClapi\CentreonClapiException $e) {
             print $e->getMessage();
             $api->setReturnCode(1);
         } catch (Exception $e) {
@@ -192,5 +203,4 @@ if ($api->login == "" || $api->password == "") {
         $api->setReturnCode(1);
     }
 }
-	$api->close();
-?>
+$api->close();

@@ -31,48 +31,41 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($centreon)) {
+    exit();
+}
 
-	require_once './class/centreonDuration.class.php';
-	include_once("./include/monitoring/common-Func.php");
-	include_once("./include/monitoring/external_cmd/cmd.php");
+require_once './class/centreonDuration.class.php';
+include_once("./include/monitoring/common-Func.php");
+include_once("./include/monitoring/external_cmd/cmd.php");
 
-	$continue = true;
+$continue = true;
 
-	/*
-	 * Pear library
-	 */
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$path_hg = "./include/monitoring/status/HostGroups/";
+$path_hg = "./include/monitoring/status/HostGroups/";
 
-	$pathDetails = "./include/monitoring/objectDetails/";
+$pathDetails = "./include/monitoring/objectDetails/";
 
-	include_once("./class/centreonDB.class.php");
+include_once("./class/centreonDB.class.php");
 
-	if ($oreon->broker->getBroker() == "ndo") {
-		$pearDBndo = new CentreonDB("ndo");
-		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
-			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
-			$continue = false;
-		}
-	}
-
-	if ($continue) {
-		switch ($o)	{
-			case "hg" 	: require_once($path_hg."hostGroup.php"); break;
-			case "hgpb" : require_once($path_hg."hostGroup.php"); break;
-			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
-			default 	: require_once($path_hg."hostGroup.php"); break;
-		}
-	}
-?>
+switch ($o) {
+    case "hg":
+        require_once($path_hg."hostGroup.php");
+        break;
+    case "hgpb":
+        require_once($path_hg."hostGroup.php");
+        break;
+    case "hgd":
+        require_once($pathDetails."hostgroupDetails.php");
+        break;
+    default:
+        require_once($path_hg."hostGroup.php");
+        break;
+}

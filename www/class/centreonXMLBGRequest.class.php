@@ -90,6 +90,7 @@ class CentreonXMLBGRequest {
      */
     var $defaultPoller;
     var $defaultHostgroups;
+    var $defaultServicegroups;
     var $defaultCriticality = 0;
 
     /*
@@ -106,7 +107,7 @@ class CentreonXMLBGRequest {
      * $compress	bool 	compress enable.
      */
 
-    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null) {
+    public function __construct($session_id, $dbNeeds, $headerType, $debug, $compress = null, $fullVersion = 1) {
         if (!isset($debug)) {
             $this->debug = 0;
         }
@@ -138,12 +139,14 @@ class CentreonXMLBGRequest {
          */
         $this->monObj = new CentreonMonitoring($this->DB);
 
-        /*
-         * Timezone management
-         */
-        $this->GMT = new CentreonGMT($this->DB);
-        $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
-
+        if ($fullVersion) {
+            /*
+             * Timezone management
+             */
+            $this->GMT = new CentreonGMT($this->DB);
+            $this->GMT->getMyGMTFromSession($this->session_id, $this->DB);
+        }
+        
         /*
          * XML class
          */
@@ -271,9 +274,13 @@ class CentreonXMLBGRequest {
     public function getDefaultFilters() {
         $this->defaultPoller = -1;
         $this->defaultHostgroups = NULL;
+        $this->defaultServicegroups = NULL;
         if (isset($_SESSION['monitoring_default_hostgroups'])) {
             $this->defaultHostgroups = $_SESSION['monitoring_default_hostgroups'];
         }
+        if (isset($_SESSION['monitoring_default_servicegroups'])) {
+            $this->defaultServicegroups = $_SESSION['monitoring_default_servicegroups'];
+       }
         if (isset($_SESSION['monitoring_default_poller'])) {
             $this->defaultPoller = $_SESSION['monitoring_default_poller'];
         }
@@ -290,6 +297,10 @@ class CentreonXMLBGRequest {
         $_SESSION['monitoring_default_hostgroups'] = $hg;
     }
 
+	public function setServiceGroupsHistory($sg) {
+        $_SESSION['monitoring_default_servicegroups'] = sg;
+    }
+
     public function setCriticality($criticality) {
         $_SESSION['criticality_id'] = $criticality;
     }
@@ -300,7 +311,8 @@ class CentreonXMLBGRequest {
                 if ($name == 'num' && $tab[$name] < 0) {
                     $tab[$name] = 0;
                 }
-                return CentreonDB::escape($tab[$name]);
+                $value = htmlspecialchars($tab[$name], ENT_QUOTES, 'utf-8');
+                return CentreonDB::escape($value);
             } else {
                 return CentreonDB::escape($defaultValue);
             }

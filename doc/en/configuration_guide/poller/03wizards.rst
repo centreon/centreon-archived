@@ -42,9 +42,6 @@ Configuration of a poller for a distributed architecture
    :align: center
    :alt: Schema distributed monitoring
 
-.. note::
-   :alt: Schema distributed monitoring
-
 #. Choose **Simple poller**
 #. Enter a name for the configuration
 #. Select  a poller

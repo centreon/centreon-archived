@@ -33,6 +33,10 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_name" />&nbsp;{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_activate" />&nbsp;{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_server_id" />&nbsp;{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="use_timezone"> {$form.use_timezone.label}</td>
+				<td class="FormRowValue">{$form.use_timezone.html}</td>
+			</tr>
 			
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
@@ -52,8 +56,6 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file" />&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="object_cache_file" />&nbsp;{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="precached_object_file" />&nbsp;{$form.precached_object_file.label}</td><td class="FormRowValue">{$form.precached_object_file.html}</td></tr>		
 	
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
@@ -193,7 +195,6 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_service_retries">&nbsp;{$form.log_service_retries.label}</td><td class="FormRowValue">{$form.log_service_retries.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_host_retries">&nbsp;{$form.log_host_retries.label}</td><td class="FormRowValue">{$form.log_host_retries.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_event_handlers">&nbsp;{$form.log_event_handlers.label}</td><td class="FormRowValue">{$form.log_event_handlers.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_initial_states">&nbsp;{$form.log_initial_states.label}</td><td class="FormRowValue">{$form.log_initial_states.html}<font color='red' style='padding-left:120px;'>{$initial_state_warning}</font></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_external_commands">&nbsp;{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_passive_checks">&nbsp;{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
@@ -345,10 +346,8 @@
               </td>
             </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_large_installation_tweaks">&nbsp;{$form.use_large_installation_tweaks.label}</td><td class="FormRowValue">{$form.use_large_installation_tweaks.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="free_child_process_memory">&nbsp;{$form.free_child_process_memory.label}</td><td class="FormRowValue">{$form.free_child_process_memory.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="child_processes_fork_twice">&nbsp;{$form.child_processes_fork_twice.label}</td><td class="FormRowValue">{$form.child_processes_fork_twice.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_environment_macros">&nbsp;{$form.enable_environment_macros.label}</td><td class="FormRowValue">{$form.enable_environment_macros.html}</td></tr>
-                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_setpgid">&nbsp;{$form.use_setpgid.label}</td><td class="FormRowValue">{$form.use_setpgid.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_setpgid">&nbsp;{$form.use_setpgid.label}</td><td class="FormRowValue">{$form.use_setpgid.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}			
@@ -362,16 +361,15 @@
               </td>
             </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><h4></h4></td></tr>
+              <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_user">&nbsp;{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_group">&nbsp;{$form.nagios_group.label}</td><td class="FormRowValue">{$form.nagios_group.html}</td></tr>
-			<tr class="list_lvl_1"><h4></h4></td></tr>	
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="illegal_object_name_chars">&nbsp;{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="illegal_macro_output_chars">&nbsp;{$form.illegal_macro_output_chars.label}</td><td class="FormRowValue">{$form.illegal_macro_output_chars.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_regexp_matching">&nbsp;{$form.use_regexp_matching.label}</td><td class="FormRowValue">{$form.use_regexp_matching.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_true_regexp_matching">&nbsp;{$form.use_true_regexp_matching.label}</td><td class="FormRowValue">{$form.use_true_regexp_matching.html}</td></tr>
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4></h4></td></tr>		
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$AdminInfo}</h4></td></tr>		
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
 			{if $o == "a" || $o == "c"}

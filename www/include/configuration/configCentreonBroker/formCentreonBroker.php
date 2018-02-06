@@ -33,11 +33,11 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin && isset($_GET['id'])
+if (!$centreon->user->admin && isset($_GET['id'])
     && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -53,11 +53,11 @@ $cbObj = new CentreonConfigCentreonBroker($pearDB);
  */
 $nagios_servers = array();
 $serverAcl = "";
-if (!$oreon->user->admin && $serverString != "''") {
+if (!$centreon->user->admin && $serverString != "''") {
     $serverAcl = " WHERE id IN ($serverString) ";
 }
 $DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name");
-while($nagios_server = $DBRESULT->fetchRow()) {
+while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
 $DBRESULT->free();
@@ -76,9 +76,9 @@ $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Centreon-Broker Configuration"));
-} else if ($o == "c") {
+} elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a Centreon-Broker Configuration"));
-} else if ($o == "w") {
+} elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a Centreon-Broker Configuration"));
 }
 
@@ -99,11 +99,10 @@ $form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
-$form->addElement('text', 'retention_path', _("Retention path"), $attrsText);
+$form->addElement('text', 'cache_directory', _("Cache directory"), $attrsText);
 
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
-$command = $form->addElement('text', 'command_file', _('Command file'), $attrText);
-$command->freeze();
+$command = $form->addElement('text', 'command_file', _('Command file'), $attrsText);
 
 $timestamp = array();
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("Yes"), 1);
@@ -120,15 +119,15 @@ $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
+$centreonbroker = array();
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Yes"), 1);
+$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("No"), 0);
+$form->addGroup($centreonbroker, 'activate_watchdog', _("Link to cbd service"), '&nbsp;');
+
 $stats_activate = array();
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
 $stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("No"), 0);
 $form->addGroup($stats_activate, 'stats_activate', _("Statistics"), '&nbsp;');
-
-$correlation_activate = array();
-$correlation_activate[] = HTML_QuickForm::createElement('radio', 'correlation_activate', null, _("Yes"), 1);
-$correlation_activate[] = HTML_QuickForm::createElement('radio', 'correlation_activate', null, _("No"), 0);
-$form->addGroup($correlation_activate, 'correlation_activate', _("Correlation"), '&nbsp;');
 
 $tags = $cbObj->getTags();
 
@@ -142,18 +141,18 @@ foreach ($tags as $tagId => $tag) {
                     'forms' => array());
 }
 
-/*
+/**
  * Default values
  */
-if (isset($_GET["o"]) && $_GET["o"] == 'a'){
+if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     $form->setDefaults(array(
         "name" => '',
-        "retention_path" => '/var/lib/centreon-broker/',
+        "cache_directory" => '/var/lib/centreon-broker/',
         "write_timestamp" => '1',
         "write_thread_id" => '1',
         "stats_activate" => '1',
-        "correlation_activate" => '0',
-        "activate" => '1'
+        "activate" => '1',
+        "activate_watchdog" => '1'
     ));
     $tpl->assign('config_id', 0);
 } else {
@@ -178,49 +177,54 @@ $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
+/**
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Mandatory name"), 'required');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('filename', _("Mandatory filename"), 'required');
-$form->addRule('retention_path', _("Mandatory retention path"), 'required');
+$form->addRule('cache_directory', _("Mandatory cache directory"), 'required');
 $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
 
-if ($o == "w")  {
+if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'")
+        );
     }
     $form->freeze();
- } else if ($o == "c")   {
+} elseif ($o == "c") {
     /*
      * Modify a Centreon Broker information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
- } else if ($o == "a")   {
+} elseif ($o == "a") {
     /*
      * Add a nagios information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
- }
+}
 
 $valid = false;
-if ($form->validate())  {
+if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
     if ($form->getSubmitValue("submitA")) {
         $cbObj->insertConfig($_POST);
-    } else if ($form->getSubmitValue("submitC")) {
+    } elseif ($form->getSubmitValue("submitC")) {
         $cbObj->updateConfig($_POST['id'], $_POST);
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 if ($valid) {
     require_once($path."listCentreonBroker.php");
- } else {
+} else {
     /*
      * Apply a template definition
      */
@@ -235,4 +239,3 @@ if ($valid) {
     $tpl->assign('tabs', $tabs);
     $tpl->display("formCentreonBroker.ihtml");
 }
-?>

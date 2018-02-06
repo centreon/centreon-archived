@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -35,36 +35,55 @@
 
 class Timezone extends AbstractObject {
     private $aTimezone = null;
-    
+    private $defaultTimezone = null;
+
+    public function getDefaultTimezone()
+    {
+        if (!is_null($this->defaultTimezone)) {
+            return $this->defaultTimezone;
+        }
+
+        $stmt = $this->backend_instance->db->prepare("SELECT `value` from options WHERE `key` = 'gmt'");
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($results) > 0 && isset($this->aTimezone[$results[0]['value']])) {
+            $this->defaultTimezone = $this->aTimezone[$results[0]['value']];
+        }
+
+        return $this->defaultTimezone;
+    }
+
     private function getTimezone()
     {   
         if (!is_null($this->aTimezone)) {
             return $this->aTimezone;
         }
 
+        $this->aTimezone = array();
         $stmt = $this->backend_instance->db->prepare("SELECT 
                 timezone_id,
                 timezone_name
             FROM timezone");
         $stmt->execute();
-        $resulats = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($resulats as $res) {
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($results as $res) {
             $this->aTimezone[$res['timezone_id']] = $res['timezone_name'];
         }
-        
     }
-    
-    public function getTimezoneFromId($iTimezone)
+
+    public function getTimezoneFromId($iTimezone, $returnDefault = false)
     {
         if (is_null($this->aTimezone)) {
             $this->getTimezone();
         }
-        
+
         $result = null;
         if (!is_null($iTimezone) && isset($this->aTimezone[$iTimezone])) {
             $result = $this->aTimezone[$iTimezone];
+        } elseif ($returnDefault === true) {
+            $result = $this->getDefaultTimezone();
         }
-        
+
         return $result;
     }
 }

@@ -31,24 +31,22 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset ($oreon))
-	exit ();
+if (!isset($centreon)) {
+    exit();
+}
 
-isset($_GET["hc_id"]) ? $hG = $_GET["hc_id"] : $hG = NULL;
-isset($_POST["hc_id"]) ? $hP = $_POST["hc_id"] : $hP = NULL;
+isset($_GET["hc_id"]) ? $hG = $_GET["hc_id"] : $hG = null;
+isset($_POST["hc_id"]) ? $hP = $_POST["hc_id"] : $hP = null;
 $hG ? $hc_id = $hG : $hc_id = $hP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 
@@ -71,40 +69,51 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $dbmon = new CentreonDB('centstorage');
 $aclDbName = $acl->getNameDBAcl();
 $hcString = $acl->getHostCategoriesString();
 $hoststring = $acl->getHostsString('ID', $dbmon);
 
-switch ($o)	{
-	case "a" :
-		require_once($path."formHostCategories.php"); break;
-	case "w" :
-		require_once($path."formHostCategories.php"); break;
-	case "c" :
-		require_once($path."formHostCategories.php"); break;
-	case "s" :
-		enableHostCategoriesInDB($hc_id);
-		require_once($path."listHostCategories.php"); break;
-	case "ms" :
-		enableHostCategoriesInDB(NULL, isset($select) ? $select : array());
-		require_once($path."listHostCategories.php"); break;
-	case "u" :
-		disableHostCategoriesInDB($hc_id);
-		require_once($path."listHostCategories.php"); break;
-	case "mu" :
-		disableHostCategoriesInDB(NULL, isset($select) ? $select : array());
-		require_once($path."listHostCategories.php"); break;
-	case "m" :
-		multipleHostCategoriesInDB(isset($select) ? $select : array(), $dupNbr);
-		require_once($path."listHostCategories.php"); break;
-	case "d" :
-		deleteHostCategoriesInDB(isset($select) ? $select : array());
-		require_once($path."listHostCategories.php"); break;
-	default :
-		require_once($path."listHostCategories.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path."formHostCategories.php");
+        break;
+    case "w":
+        require_once($path."formHostCategories.php");
+        break;
+    case "c":
+        require_once($path."formHostCategories.php");
+        break;
+    case "s":
+        enableHostCategoriesInDB($hc_id);
+        require_once($path."listHostCategories.php");
+        break;
+    case "ms":
+        enableHostCategoriesInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostCategories.php");
+        break;
+    case "u":
+        disableHostCategoriesInDB($hc_id);
+        require_once($path."listHostCategories.php");
+        break;
+    case "mu":
+        disableHostCategoriesInDB(null, isset($select) ? $select : array());
+        require_once($path."listHostCategories.php");
+        break;
+    case "m":
+        multipleHostCategoriesInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listHostCategories.php");
+        break;
+    case "d":
+        deleteHostCategoriesInDB(isset($select) ? $select : array());
+        require_once($path."listHostCategories.php");
+        break;
+    default:
+        require_once($path."listHostCategories.php");
+        break;
 }

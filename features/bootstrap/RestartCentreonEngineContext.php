@@ -1,31 +1,21 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\ConfigurationPollersPage;
+use Centreon\Test\Behat\Configuration\PollerConfigurationExportPage;
 
 /**
  * Defines application features from the specific context.
  */
 class RestartCentreonEngineContext extends CentreonContext
 {
-
-    private $pollers_page;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->pollers_page = new ConfigurationPollersPage($this);
-    }
+    private $export_page;
 
     /**
-     * @Given I am on the Central poller page
+     * @Given I am on the poller configuration export page
      */
     public function iAmOnTheCentralPollerWebpage()
     {
-        $this->visit('/main.php?p=60902&poller=1');
+        $this->export_page = new PollerConfigurationExportPage($this);
     }
 
     /**
@@ -33,23 +23,27 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iCheckRestartMonitoringEngine()
     {
-        $this->assertFind('named', array('id', 'nrestart'))->check();
+        $this->export_page->setProperties(array('restart_engine' => true));
     }
 
     /**
-     * @Given I select the Method Restart
+     * @Given I select the method Restart
      */
     public function iSelectTheMethodRestart()
     {
-        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Reload');
+        $this->export_page->setProperties(array(
+            'restart_method' => PollerConfigurationExportPage::METHOD_RESTART
+        ));
     }
 
     /**
-     * @Given I select the Method Reload
+     * @Given I select the method Reload
      */
     public function iSelectTheMethodReload()
     {
-        $this->getSession()->getPage()->selectFieldOption('restart_mode', 'Restart');
+        $this->export_page->setProperties(array(
+            'restart_method' => PollerConfigurationExportPage::METHOD_RELOAD
+        ));
     }
 
     /**
@@ -57,7 +51,7 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function iExportCentreonEngine()
     {
-        $this->assertFind('named', array('id', 'exportBtn'))->click();
+        $this->export_page->export();
     }
 
     /**
@@ -65,10 +59,13 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function centreonEngineIsRestarted()
     {
-        $this->spin(function($context) {
-            return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                   && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
-        });
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
+                        ->getText() == '100%';
+            }
+        );
     }
 
     /**
@@ -76,9 +73,12 @@ class RestartCentreonEngineContext extends CentreonContext
      */
     public function centreonEngineIsReloaded()
     {
-        $this->spin(function($context) {
-            return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
-                   && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))->getText() == '100%';
-        });
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('named', array('id', 'progressPct'))
+                    && $context->getSession()->getPage()->find('named', array('id', 'progressPct'))
+                        ->getText() == '100%';
+            }
+        );
     }
 }

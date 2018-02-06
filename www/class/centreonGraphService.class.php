@@ -31,10 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 require_once 'centreonGraph.class.php';
 
 /**
@@ -43,6 +41,8 @@ require_once 'centreonGraph.class.php';
  */
 class CentreonGraphService extends CentreonGraph
 {
+    protected $legends = array();
+
     /**
      * Constructor
      *
@@ -62,42 +62,134 @@ class CentreonGraphService extends CentreonGraph
      */
     public function getData($rows = 200)
     {
+        $legendDataInfo = array(
+            "last" => "LAST",
+            "min" => "MINIMUM",
+            "max" => "MAXIMUM",
+            "average" => "AVERAGE",
+            "total" => "TOTAL"
+        );
+
         /* Flush RRDCached for have the last values */
         $this->flushRrdCached($this->listMetricsId);
-        
-        $commandLine = "";
+
+        $commandLine = '';
+        $defType = array(
+            0 => 'CDEF',
+            1 => 'VDEF'
+        );
 
         /* Build command line */
         $commandLine .= " xport ";
-        $commandLine .= " --start " . $this->_RRDoptions['start'];
-        $commandLine .= " --end " . $this->_RRDoptions['end'];
+        $commandLine .= " --start " . $this->RRDoptions['start'];
+        $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;
 
+        /* Build legend command line */
+        $extraLegend = false;
+        $commandLegendLine = ' graph x';
+        $commandLegendLine .= " --start " . $this->RRDoptions['start'];
+        $commandLegendLine .= " --end " . $this->RRDoptions['end'];
+
         $metrics = array();
+        $vname = array();
+        $virtuals = array();
         $i = 0;
+
+        /* Parse metrics */
         foreach ($this->metrics as $metric) {
-            $path = $this->dbPath . '/' . $metric['metric_id'] . '.rrd';
-            if (false === file_exists($path)) {
-                throw new RuntimeException();
+            if (isset($metric['virtual']) && $metric['virtual'] == 1) {
+                $virtuals[] = $metric;
+                $vname[$metric['metric']] = 'vv' . $i;
+            } else {
+                $path = $this->dbPath . '/' . $metric['metric_id'] . '.rrd';
+                if (false === file_exists($path)) {
+                    throw new RuntimeException();
+                }
+                $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
+                $commandLegendLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
+                $commandLine .= " XPORT:v" . $i . ":v" . $i;
+                $vname[$metric['metric']] = 'v' . $i;
+                $info = array(
+                    "data" => array(),
+                    "graph_type" => "line",
+                    "unit" => $metric["unit"],
+                    "color" => $metric["ds_color_line"],
+                    "negative" => false,
+                    "stack" => false,
+                    "crit" => null,
+                    "warn" => null
+                );
+                $info['legend'] = str_replace('\\\\', '\\', $metric['metric_legend']);
+
+                /* Add legend getting data */
+                foreach ($legendDataInfo as $name => $key) {
+                    if ($metric['ds_' . $name] !== '') {
+                        $extraLegend = true;
+                        if (($name == "min" || $name == "max") &&
+                            (isset($metric['ds_minmax_int']) &&
+                                $metric['ds_minmax_int'])
+                        ) {
+                            $displayformat = "%7.0lf";
+                        } else {
+                            $displayformat = "%7.2lf";
+                        }
+                        $commandLegendLine .= ' VDEF:l' . $i . $key . '=v' . $i . ',' . $key;
+                        $commandLegendLine .= ' PRINT:l' . $i . $key . ':"' .
+                            str_replace(':', '\:', $metric['metric_legend']) .
+                            '|' . ucfirst($name) . '|' . $displayformat . '"';
+                    }
+                }
+
+                if (isset($metric['ds_color_area']) &&
+                    isset($metric['ds_filled']) &&
+                    $metric['ds_filled'] === '1'
+                ) {
+                    $info['graph_type'] = "area";
+                }
+                if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
+                    $info['negative'] = true;
+                }
+                if (isset($metric['stack'])) {
+                    $info['stack'] = $metric['stack'] == 1 ? true : false;
+                }
+                if (isset($metric['crit'])) {
+                    $info['crit'] = $metric['crit'];
+                }
+                if (isset($metric['warn'])) {
+                    $info['warn'] = $metric['warn'];
+                }
+                $metrics[] = $info;
             }
-            $commandLine .= " DEF:v" . $i . "=" . $path . ":value:AVERAGE";
-            $commandLine .= " XPORT:v" . $i . ":v" . $i;
+
             $i++;
-            $info = array(
-                "data" => array(),
-                "legend" => $metric["metric_legend"],
-                "graph_type" => "line",
-                "unit" => $metric["unit"],
-                "color" => $metric["ds_color_line"],
-                "negative" => false
-            );
-            if (isset($metric['ds_color_area'])) {
-                $info['graph_type'] = "area";
+        }
+        /* Append virtual metrics */
+        foreach ($virtuals as $metric) {
+            $commandLine .= ' ' . $defType[$metric['def_type']] . ':'
+                . $vname[$metric['metric']] . '='
+                . $this->subsRPN($metric['rpn_function'], $vname);
+            if ($metric['def_type'] == 0) {
+                $commandLine .= " XPORT:" . $vname[$metric['metric']] . ":" . $vname[$metric['metric']];
+                $info = array(
+                    "data" => array(),
+                    "legend" => $metric["metric_legend"],
+                    "graph_type" => "line",
+                    "unit" => $metric["unit"],
+                    "color" => $metric["ds_color_line"],
+                    "negative" => false
+                );
+                if (isset($metric['ds_color_area']) &&
+                    isset($metric['ds_filled']) &&
+                    $metric['ds_filled'] === '1'
+                ) {
+                    $info['graph_type'] = "area";
+                }
+                if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
+                    $info['negative'] = true;
+                }
+                $metrics[] = $info;
             }
-            if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
-                $info['negative'] = true;
-            }
-            $metrics[] = $info;
         }
 
         $descriptorspec = array(
@@ -106,18 +198,21 @@ class CentreonGraphService extends CentreonGraph
             2 => array('pipe', 'a'),
         );
 
-        $process = proc_open($this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
         if (false === is_resource($process)) {
             throw new RuntimeException();
         }
         fwrite($pipes[0], $commandLine);
         fclose($pipes[0]);
 
+        $str = '';
+        stream_set_blocking($pipes[1], 0);
         do {
             $status = proc_get_status($process);
+            $str .= stream_get_contents($pipes[1]);
         } while ($status['running']);
 
-        $str = stream_get_contents($pipes[1]);
+        $str .= stream_get_contents($pipes[1]);
 
         /* Remove text of the end of the stream */
         $str = preg_replace("/<\/xport>(.*)$/s", "</xport>", $str);
@@ -154,7 +249,95 @@ class CentreonGraphService extends CentreonGraph
             }
         }
 
+        /* Get legends */
+        $descriptorspec = array(
+            0 => array('pipe', 'r'),
+            1 => array('pipe', 'w'),
+            2 => array('pipe', 'a'),
+        );
+
+        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
+        if (false === is_resource($process)) {
+            throw new RuntimeException();
+        }
+        fwrite($pipes[0], $commandLegendLine);
+        fclose($pipes[0]);
+
+        $str = '';
+        stream_set_blocking($pipes[1], 0);
+        do {
+            $status = proc_get_status($process);
+            $str .= stream_get_contents($pipes[1]);
+        } while ($status['running']);
+
+        $str .= stream_get_contents($pipes[1]);
+
+        $exitCode = $status['exitcode'];
+
+        proc_close($process);
+
+        if ($exitCode != 0) {
+            throw new RuntimeException();
+        }
+        /* Parsing */
+        $retLines = explode("\n", $str);
+        foreach ($retLines as $retLine) {
+            if (strpos($retLine, '|') !== false) {
+                $infos = explode('|', $retLine);
+                if (!isset($this->legends[$infos[0]])) {
+                    $this->legends[$infos[0]] = array(
+                        'extras' => array()
+                    );
+                }
+                $this->legends[$infos[0]]['extras'][] = array(
+                    'name' => $infos[1],
+                    'value' => $infos[2]
+                );
+            }
+        }
+
         return $metrics;
+    }
+
+    /**
+     * Get limits lower and upper for a chart
+     *
+     * This values are defined on chart template
+     *
+     * @return array
+     */
+    public function getLimits()
+    {
+        $limits = array(
+            'min' => null,
+            'max' => null
+        );
+        if ($this->templateInformations['lower_limit'] !== '') {
+            $limits['min'] = $this->templateInformations['lower_limit'];
+        }
+        if ($this->templateInformations['upper_limit'] !== '') {
+            $limits['max'] = $this->templateInformations['upper_limit'];
+        }
+
+        return $limits;
+    }
+
+    /**
+     * Get the base for this chart
+     *
+     * @return int
+     */
+    public function getBase()
+    {
+        if (isset($this->templateInformations['base'])) {
+            return $this->templateInformations['base'];
+        }
+        return 1000;
+    }
+
+    public function getLegends()
+    {
+        return $this->legends;
     }
 
     /**
@@ -167,15 +350,17 @@ class CentreonGraphService extends CentreonGraph
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
     {
-        $query = "SELECT id FROM index_data
-            WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
-        $res = $dbc->query($query);
+        $query = 'SELECT id FROM index_data ' .
+            'WHERE host_id = ? ' .
+            'AND service_id = ?';
+
+        $stmt = $dbc->prepare($query);
+        $res = $dbc->execute($stmt, array((int)$hostId, (int)$serviceId));
         $row = $res->fetchRow();
 
         if (false == $row) {
             throw new OutOfRangeException();
         }
-
         return $row['id'];
     }
 }

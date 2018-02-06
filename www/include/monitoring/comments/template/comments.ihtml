@@ -24,7 +24,6 @@
 	<tr class="ToolbarTR">
 	  <td>
           {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
-          {if $msgs}<a href="{$msgs.addL2}" class="btc bt_success">{$msgs.addT2}</a>{/if}
           {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
           </td>
 		{php}
@@ -67,7 +66,6 @@
 	<tr class="ToolbarTR">
 	  <td>
           {if $msgs}<a href="{$msgs.addL}" class="btc bt_success">{$msgs.addT}</a>{/if}
-          {if $msgs}<a href="{$msgs.addL2}" class="btc bt_success">{$msgs.addT2}</a>{/if}
           {if $nb_comments_svc}<input type="submit" name="submit2" value="{$delete}" class="btc bt_danger" onclick="return confirm('{$msgs.delConfirm}')">{/if}
           </td>
 		{php}

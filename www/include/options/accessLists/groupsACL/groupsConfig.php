@@ -34,21 +34,20 @@
  */
 
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["acl_group_id"]) ? $cG = $_GET["acl_group_id"] : $cG = NULL;
-isset($_POST["acl_group_id"]) ? $cP = $_POST["acl_group_id"] : $cP = NULL;
+isset($_GET["acl_group_id"]) ? $cG = $_GET["acl_group_id"] : $cG = null;
+isset($_POST["acl_group_id"]) ? $cP = $_POST["acl_group_id"] : $cP = null;
 $cG ? $acl_group_id = $cG : $acl_group_id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 
 /*
  * Pear library
@@ -67,13 +66,51 @@ $path = "./include/options/accessLists/groupsACL/";
  */
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
-switch ($o)	{
-	case "a" : require_once($path."formGroupConfig.php"); break; #Add a contactgroup
-	case "w" : require_once($path."formGroupConfig.php"); break; #Watch a contactgroup
-	case "c" : require_once($path."formGroupConfig.php"); break; #Modify a contactgroup
-	case "s" : enableGroupInDB($acl_group_id); require_once($path."listGroupConfig.php"); break; #Activate a contactgroup
-	case "u" : disableGroupInDB($acl_group_id); require_once($path."listGroupConfig.php"); break; #Desactivate a contactgroup
-	case "m" : multipleGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listGroupConfig.php"); break; #Duplicate n contact grou
-	case "d" : deleteGroupInDB(isset($select) ? $select : array()); require_once($path."listGroupConfig.php"); break; #Delete n contact group
-	default : require_once($path."listGroupConfig.php"); break;
+
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
+
+switch ($o) {
+    case "a":
+        require_once($path."formGroupConfig.php");
+        break; #Add an access group
+    case "w":
+        require_once($path."formGroupConfig.php");
+        break; #Watch an access group
+    case "c":
+        require_once($path."formGroupConfig.php");
+        break; #Modify an access group
+    case "s":
+        enableGroupInDB($acl_group_id);
+        require_once($path."listGroupConfig.php");
+        break; #Activate an access group
+    case "ms":
+        enableGroupInDB(null, isset($select) ? $select : array());
+        require_once($path."listGroupConfig.php");
+        break; #Activate n access group
+    case "u":
+        disableGroupInDB($acl_group_id);
+        require_once($path."listGroupConfig.php");
+        break; #Desactivate an access group
+    case "mu":
+        disableGroupInDB(null, isset($select) ? $select : array());
+        require_once($path."listGroupConfig.php");
+        break; #Desactivate n access group
+    case "m":
+        multipleGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listGroupConfig.php");
+        break; #Duplicate n access group
+    case "d":
+        deleteGroupInDB(isset($select) ? $select : array());
+        require_once($path."listGroupConfig.php");
+        break; #Delete n access group
+    default:
+        require_once($path."listGroupConfig.php");
+        break;
 }

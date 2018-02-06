@@ -1,9 +1,8 @@
-
 --
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.0');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.18');
 
 --
 -- Contenu de la table `contact`
@@ -78,11 +77,12 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
 ('ldap_contact_tmpl', '0'),
+('broker','broker'),
 ('oreon_path','@INSTALL_DIR_CENTREON@/'),
 ('oreon_web_path','/centreon/'),
 ('session_expire','120'),
 ('maxViewMonitoring','30'),
-('maxGraphPerformances','5'),
+('maxGraphPerformances','18'),
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
@@ -140,7 +140,9 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('index_data', '1'), 
 ('interval_length', '60'),
 ('nagios_path_img','@INSTALL_DIR_CENTREON@/www/img/media/'),
-('selectPaginationSize', 60);
+('selectPaginationSize', 60),
+('display_downtime_chart','0'),
+('display_comment_chart','0');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -435,7 +437,6 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (1, 'SQL', 'sql.so', 80, 0, 1),
 (2, 'TCP', 'tcp.so', 50, 0, 1),
 (3, 'file', 'file.so', 50, 0, 1),
-(5, 'NDO', 'ndo.so', 80, 0, 1),
 (6, 'NEB', 'neb.so', 10, 0, 1),
 (7, 'RRD', 'rrd.so', 30, 0, 1),
 (8, 'Storage', 'storage.so', 20, 0, 1),
@@ -445,7 +446,9 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (12, 'Failover', NULL, NULL, 0, 1),
 (17, 'Dumper', 'dumper.so', 20, 0, 1),
 (18, 'Graphite', 'graphite.so', 21, 0, 1),
-(19, 'InfluxDB', 'influxdb.so', 22, 0, 1);
+(19, 'InfluxDB', 'influxdb.so', 22, 0, 1),
+(20, 'Correlation', 'correlation.so', 30, 0, 1),
+(21, 'Generic', 'lua.so', 40, 0, 1);
 
 
 --
@@ -468,7 +471,9 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (28, 'Database configuration reader', 'db_cfg_reader', 17),
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
-(31, 'Storage - InfluxDB', 'influxdb', 19);
+(31, 'Storage - InfluxDB', 'influxdb', 19),
+(32, 'Correlation', 'correlation', 20),
+(33, 'Stream connector', 'lua', 21);
 
 --
 -- Contenu de la table `cb_field`
@@ -525,12 +530,22 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
 (50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
 (51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL);
+(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
+(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
+(65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
+(66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
+(67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
+(68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
+(69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
+(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
+(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
 (2, 'metrics_column', 'Metrics column', 1, NULL),
-(3, 'status_column', 'Status column', 1, NULL);
+(3, 'status_column', 'Status column', 1, NULL),
+(4, 'lua_parameters', 'lua parameters', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
 (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
@@ -543,7 +558,10 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (59, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 3),
 (60, 'value', 'Value', 'Value of the column (macros accepted)', 'text', NULL, 3),
 (61, 'type', 'Type', 'Type of the column', 'select', NULL, 3),
-(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3);
+(62, 'is_tag', 'Tag', 'Whether or not this column is a tag', 'radio', NULL, 3),
+(71, 'name', 'Name', 'Name of the metric.', 'text', NULL, 4),
+(72, 'value', 'Value', 'Value of the metric.', 'text', NULL, 4),
+(73, 'type', 'Type', 'Type of the metric.', 'select', NULL, 4);
 
 --
 -- Contenu de la table `cb_list`
@@ -558,6 +576,7 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (5, 25, 'no'),
 (2, 12, NULL),
 (3, 15, NULL),
+(3, 69, NULL),
 (4, 24, NULL),
 (1, 39, 'no'),
 (1, 42, 'yes'),
@@ -569,7 +588,10 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (7, 57, 'string'),
 (8, 58, 'false'),
 (9, 61, 'string'),
-(10, 62, 'false');
+(10, 62, 'false'),
+(1, 63, 'yes'),
+(1, 70, 'no'),
+(11, 73, 'string');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -578,7 +600,6 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (1, 'No', 'no'),
 (1, 'Yes', 'yes'),
-(2, 'NDO Protocol', 'ndo'),
 (2, 'BBDO Protocol', 'bbdo'),
 (3, 'DB2', 'db2'),
 (3, 'InterBase', 'ibase'),
@@ -605,7 +626,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (9, 'String', 'string'),
 (9, 'Number', 'number'),
 (10, 'True', 'true'),
-(10, 'False', 'false');
+(10, 'False', 'false'),
+(11, 'String', 'string'),
+(11, 'Number', 'number'),
+(11, 'Password', 'password');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -619,7 +643,6 @@ INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_c
 (2, 12, 1),
 (3, 11, 1),
 (3, 12, 1),
-(5, 6, 0),
 (7, 8, 0),
 (7, 12, 1),
 (8, 6, 0),
@@ -646,7 +669,9 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 28, 1),
 (1, 29, 1),
 (1, 30, 0),
-(1, 31, 0);
+(1, 31, 0),
+(1, 32, 1),
+(1, 33, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -760,17 +785,36 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (30, 8, 0, 3),
 (30, 9, 0, 4),
 (30, 34, 0, 5),
-(30, 28, 0, 6),
 (30, 51, 1, 7),
 (30, 52, 1, 8),
-(31, 7, 1, 1),
-(31, 18, 0, 2),
-(31, 8, 0, 3),
-(31, 9, 0, 4),
-(31, 34, 0, 5),
-(31, 28,0, 6),
-(31, 51, 1, 7),
-(31, 52, 1, 8);
+(31, 63, 0, 1),
+(31, 7, 1, 2),
+(31, 18, 0, 3),
+(31, 8, 1, 4),
+(31, 9, 0, 5),
+(31, 10, 1, 6),
+(31, 53, 1, 7),
+(31, 55, 0, 8),
+(31, 56, 0, 9),
+(31, 57, 0, 10),
+(31, 58, 0, 11),
+(31, 54, 1, 12),
+(31, 59, 0, 13),
+(31, 60, 0, 14),
+(31, 61, 0, 15),
+(31, 62, 0, 16),
+(32, 29, 1, 1),
+(32, 70, 0, 2),
+(33, 74, 0, 1),
+(33, 47, 0, 2),
+(33, 72, 0, 3),
+(33, 71, 0, 4);
+
+--
+-- Contenu de la table `cb_type_field_relation`
+--
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameters__value_%d"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -794,8 +838,19 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('poller', 1), 
                                            ('hostCategories',1), 
                                            ('serviceCategories',1),
-                                           ('metric',1); 	  
-
+                                           ('metric',1), 
+                                           ('ba', 1),
+                                           ('bv', 1),
+                                           ('hostCategoriesMulti', 1),
+                                           ('hostGroupMulti', 1),
+                                           ('hostMulti', 1),
+                                           ('metricMulti', 1),
+                                           ('serviceCategory', 1),
+                                           ('hostCategory', 1),
+                                           ('serviceMulti', 1),
+                                           ('pollerMulti', 1),
+                                           ('serviceGroupMulti', 1),
+                                           ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
                         ('Africa/Abidjan', '-00:00', '-00:00'),
@@ -1220,3 +1275,36 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
 INSERT INTO `locale` ( `locale_short_name`, `locale_long_name`, `locale_img`) VALUES
 ('en', 'English', 'en.png'),
 ('fr', 'French', 'fr.png');
+
+-- Insert Centreon Backup base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+('backup_enabled', '0'),
+('backup_configuration_files', '1'),
+('backup_database_centreon', '1'),
+('backup_database_centreon_storage', '1'),
+('backup_database_type', '1'),
+('backup_database_full', ''),
+('backup_database_partial', ''),
+('backup_backup_directory', '/var/cache/centreon/backup'),
+('backup_tmp_directory', '/tmp/backup'),
+('backup_retention', '7'),
+('backup_mysql_conf', '/etc/my.cnf.d/centreon.cnf'),
+('backup_zend_conf', '/etc/php.d/zendguard.ini');
+
+-- Insert Centreon Knowledge base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES ('kb_db_name', ''),
+('kb_db_user', ''),
+('kb_db_password', ''),
+('kb_db_host', ''),
+('kb_db_prefix', ''),
+('kb_wiki_url', '');
+
+
+-- Insert Centreon Partitioning base conf
+INSERT INTO `options` (`key`, `value`)
+VALUES
+  ('partitioning_retention', 365),
+  ('partitioning_retention_forward', 10),
+  ('partitioning_backup_directory', '/var/cache/centreon/backup');

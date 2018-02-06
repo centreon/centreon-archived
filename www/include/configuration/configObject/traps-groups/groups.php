@@ -34,19 +34,19 @@
  */
  
 if (!isset($centreon)) {
-	exit ();
+    exit();
 }
 
-isset($_GET["id"]) ? $trapGroupG = $_GET["id"] : $trapGroupG = NULL;
-isset($_POST["id"]) ? $trapGroupP = $_POST["id"] : $trapGroupP = NULL;
+isset($_GET["id"]) ? $trapGroupG = $_GET["id"] : $trapGroupG = null;
+isset($_POST["id"]) ? $trapGroupP = $_POST["id"] : $trapGroupP = null;
 $trapGroupG ? $id = $trapGroupG : $id = $trapGroupP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 #Pear library
@@ -62,14 +62,29 @@ require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+    $p = $ret['topology_page'];
+}
 
-switch ($o)	{
-	case "a" : require_once($path . "formGroups.php"); break; #Add a Trap
-	case "w" : require_once($path . "formGroups.php"); break; #Watch a Trap
-	case "c" : require_once($path . "formGroups.php"); break; #Modify a Trap
-	case "m" : multipleTrapGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path . "listGroups.php"); break; #Duplicate n Traps
-	case "d" : deleteTrapGroupInDB(isset($select) ? $select : array()); require_once($path . "listGroups.php"); break; #Delete n Traps
-	default : require_once($path . "listGroups.php"); break;
+switch ($o) {
+    case "a":
+        require_once($path . "formGroups.php");
+        break; #Add a Trap
+    case "w":
+        require_once($path . "formGroups.php");
+        break; #Watch a Trap
+    case "c":
+        require_once($path . "formGroups.php");
+        break; #Modify a Trap
+    case "m":
+        multipleTrapGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path . "listGroups.php");
+        break; #Duplicate n Traps
+    case "d":
+        deleteTrapGroupInDB(isset($select) ? $select : array());
+        require_once($path . "listGroups.php");
+        break; #Delete n Traps
+    default:
+        require_once($path . "listGroups.php");
+        break;
 }

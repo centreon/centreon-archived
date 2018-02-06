@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -67,14 +67,34 @@ class MetaService extends AbstractObject {
         'notification_options',
         'register',
     );
+    protected $attributes_default = array(
+        'notifications_enabled',
+    );
     protected $attributes_hash = array(
         'macros'
     );
     protected $attributes_array = array(
-        'contact_groups'
+        'contact_groups','contacts'
     );
     private $stmt_cg = null;
-    
+    private $stmt_contact = null;
+
+    private function getCtFromMetaId($meta_id) {
+        if (is_null($this->stmt_contact)) {
+            $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
+                    contact_id
+                FROM meta_contact
+                WHERE meta_id = :meta_id
+                ");
+        }
+        $this->stmt_contact->bindParam(':meta_id', $meta_id);
+        $this->stmt_contact->execute();
+        $this->meta_services[$meta_id]['contacts'] = array();
+        foreach ($this->stmt_contact->fetchAll(PDO::FETCH_COLUMN) as $ct_id) {
+            $this->meta_services[$meta_id]['contacts'][] = Contact::getInstance()->generateFromContactId($ct_id);
+        }
+    }
+
     private function getCgFromMetaId($meta_id) {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
@@ -106,26 +126,6 @@ class MetaService extends AbstractObject {
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $service_id = $row['service_id'];
-        } else {
-            $stmt = $this->backend_instance->db->prepare("INSERT INTO service
-                    (service_description, display_name, service_register)
-                VALUES
-                    (:meta_composed_name, :meta_name, '2')");
-            $stmt->bindParam(':meta_composed_name', $composed_name);
-            $stmt->bindParam(':meta_name', $meta_name);
-            $stmt->execute();
-            $stmt = $this->backend_instance->db->prepare("SELECT
-                    MAX(service_id) as sid
-                FROM service
-                WHERE service_description = :meta_composed_name
-                AND display_name = :meta_name
-                AND service_register = '2'");
-            $stmt->bindParam(':meta_composed_name', $composed_name);
-            $stmt->bindParam(':meta_name', $meta_name);
-            $stmt->execute();
-            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $service_id = $row['sid'];
-            }
         }
 
         if (!isset($service_id)) {
@@ -137,11 +137,7 @@ class MetaService extends AbstractObject {
     }
     
     private function buildCacheMetaServices() {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
-            FROM meta_service
-            WHERE meta_activate = '1'
-        ");
+        $stmt = $this->backend_instance->db->prepare("SELECT $this->attributes_select FROM meta_service WHERE meta_activate = '1'");
         $stmt->execute();
         $this->meta_services = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
         foreach ($this->meta_services as $meta_id => $meta_infos) {
@@ -167,6 +163,7 @@ class MetaService extends AbstractObject {
         
         foreach ($this->meta_services as $meta_id => &$meta_service) {
             $meta_service['macros'] = array('_SERVICE_ID' => $meta_service['service_id']);
+            $this->getCtFromMetaId($meta_id);
             $this->getCgFromMetaId($meta_id);            
             $meta_service['check_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['check_period_id']);
             $meta_service['notification_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['notification_period_id']);
@@ -175,6 +172,7 @@ class MetaService extends AbstractObject {
             $meta_service['passive_checks_enabled'] = 0;
             $meta_service['host_name'] = '_Module_Meta';
             $meta_service['service_description'] = 'meta_' . $meta_id;
+            $meta_service['display_name'] = $meta_service['display_name'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
             
             $this->generated_services[] = $meta_id;

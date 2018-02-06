@@ -227,6 +227,7 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
     $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
     $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
+    $_SESSION['BIN_RRDTOOL'] = $conf_centreon['rrdtool_dir'];
     $_SESSION['MONITORINGENGINE_USER'] = $conf_centreon['monitoring_user'];
     $_SESSION['MONITORINGENGINE_GROUP'] = $conf_centreon['monitoring_group'];
     $_SESSION['MONITORINGENGINE_ETC'] = $conf_centreon['monitoring_etc'];
@@ -241,5 +242,23 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['CENTREON_ENGINE_CONNECTORS'] = $conf_centreon['centreon_engine_connectors'];
     $_SESSION['CENTREON_ENGINE_LIB'] = $conf_centreon['centreon_engine_lib'];
     $_SESSION['CENTREONBROKER_CBMOD'] = $conf_centreon['centreonbroker_cbmod'];
+    $_SESSION['CENTREONPLUGINS'] = $conf_centreon['centreon_plugins'];
 }
+
+function getDatabaseVariable($variable) {
+    $query = "SHOW VARIABLES LIKE '" . $variable . "'";
+    $res = mysql_query($query);
+
+    $row = mysql_fetch_assoc($res);
+
+    $value = null;
+    if ($row && isset($row['Value'])) {
+        $value = $row['Value'];
+    }
+
+    mysql_free_result($res);
+
+    return $value;
+}
+
 ?>

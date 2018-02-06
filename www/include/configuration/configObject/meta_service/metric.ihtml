@@ -10,7 +10,7 @@
                 		<td>{$form.host_id.html}</td>
                     </tr>
 	                <tr class="list_two">
-                        <td>{$form.metric_sel.label}</td>                   	 	
+                        <td>{$form.metric_sel.label}</td>
                         <td>{$form.metric_sel.html}</td>
 	                </tr>
                     <tr class="list_one">

@@ -61,8 +61,17 @@ class CentreonTimeperiodRenderer
      * @param strign $inex
      * @return void
      */
-    public function __construct($db, $tpid, $inex) {
-        $dayTab = array("tp_sunday" => array(), "tp_monday" => array(), "tp_tuesday" => array(), "tp_wednesday" => array(), "tp_thursday" => array(), "tp_friday" => array(), "tp_saturday" => array());
+    public function __construct($db, $tpid, $inex)
+    {
+        $dayTab = array(
+            "tp_sunday" => array(),
+            "tp_monday" => array(),
+            "tp_tuesday" => array(),
+            "tp_wednesday" => array(),
+            "tp_thursday" => array(),
+            "tp_friday" => array(),
+            "tp_saturday" => array()
+        );
         $this->timerange = $dayTab;
         $this->timeline = $dayTab;
         $this->includedTp = array();
@@ -70,9 +79,10 @@ class CentreonTimeperiodRenderer
         $this->exceptionList = array();
         $this->db = $db;
         $this->tpid = $tpid;
-        $query = "SELECT tp_name, tp_alias, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday, tp_saturday, tp_sunday
-        		  FROM timeperiod
-        		  WHERE tp_id = '" . $tpid . "'";
+        $query = "SELECT tp_name, tp_alias, tp_monday, tp_tuesday, tp_wednesday, tp_thursday, tp_friday,
+            tp_saturday, tp_sunday
+            FROM timeperiod
+            WHERE tp_id = '" . $tpid . "'";
         $res = $this->db->query($query);
         if (!$res->numRows()) {
             throw new Exception("Timeperiod not found");
@@ -82,7 +92,7 @@ class CentreonTimeperiodRenderer
         $this->tpalias = $row["tp_alias"];
         foreach ($this->timerange as $key => $val) {
             if ($row[$key]) {
-                $tmparr = explode(",",$row[$key]);
+                $tmparr = explode(",", $row[$key]);
                 foreach ($tmparr as $tr) {
                     $tmptr = $this->getTimeRange($this->tpid, $this->tpname, $inex, $tr);
                     $this->timerange[$key][] = $tmptr;
@@ -100,17 +110,18 @@ class CentreonTimeperiodRenderer
      *
      * @return void
      */
-    public function timeBars() {
+    public function timeBars()
+    {
         $coef = 4;
         foreach ($this->timerange as $day => $ranges) {
             $timeindex=0;
             $timeline[0]=array("start"    => 0,
-							   "style"    => "unset",
-							   "end"      => 0,
-							   "size"     => 0,
-							   "Text"     => "init",
-							   "From"     => "",
-							   "Textual"  => "");
+                               "style"    => "unset",
+                               "end"      => 0,
+                               "size"     => 0,
+                               "Text"     => "init",
+                               "From"     => "",
+                               "Textual"  => "");
             if (isset($ranges[0])) {
                 $last["in"] = "";
                 $last["nb"] = 0;
@@ -119,7 +130,7 @@ class CentreonTimeperiodRenderer
                     $actual["nb"] = 0;
                     foreach ($ranges as $k => $r) {
                         if ($r['tstart'] <= $i && $i <= $r['tend']) {
-                            $actual["in"] .= $actual["in"] != "" ? ",".$k : $k;
+                            $actual["in"] .= $actual["in"] != "" ? "," . $k : $k;
                             $actual["nb"]++;
                         }
                     }
@@ -128,46 +139,52 @@ class CentreonTimeperiodRenderer
                             $last = $actual;
                         }
                         $timeline[$timeindex]["end"] = $i;
-                        $timeline[$timeindex]["size"] = round(($i - $timeline[$timeindex]["start"])/$coef);
-                        switch ($last["nb"] ) {
+                        $timeline[$timeindex]["size"] = round(($i - $timeline[$timeindex]["start"]) / $coef);
+                        switch ($last["nb"]) {
                             case 0:
                                 $ts = $timeline[$timeindex]["start"];
                                 $timeline[$timeindex]["style"] = "unset";
-                                $timeline[$timeindex]["Textual"] = sprintf("%02d",intval($ts/60)).":".sprintf("%02d",$ts%60)."-".sprintf("%02d",intval($i/60)).":".sprintf("%02d",$i%60);
-                                $timeline[$timeindex]["From"] = "No timeperiod covering ".$timeline[$timeindex]["Textual"];
+                                $timeline[$timeindex]["Textual"] = sprintf("%02d", intval($ts / 60)) . ":" .
+                                    sprintf("%02d", $ts % 60) . "-" . sprintf("%02d", intval($i / 60)) . ":" .
+                                    sprintf("%02d", $i % 60);
+                                $timeline[$timeindex]["From"] = "No timeperiod covering " .
+                                    $timeline[$timeindex]["Textual"];
                                 break;
                             default:
-                                $idlist = explode(",",$last["in"]);
+                                $idlist = explode(",", $last["in"]);
                                 foreach ($idlist as $v) {
                                     if ($ranges[$v]['inex'] == 0) {
                                         $timeline[$timeindex]["style"] = "excluded";
                                     }
                                     $txt = $ranges[$v]['textual'];
                                     $inex = $ranges[$v]['inex'] ? "include" : "exclude";
-                                    $from = $ranges[$v]['fromTpName']." ".$inex." ".$txt;
-                                    $timeline[$timeindex]["From"] .= $timeline[$timeindex]["From"] != "" ? ",".$from : $from;
-                                    $timeline[$timeindex]["Textual"] .= $timeline[$timeindex]["Textual"] != "" ? ",".$txt : $txt;
+                                    $from = $ranges[$v]['fromTpName'] . " " . $inex . " " . $txt;
+                                    $timeline[$timeindex]["From"] .= $timeline[$timeindex]["From"] != "" ?
+                                        "," . $from : $from;
+                                    $timeline[$timeindex]["Textual"] .= $timeline[$timeindex]["Textual"] != "" ?
+                                        "," . $txt : $txt;
                                 }
                         }
-                        switch ($last["nb"] ) {
+                        switch ($last["nb"]) {
                             case 0:
                                 break;
                             case 1:
-                                $timeline[$timeindex]["style"] = ($ranges[$last["in"]]['inex'] == 1) ? "included" : "excluded";
+                                $timeline[$timeindex]["style"] = ($ranges[$last["in"]]['inex'] == 1) ?
+                                    "included" : "excluded";
                                 break;
                             default:
                                 $timeline[$timeindex]["style"] = "warning";
-                                $timeline[$timeindex]["From"] = "OVERLAPS: ".$timeline[$timeindex]["From"];
+                                $timeline[$timeindex]["From"] = "OVERLAPS: " . $timeline[$timeindex]["From"];
                                 break;
                         }
                         if ($i < 1440) {
                             $timeline[++$timeindex] = array("start"    => $i,
-														    "style"    => "unset",
-														    "end"      => 0,
-				                                            "size"     => 0,
-                                				            "Text"     => "New in loop",
-				                                            "From"     => "",
-                                				            "Textual"  => "");
+                                                            "style"    => "unset",
+                                                            "end"      => 0,
+                                                            "size"     => 0,
+                                                            "Text"     => "New in loop",
+                                                            "From"     => "",
+                                                            "Textual"  => "");
                         }
                     }
                     $last = $actual;
@@ -177,12 +194,12 @@ class CentreonTimeperiodRenderer
             if ($endtime < 1440) {
                 $textual = sprintf("%02d", intval($endtime/60)).":".sprintf("%02d", $endtime%60)."-24:00";
                 $timeline[$timeindex] = array("start"    => $endtime,
-										      "style"    => "unset",
-											  "end"      => 1440,
-											  "size"     => (1440 - $endtime) / $coef,
-											  "Text"     => "No Timeperiod covering ".$textual,
-	                                          "From"     => "No Timeperiod covering ".$textual,
-        	                                  "Textual"  => $textual);
+                                              "style"    => "unset",
+                                              "end"      => 1440,
+                                              "size"     => (1440 - $endtime) / $coef,
+                                              "Text"     => "No Timeperiod covering ".$textual,
+                                              "From"     => "No Timeperiod covering ".$textual,
+                                              "Textual"  => $textual);
             }
             $this->timeline[$day] = $timeline;
             unset($timeline);
@@ -196,7 +213,8 @@ class CentreonTimeperiodRenderer
      * @param array $b
      * @return int
      */
-    protected function startCompare($a, $b) {
+    protected function startCompare($a, $b)
+    {
         if ($a['tstart'] == $b['tstart']) {
             return 0;
         }
@@ -211,7 +229,8 @@ class CentreonTimeperiodRenderer
      *
      * @return void
      */
-    protected function orderTimeRanges() {
+    protected function orderTimeRanges()
+    {
         foreach ($this->timerange as $key => $val) {
             usort($val, array("CentreonTimeperiodRenderer", "startCompare"));
             $this->timerange[$key] = $val;
@@ -224,7 +243,8 @@ class CentreonTimeperiodRenderer
      * @param array $inexTr
      * @return void
      */
-    protected function updateTimeRange($inexTr) {
+    protected function updateTimeRange($inexTr)
+    {
         foreach ($inexTr as $key => $val) {
             if (isset($val[0])) {
                 foreach ($val as $tp) {
@@ -239,7 +259,8 @@ class CentreonTimeperiodRenderer
      *
      * @return void
      */
-    protected function updateInclusions() {
+    protected function updateInclusions()
+    {
         $query = "SELECT timeperiod_include_id
         		  FROM timeperiod_include_relations
         		  WHERE timeperiod_id= '". $this->tpid. "'";
@@ -258,7 +279,8 @@ class CentreonTimeperiodRenderer
      *
      * @return void
      */
-    protected function updateExclusions() {
+    protected function updateExclusions()
+    {
         $query = "SELECT * FROM timeperiod_exceptions WHERE timeperiod_id='".$this->tpid."'";
         $DBRESULT = $this->db->query($query);
         while ($row = $DBRESULT->fetchRow()) {
@@ -282,7 +304,8 @@ class CentreonTimeperiodRenderer
      * @param string $range
      * @return array
      */
-    protected function getTimeRange($id, $name, $in, $range) {
+    protected function getTimeRange($id, $name, $in, $range)
+    {
         $timeRange = array();
         $timeRange['fromTpId'] = $id;
         $timeRange['fromTpName'] = $name;
@@ -309,7 +332,8 @@ class CentreonTimeperiodRenderer
      * @param string $range
      * @return array
      */
-    protected function getException($id, $name, $day, $range) {
+    protected function getException($id, $name, $day, $range)
+    {
         $exception = array();
         $exception['fromTpId'] = $id;
         $exception['fromTpName']  = $name;
@@ -325,7 +349,8 @@ class CentreonTimeperiodRenderer
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->tpname;
     }
 
@@ -334,7 +359,8 @@ class CentreonTimeperiodRenderer
      *
      * @return string
      */
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->tpalias;
     }
 
@@ -343,7 +369,8 @@ class CentreonTimeperiodRenderer
      *
      * @return array
      */
-    public function getTimeline() {
+    public function getTimeline()
+    {
         return $this->timeline;
     }
 
@@ -352,12 +379,13 @@ class CentreonTimeperiodRenderer
      *
      * @return array
      */
-    public function getExceptionList() {
+    public function getExceptionList()
+    {
         return $this->exceptionList;
     }
     
     /**
-     * 
+     *
      * @param type $field
      * @return string
      */

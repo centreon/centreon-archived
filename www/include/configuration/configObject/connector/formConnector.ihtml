@@ -1,5 +1,4 @@
 <form {$form.attributes}>
-
     <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -7,7 +6,6 @@
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
 	</div>
-    
     <div id='tab1' class='tab'>
         <table class="formTable table">
             <tr class="ListHeader">

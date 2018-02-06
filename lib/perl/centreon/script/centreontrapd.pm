@@ -337,6 +337,7 @@ sub reload {
     my $self = shift;
 
     $self->{logger}->writeLogInfo("Reload in progress for main process...");
+    
     # reopen file
     if ($self->{logger}->is_file_mode()) {
         $self->{logger}->file_mode($self->{logger}->{file_name});
@@ -346,8 +347,10 @@ sub reload {
         $self->{logger_unknown}->file_mode($self->{centreontrapd_config}->{unknown_trap_file});
     }
     
-    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb}, $self->{csdb});
-    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file});
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+    	centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+    }
 
     if ($self->{cdb}->type() =~ /SQLite/i) {
         $self->{logger}->writeLogInfo("Sqlite database. Need to disconnect and connect file.");
@@ -609,7 +612,7 @@ sub manage_exec {
         # OID type
         if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 1 &&
             defined($self->{last_time_exec}{oid}->{$self->{current_oid}}) &&
-            $self->{trap_date_time_epoch} < ($self->{last_time_exec}{oid}->{$self->{current_oid}} + $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
+            $self->{trap_data}->{trap_date_time_epoch} < ($self->{last_time_exec}{oid}->{$self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
             $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "': time interval");
             return 1;
         }
@@ -617,7 +620,7 @@ sub manage_exec {
         # Host type
         if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 2 &&
             defined($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}}) &&
-            $self->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
+            $self->{trap_data}->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
             $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "': time interval");
             return 1;
         }
@@ -658,8 +661,8 @@ sub manage_exec {
     }
 
     $self->{running_processes}->{$current_pid} = 1;
-    $self->{last_time_exec}{oid}->{$self->{current_oid}} = $self->{trap_date_time_epoch};
-    $self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} = $self->{trap_date_time_epoch};
+    $self->{last_time_exec}{oid}->{$self->{current_oid}} = $self->{trap_data}->{trap_date_time_epoch};
+    $self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} = $self->{trap_data}->{trap_date_time_epoch};
     return 1;
 }
 

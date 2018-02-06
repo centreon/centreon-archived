@@ -33,20 +33,20 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
- }
+}
 
-isset($_GET["id"]) ? $cG = $_GET["id"] : $cG = NULL;
-isset($_POST["id"]) ? $cP = $_POST["id"] : $cP = NULL;
+isset($_GET["id"]) ? $cG = $_GET["id"] : $cG = null;
+isset($_POST["id"]) ? $cP = $_POST["id"] : $cP = null;
 $cG ? $id = $cG : $id = $cP;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
+isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
 $cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
+isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
@@ -72,54 +72,58 @@ require_once "./include/common/common-Func.php";
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
- }
+}
 
-$acl = $oreon->user->access;
+$acl = $centreon->user->access;
 $serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
 
 if ($serverString != "''" && !empty($serverString)) {
-    $sql = "SELECT config_id
-                FROM cfg_centreonbroker
-                WHERE ns_nagios_server IN (".$serverString.")";
+    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (".$serverString.")";
     $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedBrokerConf[$row['config_id']] = true;
     }
- }
+}
 
 switch ($o) {
- case "j" :
-     require_once($path."blockConfig.php");
-     break; // For display a block config
- case "a" :
-     require_once($path."formCentreonBroker.php");
-     break; // Add CentreonBroker
- case "w" :
-     require_once($path."formCentreonBroker.php");
-     break; // Watch CentreonBroker
- case "c" :
-     require_once($path."formCentreonBroker.php");
-     break; // modify CentreonBroker
- case "s" :
-     enableCentreonBrokerInDB($id);
-     require_once($path."listCentreonBroker.php");
-     break; // Activate a CentreonBroker CFG
- case "u" :
-     disablCentreonBrokerInDB($id);
-     require_once($path."listCentreonBroker.php");
-     break; // Desactivate a CentreonBroker CFG
- case "m" :
-     multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
-     require_once($path."listCentreonBroker.php");
-     break; // Duplicate n CentreonBroker CFGs
- case "d" :
-     deleteCentreonBrokerInDB(isset($select) ? $select : array());
-     require_once($path."listCentreonBroker.php");
-     break; // Delete n CentreonBroker CFG
- default :
-     require_once($path."listCentreonBroker.php");
-     break;
- }
+    case "j":
+        require_once($path."blockConfig.php");
+        break;
 
-?>
+    case "a":
+        require_once($path."formCentreonBroker.php");
+        break; // Add CentreonBroker
+
+    case "w":
+        require_once($path."formCentreonBroker.php");
+        break; // Watch CentreonBroker
+
+    case "c":
+        require_once($path."formCentreonBroker.php");
+        break; // modify CentreonBroker
+
+    case "s":
+        enableCentreonBrokerInDB($id);
+        require_once($path."listCentreonBroker.php");
+        break; // Activate a CentreonBroker CFG
+
+    case "u":
+        disablCentreonBrokerInDB($id);
+        require_once($path."listCentreonBroker.php");
+        break; // Desactivate a CentreonBroker CFG
+
+    case "m":
+        multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
+        require_once($path."listCentreonBroker.php");
+        break; // Duplicate n CentreonBroker CFGs
+
+    case "d":
+        deleteCentreonBrokerInDB(isset($select) ? $select : array());
+        require_once($path."listCentreonBroker.php");
+        break; // Delete n CentreonBroker CFG
+
+    default:
+        require_once($path."listCentreonBroker.php");
+        break;
+}

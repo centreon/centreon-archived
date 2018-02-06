@@ -50,7 +50,7 @@ CREATE TABLE `traps_group_relation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO topology (topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_popup, topology_modules) VALUES 
-('Group', './img/icones/16x16/factory.gif', 617, 61705, 25, 1, './include/configuration/configObject/traps-groups/groups.php', 0, 0);
+('Group', './img/icones/16x16/factory.gif', 617, 61705, 25, 1, './include/configuration/configObject/traps-groups/groups.php', '0', '0');
 
 -- Create table for relation between metaservice and contact
 CREATE TABLE `meta_contact` (

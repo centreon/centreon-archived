@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -55,7 +55,7 @@ class Command extends AbstractObject {
         $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM command 
-                LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1'
+                LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' AND command.command_activate = '1'
             ");
         $stmt->execute();
         $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
@@ -92,10 +92,14 @@ class Command extends AbstractObject {
             $this->getMailBin();
         }
 
-        # enable_shell is 0 we remove it
+        /*
+         * enable_shell is 0 we remove it
+         */
         $command_line = html_entity_decode($this->commands[$command_id]['command_line_base']);
         $command_line = str_replace('#BR#', "\\n", $command_line);
         $command_line = str_replace("@MAILER@", $this->mail_bin, $command_line);
+        $command_line = str_replace("\n", " \\\n", $command_line);
+        $command_line = str_replace("\r", "", $command_line);
 
         if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
             $command_line = '/bin/sh -c ' . escapeshellarg($command_line);

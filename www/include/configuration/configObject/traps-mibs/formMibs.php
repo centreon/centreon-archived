@@ -33,8 +33,9 @@
  *
  */
 
-	if (!isset($centreon))
-		exit();
+if (!isset($centreon)) {
+    exit();
+}
     
 /*
  * Debug Flag
@@ -46,9 +47,10 @@ $debug = 0;
  * Database retrieve information for Manufacturer
  */
 
-function myDecodeMib($arg)	{
-	$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-	return($arg);
+function myDecodeMib($arg)
+{
+    $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
+    return($arg);
 }
 
 /*
@@ -90,12 +92,12 @@ $tpl = initSmartyTpl($path, $tpl);
 
 
 
-$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 # prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-	$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -103,39 +105,39 @@ $tpl->assign("helptext", $helptext);
  * Just watch a Command information
  */
 $subA = $form->addElement('submit', 'submit', _("Import"), array("class" => "btc bt_success"));
-$form->addElement('header', 'status',_("Status"));
+$form->addElement('header', 'status', _("Status"));
 $valid = false;
-$msg = NULL;
-$stdout = NULL;
-if ($form->validate())	{
+$msg = null;
+$stdout = null;
+if ($form->validate()) {
+    $ret = $form->getSubmitValues();
 
-	$ret = $form->getSubmitValues();
+    $fileObj = $form->getElement('filename');
 
-	$fileObj = $form->getElement('filename');
-
-	if ($fileObj->isUploadedFile()) {
-		/*
+    if ($fileObj->isUploadedFile()) {
+        /*
 		 * Upload File
 		 */
-		$values = $fileObj->getValue();
-		$msg .= str_replace ("\n", "<br />", $stdout);
-		$msg .= "<br />Moving traps in DataBase...";
+        $values = $fileObj->getValue();
+        $msg .= str_replace("\n", "<br />", $stdout);
+        $msg .= "<br />Moving traps in DataBase...";
 
-		if ($debug)
-			print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
+        if ($debug) {
+            print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
+        }
 
-		$stdout = shell_exec("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
-		unlink($values['tmp_name']);
-		$msg .= "<br />".str_replace ("\n", "<br />", $stdout);
-		$msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
-		if ($msg) {
+        $stdout = shell_exec("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
+        unlink($values['tmp_name']);
+        $msg .= "<br />".str_replace("\n", "<br />", $stdout);
+        $msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
+        if ($msg) {
             if (strlen($msg) > $max_characters) {
                 $msg = substr($msg, 0, $max_characters)."...".sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
             }
             $tpl->assign('msg', $msg);
         }
-	}
-	$valid = true;
+    }
+    $valid = true;
 }
 
 /*

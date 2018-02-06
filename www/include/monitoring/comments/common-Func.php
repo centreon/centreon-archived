@@ -37,7 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-function DeleteComment($type, $hosts = array()) {
+function DeleteComment($type, $hosts = array())
+{
     global $pearDB;
 
     foreach ($hosts as $key => $value) {
@@ -46,20 +47,24 @@ function DeleteComment($type, $hosts = array()) {
     }
 }
 
-function AddHostComment($host, $comment, $persistant) {
+function AddHostComment($host, $comment, $persistant)
+{
     global $centreon, $pearDB;
 
     if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
         $persistant = '0';
     }
-    write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" . $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+    write_command(" ADD_HOST_COMMENT;" . getMyHostName($host) . ";" . $persistant . ";" .
+        $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }
 
-function AddSvcComment($host, $service, $comment, $persistant) {
+function AddSvcComment($host, $service, $comment, $persistant)
+{
     global $centreon, $pearDB;
 
     if (!isset($persistant) || !in_array($persistant, array('0', '1'))) {
         $persistant = '0';
     }
-    write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant . ";" . $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
+    write_command(" ADD_SVC_COMMENT;" . getMyHostName($host) . ";" . getMyServiceName($service) . ";" . $persistant .
+        ";" . $centreon->user->get_alias() . ";" . trim($comment), GetMyHostPoller($pearDB, getMyHostName($host)));
 }

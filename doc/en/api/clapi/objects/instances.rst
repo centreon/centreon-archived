@@ -37,13 +37,9 @@ Status	          *1* if poller is running, *0* otherwise
 
 Init script	  Init script path
 
-Monitoring Engine Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*...
-
 Bin	          Path of the Scheduler binary
 
 Stats Bin	  Path of the Nagios Stats binary
-
-Perfdata	  Path of perfdata file
 
 SSH Port	  SSH Port
 ================= ================================================================
@@ -66,7 +62,6 @@ Address	            IP address of the poller
 
 SSH Port	    SSH port
 
-Monitoring Engine   Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*
 =================== =====================================================
 
 
@@ -114,13 +109,9 @@ ns_activate	           *1* if poller is enabled, *0* otherwise
 
 init_script	           Init script path
 
-monitoring_engine	   Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*
-
 nagios_bin	           Path of the Scheduler binary
 
 nagiostats_bin	           Path of the Nagios Stats binary
-
-nagios_perfdata	           Path of perfdata file
 
 ssh_port	           SSH Port
 

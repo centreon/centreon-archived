@@ -101,7 +101,7 @@ if ($o == "mc") {
  * Timeperiods comes from DB -> Store in $notifsTps Array
  * When we make a massive change, give the possibility to not crush value
  */
-$notifTps = array(NULL => NULL);
+$notifTps = array(null => null);
 $DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 while ($notifTp = $DBRESULT->fetchRow()) {
     $notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
@@ -127,7 +127,7 @@ if (isset($contact_id)) {
     $strRestrinction = "";
 }
 
-$contactTpl = array(NULL => "");
+$contactTpl = array(null => "");
 $DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '0' $strRestrinction ORDER BY contact_name");
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
@@ -305,9 +305,10 @@ $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
 if (is_array($select)) {
-    $select_str = NULL;
-    foreach ($select as $key => $value)
+    $select_str = null;
+    foreach ($select as $key => $value) {
         $select_str .= $key . ",";
+    }
     $select_pear = $form->addElement('hidden', 'select');
     $select_pear->setValue($select_str);
 }
@@ -315,7 +316,8 @@ if (is_array($select)) {
 /**
  * Form Rules
  */
-function myReplace() {
+function myReplace()
+{
     global $form;
     $ret = $form->getSubmitValues();
     return (str_replace(" ", "_", $ret["contact_name"]));
@@ -343,11 +345,12 @@ if ($o != "mc") {
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
     $form->registerRule('existAlias', 'callback', 'testAliasExistence');
     $form->addRule('contact_alias', "<font style='color: red;'>*</font>&nbsp;" . _("Alias already exists"), 'existAlias');
-} else if ($o == "mc") {
-    if ($form->getSubmitValue("submitMC"))
+} elseif ($o == "mc") {
+    if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
-    else
+    } else {
         $from_list_menu = true;
+    }
 }
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
@@ -370,20 +373,21 @@ $tpl->assign("helptext", $helptext);
 
 if ($o == "w") {
 // Just watch a contact information
-    if ($centreon->user->access->page($p) != 2)
+    if ($centreon->user->access->page($p) != 2) {
         $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contact_id . "'"));
+    }
     $form->setDefaults($cct);
     $form->freeze();
-} else if ($o == "c") {
+} elseif ($o == "c") {
 // Modify a contact information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
-} else if ($o == "a") {
+} elseif ($o == "a") {
 // Add a contact information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} else if ($o == "mc") {
+} elseif ($o == "mc") {
 // Massive Change
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -404,7 +408,7 @@ if ($form->validate() && $from_list_menu == false) {
             }
         }
     }
-    $o = NULL;
+    $o = null;
     $valid = true;
 }
 

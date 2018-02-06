@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -32,19 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
- *  
+ *
  */
 class CentreonManufacturer
 {
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $db;
     
@@ -59,17 +55,24 @@ class CentreonManufacturer
     }
     
     /**
-     * 
+     *
      * @param type $values
      * @return type
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected timeperiods
@@ -77,8 +80,13 @@ class CentreonManufacturer
             . "FROM traps_vendor "
             . "WHERE id IN (" . $explodedValues . ") "
             . "ORDER BY name ";
-        
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad manufacturer query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['id'],
@@ -89,5 +97,3 @@ class CentreonManufacturer
         return $items;
     }
 }
-
-?>
