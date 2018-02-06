@@ -13,14 +13,14 @@ INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
 VALUES ('Stream connector', 'lua', (SELECT `cb_module_id` FROM `cb_module` WHERE `libname` = 'lua.so'));
 
 INSERT INTO `cb_fieldgroup` (`groupname`, `displayname`, `multiple`, `group_parent_id`)
-VALUES ('lua_parameters', 'lua parameters', 1, NULL);
+VALUES ('lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`)
 VALUES
 ('path', 'Path', 'Path of the lua script.', 'text', NULL, NULL),
-('type', 'Type', 'Type of the metric.', 'select', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameters')),
-('name', 'Name', 'Name of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameters')),
-('value', 'Value', 'Value of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameters'));
+('type', 'Type', 'Type of the metric.', 'select', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameter')),
+('name', 'Name', 'Name of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameter')),
+('value', 'Value', 'Value of the metric.', 'text', NULL, (SELECT `cb_fieldgroup_id` FROM `cb_fieldgroup` WHERE `groupname` = 'lua_parameter'));
 
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`)
 VALUES (
@@ -32,7 +32,7 @@ VALUES (
 0, 2, NULL, NULL),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'lua'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'),
-0, 5, 'luaArguments', '{"target": "lua_parameters__value_%d"}'),
+0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
 ((SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'lua'),
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Name of the metric.'),
 0, 4, NULL, NULL),
