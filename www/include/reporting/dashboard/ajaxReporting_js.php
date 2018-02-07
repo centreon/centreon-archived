@@ -34,18 +34,22 @@
  */
     
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once './class/centreonEscaping.php';
 
 if ($type == "Service") {
-    $arg = "id=".$service_id."&host_id=".$host_id;
+    $arg = "id=".Esc::forUrlValue($service_id)."&host_id=".Esc::forUrlValue($host_id);
 } else {
-    $arg = "id=".$id;
+    $arg = "id=".Esc::forUrlValue($id);
 }
 
-$arg .= "&color[UP]=".$oreon->optGen["color_up"]."&color[UNDETERMINED]=".$oreon->optGen["color_undetermined"].
-        "&color[DOWN]=".$oreon->optGen["color_down"]."&color[UNREACHABLE]=".$oreon->optGen["color_unreachable"].
-        "&color[OK]=".$oreon->optGen["color_ok"]."&color[WARNING]=".$oreon->optGen["color_warning"].
-        "&color[CRITICAL]=".$oreon->optGen["color_critical"]."&color[UNKNOWN]=".$oreon->optGen["color_unknown"];
-$arg = str_replace("#", "%23", $arg);
+$arg .= "&color[UP]=".Esc::forUrlValue($oreon->optGen["color_up"]).
+		"&color[UNDETERMINED]=".Esc::forUrlValue($oreon->optGen["color_undetermined"]).
+        "&color[DOWN]=".Esc::forUrlValue($oreon->optGen["color_down"]).
+		"&color[UNREACHABLE]=".Esc::forUrlValue($oreon->optGen["color_unreachable"]).
+        "&color[OK]=".Esc::forUrlValue($oreon->optGen["color_ok"]).
+		"&color[WARNING]=".Esc::forUrlValue($oreon->optGen["color_warning"]).
+        "&color[CRITICAL]=".Esc::forUrlValue($oreon->optGen["color_critical"]).
+		"&color[UNKNOWN]=".Esc::forUrlValue($oreon->optGen["color_unknown"]);
 $url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
 
 ?>
@@ -77,6 +81,6 @@ function initTimeline() {
                 
     tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
     
-    Timeline.loadXML('<?php echo $url ?>', function(xml, url) { eventSource.loadXML(xml, url); });
+    Timeline.loadXML('<?php echo Esc::forJsValue($url); ?>', function(xml, url) { eventSource.loadXML(xml, url); });
 }
 </script>

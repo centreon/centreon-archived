@@ -204,7 +204,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                         if (isset($_GET["problem"])) {
                             $obis .= '_pb';
                         }
-                        if (isset($_GET["acknowledge"])) {
+                        if (isset($_GET["acknowledge"]) && ctype_digit($_GET["acknowledge"])) {
                             $obis .= '_ack_' . $_GET["acknowledge"];
                         }
                         print "\tsetTimeout('initM($tM, \"$sid\", \"$obis\")', 0);";

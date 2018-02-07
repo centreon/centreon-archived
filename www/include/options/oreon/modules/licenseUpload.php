@@ -51,7 +51,7 @@ require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.confi
 require_once _CENTREON_PATH_ . '/www/autoloader.php';
 
 $LicenseFileInfos = $_FILES['licensefile'];
-$filename = str_replace('/', '', $_GET['module']);
+$filename = str_replace('..', '', str_replace('/', '', $_GET['module']));
 
 if ($LicenseFileInfos['name'] == 'merethis_lic.zl') {
     if (is_writable(_CENTREON_PATH_ . "www/modules/" . $filename . "/license/")) {
