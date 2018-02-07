@@ -34,7 +34,7 @@ class BrokerConfigurationContext extends CentreonContext
         $page = $this->currentPage = new BrokerConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
         $this->assertFind('css', '#c4')->click();
-        $this->selectInList('#block_output', 'Lua - Lua script');
+        $this->selectInList('#block_output', 'Generic - Stream connector');
         $this->assertFind('css', 'a#add_output.btc.bt_success')->click();
         $this->currentPage;
 
