@@ -38,6 +38,7 @@ DEFINE('STEP_NUMBER', 6);
 DEFINE('DEFAULT_CONF_NAME', 'centreon');
 DEFINE('DEFAULT_STORAGE_NAME', 'centreon_storage');
 DEFINE('DEFAULT_UTILS_NAME', 'centreon_status');
+DEFINE('DEFAULT_root_user', 'root');
 DEFINE('DEFAULT_DB_USER', 'centreon');
 DEFINE('DEFAULT_PORT', '3306');
 
@@ -49,6 +50,7 @@ $title = _('Database information');
 
 $defaults = array('ADDRESS' => '', 
                 'DB_PORT' => DEFAULT_PORT,
+                'root_user' => DEFAULT_root_user,
                 'root_password' => '', 
                 'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
                 'STORAGE_DB' => DEFAULT_STORAGE_NAME,
@@ -85,7 +87,14 @@ $contents = "
             </td>
         </tr>
         <tr>
-            <td class='formlabel'>"._('Root password')."</td>
+            <td class='formlabel'>"._('User with root privileges').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='root_user' value='".$defaults['root_user']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('User with root privileges password')."</td>
             <td class='formvalue'>
                 <input type='password' name='root_password' value='".$defaults['root_password']."' />
                 <label class='field_msg'></label>
