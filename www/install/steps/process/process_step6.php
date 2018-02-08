@@ -41,7 +41,7 @@ foreach ($_POST as $key => $value) {
     $_SESSION[$key] = $value;
 }
 
-$mandatoryFields = array('CONFIGURATION_DB', 'STORAGE_DB', 'DB_USER', 'DB_PASS', 'db_pass_confirm');
+$mandatoryFields = array('CONFIGURATION_DB', 'STORAGE_DB', 'DB_USER', 'DB_PASS', 'db_pass_confirm', 'root_user');
 $strError = '';
 foreach ($mandatoryFields as $field) {
     if ($_POST[$field] == '') {
