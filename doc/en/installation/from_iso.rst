@@ -1,120 +1,179 @@
-.. _firststepsces3:
+.. _installisoel7:
 
-==============
-Using Centreon
-==============
+======================
+Using Centreon ISO el7
+======================
+
+.. note::
+   Installation from Centreon el6 ISO is available :ref:`here<installisoel6>`
 
 ************
 Installation
 ************
 
-Step 1 : Start
-==============
+Step 1: Start
+=============
 
-To install Centreon, start the server/virtual machine using the ISO file cited in the downloads section of the installation guide.
-Start with the **Install or upgrade an existing system** option
+To install Centreon, start your server on the Centreon ISO image in version el7.
+Start with **Install CentOS 7**:
 
-.. image :: /images/user/abootmenu.png
+.. image :: /images/user/01_bootmenu.png
    :align: center
    :scale: 65%
 
-Click on **Next**
+Step 2: Choice of language
+==========================
 
-.. image :: /images/user/adisplayicon.png
+Choose the language of the installation process then click **Done**:
+
+.. image :: /images/user/02_select_install_lang.png
    :align: center
    :scale: 65%
 
-
-Step 2 : Choice of language
+Step 3: Component selection
 ===========================
 
-Choose your language and click on **Next**.
+Click on the **Installation Type** menu:
 
-.. image :: /images/user/ainstalllanguage.png
+.. image :: /images/user/03_menu_type_install.png
    :align: center
    :scale: 65%
 
-Select the keyboard used by your system and click on **Next**.
+It is possible to choose different options:
 
-.. image :: /images/user/akeyboard.png
-   :align: center
-   :scale: 65%
-
-
-Step 3 : General configuration
-==============================
-
-Depending on the type of storage required, choose the options necessary to obtain the partitioning that suits you best.
-
-.. image :: /images/user/adatastore1.png
-   :align: center
-   :scale: 65%
-
-A warning message may appear
-
-.. image :: /images/user/adatastore2.png
-   :align: center
-   :scale: 65%
-
-Choose your hostname and click on **Configure network** in order to modify your network card configuration.
-
-Select the network card that you want to use and go to the “IPv4 Settings” tab or the “IPv6 Settings” tab (depending on the requirements) to configure the IP addresses of the different interfaces. Click on **Apply** to save the changes.
-
-.. image :: /images/user/anetworkconfig.png
-   :align: center
-   :scale: 65%
-
-Click on **Close** and  **Next** to continue.
-
-Select your time zone and click on **Next**.
-
-.. image :: /images/user/afuseauhoraire.png
-   :align: center
-   :scale: 65%
-
-Enter the desired root password, and click on **Next**.
-
-Select the partitioning options that suit you best. Then validate.
-
-.. image :: /images/user/apartitionning.png
-   :align: center
-   :scale: 65%
-
-
-Step 4 : Component selection
-============================
-
-Choose the server type
-----------------------
-
-It is possible to choose from different options to answer the question: **Which server type would you like to install?**:
-
-
-.. image :: /images/user/aservertoinstall.png
+.. image :: /images/user/04_form_type_install.png
    :align: center
    :scale: 65%
 
 |
 
-* Central server with database : Install Centreon (web interface and database), monitoring engine and broker
-* Central server without database : Install Centreon (web interface only), monitoring engine and broker
-* Poller server : Install poller (monitoring engine and broker only)
-* Database server : Install database server (use with **Central server without database** option)
+ * **Central with database**: Install Centreon (web interface and database), monitoring engine and broker
+ * **Central without database**: Install Centreon (web interface only), monitoring engine and broker
+ * **Poller**: Install poller (monitoring engine and broker only)
+ * **Database**: Install database server (use with **Central server without database** option)
 
-In our box, we shall choose the **Centreon Server with database** option.
+Step 4: System configuration
+============================
 
-Once all these options have been selected, the installation starts.
+Partitioning of disk
+--------------------
 
-.. image :: /images/user/arpminstall.png
+Click on **Installation Destination** menu:
+
+.. image :: /images/user/05_menu_filesystem.png
    :align: center
    :scale: 65%
 
-When the installation is finished, click on **Restart**.
+Select the hard disk drive and the **I will configure partitioning** option, then click **Done**:
 
-.. image :: /images/user/arestartserver.png
+.. image :: /images/user/06_select_disk.png
    :align: center
    :scale: 65%
 
+Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**: 
+
+.. image :: /images/user/07_partitioning_filesystem.png
+   :align: center
+   :scale: 65%
+
+A confirmation window appears. Click **Accept Changes** to validate the partitioning:
+
+.. image :: /images/user/08_apply_changes.png
+   :align: center
+   :scale: 65%
+
+Network configuration
+---------------------
+
+Click **Network & Hostname** menu:
+
+.. image :: /images/user/09_menu_network.png
+   :align: center
+   :scale: 65%
+
+Enable all network interfaces and define hostname then click **Done**:
+
+.. image :: /images/user/10_network_hostname.png
+   :align: center
+   :scale: 65%
+
+Timezone configuration
+----------------------
+
+Click **Date & Time** menu:
+
+.. image :: /images/user/11_menu_timezone.png
+   :align: center
+   :scale: 65%
+
+Select timezone then click on configuration button:
+
+.. image :: /images/user/12_select_timzeone.png
+   :align: center
+   :scale: 65%
+
+Enable or add a NTP server, click **OK** then **Done**:
+
+.. image :: /images/user/13_enable_ntp.png
+   :align: center
+   :scale: 65%
+
+Start installation
+------------------
+
+Once configuration is over click **Begin Installation**:
+
+.. image :: /images/user/14_begin_install.png
+   :align: center
+   :scale: 65%
+
+Click **Root Password** :
+
+.. image :: /images/user/15_menu_root_password.png
+   :align: center
+   :scale: 65%
+
+Define and confirm **root** user password. Click **Done**:
+
+.. image :: /images/user/16_define_root_password.png
+   :align: center
+   :scale: 65%
+
+Wait during installation process:
+
+.. image :: /images/user/17_wait_install.png
+   :align: center
+   :scale: 65%
+
+When the installation is finished, click **Reboot**:
+
+.. image :: /images/user/18_reboot_server.png
+   :align: center
+   :scale: 65%
+
+
+Update system packages
+----------------------
+
+Connect to your server using a terminal and execute:
+  ::
+
+  # yum update
+
+.. image :: /images/user/19_update_system.png
+   :align: center
+   :scale: 65%
+
+Accept all GPG keys:
+
+.. image :: /images/user/20_accept_gpg_key.png
+   :align: center
+   :scale: 65%
+
+Then restart your server with following command:
+  ::
+
+  # reboot
 
 *************
 Configuration
@@ -222,20 +281,21 @@ To start the monitoring engine :
  6. Log into the ‘root’ user on your server
  7. Start Centreon Broker
 
-::
+  ::
 
-	service cbd start
+    service cbd start
+
  8. Start Centreon Engine
 
-::
+  ::
 
-   service centengine start
+    service centengine start
 
  9. Start centcore
 
-::
+  ::
 
-   service centcore start
+    service centcore start
 
 Monitoring is now working. You can start to monitor your IT !
 
@@ -255,20 +315,6 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 * The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 * The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
 * The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
-
-Before going further
-====================
-
-it is necessary update the server. To do this:
-
- #.	Log in as a ‘root’ on the central server
- #.	Enter this command
-
-::
-
-    yum -y update
-
-Allow the update to run fully and then restart the server in case of a kernel update.
 
 .. _installation_ppm:
 

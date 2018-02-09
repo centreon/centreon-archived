@@ -1,8 +1,8 @@
-.. _firststepsces3:
+.. _installisoel6:
 
-========================
-A partir de Centreon ISO
-========================
+============================
+A partir de Centreon ISO el6
+============================
 
 ************
 Installation
@@ -11,7 +11,7 @@ Installation
 Etape 1 : Démarrage
 ====================
 
-Afin d'installer, démarrez votre serveur sur le support (créé à partir du fichier ISO) de Centreon Enterprise Server.
+Afin d'installer, démarrez votre serveur sur l'image ISO el6.
 Démarrez avec l'option **Install or upgrade an existing system**
 
 .. image :: /images/guide_utilisateur/abootmenu.png
@@ -114,8 +114,6 @@ Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 *************
 Configuration
 *************
-
-.. _installation_web_ces:
 
 Via l'interface web
 ===================
@@ -302,7 +300,7 @@ Centreon IMP nécessite les composants techniques Centreon License
 Manager et Centreon Plugin Pack Manager pour fonctionner.
 
 Installation système
---------------------
+====================
 
 En utilisant Centreon ISO, l'installation des paquets est très simple. Vous
 noterez que Centreon Plugin Pack Manager installe également Centreon
@@ -314,7 +312,7 @@ License Manager en tant que dépendance.
 
 
 Installation web
-----------------
+================
 
 Une fois les paquets installés, il est nécessaire d'activer les modules
 dans Centreon. Rendez-vous à la page Administration -> Extensions -> Modules.

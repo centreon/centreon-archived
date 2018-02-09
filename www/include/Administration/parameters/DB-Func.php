@@ -164,7 +164,12 @@ function updateNagiosConfigData($gopt_id = null)
         isset($ret["interval_length"]) && $ret["interval_length"] != null
             ? $pearDB->escape($ret["interval_length"]) : "NULL"
     );
-    updateOption($pearDB, "broker", $pearDB->escape($ret['broker']));
+    updateOption(
+        $pearDB,
+        "broker",
+        isset($ret["broker"]) && $ret["broker"] != null
+            ? $pearDB->escape($ret['broker']) : "broker"
+    );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
     
     /*
@@ -920,7 +925,9 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-
+    if (!isset($ret['kb_wiki_certificate'])){
+        $ret['kb_wiki_certificate'] = 0;
+    }
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
                 updateOption($db, $key, $value);
