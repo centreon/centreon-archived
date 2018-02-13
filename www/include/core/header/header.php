@@ -137,6 +137,7 @@ if (!isset($_SESSION["centreon"])) {
 		$newUrl = "index.php?disconnect=1".$args;
 		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
 			header("Location: ".$newUrl);
+		}
     }
 }
 
