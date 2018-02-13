@@ -137,6 +137,7 @@ if (!isset($_SESSION["centreon"])) {
 		$newUrl = "index.php?disconnect=1".$args;
 		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
 			header("Location: ".$newUrl);
+		}
     }
 }
 
@@ -247,3 +248,5 @@ $DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$le
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
+
+
