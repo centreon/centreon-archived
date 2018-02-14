@@ -1069,7 +1069,7 @@ class CentreonHost extends CentreonObject
         }
         $sortedHosts = array();
         while ($hostId = array_pop($hosts)) {
-            if (!in_array($hostId, array_keys($parentShip))) {
+            if (!in_array((int)$hostId, $parentShip)) {
                 $sortedHosts[] = $hostId;
             } else {
                 $parents = $parentShip[$hostId];
