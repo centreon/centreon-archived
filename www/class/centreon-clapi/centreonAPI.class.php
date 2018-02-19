@@ -840,6 +840,14 @@ class CentreonAPI
     }
 
     /**
+     * @param $newOption
+     */
+    public function setOption($newOption)
+    {
+        $this->options = $newOption;
+    }
+
+    /**
      * Export All configuration
      */
     public function export()
@@ -866,8 +874,7 @@ class CentreonAPI
                 }
                 $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
             }
-            # Don't want return \n
-            exit($this->return_code);
+            return $this->return_code;
         } else {
             // header
             echo "{OBJECT_TYPE}{$this->delim}{COMMAND}{$this->delim}{PARAMETERS}\n";
