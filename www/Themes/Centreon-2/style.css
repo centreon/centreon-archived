@@ -1188,10 +1188,31 @@ a.infobulle:hover   {z-index:25;}
 }
 
 /* Warning */
-.msg    {
+.msg-wrapper {
+    margin: 1rem auto;
+    opacity: 1;
+    transition: opacity .2s ease-out;
+}
+.msg-center {
+    text-align: center;
+}
+.msg,
+.error-msg {
     background-color: #ffe6ec;
     border: 1px solid #e00b3d;
     color: #e00b3d;
+    font-weight: bold;
+    margin: 5px auto;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+    width: 30%;
+}
+
+.success-msg {
+    background-color: rgba(158, 199, 0, 0.49);
+    border: 1px solid #597f00;
+    color: #597f00;
     font-weight: bold;
     margin: 5px auto;
     padding: 6px;
