@@ -398,11 +398,10 @@ class CentreonCentbrokerCfg extends CentreonObject
             "AND config_key = 'name' " .
             "AND config_group = ? ";
         $res = $this->db->query($sql, array($configId, $tagName));
-
+        $listName[] = array();
         while ($list = $res->fetch()) {
             $listName[] = $list['config_value'];
         }
-
         if (in_array($args[1], $listName)) {
             throw new CentreonClapiException(self::OBJECTALREADYEXISTS);
         }
