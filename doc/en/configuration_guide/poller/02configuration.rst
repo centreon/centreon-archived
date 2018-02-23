@@ -61,7 +61,7 @@ It is necessary to generate a configuration file for Centreon Broker:
   * Add a new **TCP - IPv4** output
   * Set the **Name**
   * Set the distant TCP port, by default **5669**
-  * Set the IP address of the Centreon cantral server (**Host to connect to**)
+  * Set the IP address of the Centreon central server (**Host to connect to**)
 
 .. image:: /images/user/configuration/10advanced_configuration/07_Addbroker_output.png
    :align: center
