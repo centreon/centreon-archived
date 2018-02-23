@@ -872,7 +872,18 @@ class CentreonAPI
                     $this->setReturnCode(1);
                     $this->close();
                 }
-                $this->export_filter($splits[0], $this->objectTable[$splits[0]]->getObjectId($splits[1]), $splits[1]);
+
+                if (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
+                    echo "Unknown object : $splits[0];$splits[1]\n";
+                    $this->setReturnCode(1);
+                    return $this->return_code;
+                } else {
+                    $this->export_filter(
+                        $splits[0],
+                        $this->objectTable[$splits[0]]->getObjectId($splits[1]),
+                        $splits[1]
+                    );
+                }
             }
             return $this->return_code;
         } else {
