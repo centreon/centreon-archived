@@ -1,5 +1,5 @@
 ###################
-Centreon Web 2.8.18
+Centreon Web 2.8.19
 ###################
 
 Enhancements
