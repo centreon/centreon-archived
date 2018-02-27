@@ -2,7 +2,11 @@
 -- Insert version
 --
 
+<<<<<<< HEAD
 INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.9.0');
+=======
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.8.19');
+>>>>>>> 4338ffa68... fix(perf): fix centreon_acl index creation on update (#6093)
 
 --
 -- Contenu de la table `contact`
