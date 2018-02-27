@@ -24,3 +24,8 @@ Please find here the release notes dedicated to the last 2.8.x version of Centre
     centreon-2.8.15
     centreon-2.8.16
     centreon-2.8.17
+<<<<<<< HEAD
+=======
+    centreon-2.8.18
+    centreon-2.8.19
+>>>>>>> 98b30fd22... doc(release note) : Add empty release note for the 2.8.19
