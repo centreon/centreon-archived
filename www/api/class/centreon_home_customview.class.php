@@ -53,6 +53,11 @@ class CentreonHomeCustomview extends CentreonWebService
     {
         global $centreon;
         $views = array();
+        $q = array();
+        if (isset($this->arguments['q']) && $this->arguments['q'] != '') {
+            $q[] = '%' . $this->arguments['q'] . '%';
+        }
+        
         $query = 'SELECT custom_view_id, name FROM (' .
             'SELECT cv.custom_view_id, cv.name FROM custom_views cv ' .
             'INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id ' .
@@ -69,9 +74,13 @@ class CentreonHomeCustomview extends CentreonWebService
             'WHERE d.custom_view_id NOT IN (' .
             'SELECT cvur2.custom_view_id FROM custom_view_user_relation cvur2 ' .
             'WHERE cvur2.user_id = ' . $centreon->user->user_id . ' ' .
-            'AND cvur2.is_consumed = 1) ';
+            'AND cvur2.is_consumed = 1) ' .
+            (count($q) > 0 ? 'AND d.name like ? ' : '') .
+            ') tmp ORDER BY tmp.name';
 
-        $dbResult = $this->pearDB->query($query);
+        $stmt = $this->pearDB->prepare($query);
+        $dbResult = $this->pearDB->execute($stmt, $q);
+
         while ($row = $dbResult->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
