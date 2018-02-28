@@ -578,6 +578,8 @@ Available parameters
 ==================================== =================================================================================
 Parameter                            Description
 ==================================== =================================================================================
+geo_coords                           Geo coordinates
+
 2d_coords                            2D coordinates (used by statusmap)
 
 3d_coords                            3D coordinates (used by statusmap)
