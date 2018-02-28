@@ -49,30 +49,27 @@ if (defined('_CENTREON_VARLIB_')) {
 /*
  *  Get Poller List
  */
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY name ASC");
-$n = $DBRESULT->rowCount();
+$acl = $centreon->user->access;
+$tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
+                                                  'order'      => array('name'),
+                                                  'keys'       => array('id'),
+                                                  'conditions' => array('ns_activate' => 1)));
 
-/*
- * Display null option
- */
-if ($n > 1) {
-    $tab_nagios_server = array(-1 => "");
+/* Sort the list of poller server */
+$pollersId = explode(',', $_GET['poller']);
+foreach ($tab_nagios_server as $key => $name) {
+    if (in_array($key, $pollersId)) {
+        $tab_nagios_server[$key] = $name;
+    }
 }
 
-/*
- * Display all servers list
- */
-for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
-    $tab_nagios_server[$nagios['id']] = $nagios['name'];
-}
-$DBRESULT->closeCursor();
-
+$n = count($tab_nagios_server);
 
 /*
  * Display all server options
  */
 if ($n > 1) {
-    $tab_nagios_server[0] = _("All Pollers");
+    $tab_nagios_server = array_merge(array(0 => _("All Pollers")), $tab_nagios_server);
 }
 
 /*
