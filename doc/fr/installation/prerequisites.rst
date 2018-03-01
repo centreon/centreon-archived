@@ -27,7 +27,7 @@ Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation
 sera plus complexe à partir des fichiers sources de chaque composant.
 
 .. note::
-    Seuls les système d'exploitation 64bits (x86_64) sont supportés.
+    Seuls les systèmes d'exploitation 64bits (x86_64) sont supportés.
 
 SGBD
 ====
