@@ -26,6 +26,9 @@ and use rpms from repository.
 Else you can use another GNU/Linux operating system but installation will be
 more complex and realised using software sources.
 
+.. note::
+    Only 64-bit operating systems (x86_64) are supported.
+
 DBMS
 ====
 
