@@ -206,4 +206,4 @@ while ($row = $res->fetchRow()) {
         . $row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";"
         . date("Y-m-d H:i:s", $row["date_start"]).";\n";
 }
-$res->free();
+$res->closeCursor();
