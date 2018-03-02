@@ -1,5 +1,6 @@
 .idea/
 /nbproject/private/
 nbproject/
+node_modules/
 /vendor/
 composer.lock
