@@ -691,6 +691,33 @@ Fin de l'installation
   #                                                                             #
   ###############################################################################
 
+Installation des dépendances PHP
+--------------------------------
+
+Tout d'abord, vous devez installer l'installeur de dépendance PHP **composer**.
+Composer peut être téléchargé `ici <https://getcomposer.org/download/>` (celui-ci est également disponible dans les dépôts EPEL).
+
+Une fois que composer est installé, rendez vous dans les répertoire centreon (habituellement /usr/share/centreon/) et exécutez la commande suivante :
+
+ ::
+
+    composer install --no-dev --optimize-autoloader
+
+
+Installation des dépendances Javascript
+---------------------------------------
+
+Tout d'abord, vous devez installer l'environnement d'exécution javscript **nodejs**.
+Les instructions d'installation sont disponibles `ici <https://nodejs.org/en/download/package-manager/>`.
+
+Une fois que nodejs est installé, rendez vous dans les répertoire centreon (habituellement /usr/share/centreon/) et exécutez les commandes suivantes :
+
+ ::
+
+    npm install
+    npm run build
+    npm prune --production
+
 
 Pour tous les OS
 ----------------

@@ -674,6 +674,34 @@ End
   #                                                                             #
   ###############################################################################
 
+PHP dependencies installation
+-----------------------------
+
+First, you need to install PHP dependency installer **composer**.
+Composer can be downloaded `here <https://getcomposer.org/download/>` (it is also available in EPEL repository).
+
+Once composer is installed, go to the centreon directory (usually /usr/share/centreon/) and run the following command :
+
+ ::
+
+    composer install --no-dev --optimize-autoloader
+
+
+Javascript dependencies installation
+------------------------------------
+
+First, you need to install javascript runtime **nodejs**.
+Installation instructions are available `here <https://nodejs.org/en/download/package-manager/>`.
+
+Once nodejs is installed, go to the centreon directory (usually /usr/share/centreon/) and run the following commands :
+
+ ::
+
+    npm install
+    npm run build
+    npm prune --production
+
+
 Any operating system
 --------------------
 
