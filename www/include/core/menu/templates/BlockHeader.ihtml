@@ -1,3 +1,4 @@
+{include file='react-header.tpl'}
 <div id="header">
 	<div id="centreon_logo">
 		<img src='{$urlLogo}' title='Centreon Logo' id="logo" />
