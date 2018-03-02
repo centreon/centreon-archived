@@ -933,6 +933,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . $pearDB->quote($ret["illegal_object_name_chars"]) . "',  ";
     } else {
         $rq .= "NULL, ";
+    }
 
     if (isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null) {
         $rq .= "'" . $pearDB->quote($ret["illegal_macro_output_chars"]) . "',  ";
