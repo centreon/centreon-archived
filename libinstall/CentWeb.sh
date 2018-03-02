@@ -58,7 +58,6 @@ check_httpd_directory
 check_user_apache
 check_group_apache
 
-
 ## Ask for centreon user
 check_centreon_group
 check_centreon_user
