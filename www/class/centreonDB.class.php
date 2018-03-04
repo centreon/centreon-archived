@@ -547,7 +547,7 @@ class CentreonDB
                     $info[$key] = round($value / $unitMultiple, 2);
                 }
                 if ($key == "version") {
-                    $tab = split('-', $value);
+                    $tab = explode('-', $value);
                     $info["version"] = $tab[0];
                     $info["engine"] = $tab[1];
                 }

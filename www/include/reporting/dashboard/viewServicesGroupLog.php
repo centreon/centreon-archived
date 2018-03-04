@@ -45,10 +45,9 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting servic egroup to report
  */
-isset($_GET["item"]) ? $id = $_GET["item"] : $id = "NULL";
-isset($_POST["item"]) ? $id = $_POST["item"] : $id;
+isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ? $id = trim($_GET["item"]) : $id = "NULL";
+isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ? $id = trim($_POST["item"]) : $id;
 isset($_POST["search"]) ? $search = $_POST["search"] : "";
-
 /*
  * FORMS
  */

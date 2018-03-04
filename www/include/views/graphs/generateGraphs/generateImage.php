@@ -72,7 +72,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     }
 }
 
-$index = isset($_GET['index']) ? $_GET['index'] : 0;
+$index = isset($_GET['index']) && is_numeric($_GET['index']) ? $_GET['index'] : 0;
 $pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
     $DBRESULT = $pearDBO->prepare("SELECT `id`
