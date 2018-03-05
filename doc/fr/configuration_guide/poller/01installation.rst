@@ -1,5 +1,5 @@
 =======================
-Les serveurs satellites
+Les collecteurs distant
 =======================
 
 ************
