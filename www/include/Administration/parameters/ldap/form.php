@@ -177,7 +177,7 @@ if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
     $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable`
                             FROM `auth_ressource`
-                            WHERE ar_id = " .$pearDB->escape($arId));
+                            WHERE ar_id = " . $pearDB->escape($arId));
     while ($row = $res->fetchRow()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
