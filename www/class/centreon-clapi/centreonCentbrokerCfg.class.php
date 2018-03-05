@@ -693,8 +693,14 @@ class CentreonCentbrokerCfg extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_id = null, $filter_name = null)
     {
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters = array(
+                $this->object->getPrimaryKey() => $filter_id
+            );
+        }
 
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
