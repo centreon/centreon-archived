@@ -69,7 +69,7 @@
                                         </td>
                                         <td class="ListColCenter ListColNoWrap"><span class="badge {$hs.status_class}">{$hs.current_state}</span></td>
                                         <td class="ListColCenter ListColNoWrap">{$hs.duration}</td>
-                                        <td class="ListColLeft">{$hs.short_output}</td>
+                                        <td class="ListColLeft containsURI">{$hs.short_output}</td>
                                     </tr>
                                     {/foreach}
                                 </table>
@@ -106,7 +106,7 @@
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.plugin_output}</td>
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{$m_mon_performance_data}</td>
@@ -165,7 +165,7 @@
                                 {if $host_data.comments}
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_host_comment}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.comments}</td>
+                                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.comments}</td>
                                 </tr>
                                 {/if}
                             </table>
@@ -330,7 +330,7 @@
                                     <td class="ListColLeft">{$tch.host_name}</td>
                                     <td class="ListColRight">{$tch.comment_time}</td>
                                     <td class="ListColCenter">{$tch.author_name}</td>
-                                    <td class="ListColLeft">{$tch.comment_data}</td>
+                                    <td class="ListColLeft containsURI">{$tch.comment_data}</td>
                                     <td class="ListColCenter">{$tch.is_persistent}</td>
                                 </tr>
                                 {/foreach}
@@ -351,7 +351,7 @@
                 </tr>
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
-                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.plugin_output}</td>
                 </tr>
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup">{t}Poller Name{/t}</td>
