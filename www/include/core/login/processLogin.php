@@ -38,7 +38,6 @@ require_once _CENTREON_PATH_ . 'bootstrap.php';
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) &&
         $_GET["autologin"] &&
-        $_GET["autologin"] &&
         isset($generalOptions["enable_autologin"]) &&
         $generalOptions["enable_autologin"])
     || (isset($_POST["autologin"]) &&
