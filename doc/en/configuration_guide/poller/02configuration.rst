@@ -1,10 +1,10 @@
-Configuration of the scheduler
-==============================
+Configuration of the poller
+===========================
 
 Once the installation is completed, it is necessary to integrate this remote server into the Centreon configuration.
 
-#. Go into the menu: **Configuration** ==> **Pollers**
-#. Click on **Add**
+#. Go into the menu: **Configuration > Pollers**
+#. Duplicate the central server and edit it
 #. Change the following settings, and save:
 
 *	Change the name of the **Poller Name**.
@@ -15,29 +15,58 @@ Once the installation is completed, it is necessary to integrate this remote ser
    :align: center
 
 
-#. Go into the menu: **Configuration** ==> **Pollers** ==> **Engine configuration**
+#. Go into the **Configuration > Pollers > Engine configuration** menu
 #. Select your last added configuration.
 #. Change the following settings, and save:
 
-*	In the **Data** tab - **Multiple broker module** field change the name of the of Centreon Broker configuration file **central-module.xml** to for example: poller1-module.xml.
+* In the **Files** tab:
+
+  * Modify **Configuration Name**
+  * Check that ** Linked poller** is the previous created poller
+  * Change if necessary the **Timezone / Location**
+
+.. image:: /images/user/configuration/10advanced_configuration/07addengine.png
+   :align: center
+
+* In the **Data** tab - **Multiple Broker Module** fields check / add the following entries::
+
+   /usr/lib64/centreon-engine/externalcmd.so
+
+   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
 
 .. image:: /images/user/configuration/10advanced_configuration/07mainconffilebrokerconf.png
-   :align: center
+
+   oalign  center
 
 Centreon Broker configuration
 =============================
 
 It is necessary to generate a configuration file for Centreon Broker:
 
-#. Go into the menu: **Configuration ==> Pollers ==> Centreon-Broker ==> Configuration**
-#. Use **Add with wizard**
-#. Choose **Simple Poller**
-#. Indicates a configuration name and the Central monitoring server address
-#. Click on Finish
+#. Go into the menu: **Configuration > Pollers > Broker configuration**
+#. click on **Add**
 
-.. image:: /images/user/configuration/10advanced_configuration/07brokerconfwizzard.png
+* In the **General** tab:
+
+  * Select the **Requester**
+  * Set **Name** of the configuration
+  * Set **Config file name ** that sould be exaclty the same than defined in CEntreon Engine configuration, for example **poller-module.xml**
+  * Check the value **No** for the **Link to cbd service** option
+
+.. image:: /images/user/configuration/10advanced_configuration/07_Addbroker.png
    :align: center
 
+* In the **Output** tab:
+
+  * Add a new **TCP - IPv4** output
+  * Set the **Name**
+  * Set the distant TCP port, by default **5669**
+  * Set the IP address of the Centreon central server (**Host to connect to**)
+
+.. image:: /images/user/configuration/10advanced_configuration/07_Addbroker_output.png
+   :align: center
+
+* Save the configuration
 
 Optional authentication with Centreon Broker
 ============================================

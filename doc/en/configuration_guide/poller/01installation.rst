@@ -1,5 +1,5 @@
 ==============
-Remote servers
+Remote pollers
 ==============
 
 ************
