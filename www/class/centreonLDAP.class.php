@@ -83,7 +83,7 @@ class CentreonLDAP
             "SELECT `ari_value`  " .
             "FROM `auth_ressource_info` " .
             "WHERE `ari_name` = 'ldap_srv_dns' " .
-            "AND ar_id = ?" , array($arId)
+            "AND ar_id = " . $this->db->escape($arId)
         );
         $row = $dbresult->fetchRow();
         $dbresult->closeCursor();
@@ -1224,7 +1224,7 @@ class CentreonLdapAdmin
         $res = $this->db->query(
             "SELECT host_address, host_port, use_ssl, use_tls
             FROM auth_ressource_host
-            WHERE auth_ressource_id = ?", array($arId) .
+            WHERE auth_ressource_id = " . $this->db->escape($arId) .
             " ORDER BY host_order"
         );
         $arr = array();

@@ -177,7 +177,7 @@ if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
     $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable`
                             FROM `auth_ressource`
-                            WHERE ar_id = ?", array($arId));
+                            WHERE ar_id = " .$pearDB->escape($arId));
     while ($row = $res->fetchRow()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
@@ -247,18 +247,18 @@ $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "bt
 
 $nbOfInitialRows = 0;
 if ($arId) {
-    $res = $pearDB->query ("SELECT count(*) as nb 
-             FROM auth_ressource_host 
-             WHERE auth_ressource_id = ?", array($arId));
+    $query = "SELECT count(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
+    $res = $pearDB->query($query);
     $row = $res->fetchRow();
     $nbOfInitialRows = $row['nb'];
 }
 
 $maxHostId = 1;
 if ($arId) {
-    $res = $pearDB->query("SELECT MAX(ldap_host_id) as cnt 
+    $query = "SELECT MAX(ldap_host_id) as cnt 
               FROM auth_ressource_host 
-              WHERE auth_ressource_id = ?", array($arId));
+              WHERE auth_ressource_id = " . $pearDB->escape($arId);
+    $res = $pearDB->query($query);
     if ($res->rowCount()) {
         $row = $res->fetchRow();
         $maxHostId = $row['cnt'];
