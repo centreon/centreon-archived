@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -43,12 +42,9 @@ class Engine extends AbstractObject
     # lock_file, daemon_dumps_core
     protected $attributes_select = '
         nagios_id,
-        
         use_timezone,
-        
         cfg_dir,
         cfg_file as cfg_filename,
-        
         log_file,
         status_file,
         check_result_path,
@@ -114,7 +110,6 @@ class Engine extends AbstractObject
         debug_verbosity,
         max_debug_file_size,
         log_pid,
-        
         global_host_event_handler as global_host_event_handler_id,
         global_service_event_handler as global_service_event_handler_id,
         ocsp_command as ocsp_command_id,
@@ -123,7 +118,6 @@ class Engine extends AbstractObject
         service_perfdata_command as service_perfdata_command_id,
         host_perfdata_file_processing_command as host_perfdata_file_processing_command_id,
         service_perfdata_file_processing_command as service_perfdata_file_processing_command_id,
-        
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -227,7 +221,6 @@ class Engine extends AbstractObject
         'debug_verbosity',
         'max_debug_file_size',
         'log_pid', // cengine
-
         'global_host_event_handler',
         'global_service_event_handler',
         'ocsp_command',
