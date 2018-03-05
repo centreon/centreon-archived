@@ -292,7 +292,7 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
-    
+
     test_proxy_configuration:
       paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
       contexts: [ TestProxyConfigurationContext ]
@@ -304,3 +304,7 @@ default:
     traps_snmp_group_configuration:
       paths: [ %paths.base%/features/TrapsSNMPGroupConfiguration.feature ]
       contexts: [ TrapsSNMPGroupConfigurationContext ]
+
+    uri:
+      paths: [ %paths.base%/features/URI.feature ]
+      contexts: [ URIContext ]
