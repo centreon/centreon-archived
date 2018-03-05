@@ -15,7 +15,6 @@ Please find here the release notes dedicated to the last 2.8.x version of Centre
     centreon-2.8.6
     centreon-2.8.7
     centreon-2.8.8
-<<<<<<< HEAD
     centreon-2.8.9
     centreon-2.8.10
     centreon-2.8.11
@@ -27,5 +26,3 @@ Please find here the release notes dedicated to the last 2.8.x version of Centre
     centreon-2.8.17
     centreon-2.8.18
     centreon-2.8.19
-=======
->>>>>>> a9015123a... Prepare 2.8.8 release.
