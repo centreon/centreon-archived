@@ -257,7 +257,14 @@ class CentreonHost extends CentreonObject
             if ($instanceName) {
                 $tmp = $instanceObject->getIdByParameter($instanceObject->getUniqueLabelField(), $instanceName);
                 if (!count($tmp)) {
-                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $instanceName);
+                    $defaultInstanceName = $instanceObject->getDefaultInstance();
+                    $tmp = $instanceObject->getIdByParameter(
+                        $instanceObject->getUniqueLabelField(),
+                        $defaultInstanceName
+                    );
+                    if (!count($tmp)) {
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . " :" . $instanceName);
+                    }
                 }
                 $instanceId = $tmp[0];
             } else {
