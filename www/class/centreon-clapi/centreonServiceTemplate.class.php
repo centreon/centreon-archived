@@ -1025,7 +1025,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($telements as $telement) {
-            $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+            $this->api->export_filter('TRAP', $telement['traps_id'], $telement['traps_name']);
             echo $this->action . $this->delim
                 . "addtrap" . $this->delim
                 . $telement['service_description'] . $this->delim
