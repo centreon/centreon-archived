@@ -2291,6 +2291,7 @@ CREATE TABLE ws_token (
   token VARCHAR(100) NOT NULL,
   generate_date DATETIME NOT NULL,
   UNIQUE (token),
+  KEY `index1` (`generate_date`),
   FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
