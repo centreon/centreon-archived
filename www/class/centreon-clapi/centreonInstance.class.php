@@ -165,7 +165,7 @@ class CentreonInstance extends CentreonObject
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
         foreach ($elements as $tab) {
             if (isset($pollerState[$tab["id"]])) {
-                $tab["ns_status"] = $poller[$tab["id"]];
+                $tab["ns_status"] = $pollerState[$tab["id"]];
             } else {
                 $tab["ns_status"] = '-';
             }
@@ -231,5 +231,23 @@ class CentreonInstance extends CentreonObject
                 echo $elem['host_id'] . $this->delim . $elem['host_name'] . $this->delim . $elem['host_address'] . "\n";
             }
         }
+    }
+
+    /**
+         * Export data
+         *
+         * @param null $filter_id
+         * @param null $filter_name
+         */
+    public function export($filter_id = null, $filter_name = null)
+    {
+        $filters = null;
+        if (!is_null($filter_id)) {
+            $filters = array(
+                $this->object->getPrimaryKey() => $filter_id
+            );
+        }
+
+        parent::export($filters);
     }
 }
