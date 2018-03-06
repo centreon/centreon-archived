@@ -141,9 +141,9 @@ if ($DBRESULT->rowCount()) {
 
 /* --------------- Services ---------------*/
 $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
- d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
-  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
-   s.description as service_description " . $extrafields . " " .
+        d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
+        d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+        s.description as service_description " . $extrafields . " " .
     "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
     "WHERE d.host_id = s.host_id " .
     "AND d.service_id = s.service_id " .
@@ -193,14 +193,8 @@ $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
-    $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(
-        _("Y/m/d H:i"),
-        $tab_downtime_svc[$i]["scheduled_start_time"]
-    ) . " ";
-    $tab_downtime_svc[$i]['scheduled_end_time'] = $centreonGMT->getDate(
-        _("Y/m/d H:i"),
-        $tab_downtime_svc[$i]["scheduled_end_time"]
-    ) . " ";
+    $tab_downtime_svc[$i]['scheduled_start_time'] = $tab_downtime_svc[$i]["scheduled_start_time"] . " ";
+    $tab_downtime_svc[$i]['scheduled_end_time'] = $tab_downtime_svc[$i]["scheduled_end_time"] . " ";
 
     if (preg_match('/_Module_BAM_\d+/', $data['host_name'])) {
         $tab_downtime_svc[$i]['host_name'] = 'Module BAM';
@@ -247,10 +241,7 @@ foreach ($tab_downtime_svc as $key => $value) {
                 $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
             }
         } else {
-            $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate(
-                _("Y/m/d H:i"),
-                $tab_downtime_svc[$key]["actual_end_time"]
-            ) . " ";
+            $tab_downtime_svc[$key]["actual_end_time"] = $tab_downtime_svc[$key]["actual_end_time"] . " ";
         }
         $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
     }
