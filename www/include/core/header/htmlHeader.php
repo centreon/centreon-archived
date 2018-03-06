@@ -119,6 +119,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
     <script src="./include/common/javascript/numeral.min.js"></script>
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
+    <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
+    <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
     <?php
 
     /*
