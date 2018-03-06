@@ -120,6 +120,28 @@ Setting this option into /etc/my.cnf will NOT work.
    # systemctl daemon-reload
    # service mysql restart
 
+Launch services during the system startup
+-----------------------------------------
+
+Enable the automatically start of services during the system startup.
+
+Execute these commands on central server.
+
+ **CentOS v6** ::
+
+    # chkconfig httpd on
+    # chkconfig snmpd on
+    # chkconfig mysql on
+
+* **CentOS v7** ::
+
+    # systemctl enable httpd.service
+    # systemctl enable snmpd.service
+    # systemctl enable mysql.service
+
+.. note::
+    If MySQL database is on a dedicated server, execute the enable command of mysql on DB server.
+
 Conclude installation
 ---------------------
 
