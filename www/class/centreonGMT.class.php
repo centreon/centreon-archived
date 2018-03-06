@@ -214,6 +214,29 @@ class CentreonGMT
     }
 
     /**
+     * @param $date
+     * @param null $gmt
+     * @return int|string
+     */
+    public function getCurrentTime($date = "N/A", $gmt = null)
+    {
+        $return = "";
+        if ($date == "N/A") {
+            return $date;
+        }
+
+        if (is_null($gmt)) {
+            $gmt = $this->myGMT;
+        }
+
+        $sDate = new DateTime();
+        $sDate->setTimestamp($date);
+        $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($gmt)));
+        $return = $sDate->getTimestamp();
+        return $return;
+    }
+
+    /**
      *
      * @param type $date
      * @param type $gmt
