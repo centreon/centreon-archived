@@ -232,22 +232,4 @@ class CentreonInstance extends CentreonObject
             }
         }
     }
-
-    /**
-         * Export data
-         *
-         * @param null $filter_id
-         * @param null $filter_name
-         */
-    public function export($filter_id = null, $filter_name = null)
-    {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters = array(
-                $this->object->getPrimaryKey() => $filter_id
-            );
-        }
-
-        parent::export($filters);
-    }
 }
