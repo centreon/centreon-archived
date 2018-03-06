@@ -58,7 +58,7 @@
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_name_link};{$tds.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150">
+		<td class="ListColLeft" width="130">
                     {if $tds.service_name_link}
                     <a href='./main.php?{$tds.host_name_link}'>
                     {else}
@@ -67,7 +67,7 @@
                     {$tds.host_name}
                     </a>
                 </td>
-		<td class="ListColLeft" width="150">
+		<td class="ListColLeft" width="130">
                     {if $tds.service_name_link}
                     <a href='./main.php?{$tds.host_name_link}'>
                     {else}
@@ -76,16 +76,18 @@
                     {$tds.service_description}
                     </a>
                 </td>
-		<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
-		<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
-		<td class="ListColRight" width="120">{$tds.duration}{if $tds.service_name_link} {$secondes}{/if}</td>
+        <!-- using a class to format the timestamp -->
+		<td width="160" class="ListColRight{if ($tds.scheduled_start_time == 0)}"> {else} isTimestamp">{$tds.scheduled_start_time}{/if}</td>
+		<td width="160" class="ListColRight{if ($tds.scheduled_end_time == 0)}"> {else} isTimestamp">{$tds.scheduled_end_time}{/if}
+		<td class="ListColRight" width="100">{$tds.duration}{if $tds.service_name_link} {$secondes}{/if}</td>
 		<td class="ListColCenter" width="150">{$tds.author_name}</td>
 		<td class="ListColLeft containsURI">{$tds.comment_data}</td>
 		<td class="ListColCenter" width="50">{$tds.was_started}</td>
 		<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
 		{if $view_all == '1'}
 		<td class="ListColCenter" width="50">{$tds.was_cancelled}</td>
-		<td class="ListColRight" width="100">{$tds.actual_end_time}</td>
+            <!-- using a class to format the timestamp -->
+		<td width="160" class="ListColRight{if ($tds.actual_end_time == 0)}"> {else} isTimestamp"> {$tds.actual_end_time}{/if}</td>
 		{/if}
 	</tr>
 	{/foreach}
@@ -137,17 +139,8 @@
             }
         }
     }
+
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
 </script>
 {/literal}
-
-
-
-
-
-
-
-
-
-
-
-
