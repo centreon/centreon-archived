@@ -5,19 +5,20 @@ use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
 use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Monitoring\CommentMonitoringListingPage;
+use Centreon\Test\Behat\Monitoring\CommentMonitoringPage;
 
 class URIContext extends CentreonContext
 {
     protected $page;
     protected $hostname = 'passiveHost';
     protected $serviceDescription = 'PassiveService';
-    protected $checkOutput = 'http://centreon.com';
-
+    protected $checkOutput = 'https://www.centreon.com/';
 
     /**
-     * @Given a plugin output which contains an URI
+     * @Given a monitored passive service
      */
-    public function aPluginOutputWhichContainsAnURI()
+    public function aMonitoredPassiveService()
     {
         // Create host.
         $hostConfig = new HostConfigurationPage($this);
@@ -50,17 +51,66 @@ class URIContext extends CentreonContext
 
         // Ensure service is monitored.
         $this->restartAllPollers();
+    }
+
+    /**
+     * @Given a plugin output which contains an URI
+     */
+    public function aPluginOutputWhichContainsAnURI()
+    {
+        $this->aMonitoredPassiveService();
 
         $this->submitServiceResult($this->hostname, $this->serviceDescription, 2, $this->checkOutput);
     }
 
     /**
-     * @When I click on the link
+     * @Given a comment which contains an URI
      */
-    public function iClickOnTheLink()
+    public function aCommentWhichContainsAnURI()
+    {
+        $this->aMonitoredPassiveService();
+
+        $this->page = new CommentMonitoringPage($this);
+        $this->page->setProperties(array(
+            'type' => CommentMonitoringPage::TYPE_HOST,
+            'host' => $this->hostname,
+            'comment' => $this->checkOutput
+        ));
+        $this->page->save();
+
+        $this->spin(
+            function($context) {
+                $context->page = new CommentMonitoringListingPage($context);
+                $context->page->getEntry("HOST;" . $this->hostname . ";1");
+                return true;
+            },
+            'Comment is not applied.',
+            10
+        );
+    }
+
+    /**
+     * @When I click on the link in the service output
+     */
+    public function iClickOnTheLinkInTheServiceOutput()
     {
         $this->page = new ServiceMonitoringDetailsPage($this, $this->hostname, $this->serviceDescription);
-        var_dump($this->assertFind('css', 'table.ListTable')->getHtml());
+        $this->spin(
+            function($context) {
+                $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
+                return true;
+            },
+            'Cannot find link in service output',
+            10
+        );
+    }
+
+    /**
+     * @When I click on the link in the comment
+     */
+    public function iClickOnTheLinkInTheComment()
+    {
+        $this->page = new CommentMonitoringListingPage($this);
         $this->spin(
             function($context) {
                 $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
@@ -88,7 +138,7 @@ class URIContext extends CentreonContext
         $windowNames = $this->getSession()->getWindowNames();
         $this->getSession()->switchToWindow($windowNames[1]);
         $openUrl = urldecode($this->getSession()->getCurrentUrl());
-        if ($openUrl != $this->$checkOutput) {
+        if ($openUrl != $this->checkOutput) {
             throw new \Exception('Link is not correctly open (open tab is ' . $openUrl . ')');
         }
     }

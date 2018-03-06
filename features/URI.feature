@@ -8,5 +8,10 @@ Feature: URI
 
     Scenario: URI in service output
         Given a plugin output which contains an URI
-        When I click on the link
+        When I click on the link int the service output
+        Then a new tab is open to the link
+
+    Scenario: URI in comments
+        Given a comment which contains an URI
+        When I click on the link in the comment
         Then a new tab is open to the link
