@@ -59,58 +59,58 @@ function createArrayStats($arryFromJson) {
     }
 
     if (isset($arryFromJson['status']) && $arryFromJson['status']) {
-        $io[_('Status')] = $arryFromJson['status'];
+        $io[_('Status')] = array('value' => $arryFromJson['status'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['last_event_at']) && $arryFromJson['last_event_at'] != -1) {
-        $io[_('Last event at')] = date('Y-m-d H:i:s', $arryFromJson['last_event_at']);
+        $io[_('Last event at')] = array('value' => $arryFromJson['last_event_at'], 'isTimestamp' => true);
     }
 
     if (isset($arryFromJson['last_connection_attempt']) && $arryFromJson['last_connection_attempt'] != -1) {
-        $io[_('Last connection attempt')] = date('Y-m-d H:i:s', $arryFromJson['last_connection_attempt']);
+        $io[_('Last connection attempt')] = array('value' => $arryFromJson['last_connection_attempt'], 'isTimestamp' => true);
     }
 
     if (isset($arryFromJson['last_connection_success']) && $arryFromJson['last_connection_success'] != -1) {
-        $io[_('Last connection success')] = date('Y-m-d H:i:s', $arryFromJson['last_connection_success']);
+        $io[_('Last connection success')] = array('value' => $arryFromJson['last_connection_success'], 'isTimestamp' => true);;
     }
 
     if (isset($arryFromJson['one_peer_retention_mode'])) {
-        $io[_('One peer retention mode')] = $arryFromJson['one_peer_retention_mode'];
+        $io[_('One peer retention mode')] = array('value' => $arryFromJson['one_peer_retention_mode'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['event_processing_speed'])) {
-        $io[_('Event processing speed')] = sprintf("%.2f events/s", $arryFromJson['event_processing_speed']);
+        $io[_('Event processing speed')] = array('value' => sprintf("%.2f events/s", $arryFromJson['event_processing_speed']), 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['queue file']) && isset($arryFromJson['queue file enabled']) && $arryFromJson['queue file enabled'] != "no") {
-        $io[_('Queue file')] = $arryFromJson['queue file'];
+        $io[_('Queue file')] = array('value' => $arryFromJson['queue file'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['queue file enabled'])) {
-        $io[_('Queued file enabled')] = $arryFromJson['queue file enabled'];
+        $io[_('Queued file enabled')] = array('value' => $arryFromJson['queue file enabled'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['queued_events'])) {
-        $io[_('Queued events')] = $arryFromJson['queued_events'];
+        $io[_('Queued events')] = array('value' => $arryFromJson['queued_events'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['memory file'])) {
-        $io[_('Memory file')] = $arryFromJson['memory file'];
+        $io[_('Memory file')] = array('value' => $arryFromJson['memory file'], 'isTimestamp' => false);
     }
 
     if (isset($arryFromJson['read_filters']) && $arryFromJson['read_filters']) {
         if ($arryFromJson['read_filters'] != 'all') {
-            $io[_('Input accepted events type')] = substr($arryFromJson['read_filters'], 22);
+            $io[_('Input accepted events type')] = array('value' => substr($arryFromJson['read_filters'], 22), 'isTimestamp' => false);
         } else {
-            $io[_('Input accepted events type')] = $arryFromJson['read_filters'];
+            $io[_('Input accepted events type')] = array('value' => $arryFromJson['read_filters'], 'isTimestamp' => false);
         }
     }
 
     if (isset($arryFromJson['write_filters']) && $arryFromJson['write_filters']) {
         if ($arryFromJson['write_filters'] != 'all') {
-            $io[_('Output accepted events type')] = substr($arryFromJson['write_filters'], 2);
+            $io[_('Output accepted events type')] = array('value' => substr($arryFromJson['write_filters'], 2), 'isTimestamp' => false);
         } else {
-            $io[_('Output accepted events type')] = $arryFromJson['write_filters'];
+            $io[_('Output accepted events type')] = array('value' => $arryFromJson['write_filters'], 'isTimestamp' => false);
         }
     }
 
@@ -122,7 +122,7 @@ function parseStatsFile($statfile)
     $jsonc_content = file_get_contents($statfile);
     $json_stats = json_decode($jsonc_content, true);
 
-    $lastmodif = date('Y-m-d H:i:s', $json_stats['now']);
+    $lastmodif = $json_stats['now'];
 
     $result = array(
         'lastmodif' => $lastmodif,
