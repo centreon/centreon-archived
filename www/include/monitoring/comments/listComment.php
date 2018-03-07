@@ -151,7 +151,6 @@ $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
-    $tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("Y/m/d H:i", $tab_comments_svc[$i]["entry_time"]);
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
     $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
     if ($data['service_description'] != '') {
