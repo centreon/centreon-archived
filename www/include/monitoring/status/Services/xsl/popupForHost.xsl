@@ -49,7 +49,7 @@
         </tr>
         <tr class='list_two'>
             <td class="ColPopup">&#160;<xsl:value-of select="last_state_change_name"/></td>
-            <td class="ColPopup">&#160;<xsl:value-of select="last_state_change"/></td>
+            <td class="ColPopup isTimestamp">&#160;<xsl:value-of select="last_state_change"/></td>
         </tr>
         <tr class='list_one'>
             <td class="ColPopup">&#160;<xsl:value-of select="duration_name"/></td>
@@ -86,7 +86,7 @@
         </tr>
         <tr class='list_two'>
             <td class="ColPopup">&#160;<xsl:value-of select="last_check_name"/></td>
-            <td class="ColPopup">&#160;<xsl:value-of select="last_check"/></td>
+            <td class="ColPopup isTimestamp">&#160;<xsl:value-of select="last_check"/></td>
         </tr>
         <tr class='list_two'>
             <td class="ColPopup">&#160;<xsl:value-of select="is_downtime_name"/></td>
@@ -99,7 +99,7 @@
         </tr>       
         <tr class='list_two'>
             <td class="ColPopup">&#160;<xsl:value-of select="last_notification_name"/></td>
-            <td class="ColPopup">&#160;<xsl:value-of select="last_notification"/></td>
+            <td class="ColPopup isTimestamp">&#160;<xsl:value-of select="last_notification"/></td>
         </tr>
         <tr class='list_lvl_1'>
             <td class="ListColLvl1_name" colspan="2">
@@ -108,7 +108,7 @@
         </tr>
         <tr class='list_one'>
             <td class="ColPopup">&#160;<xsl:value-of select="last_time_name"/><xsl:value-of select="last_time_status"/></td>
-            <td class="ColPopup">&#160;<xsl:value-of select="last_time"/></td>
+            <td class="ColPopup isTimestamp">&#160;<xsl:value-of select="last_time"/></td>
         </tr>
     </table>
 </xsl:template>
