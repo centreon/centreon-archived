@@ -232,7 +232,7 @@ while ($res = $DBRESULT->fetchRow()) {
         if ($res['object_type'] == "service") {
             if (isset($host_name) && $host_name != '') {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -245,7 +245,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hosts) && count($hosts) != 1) {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -258,7 +258,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hg_name) && $hg_name != '') {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -271,7 +271,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hostgroups) && count($hostgroups) != 1) {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -289,7 +289,7 @@ while ($res = $DBRESULT->fetchRow()) {
             unset($hostgroups);
         } else {
             $elemArray[] = array(
-                "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                "date" => $res['action_log_date'],
                 "type" => $res['object_type'],
                 "object_name" => $objectName,
                 "action_log_id" => $res['action_log_id'],

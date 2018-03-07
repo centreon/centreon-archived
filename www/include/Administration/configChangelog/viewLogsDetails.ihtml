@@ -19,7 +19,8 @@
             {assign var='classStyle' value='list_two'}
         {/if}
         <tr>
-            <td>{$list.action_type} by {$list.log_contact_id} at {$list.action_log_date}</td>
+            <!-- converting the db formatted date to timestamp then using the class to call moment-->
+            <td>{$list.action_type} by {$list.log_contact_id} at <span class="isTimestamp">{$list.action_log_date|strtotime}</span></td>
         </tr>
         <tr class={$classStyle}>
             <td class="ListColCenter">
@@ -70,3 +71,10 @@
 {$form.hidden}
 </form>
 <br>
+
+{literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
+{/literal}
