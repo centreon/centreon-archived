@@ -905,6 +905,8 @@ var func_popupXsltCallback = function(trans_obj) {
     jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
     jQuery('#' + target_element).show();
 <?php } ?>
+
+    formatDateMoment();
 };
 
 var func_displayPOPUP = function(event) {

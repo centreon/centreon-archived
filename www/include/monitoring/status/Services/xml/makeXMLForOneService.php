@@ -218,19 +218,19 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("performance_data_name", _("Performance Data"), 0);
     $obj->XML->writeElement("state_type", $obj->stateTypeFull[$data["state_type"]]);
     $obj->XML->writeElement("state_type_name", _("State Type"), 0);
-    $obj->XML->writeElement("last_check", $obj->GMT->getDate($dateFormat, $data["last_check"]));
+    $obj->XML->writeElement("last_check", $data["last_check"]);
     $obj->XML->writeElement("last_check_name", _("Last Check"), 0);
-    $obj->XML->writeElement("next_check", $obj->GMT->getDate($dateFormat, $data["next_check"]));
+    $obj->XML->writeElement("next_check", $data["next_check"]);
     $obj->XML->writeElement("next_check_name", _("Next Check"), 0);
     $obj->XML->writeElement("check_latency", $data["latency"]);
     $obj->XML->writeElement("check_latency_name", _("Latency"), 0);
     $obj->XML->writeElement("check_execution_time", $data["execution_time"]);
     $obj->XML->writeElement("check_execution_time_name", _("Execution Time"), 0);
-    $obj->XML->writeElement("last_state_change", $obj->GMT->getDate($dateFormat, $data["last_state_change"]));
+    $obj->XML->writeElement("last_state_change", $data["last_state_change"]);
     $obj->XML->writeElement("last_state_change_name", _("Last State Change"), 0);
     $obj->XML->writeElement("duration", $duration);
     $obj->XML->writeElement("duration_name", _("Current State Duration"), 0);
-    $obj->XML->writeElement("last_notification", $obj->GMT->getDate($dateFormat, $last_notification));
+    $obj->XML->writeElement("last_notification", $last_notification);
     $obj->XML->writeElement("last_notification_name", _("Last Notification"), 0);
     $obj->XML->writeElement("current_notification_number", $data["notification_number"]);
     $obj->XML->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
@@ -243,22 +243,22 @@ if ($data = $DBRESULT->fetchRow()) {
         $status = '';
         $status_date = 0;
         if (isset($data["last_time_critical"]) && $status_date < $data["last_time_critical"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_critical"]);
+            $status_date = $data["last_time_critical"];
             $status = _('CRITICAL');
         }
         if (isset($data["last_time_warning"]) && $status_date < $data["last_time_warning"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_warning"]);
+            $status_date = $data["last_time_warning"];
             $status = _('WARNING');
         }
         if (isset($data["last_time_unknown"]) && $status_date < $data["last_time_unknown"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_unknown"]);
+            $status_date = $data["last_time_unknown"];
             $status = _('UNKNOWN');
         }
     } else {
         $status = _('OK');
         $status_date = 0;
         if ($data["last_time_ok"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_ok"]);
+            $status_date = $data["last_time_ok"];
         }
     }
     if ($status_date == 0) {
