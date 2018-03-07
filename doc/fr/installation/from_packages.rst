@@ -62,6 +62,36 @@ Exécutez la commande :
 
   $ yum install centreon-base-config-centreon-engine centreon
 
+:ref:`A la fin de cette étape, connectez-vous à Centreon pour finaliser le processus d'installation <installation_web_ces>`.
+
+Installer un collecteur
+------------------------
+
+Ce chapitre décrit l'installation d'un collecteur.
+
+Exécutez la commande :
+
+  ::
+
+  $ yum install centreon-poller-centreon-engine
+
+La communication entre le serveur central et un collecteur se fait via SSH.
+
+Vous devez échanger les clés SSH entre les serveurs.
+
+Si vous n'avez pas de clé SSH privés sur le serveur central pour l'utilisateur 'centreon' :
+
+  ::
+
+  $ su - centreon
+  $ ssh-keygen -t rsa
+
+Vous devez copier cette clé sur le collecteur :
+
+  ::
+
+  $ ssh-copy-id centreon@your_poller_ip
+
 Installer MySQL sur le même serveur
 -----------------------------------
 
