@@ -36,7 +36,7 @@
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter" width="150">{t}Host Name{/t}</td>
 		<td class="ListColHeaderCenter" width="120">{t}Service Description{/t}</td>
-		<td class="ListColHeaderCenter" width="110">{t}Entry time{/t}</td>
+		<td class="ListColHeaderCenter" width="180">{t}Entry time{/t}</td>
 		<td class="ListColHeaderCenter" width="120">{t}Authors{/t}</td>
 		<td class="ListColHeaderCenter">{t}Comments{/t}</td>
 		<td class="ListColHeaderCenter" width="60">{t}Persistent{/t}</td>
@@ -47,7 +47,8 @@
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.comment_type};{$tcs.host_name_link};{$tcs.internal_id}]'></td>
 		<td class="ListColLeft"><a href='./main.php?p=20202&o=hd&host_name={$tcs.host_name_link}'>{$tcs.host_name}</a></td>
 		<td class="ListColLeft"><a href='./main.php?p=202&o=svcd&host_name={$tcs.host_name_link}&service_description={$tcs.service_description}'>{$tcs.service_description}</a></td>
-		<td class="ListColCenter">{$tcs.entry_time}</td>
+		<!-- using a class to format the timestamp -->
+		<td class="ListColCenter isTimestamp">{$tcs.entry_time}</td>
 		<td class="ListColCenter">{$tcs.author}</td>
 		<td class="ListColNoWrap containsURI">{$tcs.data}</td>
 		<td class="ListColCenter">{$tcs.persistent}</td>
@@ -77,3 +78,10 @@
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
+
+{literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
+{/literal}
