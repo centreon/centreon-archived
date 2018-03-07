@@ -118,11 +118,11 @@ while ($row = $res->fetch()) {
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
-    $xml->writeElement('start', $centreonGMT->getDate('Y/m/d H:i:s', $row['actual_start_time']));
+    $xml->writeElement('start', $row['actual_start_time']);
     if (!$row['fixed']) {
         $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
     }
-    $xml->writeElement('end', $centreonGMT->getDate('Y/m/d H:i:s', $row['end_time']));
+    $xml->writeElement('end', $row['end_time']);
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));

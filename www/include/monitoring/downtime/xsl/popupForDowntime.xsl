@@ -14,8 +14,8 @@
 				<!--<xsl:attribute name='class'><xsl:value-of select="@class"/></xsl:attribute>-->
 				<td style="padding: 4px;"><xsl:value-of select="author"/></td>
 				<td style="padding: 4px;"><xsl:value-of select="fixed"/></td>
-				<td style="padding: 4px;"><xsl:value-of select="start"/></td>
-				<td style="padding: 4px;"><xsl:value-of select="end"/></td>
+				<td style="padding: 4px;" class="isTimestamp"><xsl:value-of select="start"/></td>
+				<td style="padding: 4px;" class="isTimestamp"><xsl:value-of select="end"/></td>
 				<td style="padding: 4px;"><xsl:value-of select="comment"/></td>
 			</xsl:element>
 		</xsl:for-each>
