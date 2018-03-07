@@ -106,6 +106,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                 src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
         <script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>

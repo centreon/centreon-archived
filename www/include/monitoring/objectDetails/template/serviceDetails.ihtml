@@ -38,11 +38,11 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" style="vertical-align:top;">{$m_mon_host_status_info}</td>
-                                <td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;"><b>{$service_data.plugin_output}<b></div></td>
+                                <td class="ListColNoWrap containsURI"><div style="overflow:auto; width:100%; max-height:500px;"><b>{$service_data.plugin_output}<b></div></td>
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup" style="vertical-align:top;">{$m_mon_host_long_info}</td>
-                                <td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
+                                <td class="ListColNoWrap containsURI"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
@@ -621,7 +621,7 @@
         <td class="ListColLeft ColPopup" width="120">{$tcs.service_description}</td>
         <td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
         <td class="ListColCenter" width="100">{$tcs.author_name}</td>
-        <td class="ListColNoWrap">{$tcs.comment_data}</td>
+        <td class="ListColNoWrap containsURI">{$tcs.comment_data}</td>
         <td class="ListColCenter" width="50">{$tcs.is_persistent}</td>
         </tr>
     {/if}
@@ -632,6 +632,7 @@
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 {literal}
 <script>
+
 jQuery(function () {
   var times = {
     height: 240,
@@ -639,6 +640,7 @@ jQuery(function () {
   };
   jQuery('.chart').centreonGraph(times);
 });
+
 var clipboard = new Clipboard('.btn-copy', {
   text: function() {
     var command = document.querySelector('#command_line').textContent;
@@ -646,5 +648,6 @@ var clipboard = new Clipboard('.btn-copy', {
     return command.replace(re,' ');
   }
 });
+
 </script>
 {/literal}
