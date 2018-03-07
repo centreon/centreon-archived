@@ -1,6 +1,6 @@
 <?php
 
-
+include_once("Esc.class.php");
 
 /*
  * A class to include all escaping in one place. 
@@ -28,11 +28,11 @@
  * CSS etc...) 
  * 
  * Hence, each injected value needs to be "ESCAPE FOR a particular CONTEXT". 
- * Note the capital words. The functions within the class CentreonEscape 
+ * Note the capital words. The functions within the class CentreonEscaping 
  * will correspond as much as possible the above quote, to make it as clear 
  * and easy to understand as possible, when where and what to escape. For 
  * example: To 'Escape for a Html Attribute', you use:
- *  CentreonEscape::forHtmlAttr(...) 
+ *  CentreonEscaping::forHtmlAttr(...) 
  * or even better using the below shortcut class:
  *  Esc::forHtmlAttr()
  * 
@@ -44,7 +44,7 @@
  * are used in this class file.
  * 
  */
-class CentreonEscape
+class CentreonEscaping
 {
 	
 	public function __construct()
@@ -157,15 +157,3 @@ class CentreonEscape
 		return CentreonDB::escape($sValue);
 	}
 }
-
-/*
- * A class for convenience. 
- * This class makes short code style possible using Esc::forHtmlAttr(). 
- * 
- * This is prefered as opposed to CentreonEscape::forHtmlAttr(), which 
- * can be long and unclear, unoverseeable in lines with more than 3 values to 
- * escape, and hence prone to security mistakes. This class makes it clearer 
- * for developers' understanding and analogous with verbal understanding 
- * eg. "Escape (this value) for Html Attributes":  Esc::forHtmlAttr($sThisValue)
- */
-class Esc extends CentreonEscape { }

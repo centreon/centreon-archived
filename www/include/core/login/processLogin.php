@@ -33,7 +33,7 @@
  *
  */
 
-require_once $centreon_path . "www/class/centreonEscaping.php";
+require_once $centreon_path . "www/class/centreonEscaping.class.php";
 
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])

@@ -53,7 +53,7 @@ require_once "DB.php";
 require_once "include/common/common-Func.php";
 require_once "class/centreonLog.class.php";
 require_once "class/centreonDB.class.php";
-require_once "class/centreonEscaping.php";
+require_once "class/centreonEscaping.class.php";
 require_once "class/centreon-knowledge/procedures.class.php";
 require_once "class/centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "class/centreon-knowledge/procedures_Proxy.class.php";

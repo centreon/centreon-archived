@@ -34,7 +34,7 @@
  */
 
 require_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonEscaping.php";
+require_once _CENTREON_PATH_ . "www/class/centreonEscaping.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
 
 /**

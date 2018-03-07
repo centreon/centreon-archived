@@ -34,7 +34,7 @@
  */
     
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-require_once './class/centreonEscaping.php';
+require_once './class/centreonEscaping.class.php';
 
 if ($type == "Service") {
     $arg = "id=".Esc::forUrlValue($service_id)."&host_id=".Esc::forUrlValue($host_id);

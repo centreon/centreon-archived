@@ -59,7 +59,7 @@ require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
 require_once "centreonDB.class.php";
 
-require_once $centreon_path . "/www/class/centreonEscaping.php";
+require_once $centreon_path . "/www/class/centreonEscaping.class.php";
 
 $modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
