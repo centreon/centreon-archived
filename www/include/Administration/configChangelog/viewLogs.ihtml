@@ -28,7 +28,7 @@
 </table>
 <table class="ListTable">
     <tr class="ListHeader">
-        <td class="ListColHeaderCenter" style='width:120px'>{t}Date{/t}</td>
+        <td class="ListColHeaderCenter" style='width:180px'>{t}Date{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Modificaton type{/t}</td>       
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Objects{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Object Name{/t}</td>
@@ -42,7 +42,8 @@
         {assign var='classStyle' value='list_two'}
     {/if}
     <tr class='{$classStyle}'>
-        <td class='ListColCenter'>{$elem.date}</td>
+        <!-- using a class to format the timestamp -->
+        <td class='ListColCenter isTimestamp'>{$elem.date}</td>
         <td class='ListColCenter' style='width:120px;'><span class="badge service_{$elem.badge}">{$elem.modification_type}</span></td>
         <td class='ListColCenter'>{$elem.type}</td>
         <td class='ListColLeft'>
@@ -90,3 +91,10 @@
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
+
+{literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
+{/literal}
