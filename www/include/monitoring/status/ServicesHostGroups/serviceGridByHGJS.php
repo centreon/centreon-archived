@@ -142,7 +142,6 @@ if (isset($_GET["acknowledge"])) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
-        construct_HostGroupSelectList('hostgroups_selected');
 
         if (document.getElementById("host_search") && document.getElementById("host_search").value) {
             _host_search = document.getElementById("host_search").value;

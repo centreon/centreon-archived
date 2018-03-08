@@ -1025,7 +1025,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($telements as $telement) {
-            $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+            $this->api->export_filter('TRAP', $telement['traps_id'], $telement['traps_name']);
             echo $this->action . $this->delim
                 . "addtrap" . $this->delim
                 . $telement['service_description'] . $this->delim
@@ -1049,6 +1049,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($helements as $helement) {
+            $this->api->export_filter('HOST', $helement['host_id'], $helement['host_name']);
             echo $this->action . $this->delim
                 . "addhosttemplate" . $this->delim
                 . $helement['service_description'] . $this->delim

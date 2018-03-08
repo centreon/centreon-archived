@@ -281,7 +281,6 @@ class CentreonHostGroup extends CentreonObject
     public function export($filters = null)
     {
         parent::export($filters);
-
         $relObj = new \Centreon_Object_Relation_Host_Group_Host($this->dependencyInjector);
         $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
 

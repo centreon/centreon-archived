@@ -23,7 +23,10 @@ All actions in Centreon CLAPI will require authentication, so your commands will
   # cd /usr/share/centreon/bin
   # ./centreon -u admin -p centreon [...]
 
-Obviously, the **-u** option is for the username and the **-p** option is for the password. If your passwords 
-are encoded with SHA1 in database, use the **-s** option::
+Obviously, the **-u** option is for the username and the **-p** option is for the password.
+The password can be in clear or the encrypted in the database.
+
+.. note::
+    If your passwords are encoded with SHA1 in database (MD5 by default), use the **-s** option::
 
   # ./centreon -u admin -p centreon -s [...]

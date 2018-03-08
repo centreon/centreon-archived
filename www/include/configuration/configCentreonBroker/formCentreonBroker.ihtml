@@ -171,7 +171,7 @@ uniqueType["{$block.id}"] = false;
                 });
 
                 clonifyTableFields('parentGroup', 'displaynamegroup');
-                addCollapse();
+                addCollapse(id_name);
                 openNewElem(id_name);
 
                 jQuery('#' + id_name).centreonValidate();
@@ -221,6 +221,12 @@ uniqueType["{$block.id}"] = false;
         if(tab == "tab4"){
             clonifyTableFields('parentGroup','displaynamegroup');
         }
+        jQuery(function() {
+            jQuery.each(jQuery('[data-ontab-fn]'), function () {
+                window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+            });
+        });
+        initCollapsebyTab(tab);
     }
 
     function purgeHideInput(tab) {

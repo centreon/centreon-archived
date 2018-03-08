@@ -407,7 +407,7 @@ abstract class CentreonObject
     /**
      * Export data
      *
-     * @param string $parameters
+     * @param string $filters
      * @return void
      */
     public function export($filters = null)

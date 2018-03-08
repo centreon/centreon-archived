@@ -18,8 +18,8 @@ SELinux should be disabled; for this, you have to modify the file */etc/selinux/
 
     SELINUX=disabled
 
-After saving the file, please reboot your operating system to apply the changes.
-
+.. note::
+    After saving the file, please reboot your operating system to apply the changes.
 
 ******************
 Repository install
@@ -51,26 +51,22 @@ For CentOS 7.
 The repository is now installed.
 
 
-***************
-Package install
-***************
-
-Installing a central server
----------------------------
+************************
+Install a central server
+************************
 
 The chapter describes the installation of a Centreon central server.
 
 Perform the command:
 
- ::
+::
 
   $ yum install centreon-base-config-centreon-engine centreon
-
 
 :ref:`After this step you should connect to Centreon to finalise the installation process <installation_web_ces>`.
 
 Installing a poller
--------------------
+--------------------
 
 This chapter describes the installation of a collector.
 
@@ -97,6 +93,7 @@ Copy this key on the collector:
 
  $ ssh-copy-id centreon@your_poller_ip
 
+
 Installing MySQL on the same server
 -----------------------------------
 
@@ -104,20 +101,16 @@ This chapter describes the installation of MySQL on a server including Centreon.
 
 Perform the command:
 
-  ::
+::
 
    $ yum install MariaDB-server
    $ service mysql restart
 
 
-******************
-Post-package steps
-******************
-
 PHP timezone
 ------------
 
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
+PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini which contains the following line :
 
 ::
 
@@ -164,7 +157,7 @@ Enable the automatically start of services during the system startup.
 
 Execute these commands on central server.
 
-* **CentOS v6** ::
+ **CentOS v6** ::
 
     # chkconfig httpd on
     # chkconfig snmpd on

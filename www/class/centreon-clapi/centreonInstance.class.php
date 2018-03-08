@@ -165,7 +165,7 @@ class CentreonInstance extends CentreonObject
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
         foreach ($elements as $tab) {
             if (isset($pollerState[$tab["id"]])) {
-                $tab["ns_status"] = $poller[$tab["id"]];
+                $tab["ns_status"] = $pollerState[$tab["id"]];
             } else {
                 $tab["ns_status"] = '-';
             }

@@ -105,10 +105,10 @@ $DBRESULT->closeCursor();
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enable") . "</option>";
-$statusFilter .= "<option value='0'" . (($status == 0 && $status != '') ? " selected" : "") . ">" .
-    _("Disable") . "</option>";
+$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
+;
+$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
+$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {

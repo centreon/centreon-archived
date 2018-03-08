@@ -19,3 +19,5 @@ Voici les différentes notes de versions pour les versions majeures :
 Il est très important lorsque vous souhaitez mettre à jour votre système de vous reporter à cette section afin de connaître les changements de comportement ou les changements majeurs qui ont été opérés sur cette version. Cela vous permettra de connaître l'impact de l'installation de ces versions sur les fonctionnalités que vous utilisez ou sur les développements spécifiques que vous avez intégrés sur votre plateforme (modules, widgets, plugins).
 
 Si vous avez des questions ou besoins de compléments relatifs au contenu des notes, vous pouvez poser vos questions sur notre `github <https://github.com/centreon/centreon>`_.
+
+Afin de régler les problèmes de vue concernant toutes les widgets vous devez vider votre cache.

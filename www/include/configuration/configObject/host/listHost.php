@@ -124,10 +124,9 @@ $centreon->template = $template;
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enable") . "</option>";
-$statusFilter .= "<option value='0'"
-    . (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disable") . "</option>";
+$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
+$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
+$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
@@ -275,12 +274,12 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=" . $p . "&host_id=" . $host['host_id'] . "&o=u&limit=" . $limit
-                . "&num=" . $num . "&search=" . $search
+                . "&num=" . $num . "&searchH=" . $search
                 . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
                 . _("Disabled") . "'></a>";
         } else {
             $moptions = "<a href='main.php?p=" . $p . "&host_id=" . $host['host_id'] . "&o=s&limit=" . $limit
-                . "&num=" . $num . "&search=" . $search
+                . "&num=" . $num . "&searchH=" . $search
                 . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
                 . _("Enabled") . "'></a>";
         }

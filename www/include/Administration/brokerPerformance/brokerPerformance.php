@@ -254,7 +254,7 @@ $queryStatName = "SELECT config_name, cache_directory "
     . "AND ns_nagios_server = :id";
 try {
     $stmt = $pearDB->prepare($queryStatName);
-    $stmt->bindParam(':id', $selectedPoller, PDO:PARAM_INT);
+    $stmt->bindParam(':id', $selectedPoller, PDO::PARAM_INT);
     $stmt->execute();
     if (!$stmt->rowCount()) {
         $tpl->assign('msg_err', _('No statistics file defined for this poller'));

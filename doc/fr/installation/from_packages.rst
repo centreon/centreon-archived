@@ -20,8 +20,8 @@ SELinux doit être désactivé. Pour cela vous devez modifier le fichier */etc/s
 
     SELINUX=disabled
 
-Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
-
+.. note::
+    Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
 
 ***********************
 Installation des dépôts
@@ -50,26 +50,22 @@ Pour CentOS 7.
 Le dépôt est maintenant installé.
 
 
-************************
-Installation des paquets
-************************
-
-Installer un serveur central
-----------------------------
+*******************************
+Installation du serveur central
+*******************************
 
 Ce chapitre décrit l'installation d'un serveur central Centreon.
 
 Exécutez la commande :
 
- ::
+::
 
   $ yum install centreon-base-config-centreon-engine centreon
-
 
 :ref:`A la fin de cette étape, connectez-vous à Centreon pour finaliser le processus d'installation <installation_web_ces>`.
 
 Installer un collecteur
------------------------
+------------------------
 
 Ce chapitre décrit l'installation d'un collecteur.
 
@@ -103,15 +99,10 @@ Ce chapitre décrit l'installation de MySQL sur un serveur comprenant Centreon.
 
 Exécutez la commande :
 
-  ::
+::
 
    $ yum install MariaDB-server
    $ service mysql restart
-
-
-*******************
-Étapes post-paquets
-*******************
 
 Fuseau horaire PHP
 ------------------
@@ -146,7 +137,7 @@ Système de gestion de base de données
 
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information nous recommandons MariaDB.
 
-Pour les système CentOS / RHEL en verison 7, il est nécessaire de modifidier la limitation **LimitNOFILE**.
+Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier la limitation **LimitNOFILE**.
 Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
 
 ::
@@ -155,7 +146,7 @@ Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysqld restart
- 
+   
 Lancer les services au démarrage
 --------------------------------
 
@@ -181,7 +172,7 @@ Lancer les commandes suivantes sur le serveur Central.
 Terminer l'installation
 -----------------------
 
-:ref:`Clicquer ici pour finaliser le processus d'installation <installation_web_ces>`.
+:ref:`Cliquer ici pour finaliser le processus d'installation <installation_web_ces>`.
 
 Installer un collecteur
 -----------------------
@@ -210,4 +201,3 @@ Vous devez copier cette clé sur le collecteur :
 ::
 
     $ ssh-copy-id centreon@your_poller_ip
-
