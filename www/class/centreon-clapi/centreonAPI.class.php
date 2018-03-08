@@ -36,18 +36,18 @@
 namespace CentreonClapi;
 
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
-require_once realpath(dirname(__FILE__)."/../centreonDB.class.php");
-require_once realpath(dirname(__FILE__)."/../centreonXML.class.php");
+require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
+require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 require_once __DIR__ . '/centreonUtils.class.php';
 
-if (file_exists(realpath(dirname(__FILE__)."/../centreonSession.class.php"))) {
-    require_once realpath(dirname(__FILE__)."/../centreonSession.class.php");
+if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
+    require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 } else {
-    require_once realpath(dirname(__FILE__)."/../Session.class.php");
+    require_once realpath(dirname(__FILE__) . "/../Session.class.php");
 }
 
 /**
@@ -88,6 +88,9 @@ class CentreonAPI
     public function __construct($user, $password, $action, $centreon_path, $options)
     {
         global $version;
+        global $licensedModule;
+
+        $licensedModule = array();
 
         /**
          * Set variables
@@ -303,10 +306,13 @@ class CentreonAPI
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
         while ($row = $DBRESULT->fetchRow()) {
-            $objectsPath = array_merge(
-                $objectsPath,
-                glob(_CENTREON_PATH_.'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
-            );
+
+            if ($this->checkModuleValidity($row['name'])) {
+                $objectsPath = array_merge(
+                    $objectsPath,
+                    glob(_CENTREON_PATH_ . 'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
+                );
+            }
         }
 
         foreach ($objectsPath as $objectPath) {
@@ -342,6 +348,58 @@ class CentreonAPI
     }
 
     /**
+     * @param $moduleName
+     * @return bool
+     */
+    public function checkModuleValidity($moduleName)
+    {
+        global $licensedModule;
+
+        $isValid = true;
+
+        $checkLicenseFile = _CENTREON_PATH_ . "www/modules/$moduleName/extensions/checkLicense.php";
+        if (file_exists($checkLicenseFile)) {
+            require_once $checkLicenseFile;
+        }
+
+        if (in_array($moduleName, $licensedModule)) {
+            $isValid = false;
+            $licenseFile = _CENTREON_PATH_ . "www/modules/$moduleName/license/merethis_lic_temp.zl";
+
+            if (function_exists("zend_loader_file_encoded")) {
+
+                if (file_exists($licenseFile)) {
+
+                    $zend_info = $this->parseZendLicenseFile($licenseFile);
+
+                    $license_expires = strtotime($zend_info['Expires']);
+                    if ($license_expires > time()) {
+                        $isValid = true;
+                    }
+                }
+            }
+        }
+
+        return $isValid;
+    }
+
+    /**
+     * @param $file
+     * @return array
+     */
+    private function parseZendLicenseFile($file)
+    {
+        $lines = preg_split('/\n/', file_get_contents($file));
+        $infos = array();
+        foreach ($lines as $line) {
+            if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
+                $infos[$match[1]] = $match[2];
+            }
+        }
+        return $infos;
+    }
+
+    /**
      *
      * @param void
      * @return CentreonApi
@@ -352,7 +410,8 @@ class CentreonAPI
         $action = null,
         $centreon_path = null,
         $options = null
-    ) {
+    )
+    {
         if (is_null(self::$_instance)) {
             self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
         }
@@ -384,7 +443,7 @@ class CentreonAPI
                 if ($this->relationObject[$object]['module'] == 'core') {
                     require_once "centreon" . $this->relationObject[$object]['class'] . ".class.php";
                 } else {
-                    require_once _CENTREON_PATH_."/www/modules/"
+                    require_once _CENTREON_PATH_ . "/www/modules/"
                         . $this->relationObject[$object]['module']
                         . "/centreon-clapi/class/centreon"
                         . $this->relationObject[$object]['class']
@@ -423,8 +482,8 @@ class CentreonAPI
          * Default class needed
          */
 
-        require_once _CLAPI_CLASS_."/centreonTimePeriod.class.php";
-        require_once _CLAPI_CLASS_."/centreonACLResources.class.php";
+        require_once _CLAPI_CLASS_ . "/centreonTimePeriod.class.php";
+        require_once _CLAPI_CLASS_ . "/centreonACLResources.class.php";
     }
 
     /**
@@ -487,14 +546,14 @@ class CentreonAPI
         }
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
-                 WHERE contact_alias = '".$this->login."'
+                 WHERE contact_alias = '" . $this->login . "'
                  AND contact_activate = '1'
                  AND contact_oreon = '1'");
         if ($DBRESULT->numRows()) {
             $row = $DBRESULT->fetchRow();
             if ($row['contact_admin'] == 1) {
                 $algo = $this->utilsObject->detectPassPattern($row['contact_passwd']);
-                if(!$algo) {
+                if (!$algo) {
                     if ($useSha1) {
                         $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
                     } else {
@@ -914,8 +973,8 @@ class CentreonAPI
      */
     public function printLegals()
     {
-        $DBRESULT = & $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
-        $data = & $DBRESULT->fetchRow();
+        $DBRESULT = &$this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
+        $data = &$DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
         print "Copyright Centreon - www.centreon.com\n";
         unset($data);
