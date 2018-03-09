@@ -364,7 +364,7 @@ class CentreonAPI
 
         if (in_array($moduleName, $licensedModule)) {
             $isValid = false;
-            $licenseFile = _CENTREON_PATH_ . "www/modules/$moduleName/license/merethis_lic_temp.zl";
+            $licenseFile = _CENTREON_PATH_ . "www/modules/$moduleName/license/merethis_lic.zl";
 
             if (function_exists("zend_loader_file_encoded")) {
 
