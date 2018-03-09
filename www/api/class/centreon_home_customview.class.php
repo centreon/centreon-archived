@@ -81,7 +81,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $q);
 
-        while ($row = $dbResult->fetchRow()) {
+        while ($row = $dbResult->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
