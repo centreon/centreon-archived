@@ -76,12 +76,12 @@ class CentreonHomeCustomview extends CentreonWebService
             'WHERE cvur2.user_id = ' . $centreon->user->user_id . ' ' .
             'AND cvur2.is_consumed = 1) ' .
             (count($q) > 0 ? 'AND d.name like ? ' : '') .
-            ') tmp ORDER BY tmp.name';
+            'ORDER BY name';
 
         $stmt = $this->pearDB->prepare($query);
         $dbResult = $this->pearDB->execute($stmt, $q);
 
-        while ($row = $dbResult->fetch()) {
+        while ($row = $dbResult->fetchRow()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
