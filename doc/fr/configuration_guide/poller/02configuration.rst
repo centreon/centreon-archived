@@ -15,14 +15,14 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
    :align: center
 
 #. Rendez-vous dans le menu **Configuration > Collecteur > Configuration du moteur de collecte**
-#. Selectionnez la configuration qui correspond au dernier poller ajouté
+#. Sélectionnez la configuration qui correspond au dernier poller ajouté
 #. Modifiez les paramètres suivants, puis sauvegardez :
 
 * Dans l'onglet **Fichiers**
 
   * Modifiez le **Nom de la configuration**
   * Vérifiez que le **Collecteur lié** est bien celui précédemment créé
-  * Modifier si besoin le **Fuseau horaire / Localisation**
+  * Modifiez si besoin le **Fuseau horaire / Localisation**
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addengine.png
    :align: center
@@ -46,7 +46,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 
 * Dans l'onglet **Général**
 
-  * Selectionnez le **Collecteur**
+  * Sélectionnez le **Collecteur**
   * Saisissez le **Nom** de la configuration
   * Saisissez le **Nom du fichier de configuration** qui doit être identique à celui défini dans la configuration de Centreon Engine, par exemple poller-module.xml
   * Cochez la case **Non** pour la configuration **Link to cbd service**
@@ -56,10 +56,10 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 
 * Dans l'onglet **Output**
 
-  * Ajouter une configuration de type **TCP - IPv4**
+  * Ajoutez une configuration de type **TCP - IPv4**
   * Saisissez le **Nom**
   * Saisissez le **Port de connexion**, par défaut **5669**
-  * Saisissez l'adresse IP (**Hôte distant**) du servuer Centreon central vue par ce collecteur
+  * Saisissez l'adresse IP (**Hôte distant**) du serveur Centreon central vue par ce collecteur
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07_Addbroker_output.png
    :align: center
