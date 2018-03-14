@@ -1,15 +1,15 @@
 Configuration of the poller
 ===========================
 
-Once the installation is completed, it is necessary to integrate this remote server into the Centreon configuration.
+Once the installation is completed, it is necessary to integrate this remote poller into the Centreon configuration.
 
 #. Go into the menu: **Configuration > Pollers**
 #. Duplicate the central server and edit it
 #. Change the following settings, and save:
 
 *	Change the name of the **Poller Name**.
-*	Enter the IP address of the collector in the **IP Address** field.
-*	Enable the collector by clicking on **Enabled** in the **Status** field.
+*	Enter the IP address of the poller in the **IP Address** field.
+*	Enable the poller by clicking on **Enabled** in the **Status** field.
 
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller.png
    :align: center
@@ -22,7 +22,7 @@ Once the installation is completed, it is necessary to integrate this remote ser
 * In the **Files** tab:
 
   * Modify **Configuration Name**
-  * Check that ** Linked poller** is the previous created poller
+  * Check that ** Linked poller** is the previously created poller
   * Change if necessary the **Timezone / Location**
 
 .. image:: /images/user/configuration/10advanced_configuration/07addengine.png
@@ -50,7 +50,7 @@ It is necessary to generate a configuration file for Centreon Broker:
 
   * Select the **Requester**
   * Set **Name** of the configuration
-  * Set **Config file name ** that sould be exaclty the same than defined in CEntreon Engine configuration, for example **poller-module.xml**
+  * Set **Config file name ** that should be exactly the same as the one defined in Centreon Engine configuration, for example **poller-module.xml**
   * Check the value **No** for the **Link to cbd service** option
 
 .. image:: /images/user/configuration/10advanced_configuration/07_Addbroker.png
@@ -131,7 +131,7 @@ It is necessary to change the configuration files of Centreontrapd so that the s
 Plugins synchronisation
 =======================
 
-You can synchronise the plugins between your central server and your remote servers using **rsync** software.
+You can synchronise the plugins between your central server and your remote pollers using **rsync** software.
 
 .. warning::
    Don’t perform this action if your plugins depend on third party libraries that need to have been installed previously.
@@ -139,9 +139,9 @@ You can synchronise the plugins between your central server and your remote serv
 Exchanging SSH keys
 ===================
 
-For the central server to be able to export the configuration files of the monitoring engine, it is necessary to make a SSH key exchange between the central server and the new remote server.
+For the central server to be able to export the configuration files of the monitoring engine, it is necessary to make a SSH key exchange between the central server and the new remote poller.
 
-On the remote server:
+On the remote poller:
 
 #. Log in as a ‘root’
 #. Change the Centreon user password::
@@ -158,18 +158,18 @@ On the central server:
 
     $ ssh-keygen
 
-3. Then export your SSH key to the remote server::
+3. Then export your SSH key to the remote poller::
 
     $ ssh-copy-id -i /var/spool/centreon/.ssh/id_rsa.pub centreon@[POLLER_IP]
 
-4. Check that you can log in from the central server to the remote server as a Centreon user. You can you use the command::
+4. Check that you can log in from the central server to the remote poller as a Centreon user. You can you use the command::
 
     $ ssh centreon@[POLLER_IP]
 
 Export the configuration
 ========================
 
-It only remains to export the configuration to verify that the installation of the remote server has been executed correctly.
+The final step is to export the configuration to verify that the installation of the remote poller has been executed correctly.
 
 .. note::
    Refer to the documentation: :ref:`Export configuration<deployconfiguration>`

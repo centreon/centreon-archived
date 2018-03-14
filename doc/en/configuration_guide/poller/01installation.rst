@@ -6,8 +6,8 @@ Remote pollers
 Presentation
 ************
 
-Remote servers (also called pollers) are monitoring server equipped with a scheduler and a broker module. 
-Their function is to monitor the equipment and send the results to the Centreon central server (for display of the results...).
+Remote servers (also called pollers) are monitoring servers equipped with a scheduler and a broker module. 
+Their function is to monitor the equipment and send the results to the Centreon central server (to display the results...).
 
 ************
 Installation
