@@ -118,9 +118,9 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     $tpl->assign('totalTime', $serviceStats["TOTAL_TIME_F"]);
     $tpl->assign('summary', $serviceStats);
     $tpl->assign('from', _("From"));
-    $tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
+    $tpl->assign('date_start', $start_date);
     $tpl->assign('to', _("to"));
-    $tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
+    $tpl->assign('date_end', $end_date);
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $service_id);
 }
