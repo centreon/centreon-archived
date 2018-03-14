@@ -70,7 +70,8 @@ class CentreonResourceCfg extends CentreonObject
         $this->instanceObj = new CentreonInstance($dependencyInjector);
         $this->relObj = new \Centreon_Object_Relation_Instance_Resource($dependencyInjector);
         $this->object = new \Centreon_Object_Resource($dependencyInjector);
-        $this->params = array('resource_line' => '',
+        $this->params = array(
+            'resource_line' => '',
             'resource_comment' => '',
             'resource_activate' => '1'
         );
@@ -161,11 +162,8 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param int $parameters
+     * @throws CentreonClapiException
      */
     public function setparam($parameters)
     {
@@ -204,11 +202,8 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Add poller to cfg file
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function addPoller($parameters)
     {
@@ -250,11 +245,8 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Del Action
-     *
-     * @param int $objectId
-     * @return void
-     * @throws Exception
+     * @param string $objectName
+     * @throws CentreonClapiException
      */
     public function del($objectName)
     {
@@ -275,10 +267,7 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Show
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
      */
     public function show($parameters = null)
     {
@@ -327,13 +316,21 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param array $arg
      */
-    public function export()
+    public function export($arg = array())
     {
         $elements = $this->object->getList();
+
+        if (!empty($arg)) {
+            $nbElements = count($elements);
+            for ($i = 0; $i < $nbElements; $i++) {
+                if ($elements[$i]["resource_id"] != $arg["resource_id"]) {
+                    unset($elements[$i]);
+                }
+            }
+        }
+
         foreach ($elements as $element) {
             $instanceIds = $this->relObj->getinstance_idFromresource_id(
                 trim($element[$this->object->getPrimaryKey()])
