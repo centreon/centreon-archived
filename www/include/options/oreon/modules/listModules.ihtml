@@ -22,7 +22,8 @@
 		<td class="ListColLeft">{$properties.infos}</td>
 		<td class="ListColCenter">{$properties.installed_version}</td>
 		<td class="ListColCenter">{$properties.author}</td>
-		<td class="ListColCenter">{$properties.license_expiration}</td>
+		<!-- using a class to format the timestamp -->
+		<td class="ListColCenter isTimestamp">{$properties.license_expiration}</td>
 		<td class="ListColCenter">{$properties.installed}</td>
         <td id="{$properties.name}" class="ListColCenter"></td>
 		<td id="action_{$properties.name}" class="ListColRight">
@@ -45,3 +46,10 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
 <script type="text/javascript" src="./include/options/oreon/modules/listModules.js"></script>
+
+{literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
+{/literal}
