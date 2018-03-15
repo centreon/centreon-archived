@@ -471,18 +471,27 @@ class CentreonLDAP
      */
     public function listUserForGroup($groupdn)
     {
-        if (trim($this->groupSearchInfo['member']) == '') {
+        $this->setErrorHandler();
+        if (trim($this->userSearchInfo['filter']) == '') {
+            restore_error_handler();
             return array();
         }
-        $group = $this->getEntry($groupdn, $this->groupSearchInfo['member']);
-        $list = array();
-        if (!isset($group[$this->groupSearchInfo['member']])) {
-            return $list;
-        } elseif (is_array($group[$this->groupSearchInfo['member']])) {
-            return $group[$this->groupSearchInfo['member']];
-        } else {
-            return array($group[$this->groupSearchInfo['member']]);
+        $groupdn = str_replace('\\', '\\\\', $groupdn);
+        $filter = '(&' . preg_replace('/%s/', '*', $this->userSearchInfo['filter']) .
+            '(' . $this->userSearchInfo['group'] . '=' . $this->replaceFilter($groupdn) . '))';
+        $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+        if (false === $result) {
+            restore_error_handler();
+            return array();
         }
+        $entries = ldap_get_entries($this->ds, $result);
+        $nbEntries = $entries["count"];
+        $list = array();
+        for ($i = 0; $i < $nbEntries; $i++) {
+            $list[] = $entries[$i]['dn'];
+        }
+        restore_error_handler();
+        return $list;
     }
 
     /**

@@ -1122,7 +1122,10 @@ function insertLdapContactInDB($tmpContacts = array())
             }
             $pearDB->query(sprintf($sqlUpdate, $tmplSql));
         }
-        $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
+        $listGroup = array();
+        if (false !== $ldap->connect()) {
+            $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
+        }
         if (count($listGroup) > 0) {
             $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
             try {
