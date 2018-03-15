@@ -81,8 +81,9 @@
                 </span>
             </td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
-            <td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
+            <!-- using a class to format the timestamp -->
+            <td class="ListColCenter isTimestamp">{$elemArr[elem].RowMenu_startTime}</td>
+            <td class="ListColCenter isTimestamp"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
@@ -127,5 +128,8 @@
 
     setDisabledRowStyle();
 
+
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
 </script>
 {/literal}
