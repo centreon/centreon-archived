@@ -133,8 +133,8 @@
 		<xsl:for-each select="//line">
 		<tr>
 			<xsl:attribute name="class"><xsl:value-of select="class"/></xsl:attribute>
-	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="date"/></td>
-	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="time"/></td>
+	   		<td style="padding-left:5px;" class="ListColCenter isTimestamp isDate"><xsl:value-of select="date"/></td>
+	   		<td style="padding-left:5px;" class="ListColCenter isTimestamp isTime"><xsl:value-of select="time"/></td>
 	   		<td style="padding-left:5px;" class="ListColCenter"><xsl:value-of select="poller"/></td>
 	   		<td style="padding-left:5px;"><xsl:value-of select="output"/></td>
 		</tr>
