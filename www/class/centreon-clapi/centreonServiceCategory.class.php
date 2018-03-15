@@ -401,6 +401,7 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      */
     public function export($filters = null)
     {
+        parent::export();
         $scs = $this->object->getList(
             array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()),
             -1,
