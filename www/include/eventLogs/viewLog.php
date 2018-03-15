@@ -419,8 +419,9 @@ if ($engine == 'false') {
                 '&unknown=false&critical=false&warning=false&period=' + period + '&StartDate=' + StartDate +
                 '&EndDate=' + EndDate + '&StartTime=' + StartTime + '&EndTime=' + EndTime + '&num=' + _num +
                 '&limit=' + _limit + '&id=' + args;
-            proc.setXml(_addr)
-            proc.setXslt(_addrXSL)
+            proc.setXml(_addr);
+            proc.setXslt(_addrXSL);
+            proc.setCallback(formatDateMoment);
             proc.transform("logView4xml");
         } else {
             if (type == 'CSV') {
@@ -496,6 +497,9 @@ if ($engine == 'false') {
                 '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
                 '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
                 '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
+
+
+
                 <?php
                 if (isset($search) && $search) {
                     print "&search_host=" . $search;
@@ -504,8 +508,10 @@ if ($engine == 'false') {
                 }
                 ?>;
 
+
             proc.setXml(_addr)
             proc.setXslt(_addrXSL)
+            proc.setCallback(formatDateMoment)
             proc.transform("logView4xml");
         } else {
             var openid = document.getElementById('openid').innerHTML;

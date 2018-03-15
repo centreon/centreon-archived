@@ -790,8 +790,8 @@ if (isset($req) && $req) {
         $buffer->writeElement("real_name", $log["host_name"], false);
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);
-        $buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
-        $buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
+        $buffer->writeElement("date", $log["ctime"]);
+        $buffer->writeElement("time", $log["ctime"]);
         $buffer->writeElement("output", $log["output"]);
         $buffer->writeElement("contact", $log["notification_contact"], false);
         $buffer->writeElement("contact_cmd", $log["notification_cmd"], false);
