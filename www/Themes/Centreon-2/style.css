@@ -2171,7 +2171,7 @@ textarea.default-textarea {
 .graphZone {
     margin-bottom: 40px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
 }
