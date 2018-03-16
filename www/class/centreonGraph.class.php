@@ -1427,8 +1427,8 @@ class CentreonGraph
 		fwrite($pipes[0], $commandLine);
 		fclose($pipes[0]);
 
-		if( $str = fopen("php://output","w") ) {
-			stream_copy_to_stream($pipes[1],$str);
+		if( $str = fopen("php://output", "w") ) {
+			stream_copy_to_stream($pipes[1], $str);
 			fclose($str);
 		}  
 
