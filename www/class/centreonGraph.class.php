@@ -1422,7 +1422,6 @@ class CentreonGraph
                 null
             );
             if (is_resource($process)) {
-
 		header("Content-Type: image/png");
 				
 		fwrite($pipes[0], $commandLine);
