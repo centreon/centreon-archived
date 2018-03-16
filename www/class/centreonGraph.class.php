@@ -1422,15 +1422,19 @@ class CentreonGraph
                 null
             );
             if (is_resource($process)) {
-                fwrite($pipes[0], $commandLine);
-                fclose($pipes[0]);
 
-                $str = stream_get_contents($pipes[1]);
-                $return_value = proc_close($process);
+				header("Content-Type: image/png");
+				
+				fwrite($pipes[0], $commandLine);
+				fclose($pipes[0]);
 
-                /* Force no compress for image */
-                $this->setHeaders(false, mb_strlen($str, '8bit'));
-                print $str;
+				if( $str = fopen("php://output","w") ) {
+					stream_copy_to_stream($pipes[1],$str);
+					fclose($str);
+				}  
+
+				fclose($pipes[1]);
+				$return_value = proc_close($process);
             }
         } else {
             return $commandLine;
