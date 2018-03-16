@@ -187,7 +187,7 @@ $query = "SELECT count(ar_id) as count_ldap "
     . "FROM auth_ressource ";
 $res = $pearDB->query($query);
 $row = $res->fetchRow();
-if ($row['count_ldap'] > 0) {
+if ($row['count_ldap'] >= 0) {
     $tpl->assign('ldap', '1');
 }
 

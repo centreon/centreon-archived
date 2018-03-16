@@ -142,7 +142,7 @@ if ($centreon->user->access->checkAction("service_comment")) {
         //global services comment
         if (!isset($_POST["host_id"])) {
             foreach ($_POST["service_id"] as $value) {
-                $info = split('-', $value);
+                $info = explode('-', $value);
                 AddSvcComment(
                     $info[0],
                     $info[1],

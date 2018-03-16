@@ -49,7 +49,7 @@ if (!isset($_SESSION["centreon"])) {
     $oreon = $_SESSION["centreon"];
 }
 
-if (!isset($_POST['confList']) || !strlen($_POST['confList'])) {
+if (!isset($_POST['confList']) || !strlen($_POST['confList']) || !ctype_digit((string)trim(implode("", explode(",", $_POST['confList']))))) {
     exit();
 }
 $confList = $_POST['confList'];

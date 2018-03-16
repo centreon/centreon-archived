@@ -58,7 +58,7 @@ if (!CentreonSession::checkSession($sid, $pearDB)) {
 
 require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 $contactId = CentreonSession::getUser($sid, $pearDB);
-$obj = new CentreonGraph($contactId, $_GET["index"], 0, 1);
+$obj = new CentreonGraph($contactId, is_numeric($_GET['index']) ? $_GET["index"] : 0, 0, 1);
 
 /*
  * Set arguments from GET

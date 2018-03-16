@@ -59,6 +59,8 @@ require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
 require_once "centreonDB.class.php";
 
+require_once $centreon_path . "/www/class/centreonEscaping.class.php";
+
 $modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
 
@@ -82,11 +84,16 @@ $proc = new procedures(
 );
 
 if (isset($_GET["template"]) && $_GET["template"] != "") {
-    $proc->duplicate(
+    /*$proc->duplicate(
         htmlentities($_GET["template"], ENT_QUOTES),
         htmlentities($_GET["object"], ENT_QUOTES),
         htmlentities($_GET["type"], ENT_QUOTES)
-    );
+    );*/ //This is not how you escape for DB calls within $proc->duplicate().
+	$proc->duplicate($_GET["template"], $_GET["object"], $_GET["type"]);
 }
 
-header("Location: $WikiURL/index.php?title=".htmlentities($_GET["object"], ENT_QUOTES)."&action=edit");
+$newUrl = "$WikiURL/index.php?title=".Esc::forUrlValue($_GET["object"])."&action=edit";
+if(filter_var($newUrl, FILTER_VALIDATE_URL)) {
+	header("Location: $newUrl");
+}
+
