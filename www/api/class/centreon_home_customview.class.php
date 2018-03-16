@@ -79,9 +79,9 @@ class CentreonHomeCustomview extends CentreonWebService
             'ORDER BY name';
 
         $stmt = $this->pearDB->prepare($query);
-        $dbResult = $stmt->execute($q);
+        $stmt->execute($q);
 
-        while ($row = $dbResult->fetch()) {
+        while ($row = $stmt->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
