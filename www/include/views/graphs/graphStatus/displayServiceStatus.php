@@ -289,7 +289,8 @@ if (!$session->numRows()) {
     $command_line = escape_command("$command_line");
 
     if ($centreon->optGen["debug_rrdtool"] == "1") {
-        error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
+    	$msg = str_replace("\n", "\\n", str_replace("\r", "\\r", $command_line));
+        error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $msg \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
     }
 
     $fp = popen($command_line, 'r');
