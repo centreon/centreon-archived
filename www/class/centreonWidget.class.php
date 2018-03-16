@@ -297,11 +297,9 @@ class CentreonWidget
             if ($rowNb != $row) {
                 break;
             }
-            file_put_contents('/tmp/debug-layout', "Row " . $row);
             if (count($cols) < $layout) {
                 sort($cols);
                 for ($i = 0; $i < $layout; $i++) {
-                    file_put_contents('/tmp/debug-layout', "Col " . $i, FILE_APPEND);
                     if ($cols[$i] != $i) {
                         $newPosition = $i . '_' . $rowNb;
                         break;

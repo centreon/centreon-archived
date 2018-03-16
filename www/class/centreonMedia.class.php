@@ -185,8 +185,6 @@ class CentreonMedia
 
         $fullPath = $mediaDirectory . '/' . $dirname;
 
-        file_put_contents('/tmp/test.txt', $fullPath);
-
         // Create directory
         if (!is_dir($fullPath)) {
             mkdir($fullPath);
