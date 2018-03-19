@@ -199,6 +199,36 @@ class DowntimeStartAndStopContext extends CentreonContext
     }
 
     /**
+     * @Then the flexible downtime is stopped
+     */
+    public function theFlexibleDowntimeIsStopped()
+    {
+        $this->spin(
+            function ($context) {
+                $finished = false;
+
+                $storageDb = $context->getStorageDatabase();
+                $res = $storageDb->query(
+                    'SELECT d.downtime_id, d.actual_end_time ' .
+                    'FROM downtimes d, hosts h, services s ' .
+                    'WHERE h.host_id = d.host_id ' .
+                    'AND s.service_id = d.service_id ' .
+                    'AND h.name = "' . $context->host . '" ' .
+                    'AND s.description = "' . $context->service . '" ' .
+                    'AND d.actual_end_time IS NOT NULL ' .
+                    'AND d.actual_end_time < ' . time()
+                );
+                if ($row = $res->fetch()) {
+                    $finished = true;
+                }
+                return $finished;
+            },
+            'FLexible downtime is still running.',
+            30
+        );
+    }
+
+    /**
      * @Given a downtime in configuration of a user in other timezone
      */
     public function aDowntimeInConfigurationOfAUserInOtherTimezone()
