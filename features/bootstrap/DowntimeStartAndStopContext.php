@@ -203,9 +203,8 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function theFlexibleDowntimeIsStopped()
     {
-        $downtimeEndTimestamp = strtotime($this->downtimeEndTime);
         $this->spin(
-            function ($context) use ($downtimeEndTimestamp) {
+            function ($context) {
                 $finished = false;
 
                 $storageDb = $context->getStorageDatabase();
@@ -216,7 +215,8 @@ class DowntimeStartAndStopContext extends CentreonContext
                     'AND s.service_id = d.service_id ' .
                     'AND h.name = "' . $context->host . '" ' .
                     'AND s.description = "' . $context->service . '" ' .
-                    'AND d.actual_end_time = ' . $downtimeEndTimestamp
+                    'AND d.actual_end_time IS NOT NULL ' .
+                    'AND d.actual_end_time < ' . time()
                 );
                 if ($row = $res->fetch()) {
                     $finished = true;
