@@ -36,9 +36,9 @@
 
 /* Set default poller with localhost if it is not set */
 if (isset($pearDB)) {
-    $res = $this->db->query("SELECT `name` FROM `nagios_server` WHERE `is_default` = 1");
+    $res = $pearDB->query("SELECT `name` FROM `nagios_server` WHERE `is_default` = 1");
 
     if( $res->rowCount() == 0) {
-        $res = $this->db->query("UPDATE `nagios_server` SET `is_default` = 1 WHERE `localhost` = '1'");
+        $res = $pearDB->query("UPDATE `nagios_server` SET `is_default` = 1 WHERE `localhost` = '1'");
     }
 }
