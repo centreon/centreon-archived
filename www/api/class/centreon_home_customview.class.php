@@ -57,7 +57,7 @@ class CentreonHomeCustomview extends CentreonWebService
         if (isset($this->arguments['q']) && $this->arguments['q'] != '') {
             $q[] = '%' . $this->arguments['q'] . '%';
         }
-        
+
         $query = 'SELECT custom_view_id, name FROM (' .
             'SELECT cv.custom_view_id, cv.name FROM custom_views cv ' .
             'INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id ' .
@@ -79,9 +79,9 @@ class CentreonHomeCustomview extends CentreonWebService
             'ORDER BY name';
 
         $stmt = $this->pearDB->prepare($query);
-        $dbResult = $this->pearDB->execute($stmt, $q);
+        $stmt->execute($q);
 
-        while ($row = $dbResult->fetch()) {
+        while ($row = $stmt->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
