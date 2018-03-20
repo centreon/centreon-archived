@@ -34,7 +34,7 @@ Once the installation is completed, it is necessary to integrate this remote pol
    
    /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
 
-.. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller_neb.png
+.. image:: /images/user/configuration/10advanced_configuration/07addpoller_neb.png
    :align: center 
 
 Centreon Broker configuration
