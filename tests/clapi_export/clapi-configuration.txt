@@ -433,8 +433,8 @@ CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-broker-master;1;negociation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-broker-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;1;port;5669
 CENTBROKERCFG;SETINPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-broker-master;1;buffering_timeout;0
@@ -460,8 +460,9 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negociation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;one_peer_retention_mode;no
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;port;5670
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;protocol;bbdo
@@ -471,6 +472,8 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;2;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;buffering_timeout;0
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-perfdata;storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;type;storage
+CENTBROKERCFG;SETOUTPUT;central-broker-master;3;store_in_data_bin;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;3;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;buffering_timeout;0
@@ -489,8 +492,9 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-rrd-master;1;negociation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;one_peer_retention_mode;no
+CENTBROKERCFG;SETINPUT;central-rrd-master;1;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;buffering_timeout;0
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;retry_interval;60
@@ -528,6 +532,8 @@ CENTBROKERCFG;SETLOGGER;central-module-master;1;info;no
 CENTBROKERCFG;SETLOGGER;central-module-master;1;level;low
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;type;ipv4
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-module-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;port;5669
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;host;localhost
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;retry_interval;60
@@ -5400,6 +5406,14 @@ SERVICE;setparam;test_host;service_test;service_use_only_contacts_from_host;0
 SERVICE;setparam;test_host;service_test;service_locked;0
 SERVICE;setparam;test_host;service_test;service_register;1
 SERVICE;setparam;test_host;service_test;service_activate;1
+SC;ADD;Ping;ping
+SC;setparam;Ping;sc_activate;1
+SC;ADD;Traffic;Traffic
+SC;setparam;Traffic;sc_activate;1
+SC;ADD;Disk;Disk
+SC;setparam;Disk;sc_activate;0
+SC;ADD;Memory;Memory
+SC;setparam;Memory;sc_activate;0
 SC;addservicetemplate;Ping;Ping-LAN
 SC;addservicetemplate;Ping;Ping-WAN
 SC;addservicetemplate;Ping;test_stpl
@@ -5427,3 +5441,4 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+
