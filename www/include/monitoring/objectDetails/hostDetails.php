@@ -390,40 +390,27 @@ if (!$is_admin && !$haveAccess) {
 
         $host_status[$host_name]["status_class"] =
             $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
-        $host_status[$host_name]["last_check"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_check"]
-            );
-        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"]
-            ? $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"])
-            : "";
-        !$host_status[$host_name]["last_notification"]
-            ? $host_status[$host_name]["last_notification"] = ""
-            : $host_status[$host_name]["last_notification"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_notification"]
-            );
-        !$host_status[$host_name]["next_notification"]
-            ? $host_status[$host_name]["next_notification"] = ""
-            : $host_status[$host_name]["next_notification"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["next_notification"]
-            );
+
+        if (!$host_status[$host_name]["next_check"]) {
+            $host_status[$host_name]["next_check"] = "";
+        }
+
+        if (!$host_status[$host_name]["last_notification"]) {
+            $host_status[$host_name]["last_notification"] = "";
+        }
+
+        if (!$host_status[$host_name]["next_notification"]) {
+            $host_status[$host_name]["next_notification"] = "";
+        }
+
         !$host_status[$host_name]["last_state_change"]
             ? $host_status[$host_name]["duration"] = ""
             : $host_status[$host_name]["duration"] =
             CentreonDuration::toString(time() - $host_status[$host_name]["last_state_change"]);
-        !$host_status[$host_name]["last_state_change"]
-            ? $host_status[$host_name]["last_state_change"] = ""
-            : $host_status[$host_name]["last_state_change"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_state_change"]
-            );
-        $host_status[$host_name]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
+
+        if (!$host_status[$host_name]["last_state_change"]) {
+            $host_status[$host_name]["last_state_change"] = "";
+        }
 
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";

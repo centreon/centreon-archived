@@ -122,15 +122,16 @@
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_check}</td>
+                                    <!-- using a class to format the timestamp -->
+                                    <td class="ListColLeft ListColNoWrap isTimestamp">{$host_data.last_check}</td>
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{$m_mon_next_check}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.next_check}</td>
+                                    <td class="ListColLeft ListColNoWrap isTimestamp">{$host_data.next_check}</td>
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_last_change}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_state_change}</td>
+                                    <td class="ListColLeft ListColNoWrap{if ($host_data.last_state_change == 0)}"> {else} isTimestamp">{$host_data.last_state_change}{/if}</td>
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{$m_mon_current_state_duration}</td>
@@ -138,11 +139,12 @@
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_last_notification}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.last_notification}</td>
+                                    <td class="ListColLeft ListColNoWrap{if ($host_data.last_notification == 0)}"> {else} isTimestamp">{$host_data.last_notification}{/if}</td>
+
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{$m_mon_next_notification}</td>
-                                    <td class="ListColLeft ListColNoWrap">{if ($host_data.next_notification == 0)} N/A {else}{$host_data.next_notification}{/if}</td>
+                                    <td class="ListColLeft ListColNoWrap{if ($host_data.next_notification == 0)}"> N/A{else} isTimestamp">{$host_data.next_notification}{/if}</td>
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_notification_nb}</td>
@@ -363,7 +365,7 @@
                 </tr>
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
-                    <td class="ListColLeft ListColNoWrap">{$host_data.last_check}</td>
+                    <td class="ListColLeft ListColNoWrap isTimestamp">{$host_data.last_check}</td>
                 </tr>
             </table>
             <br />
@@ -498,5 +500,8 @@
         };
         jQuery('.chart').centreonGraph(times);
     });
+
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
 </script>
 {/literal}
