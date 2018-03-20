@@ -334,14 +334,7 @@ if (!is_null($host_id)) {
         $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
         $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
-
         $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
-
-
-        $service_status["last_check"] =
-            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_check"]);
-        $service_status["next_check"] =
-            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_check"]);
         !$service_status["check_latency"]
             ? $service_status["check_latency"] = "< 1 second"
             : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
@@ -349,18 +342,14 @@ if (!is_null($host_id)) {
             ? $service_status["check_execution_time"] = "< 1 second"
             : $service_status["check_execution_time"] = $service_status["check_execution_time"] . " seconds";
 
-        !$service_status["last_notification"]
-            ? $service_status["notification"] = ""
-            : $service_status["last_notification"] =
-            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_notification"]);
+        if (!$service_status["last_notification"]) {
+            $service_status["notification"] = "";
+        }
 
         if (isset($service_status["next_notification"]) && !$service_status["next_notification"]) {
             $service_status["next_notification"] = "";
         } elseif (!isset($service_status["next_notification"])) {
             $service_status["next_notification"] = "N/A";
-        } else {
-            $service_status["next_notification"] =
-                $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["next_notification"]);
         }
 
         $service_status["long_plugin_output"] = "";
@@ -521,11 +510,11 @@ if (!is_null($host_id)) {
                 : $service_status["duration"] =
                 centreonDuration::toString(time() - $service_status["last_state_change"]);
         }
-        !$service_status["last_state_change"]
-            ? $service_status["last_state_change"] = ""
-            : $service_status["last_state_change"] =
-            $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status["last_state_change"]);
-        $service_status["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
+
+        if (!$service_status["last_state_change"]) {
+            $service_status["last_state_change"] = "";
+        }
+
         $service_status["is_flapping"]
             ? $service_status["is_flapping"] = $en[$service_status["is_flapping"]]
             : $service_status["is_flapping"] = "N/A";
