@@ -5406,6 +5406,14 @@ SERVICE;setparam;test_host;service_test;service_use_only_contacts_from_host;0
 SERVICE;setparam;test_host;service_test;service_locked;0
 SERVICE;setparam;test_host;service_test;service_register;1
 SERVICE;setparam;test_host;service_test;service_activate;1
+SC;ADD;Ping;ping
+SC;setparam;Ping;sc_activate;1
+SC;ADD;Traffic;Traffic
+SC;setparam;Traffic;sc_activate;1
+SC;ADD;Disk;Disk
+SC;setparam;Disk;sc_activate;0
+SC;ADD;Memory;Memory
+SC;setparam;Memory;sc_activate;0
 SC;addservicetemplate;Ping;Ping-LAN
 SC;addservicetemplate;Ping;Ping-WAN
 SC;addservicetemplate;Ping;test_stpl
@@ -5433,3 +5441,4 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+
