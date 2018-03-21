@@ -1,7 +1,9 @@
-const path = require ('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require ('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const MinifyPlugin = require("babel-minify-webpack-plugin")
 
 module.exports = {
   entry: './www/index.js',
@@ -14,6 +16,9 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',
     }),
+    new UglifyJsPlugin({
+      test: /\.js($|\?)/i
+    })
   ],
   module: {
     rules: [
