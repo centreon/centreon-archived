@@ -5,9 +5,6 @@ Using Centreon ISO el7
 ======================
 
 .. note::
-   The ISO image will be available in the coming days.
-
-.. note::
    Installation from Centreon el6 ISO is available :ref:`here<installisoel6>`
 
 ************
