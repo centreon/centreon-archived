@@ -253,6 +253,10 @@
 </div>
 <script>
 {literal}
+
+var rotationTimeout;
+var rotationTimer = {/literal}{$rotationTimer}{literal};
+
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
   if (jQuery('#tabs .tabs_header > li').length > 0) {
@@ -313,7 +317,7 @@ function deleteTab(viewId) {
   });
 
   if (jQuery('#tabs .tabs_header > li').length > 0) {
-    jQuery('#tabs').tabs('select', 1);
+    jQuery('#tabs').tabs('option', 'active', 1);
   }
 
   infoEmptyTab();
@@ -370,7 +374,7 @@ function submitAddView() {
               public: (jQuery('#formAddView input[name="public"]:checked').length ? true : false),
               nbCols: jQuery('#formAddView input[name="layout[layout]"]:checked').val()
             });
-            jQuery("#tabs").tabs('select', getTabPos(viewId));
+            jQuery("#tabs").tabs('option', 'active', getTabPos(viewId));
             jQuery('#formAddView').parents('.toggle_wrapper').hide();
         }else{
             jQuery('#formAddView').parents('.toggle_wrapper').hide();
@@ -493,7 +497,8 @@ function submitRotation() {
       var view = response.getElementsByTagName('custom_view_id');
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
-        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
+        //jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
+        initRotateView();
         jQuery('#rotation_timer').parents('.toggle_wrapper').hide();
       } else if (typeof(err) != 'undefined') {
         var errorMsg = err.item(0).firstChild.data;
@@ -603,6 +608,26 @@ function toggleEdit(show) {
   });
 }
 
+function initRotateView() {
+  clearTimeout(rotationTimeout);
+
+  jQuery("#tabs").tabs({
+    rotate: function(event, ui) {
+      if (rotationTimer > 0) {
+        setTimeout(function() {
+          var countTabs = jQuery('#tabs .tabs_header > li').length;
+          var currentTabId = jQuery(ui.newPanel).prop('id');
+          var newTabId = currentTabId + 1;
+          if (newTabId == countTabs) {
+            newTabId = 0;
+          }
+          jQuery("#tabs").tabs("option", "active", newTabId);
+        }, rotationTimer * 1000);
+      }
+    }
+  });
+}
+
 /* Share view functions */
 
 function removeUserFromView(user_id) {
@@ -667,10 +692,11 @@ function removeUsergroupFromView(usergroup_id) {
 }
 
 jQuery(function () {
+  jQuery('#tabs').tabs();
   toggleEdit(defaultShow);
 
   /* Initialize buttons */
-  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
+  jQuery('.addView').button({icon: "ui-icon-plus"}).on('click', function () {
     //reset select2
     jQuery("#formAddView #viewLoad").empty().append($('<option>'));
     //reset add view form
@@ -758,7 +784,6 @@ jQuery(function () {
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
 
-  var rotationTimer = {/literal}{$rotationTimer}{literal};
   jQuery("#rotation_timer").slider({
     value: rotationTimer,
     min: 0,
@@ -774,7 +799,7 @@ jQuery(function () {
 
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
-    /* 
+    /*
      * if were are in dropdown selection or popin select all.
      */
     if (jQuery(e.target).parents('.cntn').length === 0 &&
@@ -841,9 +866,13 @@ jQuery(function () {
     method: 'get',
     methodType: 'json',
     success: function (data) {
+
+      jQuery('#tabs').tabs("destroy");
+
       jQuery.each(data.tabs, function (idx, tab) {
         addTab(tab, true);
       });
+
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
           ajaxOptions: { async: true },
@@ -852,10 +881,11 @@ jQuery(function () {
           },
           selected: -1
         });
+        jQuery("#tabs").tabs('option', 'active', getTabPos(data.current));
+        initRotateView();
       }
-      jQuery("#tabs").tabs('select', getTabPos(data.current));
+
       infoEmptyTab();
-      jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
     }
   });
 

@@ -10,7 +10,22 @@
 .portlet-header .ui-icon { float: right; cursor: pointer}
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder { visibility: hidden; }
-.portlet-content { 
+
+.ui-button, .ui-button:hover {
+    padding: .2em 1em .2em .2em;
+    color: #ffffff;
+    font-weight: bold;
+    font-family: segoe ui, Arial, sans-serif;
+    font-size: 1.1em;
+}
+.ui-button .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+.ui-button:hover .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+
+.portlet-content {
 	padding: 0.2em;
 	width: 100%;
 	border: none;
