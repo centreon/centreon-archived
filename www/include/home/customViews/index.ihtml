@@ -497,8 +497,7 @@ function submitRotation() {
       var view = response.getElementsByTagName('custom_view_id');
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
-        //jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
-        initRotateView();
+        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
         jQuery('#rotation_timer').parents('.toggle_wrapper').hide();
       } else if (typeof(err) != 'undefined') {
         var errorMsg = err.item(0).firstChild.data;
@@ -605,26 +604,6 @@ function toggleEdit(show) {
       editMode: show
     },
     type: 'POST'
-  });
-}
-
-function initRotateView() {
-  clearTimeout(rotationTimeout);
-
-  jQuery("#tabs").tabs({
-    rotate: function(event, ui) {
-      if (rotationTimer > 0) {
-        setTimeout(function() {
-          var countTabs = jQuery('#tabs .tabs_header > li').length;
-          var currentTabId = jQuery(ui.newPanel).prop('id');
-          var newTabId = currentTabId + 1;
-          if (newTabId == countTabs) {
-            newTabId = 0;
-          }
-          jQuery("#tabs").tabs("option", "active", newTabId);
-        }, rotationTimer * 1000);
-      }
-    }
   });
 }
 
@@ -882,7 +861,7 @@ jQuery(function () {
           selected: -1
         });
         jQuery("#tabs").tabs('option', 'active', getTabPos(data.current));
-        initRotateView();
+        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
       }
 
       infoEmptyTab();
