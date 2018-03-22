@@ -545,7 +545,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (1, 'filters', '', 0, NULL),
 (2, 'metrics_column', 'Metrics column', 1, NULL),
 (3, 'status_column', 'Status column', 1, NULL),
-(4, 'lua_parameters', 'lua parameters', 1, NULL);
+(4, 'lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
 (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
