@@ -814,7 +814,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameters__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
