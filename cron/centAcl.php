@@ -479,18 +479,18 @@ try {
                         }
                     }
                 }
-                
+
                 if (isset($hostExclCache[$res2["acl_res_id"]])) {
                     foreach ($hostExclCache[$res2["acl_res_id"]] as $host_id => $host_name) {
                         unset($Host[$host_id]);
                     }
                 }
-                
+
                 /*
                  * Give Authorized Categories
                  */
                 $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
-                
+
                 /*
                  * get all Service groups
                  */
@@ -511,10 +511,12 @@ try {
                 		        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
                 		        AND service_activate = '1'";
                 $DBRESULT3 = $pearDB->query($sgReq);
+
                 $sgElem = array();
                 $tmpH = array();
                 if ($DBRESULT3->numRows()) {
                     while ($h = $DBRESULT3->fetchRow()) {
+
                         if (!isset($sgElem[$h["host_name"]])) {
                             $sgElem[$h["host_name"]] = array();
                             $tmpH[$h['host_id']] = $h['host_name'];
@@ -523,19 +525,32 @@ try {
                     }
                 }
                 $DBRESULT3->free();
-                
-                foreach ($tmpH as $key => $value) {
-                    $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
-                    foreach ($tab as $desc => $id) {
-                        if (isset($sgElem[$value]) && isset($sgElem[$value][$desc])) {
-                            if (!isset($tabElem[$value])) {
-                                $tabElem[$value] = array();
+
+                $tmpH = getFilteredHostCategories($tmpH, $acl_group_id, $res2["acl_res_id"]);
+                $tmpH = getFilteredPollers($tmpH, $acl_group_id, $res2["acl_res_id"]);
+
+                foreach ($sgElem as $key => $value) {
+                    if (in_array($key, $tmpH)) {
+                        if (count($authorizedCategories) == 0) { // no category filter
+                            $tabElem[$key] = $value;
+                        } else {
+                            // subkey = <service_description>, subvalue = <host_id>,<service_id>
+                            foreach ($value as $subkey => $subvalue) {
+                                if (preg_match('/\d+,(\d+)/', $subvalue, $matches)) { // get service id
+                                    $linkedServiceCategories = getServiceTemplateCategoryList($matches[1]);
+                                    foreach ($linkedServiceCategories as $linkedServiceCategory) {
+                                        // Check if category linked to service is allowed
+                                        if (in_array($linkedServiceCategory, $authorizedCategories)) {
+                                            $tabElem[$key][$subkey] = $subvalue;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
-                            $tabElem[$value][$desc] = $key . "," . $id;
                         }
                     }
-                    unset($tab);
                 }
+
                 unset($tmpH);
                 unset($sgElem);
 
@@ -557,7 +572,7 @@ try {
                     unset($tab);
                 }
                 unset($Host);
-                    
+
                 /*
                  * Set meta services
                  */
