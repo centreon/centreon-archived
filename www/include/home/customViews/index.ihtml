@@ -207,8 +207,8 @@
                 <div class="toggle_wrapper inactive" id="rotationTabs">
                 <div id='rotation_timer'></div>
                 <div id='timer_value'></div>
-                <div class="button_group_center">
-                    <input type='button' value='{t}Apply{/t}' class="btc bt_success" onClick='submitRotation();'/>
+                <div class="button_group button_group_center">
+                    <input type='button' value='{t}Apply{/t}' class="btc bt_success bt_widget" onClick='submitRotation();'/>
                 </div>
             </div>
             </div>

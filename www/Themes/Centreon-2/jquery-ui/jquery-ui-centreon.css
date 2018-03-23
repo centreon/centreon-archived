@@ -11,7 +11,7 @@
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder { visibility: hidden; }
 
-.ui-button, .ui-button:hover {
+.ui-button, .ui-button:hover, .ui-button:focus {
     padding: .2em 1em .2em .2em;
     color: #ffffff;
     font-weight: bold;
@@ -22,6 +22,9 @@
     background-image: url(images/ui-icons_ffffff_256x240.png);
 }
 .ui-button:hover .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+.ui-button:focus .ui-icon {
     background-image: url(images/ui-icons_ffffff_256x240.png);
 }
 
