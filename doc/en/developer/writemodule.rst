@@ -12,9 +12,6 @@ inside Cetreon's ``modules/`` directory. Example::
 
   /usr/local/centreon/www/modules/module-Dummy
 
-An empty module template can be found inside `Centreon's repository
-<http://svn.centreon.com/trunk/module-Dummy>`_.
-
 *****
 Basis
 *****
