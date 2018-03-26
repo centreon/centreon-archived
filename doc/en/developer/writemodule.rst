@@ -58,8 +58,7 @@ inside the *conf.php* file.
 This SQL file is executed during the module installation if it is
 configured inside the *conf.php* file. If you want your module to be
 available from Centreon menus, you must insert new entries into the
-``topology`` table of the ``centreon`` database. An example is
-available inside the ``Dummy`` module.
+``topology`` table of the ``centreon`` database.
 
 **[sql > uninstall.sql]**
 
