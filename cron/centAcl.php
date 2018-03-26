@@ -479,7 +479,7 @@ try {
                         }
                     }
                 }
-                
+
                 if (isset($hostExclCache[$res2["acl_res_id"]])) {
                     foreach ($hostExclCache[$res2["acl_res_id"]] as $host_id => $flag) {
                         unset($Host[$host_id]);
@@ -487,19 +487,10 @@ try {
                 }
 
                 /*
-                 * Get all hosts
-                 */
-                if (isset($hostIncCache[$res2["acl_res_id"]])) {
-                    foreach ($hostIncCache[$res2["acl_res_id"]] as $host_id => $flag) {
-                        $Host[$host_id] = 1;
-                    }
-                }
-                
-                /*
                  * Give Authorized Categories
                  */
                 $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
-                
+
                 /*
                  * get all Service groups
                  */
@@ -522,31 +513,46 @@ try {
                     "AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id " .
                     "AND service_activate = '1'";
                 $DBRESULT3 = $pearDB->query($sgReq);
+
                 $sgElem = array();
                 $tmpH = array();
                 if ($DBRESULT3->rowCount()) {
                     while ($h = $DBRESULT3->fetchRow()) {
-                        if (!isset($sgElem[$h["host_id"]])) {
-                            $sgElem[$h["host_id"]] = array();
-                            $tmpH[$h['host_id']] = 1;
+
+                        if (!isset($sgElem[$h["host_name"]])) {
+                            $sgElem[$h["host_name"]] = array();
+                            $tmpH[$h['host_id']] = $h['host_name'];
                         }
                         $sgElem[$h["host_id"]][$h["service_id"]] = $h["host_id"] . "," . $h["service_id"];
                     }
                 }
                 $DBRESULT3->closeCursor();
-                
-                foreach ($tmpH as $host_id => $flag) {
-                    $tab = getAuthorizedServicesHost($host_id, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
-                    foreach ($tab as $service_id => $flag2) {
-                        if (isset($sgElem[$host_id]) && isset($sgElem[$host_id][$service_id])) {
-                            if (!isset($tabElem[$host_id])) {
-                                $tabElem[$host_id] = array();
+
+                $tmpH = getFilteredHostCategories($tmpH, $acl_group_id, $res2["acl_res_id"]);
+                $tmpH = getFilteredPollers($tmpH, $acl_group_id, $res2["acl_res_id"]);
+
+                foreach ($sgElem as $key => $value) {
+                    if (in_array($key, $tmpH)) {
+                        if (count($authorizedCategories) == 0) { // no category filter
+                            $tabElem[$key] = $value;
+                        } else {
+                            // subkey = <service_description>, subvalue = <host_id>,<service_id>
+                            foreach ($value as $subkey => $subvalue) {
+                                if (preg_match('/\d+,(\d+)/', $subvalue, $matches)) { // get service id
+                                    $linkedServiceCategories = getServiceTemplateCategoryList($matches[1]);
+                                    foreach ($linkedServiceCategories as $linkedServiceCategory) {
+                                        // Check if category linked to service is allowed
+                                        if (in_array($linkedServiceCategory, $authorizedCategories)) {
+                                            $tabElem[$key][$subkey] = $subvalue;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
-                            $tabElem[$host_id][$service_id] = 1;
                         }
                     }
-                    unset($tab);
                 }
+
                 unset($tmpH);
                 unset($sgElem);
 
@@ -568,7 +574,7 @@ try {
                     unset($tab);
                 }
                 unset($Host);
-                    
+
                 /*
                  * Set meta services
                  */

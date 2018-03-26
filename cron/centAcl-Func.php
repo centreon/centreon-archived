@@ -136,7 +136,6 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
 /*
  * Return enable categories for this resource access
  */
-
 function getAuthorizedCategories($groupstr, $res_id)
 {
     global $pearDB;
@@ -218,35 +217,6 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
             }
         }
     }
-    return $svc;
-
-    /*
-     * Init Acl Table
-     */
-    $svc = array();
-    $condition = "";
-    if ($groupstr != "") {
-        $condition = " WHERE `acl_group_id` IN (" . $groupstr . ") AND ";
-    } else {
-        $condition = " WHERE ";
-    }
-
-    $DBRESULT = $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar " . $condition . " " .
-            "argr.acl_res_id = ar.acl_res_id " .
-            "AND ar.acl_res_activate = '1'");
-    while ($res = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT `service_service_id` " .
-                "FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
-                "WHERE `acl_res_id` = '" . $res["acl_res_id"] . "' " .
-                "AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
-                "AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
-                "AND `servicegroup_relation`.`host_host_id` = '" . $host_id . "'");
-        while ($service = $DBRESULT2->fetchRow()) {
-            $svc[$service["service_service_id"]] = $service["service_service_id"];
-        }
-        $DBRESULT2->closeCursor();
-    }
-    $DBRESULT->closeCursor();
     return $svc;
 }
 
