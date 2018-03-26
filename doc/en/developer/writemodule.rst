@@ -36,7 +36,7 @@ The essential elements your module's directory must contain are presented below 
   // 0: the module doesn't execute any SQL file
   $module_conf['dummy']['sql_files'] = "1"; 
   // 1: the module executes a PHP file for installation and/or uninstallation
-  // 0: the module doesn't execute any SQL file
+  // 0: the module doesn't execute any PHP file
   $module_conf['dummy']['php_files'] = "1"; 
 
 **[infos > infos.txt]**
