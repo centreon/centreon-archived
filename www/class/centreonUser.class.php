@@ -59,7 +59,10 @@ class CentreonUser
 	var $userCrypted;
     protected $token;
     public $default_page;
-        
+
+    protected $restApi;
+    protected $restApiRt;
+
 	# User LCA
 	# Array with elements ID for loop test
 	var $lcaTopo;
@@ -68,7 +71,7 @@ class CentreonUser
 	var $lcaTStr;
 
     /**
-     * 
+     *
      * @global type $pearDB
      * @param type $user
      */
@@ -101,10 +104,16 @@ class CentreonUser
          */
         $this->log = new CentreonUserLog($this->user_id, $pearDB);
         $this->userCrypted = md5($this->alias);
+
+        /**
+         * Init rest api auth
+         */
+        $this->restApi = isset($user['reach_api']) && $user['reach_api'] == 1;
+        $this->restApiRt = isset($user['reach_api_rt']) && $user['reach_api_rt'] == 1;
     }
 
     /**
-     * 
+     *
      * @global type $pearDB
      * @param type $div_name
      * @return int
@@ -124,7 +133,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $pearDB
      * @return int
      */
@@ -140,10 +149,10 @@ class CentreonUser
         $DBRESULT->free();
         return $lcaTopo;
     }
-    
+
     /**
      * Check if user is admin or had ACL
-     * 
+     *
      * @param type $sid
      * @param type $pearDB
      */
@@ -175,7 +184,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_name()
@@ -184,7 +193,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_email()
@@ -193,7 +202,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_alias()
@@ -202,7 +211,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_version()
@@ -211,7 +220,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_lang()
@@ -220,7 +229,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_passwd()
@@ -229,7 +238,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function get_admin()
@@ -238,7 +247,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function is_admin()
@@ -247,7 +256,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @global type $pearDB
      * @return type
      */
@@ -264,11 +273,11 @@ class CentreonUser
 
         return $this->js_effects;
     }
-  
+
   // Set
 
     /**
-     * 
+     *
      * @param type $id
      */
     function set_id($id)
@@ -277,7 +286,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $name
      */
     function set_name($name)
@@ -286,7 +295,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $email
      */
     function set_email($email)
@@ -295,7 +304,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $lang
      */
     function set_lang($lang)
@@ -304,7 +313,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $alias
      */
     function set_alias($alias)
@@ -313,7 +322,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $version
      */
     function set_version($version)
@@ -322,7 +331,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @param type $js_effects
      */
     function set_js_effects($js_effects)
@@ -331,7 +340,7 @@ class CentreonUser
     }
 
     /**
-     * 
+     *
      * @return type
      */
     function getMyGMT()
@@ -437,7 +446,7 @@ class CentreonUser
             . 'WHERE cp_contact_id = ? '
             . 'AND  cp_key IN( ';
         $queryValues[] = $this->user_id;
-        
+
         $queryKey ='';
         foreach ($keys as $key) {
             $queryKey .=' ?,';
@@ -445,14 +454,14 @@ class CentreonUser
         }
         $queryKey = rtrim($queryKey, ',');
         $deleteQuery .= $queryKey. ' )';
-        
+
         $stmt = $db->prepare($deleteQuery);
         $res = $db->execute($stmt, $queryValues);
-        
+
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
-       
+
         $insertQuery = 'INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) VALUES (?, ?, ?)';
         $stmt = $db->prepare($insertQuery);
         foreach ($parameters as $key => $value) {
@@ -460,25 +469,41 @@ class CentreonUser
             $db->execute($stmt, $sqlParams);
         }
     }
-  
+
   /**
    * Get token
-   * 
+   *
    * @return string
    */
     public function getToken()
     {
         return $this->token;
     }
-  
+
   /**
    * Set token
-   * 
+   *
    * @param string $token
    * @return void
    */
     public function setToken($token)
     {
         $this->token = $token;
+    }
+
+    /**
+     * If the user has access to Rest API Configuration
+     */
+    public function hasAccessRestApiConfiguration()
+    {
+        return $this->restApi;
+    }
+
+    /**
+     * If the user has access to Rest API Realtime
+     */
+    public function hasAccessRestApiRealtime()
+    {
+        return $this->restApiRt;
     }
 }
