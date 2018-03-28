@@ -263,7 +263,7 @@ class CentreonServicegroups
                 'service' => $elem['service_description'],
                 'service_id' => $elem['service_id'],
                 'host' => $elem['host_name'],
-                'sg_name' => $elem[$sgName]
+                'sg_name' => $sgName
             );
         }
 

@@ -271,7 +271,7 @@ class CentreonInstance
         while ($elem = $result->fetchrow()) {
             $instanceList[] = array(
                 'host' => $elem['host_name'],
-                'name' => $elem['instance_name']
+                'name' => $instanceName
             );
         }
 
