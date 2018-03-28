@@ -37,20 +37,20 @@ require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.p
 require_once './class/centreonEscaping.class.php';
 
 if ($type == "Service") {
-    $arg = "id=".Esc::forUrlValue($service_id)."&host_id=".Esc::forUrlValue($host_id);
+    $arg = "id=" . Esc::forUrlValue($service_id) . "&host_id=" . Esc::forUrlValue($host_id);
 } else {
-    $arg = "id=".Esc::forUrlValue($id);
+    $arg = "id=" . Esc::forUrlValue($id);
 }
 
-$arg .= "&color[UP]=".Esc::forUrlValue($oreon->optGen["color_up"]).
-		"&color[UNDETERMINED]=".Esc::forUrlValue($oreon->optGen["color_undetermined"]).
-        "&color[DOWN]=".Esc::forUrlValue($oreon->optGen["color_down"]).
-		"&color[UNREACHABLE]=".Esc::forUrlValue($oreon->optGen["color_unreachable"]).
-        "&color[OK]=".Esc::forUrlValue($oreon->optGen["color_ok"]).
-		"&color[WARNING]=".Esc::forUrlValue($oreon->optGen["color_warning"]).
-        "&color[CRITICAL]=".Esc::forUrlValue($oreon->optGen["color_critical"]).
-		"&color[UNKNOWN]=".Esc::forUrlValue($oreon->optGen["color_unknown"]);
-$url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
+$arg .= "&color[UP]=" . Esc::forUrlValue($oreon->optGen["color_up"]) .
+    "&color[UNDETERMINED]=" . Esc::forUrlValue($oreon->optGen["color_undetermined"]) .
+    "&color[DOWN]=" . Esc::forUrlValue($oreon->optGen["color_down"]) .
+    "&color[UNREACHABLE]=" . Esc::forUrlValue($oreon->optGen["color_unreachable"]) .
+    "&color[OK]=" . Esc::forUrlValue($oreon->optGen["color_ok"]) .
+    "&color[WARNING]=" . Esc::forUrlValue($oreon->optGen["color_warning"]) .
+    "&color[CRITICAL]=" . Esc::forUrlValue($oreon->optGen["color_critical"]) .
+    "&color[UNKNOWN]=" . Esc::forUrlValue($oreon->optGen["color_unknown"]);
+$url = "./include/reporting/dashboard/xmlInformations/GetXml" . $type . ".php?" . $arg;
 
 ?>
 <script type="text/javascript">

@@ -34,7 +34,7 @@
  */
 
 require_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonEscaping.class.php";
+require_once _CENTREON_PATH_ . "www/class/esc.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
 
 /**
@@ -923,7 +923,7 @@ class CentreonWidget
      */
     public function install($widgetPath, $directory)
     {
-        $config = $this->readConfigFile($widgetPath . "/".Esc::forUrlValue($directory)."/configs.xml");
+        $config = $this->readConfigFile($widgetPath . "/" . Esc::forUrlValue($directory) . "/configs.xml");
         if (!$config['autoRefresh']) {
             $config['autoRefresh'] = 0;
         }

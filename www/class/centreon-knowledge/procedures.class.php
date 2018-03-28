@@ -321,7 +321,8 @@ class procedures
                 $template = "S-TPL-" . $template;
             }
             $DBRESULT = $this->DB->query(
-                "SELECT * FROM " . $this->db_prefix . "page WHERE page_title LIKE '".CentreonDB::escape($template)."'"
+                "SELECT * FROM " . $this->db_prefix . "page WHERE page_title LIKE '"
+                . CentreonDB::escape($template) . "'"
             );
             $data = $DBRESULT->fetchRow();
             $DBRESULT->free();
@@ -367,21 +368,22 @@ class procedures
             $this->DB->query(
                 "INSERT INTO " . $this->db_prefix . "page (`page_namespace` ,`page_title`,`page_counter`, " .
                 "  `page_is_redirect`,`page_is_new`,`page_random` ,`page_touched`,`page_latest`,`page_len`) " .
-                " VALUES ('0', '" . CentreonDB::escape($object) . "', '0', '0', '1', '" . $data["page_random"] . "', '" .
-                $dateTouch . "', '" . $data["page_latest"] . "', '" . $data["page_len"] . "')"
+                " VALUES ('0', '" . CentreonDB::escape($object) . "', '0', '0', '1', '" . $data["page_random"] .
+                "', '" . $dateTouch . "', '" . $data["page_latest"] . "', '" . $data["page_len"] . "')"
             );
             $DBRESULT = $this->DB->query("SELECT MAX(page_id) FROM " . $this->db_prefix . "page");
             $id = $DBRESULT->fetchRow();
 
             $this->DB->query(
                 "INSERT INTO `text` (old_id, old_text, old_flags) VALUE (NULL, '" .
-            		CentreonDB::escape($text["old_text"]) . "', '" . CentreonDB::escape($text["old_flags"]) . "')"
+                CentreonDB::escape($text["old_text"]) . "', '" . CentreonDB::escape($text["old_flags"]) . "')"
             );
             $this->DB->query(
-                "INSERT INTO `revision` (rev_page, rev_text_id, rev_comment, rev_user_text, rev_timestamp, " .
-                "  rev_len) VALUE ('" . $id["MAX(page_id)"] . "', (SELECT MAX(old_id) FROM text), '" .
-            		CentreonDB::escape($revision["rev_comment"]) . "', '" . CentreonDB::escape($revision["rev_user_text"]) . "','" . $dateTouch .
-                "','" . $revision["rev_len"] . "')"
+                "INSERT INTO `revision` (rev_page, rev_text_id, rev_comment, rev_user_text, rev_timestamp, rev_len) "
+                . " VALUE ('" . $id["MAX(page_id)"] . "', (SELECT MAX(old_id) FROM text), '"
+                . CentreonDB::escape($revision["rev_comment"]) . "', '"
+                . CentreonDB::escape($revision["rev_user_text"]) . "','"
+                . $dateTouch . "','" . $revision["rev_len"] . "')"
             );
         } else {
             ;

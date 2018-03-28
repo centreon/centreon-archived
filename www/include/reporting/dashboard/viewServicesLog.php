@@ -45,10 +45,18 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-isset($_GET["host_id"]) && (ctype_digit(trim($_GET["host_id"])) || strtoupper(trim($_GET["host_id"])) == "NULL") ? $host_id = trim($_GET["host_id"]) : $host_id = "NULL";
-isset($_POST["host_id"]) && (ctype_digit(trim($_POST["host_id"])) || strtoupper(trim($_POST["host_id"])) == "NULL") ? $host_id = trim($_POST["host_id"]) : $host_id;
-isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ? $service_id = trim($_GET["item"]) : $service_id = "NULL";
-isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ? $service_id = trim($_POST["item"]) : $service_id;
+isset($_GET["host_id"]) && (ctype_digit(trim($_GET["host_id"])) || strtoupper(trim($_GET["host_id"])) == "NULL")
+    ? $host_id = trim($_GET["host_id"])
+    : $host_id = "NULL";
+isset($_POST["host_id"]) && (ctype_digit(trim($_POST["host_id"])) || strtoupper(trim($_POST["host_id"])) == "NULL")
+    ? $host_id = trim($_POST["host_id"])
+    : $host_id;
+isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL")
+    ? $service_id = trim($_GET["item"])
+    : $service_id = "NULL";
+isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL")
+    ? $service_id = trim($_POST["item"])
+    : $service_id;
 
 /*
  * FORMS
@@ -147,10 +155,10 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
      */
     $tpl->assign(
         "link_csv_url",
-        "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host=".Esc::forUrlValue($host_id).
-    		"&service=".Esc::forUrlValue($service_id).
-    		"&start=".Esc::forUrlValue($start_date).
-    		"&end=".Esc::forUrlValue($end_date)
+        "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host=" . Esc::forUrlValue($host_id) .
+        "&service=" . Esc::forUrlValue($service_id) .
+        "&start=" . Esc::forUrlValue($start_date) .
+        "&end=" . Esc::forUrlValue($end_date)
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 

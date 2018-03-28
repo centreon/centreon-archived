@@ -53,7 +53,7 @@ require_once "DB.php";
 require_once "include/common/common-Func.php";
 require_once "class/centreonLog.class.php";
 require_once "class/centreonDB.class.php";
-require_once "class/centreonEscaping.class.php";
+require_once "class/esc.class.php";
 require_once "class/centreon-knowledge/procedures.class.php";
 require_once "class/centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "class/centreon-knowledge/procedures_Proxy.class.php";
@@ -82,9 +82,10 @@ if ($proxy->url != "") {
     header("Location: " . $proxy->url);
 } else {
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-        header("Location: $WikiURL/?title=Service_:_".Esc::forUrlValue($_GET["host_name"])."_/_" . Esc::forUrlValue($_GET["service_description"]));
+        header("Location: $WikiURL/?title=Service_:_" . Esc::forUrlValue($_GET["host_name"])
+            . "_/_" . Esc::forUrlValue($_GET["service_description"]));
     } else {
-        header("Location: $WikiURL/?title=Host_:_".Esc::forUrlValue($_GET["host_name"]) );
+        header("Location: $WikiURL/?title=Host_:_" . Esc::forUrlValue($_GET["host_name"]));
     }
 }
 exit();

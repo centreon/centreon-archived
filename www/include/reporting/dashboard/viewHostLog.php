@@ -49,8 +49,12 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-isset($_GET["host"]) && (ctype_digit(trim($_GET["host"])) || strtoupper(trim($_GET["host"])) == "NULL") ? $id = trim($_GET["host"]) : $id = "NULL";
-isset($_POST["host"]) && (ctype_digit(trim($_POST["host"])) || strtoupper(trim($_POST["host"])) == "NULL") ? $id = trim($_POST["host"]) : $id;
+isset($_GET["host"]) && (ctype_digit(trim($_GET["host"])) || strtoupper(trim($_GET["host"])) == "NULL")
+    ? $id = trim($_GET["host"])
+    : $id = "NULL";
+isset($_POST["host"]) && (ctype_digit(trim($_POST["host"])) || strtoupper(trim($_POST["host"])) == "NULL")
+    ? $id = trim($_POST["host"])
+    : $id;
 
 /*
  * Formulary

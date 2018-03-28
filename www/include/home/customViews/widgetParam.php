@@ -54,7 +54,14 @@ $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);
 $title = "";
 $defaultTab = array();
-if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && ctype_digit($_REQUEST['view_id']) && isset($_REQUEST['widget_id']) && $_REQUEST['widget_id'] && ctype_digit($_REQUEST['widget_id'])) {
+if (
+    isset($_REQUEST['view_id'])
+    && $_REQUEST['view_id']
+    && ctype_digit($_REQUEST['view_id'])
+    && isset($_REQUEST['widget_id'])
+    && $_REQUEST['widget_id']
+    && ctype_digit($_REQUEST['widget_id'])
+) {
     $viewId = $_REQUEST['view_id'];
     $widgetId = $_REQUEST['widget_id'];
     $action = "setPreferences";

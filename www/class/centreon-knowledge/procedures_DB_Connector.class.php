@@ -111,9 +111,6 @@ class procedures_DB_Connector {
     public function query($query_string = NULL) {
 
     	if ($this->debug) {
-    		/*$query = str_replace("`", "", $query_string);
-    		$query = str_replace("'", "\'", $query);
-    		$query = str_replace("*", "\*", $query);*/
     		$query = escapeshellarg($query_string);
     		exec("echo $query >> $log_centreon/procedure.log");
     	}
@@ -123,4 +120,3 @@ class procedures_DB_Connector {
     	return $DBRES;
     }
 }
-?>

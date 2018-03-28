@@ -56,11 +56,11 @@ class CentreonUtils
         } else {
             $http .= 'http://';
         }
-        
+
         $newUrl = $http . $_SERVER['HTTP_HOST'] . $centreon->optGen["oreon_web_path"] . 'main.php?p=' . $idPage;
-        
-        if(!filter_var($newUrl, FILTER_VALIDATE_URL)) {
-        	return null;
+
+        if (!filter_var($newUrl, FILTER_VALIDATE_URL)) {
+            return null;
         }
         if ($redirect) {
             header("Location: " . $newUrl);

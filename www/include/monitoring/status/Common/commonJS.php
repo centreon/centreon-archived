@@ -42,7 +42,7 @@ if (!isset($default_poller)) {
 }
 
 //We need to escape $obis as this contains user untrusted values
-include_once "./class/centreonEscaping.class.php";
+include_once "./class/esc.class.php";
 
 ?>
 // Dynamique

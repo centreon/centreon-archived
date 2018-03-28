@@ -33,7 +33,7 @@
  *
  */
 
-require_once $centreon_path . "www/class/centreonEscaping.class.php";
+require_once $centreon_path . "www/class/esc.class.php";
 
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
@@ -91,7 +91,7 @@ if (isset($_POST["centreon_token"])
                 $minimize = '&min=1';
             }
             if (isset ($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: main.php?p='.Esc::forUrlValue($_GET["p"]).$minimize);
+                header('Location: main.php?p=' . Esc::forUrlValue($_GET["p"]) . $minimize);
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 header('Location: main.php?p=' . $centreon->user->default_page . $minimize);
             } else {

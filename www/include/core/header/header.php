@@ -103,9 +103,9 @@ $args .= "'";
  */
 $DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
 
-$newUrl = "index.php?disconnect=2".$args;
+$newUrl = "index.php?disconnect=2" . $args;
 if (!$DBRESULT->numRows() && filter_var($newUrl, FILTER_VALIDATE_URL)) {
-    header("Location: ".$newUrl);
+    header("Location: " . $newUrl);
 }
 
 /*
@@ -123,21 +123,21 @@ if (!isset($_SESSION["centreon"])) {
             $a++;
         }
         $args .= "'";
-        
-		$newUrl = "index.php?disconnect=1".$args;
-		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
-			header("Location: ".$newUrl);
-		}
+
+        $newUrl = "index.php?disconnect=1" . $args;
+        if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
+            header("Location: " . $newUrl);
+        }
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {
             $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
         }
-        
-		$newUrl = "index.php?disconnect=1".$args;
-		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
-			header("Location: ".$newUrl);
-		}
+
+        $newUrl = "index.php?disconnect=1" . $args;
+        if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
+            header("Location: " . $newUrl);
+        }
     }
 }
 
@@ -248,5 +248,3 @@ $DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$le
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
-
-
