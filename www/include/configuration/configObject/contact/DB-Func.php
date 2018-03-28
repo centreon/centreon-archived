@@ -122,10 +122,10 @@ function keepOneContactAtLeast($ct_id = null)
     /*
      * Get activated contacts
      */
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid 
-            FROM contact 
-            WHERE contact_activate = '1' 
-            AND contact_oreon = '1' 
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid
+            FROM contact
+            WHERE contact_activate = '1'
+            AND contact_oreon = '1'
             AND contact_id <> '" . $pearDB->escape($contact_id) . "'");
     $contacts = $DBRESULT->fetchRow();
 
@@ -425,8 +425,8 @@ function insertContact($ret = array())
         "`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
         "`contact_alias` , `contact_autologin_key` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
         "`contact_host_notification_options` , `contact_service_notification_options` , " .
-        "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`," .
-        " `contact_register`, `contact_enable_notifications` , " .
+        "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`, `reach_api_rt`, " .
+        "`contact_register`, `contact_enable_notifications` , " .
         "`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
         "`contact_ldap_dn`, `contact_location`, `contact_address1`, `contact_address2`, " .
         "`contact_address3`, `contact_address4`, `contact_address5`, `contact_address6`)" .
@@ -492,6 +492,9 @@ function insertContact($ret = array())
     }
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null
         ? $rq .= $ret["reach_api"]["reach_api"] . ", "
+        : $rq .= " 0, ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= $ret["reach_api_rt"]["reach_api_rt"] . ", "
         : $rq .= " 0, ";
     isset($ret["contact_register"]) && $ret["contact_register"] != null
         ? $rq .= "'" . $ret["contact_register"] . "', "
@@ -656,6 +659,9 @@ function updateContact($contact_id = null, $from_MC = false)
     $rq .= "reach_api = ";
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null
         ? $rq .= "'" . $ret["reach_api"]["reach_api"] . "', "
+        : $rq .= "NULL, ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= "'" . $ret["reach_api_rt"]["reach_api_rt"] . "', "
         : $rq .= "NULL, ";
     $rq .= "contact_enable_notifications = ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) &&

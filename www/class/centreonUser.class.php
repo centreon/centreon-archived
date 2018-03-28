@@ -60,6 +60,9 @@ class CentreonUser
     protected $token;
     public $default_page;
 
+    protected $restApi;
+    protected $restApiRt;
+
     # User LCA
     # Array with elements ID for loop test
     public $lcaTopo;
@@ -70,6 +73,9 @@ class CentreonUser
     /**
      * CentreonUser constructor.
      * @param array $user
+     *
+     * @global type $pearDB
+     * @param type $user
      */
     public function __construct($user = array())
     {
@@ -100,6 +106,12 @@ class CentreonUser
          */
         $this->log = new CentreonUserLog($this->user_id, $pearDB);
         $this->userCrypted = md5($this->alias);
+
+        /**
+         * Init rest api auth
+         */
+        $this->restApi = isset($user['reach_api']) && $user['reach_api'] == 1;
+        $this->restApiRt = isset($user['reach_api_rt']) && $user['reach_api_rt'] == 1;
     }
 
     /**
@@ -326,7 +338,8 @@ class CentreonUser
     }
 
     /**
-     * @param $js_effects
+     *
+     * @param type $js_effects
      */
     public function set_js_effects($js_effects)
     {
@@ -334,7 +347,8 @@ class CentreonUser
     }
 
     /**
-     * @return mixed
+     *
+     * @return type
      */
     public function getMyGMT()
     {
@@ -477,5 +491,21 @@ class CentreonUser
     public function setToken($token)
     {
         $this->token = $token;
+    }
+
+    /**
+     * If the user has access to Rest API Configuration
+     */
+    public function hasAccessRestApiConfiguration()
+    {
+        return $this->restApi;
+    }
+
+    /**
+     * If the user has access to Rest API Realtime
+     */
+    public function hasAccessRestApiRealtime()
+    {
+        return $this->restApiRt;
     }
 }

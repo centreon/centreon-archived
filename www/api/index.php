@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 
     /* Check if user exists in contact table */
     $reachAPI = 0;
-    $query = "SELECT contact_id, reach_api, contact_admin FROM contact " .
+    $query = "SELECT contact_id, reach_api, reach_api_rt, contact_admin FROM contact " .
         "WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?";
     $res = $pearDB->prepare($query);
     $res->execute(array($_POST['username']));
@@ -76,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
+               $reachAPI = 1;
+            } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
                 $reachAPI = 1;
             }
         }
@@ -116,4 +118,4 @@ if (is_null($userInfos)) {
 $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
-CentreonWebService::router($dependencyInjector);
+CentreonWebService::router($dependencyInjector, $centreon->user);
