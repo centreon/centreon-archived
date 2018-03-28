@@ -205,7 +205,7 @@ while ($res = $DBRESULT->fetchRow()) {
             if ($tmp != -1) {
                 if (isset($tmp['h'])) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = split(',', $tmp2["h"]);
+                    $tabHost = explode(',', $tmp2["h"]);
                     if (count($tabHost) == 1) {
                         $host_name = $centreon->CentreonLogAction->getHostName($tmp2["h"]);
                     } elseif (count($tabHost) > 1) {
@@ -216,7 +216,7 @@ while ($res = $DBRESULT->fetchRow()) {
                     }
                 } elseif (isset($tmp['hg'])) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = split(',', $tmp2["hg"]);
+                    $tabHost = explode(',', $tmp2["hg"]);
                     if (count($tabHost) == 1) {
                         $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
                     } elseif (count($tabHost) > 1) {

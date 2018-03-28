@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (isset($_POST["limit"]) && $_POST["limit"]) {
+if (isset($_POST["limit"]) && $_POST["limit"] && ctype_digit(trim($_POST["limit"]))) {
     $limit = $_POST["limit"];
-} elseif (isset($_GET["limit"])) {
+} elseif (isset($_GET["limit"]) && ctype_digit(trim($_GET["limit"]))) {
     $limit = $_GET["limit"];
 } elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
     $limit = $centreon->historyLimit[$url];
@@ -56,14 +56,16 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 }
 if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && $limit != $centreon->historyLimit[$url]) {
     $num = 0;
-} elseif (isset($_POST["num"]) && $_POST["num"]) {
+} elseif (isset($_POST["num"]) && $_POST["num"] && ctype_digit(trim($_POST["num"]))) {
     $num = $_POST["num"];
-} elseif (isset($_GET["num"]) && $_GET["num"]) {
+} elseif (isset($_GET["num"]) && $_GET["num"] && ctype_digit(trim($_GET["num"]))) {
     $num = $_GET["num"];
 } elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
     $num = $centreon->historyPage[$url];
 } else {
     $num = 0;
 }
+$limit = (int)$limit;
+$num = (int)$num;
 
 global $search;

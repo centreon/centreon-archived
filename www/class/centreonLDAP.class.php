@@ -774,6 +774,7 @@ class CentreonLDAP
     private function debug($msg)
     {
         if ($this->debugImport) {
+        	$msg = str_replace("\n", "\\n", str_replace("\r", "\\r", $msg));
             error_log("[" . date("d/m/Y H:i") . "]" . $msg . "\n", 3, $this->debugPath . "ldapsearch.log");
         }
     }
