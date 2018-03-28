@@ -224,8 +224,7 @@
                 {t}No view available. To create a new view, please click "Add view" button.{/t}
             </h4>
         </div>
-        <ul class="tabs_header">
-        </ul>
+        <ul class="tabs_header"></ul>
     </div>
 </div>
 <div hidden>
@@ -854,13 +853,8 @@ jQuery(function () {
 
       if (data.tabs.length > 0) {
         jQuery("#tabs").tabs({
-          ajaxOptions: { async: true },
-          select: function() {
-            jQuery('.viewBody').empty();
-          },
-          selected: -1
+          active: getTabPos(data.current)
         });
-        jQuery("#tabs").tabs('option', 'active', getTabPos(data.current));
         jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
       }
 
