@@ -26,4 +26,17 @@ class CentreonProxy extends CentreonWebService
             'message' => $message
         );
     }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        return true;
+    }
 }
