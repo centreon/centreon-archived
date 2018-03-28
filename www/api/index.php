@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendJson("Bad parameters", 400);
     }
-    
+
     /* @todo Check if user already have valid token */
     require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
     require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
-    
+
     /* Authenticate the user */
     $log = new CentreonUserLog(0, $pearDB);
     $auth = new CentreonAuth($_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
@@ -62,10 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
         CentreonWebService::sendJson("Bad credentials", 403);
         exit();
     }
-    
+
     /* Check if user exists in contact table */
     $reachAPI = 0;
-    $res = $pearDB->prepare("SELECT contact_id, reach_api, contact_admin FROM contact WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?");
+    $res = $pearDB->prepare("SELECT contact_id, reach_api, reach_api_rt, contact_admin
+        FROM contact
+        WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?");
     $res = $pearDB->execute($res, array($_POST['username']));
     while ($data = $res->fetchRow()) {
       if (isset($data['contact_admin']) && $data['contact_admin'] == 1) {
@@ -73,6 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
                $reachAPI = 1;
+            } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
+                $reachAPI = 1;
             }
         }
     }
@@ -111,4 +115,4 @@ if (is_null($userInfos)) {
 $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
-CentreonWebService::router();
+CentreonWebService::router($centreon->user);

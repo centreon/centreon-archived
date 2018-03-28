@@ -33,7 +33,7 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
-        
+
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.groupLinks}</h4>
@@ -118,6 +118,7 @@
         {if $displayAdminFlag == 1}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin"> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="reach_api"> {$form.reach_api.label}</td><td class="FormRowValue">{$form.reach_api.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="reach_api_rt"> {$form.reach_api_rt.label}</td><td class="FormRowValue">{$form.reach_api_rt.html}</td></tr>
         {/if}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
@@ -125,7 +126,7 @@
             </td>
         </tr>
         {if $o == "mc"}
-            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_acl.label}</td><td class="FormRowValue">{$form.mc_mod_acl.html}</td></tr>
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="aclgroups"> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
         {if $o == "a" || $o == "c"}

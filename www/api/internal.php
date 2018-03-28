@@ -64,4 +64,4 @@ if (false === isset($centreon) || false === is_object($centreon)) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
 
-CentreonWebService::router();
+CentreonWebService::router($centreon->user, true);
