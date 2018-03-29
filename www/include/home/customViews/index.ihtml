@@ -845,13 +845,13 @@ jQuery(function () {
     methodType: 'json',
     success: function (data) {
 
-      jQuery('#tabs').tabs("destroy");
-
-      jQuery.each(data.tabs, function (idx, tab) {
-        addTab(tab, true);
-      });
-
       if (data.tabs.length > 0) {
+        jQuery('#tabs').tabs("destroy");
+
+        jQuery.each(data.tabs, function (idx, tab) {
+          addTab(tab, true);
+        });
+
         jQuery("#tabs").tabs({
           active: getTabPos(data.current)
         });
