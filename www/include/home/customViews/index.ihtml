@@ -444,7 +444,7 @@ function submitAddWidget() {
 /* Delete action */
 function submitDeleteView() {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -468,7 +468,7 @@ function submitDeleteView() {
 /* Set default action */
 function submitSetDefaultView() {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -509,7 +509,7 @@ function submitRotation() {
 function submitShareView()
 {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   var lockedUsers = jQuery("#formShareView").find('select[name="locked_user_id[]"]').val();
   lockedUsers = (lockedUsers == null) ? [] : lockedUsers.filter(function (elem) {return elem !== '';});
@@ -611,7 +611,7 @@ function toggleEdit(show) {
 function removeUserFromView(user_id) {
 
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -641,7 +641,7 @@ function removeUserFromView(user_id) {
 
 function removeUsergroupFromView(usergroup_id) {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -695,7 +695,7 @@ jQuery(function () {
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
-      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+      jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
     ).data('cvId');
     jQuery("#locked_user_id option").remove();
     jQuery("#unlocked_user_id option").remove();
@@ -790,7 +790,7 @@ jQuery(function () {
 
   jQuery('.editView').on('click', function () {
     var tabActive = jQuery(
-      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+      jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
     );
 
     jQuery('#formEditView input[name="custom_view_id"]').val(tabActive.data('cvId'));
