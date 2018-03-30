@@ -10,7 +10,7 @@ export function requestClock () {
 }
 
 export function requestClockSuccess (res) {
-  console.log('clock :', res.data)
+
   return {
     type: REQUEST_CLOCK_SUCCESS,
     data: res.data,
