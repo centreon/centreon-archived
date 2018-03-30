@@ -364,7 +364,7 @@ class CentreonContact extends CentreonObject
                         }
                     }
                 }
-                if ($params[1] != 'reach_api' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
+                if ($params[1] != 'reach_api' && $params[1] != 'reach_api_rt' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
                     $params[1] = "contact_" . $params[1];
                 }
             }

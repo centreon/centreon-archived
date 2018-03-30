@@ -714,6 +714,7 @@ CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
 CONTACTTPL;setparam;contact_template;timezone;
 CONTACTTPL;setparam;contact_template;reach_api;0
+CONTACTTPL;setparam;contact_template;reach_api_rt;0
 CONTACTTPL;setparam;contact_template;contact_enable_notifications;2
 CONTACTTPL;setparam;contact_template;contact_type_msg;txt
 CONTACTTPL;setparam;contact_template;contact_activate;1
@@ -787,6 +788,7 @@ CONTACT;setparam;admin;servicenotifopt;n
 CONTACT;setparam;admin;contact_js_effects;0
 CONTACT;setparam;admin;timezone;
 CONTACT;setparam;admin;reach_api;0
+CONTACT;setparam;admin;reach_api_rt;0
 CONTACT;setparam;admin;contact_enable_notifications;1
 CONTACT;setparam;admin;contact_type_msg;txt
 CONTACT;setparam;admin;contact_activate;1
