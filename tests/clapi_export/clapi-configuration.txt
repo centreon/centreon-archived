@@ -723,6 +723,7 @@ CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
 CONTACTTPL;setparam;test_contact-template;timezone;
 CONTACTTPL;setparam;test_contact-template;reach_api;0
+CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
 CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
 CONTACTTPL;setparam;test_contact-template;contact_type_msg;txt
 CONTACTTPL;setparam;test_contact-template;contact_activate;1
@@ -799,6 +800,7 @@ CONTACT;setparam;guest;servicenotifopt;n
 CONTACT;setparam;guest;contact_js_effects;0
 CONTACT;setparam;guest;timezone;
 CONTACT;setparam;guest;reach_api;0
+CONTACT;setparam;guest;reach_api_rt;0
 CONTACT;setparam;guest;contact_enable_notifications;2
 CONTACT;setparam;guest;contact_type_msg;txt
 CONTACT;setparam;guest;contact_activate;0
@@ -812,6 +814,7 @@ CONTACT;setparam;user;servicenotifopt;n
 CONTACT;setparam;user;contact_js_effects;0
 CONTACT;setparam;user;timezone;
 CONTACT;setparam;user;reach_api;0
+CONTACT;setparam;user;reach_api_rt;0
 CONTACT;setparam;user;contact_enable_notifications;2
 CONTACT;setparam;user;contact_type_msg;txt
 CONTACT;setparam;user;contact_activate;0
@@ -823,6 +826,7 @@ CONTACT;setparam;test_contact;servicenotifopt;n
 CONTACT;setparam;test_contact;contact_js_effects;0
 CONTACT;setparam;test_contact;timezone;
 CONTACT;setparam;test_contact;reach_api;0
+CONTACT;setparam;test_contact;reach_api_rt;0
 CONTACT;setparam;test_contact;contact_enable_notifications;0
 CONTACT;setparam;test_contact;contact_type_msg;txt
 CONTACT;setparam;test_contact;contact_activate;1
@@ -832,6 +836,7 @@ CONTACT;setparam;jeanpierre;servicenotifopt;n
 CONTACT;setparam;jeanpierre;contact_js_effects;0
 CONTACT;setparam;jeanpierre;timezone;
 CONTACT;setparam;jeanpierre;reach_api;0
+CONTACT;setparam;jeanpierre;reach_api_rt;0
 CONTACT;setparam;jeanpierre;contact_enable_notifications;2
 CONTACT;setparam;jeanpierre;contact_type_msg;txt
 CONTACT;setparam;jeanpierre;contact_activate;1
