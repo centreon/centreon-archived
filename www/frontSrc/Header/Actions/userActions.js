@@ -11,7 +11,7 @@ export function requestUser () {
 export function requestUserSuccess (res) {
   return {
     type: REQUEST_USER_SUCCESS,
-    data: res,
+    data: res.data,
   }
 }
 
