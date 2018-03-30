@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "Configure ACL reload",
+    "_postman_id": "5abba33eb6dbe",
+    "description": "Configure ACL reload",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Reload",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"reload\",\n  \"object\": \"acl\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Lastreload",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"lastreload\",\n  \"object\": \"acl\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Lastreload input time",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"lastreload\",\n  \"object\": \"acl\",\n  \"values\": \"lastreload_time\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

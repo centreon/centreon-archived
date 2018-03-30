@@ -1,0 +1,1658 @@
+{
+  "info": {
+    "name": "Manage LDAP",
+    "_postman_id": "5abba33eb7351",
+    "description": "Manage LDAP",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Add LDAP",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"ldap\",\n  \"values\": \"test_ldap;test_description\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam name",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"test_ldap;name;{{ldap_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam description",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};description;{{ldap_description}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam enable",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};enable;{{ldap_enable}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam alias",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};alias;{{ldap_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam bind_dn",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};bind_dn;{{ldap_bind_dn}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam bind_pass",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};bind_pass;{{ldap_bind_pass}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam group_base_search",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};group_base_search;{{ldap_group_base_search}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam group_filter",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};group_filter;{{ldap_group_filter}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam group_member",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};group_member;{{ldap_group_member}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam group_name",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};group_name;{{ldap_group_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_auto_import",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_auto_import;{{ldap_auto_import}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_contact_tmpl",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_contact_tmpl;{{ctpl_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_dns_use_domain",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_dns_use_domain;{{ldap_dns_use_domain}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_search_limit",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_search_limit;{{ldap_search_limit}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_search_timeout",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_search_timeout;{{ldap_search_timeout}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_srv_dns",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_srv_dns;{{ldap_srv_dns}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_store_password",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_store_password;{{ldap_store_pwd}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam ldap_template",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};ldap_template;{{ldap_tpl}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam protocol_version",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};protocol_version;{{ldap_protocol_version}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_base_search",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_base_search;{{ldap_user_base_search}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_email",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_email;{{ldap_user_email}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_filter",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_filter;{{ldap_user_filter}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_firstname",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_firstname;{{ldap_user_firstname}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_lastname",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_lastname;{{ldap_user_lastname}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_name",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_name;{{ldap_user_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_pager",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_pager;{{ldap_user_pager}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam user_group",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};user_group;{{ldap_user_group}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "List LDAP",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var ldapData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of ldap configurations\"] = ldapData;",
+          "    var i = 0;",
+          "    while (i < ldapData.length) {",
+          "        if (postman.getEnvironmentVariable(\"ldap_name\") == ldapData[i].name) {",
+          "            tests[\"Body contains added ldap_name\"] = postman.getEnvironmentVariable(\"ldap_name\") == ldapData[i].name;",
+          "            tests[\"Body contains added ldap_description\"] = postman.getEnvironmentVariable(\"ldap_description\") == ldapData[i].description;",
+          "            tests[\"Body contains added ldap_enable\"] = postman.getEnvironmentVariable(\"ldap_enable\") == ldapData[i].status;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == ldapData.length)",
+          "        tests[\"ldap_name was found\"] = false;",
+          "} catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"show\",\n  \"object\": \"ldap\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Addserver",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}};{{ldap_server_address}};{{ldap_server_port}};{{ldap_use_ssl}};{{ldap_use_tls}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Get server id",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var serverData = jsonData.result;",
+          "",
+          "try {",
+          "    var i = 0;",
+          "    while (i < serverData.length) {",
+          "        if (postman.getEnvironmentVariable(\"ldap_server_address\") == serverData[i].address) {",
+          "            postman.setEnvironmentVariable(\"ldap_server_id\",serverData[i].id);",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == serverData.length)",
+          "        tests[\"ldap_server_adress was found\"] = false;",
+          "} catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"showserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparamserver host_address",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparamserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}};host_address;{{ldap_host_address}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparamserver host_port",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparamserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}};host_port;{{ldap_host_port}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparamserver host_order",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparamserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}};host_order;{{ldap_host_order}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparamserver use_ssl",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparamserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}};use_ssl;{{ldap_use_ssl_changed}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparamserver use_tls",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparamserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}};use_tls;{{ldap_use_tls_changed}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Showserver",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);", "var serverData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of servers\"] = serverData;",
+          "    var i = 0;",
+          "    while (i < serverData.length) {",
+          "        if (postman.getEnvironmentVariable(\"ldap_host_address\") == serverData[i].address) {",
+          "            tests[\"Body contains added server\"] = postman.getEnvironmentVariable(\"ldap_host_address\") == serverData[i].address;",
+          "            tests[\"Body contains added server_port\"] = postman.getEnvironmentVariable(\"ldap_host_port\") == serverData[i].port;",
+          "            tests[\"Body contains added server_use_ssl\"] = postman.getEnvironmentVariable(\"ldap_use_ssl_changed\") == serverData[i].ssl;",
+          "            tests[\"Body contains added server_use_tls\"] = postman.getEnvironmentVariable(\"ldap_use_tls_changed\") == serverData[i].tls;",
+          "            tests[\"Body contains added server_use_tls\"] = postman.getEnvironmentVariable(\"ldap_host_order\") == serverData[i].order;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == serverData.length)",
+          "        tests[\"ldap_server_address was found\"] = false;",
+          "} catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"showserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Delserver",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delserver\",\n  \"object\": \"ldap\",\n  \"values\": \"{{ldap_server_id}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

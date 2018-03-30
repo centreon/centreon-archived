@@ -1,0 +1,665 @@
+{
+  "info": {
+    "name": "Configure dependencies",
+    "_postman_id": "5abba33eb41fd",
+    "description": "Configure dependencies",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Add dependency",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"dep\",\n  \"values\": \"dep_test;test_description;{{dep_type}};{{host_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam name",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"dep_test;name;{{dep_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam description",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};description;{{dep_description}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam comment",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};comment;{{dep_comment}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam inherits_parent",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};inherits_parent;{{dep_inherits_parent}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam exec_fail_criteria",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};execution_failure_criteria;{{dep_exec_fail_crit}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam notif_fail_criteria",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};notification_failure_criteria;{{dep_notif_fail_crit}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "List dependencies",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var depData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of dependencies\"] = depData;",
+          "    var i = 0;",
+          "    while (i < depData.length) {",
+          "        if (postman.getEnvironmentVariable(\"dep_name\") == depData[i].name)",
+          "        {",
+          "            tests[\"Body contains added dep_name\"] = postman.getEnvironmentVariable(\"dep_name\") == depData[i].name;",
+          "            tests[\"Body contains added dep_description\"] = postman.getEnvironmentVariable(\"dep_description\") == depData[i].description;",
+          "            tests[\"Body contains added dep_inherits_parents\"] = postman.getEnvironmentVariable(\"dep_inherits_parent\") == depData[i].inherits_parent;",
+          "            tests[\"Body contains added dep_execution_failure_criteria\"] = postman.getEnvironmentVariable(\"dep_exec_fail_crit\") == depData[i].execution_failure_criteria;",
+          "            tests[\"Body contains added dep_notification_failure_criteria\"] = postman.getEnvironmentVariable(\"dep_notif_fail_crit\") == depData[i].notification_failure_criteria;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == depData.length)",
+          "        tests[\"dep_name was found\"] = false;",
+          "}",
+          "catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"show\",\n  \"object\": \"dep\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Addparent",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addparent\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};{{host_name2}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Create host3",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"{{host_name3}};{{host_name3}};0.0.0.0;;central;\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Addchild",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addchild\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};{{host_name3}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Delparent",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delparent\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};{{host_name2}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Listdep",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var depData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of dependencies\"] = depData;",
+          "    var i = 0;",
+          "    var nb_find = 0",
+          "    while (i < depData.length) {",
+          "        if (postman.getEnvironmentVariable(\"host_name\") == depData[i].parents)",
+          "        {",
+          "            tests[\"Body contains added a parent\"] = postman.getEnvironmentVariable(\"host_name\") == depData[i].parents;",
+          "            nb_find += 1;",
+          "        }",
+          "        if (postman.getEnvironmentVariable(\"host_name3\") == depData[i].children)",
+          "        {",
+          "            tests[\"Body contains added a child\"] = postman.getEnvironmentVariable(\"host_name3\") == depData[i].children;",
+          "            nb_find += 1;",
+          "        }",
+          "        if (nb_find == 2)",
+          "            break;",
+          "        i++;",
+          "    }",
+          "    if (i == depData.length)",
+          "        tests[\"the child and the parent were found\"] = i < depData.length;",
+          "}",
+          "catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"listdep\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Delchild",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delchild\",\n  \"object\": \"dep\",\n  \"values\": \"{{dep_name}};{{host_name3}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

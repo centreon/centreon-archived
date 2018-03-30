@@ -1,0 +1,479 @@
+{
+  "info": {
+    "name": "Configure contractgroups",
+    "_postman_id": "5abba33eb19b9",
+    "description": "Configure contractgroups",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Add contact group",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"cg\",\n  \"values\": \"test_name;test_alias\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam name",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"cg\",\n  \"values\": \"test_name;name;{{cg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam alias",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};alias;{{cg_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Enable",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"enable\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Disable",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"disable\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Addcontact",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Delcontact",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setcontact",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}};{{contact_alias}}|{{contact_alias2}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Getcontact",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var contactData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of contacts\"] = contactData;",
+          "    var i = 0;",
+          "    while (i < contactData.length) {",
+          "        if (postman.getEnvironmentVariable(\"contact_alias\") == contactData[i].name)",
+          "        {",
+          "            tests[\"Body contains added contact_alias\"] = postman.getEnvironmentVariable(\"contact_alias\") == contactData[i].name;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == contactData.length)",
+          "        tests[\"contact_alias was found\"] = false;",
+          "}",
+          "catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;",
+          ""]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"getcontact\",\n  \"object\": \"cg\",\n  \"values\": \"{{cg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "List contact group",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var cgData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of contact groups\"] = cgData;",
+          "    var i = 0;",
+          "    while (i < cgData.length) {",
+          "        if (postman.getEnvironmentVariable(\"cg_name\") == cgData[i].name)",
+          "        {",
+          "            tests[\"Body contains added cg_name\"] = postman.getEnvironmentVariable(\"cg_name\") == cgData[i].name;",
+          "            tests[\"Body contains added cg_alias\"] = postman.getEnvironmentVariable(\"cg_alias\") == cgData[i].alias;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == cgData.length)",
+          "        tests[\"cg_name was found\"] = false;",
+          "}",
+          "catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "description": "",
+          "equals": true,
+          "key": "action",
+          "value": "action"
+        }, {
+          "description": "",
+          "equals": true,
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"show\",\n  \"object\": \"cg\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

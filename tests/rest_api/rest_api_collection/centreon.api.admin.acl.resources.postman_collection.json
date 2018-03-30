@@ -1,0 +1,847 @@
+{
+  "info": {
+    "name": "Configure ACL resources",
+    "_postman_id": "5abba33eb6450",
+    "description": "Configure ACL resources",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Setparam alias",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};alias;{{racl_alias}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Setparam activate",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};activate;{{racl_activate}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "List resource ACL",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var raclData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of ACL resource\"] = raclData;",
+          "    var i = 0;",
+          "    while (i < raclData.length) {",
+          "        if (postman.getEnvironmentVariable(\"racl_name\") == raclData[i].name) {",
+          "            tests[\"Body contains added ACL resource\"] = postman.getEnvironmentVariable(\"racl_name\") == raclData[i].name;",
+          "            tests[\"Body contains added racl_alias\"] = postman.getEnvironmentVariable(\"racl_alias\") == raclData[i].alias;",
+          "            tests[\"Body contains added racl_activate\"] = postman.getEnvironmentVariable(\"racl_activate\") == raclData[i].activate;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == raclData.length)",
+          "        tests[\"racl_name was found\"] = false;",
+          "} catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"show\",\n  \"object\": \"aclresource\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Getaclgroup",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["var jsonData = JSON.parse(responseBody);",
+          "var aclgData = jsonData.result;",
+          "",
+          "try {",
+          "    tests[\"Body contains list of ACL groups\"] = aclgData;",
+          "    var i = 0;",
+          "    while (i < aclgData.length) {",
+          "        if (postman.getEnvironmentVariable(\"aclg_name\") == aclgData[i].name) {",
+          "            tests[\"Body contains added ACL resource\"] = postman.getEnvironmentVariable(\"aclg_name\") == aclgData[i].name;",
+          "            break;",
+          "        }",
+          "        i++;",
+          "    }",
+          "    if (i == aclgData.length)",
+          "        tests[\"aclg_name was found\"] = false;",
+          "} catch (e) {}",
+          "",
+          "tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"getaclgroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Grant_host",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"grant_host\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{host_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Revoke_host",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"revoke_host\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{host_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Grant_hostgroup",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"grant_hostgroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{hg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Revoke_hostgroup",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"revoke_hostgroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{hg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Grant_servicegroup",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"grant_servicegroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{sg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "Revoke_servicegroup",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"revoke_servicegroup\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{sg_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "addhostexclusion",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addhostexclusion\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{host_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "delhostexclusion",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delhostexclusion\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{host_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "addfilter_instance",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addfilter_instance\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{instance_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "delfilter_instance",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delfilter_instance\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{instance_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "addfilter_hostcategory",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addfilter_hostcategory\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{hc_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "delfilter_hostcategory",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delfilter_hostcategory\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{hc_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "addfilter_servicecategory",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"addfilter_servicecategory\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{sc_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }, {
+    "name": "delfilter_servicecategory",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action",
+          "equals": true,
+          "description": ""
+        }, {
+          "key": "object",
+          "value": "centreon_clapi",
+          "equals": true,
+          "description": ""
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "key": "Content-Type",
+        "value": "application\/json",
+        "description": ""
+      }, {
+        "key": "centreon-auth-token",
+        "value": "{{token}}",
+        "description": ""
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"delfilter_servicecategory\",\n  \"object\": \"aclresource\",\n  \"values\": \"{{racl_name}};{{sc_name}}\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

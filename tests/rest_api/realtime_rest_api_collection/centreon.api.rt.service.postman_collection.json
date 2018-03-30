@@ -1,0 +1,468 @@
+{
+  "info": {
+    "name": "Realtime service",
+    "_postman_id": "5abbabe305593",
+    "description": "Realtime service",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Service list without parameters",
+    "item": [{
+      "name": "Service List",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }]
+        }
+      },
+      "response": []
+    }],
+    "_postman_isSubFolder": true
+  }, {
+    "name": "Service list by host and service",
+    "item": [{
+      "name": "Service List by host name",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "searchHost",
+            "value": "{{host_name}}"
+          }]
+        }
+      },
+      "response": []
+    }, {
+      "name": "Service List by service description",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "searchHost",
+            "value": "{{host_name}}"
+          }, {
+            "equals": true,
+            "key": "searchService",
+            "value": "{{service_description}}"
+          }]
+        }
+      },
+      "response": []
+    }, {
+      "name": "Service List by host name and service description",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&searchHost={{host_name}}&searchService={{service_description}}",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "searchHost",
+            "value": "{{host_name}}"
+          }, {
+            "equals": true,
+            "key": "searchService",
+            "value": "{{service_description}}"
+          }]
+        }
+      },
+      "response": []
+    }],
+    "_postman_isSubFolder": true
+  }, {
+    "name": "Service list with limit parameter",
+    "item": [{
+      "name": "Service List with limit",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "limit",
+            "value": "{{my_limit}}"
+          }]
+        }
+      },
+      "response": []
+    }, {
+      "name": "Service List with limit and one field",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.checkServiceList([\"service_id\"]);"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=id",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "limit",
+            "value": "{{my_limit}}"
+          }, {
+            "equals": true,
+            "key": "fields",
+            "value": "id"
+          }]
+        }
+      },
+      "response": []
+    }, {
+      "name": "Service List with limit and all fields",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);",
+            "helpers.checkServiceList([",
+            "    \"host_id\",",
+            "    \"host_name\",",
+            "    \"host_alias\",",
+            "    \"host_address\",",
+            "    \"host_state\",",
+            "    \"host_state_type\",",
+            "    \"host_output\",",
+            "    \"host_last_check\",",
+            "    \"host_next_check\",",
+            "    \"host_acknowledged\",",
+            "    \"instance_name\",",
+            "    \"instance_id\",",
+            "    \"host_action_url\",",
+            "    \"host_notes_url\",",
+            "    \"host_icon_image\",",
+            "    \"description\",",
+            "    \"state\",",
+            "    \"state_type\",",
+            "    \"service_id\",",
+            "    \"output\",",
+            "    \"perfdata\",",
+            "    \"current_attempt\",",
+            "    \"last_update\",",
+            "    \"last_state_change\",",
+            "    \"last_hard_state_change\",",
+            "    \"last_check\",",
+            "    \"next_check\",",
+            "    \"max_check_attempts\",",
+            "    \"notes\",",
+            "    \"notes_url\",",
+            "    \"action_url\",",
+            "    \"icon_image\",",
+            "    \"display_name\",",
+            "    \"notify\",",
+            "    \"acknowledged\",",
+            "    \"passive_checks\",",
+            "    \"active_checks\",",
+            "    \"event_handler_enabled\",",
+            "    \"flapping\",",
+            "    \"scheduled_downtime_depth\",",
+            "    \"flap_detection\",",
+            "    \"criticality\"",
+            "    ]);"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&limit={{my_limit}}&fields=host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "limit",
+            "value": "{{my_limit}}"
+          }, {
+            "equals": true,
+            "key": "fields",
+            "value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality"
+          }]
+        }
+      },
+      "response": []
+    }],
+    "_postman_isSubFolder": true
+  }, {
+    "name": "Service list with viewType parameter",
+    "item": [{
+      "name": "Service List with viewType problems",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.test200();", "helpers.testJson();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&viewType=problems",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "viewType",
+            "value": "problems"
+          }]
+        }
+      },
+      "response": []
+    }, {
+      "name": "Service List with viewType unhandled critical",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text\/javascript",
+          "exec": ["var helpers = eval(globals.loadHelpers);", "helpers.test200();", "helpers.testJson();"]
+        }
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{
+          "key": "Content-Type",
+          "value": "application\/json"
+        }, {
+          "key": "centreon-auth-token",
+          "value": "{{token}}"
+        }],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=list&object=centreon_realtime_services&viewType=unhandled_critical",
+          "protocol": "http",
+          "host": ["{{url}}"],
+          "path": ["centreon", "api", "index.php"],
+          "query": [{
+            "equals": true,
+            "key": "action",
+            "value": "list"
+          }, {
+            "equals": true,
+            "key": "object",
+            "value": "centreon_realtime_services"
+          }, {
+            "equals": true,
+            "key": "viewType",
+            "value": "unhandled_critical"
+          }]
+        }
+      },
+      "response": []
+    }],
+    "_postman_isSubFolder": true
+  }]
+}
