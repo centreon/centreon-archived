@@ -5814,6 +5814,10 @@ jQuery.fn.extend( {
 	on: function( types, selector, data, fn ) {
 		return on( this, types, selector, data, fn );
 	},
+	live: function( types, data, fn ) {
+		jQuery(this.context).on( types, this.selector, data, fn );
+		return this;
+	},
 	one: function( types, selector, data, fn ) {
 		return on( this, types, selector, data, fn, 1 );
 	},
