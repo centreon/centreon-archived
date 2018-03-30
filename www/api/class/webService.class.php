@@ -131,7 +131,7 @@ class CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if ($isInternal || $user->is_admin()) {
+        if ($isInternal || $user->admin) {
             return true;
         }
 
