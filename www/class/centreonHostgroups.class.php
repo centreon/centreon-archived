@@ -373,7 +373,7 @@ class CentreonHostgroups
             $hostList[] = array(
                 'host' => $elem['host_name'],
                 'host_id' => $elem['host_id'],
-                'hg_name' => $elem[$hgName]
+                'hg_name' => $hgName
             );
         }
         return $hostList;
