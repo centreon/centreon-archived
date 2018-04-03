@@ -313,34 +313,32 @@ class MassiveChangeHostsContext extends CentreonContext
      */
     public function allSelectedHostsAreUpdatedWithTheSameValues()
     {
-        $this->tableau = array();
-        try {
-            $this->spin(
-                function ($context) {
-                    $this->currentPage = new HostConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->updatedHost1['name']);
-                    $object = $this->currentPage->getProperties();
-                    foreach ($this->updatedHost1 as $key => $value) {
-                        if ($value != $object[$key]) {
-                            $this->tableau[] = $key . '1';
+        foreach (array($this->updatedHost1, $this->updatedHost2) as $hostProperties) {
+            $this->notUpdatedProperties = array();
+
+            $this->currentPage = new HostConfigurationListingPage($this);
+            $this->currentPage = $this->currentPage->inspect($hostProperties['name']);
+
+            try {
+                $this->spin(
+                    function ($context) use ($hostProperties) {
+                        $object = $context->currentPage->getProperties();
+                        foreach ($hostProperties as $key => $value) {
+                            if ($value != $object[$key]) {
+                                $context->notUpdatedProperties[] = $key;
+                            }
                         }
-                    }
-                    $this->currentPage = new HostConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->updatedHost2['name']);
-                    $object = $this->currentPage->getProperties();
-                    foreach ($this->updatedHost2 as $key => $value) {
-                        if ($value != $object[$key]) {
-                            $this->tableau[] = $key . '2';
-                        }
-                    }
-                    return count($this->tableau) == 0;
-                },
-                "Some properties are not being updated : ",
-                5
-            );
-        } catch (\Exception $e) {
-            $this->tableau = array_unique($this->tableau);
-            throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
+                        return count($context->notUpdatedProperties) == 0;
+                    },
+                    'Some properties have not been updated',
+                    5
+                );
+            } catch (\Exception $e) {
+                throw new \Exception(
+                    "Some properties have not been update on host " . $hostProperties['name'] . " : " .
+                    implode(',', array_unique($this->notUpdatedProperties))
+                );
+            }
         }
     }
 }
