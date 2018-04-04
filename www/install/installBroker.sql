@@ -377,8 +377,10 @@ CREATE TABLE `instances` (
   `name` varchar(255) NOT NULL DEFAULT 'localhost',
   `active_host_checks` tinyint(1) DEFAULT NULL,
   `active_service_checks` tinyint(1) DEFAULT NULL,
+  `address` varchar(128) DEFAULT NULL,
   `check_hosts_freshness` tinyint(1) DEFAULT NULL,
   `check_services_freshness` tinyint(1) DEFAULT NULL,
+  `daemon_mode` tinyint(1) DEFAULT NULL,
   `description` varchar(128) DEFAULT NULL,
   `end_time` int(11) DEFAULT NULL,
   `engine` varchar(64) DEFAULT NULL,
@@ -389,6 +391,7 @@ CREATE TABLE `instances` (
   `global_service_event_handler` text,
   `last_alive` int(11) DEFAULT NULL,
   `last_command_check` int(11) DEFAULT NULL,
+  `last_log_rotation` int(11) DEFAULT NULL,
   `modified_host_attributes` int(11) DEFAULT NULL,
   `modified_service_attributes` int(11) DEFAULT NULL,
   `notifications` tinyint(1) DEFAULT NULL,
@@ -397,10 +400,11 @@ CREATE TABLE `instances` (
   `passive_host_checks` tinyint(1) DEFAULT NULL,
   `passive_service_checks` tinyint(1) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
+  `process_perfdata` tinyint(1) DEFAULT NULL,
   `running` tinyint(1) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
-  `deleted` boolean NOT NULL default false,
+  `deleted` boolean NOT NULL default false, 
   `outdated` boolean NOT NULL default false,
   PRIMARY KEY (`instance_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -696,3 +700,4 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
