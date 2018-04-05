@@ -10,7 +10,25 @@
 .portlet-header .ui-icon { float: right; cursor: pointer}
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder { visibility: hidden; }
-.portlet-content { 
+
+.ui-button, .ui-button:hover, .ui-button:focus {
+    padding: .2em 1em .2em .2em;
+    color: #ffffff;
+    font-weight: bold;
+    font-family: segoe ui, Arial, sans-serif;
+    font-size: 1.1em;
+}
+.ui-button .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+.ui-button:hover .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+.ui-button:focus .ui-icon {
+    background-image: url(images/ui-icons_ffffff_256x240.png);
+}
+
+.portlet-content {
 	padding: 0.2em;
 	width: 100%;
 	border: none;
@@ -37,7 +55,7 @@ iframe {
 
 .ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0.4em; background: none; }
 .ui-tabs .ui-tabs-nav li a { float: left; padding: .4em 1em 0.4em .4em; text-decoration: none; background: #009fdf;}
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text;  background: none; }
+.ui-tabs .ui-tabs-nav li.ui-state-active a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text;  background: none; }
 
 
 .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: .2em 1em .2em 2.1em; }
