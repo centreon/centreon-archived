@@ -1003,6 +1003,11 @@ div.menuLeft {
     background: #fff !important;
 }
 
+.ui-state-default a {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
     color: #00a499 !important;
 }

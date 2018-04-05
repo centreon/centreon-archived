@@ -147,15 +147,13 @@ class TrapsSNMPConfigurationContext extends CentreonContext
      */
     public function theTrapDefinitionIsSavedWithItsPropertiesEspeciallyTheContentOfRegexpField()
     {
-
-
-
         $this->tableau = array();
+
+        $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
+        $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
         try {
             $this->spin(
                 function ($context) {
-                    $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
-                    $this->currentPage = $this->currentPage->inspect($this->updatedProperties['name']);
                     $object = $this->currentPage->getProperties();
                     foreach ($this->updatedProperties as $key => $value) {
                         if ($key != 'rule' && $value != $object[$key]) {

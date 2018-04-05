@@ -84,13 +84,10 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                 src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
-        <!--<script type="text/javascript">jQuery.noConflict();</script>-->
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui-tabs-rotate.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/jquery.noty.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/themes/default.js"></script>
         <script type="text/javascript"
