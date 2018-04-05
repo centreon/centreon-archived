@@ -183,20 +183,26 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     ?>
     <script type='text/javascript'>
         <?php
-        require_once("./include/core/autologout/autologout.php");
+        /* Deactive refresh/autologout if new header feature is activated */
+        if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+            require_once("./include/core/autologout/autologout.php");
+        }
         ?>
         jQuery(function () {
             <?php
 
-            if ($centreon->user->access->admin == 0) {
-                $tabActionACL = $centreon->user->access->getActions();
-                if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
-                }
-                unset($tabActionACL);
-            } else {
-                if ($min != 1) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+            /* Deactive refresh if new header feature is activated */
+            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+                if ($centreon->user->access->admin == 0) {
+                    $tabActionACL = $centreon->user->access->getActions();
+                    if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
+                    unset($tabActionACL);
+                } else {
+                    if ($min != 1) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
                 }
             }
 
