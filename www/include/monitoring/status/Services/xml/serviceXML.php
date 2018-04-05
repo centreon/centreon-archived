@@ -41,7 +41,7 @@ require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.co
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
 /**
- * Require Sepecific XML / Ajax Class
+ * Require Specific XML / Ajax Class
  */
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
@@ -49,7 +49,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
 
 /**
- * Require commonu Files.
+ * Require common Files.
  */
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
