@@ -54,6 +54,23 @@
                 <td class="FormRowField">{$form.contact_autologin_key.label}</td>
                 <td class="FormRowValue">{$form.contact_autologin_key.html} {if $o}{$form.contact_gen_akey.html}{/if}</td>
             </tr>
+            {if $featuresTesing}
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{t}Features testing{/t}</h4>
+                </td>
+            </tr>
+            {foreach item=feature from=$form.features name=features}
+            {if $smarty.foreach.features.index % 2 == 0}
+            <tr class="list_one">
+            {else}
+            <tr class="list_two">
+            {/if}
+                <td class="FormRowField">{$feature.label}</td>
+                <td class="FormRowValue">{$feature.html}</td>
+            </tr>
+            {/foreach}
+            {/if}
         </table>
     </div>
     <div id='tab2' class='tab'>
