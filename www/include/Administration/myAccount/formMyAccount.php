@@ -3,34 +3,34 @@
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
@@ -39,7 +39,9 @@ if (!isset($centreon)) {
 
 require_once "./include/common/common-Func.php";
 
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+require_once './class/centreonFeature.class.php';
+
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
 /*
  * Path to the configuration dir
@@ -48,6 +50,10 @@ $path = "./include/Administration/myAccount/";
 
 // PHP Functions
 require_once $path . "DB-Func.php";
+
+if (!isset($centreonFeature)) {
+    $centreonFeature = new CentreonFeature($pearDB);
+}
 
 if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
@@ -63,11 +69,13 @@ if ($o == "c") {
         "FROM contact WHERE contact_id = '" . $centreon->user->get_id() . "'";
     $DBRESULT = $pearDB->query($query);
     // Set base value
-    $cct = array_map("myDecode", $DBRESULT->fetchRow());
-    $res = $pearDB->query("SELECT cp_key, cp_value 
-                           FROM contact_param 
-                           WHERE cp_contact_id = '" . $pearDB->escape($centreon->user->get_id()) . "'");
-    while ($row = $res->fetchRow()) {
+    $cct = array_map("myDecode", $DBRESULT->fetch());
+    $res = $pearDB->query(
+        "SELECT cp_key, cp_value " .
+        "FROM contact_param " .
+        "WHERE cp_contact_id = '" . $pearDB->escape($centreon->user->get_id()) . "'"
+    );
+    while ($row = $res->fetch()) {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
 }
@@ -201,7 +209,6 @@ $form->addElement('select', 'monitoring_sound_svc_notification_0', _("Sound for 
 $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
-
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list';
 $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone' .

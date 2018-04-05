@@ -11,5 +11,4 @@ www/img/media/*
 !www/install/tmp/.gitkeep
 www/install/install.conf.php
 config/centreon.config.php
-
 *-dev.yml

@@ -191,12 +191,12 @@ foreach ($jsdata as $k => $val) {
 
     <script type='text/javascript'>
         jQuery(function() {
-        initWholePage();
+            initWholePage();
 
-        // convert URIs to links
-        jQuery(".containsURI").each(function() {
-            jQuery(this).linkify();
-        });
+            // convert URIs to links
+            jQuery(".containsURI").each(function() {
+                jQuery(this).linkify();
+            });
         });
 
         /*

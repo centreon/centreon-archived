@@ -128,6 +128,8 @@ mkdir -p $TMP_DIR/final/config
 cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
 cp -f $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/final/config/centreon.config.php
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
+cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
+cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
@@ -352,6 +354,12 @@ $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
 cp -Rf $TMP_DIR/final/vendor $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/vendor
+
+cp -f $TMP_DIR/final/composer.json $INSTALL_DIR_CENTREON/composer.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
+
+cp -f $TMP_DIR/final/package.json $INSTALL_DIR_CENTREON/package.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/package.json
 
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \

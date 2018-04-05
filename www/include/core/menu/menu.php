@@ -357,6 +357,11 @@ if ($is_admin) {
 $tpl->assign('amIadmin', $centreon->user->admin);
 $tpl->assign('newHeader', $newHeader);
 
+/**
+ * Add new header featire testing variable
+ */
+$tpl->assign('newHeader', $centreonFeature->featureActive('Header', 2, $centreon->user->user_id));
+
 /*
  * Display
  */

@@ -695,7 +695,7 @@ class CentreonTopCounter extends CentreonWebService
 
         /* Get status of pollers */
         $query = 'SELECT instance_id, last_alive, running FROM instances
-            WHERE deleted = 0 AND instance_id IN (' . join(', ', array_keys($listPoller)) . ')';
+            WHERE deleted = 0 AND instance_id IN (' . implode(', ', array_keys($listPoller)) . ')';
 
         try {
             $res = $this->pearDBMonitoring->query($query);
@@ -725,7 +725,7 @@ class CentreonTopCounter extends CentreonWebService
                 AND n.stat_key = "Average"
                 AND n.instance_id = i.instance_id
                 AND i.deleted = 0
-                AND i.instance_id IN (' . join(', ', array_keys($listPoller)) . ')';
+                AND i.instance_id IN (' . implode(', ', array_keys($listPoller)) . ')';
 
         try {
             $res = $this->pearDBMonitoring->query($query);

@@ -43,7 +43,7 @@ class CentreonFeature
         array(
             'name' => 'Header',
             'version' => 2,
-            'description' => 'New header design and functional',
+            'description' => 'New header design user experience',
             'visible' => true
         )
     );
