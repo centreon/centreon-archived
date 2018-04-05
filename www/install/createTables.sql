@@ -2356,6 +2356,16 @@ CREATE TABLE IF NOT EXISTS `downtime_cache` (
   CONSTRAINT `downtime_cache_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Manage new feature proposal
+CREATE TABLE IF NOT EXISTS contact_feature (
+  contact_id INT NOT NULL,
+  feature VARCHAR(255) NOT NULL,
+  feature_version VARCHAR(50) NOT NULL,
+  feature_enabled TINYINT DEFAULT 0,
+  PRIMARY KEY (contact_id, feature, feature_version),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

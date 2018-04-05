@@ -60,6 +60,7 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
+require_once $classdir . '/centreonFeature.class.php';
 require_once SMARTY_DIR."Smarty.class.php";
 
 /*
@@ -238,3 +239,8 @@ $DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$le
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
+
+/**
+ * Initialize features testing
+ */
+$centreonFeature = new CentreonFeature($pearDB);
