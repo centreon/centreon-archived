@@ -3,34 +3,34 @@
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
@@ -44,8 +44,10 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 require_once "./include/common/common-Func.php";
 
+require_once './class/centreonFeature.class.php';
+
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-    
+
 /*
  * Path to the configuration dir
  */
@@ -54,24 +56,28 @@ $path = "./include/Administration/myAccount/";
 // PHP Functions
 require_once $path."DB-Func.php";
 
+if (!isset($centreonFeature)) {
+    $centreonFeature = new CentreonFeature($pearDB);
+}
+
 /*
  * Database retrieve information for the User
  */
 $cct = array();
 if ($o == "c") {
-    $DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects, contact_autologin_key, default_page, contact_auth_type 
-                                        FROM contact 
+    $DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects, contact_autologin_key, default_page, contact_auth_type
+                                        FROM contact
                                         WHERE contact_id = '".$centreon->user->get_id()."'");
     // Set base value
     $cct = array_map("myDecode", $DBRESULT->fetchRow());
-    $res = $pearDB->query("SELECT cp_key, cp_value 
-                           FROM contact_param 
+    $res = $pearDB->query("SELECT cp_key, cp_value
+                           FROM contact_param
                            WHERE cp_contact_id = '".$pearDB->escape($centreon->user->get_id())."'");
     while ($row = $res->fetchRow()) {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
 }
-    
+
 /*
  * Database retrieve information for differents elements list we need on the page
  *
@@ -143,6 +149,17 @@ $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning s
 $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
 $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
 
+/* Add feature information */
+$features = $centreonFeature->getFeatures();
+$defaultFeatures = array();
+foreach ($features as $feature) {
+    $featRadio = array();
+    $featRadio[] = HTML_QuickForm::createElement('radio', $feature['version'], null, _('New version'), '1');
+    $featRadio[] = HTML_QuickForm::createElement('radio', $feature['version'], null, _('Legacy version'), '0');
+    $feat = $form->addGroup($featRadio, 'features[' . $feature['name'] . ']', $feature['name'], '&nbsp;');
+    $defaultFeatures['features'][$feature['name']][$feature['version']] = '0';
+}
+
 $sound_files = scandir(_CENTREON_PATH_."www/sounds/");
 $sounds = array(null => null);
 foreach ($sound_files as $f) {
@@ -160,7 +177,7 @@ $form->addElement('select', 'monitoring_sound_svc_notification_0', _("Sound for 
 $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
-    
+
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list',
@@ -195,11 +212,20 @@ $form->setRequiredNote("<font style='color: red;'>*</font>"._("Required fields")
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$form->setDefaults($defaultFeatures);
+
 // Modify a contact information
 if ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
+    /* Add saved value for feature testing */
+    $userFeatures = $centreonFeature->userFeaturesValue($centreon->user->get_id());
+    $defaultUserFeatures = array();
+    foreach ($userFeatures as $feature) {
+        $defaultUserFeatures['features'][$feature['name']][$feature['version']] = $feature['enabled'];
+    }
+    $form->setDefaults($defaultUserFeatures);
 }
 
 if ($form->validate()) {
@@ -208,11 +234,13 @@ if ($form->validate()) {
         $centreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
     }
     $o = null;
+    $features = $form->getSubmitValue('features');
+    $centreonFeature->saveUserFeaturesValue($centreon->user->get_id(), $features);
     $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'", 'class' => 'btc bt_info'));
     $form->freeze();
 }
 
-//Apply a template definition	
+//Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -220,6 +248,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
+$tpl->assign('featuresTesing', (count($features) > 0));
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

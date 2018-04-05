@@ -40,11 +40,11 @@ if (!isset($centreon)) {
 require_once("./class/centreonData.class.php");
 
 if (!$min) {
-?>    
+?>
 <!-- Footer -->
 <div class="fullscreen-icon" title="Fullscreen" onclick="myToggleAll(0,true);" >
     <img class="ico-16" id="fullscreenIcon" alt="FullScreen" src="./img/icons/fullscreen.png">
-</div> 
+</div>
 <div id="clearfooter" style="height: 1px;"></div>
 <div id="footer">
     <table cellpadding='0' cellspacing='0' width='100%' border='0' id="tfooter">
@@ -57,9 +57,9 @@ if (!$min) {
             </td>
                 <td align='center' class='copyRight'>
                 <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
-                <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> | 
-                <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> | 
-                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>  
+                <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> |
+                <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> |
+                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>
                     <?php if (isset($centreon->optGen["centreon_support_email"]) && $centreon->optGen["centreon_support_email"] != "") { ?>
                 | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                     <?php } ?>
@@ -128,12 +128,12 @@ if (!$min) {
             }
         }
     }
-    
+
     document.addEventListener('webkitfullscreenchange', exitHandler, false);
     document.addEventListener('mozfullscreenchange', exitHandler, false);
     document.addEventListener('fullscreenchange', exitHandler, false);
     document.addEventListener('MSFullscreenChange', exitHandler, false);
-    
+
     function exitHandler() {
         var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement;
         var event = state ? 'FullscreenOn' : 'FullscreenOff';
@@ -185,7 +185,7 @@ jQuery(function() {
 function initWholePage() {
     setQuickSearchPosition();
     jQuery().centreon_notify({
-        sid: "<?php echo session_id();?>", 
+        sid: "<?php echo session_id();?>",
         refresh_rate: <?php echo ($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
     });
 }
@@ -200,17 +200,72 @@ function setQuickSearchPosition() {
         } else {
             $('QuickSearch').setStyle({ top: '3px' });
         }
-    }    
+    }
     jQuery(".timepicker").timepicker();
     jQuery(".datepicker").datepicker();
 }
+<?php
+$featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
+if (count($featureToAsk) === 1) {
+?>
+var testingFeature = jQuery('<div/>')
+    .html(
+        '<h3>Feature testing</h3>' +
+        '<div style="margin: 2px;">Would you activate the feature testing: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+        '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
+        '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
+        '<div style="margin: 2px;">You can give use your feedback on <a href="https://centreon.github.io">Slack</a> ' +
+        'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
+        '<div style="margin-top: 8px; text-align: center;">' +
+            '<button class="btc bt_success" onclick="featureEnable()">Activate</button>' +
+            '&nbsp;<button class="btc bt_default" onclick="featureDisable()">No</button>' +
+        '</div>'
+    )
+    .css('position', 'relative');
 
+function validateFeature(name, version, enabled) {
+    jQuery.ajax({
+        url: './api/internal.php?object=centreon_featuretesting&action=enabled',
+        data: JSON.stringify({
+            name: name,
+            version: version,
+            enabled: enabled
+        }),
+        dataType: 'json',
+        type: 'POST'
+    })
+}
+
+function featureEnable() {
+    validateFeature(
+        "<?php echo $featureToAsk[0]['name']; ?>",
+        "<?php echo $featureToAsk[0]['version']; ?>",
+        true
+    );
+    testingFeature.centreonPopin("close");
+}
+
+function featureDisable() {
+    validateFeature(
+        "<?php echo $featureToAsk[0]['name']; ?>",
+        "<?php echo $featureToAsk[0]['version']; ?>",
+        true
+    );
+    testingFeature.centreonPopin("close");
+}
+
+testingFeature.centreonPopin({
+    open: true
+})
+<?php
+}
+?>
 </script>
 </body>
 </html>
 <?php
 
-/* 
+/*
  * Close all DB handler
  */
 if (isset($pearDB) && is_object($pearDB)) {
