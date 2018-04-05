@@ -16,17 +16,7 @@ jQuery(function(){
         });
     };
 
-    jQuery("#tabs_periods").tabs({
-        closable: true,
-        add: function(event, ui) {
-            jQuery(this).tabs('select',ui.index);
-            removetab(jQuery(this), ui.index);
-        },
-        show: function(event, ui) {
-            //load function to close selected tabs
-            removetab(jQuery(this), ui.index);
-        }
-    });
+    jQuery("#tabs_periods").tabs();
 
     if (jQuery('input[name="dt_id"]')[0].value) {
         jQuery.ajax({
@@ -48,12 +38,17 @@ jQuery(function(){
 function addPeriods() {
     periods++;
 
-    jQuery("#ul_tabs").after("<div id=\"p_"+periods+"\"></div>");
-    jQuery("#p_"+periods).load('./main.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods);
+    var ulTabs = jQuery("#ul_tabs");
+
+    ulTabs.after("<div id=\"p_" + periods + "\"></div>");
+    jQuery("#p_" + periods).load('./main.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods);
 
     var href = "#p_"+periods;
     var title = '{/literal}{$period}{literal} ' + periods;
-    jQuery("#tabs_periods").tabs( 'add' , href , title+' &nbsp;');
+
+    jQuery('<li><a href="' + href + '">' + title + '</a>').appendTo(ulTabs);
+    jQuery("#tabs_periods").tabs("refresh");
+    jQuery("#tabs_periods").tabs("option", "active", (periods - 1));
 
     return false;
 }
