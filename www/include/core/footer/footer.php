@@ -211,7 +211,7 @@ if (count($featureToAsk) === 1) {
 var testingFeature = jQuery('<div/>')
     .html(
         '<h3>Feature testing</h3>' +
-        '<div style="margin: 2px;">Would you activate the feature testing: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+        '<div style="margin: 2px;">Would you activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
         '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
         '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
         '<div style="margin: 2px;">You can give use your feedback on <a href="https://centreon.github.io">Slack</a> ' +
