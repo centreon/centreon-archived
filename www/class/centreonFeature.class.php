@@ -153,6 +153,14 @@ class CentreonFeature
         }
     }
 
+    /**
+     * Get if a feature is active for the application or an user
+     *
+     * @param string $name - The feature name
+     * @param string $version - The feature version
+     * @param int|null $userId - The user id if check for an user
+     * @return bool
+     */
     public function featureActive($name, $version, $userId = null)
     {
         foreach (self::$availableFeatures as $feature) {
