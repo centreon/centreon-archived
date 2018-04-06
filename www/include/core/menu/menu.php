@@ -153,7 +153,7 @@ if (isset($centreon->optGen["display_autologin_shortcut"])) {
             $autoLoginUrl .= "?p=".$root_menu["topology_page"];
         }
         $autoLoginUrl .= "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
-        
+
         $prefix = '';
         if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
             $prefix .= "http://";
@@ -180,7 +180,7 @@ $firstP = null;
 $sep = "&nbsp;";
 for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++) {
     $firstP ? null : $firstP = $elem["topology_page"];
-    
+
     $pageAccess = $centreon->user->access->page($elem["topology_page"]);
     if (($pageAccess == "1") || ($pageAccess == "2")) {
         $elemArr[2][$i] = array("Menu2Sep" => $sep,
@@ -295,7 +295,7 @@ if ($is_admin) {
             $tab_user_non_admin[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
         }
     }
-    
+
     $tab_user = array_merge($tab_user_admin, $tab_user_non_admin);
     unset($tab_user_admin);
     unset($tab_user_non_admin);
@@ -303,6 +303,11 @@ if ($is_admin) {
     $tpl->assign("tab_user", $tab_user);
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
+
+/**
+ * Add new header featire testing variable
+ */
+$tpl->assign('newHeader', $centreonFeature->featureActive('Header', 2, $centreon->user->user_id));
 
 /*
  * Display

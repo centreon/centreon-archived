@@ -131,7 +131,7 @@ class CentreonFeature
     }
 
     /**
-     * Save the user choices for feature testing
+     * Save the user choices for feature flipping
      *
      * @param int $userId - The user id
      * @param array $features - The list of features
