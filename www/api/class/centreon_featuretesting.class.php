@@ -50,7 +50,7 @@ class CentreonFeaturetesting extends CentreonWebService
     }
 
     /**
-     * Enabled or disabled a feature testing for an user
+     * Enabled or disabled a feature flipping for an user
      *
      * METHOD POST
      */

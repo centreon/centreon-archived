@@ -245,6 +245,6 @@ $centreonLang->bindLang();
 $centreonLang->bindLang('help');
 
 /**
- * Initialize features testing
+ * Initialize features flipping
  */
 $centreonFeature = new CentreonFeature($pearDB);
