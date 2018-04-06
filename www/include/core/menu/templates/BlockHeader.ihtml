@@ -1,4 +1,6 @@
+{if $newHeader}
 {include file='react-header.tpl'}
+{else}
 <div id="header">
 	<div id="centreon_logo">
 		<img src='{$urlLogo}' title='Centreon Logo' id="logo" />
@@ -98,8 +100,9 @@
 		<span id="date">{$Date}</span>
 		<img id="sound_status" src="./img/icons/speaker_{$sound_status}.png" style="cursor:pointer;vertical-align: bottom;" onClick="{$sound_action}">
 	</div>
-	<div id="centreonMsg"></div>
 </div>
+{/if}
+<div id="centreonMsg"></div>
 {literal}
 <script type='text/javascript'>
 /*
