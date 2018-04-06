@@ -248,7 +248,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
-$tpl->assign('featuresTesing', (count($features) > 0));
+$tpl->assign('featuresFlipping', (count($features) > 0));
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>
