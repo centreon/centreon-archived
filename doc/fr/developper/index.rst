@@ -9,4 +9,5 @@ Ce chapitre est une reprise sans traduction de la documentation anglaise.
 
    writemodule
    writewidget
+   writestreamconnector
    translatecentreon
