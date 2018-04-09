@@ -140,29 +140,29 @@
 {literal}
 <script>
 
-    jQuery('input[name=all_service]').change(function(){
-        if(jQuery(this).attr('checked')){
-                jQuery('.serviceCheckbox input').attr('checked',true);
-        }else{
-                jQuery('.serviceCheckbox input').attr('checked',false);
-        }
-    });
+  jQuery('input[name=all_service]').change(function(){
+    if (jQuery(this).prop('checked')) {
+      jQuery('.serviceCheckbox input').attr('checked',true);
+    } else {
+      jQuery('.serviceCheckbox input').attr('checked',false);
+    }
+  });
 
-    jQuery('input[name=all_host]').change(function(){
-        if(jQuery(this).attr('checked')){
-                jQuery('.hostCheckbox input').attr('checked',true);
-        }else{
-                jQuery('.hostCheckbox input').attr('checked',false);
-        }
-    });
+  jQuery('input[name=all_host]').change(function(){
+    if (jQuery(this).prop('checked')) {
+      jQuery('.hostCheckbox input').attr('checked',true);
+    } else {
+      jQuery('.hostCheckbox input').attr('checked',false);
+    }
+  });
 
-    jQuery('input[name=all_engine]').change(function(){
-        if(jQuery(this).attr('checked')){
-                jQuery('.engineCheckbox input').attr('checked',true);
-        }else{
-                jQuery('.engineCheckbox input').attr('checked',false);
-        }
-    });
+  jQuery('input[name=all_engine]').change(function(){
+    if (jQuery(this).prop('checked')) {
+      jQuery('.engineCheckbox input').attr('checked',true);
+    } else {
+      jQuery('.engineCheckbox input').attr('checked',false);
+    }
+  });
 
 </script>
 {/literal}
