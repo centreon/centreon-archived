@@ -1,10 +1,10 @@
 stage('Source') {
   node {
-    sh 'cd /opt/centreon-build && git pull && cd -'
+    sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
     }
-    sh '/opt/centreon-build/jobs/web/3.4/mon-web-source.sh'
+    sh './centreon-build/jobs/web/3.4/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -15,14 +15,14 @@ try {
   stage('Unit tests') {
     parallel 'centos6': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-unittest.sh centos6'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-unittest.sh centos6'
       }
     },
     'centos7': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-unittest.sh centos7'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-unittest.sh centos7'
         step([
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: 'codestyle.xml',
@@ -40,14 +40,14 @@ try {
   stage('Package') {
     parallel 'centos6': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-package.sh centos6'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-package.sh centos6'
       }
     },
     'centos7': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-package.sh centos7'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-package.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -58,14 +58,14 @@ try {
   stage('Bundle') {
     parallel 'centos6': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-bundle.sh centos6'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-bundle.sh centos6'
       }
     },
     'centos7': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-bundle.sh centos7'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -76,8 +76,8 @@ try {
   stage('Critical tests') {
     parallel 'centos6': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 @critical'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 @critical'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -91,8 +91,8 @@ try {
     },
     'centos7': {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -113,8 +113,8 @@ try {
     stage('Acceptance tests') {
       parallel 'centos6': {
         node {
-          sh 'cd /opt/centreon-build && git pull && cd -'
-          sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 ~@critical'
+          sh 'setup_centreon_build.sh'
+          sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 ~@critical'
           step([
             $class: 'XUnitBuilder',
             thresholds: [
@@ -128,8 +128,8 @@ try {
       },
       'centos7': {
         node {
-          sh 'cd /opt/centreon-build && git pull && cd -'
-          sh '/opt/centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 ~@critical'
+          sh 'setup_centreon_build.sh'
+          sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 ~@critical'
           step([
             $class: 'XUnitBuilder',
             thresholds: [
@@ -148,8 +148,8 @@ try {
 
     stage('Delivery') {
       node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.4/mon-web-delivery.sh'
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/3.4/mon-web-delivery.sh'
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure.');
