@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Add host",
+    "description": "Add host",
+    "actions": [
+      {
+        "from": "centreon.api.auth",
+        "name": "Authenticate"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Add host"
+      }
+    ]
+  }
+]
