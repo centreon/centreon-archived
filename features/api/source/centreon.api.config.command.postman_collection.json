@@ -41,7 +41,7 @@
       }],
       "body": {
         "mode": "raw",
-        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"cmd\",\n  \"values\": \"cmd-test;misc;{{command_name}}\"\n}"
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"cmd\",\n  \"values\": \"{{command_name}};{{command_type}};{{command_line}}\"\n}"
       },
       "description": ""
     },
