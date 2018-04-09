@@ -36,6 +36,7 @@
 require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonCommand.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLogAction.class.php';
 
 /*
  *  Class that contains various methods for managing hosts
@@ -1810,6 +1811,8 @@ class CentreonHost
      */
     public function deployServices($hostId, $hostTemplateId = null)
     {
+        global $centreon;
+
         if (!isset($hostTemplateId)) {
             $id = $hostId;
         } else {
@@ -1844,13 +1847,20 @@ class CentreonHost
                     throw new \Exception("An error occured");
                 }
                 if (!$stmt->rowCount()) {
-                    $svcId = $this->serviceObj->insert(
-                        array(
-                            'service_description' => $service['service_alias'],
-                            'service_activate' => array('service_activate' => '1'),
-                            'service_register' => '1',
-                            'service_template_model_stm_id' => $serviceTemplateId
-                        )
+                    $serviceDesc = array(
+                        'service_description' => $service['service_alias'],
+                        'service_activate' => array('service_activate' => '1'),
+                        'service_register' => '1',
+                        'service_template_model_stm_id' => $serviceTemplateId,
+                        'service_hPars' => $hostId
+                    );
+
+                    $svcId = $this->serviceObj->insert($serviceDesc);
+                    $fields = CentreonLogAction::prepareChanges($serviceDesc);
+                    $centreon->CentreonLogAction->insertLog(
+                        "service",
+                        $svcId,
+                        CentreonDB::escape($service['service_alias']), "a", $fields
                     );
                     $this->insertRelHostService($hostId, $svcId);
                 }
