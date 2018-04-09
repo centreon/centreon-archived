@@ -395,7 +395,8 @@ function insertContact($ret = array())
             "`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
             "`contact_alias` , `contact_autologin_key` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
             "`contact_host_notification_options` , `contact_service_notification_options` , " .
-            "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`, `reach_api_rt`, `contact_register`, `contact_enable_notifications` , " .
+            "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`, `reach_api_rt`, " .
+            "`contact_register`, `contact_enable_notifications` , " .
             "`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
             "`contact_ldap_dn`, `contact_location`, `contact_address1`, `contact_address2`, " .
             "`contact_address3`, `contact_address4`, `contact_address5`, `contact_address6`)" .
@@ -439,7 +440,9 @@ function insertContact($ret = array())
         isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != null ? $rq .= "'" . $ret["contact_oreon"]["contact_oreon"] . "', " : $rq .= " '1', ";
     }
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null ? $rq .= $ret["reach_api"]["reach_api"] . ", " : $rq .= " 0, ";
-    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null ? $rq .= $ret["reach_api_rt"]["reach_api_rt"] . ", " : $rq .= " 0, ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= $ret["reach_api_rt"]["reach_api_rt"] . ", "
+        : $rq .= " 0, ";
     isset($ret["contact_register"]) && $ret["contact_register"] != null ? $rq .= "'" . $ret["contact_register"] . "', " : $rq .= " '1', ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != null ? $rq .= "'" . $ret["contact_enable_notifications"]["contact_enable_notifications"] . "', " : $rq .= "NULL, ";
     isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != null ? $rq .= "'" . $ret["contact_admin"]["contact_admin"] . "', " : $rq .= "'0', ";
@@ -533,7 +536,9 @@ function updateContact($contact_id = null, $from_MC = false)
     $rq .= "reach_api = ";
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null ? $rq .= "'" . $ret["reach_api"]["reach_api"] . "', " : $rq .= "NULL, ";
     $rq .= "reach_api_rt = ";
-    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null ? $rq .= "'" . $ret["reach_api_rt"]["reach_api_rt"] . "', " : $rq .= "NULL, ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= "'" . $ret["reach_api_rt"]["reach_api_rt"] . "', "
+        : $rq .= "NULL, ";
     $rq .= "contact_enable_notifications = ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != null ? $rq .= "'" . $ret["contact_enable_notifications"]["contact_enable_notifications"] . "', " : $rq .= "NULL, ";
     $rq .= "contact_admin = ";
