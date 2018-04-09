@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Authenticate",
+    "description": "Authenticate",
+    "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+  },
+  "item": [{
+    "name": "Add Instance",
+    "event": [{
+      "listen": "test",
+      "script": {
+        "type": "text\/javascript",
+        "exec": ["tests[\"Status code is 200\"] = responseCode.code === 200;"]
+      }
+    }],
+    "request": {
+      "url": {
+        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=action&object=centreon_clapi",
+        "protocol": "http",
+        "host": ["{{url}}"],
+        "path": ["centreon", "api", "index.php"],
+        "query": [{
+          "key": "action",
+          "value": "action"
+        }, {
+          "key": "object",
+          "value": "centreon_clapi"
+        }],
+        "variable": []
+      },
+      "method": "POST",
+      "header": [{
+        "description": "",
+        "key": "Content-Type",
+        "value": "application\/json"
+      }, {
+        "description": "",
+        "key": "centreon-auth-token",
+        "value": "{{token}}"
+      }],
+      "body": {
+        "mode": "raw",
+        "raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"test_instance;01.02.3.04;42;nagios\"\n}"
+      },
+      "description": ""
+    },
+    "response": []
+  }]
+}

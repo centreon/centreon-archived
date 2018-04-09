@@ -6,48 +6,6 @@
     "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
   },
   "item": [{
-    "name": "Authenticate",
-    "event": [{
-      "listen": "test",
-      "script": {
-        "type": "text\/javascript",
-        "exec": ["var jsonData = JSON.parse(responseBody);", "postman.setEnvironmentVariable(\"token\",jsonData.authToken);"]
-      }
-    }],
-    "request": {
-      "url": {
-        "raw": "http:\/\/{{url}}\/centreon\/api\/index.php?action=authenticate",
-        "protocol": "http",
-        "host": ["{{url}}"],
-        "path": ["centreon", "api", "index.php"],
-        "query": [{
-          "key": "action",
-          "value": "authenticate"
-        }],
-        "variable": []
-      },
-      "method": "POST",
-      "header": [{
-        "description": "",
-        "key": "Content-Type",
-        "value": "application\/x-www-form-urlencoded"
-      }],
-      "body": {
-        "mode": "urlencoded",
-        "urlencoded": [{
-          "key": "username",
-          "type": "text",
-          "value": "{{api_user}}"
-        }, {
-          "key": "password",
-          "type": "text",
-          "value": "{{api_password}}"
-        }]
-      },
-      "description": ""
-    },
-    "response": []
-  }, {
     "name": "Add Instance",
     "event": [{
       "listen": "test",
