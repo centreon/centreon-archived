@@ -19,4 +19,3 @@ Other
 =====
 
 * Fix php warning in realtime host API - PR #6174
-* Update jQuery UI libs  & fix compatibility - PR #6181
