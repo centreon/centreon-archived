@@ -152,7 +152,7 @@ Here is the **bbdo2file.lua** first version:
   end
 
 .. note::
-   Informations about the initialisation of the Broker's log function
+   Informations about the initialization of the Broker's log function
    and its parameters are given here `see technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-log-object>`_.
 
 Let's explain what we are doing in this script.
@@ -548,7 +548,7 @@ The **/var/log/centreon-broker/bbdo2file.log** file will now contain::
 Export performance data to InfluxDB
 ***********************************
 
-Now, you have already seen many things on stream connectors. It is time to
+Now, you have already seen many things about stream connectors. It is time to
 create something more useful!
 
 `InfluxDB <https://www.influxdata.com/>`_ is a Time Series database. We will use
@@ -642,7 +642,7 @@ The queue parameters
 
 
 In this table, we give default values to parameters that can be possibly
-changed during the **init()** call. This table will be use to store important
+changed during the **init()** call. This table will be used to store important
 data for the script and also is our queue object.
 
 A method to create the queue
@@ -858,7 +858,7 @@ and the *element* 1 for *metric*:
 Complete script
 ===============
 
-The complete script can be download `here <https://github.com/centreon/centreon-stream-connector-scripts/tree/master/influxdb>`_.
+The complete script can be downloaded `here <https://github.com/centreon/centreon-stream-connector-scripts/tree/master/influxdb>`_.
 
 Configure Centreon Broker
 =========================
