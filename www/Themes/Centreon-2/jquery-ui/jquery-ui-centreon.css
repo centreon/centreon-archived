@@ -12,7 +12,7 @@
 .ui-sortable-placeholder { visibility: hidden; }
 
 .ui-button, .ui-button:hover, .ui-button:focus {
-    padding: .2em 1em .2em .2em;
+    padding: .4em 1em;
     color: #ffffff;
     font-weight: bold;
     font-family: segoe ui, Arial, sans-serif;
@@ -57,6 +57,4 @@ iframe {
 .ui-tabs .ui-tabs-nav li a { float: left; padding: .4em 1em 0.4em .4em; text-decoration: none; background: #009fdf;}
 .ui-tabs .ui-tabs-nav li.ui-state-active a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text;  background: none; }
 
-
-.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: .2em 1em .2em 2.1em; }
 #globalView {padding-bottom:10px;}
