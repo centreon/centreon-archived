@@ -7,8 +7,13 @@ const MinifyPlugin = require("babel-minify-webpack-plugin")
 
 module.exports = {
   entry: './www/index.js',
+  output: {
+    filename: 'bundle.js',
+    publicPath: './include/core/menu/templates/',
+    path: path.resolve(__dirname, './www/include/core/menu/templates')
+  },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
+    // new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       filename: 'react-header.tpl',
       template: path.resolve(__dirname, './www/header.html')
@@ -18,7 +23,7 @@ module.exports = {
     }),
     new UglifyJsPlugin({
       test: /\.js($|\?)/i
-    })
+    }),
   ],
   module: {
     rules: [
@@ -37,9 +42,9 @@ module.exports = {
             presets: [
               "env",
               "react",
-              "stage-0"
-            ]
-          }
+              "stage-2"
+            ],
+          },
         }
       },
       {
@@ -70,9 +75,4 @@ module.exports = {
       },
     ]
   },
-  output: {
-    filename: 'bundle.js',
-    publicPath: './include/core/menu/templates/',
-    path: path.resolve(__dirname, './www/include/core/menu/templates')
-  }
 };
