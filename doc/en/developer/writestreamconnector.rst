@@ -6,45 +6,47 @@ How to write a Stream Connector
 Overview
 ********
 
-Centreon Stream Connector is a feature introduced in Centreon 3.4.6. It allows 
-to export Centreon data (events and metrics) to an external storage or application 
-such as ElasticSearch, Splunk, InfluxDB, files, etc.
+Centreon Stream Connector is a feature introduced in Centreon 3.4.6. It allows
+to export Centreon data (events and metrics) to an external storage or
+application such as ElasticSearch, Splunk, InfluxDB, files, etc.
 
-In a Centreon platform, the component that carries information between the remote 
-pollers and the Centreon central server is called Centreon Broker. This broker 
-stores received data into the Centreon local storage: MariaDB and RRDtool.
+In a Centreon platform, the component that carries information between the
+remote pollers and the Centreon central server is called Centreon Broker. This
+broker stores received data into the Centreon local storage: MariaDB and
+RRDtool.
 
-The following diagram explains the transfer of collected data and insertion into 
+The following diagram explains the transfer of collected data and insertion into
 storages:
 
 .. image:: /_static/images/developer/lua/archi_broker_regular.png
    :align: center
    :scale: 65%
 
-The Stream Connector functionality is a new Centreon Broker output getting data 
-from Centreon Broker Master (also known as Centreon Broker SQL) to aggregate and 
+The Stream Connector functionality is a new Centreon Broker output getting data
+from Centreon Broker Master (also known as Centreon Broker SQL) to aggregate and
 forward it to external storage:
 
 .. image:: /_static/images/developer/lua/archi_broker_stream.png
    :align: center
    :scale: 65%
 
-This output loads a LUA script, called a Stream Connector, which job is to handle, 
-aggregate and enrich the data before forwarding it to the defined protocol:
+This output loads a Lua script, called a Stream Connector, which job is to
+handle, aggregate and enrich the data before forwarding it to the defined
+protocol:
 
 .. image:: /_static/images/developer/lua/archi_broker_lua_script.png
    :align: center
    :scale: 65%
 
-Because it is an output of Centreon Broker, the principle of creation of retention 
-files in case of interruption of access to external storage is kept. In the same way, 
-it is possible to filter in input on the categories of flow to handle.
+Because it is an output of Centreon Broker, the principle of creation of retention
+files in case of interruption of access to external storage is kept. In the same way,
+it is possible to filter input on the categories of flow to handle.
 
 ************
 Requirements
 ************
 
-To use the Centreon Stream connector functionality you need to update your Centreon 
+To use the Centreon Stream connector functionality you need to update your Centreon
 platform to Centreon 3.4.6:
 
 * Centreon Web >= 2.8.18
@@ -52,47 +54,36 @@ platform to Centreon 3.4.6:
 * Lua >= 5.1.x
 
 *************************
-Creating a new LUA script
+Creating a new Lua script
 *************************
 
 The complete technical documentation is available `here <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html>`_.
-In this how-to, we will write all data to a log file and export performance data to a TSDB like InfluxDB.
+In this how-to, we will write two scripts:
+
+* A first one, easy, that explains basis on Stream Connectors. Its goal is to
+  export data to a log file.
+* The second one is more exigent for the reader ; it exports performance data
+  to the TSDB InfluxDB but is easily adaptable to export to another TSDB.
 
 Programming language
 ====================
 
-Centreon chose the LUA programing language to let you handle, aggregate and 
-transfer data. LUA is a programming language that is easy to use. You can find 
-more information into `LUA official documentation <https://www.lua.org/docs.html>`_
+Centreon chose the Lua programming language to let you handle, aggregate and
+transfer data. Lua is a programming language that is easy to use. You can find
+more information into `Lua official documentation <https://www.lua.org/docs.html>`_
 
-Data structure
-==============
-
-The data structure depends on the category of the event: real-time data, 
-performance data, etc. For more information about event categories and available 
-data, `please see technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/dev/bbdo.html#event-categories>`_.
-
-Cache structure
-===============
-
-Centreon Broker use ID instead of the name of object (hosts, services, metrics, 
-groups, …). The cache structures are built when the Centreon Broker receives the 
-events from Centreon Engine during the restart process. 
-
-.. warning::
-   Each time you restart your Centreon Broker with a Stream Connector output, 
-   you need to restart Centreon Engine to rebuild the cache too.
-
-For more information about event categories and available data, `please see technical documentation 
-<https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-cache-object>`_.
-
-Storage of LUA scripts
+Storage of Lua scripts
 ======================
+Broker's Lua scripts can be stored in any directory readable by the
+**centreon-broker** user.
 
-We will store all LUA scripts into the **/usr/share/centreon-broker/lua**.
+We recommend to store them in **/usr/share/centreon-broker/lua**.
 
 .. note::
-   In a near future, this directory will be known by Lua scripts launched by broker.
+   In a near future, this directory will be in the *default path* of the Lua
+   scripts launched by broker. It will then be easier to use user defined
+   Lua libraries because you will just have to add your libraries there like
+   stream connectors.
 
 Write all information into a file
 =================================
@@ -100,19 +91,52 @@ Write all information into a file
 Store raw data
 **************
 
-We will store the **bbbdo2file.lua** LUA connector into the 
+Let's start with the first script. Our goal is to store all events
+given by Broker in a log file. We will call our stream connector
+**bbdo2file.lua**.
+
+As we said previously, we store this file into the
 **/usr/share/centreon-broker/lua** directory on the Centreon central server.
 
-Centreon Broker has a log function to write logs into a file. We will use this 
-function to write raw data into a dedicated file. `See technical documentation for more information 
+If the directory does not exist, as root, we can create it with the following
+command:
+
+.. code-block:: bash
+
+  mkdir -p /usr/share/centreon-broker/lua
+
+Centreon Broker provides several log functions to write logs, warnings or errors
+into a file. We will use one of these functions *info()* to write Broker events.
+`See technical documentation for more information
 <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-log-object>`_.
 
-The **write()** function is called each time an event is received from a poller 
-through the broker. We will call the log function into this function to store 
-raw data. `See technical documentation for more information 
+The function *info()* makes part of the *broker_log* object. To call it, the
+syntax is the following:
+
+.. code-block:: lua
+
+  broker_log:info(level, text)
+
+* *level* is an integer from 1 (very important) to 3 (less important).
+* *text* is the text to write as log.
+
+.. note::
+  Did you notice the separator between **broker_log** and **info**, yes it is a
+  colon! Objects functions, also called *methods* are called like this in Lua.
+
+Let's start our script. The more important function in a stream connector is
+the **write()** function. Each time an event is received from a poller through
+Broker, this function is called with the event as argument.
+
+.. note::
+  You will never have to call the **write()** function by yourself, it is always
+  Broker's work. And it would be a fault to make a such call. In other words,
+  there should not have any call to the **write()** function in your script.
+
+`See technical documentation for more information
 <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-write-function>`_.
 
-The **bbbdo2file.lua** script will contain:
+Here is the **bbdo2file.lua** first version:
 
 .. code-block:: lua
 
@@ -128,29 +152,107 @@ The **bbbdo2file.lua** script will contain:
   end
 
 .. note::
-   For more information about the initialisation of the log function of Centreon 
-   Broker and the parameters, please `see technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-log-object>`_.
+   Informations about the initialization of the Broker's log function
+   and its parameters are given here `see technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-log-object>`_.
 
-Once your file **/usr/share/centreon-broker/lua/bbbdo2file.lua** is ready, add 
-execution rights on it::
+Let's explain what we are doing in this script.
 
-  # chown centreon-engine:centreon-engine /usr/share/centreon-broker/lua/bbbdo2file.lua
+We must provide an **init()** function, it is described in the `technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-init-function>`_.
 
-Then configure the new output into Centreon Web interface in 
-**Configuration > Pollers > Broker configuration > Central Broker**. In **Output** 
+This function is called during the stream connector initialization.
+Here, we use it to initialize the **broker_log** object. To achieve this,
+we call the **broker_log::set_parameters()** method that needs two parameters :
+
+* A max level (from 1 to 3). If you give 2 here, only logs of levels 1 and 2
+  will be returned.
+* A file to write the logs in. This file must be in a writable directory for
+  the **centreon-broker** user.
+
+The second function is the **write()** function. We already said its argument
+is a Broker event. A such object is a collection of keys/values. For example:
+
+.. code-block:: json
+
+  {
+    "check_hosts_freshness": false,
+    "active_host_checks": true,
+    "category": 1,
+    "event_handlers": true,
+    "instance_id": 1,
+    "last_command_check": 1522836592,
+    "type": 65552,
+    "global_service_event_handler": "",
+    "obsess_over_services": false,
+    "passive_service_checks": true,
+    "last_alive": 1522836593,
+    "active_service_checks": true,
+    "check_services_freshness": true,
+    "flap_detection": false,
+    "global_host_event_handler": "",
+    "notifications": true,
+    "obsess_over_hosts": false,
+    "passive_host_checks": true,
+    "element": 16
+  }
+
+In all events, you will find *category*, *element* and *type*.
+
+* Informations about the *category* can be found `here in the bbdo documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/dev/bbdo.html#event-categories>`_
+* The *element* is the *sub-category* (also called *type* in the bbdo
+  documentation).
+* The *type* is a number built from the *category* and the *element* (binary
+  concatenation).
+
+In this example, the *category* is 1 and the *element* is 16. So, by reading
+the documentation, we can say this event is a NEB event with sub-category
+*instance-status*.
+
+To finish with the **write()** function, we make a loop on the **d** event
+parameters. For each step, *k* is a key and *v* is the corresponding value.
+And we send to the log file a string `k .. " => " .. tostring(v)` that means
+the *concatenation* of *k*, *=>* and *v* converted into a string. You will see
+an example of the result below.
+
+Another possibility would be to use the **broker.json_encode(d)** function that
+converts any Lua object to a *json* string representation of it. so, we could
+write the function like this:
+
+.. code-block:: lua
+
+  function write(d)
+    broker_log:info(3, broker.json_encode(d))
+    return true
+  end
+
+.. note::
+
+  You can notice that **broker.json_encode(d)** is made of **broker** and
+  **json_encode(d)** separated by a *dot* and not a *colon*. This is because
+  **broker** is not a Lua object. In fact, you can see it as a functions set
+  provided by *Centreon Broker*.
+
+Once your file **/usr/share/centreon-broker/lua/bbdo2file.lua** is ready, verify
+it is readable by the **centreon-broker** user (or the **centreon-engine**
+user who is owner of the **centreon-broker** group), if it is not the case,
+as root you can enter::
+
+  # chown centreon-engine:centreon-engine /usr/share/centreon-broker/lua/bbdo2file.lua
+
+Then configure the new output into Centreon Web interface in
+**Configuration > Pollers > Broker configuration > Central Broker**. In **Output**
 tab select **Generic – Stream connector** and click **Add**:
 
 .. image:: /_static/images/developer/lua/add_stream_connector.png
    :align: center
 
-Define the name of this output and the path to the LUA connector:
+Define the name of this output and the path to the Lua connector:
 
 .. image:: /_static/images/developer/lua/describe_output.png
    :align: center
 
 Then click **Save** and go to generate the configuration and restart **cbd**.
 
-Once the Centreon Broker will be restart on your Centreon central server, data 
+Once the Centreon Broker will be restarted on your Centreon central server, data
 will appear in your **/var/log/centreon-broker/bbdo2file.log** log file::
 
   mer. 28 mars 2018 14:27:35 CEST: INFO: flap_detection => true
@@ -179,16 +281,16 @@ will appear in your **/var/log/centreon-broker/bbdo2file.log** log file::
   mer. 28 mars 2018 14:27:35 CEST: INFO: last_hard_state => 0
 
 .. note::
-   This log file will grow quickly, do not forget to add a log rotate
+   This log file will grow quickly, do not forget to add a log rotate.
 
 Use parameters
 **************
 
-The Centreon Broker log function should be use for log only. To write into a file, 
-we must use the LUA dedicated function. Moreover, it is possible to use parameters 
-to define the name of the log file.
+The Centreon Broker log functions should be used for log only. To write into a
+file, we must use the Lua dedicated function. Moreover, it is possible to use
+parameters to define the name of the log file.
 
-Edit your LUA connector:
+So it is time to improve our Stream Connector:
 
 .. code-block:: lua
 
@@ -196,15 +298,15 @@ Edit your LUA connector:
     logFile = conf['logFile']
     broker_log:set_parameters(3, "/var/log/centreon-broker/debug.log")
   end
-  
+
   function write(d)
     for k,v in pairs(d) do
-      wrintIntoFile(k .. " => " .. tostring(v) .. "\n")
+      writeIntoFile(k .. " => " .. tostring(v) .. "\n")
     end
     return true
   end
 
-  function wrintIntoFile(output)
+  function writeIntoFile(output)
     local file,err = io.open(logFile, 'a')
     if file == nil then
       broker_log:info(3, "Couldn't open file: " .. err)
@@ -214,20 +316,45 @@ Edit your LUA connector:
     end
   end
 
-The **init()** function allows to get parameters and define these from Centreon 
-web interface. See technical documentation for more information.
+Did you notice that expression `local file,err = io.open(logFile, 'a')`?
 
-Edit also your broker output to declare this parameter:
+Lua is able to store several variables at the same time. Also Lua functions can
+return several variables!
+
+For example, if you want to swap variables *a* and *b*, you can enter::
+  a, b = b, a
+
+Another example that illustrates several values returned:
+
+.. code-block:: lua
+
+  function fib(a, b)
+    return b, a + b
+  end
+
+So, this call to **io.open** returns two variables, a first variable
+**file** that is a *file descriptor* used to access the file and a second
+variable not always defined that contains an error if it occured or **nil**
+(not defined) otherwise.
+
+The **init()** function allows to get parameters and define these from Centreon
+web interface. See technical documentation for more information. Here, we add
+the possibility to choose the destination file name. The **conf** table has
+a key *logFile* defined in the web interface. The corresponding value is
+the file name used to store events.
+
+Edit your Broker output to declare this parameter:
 
 .. image:: /_static/images/developer/lua/add_parameter.png
    :align: center
 
+It is important that the name of the parameter in the web interface matches the
+key name in the **conf** table. Here, it is *logFile*.
+
 Then click **Save** and go to generate the configuration and restart **cbd**.
 
-.. note::
-   Don’t forget to restart “centengine” too to create the Centreon Broker cache.
-
-Data still stored into **/var/log/centreon-broker/bbdo2file.log** log file::
+Data are stored into **/var/log/centreon-broker/bbdo2file.log** log file as
+this::
 
   name => error
   category => 3
@@ -255,22 +382,51 @@ Data still stored into **/var/log/centreon-broker/bbdo2file.log** log file::
 Manipulate data
 ***************
 
-Not all data are necessary. We will select only the NEB category and the events 
-regarding hosts and services status to write into a file the following data:
+Here, we continue to improve our stream connector by choosing what events to
+export and also by improving outputs.
 
-* The type of object (HOST or SERVICE)
-* The name of host and ID
-* The description of service and ID (for service only)
-* The status and output of service
+We will select only the NEB category and the events regarding hosts and
+services status.
 
-To do this, we need to select not all events received by Centreon Broker but only 
-event regarding status of hosts and services objects from NEB category. By 
-following `the technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/dev/bbdo.html#event-categories>`_, 
-the NEB events type (real time) are linked to category 1. Moreover, the status of 
-host is link to element 14 and 24 for the status of services. To filter on these 
-events only, we will add a filter function with these properties.
+We know that NEB is the category 1, also service status is the sub-category 24,
+whereas host status is the sub-category 14.
 
-The new LUA script will contain:
+So, only events such that:
+
+* category = 1
+* element = 14 or element = 24
+
+are interesting for us.
+
+Moreover, we would prefer to have a host name instead of a host id and a service
+description instead of a service id.
+
+At last, we would be interesting to get status informations and outputs.
+
+NEB Events with element 14 and 24 give almost all we want except host names and
+service descriptions.
+
+To get those two informations, we will have to use the **broker_cache** object.
+This one is filled when pollers are restarted or reloaded. So, do not forget
+to restart your pollers if you want something in your **broker_cache** object!
+
+If the cache is well filled, it is easy to get a host name from the host id::
+
+  broker_cache:get_hostname(host_id)
+
+And it is also easy to get the service description from the host id and service
+id::
+
+  broker_cache:get_service_description(host_id, service_id)
+
+To install the filter on events, there is a useful function called **filter()**
+that takes two parameters: *category*, *element*.
+
+This function, if defined, is called just before **write()**. If it returns
+**true**, the **write()** function will be called, otherwise, the event will
+be thrown away.
+
+Let's complete our Lua script:
 
 .. code-block:: lua
 
@@ -278,19 +434,19 @@ The new LUA script will contain:
     logFile = conf['logFile']
     broker_log:set_parameters(3, "/var/log/centreon-broker/debug.log")
   end
-  
+
   function write(d)
     local output = ""
-  
+
     local host_name = broker_cache:get_hostname(d.host_id)
     if not host_name then
       broker_log:info(3, "Unable to get name of host, please restart centengine")
       host_name = d.host_id
     end
-  
+
     if d.element == 14 then
       output = "HOST:" .. host_name .. ";" .. d.host_id .. ";" .. d.state .. ";" .. d.output
-      wrintIntoFile(output)
+      writeIntoFile(output)
       broker_log:info(output)
     elseif d.element == 24 then
       local service_description = broker_cache:get_service_description(d.host_id, d.service_id)
@@ -299,13 +455,21 @@ The new LUA script will contain:
         service_description = d.service_id
       end
       output = "SERVICE:" .. host_name .. ";" .. d.host_id .. ";" .. service_description .. ";" .. d.service_id .. ";" .. d.state .. ";" .. d.output
-      wrintIntoFile(output)
+      writeIntoFile(output)
       broker_log:info(output)
     end
     return true
   end
-  
-  function wrintIntoFile(output)
+
+  function filter(category, element)
+    -- Get only host status and services status from NEB category
+    if category == 1 and (element == 14 or element == 24) then
+      return true
+    end
+      return false
+  end
+
+  local function writeIntoFile(output)
     local file,err = io.open(logFile, 'a')
     if file == nil then
       broker_log:info(3, "Couldn't open file: " .. err)
@@ -314,14 +478,51 @@ The new LUA script will contain:
       file:close()
     end
   end
-  
-  function filter(category, element)
-    -- Get only host status and services status from NEB category
-    if category == 1 and (element == 14 or element == 24) then
-      return true
-    end
-      return false
+
+Just several remarks on this new script before showing what we get.
+
+In the **init()** function, we access to the *logFile* key in the *conf* table
+by using `conf['logFile']`. Whereas, in the **write()** function, we access
+to the *element* key in the *d* table by using `d.element`...
+
+In fact, the two syntaxes are allowed : `d.element` is the same value than
+`d['element']`.
+
+Another remark, in the **write()** function we can see something like::
+
+  if not host_name then
+
+And in the **writeIntoFile()** function, we can see that::
+
+  if file == nil then
+
+Do they mean the same thing? Where is the difference?
+
+You must know that in Lua, a variable is considered to be **true** if it is
+defined and not **false**:
+
+so, the following code
+
+.. code:: lua
+
+  if toto then
+    print("Good")
+  else
+    print("Bad")
   end
+
+will write *Good* if *toto* is defined and not **false**. More precisely, it will
+write *Good* in the following cases:
+
+* toto=12
+* toto=true
+* toto="A string"
+* toto=0 (surprising!)
+
+It will write *Bad* in those cases:
+
+* toto=nil (by default a variable is nil, which means not defined)
+* toto=false
 
 The **/var/log/centreon-broker/bbdo2file.log** file will now contain::
 
@@ -342,11 +543,16 @@ The **/var/log/centreon-broker/bbdo2file.log** file will now contain::
   SERVICE:mail-io-backend;88;traffic-eth1;547;0;Traffic In : 1.51 Mb/s (1.51 %), Out : 7.12 Mb/s (7.12 %) - Total RX Bits In : 389.61 Gb, Out : 390.54 Gb
   SERVICE:mail-io-backend;88;diskio-system;551;0;Device /dev/sda: avg read 4.78 (MB/s) and write 9.08 (MB/s)
 
-Export performance data to InfluxDB
-===================================
 
-`InfluxDB <https://www.influxdata.com/>`_ is a Time Series database. We will use 
-this storage to insert performance data collected by the Centreon platform. For 
+***********************************
+Export performance data to InfluxDB
+***********************************
+
+Now, you have already seen many things about stream connectors. It is time to
+create something more useful!
+
+`InfluxDB <https://www.influxdata.com/>`_ is a Time Series database. We will use
+this storage to insert performance data collected by the Centreon platform. For
 this example, we will use the predefined `InfluxDB Docker <https://hub.docker.com/_/influxdb/>`_.
 
 To send data to InfluxDB, we need parameters to access to InfluxDB storage:
@@ -358,24 +564,69 @@ To send data to InfluxDB, we need parameters to access to InfluxDB storage:
 * **influx_user**: user to access to database if defined
 * **influx_password**: password of user to access to database if defined
 
-In order to do not saturate the storage, we will add all events in a queue and 
-send data by bulk. We need to define the size of the queue and the maximum 
-delay before send events:
+In order to not saturate the storage, we will add all events in a queue and
+once its max size is reached, we will send data by bulk.
 
-* max_buffer_size  
+We need to define the size of the queue and the maximum
+delay before sending events:
+
+* max_buffer_size
 * max_buffer_age
 
-The LUA script will contain:
+To create this queue, we introduce a code a little more complicated. We
+construct an object **event_queue**. It is composed of parameters such as
+*events*, *influx_database* and also methods as *new()*, *add()*.
 
-A function to create the queue
-******************************
+To understand how to create such an object in Lua, we recommend the Lua
+documentation `here for classes <https://www.lua.org/pil/16.1.html>`_
+and `there for metatables <https://www.lua.org/pil/13.html>`_.
 
-This function initialises the queue with default parameters or defined by the 
-user. Moreover, the queue settings and the events will be store into a 
-dedicated structure:
+To send data to a server, we provide a **broker_tcp_socket** object.
+
+Its API is very simple but relatively simple (too simple?). This *socket*
+is a TCP socket, it does not support encryption and it can be tricky to send
+data in http. Here is an example:
 
 .. code-block:: lua
 
+  -- Here, we create our socket
+  local socket = broker_tcp_socket.new()
+
+  -- We establish the connection with the server
+  socket:connect(address, port)
+
+  -- Now, we can send data
+  socket:write("This is a text to send")
+
+  -- If, we want an answer, we also have a function to read
+  local content = socket:read()
+
+  -- When exchanges are finished, we can close the socket
+  socket:close()
+
+For our purpose, we do not use **broker_tcp_socket** because of its limitations.
+We want to be able to send data to an https server.
+
+A prerequisite is to install the `lua-socket library <http://w3.impa.br/~diego/software/luasocket/>`_. This library provides several functionalities, we
+need two of them:
+
+* http socket
+* ltn12
+
+To access them, Lua provides the **require** function.
+
+Let's introduce the beginning of our new Stream Connector.
+
+The queue parameters
+====================
+
+.. code-block:: lua
+
+  -- We declare the objects to import here
+  local http = require("socket.http")
+  local ltn12 = require("ltn12")
+
+  -- Here are predefined queue parameters
   local event_queue = {
     __internal_ts_last_flush    = nil,
     http_server_address         = "",
@@ -388,7 +639,20 @@ dedicated structure:
     max_buffer_size             = 5000,
     max_buffer_age              = 5
   }
-  
+
+
+In this table, we give default values to parameters that can be possibly
+changed during the **init()** call. This table will be used to store important
+data for the script and also is our queue object.
+
+A method to create the queue
+============================
+
+To declare this table as a Lua object, we need a constructor. So, here it is:
+
+.. code-block:: lua
+
+  -- Constructor of the event_queue
   function event_queue:new(o, conf)
     o = o or {}
     setmetatable(o, self)
@@ -407,37 +671,49 @@ dedicated structure:
   end
 
 .. note::
-   In this function, we use the concept of LUA classes and metatable to facilitate
-   development. "o = o or {}" means that an object will be created even if the 
-   "event_queue:new" function doesn't receive one.
+   In this function, we use a Lua sugar "o = o or {}" that means *o* stays the
+   same if it is **true**, otherwise it is affected with an empty table `{}`.
 
-   Read official documentation to understand `classes <https://www.lua.org/pil/16.1.html>`_ 
-   and `metatable <https://www.lua.org/pil/13.html>`_.
+   Another point to notice is the **~=** operator that means **different from**.
 
-.. note::
-   We use level 1 of the log function because the settings of storage access is 
-   important information.
+   And to finish on this function, the variable **self** is implicitly defined
+   when we declare an object's method. Its meaning is the same as **this** in
+   Java or in C++. It represents the object we are working on.
 
-A function to add event in queue
-********************************
+A method to add event in queue
+==============================
 
-The add function allows to aggregate data before to add these into the queue. This 
-function replaces host ID by hostname and service ID by the description. This 
-function also operates the maximum size of the queue or the timeout:
+We have a queue object. It would be great to use it like this:
+
+.. code-block:: lua
+
+  -- We construct it
+  local queue = event_queue:new(nil, conf)
+
+  -- We add an event to it
+  queue:add(event)
+
+  -- When the queue is full, we would like to do something like this
+  queue:flush()
+
+
+Let's do it! Below, we present an **add()** method that retrieves host name,
+service description from the cache, builds a string from the event and pushes
+it on its stack.
 
 .. code-block:: lua
 
   function event_queue:add(e)
     local metric = e.name
-    -- time is a reserved word in influxDB so I rename it 
+    -- time is a reserved word in influxDB so I rename it
     if metric == "time" then
       metric = "_" .. metric
     end
-  
+
     -- retrieve objects names instead of IDs
     local host_name = broker_cache:get_hostname(e.host_id)
     local service_description = broker_cache:get_service_description(e.host_id, e.service_id)
-  
+
     -- what if we could not get them from cache
     if not host_name then
       broker_log:warning(1, "event_queue:add: host_name for id " .. e.host_id .. " not found. Restarting centengine should fix this.")
@@ -449,12 +725,12 @@ function also operates the maximum size of the queue or the timeout:
     else
       service_description = service_description:gsub(" ", "_")
     end
-  
+
     -- we finally append the event to the events table
     metric = metric:gsub(" ", "_")
     broker_log:info(3, 'event_queue:add: adding  ' .. service_description .. ",host=" .. host_name .. " " .. metric .. "=" .. e.value .. " " .. e.ctime .. '000000000" to event list.')
     self.events[#self.events + 1] = service_description .. ",host=" .. host_name .. " " .. metric .. "=" .. e.value .. " " .. e.ctime .. "000000000\n"
-  
+
     -- then we check whether it is time to send the events to the receiver and flush
     if #self.events >= self.max_buffer_size then
       broker_log:info(2, "event_queue:add: flushing because buffer size reached " .. self.max_buffer_size .. " elements.")
@@ -469,13 +745,17 @@ function also operates the maximum size of the queue or the timeout:
     end
   end
 
-A function to flush the queue
-*****************************
+A method to flush the queue
+===========================
 
-Once the events added in the queue and the maximum size of the queue or the 
-timeout is reached, events will be sent to the InfluxDB storage. This function 
-will build data from the queue and send these to the storage. If an error 
-occurs, it will be write into the associated log file:
+Once the events added in the queue and the maximum size of the queue or the
+timeout is reached, events will be sent to the InfluxDB storage.
+
+This function builds data from the queue and send them to the storage. If an
+error occurs, it dumps a log error.
+
+It is here that we use the **http** and **ltn12** objects loaded at the
+beginning of the script.
 
 .. code-block:: lua
 
@@ -489,14 +769,14 @@ occurs, it will be write into the associated log file:
     end
     broker_log:info(2, 'event_queue:flush: HTTP POST request "' .. self.http_server_protocol .. "://" .. self.http_server_address .. ":" .. self.http_server_port .. "/write?db=" .. self.influx_database .. '"')
     broker_log:info(3, "event_queue:flush: HTTP POST data are: '" .. http_post_data .. "'")
-  
+
     -- build url
     local influxdb_url = self.http_server_protocol .. "://" .. self.http_server_address .. ":" .. self.http_server_port .. "/write?db=" .. self.influx_database
     -- add authentication if needed
     if string.len(self.influx_user) >= 1 and string.len(self.influx_password) >= 1 then
       influxdb_url = influxdb_url .. "&u=" .. self.influx_user .. "&p="..self.influx_password
     end
-  
+
     local hr_result, hr_code, hr_header, hr_s = http.request{
       url = influxdb_url,
       method = "POST",
@@ -504,7 +784,7 @@ occurs, it will be write into the associated log file:
       sink = ltn12.sink.table(http_result_body),
       -- request body needs to be formatted as a LTN12 source
       source = ltn12.source.string(http_post_data),
-      headers = { 
+      headers = {
         -- mandatory for POST request with body
         ["content-length"] = string.len(http_post_data)
       }
@@ -518,7 +798,7 @@ occurs, it will be write into the associated log file:
         broker_log:error(1, "event_queue:flush: HTTP POST request FAILED: message line " .. i .. ' is "' .. v .. '"')
       end
     end
-  
+
     -- now that the data has been sent, we empty the events array
     self.events = {}
     -- and update the timestamp
@@ -526,10 +806,11 @@ occurs, it will be write into the associated log file:
   end
 
 The init() function to get parameters and create the queue
-**********************************************************
+==========================================================
 
-In this case, the “init()” function will create the queue with parameters 
-defined by users of use default parameters if some are missing:
+In this case, the **init()** function creates the queue with parameters
+defined by users in the web interface or uses default parameters already
+defined in the queue. This alternative is managed by the queue constructor.
 
 .. code-block:: lua
 
@@ -540,10 +821,15 @@ defined by users of use default parameters if some are missing:
     broker_log:info(2, "init: Ending init() function, Event queue created")
   end
 
-The write() function to insert event in queue
-*********************************************
+.. note::
 
-The “write()” function is only used to insert filtered events into the queue:
+  **queue** is not defined as local, this is important so that it is accessible
+  from all the functions.
+
+The write() function to insert events in queue
+==============================================
+
+The **write()** function is only used to insert filtered events into the queue:
 
 .. code-block:: lua
 
@@ -555,35 +841,36 @@ The “write()” function is only used to insert filtered events into the queue
   end
 
 The filter() function to select only performance data events
-************************************************************
-To select only performance data, we need to select category 3 (“Storage”) 
-and the element type 1 (“metric”):
+============================================================
+
+To select only performance data, we need to select *category* 3 (“Storage”)
+and the *element* 1 for *metric*:
 
 .. code-block:: lua
 
   function filter(category, element)
-    if category == 3 and element == 1 then 
+    if category == 3 and element == 1 then
       return true
     end
     return false
   end
 
 Complete script
-***************
+===============
 
-The complete script can by download `here <TODO>`_.
+The complete script can be downloaded `here <https://github.com/centreon/centreon-stream-connector-scripts/tree/master/influxdb>`_.
 
 Configure Centreon Broker
-*************************
+=========================
 
-Configure the new output into Centreon Web interface in 
-**Configuration > Pollers > Broker configuration > Central Broker**. 
+Configure the new output into Centreon Web interface in
+**Configuration > Pollers > Broker configuration > Central Broker**.
 In **Output** tab select **Generic – Stream connector** and click **Add**:
 
 .. image:: /_static/images/developer/lua/add_stream_connector.png
    :align: center
 
-Define the name of this output and the path to the LUA connector:
+Define the name of this output and the path to the Lua connector:
 
 .. image:: /_static/images/developer/lua/broker_influxdb_output.png
    :align: center
@@ -601,10 +888,11 @@ If you install the `Grafana <https://grafana.com/>`_ dashboard, you can visualiz
    :scale: 65%
 
 Discover other Centreon Stream Connectors
-*****************************************
+=========================================
 
-Centreon provides a Github repository to host LUA scripts developed by Centreon 
-and the community. Please go to the `dedicated Github <http://github.com/centreon/centreon-lua-scripts>`_.
+Centreon provides a Github repository to host Lua scripts developed by Centreon
+and the community. Please go to the `dedicated Github <http://github.com/centreon/centreon-stream-connector-scripts>`_.
 
-Need help to develop your Stream connector? You want to share your experience with 
+Need help to develop your Stream connector? You want to share your experience with
 the community? Join the `Centreon community Slack channel <https://centreon.github.io/>`_.
+
