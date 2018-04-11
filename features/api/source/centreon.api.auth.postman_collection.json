@@ -12,6 +12,14 @@
         "type": "text\/javascript",
         "exec": ["var jsonData = JSON.parse(responseBody);", "postman.setEnvironmentVariable(\"token\",jsonData.authToken);"]
       }
+    }, {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.environment.set(\"url\", pm.globals.get(\"url\"));"
+        ]
+      }
     }],
     "request": {
       "url": {
