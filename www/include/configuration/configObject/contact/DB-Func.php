@@ -660,6 +660,7 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null
         ? $rq .= "'" . $ret["reach_api"]["reach_api"] . "', "
         : $rq .= "NULL, ";
+    $rq .= "reach_api_rt = ";
     isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
         ? $rq .= "'" . $ret["reach_api_rt"]["reach_api_rt"] . "', "
         : $rq .= "NULL, ";
