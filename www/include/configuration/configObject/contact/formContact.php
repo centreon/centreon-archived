@@ -793,9 +793,4 @@ if ($valid) {
             document.getElementById('sNone').checked = false;
         }
     }
-<<<<<<< HEAD
 </script>
-=======
-}
-</script>
->>>>>>> 1c456741a... feat(api): Split role between configuration and realtime
