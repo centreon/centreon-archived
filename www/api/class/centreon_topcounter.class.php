@@ -69,13 +69,14 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException('Session does not exists.');
         }
         $user = $_SESSION['centreon']->user;
+        $gmt = $_SESSION['centreon']->CentreonGMT;
 
         $locale = $user->lang === 'browser' ? null : $user->lang;
 
         return array(
             'time' => time(),
             'locale' => $locale,
-            'timezone' => $user->gmt
+            'timezone' => $gmt->getActiveTimezone($user->gmt)
         );
     }
 
