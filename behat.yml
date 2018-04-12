@@ -312,3 +312,7 @@ default:
     uri:
       paths: [ %paths.base%/features/URI.feature ]
       contexts: [ URIContext ]
+
+    rest_add_command:
+      paths: [ %paths.base%/features/RestAddCommand.feature ]
+      contexts: [ RestApiContext ]
