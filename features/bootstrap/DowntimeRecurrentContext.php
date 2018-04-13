@@ -20,7 +20,8 @@ class DowntimeRecurrentContext extends CentreonContext
         'name' => 'host',
         'alias' => 'host',
         'address' => 'host2@localhost',
-        'check_command' => 'check_centreon_dummy'
+        'check_command' => 'check_centreon_dummy',
+        'location' => 'Europe/Paris'
     );
 
     protected $hostGroup = array(
