@@ -23,7 +23,7 @@
 		<td class="ListColCenter">{$properties.installed_version}</td>
 		<td class="ListColCenter">{$properties.author}</td>
 		<!-- using a class to format the timestamp -->
-		<td class="ListColCenter isTimestamp">{$properties.license_expiration}</td>
+		<td class="ListColCenter isTimestamp isDate">{$properties.license_expiration}</td>
 		<td class="ListColCenter">{$properties.installed}</td>
         <td id="{$properties.name}" class="ListColCenter"></td>
 		<td id="action_{$properties.name}" class="ListColRight">
