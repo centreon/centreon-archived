@@ -8,5 +8,7 @@ Enhancements
 Bug Fixes
 =========
 
+* [CLAPI] Fix host services deployment - PR #6212
+
 Other
 =====
