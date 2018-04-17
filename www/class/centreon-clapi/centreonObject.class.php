@@ -443,10 +443,11 @@ abstract class CentreonObject
      * @param int $objId
      * @param string $objName
      * @param array $objValues
+     * @param string|null $objectType - The object type to log if is null use the object type of the class
      */
-    public function addAuditLog($actionType, $objId, $objName, $objValues = array())
+    public function addAuditLog($actionType, $objId, $objName, $objValues = array(), $objectType = null)
     {
-        $objType = strtoupper($this->action);
+        $objType = is_null($objectType) ? strtoupper($this->action) : $objectType;
         $objectTypes = array(
             'HTPL' => 'host',
             'STPL' => 'service',

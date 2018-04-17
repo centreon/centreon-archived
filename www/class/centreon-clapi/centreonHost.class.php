@@ -906,16 +906,16 @@ class CentreonHost extends CentreonObject
                     $serviceDesc = array('service_description' => $params['service_alias'],
                         'service_activate' => '1',
                         'service_register' => '1',
-                        'service_template_model_stm_id' => $serviceTemplateId,
-                        'service_hPars' => $hostId);
+                        'service_template_model_stm_id' => $serviceTemplateId);
                     $svcId = $svcObj->insert($serviceDesc);
                     $hostSvcRel->insert($hostId, $svcId);
-                    $this->params = array_merge($this->params, $serviceDesc);
+                    $serviceDesc['service_hPars'] = $hostId;
                     $this->addAuditLog(
                         'a',
                         $svcId,
                         $params['service_alias'],
-                        $this->params
+                        $serviceDesc,
+                        'SERVICE'
                     );
                     $svcExtended->insert(array($svcExtended->getUniqueLabelField() => $svcId));
                 }
