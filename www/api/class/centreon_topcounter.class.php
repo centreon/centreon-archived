@@ -38,12 +38,32 @@ require_once dirname(__FILE__) . "/webService.class.php";
 
 class CentreonTopCounter extends CentreonWebService
 {
+    /**
+     * @var CentreonDB
+     */
     protected $pearDBMonitoring;
-    protected $timeUnit = 300;
-    protected $refreshTime = 15;
 
     /**
-     * CentreonMetric constructor.
+     * @var int
+     */
+    protected $timeUnit = 300;
+
+    /**
+     * @var int
+     */
+    protected $refreshTime = 15;
+
+    protected $hasAccessToTopCounter = false;
+
+    protected $hasAccessToPollers = false;
+
+    protected $hasAccessToProfile = false;
+
+    protected $centreonUser;
+
+    /**
+     * CentreonTopCounter constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -55,6 +75,36 @@ class CentreonTopCounter extends CentreonWebService
         if (!PEAR::isError($res) && $res->numRows() > 0) {
             $row = $res->fetchRow();
             $this->refreshTime = (int)$row['value'];
+        }
+
+        $this->checkAccess();
+    }
+
+    /**
+     * @throws RestUnauthorizedException
+     */
+    private function checkAccess()
+    {
+        if (!isset($_SESSION['centreon'])) {
+            throw new \RestUnauthorizedException('Session does not exists.');
+        }
+        $this->centreonUser = $_SESSION['centreon']->user;
+
+        if ($this->centreonUser->access->admin == 0) {
+            $tabActionACL = $this->centreonUser->access->getActions();
+            if (isset($tabActionACL["top_counter"])) {
+                $this->hasAccessToTopCounter = true;
+            }
+            if (isset($tabActionACL["poller_stats"])) {
+                $this->hasAccessToPollers = true;
+            }
+        } else {
+            $this->hasAccessToTopCounter = true;
+            $this->hasAccessToPollers = true;
+        }
+
+        if ($this->centreonUser->topology['50104'] == '1') {
+            $this->hasAccessToProfile = true;
         }
     }
 
@@ -131,6 +181,7 @@ class CentreonTopCounter extends CentreonWebService
             'username' => $user->alias,
             'locale' => $locale,
             'timezone' => $user->gmt,
+            'hasAccessToProfile' => $this->hasAccessToProfile,
             'autologinkey' => $row['contact_autologin_key']
         );
     }
@@ -142,6 +193,10 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getPollers_status()
     {
+        if (!$this->hasAccessToPollers) {
+            throw new \RestUnauthorizedException("You're not authorized to access poller datas");
+        }
+
         $pollers = $this->pollersStatusList();
         $result = array(
             'latency' => array(
@@ -180,6 +235,7 @@ class CentreonTopCounter extends CentreonWebService
 
         return $result;
     }
+
 
     /**
      * Get the list of pollers by status type
@@ -247,10 +303,9 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getHosts_status()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
+        if (!$this->hasAccessToTopCounter) {
+            throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
-        $user = $_SESSION['centreon']->user;
 
         $query = 'SELECT
             SUM(CASE WHEN h.state = 0 THEN 1 ELSE 0 END) AS up_total,
@@ -262,15 +317,19 @@ class CentreonTopCounter extends CentreonWebService
             SUM(CASE WHEN h.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END) AS unreachable_unhandled
             FROM hosts h, instances i';
-        if (!$user->admin) {
+        if (!$this->centreonUser->admin) {
             $query .= ', centreon_acl c';
         }
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
             AND h.enabled = 1
             AND h.name NOT LIKE "_Module_%"';
-        if (!$user->admin) {
-            $query .= ' ' . $user->access->queryBuilder('AND', 'c.group_id', $user->access->getAccessGroupsString());
+        if (!$this->centreonUser->admin) {
+            $query .= ' ' . $this->centreonUser->access->queryBuilder(
+                'AND',
+                'c.group_id',
+                $this->centreonUser->access->getAccessGroupsString()
+            );
         }
 
         $res = $this->pearDBMonitoring->query($query);
@@ -303,10 +362,9 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getServices_status()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
+        if (!$this->hasAccessToTopCounter) {
+            throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
-        $user = $_SESSION['centreon']->user;
 
         $query = 'SELECT
             SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END) AS ok_total,
@@ -327,12 +385,12 @@ class CentreonTopCounter extends CentreonWebService
             AND (h.name NOT LIKE "_Module_%" OR h.name LIKE "_Module_Meta%")
             AND s.enabled = 1
             AND h.host_id = s.host_id';
-        if (!$user->admin) {
+        if (!$this->centreonUser->admin) {
             $query .= ' AND EXISTS (
                 SELECT a.service_id FROM centreon_acl a
                     WHERE a.host_id = h.host_id
                         AND a.service_id = s.service_id
-                        AND a.group_id IN (' . $user->access->getAccessGroupsString() . ')
+                        AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . ')
             )';
         }
         $res = $this->pearDBMonitoring->query($query);
