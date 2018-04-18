@@ -263,15 +263,16 @@ class CentreonTopCounter extends CentreonWebService
                 THEN 1 ELSE 0 END) AS unreachable_unhandled
             FROM hosts h, instances i';
         if (!$user->admin) {
-            $query .= ', centreon_acl a';
+            $query .= ', centreon_acl c';
         }
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
             AND h.enabled = 1
             AND h.name NOT LIKE "_Module_%"';
         if (!$user->admin) {
-            $query .= ' ' . $user->access->queryBuilder('AND', 'c.group_id', $user->grouplistStr);
+            $query .= ' ' . $user->access->queryBuilder('AND', 'c.group_id', $user->access->getAccessGroupsString());
         }
+
         $res = $this->pearDBMonitoring->query($query);
         if (PEAR::isError($res)) {
             throw new \RestInternalServerErrorException();
@@ -331,7 +332,7 @@ class CentreonTopCounter extends CentreonWebService
                 SELECT a.service_id FROM centreon_acl a
                     WHERE a.host_id = h.host_id
                         AND a.service_id = s.service_id
-                        AND a.group_id IN (' . $user->grouplistStr . ')
+                        AND a.group_id IN (' . $user->access->getAccessGroupsString() . ')
             )';
         }
         $res = $this->pearDBMonitoring->query($query);
@@ -381,7 +382,7 @@ class CentreonTopCounter extends CentreonWebService
             if ($aclPoller === '') {
                 return array();
             }
-            $query .= ' WHERE id IN (' . $aclPoller . ')';
+            $query .= ' AND id IN (' . $aclPoller . ')';
         }
 
 
