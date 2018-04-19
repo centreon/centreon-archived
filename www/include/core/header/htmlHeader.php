@@ -83,6 +83,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
         <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
