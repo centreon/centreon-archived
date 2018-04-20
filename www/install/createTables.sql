@@ -1323,6 +1323,7 @@ CREATE TABLE `extended_host_information` (
   `ehi_action_url` TEXT DEFAULT NULL,
   `ehi_icon_image` int(11) DEFAULT NULL,
   `ehi_icon_image_alt` varchar(200) DEFAULT NULL,
+  `ehi_vrml_image` int(11) DEFAULT NULL,
   `ehi_statusmap_image` int(11) DEFAULT NULL,
   `ehi_2d_coords` varchar(200) DEFAULT NULL,
   `ehi_3d_coords` varchar(200) DEFAULT NULL,
