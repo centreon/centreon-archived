@@ -7,7 +7,7 @@ Overview
 ********
 
 Centreon Stream Connector is a feature introduced in Centreon 3.4.6. It allows
-to export Centreon data (events and metrics) to an external storage or
+one to export Centreon data (events and metrics) to an external storage or
 application such as ElasticSearch, Splunk, InfluxDB, files, etc.
 
 In a Centreon platform, the component that carries information between the
@@ -30,7 +30,7 @@ forward it to external storage:
    :align: center
    :scale: 65%
 
-This output loads a Lua script, called a Stream Connector, which job is to
+This output loads a Lua script called a Stream Connector, which job is to
 handle, aggregate and enrich the data before forwarding it to the defined
 protocol:
 
@@ -38,8 +38,8 @@ protocol:
    :align: center
    :scale: 65%
 
-Because it is an output of Centreon Broker, the principle of creation of retention
-files in case of interruption of access to external storage is kept. In the same way,
+Because it is an output of Centreon Broker, the principle of creating retention
+files upon interrupting external storage access is retained. In the same way,
 it is possible to filter input on the categories of flow to handle.
 
 ************
@@ -60,8 +60,8 @@ Creating a new Lua script
 The complete technical documentation is available `here <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html>`_.
 In this how-to, we will write two scripts:
 
-* A first one, easy, that explains basis on Stream Connectors. Its goal is to
-  export data to a log file.
+* The first one, easy, that explains the basics of Stream Connectors. Its goal
+  is to export data to a log file.
 * The second one is more exigent for the reader ; it exports performance data
   to the TSDB InfluxDB but is easily adaptable to export to another TSDB.
 
@@ -70,7 +70,7 @@ Programming language
 
 Centreon chose the Lua programming language to let you handle, aggregate and
 transfer data. Lua is a programming language that is easy to use. You can find
-more information into `Lua official documentation <https://www.lua.org/docs.html>`_
+more information with the `Lua official documentation <https://www.lua.org/docs.html>`_
 
 Storage of Lua scripts
 ======================
@@ -95,7 +95,7 @@ Let's start with the first script. Our goal is to store all events
 given by Broker in a log file. We will call our stream connector
 **bbdo2file.lua**.
 
-As we said previously, we store this file into the
+As we said previously, we will store this file into the
 **/usr/share/centreon-broker/lua** directory on the Centreon central server.
 
 If the directory does not exist, as root, we can create it with the following
@@ -117,7 +117,7 @@ syntax is the following:
 
   broker_log:info(level, text)
 
-* *level* is an integer from 1 (very important) to 3 (less important).
+* *level* is an integer from 1 (most important) to 3 (least important).
 * *text* is the text to write as log.
 
 .. note::
@@ -126,12 +126,12 @@ syntax is the following:
 
 Let's start our script. The more important function in a stream connector is
 the **write()** function. Each time an event is received from a poller through
-Broker, this function is called with the event as argument.
+Broker, this function is called with the event as an argument.
 
 .. note::
   You will never have to call the **write()** function by yourself, it is always
-  Broker's work. And it would be a fault to make a such call. In other words,
-  there should not have any call to the **write()** function in your script.
+  Broker's work to do so. And it would be a fault to make such a call. In other
+  words, there should not be any call to the **write()** function in your script.
 
 `See technical documentation for more information
 <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-write-function>`_.
@@ -152,7 +152,7 @@ Here is the **bbdo2file.lua** first version:
   end
 
 .. note::
-   Informations about the initialization of the Broker's log function
+   Information about the initialization of the Broker's log function
    and its parameters are given here `see technical documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/exploit/stream_connectors.html#the-broker-log-object>`_.
 
 Let's explain what we are doing in this script.
@@ -169,7 +169,7 @@ we call the **broker_log::set_parameters()** method that needs two parameters :
   the **centreon-broker** user.
 
 The second function is the **write()** function. We already said its argument
-is a Broker event. A such object is a collection of keys/values. For example:
+is a Broker event. This type of object is a collection of keys/values. For example:
 
 .. code-block:: json
 
@@ -197,7 +197,7 @@ is a Broker event. A such object is a collection of keys/values. For example:
 
 In all events, you will find *category*, *element* and *type*.
 
-* Informations about the *category* can be found `here in the bbdo documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/dev/bbdo.html#event-categories>`_
+* Information about the *category* can be found `here in the bbdo documentation <https://documentation.centreon.com/docs/centreon-broker/en/latest/dev/bbdo.html#event-categories>`_
 * The *element* is the *sub-category* (also called *type* in the bbdo
   documentation).
 * The *type* is a number built from the *category* and the *element* (binary
@@ -214,7 +214,7 @@ the *concatenation* of *k*, *=>* and *v* converted into a string. You will see
 an example of the result below.
 
 Another possibility would be to use the **broker.json_encode(d)** function that
-converts any Lua object to a *json* string representation of it. so, we could
+converts any Lua object to a *json* string representation of it. So, we could
 write the function like this:
 
 .. code-block:: lua
@@ -233,7 +233,7 @@ write the function like this:
 
 Once your file **/usr/share/centreon-broker/lua/bbdo2file.lua** is ready, verify
 it is readable by the **centreon-broker** user (or the **centreon-engine**
-user who is owner of the **centreon-broker** group), if it is not the case,
+user who is the owner of the **centreon-broker** group), if it is not the case,
 as root you can enter::
 
   # chown centreon-engine:centreon-engine /usr/share/centreon-broker/lua/bbdo2file.lua
@@ -318,10 +318,13 @@ So it is time to improve our Stream Connector:
 
 Did you notice that expression `local file,err = io.open(logFile, 'a')`?
 
-Lua is able to store several variables at the same time. Also Lua functions can
+Lua is able to store several variables at the same time. Also, Lua functions can
 return several variables!
 
-For example, if you want to swap variables *a* and *b*, you can enter::
+For example, if you want to swap variables *a* and *b*, you can enter:
+
+.. code-block:: lua
+
   a, b = b, a
 
 Another example that illustrates several values returned:
@@ -334,7 +337,7 @@ Another example that illustrates several values returned:
 
 So, this call to **io.open** returns two variables, a first variable
 **file** that is a *file descriptor* used to access the file and a second
-variable not always defined that contains an error if it occured or **nil**
+variable not always defined that contains error if one occurs or **nil**
 (not defined) otherwise.
 
 The **init()** function allows to get parameters and define these from Centreon
@@ -391,7 +394,7 @@ services status.
 We know that NEB is the category 1, also service status is the sub-category 24,
 whereas host status is the sub-category 14.
 
-So, only events such that:
+So, only events with the following criteria:
 
 * category = 1
 * element = 14 or element = 24
@@ -401,12 +404,12 @@ are interesting for us.
 Moreover, we would prefer to have a host name instead of a host id and a service
 description instead of a service id.
 
-At last, we would be interesting to get status informations and outputs.
+At last, we would be interested to get status information and outputs.
 
-NEB Events with element 14 and 24 give almost all we want except host names and
+NEB Events with elements 14 and 24 give almost all we want except host names and
 service descriptions.
 
-To get those two informations, we will have to use the **broker_cache** object.
+To get those two information, we will have to use the **broker_cache** object.
 This one is filled when pollers are restarted or reloaded. So, do not forget
 to restart your pollers if you want something in your **broker_cache** object!
 
@@ -420,7 +423,7 @@ id::
   broker_cache:get_service_description(host_id, service_id)
 
 To install the filter on events, there is a useful function called **filter()**
-that takes two parameters: *category*, *element*.
+that takes two parameters into account: *category*, *element*.
 
 This function, if defined, is called just before **write()**. If it returns
 **true**, the **write()** function will be called, otherwise, the event will
@@ -481,9 +484,9 @@ Let's complete our Lua script:
 
 Just several remarks on this new script before showing what we get.
 
-In the **init()** function, we access to the *logFile* key in the *conf* table
+In the **init()** function, we access the *logFile* key in the *conf* table
 by using `conf['logFile']`. Whereas, in the **write()** function, we access
-to the *element* key in the *d* table by using `d.element`...
+the *element* key in the *d* table by using `d.element`...
 
 In fact, the two syntaxes are allowed : `d.element` is the same value than
 `d['element']`.
@@ -519,7 +522,7 @@ write *Good* in the following cases:
 * toto="A string"
 * toto=0 (surprising!)
 
-It will write *Bad* in those cases:
+It will write *Bad* in these cases:
 
 * toto=nil (by default a variable is nil, which means not defined)
 * toto=false
@@ -575,7 +578,7 @@ delay before sending events:
 
 To create this queue, we introduce a code a little more complicated. We
 construct an object **event_queue**. It is composed of parameters such as
-*events*, *influx_database* and also methods as *new()*, *add()*.
+*events*, *influx_database* and methods like *new()*, *add()*.
 
 To understand how to create such an object in Lua, we recommend the Lua
 documentation `here for classes <https://www.lua.org/pil/16.1.html>`_
@@ -583,7 +586,7 @@ and `there for metatables <https://www.lua.org/pil/13.html>`_.
 
 To send data to a server, we provide a **broker_tcp_socket** object.
 
-Its API is very simple but relatively simple (too simple?). This *socket*
+Its API is very simple (too simple?). This *socket*
 is a TCP socket, it does not support encryption and it can be tricky to send
 data in http. Here is an example:
 
@@ -641,9 +644,9 @@ The queue parameters
   }
 
 
-In this table, we give default values to parameters that can be possibly
-changed during the **init()** call. This table will be used to store important
-data for the script and also is our queue object.
+In this table, we give default values to parameters that can possibly
+be changed during the **init()** call. This table will be used to store important
+data for the script and is also our queue object.
 
 A method to create the queue
 ============================
@@ -697,9 +700,9 @@ We have a queue object. It would be great to use it like this:
   queue:flush()
 
 
-Let's do it! Below, we present an **add()** method that retrieves host name,
-service description from the cache, builds a string from the event and pushes
-it on its stack.
+Let's do it! Below, we present an **add()** method that retrieves a host name
+and service description from the cache, builds a string from the event and
+pushes it on its stack.
 
 .. code-block:: lua
 
@@ -751,7 +754,7 @@ A method to flush the queue
 Once the events added in the queue and the maximum size of the queue or the
 timeout is reached, events will be sent to the InfluxDB storage.
 
-This function builds data from the queue and send them to the storage. If an
+This function builds data from the queue and sends them to the storage. If an
 error occurs, it dumps a log error.
 
 It is here that we use the **http** and **ltn12** objects loaded at the
@@ -844,7 +847,7 @@ The filter() function to select only performance data events
 ============================================================
 
 To select only performance data, we need to select *category* 3 (“Storage”)
-and the *element* 1 for *metric*:
+and *element* 1 for *metric*:
 
 .. code-block:: lua
 
