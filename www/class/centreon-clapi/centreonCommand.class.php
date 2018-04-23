@@ -188,6 +188,24 @@ class CentreonCommand extends CentreonObject
         }
     }
 
+    /**
+     * Get command arguments descriptions
+     *
+     * @param string $objUniqueName
+     * @throws CentreonClapiException
+     */
+    public function getargumentdesc($objUniqueName) {
+        if ($objUniqueName != "" && ($objectId = $this->getObjectId($objUniqueName)) != 0) {
+            $sql = "SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = ?";
+            $res = $this->db->query($sql, array($objectId));
+            
+            foreach($res as $param) {
+                echo $param['macro_name'] . $this->delim . $param['macro_description'] . "\n";
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objUniqueName);
+        }
+    }
 
     /**
      * Set command arguments descriptions
@@ -195,7 +213,7 @@ class CentreonCommand extends CentreonObject
      * @param string $descriptions
      * @throws CentreonClapiException
      */
-    public function describe_args($descriptions)
+    public function setargumentdescr($descriptions)
     {
         $data = explode($this->delim, trim($descriptions, $this->delim));
         if (count($data) < 1) {
@@ -285,10 +303,13 @@ class CentreonCommand extends CentreonObject
                 }
             }
 
-            echo $this->action . $this->delim
-                . "DESCRIBE_ARGS" . $this->delim
-                . $element[$this->object->getUniqueLabelField()] . $this->delim
-                . implode(';', $this->getArgsDescriptions($element['command_id'])) . "\n";
+            $argDescriptions = $this->getArgsDescriptions($element['command_id']);
+            if (sizeof($argDescriptions) > 0) {
+                echo $this->action . $this->delim
+                    . "setargumentdescr" . $this->delim
+                    . $element[$this->object->getUniqueLabelField()] . $this->delim
+                    . implode(';', $argDescriptions) . "\n";
+            }
         }
     }
 
