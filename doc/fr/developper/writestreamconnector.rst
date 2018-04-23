@@ -645,7 +645,7 @@ The queue parameters
 
 
 In this table, we give default values to parameters that can possibly
- be changed during the **init()** call. This table will be used to store important
+be changed during the **init()** call. This table will be used to store important
 data for the script and is also our queue object.
 
 A method to create the queue
