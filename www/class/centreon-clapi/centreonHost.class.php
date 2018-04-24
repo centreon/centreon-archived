@@ -330,29 +330,13 @@ class CentreonHost extends CentreonObject
      */
     public function show_poller($host)
     {
-        $pollerId= null;
-        $rq = "SELECT nagios_server_id
- 		       FROM ns_host_relation
- 		       WHERE host_host_name = " . $this->db->escape($host) . "
- 		       LIMIT 1";
-        $res = $this->db->query($rq);
-        if ($res->numRows()) {
-            $row = $res->fetchRow();
-            $pollerId = $row['nagios_server_id'];
-        } else {
-            if (preg_match('/^_Module_Meta/', $host)) {
-                $rq = "SELECT id "
-                    . "FROM nagios_server "
-                    . "WHERE localhost = '1' "
-                    . "LIMIT 1 ";
-                $res = $this->db->query($rq);
-                if ($res->numRows()) {
-                    $row = $res->fetchRow();
-                    $pollerId = $row['id'];
-                }
-            }
+        $sql = "SELECT n.ns_ip_address,n.id FROM ns_host_relation ns,host h, nagios_server n WHERE ns.host_host_id=h.host_id AND ns.nagios_server_id=n.id AND h.host_name = '$host'";
+        $res = $this->db->query($sql);
+        $result = $res->fetchAll();
+        foreach ($result as $row) {
+            echo $row['ns_ip_address'];
+            return $row;
         }
-        return $this->getObjectName($pollerId);
     }
     
     /**
