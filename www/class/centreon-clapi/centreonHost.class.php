@@ -323,6 +323,39 @@ class CentreonHost extends CentreonObject
     }
 
     /**
+     * Method that returns the poller that monitors the host
+     *
+     * @param string $host
+     * @return string
+     */
+    public function show_poller($host)
+    {
+        $pollerId= null;
+        $rq = "SELECT nagios_server_id
+ 		       FROM ns_host_relation
+ 		       WHERE host_host_name = " . $this->db->escape($host) . "
+ 		       LIMIT 1";
+        $res = $this->db->query($rq);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $pollerId = $row['nagios_server_id'];
+        } else {
+            if (preg_match('/^_Module_Meta/', $host)) {
+                $rq = "SELECT id "
+                    . "FROM nagios_server "
+                    . "WHERE localhost = '1' "
+                    . "LIMIT 1 ";
+                $res = $this->db->query($rq);
+                if ($res->numRows()) {
+                    $row = $res->fetchRow();
+                    $pollerId = $row['id'];
+                }
+            }
+        }
+        return $this->getObjectName($pollerId);
+    }
+    
+    /**
      * Tie host to instance (poller)
      *
      * @param string $parameters
