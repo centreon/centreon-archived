@@ -119,12 +119,6 @@ $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCritica
 $statusService = $obj->checkArgument('statusService', $_GET, '');
 $statusFilter = $obj->checkArgument('statusFilter', $_GET, '');
 
-/* Connection to Redis
- */
-$redis = new Redis();
-$redis->connect($conf_centreon['redisServer'], $conf_centreon['redisPort']);
-$redis->auth($conf_centreon['redisPassword']);
-
 CentreonDb::checkInjection($o);
 CentreonDb::checkInjection($p);
 CentreonDb::checkInjection($nc);
@@ -143,6 +137,12 @@ CentreonDb::checkInjection($search_type_host);
 CentreonDb::checkInjection($search_type_service);
 CentreonDb::checkInjection($criticality_id);
 
+/* Connection to Redis
+ */
+$redis = new Redis();
+$redis->connect($conf_centreon['redisServer'], $conf_centreon['redisPort']);
+$redis->auth($conf_centreon['redisPassword']);
+
 /* Store in session the last type of call */
 $_SESSION['monitoring_service_status'] = $statusService;
 $_SESSION['monitoring_service_status_filter'] = $statusFilter;
@@ -160,23 +160,23 @@ $obj->setCriticality($criticality_id);
 /**
  * Graphs Tables
  */
-$graphs = array();
+//$graphs = array();
 
 /** * *************************************************
  * Get Service status
  */
 
-$tabOrder = array();
-//$tabOrder["criticality_id"] = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
-//$tabOrder["host_name"] = " ORDER BY h.name " . $order . ", s.description ";
-//$tabOrder["service_description"] = " ORDER BY s.description " . $order . ", h.name";
-//$tabOrder["current_state"] = " ORDER BY s.state " . $order . ", h.name, s.description";
-//$tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $order . ", h.name, s.description";
-//$tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $order . ", h.name, s.description";
-//$tabOrder["last_check"] = " ORDER BY s.last_check " . $order . ", h.name, s.description";
-//$tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name, s.description";
-//$tabOrder['output'] = ' ORDER BY s.output ' . $order . ', h.name, s.description';
-$tabOrder["default"] = $tabOrder['criticality_id'];
+//$tabOrder = array();
+//  SORTABLE $tabOrder["criticality_id"] = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
+//  SORTABLE $tabOrder["host_name"] = " ORDER BY h.name " . $order . ", s.description ";
+//  SORTABLE $tabOrder["service_description"] = " ORDER BY s.description " . $order . ", h.name";
+//  SORTABLE $tabOrder["current_state"] = " ORDER BY s.state " . $order . ", h.name, s.description";
+//  SORTABLE $tabOrder["last_state_change"] = " ORDER BY s.last_state_change " . $order . ", h.name, s.description";
+//  SORTABLE $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $order . ", h.name, s.description";
+//  SORTABLE $tabOrder["last_check"] = " ORDER BY s.last_check " . $order . ", h.name, s.description";
+//  SORTABLE (current_check_attempt) $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name, s.description";
+//  SORTABLE (plugin_output) $tabOrder['output'] = ' ORDER BY s.output ' . $order . ', h.name, s.description';
+//$tabOrder["default"] = $tabOrder['criticality_id'];
 
 //$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, "
 //    . "s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts, "
@@ -240,344 +240,74 @@ $tabOrder["default"] = $tabOrder['criticality_id'];
 //    }
 //}
 
-$hkey_prev = 0;
-$hst = null;
-$instance = null;
-$ct = 0;
-$flag = 0;
-$isMeta = 0;
-
-$svc_it = null;
-
-$host = array();
-$inst = array();
-$hostGroup = array();
-$serviceGroup = array();
-
-$states = array( 'ok', 'warning', 'critical', 'unknown', 'pending' );
-$rows = array();
 $numRows = 0;
 
-do {
-    $services = $redis->scan($svc_it, 's:*');
+function build_rows($result) {
+  $retval = array();
+  global $numRows;
+  $numRows = $result[0];
 
-    if ($services !== false) {
-        foreach ($services as $k) {
-            $hst_id = explode(':', $k);
-            $svc_id = $hst_id[2];
-            $hst_id = $hst_id[1];
-
-            error_log('Service ' . $k);
-
-            if (! isset($host[$hst_id])) {
-                $tmp_hst = $redis->hgetall("h:$hst_id");
-                if ($tmp_hst !== false) {
-                    if ($search_host
-                            && strpos($tmp_hst['name'], $search_host) === false
-                            && strpos($tmp_hst['alias'], $search_host) === false
-                            && strpos($tmp_hst['address'], $search_host) === false) {
-                        $host[$hst_id] = false;
-                    }
-                    else {
-                        $host[$hst_id] = $tmp_hst;
-                    }
-                }
-            }
-
-            $hst = $host[$hst_id];
-            $svc = $redis->hgetall($k);
-
-            /* Is there a filter on the host ? */
-            if ($hst === false) {
-                continue;
-            }
-            /* Is there a filter on host groups ? */
-            if (isset($hostgroups) && $hostgroups != 0) {
-                if (! isset($hostGroup[$hst_id])) {
-                    $hostGroup[$hst_id] = $redis->sIsMember("hgm:$hst_id", $hostgroups);
-                }
-                if ($hostGroup[$hst_id] === false)
-                    continue;
-            }
-            /* Is there a filter on an instance ? */
-            if ($instance != -1 && !empty($instance) && $hst['poller_id'] != $instance) {
-                continue;
-            }
-            /* Is there a filter on the service ? */
-            if ($search && strpos($svc['description'], $search) === false
-                    && strpos($svc['display_name'], $search) === false) {
-                continue;
-            }
-            /* Is there a filter on service groups ? */
-            if (isset($servicegroups) && $servicegroups != 0) {
-                if (! isset($serviceGroup[$k])) {
-                    $serviceGroup[$k] = $redis->sIsMember("sgm:$hst_id:$svc_id", $servicegroups);
-                }
-                if ($serviceGroup[$k] === false)
-                    continue;
-            }
-            /* Is there a filter on one service status ? */
-            if ($statusFilter && $states[$svc['state']] != $statusFilter) {
-                continue;
-            }
-            /* Is there a ALL/UNHANDLED/PROBLEMS filter on services ? */
-            if (
-                    $statusService == 'svc_unhandled' &&
-                    (
-                     $svc['state'] == 0 || $svc['state'] == 4 ||
-                     $svc['state_type'] != 1 ||
-                     $svc['acknowledged'] != 0 ||
-                     $svc['scheduled_downtime_depth'] != 0 ||
-                     $hst['acknowledged'] != 0 ||
-                     $hst['scheduled_downtime_depth'] != 0
-                    )
-               ) {
-                continue;
-            } elseif ($statusService == 'svcpb' && ($svc['state'] == 0 || $svc['state'] == 4)) {
-                continue;
-            }
-            /* Is there a filter on the output ? */
-            if ($search_output && strpos($svc['plugin_output'], $search_output) === false) {
-                continue;
-            }
-
-            /* Is there a filter on criticalities ? */
-            if ($criticality_id && (! isset($svc['criticality_id']) || $svc['criticality_id'] != $criticality_id)) {
-                continue;
-            }
-
-            $row = array();
-            if (isset($svc['criticality_id'])) {
-                $row['criticality_id'] = $svc['criticality_id'];
-            } else {
-                $row['criticality_id'] = 0;
-            }
-
-            $inst_id = $hst['poller_id'];
-            if (! isset($inst[$inst_id])) {
-                $tmp_inst = $redis->hgetall('i:' . $inst_id);
-                if ($tmp_inst !== false) {
-                    $inst[$inst_id] = $tmp_inst;
-                }
-            }
-            $curInst = $inst[$inst_id];
-
-            $passive = 0;
-            $active = 1;
-
-            $class = null;
-            if ($svc['scheduled_downtime_depth'] > 0) {
-                $class = 'line_downtime';
-            } elseif ($svc['state'] == 2) {
-                $svc['acknowledged'] == 1 ? $class = 'line_ack' : $class = 'list_down';
-            } elseif ($svc['acknowledged'] == 1) {
-                $class = 'line_ack';
-            }
-
-            $isMeta = 0;
-            $svc['host_display_name'] = $hst['name'];
-            if (! strncmp($hst['name'], '_Module_Meta', strlen('_Module_Meta'))) {
-                $isMeta = 1;
-                $svc['host_display_name'] = 'Meta';
-                $svc['host_state'] = '0';
-            }
-
-            /* Split the plugin_output */
-            if (isset($svc['plugin_output'])) {
-                $row['output'] = $svc['plugin_output'];
-                $outputLines = explode("\n", $svc['plugin_output']);
-                $pluginShortOuput = $outputLines[0];
-            }
-            else {
-                $row['output'] = '';
-                $outputLines = array('');
-                $pluginShortOutput = '';
-            }
-
-            $row['o'] = $ct++;
-            $row['hid'] = $hst_id;
-            $row['host_name'] = $hst['name'];
-            $row['hdn'] = $svc['host_display_name'];
-            $row['isMeta'] = $isMeta;
-            $row['last_state_change'] = $svc['last_state_change'];
-            $row['last_hard_state_change'] = $svc['last_hard_state_change'];
-
-            if ($hst['scheduled_downtime_depth'] == 0) {
-                $row['hc'] = $obj->colorHostInService[$hst['state']];
-            } else {
-                $row['hc'] = $obj->general_opt['color_downtime'];
-            }
-
-            /*
-             * Add possibility to use display name
-             */
-            if ($isMeta) {
-                $row['sdn'] = CentreonUtils::escapeSecure($svc['display_name']);
-            } else {
-                $row['sdn'] = CentreonUtils::escapeSecure($svc['description']);
-            }
-            $row['service_description'] = $svc['description'];
-            $row['sico'] = $svc['icon_image'];
-
-            $row['sdl'] = CentreonUtils::escapeSecure(urlencode($svc['description']));
-            $row['svc_id'] = $svc_id;
-            $row['current_state'] = $svc['state'];
-            $row['po'] = CentreonUtils::escapeSecure($pluginShortOuput);
-            $row['current_attempt'] = $svc['current_check_attempt'];
-            $row['ca'] = $svc['current_check_attempt'] . '/' . $svc['max_check_attempts'] . ' (' . $obj->stateType[$svc['state_type']] . ')';
-
-            $row['ne'] = $svc['notify'];
-            $row['pa'] = $svc['acknowledged'];
-            $row['pc'] = $svc['passive_checks'];
-
-            $row['ac'] = $svc['active_checks'];
-            $row['eh'] = $svc['event_handler_enabled'];
-            $row['is'] = $svc['flapping'];
-            $row['dtm'] = $svc['scheduled_downtime_depth'];
-
-//                if ($svc['notes'] != '') {
-//                        $svc['notes'] = str_replace('$SERVICEDESC$', $svc['description'], $svc['notes']);
-//                        $svc['notes'] = str_replace('$HOSTNAME$', $hst['name'], $svc['notes']);
-//                        if (isset($hst['alias']) && $hst['alias']) {
-//                            $svc['notes'] = str_replace('$HOSTALIAS$', $hst['alias'], $svc['notes']);
-//                        }
-//                        if (isset($hst['address']) && $hst['address']) {
-//                            $svc['notes'] = str_replace('$HOSTADDRESS$', $hst['address'], $svc['notes']);
-//                        }
-//                        if (isset($curInst['name']) && $curInst['name']) {
-//                            $svc['notes'] = str_replace('$INSTANCENAME$', $curInst['name'], $svc['notes']);
-//                            $svc['notes'] = str_replace(
-//                                    '$INSTANCEADDRESS$',
-//                                    $instanceObj->getParam($curInst['name'], 'ns_ip_address'),
-//                                    $svc['notes']
-//                                    );
-//                        }
-//                        $obj->XML->writeElement('snn', CentreonUtils::escapeSecure($svc['notes']));
-//                    } else {
-//                        $obj->XML->writeElement('snn', 'none');
-//                    }
-//
-//                    if ($svc['notes_url'] != '') {
-//                        $svc['notes_url'] = str_replace('$SERVICEDESC$', $svc['description'], $svc['notes_url']);
-//                        $svc['notes_url'] = str_replace('$SERVICESTATEID$', $svc['state'], $svc['notes_url']);
-//                        $svc['notes_url'] = str_replace(
-//                                '$SERVICESTATE$',
-//                                $obj->statusService[$svc['state']],
-//                                $svc['notes_url']
-//                                );
-//                        $svc['notes_url'] = str_replace('$HOSTNAME$', $hst['name'], $svc['notes_url']);
-//                        if (isset($hst['alias']) && $hst['alias']) {
-//                            $svc['notes_url'] = str_replace('$HOSTALIAS$', $hst['alias'], $svc['notes_url']);
-//                        }
-//                        if (isset($hst['address']) && $hst['address']) {
-//                            $svc['notes_url'] = str_replace('$HOSTADDRESS$', $hst['address'], $svc['notes_url']);
-//                        }
-//                        if (isset($curInst['name']) && $curInst['name']) {
-//                            $svc['notes_url'] = str_replace('$INSTANCENAME$', $curInst['name'], $svc['notes_url']);
-//                            $svc['notes_url'] = str_replace(
-//                                    '$INSTANCEADDRESS$',
-//                                    $instanceObj->getParam($curInst['name'], 'ns_ip_address'),
-//                                    $svc['notes_url']
-//                                    );
-//                        }
-//                        $obj->XML->writeElement(
-//                                'snu',
-//                                CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString(
-//                                        $svc_id,
-//                                        $svc['notes_url']
-//                                        ))
-//                                );
-//                    } else {
-//                        $obj->XML->writeElement('snu', 'none');
-//                    }
-//
-//                    if ($svc['action_url'] != '') {
-//                        $svc['action_url'] = str_replace('$SERVICEDESC$', $svc['description'], $svc['action_url']);
-//                        $svc['action_url'] = str_replace('$SERVICESTATEID$', $svc['state'], $svc['action_url']);
-//                        $svc['action_url'] = str_replace('$SERVICESTATE$', $obj->statusService[$svc['state']], $svc['action_url']);
-//                        $svc['action_url'] = str_replace('$HOSTNAME$', $hst['name'], $svc['action_url']);
-//                        if (isset($hst['alias']) && $hst['alias']) {
-//                            $svc['action_url'] = str_replace('$HOSTALIAS$', $hst['alias'], $svc['action_url']);
-//                        }
-//                        if (isset($hst['address']) && $hst['address']) {
-//                            $svc['action_url'] = str_replace('$HOSTADDRESS$', $hst['address'], $svc['action_url']);
-//                        }
-//                        if (isset($curInst['name']) && $curInst['name']) {
-//                            $svc['action_url'] = str_replace('$INSTANCENAME$', $curInst['name'], $svc['action_url']);
-//                            $svc['action_url'] = str_replace(
-//                                    '$INSTANCEADDRESS$',
-//                                    $instanceObj->getParam($curInst['name'], 'ns_ip_address'),
-//                                    $svc['action_url']
-//                                    );
-//                        }
-//                        $obj->XML->writeElement(
-//                                'sau',
-//                                CentreonUtils::escapeSecure(
-//                                    $obj->serviceObj->replaceMacroInString($svc_id, $svc['action_url'])
-//                                    )
-//                                );
-//                    } else {
-//                        $obj->XML->writeElement('sau', 'none');
-//                    }
-//
-//                    if ($svc['notes'] != '') {
-//                        $svc['notes'] = str_replace('$SERVICEDESC$', $svc['description'], $svc['notes']);
-//                        $svc['notes'] = str_replace('$HOSTNAME$', $hst['name'], $svc['notes']);
-//                        if (isset($hst['alias']) && $hst['alias']) {
-//                            $svc['notes'] = str_replace('$HOSTALIAS$', $hst['alias'], $svc['notes']);
-//                        }
-//                        if (isset($hst['address']) && $hst['address']) {
-//                            $svc['notes'] = str_replace('$HOSTADDRESS$', $hst['address'], $svc['notes']);
-//                        }
-//                        $obj->XML->writeElement('sn', CentreonUtils::escapeSecure($svc['notes']));
-//                    } else {
-//                        $obj->XML->writeElement('sn', 'none');
-//                    }
-//
-//                    $obj->XML->writeElement('fd', $svc['flap_detection']);
-//                    $obj->XML->writeElement('ha', $hst['acknowledged']);
-//                    $obj->XML->writeElement('hae', $hst['active_checks']);
-//                    $obj->XML->writeElement('hpe', $hst['passive_checks']);
-//                    $obj->XML->writeElement('nc', $obj->GMT->getDate($dateFormat, $svc['next_check']));
-            $row['last_check'] = $svc['last_check'];
-//                    /**
-//                     * Get Service Graph index
-//                     */
-//                    if (!isset($graphs[$hst_id]) || !isset($graphs[$hst_id][$svc_id])) {
-//                        $request2 = "SELECT DISTINCT service_id, id "
-//                            . "FROM index_data, metrics "
-//                            . "WHERE metrics.index_id = index_data.id "
-//                            . "AND host_id = " . $hst_id . " "
-//                            . "AND service_id = " . $svc_id . " "
-//                            . "AND index_data.hidden = '0' ";
-//                        $DBRESULT2 = $obj->DBC->query($request2);
-//                        while ($dataG = $DBRESULT2->fetchRow()) {
-//                            if (!isset($graphs[$hst_id])) {
-//                                $graphs[$hst_id] = array();
-//                            }
-//                            $graphs[$hst_id][$dataG["service_id"]] = $dataG["id"];
-//                        }
-//                        if (!isset($graphs[$hst_id])) {
-//                            $graphs[$hst_id] = array();
-//                        }
-//                    }
-//                    $obj->XML->writeElement(
-//                            "svc_index",
-//                            (isset($graphs[$hst_id][$svc_id]) ? $graphs[$hst_id][$svc_id] : 0)
-//                            );
-//                    $obj->XML->endElement();
-            $rows[] = $row;
-            $numRows++;
-        }
+  for ($i = 1; $i < count($result); $i += 2) {
+    $retval[$i - 1] = array( "key" => $result[$i] );
+    $val = &$retval[$i - 1];
+    $tmp = explode(':', $result[$i]);
+    $val['service_id'] = $tmp[2];
+    for ($j = 0; $j < count($result[$i + 1]); $j += 2) {
+      $val[$result[$i + 1][$j]] = $result[$i + 1][$j + 1];
     }
-} while ($svc_it > 0);
+  }
+  return $retval;
+}
 
-array_multisort(
-        array_column($rows, $sort_type), $order == 'ASC' ? SORT_ASC:SORT_DESC,
-        array_column($rows, 'host_name'), SORT_ASC,
-        array_column($rows, 'service_description'), SORT_ASC,
-        $rows
-        );
+$filter = '';
+
+if (isset($statusService)) {
+    if ($statusService == 'svcpb') {
+        $filter .= ' @current_state:[1 3]';
+    }
+    elseif ($statusService == 'svc_unhandled') {
+        $filter .= ' @current_state:[1 3] @state_type:[1 1] @acknowledged:[0 0] @scheduled_downtime_depth:[0 0]';
+    }
+}
+
+if (isset($instance) && $instance > 0) {
+  $filter .= ' @poller_id:{'.$instance.'}';
+}
+
+if (isset($hostgroups) && $hostgroups > 0) {
+  $filter .= ' @host_groups:{'.$hostgroups.'}';
+}
+
+if (!empty($search)) {
+  $filter .= " @service_description:'$search'";
+}
+
+if (!empty($search_host)) {
+  $filter .= " @host_name:'$search_host'";
+}
+
+if (!empty($search_output)) {
+  $filter .= " @plugin_output:'$search_output'";
+}
+
+if (!empty($statusFilter)) {
+  $s = array(
+      "ok" => 0,
+      "warning" => 1,
+      "critical" => 2,
+      "unknown" => 3,
+      "pending" => 4
+  );
+  $tmp = $s[$statusFilter];
+  $filter .= " @current_state:[$tmp $tmp]";
+}
+
+if (empty($filter)) {
+  $filter = '*';
+}
+
+error_log("FT.SEARCH services $filter LIMIT " . ($num * $limit) . " $limit");
+$RESULT = $redis->rawCommand('FT.SEARCH', 'services', $filter, 'LIMIT', $num * $limit, $limit);
 
 /* * **************************************************
  * Create Buffer
@@ -605,168 +335,365 @@ $obj->XML->writeElement('notif_disabled', _('Notification is disabled'));
 $obj->XML->writeElement('use_criticality', $criticalityUsed);
 $obj->XML->endElement();
 
-$prev_hst_id = 0;
+$host_prev = 0;
+$ct = 0;
+$flag = 0;
+
+$rows = build_rows(&$RESULT, true);
+$hosts = array();
+$instances = array();
+
+$field = array(
+    'acknowledged' => 0,
+    'active_checks' => 0,
+    'current_check_attempt' => 0,
+    'current_state' => 3,
+    'last_hard_state_change' => 0,
+    'last_state_change' => 0,
+    'max_check_attempts' => 0,
+    'passive_checks' => 0,
+    'scheduled_downtime_depth' => 0,
+    'state_type' => 0,
+);
+
 foreach ($rows as $row) {
+    $passive = 0;
+    $active = 1;
+    $last_check = ' ';
+    $duration = ' ';
+
+    /* Split plugin_output */
+    if (!isset($row['plugin_output'])) {
+      $row['plugin_output'] = '';
+    }
+    foreach ($field as $k => $f) {
+      if (!isset($row[$k])) {
+        $row[$k] = $f;
+      }
+    }
+    $outputLines = explode("\n", $row['plugin_output']);
+    $pluginShortOuput = $outputLines[0];
+
+    if ($row['last_state_change'] > 0 && time() > $row['last_state_change']) {
+        $duration = CentreonDuration::toString(time() - $row['last_state_change']);
+    } elseif ($row['last_state_change'] > 0) {
+        $duration = ' - ';
+    }
+
+    $hard_duration = ' N/S ';
+    if ($row['last_hard_state_change'] > 0 && $row['last_hard_state_change'] >= $row['last_state_change']) {
+        $hard_duration = CentreonDuration::toString(time() - $row['last_hard_state_change']);
+    }
+
+    $class = null;
+    if ($row['scheduled_downtime_depth'] > 0) {
+        $class = 'line_downtime';
+    } elseif ($row['current_state'] == 2) {
+        $row['acknowledged'] == 1 ? $class = 'line_ack' : $class = 'list_down';
+    } else {
+        if ($row['acknowledged'] == 1) {
+            $class = 'line_ack';
+        }
+    }
+
     $obj->XML->startElement('l');
     $trClass = $obj->getNextLineClass();
     if (isset($class)) {
         $trClass = $class;
     }
     $obj->XML->writeAttribute('class', $trClass);
-    $obj->XML->writeElement('o', $row['o']);
-    if ($prev_hst_id == $row['hid']) {
+    $obj->XML->writeElement('o', $ct++);
+
+    $isMeta = 0;
+    $row['host_display_name'] = $row['host_name'];
+    if (strpos($row['host_name'], '_Module_Meta') === 0) {
+      $isMeta = 1;
+      $row['host_display_name'] = 'Meta';
+      $row['host_state'] = '0';
+    }
+
+    /* Let's get the associated host: in cache or from Redis */
+    $host_key = 'h:' . $row['host_id'];
+    if (!isset($hosts[$row['host_id']])) {
+      $hosts[$row['host_id']] = $redis->hMGet(
+          'h:' . $row['host_id'],
+          array('current_state', 'notes', 'notes_url', 'action_url', 'scheduled_downtime_depth', 'icon_image', 'address')
+      );
+    }
+    $hst = &$hosts[$row['host_id']];
+    /* Let's get the instance name: in cache or from Redis */
+    if (!isset($instances[$row['poller_id']])) {
+      $instances[$row['poller_id']] = $redis->get('i:' . $row['poller_id']);
+    }
+    $inst = &$instances[$row['poller_id']];
+
+    if ($host_prev == $row['host_id']) {
         $obj->XML->writeElement('hc', 'transparent');
-        $obj->XML->writeElement('isMeta', $row['isMeta']);
-        $obj->XML->writeElement('hdn', $row['hdn']);
+        $obj->XML->writeElement('isMeta', $isMeta);
+        $obj->XML->writeElement('hdn', $row['host_display_name']);
         $obj->XML->startElement('hn');
         $obj->XML->writeAttribute('none', '1');
         $obj->XML->text(CentreonUtils::escapeSecure(urlencode($row['host_name'])));
         $obj->XML->endElement();
         $obj->XML->writeElement('hnl', CentreonUtils::escapeSecure(urlencode($row['host_name'])));
-        $obj->XML->writeElement('hid', $row['hid']);
+        $obj->XML->writeElement('hid', $row['host_id']);
     } else {
-        $prev_hst_id = $row['hid'];
-        $obj->XML->writeElement('hc', $row['hc']);
-        $obj->XML->writeElement('isMeta', $row['isMeta']);
+        $host_prev = $row['host_id'];
+        if ($hst['scheduled_downtime_depth'] == 0) {
+          $obj->XML->writeElement('hc', $obj->colorHostInService[$hst['current_state']]);
+        } else {
+          $obj->XML->writeElement('hc', $obj->general_opt['color_downtime']);
+        }
+        $obj->XML->writeElement('isMeta', $isMeta);
         $obj->XML->writeElement('hnl', CentreonUtils::escapeSecure(urlencode($row['host_name'])));
-        $obj->XML->writeElement('hdn', $row['hdn']);
+        $obj->XML->writeElement('hdn', $row['host_display_name']);
         $obj->XML->startElement('hn');
         $obj->XML->writeAttribute('none', '0');
         $obj->XML->text(CentreonUtils::escapeSecure(urlencode($row['host_name'])), true, false);
         $obj->XML->endElement();
-    }
 
-    $hst = $host[$row['hid']];
-    $curInst = $inst[$hst['poller_id']];
-
-    $hostNotesUrl = 'none';
-    if ($hst['notes_url']) {
-        $hostNotesUrl = str_replace('$HOSTNAME$', $hst['name'], $hst['notes_url']);
-        $hostNotesUrl = str_replace('$HOSTALIAS$', $hst['alias'], $hostNotesUrl);
-        $hostNotesUrl = str_replace('$HOSTADDRESS$', $hst['address'], $hostNotesUrl);
-        $hostNotesUrl = str_replace('$INSTANCENAME$', $curInst['name'], $hostNotesUrl);
-        $hostNotesUrl = str_replace('$HOSTSTATE$', $obj->statusHost[$hst['state']], $hostNotesUrl);
-        $hostNotesUrl = str_replace('$HOSTSTATEID$', $hst['state'], $hostNotesUrl);
-        $hostNotesUrl = str_replace(
+        $hostNotesUrl = 'none';
+        if ($hst['notes_url']) {
+            $hostNotesUrl = str_replace('$HOSTNAME$', $row['host_name'], $hst['notes_url']);
+            $hostNotesUrl = str_replace('$HOSTALIAS$', $hst['alias'], $hostNotesUrl);
+            $hostNotesUrl = str_replace('$HOSTADDRESS$', $hst['address'], $hostNotesUrl);
+            $hostNotesUrl = str_replace('$INSTANCENAME$', $inst, $hostNotesUrl);
+            $hostNotesUrl = str_replace('$HOSTSTATE$', $obj->statusHost[$hst['current_state']], $hostNotesUrl);
+            $hostNotesUrl = str_replace('$HOSTSTATEID$', $hst['current_state'], $hostNotesUrl);
+            $hostNotesUrl = str_replace(
                 '$INSTANCEADDRESS$',
-                $instanceObj->getParam($curInst['name'], 'ns_ip_address'),
+                $instanceObj->getParam($inst, 'ns_ip_address'),
                 $hostNotesUrl
-                );
-    }
-    $obj->XML->writeElement(
+            );
+        }
+        $obj->XML->writeElement(
             'hnu',
-            CentreonUtils::escapeSecure( $obj->hostObj->replaceMacroInString($hst['name'], $hostNotesUrl))
-            );
+            CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($row['host_name'], $hostNotesUrl))
+        );
 
-    $hostActionUrl = 'none';
-    if ($hst['action_url']) {
-        $hostActionUrl = str_replace('$HOSTNAME$', $hst['name'], $hst['action_url']);
-        $hostActionUrl = str_replace('$HOSTALIAS$', $hst['alias'], $hostActionUrl);
-        $hostActionUrl = str_replace('$HOSTADDRESS$', $hst['address'], $hostActionUrl);
-        $hostActionUrl = str_replace('$INSTANCENAME$', $curInst['name'], $hostActionUrl);
-        $hostActionUrl = str_replace('$HOSTSTATE$', $obj->statusHost[$hst['state']], $hostActionUrl);
-        $hostActionUrl = str_replace('$HOSTSTATEID$', $hst['state'], $hostActionUrl);
-        $hostActionUrl = str_replace(
+        $hostActionUrl = 'none';
+        if ($hst['action_url']) {
+            $hostActionUrl = str_replace('$HOSTNAME$', $row['host_name'], $data["h_action_url"]);
+            $hostActionUrl = str_replace('$HOSTALIAS$', $hst['alias'], $hostActionUrl);
+            $hostActionUrl = str_replace('$HOSTADDRESS$', $hst['address'], $hostActionUrl);
+            $hostActionUrl = str_replace('$INSTANCENAME$', $inst, $hostActionUrl);
+            $hostActionUrl = str_replace('$HOSTSTATE$', $obj->statusHost[$hst['current_state']], $hostActionUrl);
+            $hostActionUrl = str_replace('$HOSTSTATEID$', $hst['current_host'], $hostActionUrl);
+            $hostActionUrl = str_replace(
                 '$INSTANCEADDRESS$',
-                $instanceObj->getParam($curInst['name'], 'ns_ip_address'),
+                $instanceObj->getParam($inst, 'ns_ip_address'),
                 $hostActionUrl
-                );
-    }
-    $obj->XML->writeElement(
+            );
+        }
+        $obj->XML->writeElement(
             'hau',
-            CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($hst['name'], $hostActionUrl))
-            );
+            CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($row['host_name'], $hostActionUrl))
+        );
 
-    $obj->XML->writeElement('hnn', CentreonUtils::escapeSecure($hst['notes']));
-
-    $obj->XML->writeElement('hico', $hst['icon_image']);
-    $obj->XML->writeElement('hip', CentreonUtils::escapeSecure($hst['address']));
-    $obj->XML->writeElement('hdtm', $hst['scheduled_downtime_depth']);
-    $obj->XML->writeElement(
+        $obj->XML->writeElement('hnn', CentreonUtils::escapeSecure($hst['notes']));
+        $obj->XML->writeElement('hico', $hst['icon_image']);
+        $obj->XML->writeElement('hip', CentreonUtils::escapeSecure($hst['address']));
+        $obj->XML->writeElement('hdtm', $hst['scheduled_downtime_depth']);
+        $obj->XML->writeElement(
             'hdtmXml',
-            './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=' . $row['hid']
-            );
-    $obj->XML->writeElement('hdtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
-    $obj->XML->writeElement(
+            './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=' . $row['host_id']
+        );
+        $obj->XML->writeElement('hdtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
+        $obj->XML->writeElement(
             'hackXml',
-            './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=' . $row['hid']
-            );
-    $obj->XML->writeElement('hackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
-    $obj->XML->writeElement('hid', $row['hid']);
-
-    $obj->XML->writeElement('hs', $hst['state']);
-    $obj->XML->writeElement('sdn', $row['sdn'], false);
-
-    $obj->XML->writeElement('sd', CentreonUtils::escapeSecure($row['service_description']), false);
-    $obj->XML->writeElement('sico', $row['sico']);
-    $obj->XML->writeElement('sdl', $row['sdl']);
-    $obj->XML->writeElement('svc_id', $row['svc_id']);
-
-    if (! isset($row['current_state'])) {
-        error_log('Service host: ' . $row['hid'] . ':' . $row['svc_id']);
+            './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=' . $row['host_id']
+        );
+        $obj->XML->writeElement('hackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
+        $obj->XML->writeElement('hid', $row['host_id']);
     }
+    $obj->XML->writeElement('hs', $hst['current_state']);
+
+    /*
+     * Add possibility to use display name
+     */
+    if ($isMeta) {
+        $obj->XML->writeElement('sdn', CentreonUtils::escapeSecure($row['display_name']), false);
+    } else {
+        $obj->XML->writeElement('sdn', CentreonUtils::escapeSecure($row['service_description']), false);
+    }
+    $obj->XML->writeElement('sd', CentreonUtils::escapeSecure($row['service_description']), false);
+
+    $obj->XML->writeElement('sico', $row['icon_image']);
+    $obj->XML->writeElement('sdl', CentreonUtils::escapeSecure(urlencode($row['service_description'])));
+    $obj->XML->writeElement('svc_id', $row['service_id']);
     $obj->XML->writeElement('sc', $obj->colorService[$row['current_state']]);
     $obj->XML->writeElement('cs', _($obj->statusService[$row['current_state']]), false);
     $obj->XML->writeElement('ssc', $row['current_state']);
-    $obj->XML->writeElement('po', $row['po']);
-    $obj->XML->writeElement('ca', $row['ca']);
-
-    /* Criticality */
-    if ($row['criticality_id']) {
-        $obj->XML->writeElement("hci", 1); // has criticality
-        //FIXME DBR
-        $critData = $criticality->getData($row['criticality_id'], true);
-        $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-        $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
+    $obj->XML->writeElement('po', CentreonUtils::escapeSecure($pluginShortOuput));
+    $obj->XML->writeElement(
+        'ca',
+        $row['current_check_attempt'] . '/' . $row['max_check_attempts']
+            . ' (' . $obj->stateType[$row['state_type']] . ')'
+    );
+    if (isset($row['criticality']) && $row['criticality'] != '' && isset($critCache[$row['service_id']])) {
+        $obj->XML->writeElement('hci', 1); // has criticality
+        $critData = $criticality->getData($critCache[$row['service_id']], true);
+        $obj->XML->writeElement('ci', $media->getFilename($critData['icon_id']));
+        $obj->XML->writeElement('cih', CentreonUtils::escapeSecure($critData['name']));
     } else {
         $obj->XML->writeElement('hci', 0); // has no criticality
     }
+    $obj->XML->writeElement('ne', $row['notify']);
+    $obj->XML->writeElement('pa', $row['acknowledged']);
+    $obj->XML->writeElement('pc', $row['passive_checks']);
+    $obj->XML->writeElement('ac', $row['active_checks']);
+    $obj->XML->writeElement('eh', $row['event_handler_enabled']);
+    $obj->XML->writeElement('is', $row['flapping']);
+    $obj->XML->writeElement('dtm', $row['scheduled_downtime_depth']);
+    $obj->XML->writeElement(
+        'dtmXml',
+        './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid='
+            . $row['host_id'] . '&svc_id=' . $row['service_id']
+    );
+    $obj->XML->writeElement('dtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
+    $obj->XML->writeElement(
+        'ackXml',
+        './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid='
+            . $row['host_id'] . '&svc_id=' . $row['service_id']
+    );
+    $obj->XML->writeElement('ackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
 
-    $obj->XML->writeElement('ne', $row['ne']);
-    $obj->XML->writeElement('pa', $row['pa']);
-    $obj->XML->writeElement('pc', $row['pc']);
-
-    $obj->XML->writeElement('ac', $row['ac']);
-    $obj->XML->writeElement('eh', $row['eh']);
-    $obj->XML->writeElement('is', $row['is']);
-    $obj->XML->writeElement('dtm', $row['dtm']);
-    $obj->XML->writeElement('rd', (time() - $row['last_state_change']));
-
-    $duration = ' ';
-    if ($row['last_state_change'] > 0 && time() > $row['last_state_change']) {
-        $duration = CentreonDuration::toString(time() - $row['last_state_change']);
-    } elseif ($row['last_state_change'] > 0) {
-        $duration = ' - ';
+    if (!empty($row['notes'])) {
+        $row['notes'] = str_replace('$SERVICEDESC$', $row['service_description'], $row['notes']);
+        $row['notes'] = str_replace('$HOSTNAME$', $row['name'], $row['notes']);
+        if (isset($row['alias']) && $row['alias']) {
+            $row['notes'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes']);
+        }
+        if (isset($row['address']) && $row['address']) {
+            $row['notes'] = str_replace('$HOSTADDRESS$', $row['address'], $row['notes']);
+        }
+        if ($inst) {
+            $row['notes'] = str_replace('$INSTANCENAME$', $inst, $row['notes']);
+            $row['notes'] = str_replace(
+                '$INSTANCEADDRESS$',
+                $instanceObj->getParam($inst, 'ns_ip_address'),
+                $row['notes']
+            );
+        }
+        $obj->XML->writeElement('snn', CentreonUtils::escapeSecure($row['notes']));
+    } else {
+        $obj->XML->writeElement('snn', 'none');
     }
-    $obj->XML->writeElement('d', $duration);
 
-    $hard_duration = ' N/S ';
-    if ($row['last_hard_state_change'] > 0 && $row['last_hard_state_change'] >= $row['last_state_change']) {
-        $hard_duration = CentreonDuration::toString(time() - $row['last_hard_state_change']);
+    if (!empty($row['notes_url'])) {
+        $row['notes_url'] = str_replace('$SERVICEDESC$', $row['description'], $row['notes_url']);
+        $row['notes_url'] = str_replace('$SERVICESTATEID$', $row['state'], $row['notes_url']);
+        $row['notes_url'] = str_replace(
+            '$SERVICESTATE$',
+            $obj->statusService[$row['state']],
+            $row['notes_url']
+        );
+        $row['notes_url'] = str_replace('$HOSTNAME$', $row['name'], $row['notes_url']);
+        if (isset($row['alias']) && $row['alias']) {
+            $row['notes_url'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes_url']);
+        }
+        if (isset($row['address']) && $row['address']) {
+            $row['notes_url'] = str_replace('$HOSTADDRESS$', $row['address'], $row['notes_url']);
+        }
+        if (isset($row['instance_name']) && $row['instance_name']) {
+            $row['notes_url'] = str_replace('$INSTANCENAME$', $row['instance_name'], $row['notes_url']);
+            $row['notes_url'] = str_replace(
+                '$INSTANCEADDRESS$',
+                $instanceObj->getParam($row['instance_name'], 'ns_ip_address'),
+                $row['notes_url']
+            );
+        }
+        $obj->XML->writeElement('snu', CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($row['service_id'], $row['notes_url'])));
+    } else {
+        $obj->XML->writeElement('snu', 'none');
     }
-    $obj->XML->writeElement('last_hard_state_change', $hard_duration);
 
+    if (!empty($row['action_url'])) {
+        $row['action_url'] = str_replace('$SERVICEDESC$', $row['description'], $row['action_url']);
+        $row['action_url'] = str_replace('$SERVICESTATEID$', $row['state'], $row['action_url']);
+        $row['action_url'] = str_replace('$SERVICESTATE$', $obj->statusService[$row['state']], $row['action_url']);
+        $row['action_url'] = str_replace('$HOSTNAME$', $row['name'], $row['action_url']);
+        if (isset($row['alias']) && $row['alias']) {
+            $row['action_url'] = str_replace('$HOSTALIAS$', $row['alias'], $row['action_url']);
+        }
+        if (isset($row['address']) && $row['address']) {
+            $row['action_url'] = str_replace('$HOSTADDRESS$', $row['address'], $row['action_url']);
+        }
+        if (isset($row['instance_name']) && $row['instance_name']) {
+            $row['action_url'] = str_replace('$INSTANCENAME$', $row['instance_name'], $row['action_url']);
+            $row['action_url'] = str_replace(
+                '$INSTANCEADDRESS$',
+                $instanceObj->getParam($row['instance_name'], 'ns_ip_address'),
+                $row['action_url']
+            );
+        }
+        $obj->XML->writeElement(
+            'sau',
+            CentreonUtils::escapeSecure(
+                $obj->serviceObj->replaceMacroInString($row['service_id'], $row['action_url'])
+            )
+        );
+    } else {
+        $obj->XML->writeElement('sau', 'none');
+    }
+
+    if (!empty($row['notes'])) {
+        $row['notes'] = str_replace('$SERVICEDESC$', $row['service_description'], $row['notes']);
+        $row['notes'] = str_replace('$HOSTNAME$', $row['name'], $row['notes']);
+        if (isset($row['alias']) && $row['alias']) {
+            $row['notes'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes']);
+        }
+        if (isset($row['address']) && $row['address']) {
+            $row['notes'] = str_replace('$HOSTADDRESS$', $row['address'], $row['notes']);
+        }
+        $obj->XML->writeElement('sn', CentreonUtils::escapeSecure($row['notes']));
+    } else {
+        $obj->XML->writeElement('sn', 'none');
+    }
+
+    $obj->XML->writeElement('fd', $row['flap_detection']);
+    $obj->XML->writeElement('ha', $hst['acknowledged']);
+    $obj->XML->writeElement('hae', $hst['active_checks']);
+    $obj->XML->writeElement('hpe', $hst['passive_checks']);
+    $obj->XML->writeElement('nc', $obj->GMT->getDate($dateFormat, $row['next_check']));
     if ($row['last_check'] != 0) {
         $obj->XML->writeElement('lc', CentreonDuration::toString(time() - $row['last_check']));
     } else {
         $obj->XML->writeElement('lc', 'N/A');
     }
+    $obj->XML->writeElement('d', $duration);
+    $obj->XML->writeElement('rd', (time() - $row['last_state_change']));
+    $obj->XML->writeElement('last_hard_state_change', $hard_duration);
 
+    /**
+     * Get Service Graph index
+     */
+    if (!isset($graphs[$row['host_id']]) || !isset($graphs[$row['host_id']][$row['service_id']])) {
+        $request2 = 'SELECT DISTINCT service_id, id '
+            . 'FROM index_data, metrics '
+            . 'WHERE metrics.index_id = index_data.id '
+            . 'AND host_id = ' . $row['host_id'] . ' '
+            . 'AND service_id = ' . $row['service_id'] . ' '
+            . 'AND index_data.hidden = \'0\' ';
+        $DBRESULT2 = $obj->DBC->query($request2);
+        while ($dataG = $DBRESULT2->fetchRow()) {
+            if (!isset($graphs[$row['host_id']])) {
+                $graphs[$row['host_id']] = array();
+            }
+            $graphs[$row['host_id']][$dataG['service_id']] = $dataG['id'];
+        }
+        if (!isset($graphs[$row['host_id']])) {
+            $graphs[$row['host_id']] = array();
+        }
+    }
     $obj->XML->writeElement(
-            'dtmXml',
-            './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid='
-            . $row['hid'] . '&svc_id=' . $row['svc_id']
-            );
-    $obj->XML->writeElement('dtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
-    $obj->XML->writeElement(
-            'ackXml',
-            './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid='
-            . $row['hid'] . '&svc_id=' . $row['svc_id']
-            );
-    $obj->XML->writeElement('ackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
-
+        'svc_index',
+        (isset($graphs[$row['host_id']][$row['service_id']]) ? $graphs[$row['host_id']][$row['service_id']] : 0)
+    );
     $obj->XML->endElement();
 }
+
+unset($rows);
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

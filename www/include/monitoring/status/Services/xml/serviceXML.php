@@ -681,7 +681,7 @@ if (!$ct) {
     $obj->XML->writeElement("infos", "none");
 }
 
-$obj->XML->writeElement("sid", $obj->session_id);
+$obj->XML->writeElement('sid', $obj->session_id);
 $obj->XML->endElement();
 
 /*

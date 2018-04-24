@@ -55,7 +55,8 @@ if (isset($_GET["acknowledge"])) {
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php";
+var _addrXML = "./include/monitoring/status/Services/xml/serviceXML-redis.php";
+//var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 var _criticality_id = 0;
 
