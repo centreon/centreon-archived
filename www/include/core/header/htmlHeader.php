@@ -226,8 +226,10 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                     echo "}";
                 }
             }
+            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
             ?>
             check_session();
+            <?php } ?>
         });
     </script>
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
