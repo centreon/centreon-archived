@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HostObject host status renders correctly 1`] = `
+<HostObjectContainer
+  getHosts={[Function]}
+  host={
+    Object {
+      "dataFetched": true,
+      "down": Object {
+        "classe": "error",
+        "total": "5",
+        "unhandled": "0",
+        "url": "./main.php?p=20202&o=h_down&search=",
+      },
+      "error": null,
+      "isFetching": true,
+      "ok": Object {
+        "classe": "success",
+        "total": "58",
+        "url": "./main.php?p=20202&o=h_up&search=",
+      },
+      "pending": Object {
+        "classe": "pending",
+        "total": "2",
+        "url": "./main.php?p=20202&o=h_pending&search=",
+      },
+      "refreshTime": 90000,
+      "total": 150,
+      "unreachable": Object {
+        "classe": "unreachable",
+        "total": "0",
+        "unhandled": "0",
+        "url": "./main.php?p=20202&o=h_unreachable&search=",
+      },
+      "url": "./main.php?p=20202&o=h&search=",
+    }
+  }
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+  storeSubscription={
+    Subscription {
+      "listeners": Object {
+        "clear": [Function],
+        "get": [Function],
+        "notify": [Function],
+        "subscribe": [Function],
+      },
+      "onStateChange": [Function],
+      "parentSub": undefined,
+      "store": Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      },
+      "unsubscribe": [Function],
+    }
+  }
+/>
+`;

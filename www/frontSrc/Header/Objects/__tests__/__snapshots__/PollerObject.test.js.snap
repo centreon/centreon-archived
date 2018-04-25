@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PollerObject Poller icon renders correctly 1`] = `
+<PollerObjectContainer
+  getPollers={[Function]}
+  poller={
+    Object {
+      "dataFetched": true,
+      "database": Object {
+        "critical": Object {
+          "message": "critical database",
+          "total": 1,
+        },
+        "warning": Object {
+          "message": "warning database",
+          "total": 0,
+        },
+      },
+      "latency": Object {
+        "critical": Object {
+          "message": "critical latency",
+          "total": 5,
+        },
+        "warning": Object {
+          "message": "warning latency",
+          "total": 0,
+        },
+      },
+      "refreshTime": 90,
+      "stability": Object {
+        "critical": Object {
+          "message": "critical stability",
+          "total": 0,
+        },
+        "warning": Object {
+          "message": "warning stability",
+          "total": 25,
+        },
+      },
+      "total": 150,
+    }
+  }
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+  storeSubscription={
+    Subscription {
+      "listeners": Object {
+        "clear": [Function],
+        "get": [Function],
+        "notify": [Function],
+        "subscribe": [Function],
+      },
+      "onStateChange": [Function],
+      "parentSub": undefined,
+      "store": Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      },
+      "unsubscribe": [Function],
+    }
+  }
+/>
+`;
