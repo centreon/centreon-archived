@@ -8,6 +8,7 @@ import Popover from 'material-ui/Popover'
 import Button from 'material-ui/Button'
 import Bookmark from 'material-ui-icons/Bookmark'
 import VolumeUp from 'material-ui-icons/VolumeUp'
+import VolumeMute from 'material-ui-icons/VolumeMute'
 import Typography from 'material-ui/Typography'
 import Clock from '../Clock/ClockContainer'
 
@@ -16,17 +17,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'row-reverse',
     fontFamily: theme.font.openSans,
-  },
-  moment: {
-    alignSelf: 'flex-start',
-    margin: '10px 0px',
-  },
-  headerDate: {
-    fontSize: 14,
-  },
-  headerTime: {
-    fontSize: 24,
-    lineHeight: '28px',
   },
   avatarButton: {
     alignSelf: 'center',
@@ -40,6 +30,10 @@ const styles = theme => ({
     verticalAlign: 'middle',
     color: '#24323E',
   },
+  icon: {
+    margin: '0 4px 0px 0px',
+    fill: '#76777f',
+  },
   profile: {
     padding: '10px 16px',
     borderBottom: '1px solid #d1d2d4',
@@ -51,6 +45,10 @@ const styles = theme => ({
     textTransform: 'initial',
     border: '1px solid ' + theme.palette.error.main,
     color: theme.palette.error.main,
+    '&:hover': {
+      color: '#FFF',
+      backgroundColor: theme.palette.error.main,
+    }
   },
   menuFooter: {
     display: 'flex',
@@ -69,6 +67,9 @@ const UserProfile = ({
     currentDate,
     handleOpen,
     handleClose,
+    handleNotification,
+    handleAutologin,
+    soundNotif,
     anchorEl
   }) => (
   <Grid item xs={12} sm={3}>
@@ -107,18 +108,21 @@ const UserProfile = ({
           as {user.username} <a href="./main.php?p=50104&o=c" className={classes.profileLink}>Edit profile </a>
         </Typography>
       </div>
-      <MenuItem onClick={handleClose}>
-        <Bookmark /> Add to your bookmark
-      </MenuItem>
-      <MenuItem onClick={handleClose}>
-        <VolumeUp /> Désactivate notification sonore
+
+        <MenuItem onClick={handleAutologin}>
+          <Bookmark className={classes.icon}/> Add to bookmark
+        </MenuItem>
+      <MenuItem onClick={handleNotification}>
+        {soundNotif ?
+          <VolumeMute className={classes.icon} />
+          : <VolumeUp className={classes.icon} />
+        }
+        {soundNotif ? 'Disable sound notification' : 'Enable sound notification'}
       </MenuItem>
       <div className={classes.menuFooter}>
-        <a href="index.php?disconnect=1">
-          <Button className={classes.logoutButton}>
-            Sign out
-          </Button>
-        </a>
+        <Button className={classes.logoutButton} href="index.php?disconnect=1">
+          Sign out
+        </Button>
       </div>
     </Popover>
   </Grid>
