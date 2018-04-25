@@ -312,3 +312,7 @@ default:
     uri:
       paths: [ %paths.base%/features/URI.feature ]
       contexts: [ URIContext ]
+
+    uri:
+      paths: [ %paths.base%/features/TopCounterPlatformStatus.feature ]
+      contexts: [ TopCounterPlatformStatusContext ]
