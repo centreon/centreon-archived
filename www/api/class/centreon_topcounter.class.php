@@ -59,6 +59,8 @@ class CentreonTopCounter extends CentreonWebService
 
     protected $hasAccessToProfile = false;
 
+    protected $soundNotificationsEnabled = false;
+
     protected $centreonUser;
 
     /**
@@ -165,6 +167,14 @@ class CentreonTopCounter extends CentreonWebService
 
         $locale = $user->lang === 'browser' ? null : $user->lang;
 
+        if (isset($_SESSION['disable_sound'])) {
+            if ($_SESSION['disable_sound'] === 'start') {
+                $this->soundNotificationsEnabled = true;
+            } else {
+                $this->soundNotificationsEnabled = false;
+            }
+        }
+
         /* Get autologinkey */
         $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
         $res = $this->pearDB->query($query);
@@ -182,7 +192,8 @@ class CentreonTopCounter extends CentreonWebService
             'locale' => $locale,
             'timezone' => $user->gmt,
             'hasAccessToProfile' => $this->hasAccessToProfile,
-            'autologinkey' => $row['contact_autologin_key']
+            'autologinkey' => $row['contact_autologin_key'],
+            'soundNotificationsEnabled' => $this->soundNotificationsEnabled
         );
     }
 
