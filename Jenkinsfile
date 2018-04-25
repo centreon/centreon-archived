@@ -37,6 +37,7 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
+        junit 'jest-test-results.xml'
       }
     },
     'debian9': {
