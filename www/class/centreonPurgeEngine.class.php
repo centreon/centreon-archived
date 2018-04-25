@@ -179,7 +179,7 @@ class CentreonPurgeEngine
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " .
             $this->tablesToPurge[$table]['retention'] . " ";
-        $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) NOT LIKE 'pmax' ";
+        $request .= "AND PARTITION_NAME NOT LIKE 'pmax' ";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
