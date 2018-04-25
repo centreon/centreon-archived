@@ -10,8 +10,7 @@
         }
     ],
     "repositories": [
-        { "packagist.org": false },
-        { "type": "composer", "url": "http://ci.int.centreon.com" }
+        { "type": "composer", "url": "https://packagist.centreon.com" }
     ],
     "config": {
         "secure-http": false

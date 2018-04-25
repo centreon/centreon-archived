@@ -39,6 +39,9 @@
         <exclude name="lib/HTML/QuickForm.php"/>
         <exclude name="lib/HTML/QuickForm/**/*.php"/>
       </fileset>
+      <fileset dir="src">
+        <include name="**/*.php"/>
+      </fileset>
     </phpcodesniffer>
   </target>
 
