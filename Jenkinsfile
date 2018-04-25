@@ -30,6 +30,7 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
+        junit 'jest-test-results.xml'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
