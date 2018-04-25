@@ -4,3 +4,4 @@ nbproject/
 node_modules/
 /vendor/
 composer.lock
+*-dev.yml
