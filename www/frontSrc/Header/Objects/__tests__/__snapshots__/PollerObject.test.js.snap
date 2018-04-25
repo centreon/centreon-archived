@@ -1,0 +1,665 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PollerObject should display detail popover when clicking on poller icon 1`] = `
+<MuiThemeProvider
+  theme={
+    Object {
+      "breakpoints": Object {
+        "between": [Function],
+        "down": [Function],
+        "keys": Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ],
+        "only": [Function],
+        "up": [Function],
+        "values": Object {
+          "lg": 1280,
+          "md": 960,
+          "sm": 600,
+          "xl": 1920,
+          "xs": 0,
+        },
+        "width": [Function],
+      },
+      "direction": "ltr",
+      "font": Object {
+        "openSans": "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+      },
+      "mixins": Object {
+        "gutters": [Function],
+        "toolbar": Object {
+          "@media (min-width:0px) and (orientation: landscape)": Object {
+            "minHeight": 48,
+          },
+          "@media (min-width:600px)": Object {
+            "minHeight": 64,
+          },
+          "minHeight": 56,
+        },
+      },
+      "overrides": Object {},
+      "palette": Object {
+        "action": Object {
+          "active": "rgba(0, 0, 0, 0.54)",
+          "disabled": "rgba(0, 0, 0, 0.26)",
+          "disabledBackground": "rgba(0, 0, 0, 0.12)",
+          "hover": "rgba(0, 0, 0, 0.08)",
+          "selected": "rgba(0, 0, 0, 0.14)",
+        },
+        "background": Object {
+          "default": "#fafafa",
+          "paper": "#fff",
+        },
+        "common": Object {
+          "black": "#000",
+          "white": "#fff",
+        },
+        "contrastThreshold": 3,
+        "divider": "rgba(0, 0, 0, 0.12)",
+        "error": Object {
+          "contrastText": "#fff",
+          "dark": "rgb(156, 7, 42)",
+          "light": "#ff2c5b",
+          "lighter": "#FF8C88",
+          "main": "#e00b3d",
+        },
+        "getContrastText": [Function],
+        "grey": Object {
+          "100": "#f5f5f5",
+          "200": "#eeeeee",
+          "300": "#e0e0e0",
+          "400": "#bdbdbd",
+          "50": "#fafafa",
+          "500": "#9e9e9e",
+          "600": "#757575",
+          "700": "#616161",
+          "800": "#424242",
+          "900": "#212121",
+          "A100": "#d5d5d5",
+          "A200": "#aaaaaa",
+          "A400": "#303030",
+          "A700": "#616161",
+        },
+        "pending": Object {
+          "main": "#2AD1D4",
+        },
+        "primary": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#597F00",
+          "light": "rgb(159, 199, 69)",
+          "main": "#88b917",
+        },
+        "secondary": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "rgb(0, 133, 125)",
+          "light": "rgb(51, 203, 194)",
+          "main": "#00bfb3",
+        },
+        "text": Object {
+          "disabled": "rgba(0, 0, 0, 0.38)",
+          "hint": "rgba(0, 0, 0, 0.38)",
+          "primary": "rgba(0, 0, 0, 0.87)",
+          "secondary": "rgba(0, 0, 0, 0.54)",
+        },
+        "tonalOffset": 0.2,
+        "type": "light",
+        "unknown": Object {
+          "dark": "#95969a",
+          "main": "#bcbdc0",
+        },
+        "unreachable": Object {
+          "light": "#a6a7a6",
+          "main": "#818285",
+        },
+        "warning": Object {
+          "light": "#ffb749",
+          "main": "#ff9a13",
+        },
+      },
+      "props": Object {},
+      "shadows": Array [
+        "none",
+        "0px 1px 3px 0px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 2px 1px -1px rgba(0, 0, 0, 0.12)",
+        "0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)",
+        "0px 1px 8px 0px rgba(0, 0, 0, 0.2),0px 3px 4px 0px rgba(0, 0, 0, 0.14),0px 3px 3px -2px rgba(0, 0, 0, 0.12)",
+        "0px 2px 4px -1px rgba(0, 0, 0, 0.2),0px 4px 5px 0px rgba(0, 0, 0, 0.14),0px 1px 10px 0px rgba(0, 0, 0, 0.12)",
+        "0px 3px 5px -1px rgba(0, 0, 0, 0.2),0px 5px 8px 0px rgba(0, 0, 0, 0.14),0px 1px 14px 0px rgba(0, 0, 0, 0.12)",
+        "0px 3px 5px -1px rgba(0, 0, 0, 0.2),0px 6px 10px 0px rgba(0, 0, 0, 0.14),0px 1px 18px 0px rgba(0, 0, 0, 0.12)",
+        "0px 4px 5px -2px rgba(0, 0, 0, 0.2),0px 7px 10px 1px rgba(0, 0, 0, 0.14),0px 2px 16px 1px rgba(0, 0, 0, 0.12)",
+        "0px 5px 5px -3px rgba(0, 0, 0, 0.2),0px 8px 10px 1px rgba(0, 0, 0, 0.14),0px 3px 14px 2px rgba(0, 0, 0, 0.12)",
+        "0px 5px 6px -3px rgba(0, 0, 0, 0.2),0px 9px 12px 1px rgba(0, 0, 0, 0.14),0px 3px 16px 2px rgba(0, 0, 0, 0.12)",
+        "0px 6px 6px -3px rgba(0, 0, 0, 0.2),0px 10px 14px 1px rgba(0, 0, 0, 0.14),0px 4px 18px 3px rgba(0, 0, 0, 0.12)",
+        "0px 6px 7px -4px rgba(0, 0, 0, 0.2),0px 11px 15px 1px rgba(0, 0, 0, 0.14),0px 4px 20px 3px rgba(0, 0, 0, 0.12)",
+        "0px 7px 8px -4px rgba(0, 0, 0, 0.2),0px 12px 17px 2px rgba(0, 0, 0, 0.14),0px 5px 22px 4px rgba(0, 0, 0, 0.12)",
+        "0px 7px 8px -4px rgba(0, 0, 0, 0.2),0px 13px 19px 2px rgba(0, 0, 0, 0.14),0px 5px 24px 4px rgba(0, 0, 0, 0.12)",
+        "0px 7px 9px -4px rgba(0, 0, 0, 0.2),0px 14px 21px 2px rgba(0, 0, 0, 0.14),0px 5px 26px 4px rgba(0, 0, 0, 0.12)",
+        "0px 8px 9px -5px rgba(0, 0, 0, 0.2),0px 15px 22px 2px rgba(0, 0, 0, 0.14),0px 6px 28px 5px rgba(0, 0, 0, 0.12)",
+        "0px 8px 10px -5px rgba(0, 0, 0, 0.2),0px 16px 24px 2px rgba(0, 0, 0, 0.14),0px 6px 30px 5px rgba(0, 0, 0, 0.12)",
+        "0px 8px 11px -5px rgba(0, 0, 0, 0.2),0px 17px 26px 2px rgba(0, 0, 0, 0.14),0px 6px 32px 5px rgba(0, 0, 0, 0.12)",
+        "0px 9px 11px -5px rgba(0, 0, 0, 0.2),0px 18px 28px 2px rgba(0, 0, 0, 0.14),0px 7px 34px 6px rgba(0, 0, 0, 0.12)",
+        "0px 9px 12px -6px rgba(0, 0, 0, 0.2),0px 19px 29px 2px rgba(0, 0, 0, 0.14),0px 7px 36px 6px rgba(0, 0, 0, 0.12)",
+        "0px 10px 13px -6px rgba(0, 0, 0, 0.2),0px 20px 31px 3px rgba(0, 0, 0, 0.14),0px 8px 38px 7px rgba(0, 0, 0, 0.12)",
+        "0px 10px 13px -6px rgba(0, 0, 0, 0.2),0px 21px 33px 3px rgba(0, 0, 0, 0.14),0px 8px 40px 7px rgba(0, 0, 0, 0.12)",
+        "0px 10px 14px -6px rgba(0, 0, 0, 0.2),0px 22px 35px 3px rgba(0, 0, 0, 0.14),0px 8px 42px 7px rgba(0, 0, 0, 0.12)",
+        "0px 11px 14px -7px rgba(0, 0, 0, 0.2),0px 23px 36px 3px rgba(0, 0, 0, 0.14),0px 9px 44px 8px rgba(0, 0, 0, 0.12)",
+        "0px 11px 15px -7px rgba(0, 0, 0, 0.2),0px 24px 38px 3px rgba(0, 0, 0, 0.14),0px 9px 46px 8px rgba(0, 0, 0, 0.12)",
+      ],
+      "spacing": Object {
+        "unit": 8,
+      },
+      "transitions": Object {
+        "create": [Function],
+        "duration": Object {
+          "complex": 375,
+          "enteringScreen": 225,
+          "leavingScreen": 195,
+          "short": 250,
+          "shorter": 200,
+          "shortest": 150,
+          "standard": 300,
+        },
+        "easing": Object {
+          "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+          "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)",
+          "easeOut": "cubic-bezier(0.0, 0, 0.2, 1)",
+          "sharp": "cubic-bezier(0.4, 0, 0.6, 1)",
+        },
+        "getAutoHeightDuration": [Function],
+      },
+      "typography": Object {
+        "body1": Object {
+          "color": "rgba(0, 0, 0, 0.87)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "0.875rem",
+          "fontWeight": 400,
+          "lineHeight": "1.46429em",
+        },
+        "body2": Object {
+          "color": "rgba(0, 0, 0, 0.87)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "lineHeight": "1.71429em",
+        },
+        "button": Object {
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "0.875rem",
+          "fontWeight": 500,
+          "textTransform": "uppercase",
+        },
+        "caption": Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "0.75rem",
+          "fontWeight": 400,
+          "lineHeight": "1.375em",
+        },
+        "display1": Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "2.125rem",
+          "fontWeight": 400,
+          "lineHeight": "1.20588em",
+        },
+        "display2": Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "2.8125rem",
+          "fontWeight": 400,
+          "lineHeight": "1.06667em",
+          "marginLeft": "-.02em",
+        },
+        "display3": Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "3.5rem",
+          "fontWeight": 400,
+          "letterSpacing": "-.02em",
+          "lineHeight": "1.30357em",
+          "marginLeft": "-.02em",
+        },
+        "display4": Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "7rem",
+          "fontWeight": 300,
+          "letterSpacing": "-.04em",
+          "lineHeight": "1.14286em",
+          "marginLeft": "-.04em",
+        },
+        "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+        "fontSize": 14,
+        "fontWeightLight": 300,
+        "fontWeightMedium": 500,
+        "fontWeightRegular": 400,
+        "headline": Object {
+          "color": "rgba(0, 0, 0, 0.87)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "1.5rem",
+          "fontWeight": 400,
+          "lineHeight": "1.35417em",
+        },
+        "pxToRem": [Function],
+        "round": [Function],
+        "subheading": Object {
+          "color": "rgba(0, 0, 0, 0.87)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "1rem",
+          "fontWeight": 400,
+          "lineHeight": "1.5em",
+        },
+        "title": Object {
+          "color": "rgba(0, 0, 0, 0.87)",
+          "fontFamily": "\\"Roboto\\", \\"Helvetica\\", \\"Arial\\", sans-serif",
+          "fontSize": "1.3125rem",
+          "fontWeight": 500,
+          "lineHeight": "1.16667em",
+        },
+      },
+      "zIndex": Object {
+        "appBar": 1100,
+        "drawer": 1200,
+        "mobileStepper": 1000,
+        "modal": 1300,
+        "snackbar": 1400,
+        "tooltip": 1500,
+      },
+    }
+  }
+>
+  <Connect(PollerObjectContainer)
+    getPollers={[MockFunction]}
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+  >
+    <PollerObjectContainer
+      getPollers={[Function]}
+      poller={
+        Object {
+          "dataFetched": true,
+          "database": Object {
+            "critical": Object {
+              "message": "critical database",
+              "total": 1,
+            },
+            "warning": Object {
+              "message": "warning database",
+              "total": 0,
+            },
+          },
+          "latency": Object {
+            "critical": Object {
+              "message": "critical latency",
+              "total": 5,
+            },
+            "warning": Object {
+              "message": "warning latency",
+              "total": 0,
+            },
+          },
+          "refreshTime": 90,
+          "stability": Object {
+            "critical": Object {
+              "message": "critical stability",
+              "total": 0,
+            },
+            "warning": Object {
+              "message": "warning stability",
+              "total": 25,
+            },
+          },
+          "total": 150,
+        }
+      }
+      store={
+        Object {
+          "clearActions": [Function],
+          "dispatch": [Function],
+          "getActions": [Function],
+          "getState": [Function],
+          "replaceReducer": [Function],
+          "subscribe": [Function],
+        }
+      }
+      storeSubscription={
+        Subscription {
+          "listeners": Object {
+            "clear": [Function],
+            "get": [Function],
+            "notify": [Function],
+            "subscribe": [Function],
+          },
+          "onStateChange": [Function],
+          "parentSub": undefined,
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          },
+          "unsubscribe": [Function],
+        }
+      }
+    >
+      <WithStyles(PollerObject)
+        anchorEl={null}
+        className=""
+        database={
+          Object {
+            "critical": Object {
+              "message": "critical database",
+              "total": 1,
+            },
+            "warning": Object {
+              "message": "warning database",
+              "total": 0,
+            },
+          }
+        }
+        handleClose={[Function]}
+        handleOpen={[Function]}
+        iconColor="#88B917"
+        latency={
+          Object {
+            "critical": Object {
+              "message": "critical latency",
+              "total": 5,
+            },
+            "warning": Object {
+              "message": "warning latency",
+              "total": 0,
+            },
+          }
+        }
+        open={false}
+        stability={
+          Object {
+            "critical": Object {
+              "message": "critical stability",
+              "total": 0,
+            },
+            "warning": Object {
+              "message": "warning stability",
+              "total": 25,
+            },
+          }
+        }
+        total={150}
+      >
+        <PollerObject
+          anchorEl={null}
+          className=""
+          classes={
+            Object {
+              "a": "PollerObject-a-2",
+              "chip": "PollerObject-chip-5",
+              "errorNotif": "PollerObject-errorNotif-11",
+              "errorStatus": "PollerObject-errorStatus-4",
+              "icon": "PollerObject-icon-6",
+              "objectDetails": "PollerObject-objectDetails-9",
+              "paper": "PollerObject-paper-7",
+              "popover": "PollerObject-popover-8",
+              "primaryButton": "PollerObject-primaryButton-13",
+              "root": "PollerObject-root-1",
+              "status": "PollerObject-status-3",
+              "total": "PollerObject-total-10",
+              "warningNotif": "PollerObject-warningNotif-12",
+            }
+          }
+          database={
+            Object {
+              "critical": Object {
+                "message": "critical database",
+                "total": 1,
+              },
+              "warning": Object {
+                "message": "warning database",
+                "total": 0,
+              },
+            }
+          }
+          handleClose={[Function]}
+          handleOpen={[Function]}
+          iconColor="#88B917"
+          latency={
+            Object {
+              "critical": Object {
+                "message": "critical latency",
+                "total": 5,
+              },
+              "warning": Object {
+                "message": "warning latency",
+                "total": 0,
+              },
+            }
+          }
+          open={false}
+          stability={
+            Object {
+              "critical": Object {
+                "message": "critical stability",
+                "total": 0,
+              },
+              "warning": Object {
+                "message": "warning stability",
+                "total": 25,
+              },
+            }
+          }
+          total={150}
+        >
+          <div
+            className="PollerObject-root-1"
+          >
+            <PollerIcon
+              alt="poller icon"
+              aria-haspopup="true"
+              className="PollerObject-icon-6"
+              id="pollerIcon"
+              nativeColor="#88B917"
+              onClick={[Function]}
+              viewBox="6 156 600 600"
+            >
+              <WithStyles(SvgIcon)
+                alt="poller icon"
+                aria-haspopup="true"
+                className="PollerObject-icon-6"
+                id="pollerIcon"
+                nativeColor="#88B917"
+                onClick={[Function]}
+                viewBox="6 156 600 600"
+              >
+                <SvgIcon
+                  alt="poller icon"
+                  aria-haspopup="true"
+                  className="PollerObject-icon-6"
+                  classes={
+                    Object {
+                      "colorAction": "MuiSvgIcon-colorAction-17",
+                      "colorDisabled": "MuiSvgIcon-colorDisabled-18",
+                      "colorError": "MuiSvgIcon-colorError-19",
+                      "colorPrimary": "MuiSvgIcon-colorPrimary-15",
+                      "colorSecondary": "MuiSvgIcon-colorSecondary-16",
+                      "root": "MuiSvgIcon-root-14",
+                    }
+                  }
+                  color="inherit"
+                  id="pollerIcon"
+                  nativeColor="#88B917"
+                  onClick={[Function]}
+                  viewBox="6 156 600 600"
+                >
+                  <svg
+                    alt="poller icon"
+                    aria-haspopup="true"
+                    aria-hidden="true"
+                    className="MuiSvgIcon-root-14 PollerObject-icon-6"
+                    color="#88B917"
+                    focusable="false"
+                    id="pollerIcon"
+                    onClick={[Function]}
+                    viewBox="6 156 600 600"
+                  >
+                    <path
+                      d="M416.8,675.1c-6.4,0-27.3,0-31,0c-3.6,0-6.4,2-6.4,7.3l0,19.4H101.6V209.7h277.9V398 c0,7.2,5.8,8.7,8.9,8.7c4.1-0.1,16.2-0.1,23.6-0.1c4.7,0,12,1.1,12-8.1V176c0-7-5.7-12.8-12.8-12.8H66.9c-7,0-12.8,5.7-12.8,12.8 v559.6c0,7,5.7,12.8,12.8,12.8h344.3c7,0,12.8-5.7,12.8-12.8v-52.9C423.7,677.6,421.5,675.1,416.8,675.1z"
+                    />
+                    <path
+                      d="M344.7,416.4v-21.7c0-6.3-5.2-11.4-11.4-11.4H144.4c-6.3,0-11.4,5.2-11.4,11.4v21.7 c0,6.3,5.2,11.4,11.4,11.4h188.9C339.5,427.8,344.7,422.6,344.7,416.4z"
+                    />
+                    <path
+                      d="M204.8,583.4c0,18.8,15.2,34,34,34s34-15.2,34-34c0-18.8-15.2-34-34-34S204.8,564.6,204.8,583.4z"
+                    />
+                    <path
+                      d="M144.4,327.5h188.9c6.3,0,11.4-5.2,11.4-11.4v-21.7c0-6.3-5.2-11.4-11.4-11.4H144.4 c-6.3,0-11.4,5.2-11.4,11.4V316C132.9,322.3,138.1,327.5,144.4,327.5z"
+                    />
+                    <path
+                      d="M462.4,558.6c0,7.2-5.8,13-13,13c-7.2,0-13-5.8-13-13c0-7.1,5.8-13,13-13 C456.6,545.6,462.4,551.4,462.4,558.6z"
+                    />
+                    <path
+                      d="M437.7,536.4c-5.2,0-9.6-3.7-10.6-8.7l0,0L414.6,465l-0.2-2.1c0-19.1,15.4-34.5,34.5-34.5l0,0 c19,0,34.4,15.4,34.5,34.5l0,0l-0.2,2.1l-12.4,62.6c-1,5.1-5.4,8.7-10.6,8.7l0,0H437.7L437.7,536.4z M446.6,514.7h4.6l10.4-52.6 c-0.4-6.7-5.9-12-12.7-12l0,0c-6.8,0-12.3,5.2-12.8,11.9l0,0L446.6,514.7L446.6,514.7z"
+                    />
+                    <path
+                      d="M337.1,624.2c-3.2-5.5-4.7-11.5-4.7-17.3l0,0c0-11.9,6.2-23.5,17.3-29.8l0,0l1.9-0.9l60.4-20.5 c4.9-1.7,10.2,0.4,12.8,4.9l0,0l11.2,19.4c2.6,4.5,1.6,10.1-2.2,13.6l0,0l-48,42l-1.9,1.3c-5.3,3-11.2,4.5-17.1,4.5l0,0 C355,641.3,343.4,635.2,337.1,624.2L337.1,624.2z M354.1,606.9c0,2.2,0.5,4.3,1.8,6.4l0,0c2.3,4.1,6.6,6.3,11,6.3l0,0 c1.9,0,3.8-0.4,5.7-1.3l0,0l40.2-35.3l-2.3-4l-50.8,17.3C356.1,598.7,354.1,602.7,354.1,606.9L354.1,606.9z"
+                    />
+                    <path
+                      d="M515.3,635.7l5.4-9.4l7.1-8.1l-7.1,8.1L515.3,635.7l-1.7-1.2l-48-42c-3.9-3.4-4.8-9.1-2.2-13.6l0,0 l11.2-19.4c2.6-4.5,8-6.5,12.9-4.8l0,0l60.4,20.5l1.9,0.9c11,6.4,17.2,17.9,17.2,29.9l0,0c0,5.8-1.5,11.8-4.6,17.3l0,0 c-6.4,10.9-17.9,17.1-29.8,17.1l0,0C526.7,640.3,520.8,638.9,515.3,635.7L515.3,635.7z M532.5,618.7c4.4,0,8.7-2.3,11.1-6.3l0,0 c1.2-2,1.7-4.2,1.7-6.4l0,0c0-4.2-2.1-8.2-5.6-10.6l0,0L488.9,578l-2.3,4l40.3,35.4C528.7,618.3,530.6,618.7,532.5,618.7 L532.5,618.7z"
+                    />
+                    <path
+                      d="M362.9,558.2c-5.9-0.8-10.1-6.2-9.4-12.1l0,0c3.1-23.7,14.7-44.7,31.7-59.8l0,0c4.4-4,11.3-3.6,15.3,0.9 l0,0c4,4.4,3.5,11.3-0.9,15.3l0,0c-13.2,11.8-22.3,28-24.6,46.4l0,0v0c-0.7,5.5-5.4,9.5-10.8,9.5l0,0 C363.9,558.3,363.4,558.3,362.9,558.2L362.9,558.2z"
+                    />
+                    <path
+                      d="M412.2,647.8c-5.5-2.3-8.1-8.7-5.8-14.2l0,0c2.3-5.5,8.6-8.1,14.2-5.8l0,0c8.9,3.7,18.6,5.8,28.9,5.8l0,0 c10.9,0,21.1-2.3,30.5-6.5l0,0h0c5.4-2.4,11.8,0,14.3,5.5l0,0c2.4,5.5,0,11.9-5.5,14.3l0,0c-12,5.4-25.4,8.3-39.3,8.3l0,0 C436.3,655.2,423.6,652.6,412.2,647.8L412.2,647.8z"
+                    />
+                    <path
+                      d="M523.7,548.3c-2.7-19.7-13.1-37-28-48.7l0,0h0c-4.7-3.7-5.6-10.5-1.9-15.2l0,0c3.7-4.7,10.5-5.5,15.2-1.8 l0,0c19.2,15.1,32.6,37.4,36.1,62.8l0,0c0.8,5.9-3.4,11.4-9.3,12.2l0,0c-0.5,0.1-1,0.1-1.5,0.1l0,0 C529.1,557.7,524.5,553.7,523.7,548.3L523.7,548.3z"
+                    />
+                  </svg>
+                </SvgIcon>
+              </WithStyles(SvgIcon)>
+            </PollerIcon>
+            <WithStyles(Popover)
+              anchorEl={null}
+              anchorOrigin={
+                Object {
+                  "horizontal": "left",
+                  "vertical": "bottom",
+                }
+              }
+              anchorPosition={
+                Object {
+                  "left": 400,
+                  "top": 500,
+                }
+              }
+              anchorReference="anchorEl"
+              id="pollerPopover"
+              onClose={[Function]}
+              open={false}
+              transformOrigin={
+                Object {
+                  "horizontal": "left",
+                  "vertical": "top",
+                }
+              }
+            >
+              <Popover
+                anchorEl={null}
+                anchorOrigin={
+                  Object {
+                    "horizontal": "left",
+                    "vertical": "bottom",
+                  }
+                }
+                anchorPosition={
+                  Object {
+                    "left": 400,
+                    "top": 500,
+                  }
+                }
+                anchorReference="anchorEl"
+                classes={
+                  Object {
+                    "paper": "MuiPopover-paper-20",
+                  }
+                }
+                elevation={8}
+                id="pollerPopover"
+                marginThreshold={16}
+                onClose={[Function]}
+                open={false}
+                transformOrigin={
+                  Object {
+                    "horizontal": "left",
+                    "vertical": "top",
+                  }
+                }
+                transition={[Function]}
+                transitionDuration="auto"
+              >
+                <WithStyles(Modal)
+                  BackdropProps={
+                    Object {
+                      "invisible": true,
+                    }
+                  }
+                  id="pollerPopover"
+                  onClose={[Function]}
+                  open={false}
+                >
+                  <Modal
+                    BackdropComponent={[Function]}
+                    BackdropProps={
+                      Object {
+                        "invisible": true,
+                      }
+                    }
+                    classes={
+                      Object {
+                        "hidden": "MuiModal-hidden-22",
+                        "root": "MuiModal-root-21",
+                      }
+                    }
+                    disableAutoFocus={false}
+                    disableBackdropClick={false}
+                    disableEnforceFocus={false}
+                    disableEscapeKeyDown={false}
+                    disableRestoreFocus={false}
+                    hideBackdrop={false}
+                    id="pollerPopover"
+                    keepMounted={false}
+                    manager={
+                      ModalManager {
+                        "containers": Array [],
+                        "data": Array [],
+                        "handleContainerOverflow": true,
+                        "hideSiblingNodes": true,
+                        "modals": Array [],
+                      }
+                    }
+                    onClose={[Function]}
+                    open={false}
+                  />
+                </WithStyles(Modal)>
+              </Popover>
+            </WithStyles(Popover)>
+          </div>
+        </PollerObject>
+      </WithStyles(PollerObject)>
+    </PollerObjectContainer>
+  </Connect(PollerObjectContainer)>
+</MuiThemeProvider>
+`;
