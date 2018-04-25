@@ -59,6 +59,8 @@ class CentreonTopCounter extends CentreonWebService
 
     protected $hasAccessToProfile = false;
 
+    protected $soundNotificationsEnabled = false;
+
     protected $centreonUser;
 
     /**
@@ -165,6 +167,14 @@ class CentreonTopCounter extends CentreonWebService
 
         $locale = $user->lang === 'browser' ? null : $user->lang;
 
+        if (isset($_SESSION['disable_sound'])) {
+            if ($_SESSION['disable_sound'] === 'start') {
+                $this->soundNotificationsEnabled = true;
+            } else {
+                $this->soundNotificationsEnabled = false;
+            }
+        }
+
         /* Get autologinkey */
         $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
         $res = $this->pearDB->query($query);
@@ -182,7 +192,8 @@ class CentreonTopCounter extends CentreonWebService
             'locale' => $locale,
             'timezone' => $user->gmt,
             'hasAccessToProfile' => $this->hasAccessToProfile,
-            'autologinkey' => $row['contact_autologin_key']
+            'autologinkey' => $row['contact_autologin_key'],
+            'soundNotificationsEnabled' => $this->soundNotificationsEnabled
         );
     }
 
@@ -317,19 +328,16 @@ class CentreonTopCounter extends CentreonWebService
             SUM(CASE WHEN h.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END) AS unreachable_unhandled
             FROM hosts h, instances i';
-        if (!$this->centreonUser->admin) {
-            $query .= ', centreon_acl c';
-        }
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
             AND h.enabled = 1
             AND h.name NOT LIKE "_Module_%"';
+
         if (!$this->centreonUser->admin) {
-            $query .= ' ' . $this->centreonUser->access->queryBuilder(
-                'AND',
-                'c.group_id',
-                $this->centreonUser->access->getAccessGroupsString()
-            );
+            $query .= ' AND EXISTS (
+                SELECT a.host_id FROM centreon_acl a
+                  WHERE a.host_id = h.host_id
+                    AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . '))';
         }
 
         $res = $this->pearDBMonitoring->query($query);
