@@ -217,8 +217,8 @@ var testingFeature = jQuery('<div/>')
         '<div style="margin: 2px;">You can give use your feedback on <a href="https://centreon.github.io">Slack</a> ' +
         'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
         '<div style="margin-top: 8px; text-align: center;">' +
-            '<button class="btc bt_success" onclick="featureEnable()">Activate</button>' +
-            '&nbsp;<button class="btc bt_default" onclick="featureDisable()">No</button>' +
+            '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
+            '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
         '</div>'
     )
     .css('position', 'relative');
