@@ -228,32 +228,35 @@ $obj->setCriticality($criticality_id);
 //$DBRESULT = $obj->DBC->query($request);
 //$numRows = $obj->DBC->numberRows();
 
-//$critRes = $obj->DBC->query(
-//        "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
-//        );
-//$criticalityUsed = 0;
-//$critCache = array();
-//if ($critRes->numRows()) {
-//    $criticalityUsed = 1;
-//    while ($critRow = $critRes->fetchRow()) {
-//        $critCache[$critRow['service_id']] = $critRow['value'];
-//    }
-//}
-
 $numRows = 0;
-
-function build_rows($result) {
-  $retval = array();
+function build_search_rows(&$result) {
   global $numRows;
+  $retval = array();
   $numRows = $result[0];
 
   for ($i = 1; $i < count($result); $i += 2) {
-    $retval[$i - 1] = array( "key" => $result[$i] );
+    $retval[$i - 1] = array();
     $val = &$retval[$i - 1];
-    $tmp = explode(':', $result[$i]);
-    $val['service_id'] = $tmp[2];
     for ($j = 0; $j < count($result[$i + 1]); $j += 2) {
       $val[$result[$i + 1][$j]] = $result[$i + 1][$j + 1];
+    }
+    setSearchDefaultSvcFields($retval[$i - 1]);
+  }
+  return $retval;
+}
+
+function build_aggregate_rows(&$result) {
+  global $numRows;
+  $retval = array();
+  error_log("BUILD ROWS: numRows = $result[0]");
+  $numRows = $result[0];
+  error_log("BUILD ROWS TYPE: numRows = " . gettype($numRows));
+
+  for ($i = 1; $i < count($result); $i++) {
+    $retval[$i - 1] = array();
+    $val = &$retval[$i - 1];
+    for ($j = 0; $j < count($result[$i]); $j += 2) {
+      $val[$result[$i][$j]] = $result[$i][$j + 1];
     }
   }
   return $retval;
@@ -306,8 +309,40 @@ if (empty($filter)) {
   $filter = '*';
 }
 
-error_log("FT.SEARCH services $filter LIMIT " . ($num * $limit) . " $limit");
-$RESULT = $redis->rawCommand('FT.SEARCH', 'services', $filter, 'LIMIT', $num * $limit, $limit);
+error_log("FT.AGGREGATE services $filter SORTBY 2 @host_name @service_description LOAD 4 @host_name @service_description @plugin_output @host_id LIMIT " . ($num * $limit) . " $limit");
+$RESULT = $redis->rawCommand('FT.SEARCH', 'services', $filter, 'SORTBY', 'service_description', 'LIMIT', $num * $limit, $limit);
+//$RESULT = $redis->rawCommand(
+//    'FT.AGGREGATE', 'services', $filter,
+//    'SORTBY', 1, '@service_description',
+//    'LOAD', 11, '@host_name', '@service_description', '@plugin_output', '@host_id', '@service_id', '@flapping', '@notes', '@notes_url', '@action_url', '@flap_detection', '@acknowledged',
+//    'LIMIT', $num * $limit, $limit);
+
+error_log(print_r($RESULT, true));
+
+$rows = build_search_rows($RESULT);
+//$rows = build_aggregate_rows($RESULT);
+
+error_log('######################################################');
+error_log(print_r($rows, true));
+
+//$critRes = $obj->DBC->query(
+//        "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
+//        );
+$criticalityUsed = 0;
+foreach ($rows as $row) {
+  if (isset($row['criticality_id'])) {
+    $criticalityUsed = 1;
+    break;
+  }
+}
+
+//$critCache = array();
+//if ($critRes->numRows()) {
+//    $criticalityUsed = 1;
+//    while ($critRow = $critRes->fetchRow()) {
+//        $critCache[$critRow['service_id']] = $critRow['value'];
+//    }
+//}
 
 /* * **************************************************
  * Create Buffer
@@ -339,22 +374,58 @@ $host_prev = 0;
 $ct = 0;
 $flag = 0;
 
-$rows = build_rows(&$RESULT, true);
 $hosts = array();
 $instances = array();
 
-$field = array(
-    'acknowledged' => 0,
-    'active_checks' => 0,
-    'current_check_attempt' => 0,
-    'current_state' => 3,
-    'last_hard_state_change' => 0,
-    'last_state_change' => 0,
-    'max_check_attempts' => 0,
-    'passive_checks' => 0,
-    'scheduled_downtime_depth' => 0,
-    'state_type' => 0,
-);
+function setSearchDefaultHostFields(&$row) {
+    $defaultField = array(
+        'acknowledged' => 0,
+        'active_checks' => 1,
+        'passive_checks' => 0,
+        'current_check_attempt' => 1,
+//        'current_state' => 4,
+        'event_handler_enabled' => 1,
+        'flapping' => 0,
+        'flap_detection' => 1,
+        'last_hard_state_change' => 0,
+        'last_state_change' => 0,
+        'max_check_attempts' => 1,
+        'notify' => 1,
+        'scheduled_downtime_depth' => 0,
+        'state_type' => 1,
+    );
+
+    foreach ($defaultField as $k => $f) {
+        if (!isset($row[$k]) || empty($row[$k])) {
+            $row[$k] = $f;
+        }
+    }
+}
+
+function setSearchDefaultSvcFields(&$row) {
+    $defaultField = array(
+        'acknowledged' => 0,
+        'active_checks' => 0,
+        'passive_checks' => 1,
+        'current_check_attempt' => 1,
+        'current_state' => 4,
+        'event_handler_enabled' => 1,
+        'flapping' => 0,
+        'flap_detection' => 1,
+        'last_hard_state_change' => 0,
+        'last_state_change' => 0,
+        'max_check_attempts' => 1,
+        'notify' => 0,
+        'scheduled_downtime_depth' => 0,
+        'state_type' => 1,
+    );
+
+    foreach ($defaultField as $k => $f) {
+        if (!isset($row[$k])) {
+            $row[$k] = $f;
+        }
+    }
+}
 
 foreach ($rows as $row) {
     $passive = 0;
@@ -365,11 +436,6 @@ foreach ($rows as $row) {
     /* Split plugin_output */
     if (!isset($row['plugin_output'])) {
       $row['plugin_output'] = '';
-    }
-    foreach ($field as $k => $f) {
-      if (!isset($row[$k])) {
-        $row[$k] = $f;
-      }
     }
     $outputLines = explode("\n", $row['plugin_output']);
     $pluginShortOuput = $outputLines[0];
@@ -413,21 +479,24 @@ foreach ($rows as $row) {
     }
 
     /* Let's get the associated host: in cache or from Redis */
-    $host_key = 'h:' . $row['host_id'];
-    if (!isset($hosts[$row['host_id']])) {
-      $hosts[$row['host_id']] = $redis->hMGet(
-          'h:' . $row['host_id'],
+    $hid = $row['host_id'];
+    $host_key = 'h:' . $hid;
+    if (!isset($hosts[$hid])) {
+      $hosts[$hid] = $redis->hMGet(
+          'h:' . $hid,
           array('current_state', 'notes', 'notes_url', 'action_url', 'scheduled_downtime_depth', 'icon_image', 'address')
       );
+      setSearchDefaultHostFields($hosts[$hid]);
     }
-    $hst = &$hosts[$row['host_id']];
+    $hst = &$hosts[$hid];
+    error_log('SET ROW '.$row['service_id'] . ': HOST PASSIVE CHECKS ' . $hst['passive_checks']);
     /* Let's get the instance name: in cache or from Redis */
     if (!isset($instances[$row['poller_id']])) {
       $instances[$row['poller_id']] = $redis->get('i:' . $row['poller_id']);
     }
     $inst = &$instances[$row['poller_id']];
 
-    if ($host_prev == $row['host_id']) {
+    if ($host_prev == $hid) {
         $obj->XML->writeElement('hc', 'transparent');
         $obj->XML->writeElement('isMeta', $isMeta);
         $obj->XML->writeElement('hdn', $row['host_display_name']);
@@ -436,9 +505,9 @@ foreach ($rows as $row) {
         $obj->XML->text(CentreonUtils::escapeSecure(urlencode($row['host_name'])));
         $obj->XML->endElement();
         $obj->XML->writeElement('hnl', CentreonUtils::escapeSecure(urlencode($row['host_name'])));
-        $obj->XML->writeElement('hid', $row['host_id']);
+        $obj->XML->writeElement('hid', $hid);
     } else {
-        $host_prev = $row['host_id'];
+        $host_prev = $hid;
         if ($hst['scheduled_downtime_depth'] == 0) {
           $obj->XML->writeElement('hc', $obj->colorHostInService[$hst['current_state']]);
         } else {
@@ -496,15 +565,15 @@ foreach ($rows as $row) {
         $obj->XML->writeElement('hdtm', $hst['scheduled_downtime_depth']);
         $obj->XML->writeElement(
             'hdtmXml',
-            './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=' . $row['host_id']
+            './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=' . $hid
         );
         $obj->XML->writeElement('hdtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
         $obj->XML->writeElement(
             'hackXml',
-            './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=' . $row['host_id']
+            './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=' . $hid
         );
         $obj->XML->writeElement('hackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
-        $obj->XML->writeElement('hid', $row['host_id']);
+        $obj->XML->writeElement('hid', $hid);
     }
     $obj->XML->writeElement('hs', $hst['current_state']);
 
@@ -530,9 +599,9 @@ foreach ($rows as $row) {
         $row['current_check_attempt'] . '/' . $row['max_check_attempts']
             . ' (' . $obj->stateType[$row['state_type']] . ')'
     );
-    if (isset($row['criticality']) && $row['criticality'] != '' && isset($critCache[$row['service_id']])) {
+    if (isset($row['criticality_id'])) {
         $obj->XML->writeElement('hci', 1); // has criticality
-        $critData = $criticality->getData($critCache[$row['service_id']], true);
+        $critData = $criticality->getData($row['criticality_id'], true);
         $obj->XML->writeElement('ci', $media->getFilename($critData['icon_id']));
         $obj->XML->writeElement('cih', CentreonUtils::escapeSecure($critData['name']));
     } else {
@@ -548,19 +617,19 @@ foreach ($rows as $row) {
     $obj->XML->writeElement(
         'dtmXml',
         './include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid='
-            . $row['host_id'] . '&svc_id=' . $row['service_id']
+            . $hid . '&svc_id=' . $row['service_id']
     );
     $obj->XML->writeElement('dtmXsl', './include/monitoring/downtime/xsl/popupForDowntime.xsl');
     $obj->XML->writeElement(
         'ackXml',
         './include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid='
-            . $row['host_id'] . '&svc_id=' . $row['service_id']
+            . $hid . '&svc_id=' . $row['service_id']
     );
     $obj->XML->writeElement('ackXsl', './include/monitoring/acknowlegement/xsl/popupForAck.xsl');
 
     if (!empty($row['notes'])) {
         $row['notes'] = str_replace('$SERVICEDESC$', $row['service_description'], $row['notes']);
-        $row['notes'] = str_replace('$HOSTNAME$', $row['name'], $row['notes']);
+        $row['notes'] = str_replace('$HOSTNAME$', $row['host_name'], $row['notes']);
         if (isset($row['alias']) && $row['alias']) {
             $row['notes'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes']);
         }
@@ -588,7 +657,7 @@ foreach ($rows as $row) {
             $obj->statusService[$row['state']],
             $row['notes_url']
         );
-        $row['notes_url'] = str_replace('$HOSTNAME$', $row['name'], $row['notes_url']);
+        $row['notes_url'] = str_replace('$HOSTNAME$', $row['host_name'], $row['notes_url']);
         if (isset($row['alias']) && $row['alias']) {
             $row['notes_url'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes_url']);
         }
@@ -612,7 +681,7 @@ foreach ($rows as $row) {
         $row['action_url'] = str_replace('$SERVICEDESC$', $row['description'], $row['action_url']);
         $row['action_url'] = str_replace('$SERVICESTATEID$', $row['state'], $row['action_url']);
         $row['action_url'] = str_replace('$SERVICESTATE$', $obj->statusService[$row['state']], $row['action_url']);
-        $row['action_url'] = str_replace('$HOSTNAME$', $row['name'], $row['action_url']);
+        $row['action_url'] = str_replace('$HOSTNAME$', $row['host_name'], $row['action_url']);
         if (isset($row['alias']) && $row['alias']) {
             $row['action_url'] = str_replace('$HOSTALIAS$', $row['alias'], $row['action_url']);
         }
@@ -639,7 +708,7 @@ foreach ($rows as $row) {
 
     if (!empty($row['notes'])) {
         $row['notes'] = str_replace('$SERVICEDESC$', $row['service_description'], $row['notes']);
-        $row['notes'] = str_replace('$HOSTNAME$', $row['name'], $row['notes']);
+        $row['notes'] = str_replace('$HOSTNAME$', $row['host_name'], $row['notes']);
         if (isset($row['alias']) && $row['alias']) {
             $row['notes'] = str_replace('$HOSTALIAS$', $row['alias'], $row['notes']);
         }
@@ -651,9 +720,11 @@ foreach ($rows as $row) {
         $obj->XML->writeElement('sn', 'none');
     }
 
+    error_log('ROW '.$row['service_id'] . ': FLAP DETECTION ' . $row['flap_detection']);
     $obj->XML->writeElement('fd', $row['flap_detection']);
     $obj->XML->writeElement('ha', $hst['acknowledged']);
     $obj->XML->writeElement('hae', $hst['active_checks']);
+    error_log('ROW '.$row['service_id'] . ': HOST PASSIVE CHECKS ' . $hst['passive_checks']);
     $obj->XML->writeElement('hpe', $hst['passive_checks']);
     $obj->XML->writeElement('nc', $obj->GMT->getDate($dateFormat, $row['next_check']));
     if ($row['last_check'] != 0) {
@@ -668,27 +739,27 @@ foreach ($rows as $row) {
     /**
      * Get Service Graph index
      */
-    if (!isset($graphs[$row['host_id']]) || !isset($graphs[$row['host_id']][$row['service_id']])) {
+    if (!isset($graphs[$hid]) || !isset($graphs[$hid][$row['service_id']])) {
         $request2 = 'SELECT DISTINCT service_id, id '
             . 'FROM index_data, metrics '
             . 'WHERE metrics.index_id = index_data.id '
-            . 'AND host_id = ' . $row['host_id'] . ' '
+            . 'AND host_id = ' . $hid . ' '
             . 'AND service_id = ' . $row['service_id'] . ' '
             . 'AND index_data.hidden = \'0\' ';
         $DBRESULT2 = $obj->DBC->query($request2);
         while ($dataG = $DBRESULT2->fetchRow()) {
-            if (!isset($graphs[$row['host_id']])) {
-                $graphs[$row['host_id']] = array();
+            if (!isset($graphs[$hid])) {
+                $graphs[$hid] = array();
             }
-            $graphs[$row['host_id']][$dataG['service_id']] = $dataG['id'];
+            $graphs[$hid][$dataG['service_id']] = $dataG['id'];
         }
-        if (!isset($graphs[$row['host_id']])) {
-            $graphs[$row['host_id']] = array();
+        if (!isset($graphs[$hid])) {
+            $graphs[$hid] = array();
         }
     }
     $obj->XML->writeElement(
         'svc_index',
-        (isset($graphs[$row['host_id']][$row['service_id']]) ? $graphs[$row['host_id']][$row['service_id']] : 0)
+        (isset($graphs[$hid][$row['service_id']]) ? $graphs[$hid][$row['service_id']] : 0)
     );
     $obj->XML->endElement();
 }
