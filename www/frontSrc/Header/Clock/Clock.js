@@ -1,14 +1,5 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
-import Avatar from 'material-ui/Avatar'
-import { MenuItem } from 'material-ui/Menu'
-import IconButton from 'material-ui/IconButton'
-import Grid from 'material-ui/Grid'
-import Popover from 'material-ui/Popover'
-import Button from 'material-ui/Button'
-import Bookmark from 'material-ui-icons/Bookmark'
-import VolumeUp from 'material-ui-icons/VolumeUp'
-import Typography from 'material-ui/Typography'
 
 const styles = theme => ({
   profileRoot: {
@@ -22,21 +13,20 @@ const styles = theme => ({
   },
   headerDate: {
     fontSize: 14,
+    color: '#81828a'
   },
   headerTime: {
-    fontSize: 35,
-    lineHeight: '28px',
+    fontSize: 24,
+    lineHeight: '22px',
+    color: '#76777f'
   },
 })
 
-const Clock = ({
-  classes,
-    currentDate,
-  }) => (
+const ClockComponent = ({classes, currentTime}) => (
       <div className={classes.moment}>
-        <div className={classes.headerDate}> {currentDate.date} </div>
-        <div className={classes.headerTime}> {currentDate.time} </div>
+        <div className={classes.headerDate}> {currentTime.date} </div>
+        <div className={classes.headerTime}>{currentTime.time}</div>
       </div>
     )
 
-export default withStyles(styles)(Clock)
+export default withStyles(styles)(ClockComponent)

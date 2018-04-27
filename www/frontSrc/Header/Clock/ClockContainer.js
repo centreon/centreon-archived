@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Clock from './Clock'
+import ClockComponent from './Clock'
 import { getClock } from "../../webservices/clockApi"
+import { timeDispatcher } from "../Actions/clockActions"
 import 'moment-timezone'
 import Moment from 'moment'
 
@@ -10,21 +11,36 @@ class ClockContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentDate: {},
+      currentDate: null,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props !== nextProps) {
-      this.setState({
-        currentDate: this.setDate(nextProps.clock.timezone, nextProps.clock.locale, nextProps.clock.time)
-      })
+    const { timezone, locale } = this.props.clock
+    if (timezone !== nextProps.clock.timezone || locale !== nextProps.clock.locale) {
+      clearTimeout(this.timeout)
+      if (!nextProps.clock.isFetching) {
+        this.refresh()
+      }
     }
   }
 
   componentDidMount = () =>  {
     this.props.getClock()
+    this.refreshClock()
+  }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeout)
+    clearInterval(this.interval)
+  }
+
+  refreshClock = () => {
+    this.interval = setInterval(() => this.props.timeDispatcher(this.props.clock.date, this.props.clock.timezone, this.props.clock.locale), 1000)
+  }
+
+  refresh = () => {
+    this.timeout = setTimeout(() => this.props.getClock(), this.props.clock.refreshTime)
   }
 
   setDate = (tz, locale, timestamp) => {
@@ -39,19 +55,18 @@ class ClockContainer extends Component {
   }
 
   render () {
-    const { currentDate } = this.state
+    const { dataFetched, date, timezone, locale } = this.props.clock
 
-    return (
-      <Clock
-        currentDate={currentDate}
-      />
-    )
+    if(dataFetched) {
+      const currentTime = this.setDate(timezone, locale, date)
+      return <ClockComponent currentTime={currentTime} />
+    } else return null
   }
 }
 
 const mapStateToProps = (store) => {
   return {
-    clock: store.clock.data,
+    clock: store.clock,
   }
 }
 
@@ -59,6 +74,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getClock: () => {
       return dispatch(getClock())
+    },
+    timeDispatcher: (time, timezone, locale) => {
+      return dispatch(timeDispatcher(time, timezone, locale))
     },
   }
 }
