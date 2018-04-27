@@ -65,35 +65,38 @@ class PollerObjectContainer extends Component {
     const open = !!anchorEl
     const { database, latency, stability, total, dataFetched, error } = this.props.poller
 
-    if (!error || error === null) {
-      if (dataFetched) {
-        const {color, className} = this.setPollerState(stability, database, latency)
+    if (dataFetched) {
+      const {color, className} = this.setPollerState(stability, database, latency)
+      return (
+        <PollerObject
+          handleClose={this.handleClose}
+          handleOpen={this.handleOpen}
+          open={open}
+          anchorEl={anchorEl}
+          iconColor={color ? color : '#BCBDC0'}
+          className={className ? className : ''}
+          database={database ? database : {critical: '...', warning: '...'}}
+          latency={latency ? latency : {critical: '...', warning: '...'}}
+          stability={stability ? stability : {critical: '...', warning: '...'}}
+          total={total ? total : '...'}
+        />
+      )
+    } else {
+      if (error === false && error != null) {
         return (
-          <PollerObject
-            handleClose={this.handleClose}
-            handleOpen={this.handleOpen}
-            open={open}
-            anchorEl={anchorEl}
-            iconColor={color ? color : '#88b917'}
-            className={className ? className : ''}
-            database={database ? database : {critical: '...', warning: '...'}}
-            latency={latency ? latency : {critical: '...', warning: '...'}}
-            stability={stability ? stability : {critical: '...', warning: '...'}}
-            total={total ? total : '...'}
+          <PollerIcon
+            open={false}
+            id='pollerIcon'
+            alt="poller icon"
+            style={{width: 34,height: 34}}
+            viewBox="6 156 600 600"
+            nativeColor='#BCBDC0'
           />
         )
       } else {
-          return (
-            <PollerIcon
-              id='pollerIcon'
-              alt="poller icon"
-              style={{width: 34,height: 34}}
-              viewBox="6 156 600 600"
-              nativeColor='#BCBDC0'
-            />
-          )
-        }
-      } else return null
+        return null
+      }
+    }
   }
 }
 
