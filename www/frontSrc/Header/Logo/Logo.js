@@ -5,15 +5,20 @@ import Grid from 'material-ui/Grid'
 const styles = theme => ({
   root: {
     display: 'flex',
-    flexDirection: 'row-reverse',
-    fontFamily: theme.font.openSans,
+    flexDirection: 'row',
+    padding: '0 14px',
+  },
+  logo: {
+    height: '100%',
+    width: '100%',
+    verticalAlign: 'middle',
   },
 })
 
 const Logo = ({classes }) => (
   <Grid item xs>
     <div className={classes.root}>
-      Centreon
+      <img src='./img/centreon.png' className={classes.logo} alt='logo centreon' />
     </div>
   </Grid>
 )
