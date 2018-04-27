@@ -42,11 +42,11 @@ class ServiceObjectContainer extends Component {
   }
 
   render = () => {
-    const {service, dataFetched, error} = this.props
+    const {critical, warning, unknown, ok, pending, total, url, dataFetched, error} = this.props.service
     const { anchorEl } = this.state
     const open = !!anchorEl
 
-    if (dataFetched || !error) {
+    if (dataFetched ) {
     return (
       <ServiceObject
         handleClose={this.handleClose}
@@ -54,29 +54,31 @@ class ServiceObjectContainer extends Component {
         open={open}
         anchorEl={anchorEl}
         object='service'
-        critical={service.critical ? service.critical : '...'}
-        warning={service.warning ? service.warning : '...'}
-        unknown={service.unknown ? service.unknown : '...'}
-        ok={service.ok ? service.ok : '...'}
-        pending={service.pending ? service.pending : false}
-        total={service.total}
-        url={service.url}
+        critical={critical}
+        warning={warning}
+        unknown={unknown}
+        ok={ok}
+        pending={pending ? pending : false}
+        total={total}
+        url={url}
         key='service'/>
     )
   } else {
-      return (
-        <ServiceObject
-          anchorEl={anchorEl}
-          object='service'
-          critical='...'
-          warning='...'
-          unknown='...'
-          ok='...'
-          pending='...'
-          total='...'
-          url='...'
-          key='service'/>
-      )
+      if (error === false && error != null) {
+        return (
+          <ServiceObject
+            open={false}
+            object='service'
+            critical='...'
+            warning='...'
+            unknown='...'
+            ok='...'
+            pending='...'
+            total='...'
+            url='...'
+            key='service'/>
+        )
+      } else return null
     }
   }
 }
