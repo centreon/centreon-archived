@@ -43,7 +43,7 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchCurve']) && $_POST['searchCurve']) {
     $search = $_POST['searchCurve'];
-    $SearchTool = " WHERE name LIKE '%".$search."%'";
+    $SearchTool = " WHERE name LIKE '%" . $pearDB->escape($search) . "%'";
 }
 
 $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM giv_components_template".$SearchTool);
@@ -163,7 +163,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchCurve', $search);
+$tpl->assign('searchCurve', htmlentities($search));
 
 /*
  * Apply a template definition
