@@ -47,7 +47,7 @@ class CentreonSession
 
     }
 
-    public function start($flag = 0)
+    public static function start($flag = 0)
     {
         session_start();
         if ($flag) {
@@ -55,15 +55,15 @@ class CentreonSession
         }
     }
 
-    public function stop()
+    public static function stop()
     {
         session_unset();
         session_destroy();
     }
 
-    public function restart()
+    public static function restart()
     {
-        self::stop();
+        static::stop();
         self::start();
         session_regenerate_id(true);
     }
