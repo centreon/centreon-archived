@@ -40,6 +40,7 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
+$monitoring_engines = [];
 
 if (!$centreon->user->admin && $server_id && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
@@ -90,7 +91,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "40");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a poller"));
 } elseif ($o == "c") {
@@ -123,18 +124,18 @@ $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 $form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 
 $Tab = array();
-$Tab[] = HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
-$Tab[] = HTML_QuickForm::createElement('radio', 'localhost', null, _("No"), '0');
+$Tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
+$Tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
 $form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 $Tab = array();
-$Tab[] = HTML_QuickForm::createElement('radio', 'is_default', null, _("Yes"), '1');
-$Tab[] = HTML_QuickForm::createElement('radio', 'is_default', null, _("No"), '0');
+$Tab[] = $form->createElement('radio', 'is_default', null, _("Yes"), '1');
+$Tab[] = $form->createElement('radio', 'is_default', null, _("No"), '0');
 $form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
 
 $Tab = array();
-$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
-$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
+$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Enabled"), '1');
+$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 $form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
 
 /*

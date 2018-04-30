@@ -31,22 +31,22 @@ if (typeof QFAMS === "undefined" || !QFAMS) {
  * @static
  */
 QFAMS.env = QFAMS.env || {
-    /**
-     * Keeps the persistant selection preference when items are selected or unselected
-     *
-     * @property persistantSelection
-     * @type     Boolean
-     */
-    persistantSelection: false,
+        /**
+         * Keeps the persistant selection preference when items are selected or unselected
+         *
+         * @property persistantSelection
+         * @type     Boolean
+         */
+        persistantSelection: false,
 
-    /**
-     * Keeps the persistant selection preference when items are moved up or down
-     *
-     * @property persistantMove
-     * @type     Boolean
-     */
-    persistantMove: true
-};
+        /**
+         * Keeps the persistant selection preference when items are moved up or down
+         *
+         * @property persistantMove
+         * @type     Boolean
+         */
+        persistantMove: true
+    };
 
 /**
  * Uses QFAMS.updateCounter as a
@@ -293,9 +293,9 @@ QFAMS.sortList = function (list, compareFunction, arrange)
 
     for (i = 0; i < options.length; i++) {
         options[i] = new Option(list.options[i].text,
-                                list.options[i].value,
-                                list.options[i].defaultSelected,
-                                list.options[i].selected);
+            list.options[i].value,
+            list.options[i].defaultSelected,
+            list.options[i].selected);
     }
     options.sort(compareFunction);
     if (arrange === 'desc') {

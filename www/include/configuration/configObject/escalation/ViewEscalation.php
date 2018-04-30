@@ -45,10 +45,8 @@ if (!isset($oreon)) {
 
 global $path;
 $path = "./include/configuration/configObject/escalation/";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 

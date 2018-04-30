@@ -91,7 +91,7 @@ $rq = "SELECT DISTINCT msr.*
 $results = $pearDB->query($rq);
 $ar_relations = array();
 
-$form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
 /*
 * Construct request

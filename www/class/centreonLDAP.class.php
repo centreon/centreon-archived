@@ -35,11 +35,11 @@
 
 /**
  *
- * @param type $errno The error num
- * @param type $errstr The error message
- * @param type $errfile The error file
- * @param type $errline The error line
- * @param type $errcontext
+ * @param int $errno The error num
+ * @param string $errstr The error message
+ * @param string $errfile The error file
+ * @param int $errline The error line
+ * @param array $errcontext
  * @return boolean
  */
 function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
@@ -68,9 +68,9 @@ class CentreonLDAP
 
     /**
      * Constructor
-     * @param type $pearDB The database connection
-     * @param type $CentreonLog The logging object
-     * @param type $arId
+     * @param \CentreonDB $pearDB The database connection
+     * @param \CentreonLog $CentreonLog The logging object
+     * @param string $arId
      */
     public function __construct($pearDB, $CentreonLog = null, $arId = null)
     {
@@ -852,8 +852,8 @@ class CentreonLdapAdmin
         if (isset($_REQUEST['address'])) {
             $addressList = $_REQUEST['address'];
             $portList = $_REQUEST['port'];
-            $sslList = $_REQUEST['ssl'];
-            $tlsList = $_REQUEST['tls'];
+            $sslList = isset($_REQUEST['ssl']) ? $_REQUEST['ssl'] : null;
+            $tlsList = isset($_REQUEST['tls']) ? $_REQUEST['tls'] : null;
             $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {

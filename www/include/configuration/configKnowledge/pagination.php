@@ -216,12 +216,12 @@ if ($rows != 0) {
         }
     </SCRIPT>
 <?php
-$form = new HTML_QuickForm(
+$form = new HTML_QuickFormCustom(
     'select_form',
     'GET',
     "?p=" . $p . "&search_type_service=" . $search_type_service . "&search_type_host=" . $search_type_host
 );
-$selLim =& $form->addElement(
+$selLim = $form->addElement(
     'select',
     'l',
     _("Rows"),

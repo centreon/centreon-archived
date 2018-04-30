@@ -50,13 +50,6 @@ isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the configuration dir
  */
 global $path;
@@ -79,7 +72,7 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 }
 
 /* Set the real page */
-if ($ret2 && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
+if (isset($ret2) && is_array($ret2) && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
     $p = $ret2['topology_page'];
 } elseif ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];

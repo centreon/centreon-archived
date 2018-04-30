@@ -38,8 +38,6 @@ if (!isset($centreon)) {
 }
 
 require_once "./include/monitoring/common-Func.php";
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
@@ -138,9 +136,11 @@ function parseStatsFile($statfile)
                 }
 
             if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
+                $keySepByDash = explode('-', $key);
+                $keySepBySpace = explode(' ', $key);
                 $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
-                $result['io'][$matches[1]]['type'] = end(explode('-', $key));
-                $result['io'][$matches[1]]['id'] = end(explode(' ', $key));
+                $result['io'][$matches[1]]['type'] = end($keySepByDash);
+                $result['io'][$matches[1]]['id'] = end($keySepBySpace);
                 $result['io'][$matches[1]]['id'] = rtrim($result['io'][$matches[1]]['id'], ')');
 
 
@@ -192,7 +192,7 @@ function parseStatsFile($statfile)
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$form = new HTML_QuickForm('form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'post', "?p=" . $p);
 
 /*
  * Get Poller List

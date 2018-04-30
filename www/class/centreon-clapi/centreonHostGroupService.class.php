@@ -78,6 +78,8 @@ class CentreonHostGroupService extends CentreonObject
         'SERVICE'
     );
 
+    protected $hgId;
+
     /**
      * Constructor
      *
@@ -162,12 +164,10 @@ class CentreonHostGroupService extends CentreonObject
     }
 
     /**
-     * Display all services
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array('service_register' => $this->register);
         if (isset($parameters)) {
@@ -283,13 +283,11 @@ class CentreonHostGroupService extends CentreonObject
     }
 
     /**
-     * Add a service
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -303,7 +301,7 @@ class CentreonHostGroupService extends CentreonObject
         if (!count($tmp)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_HOSTNAME]);
         }
-        $hgId = $tmp[0];
+        $this->hgId = $tmp[0];
         $addParams = array();
         $addParams['service_description'] = $params[self::ORDER_SVCDESC];
         $template = $params[self::ORDER_SVCTPL];
@@ -321,14 +319,20 @@ class CentreonHostGroupService extends CentreonObject
         }
         $addParams['service_template_model_stm_id'] = $tmp[0][$this->object->getPrimaryKey()];
         $this->params = array_merge($this->params, $addParams);
-        $serviceId = parent::add();
+    }
 
+    /**
+     * @param $serviceId
+     */
+    function insertRelations($serviceId)
+    {
         $relObject = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
-        $relObject->insert($hgId, $serviceId);
+        $relObject->insert($this->hgId, $serviceId);
 
         $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
     }
+
 
     /**
      * Set parameters
@@ -337,7 +341,7 @@ class CentreonHostGroupService extends CentreonObject
      * @return void
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
@@ -367,7 +371,6 @@ class CentreonHostGroupService extends CentreonObject
         $commandObject = new CentreonCommand($this->dependencyInjector);
         switch ($params[2]) {
             case "contact_additive_inheritance":
-                break;
             case "cg_additive_inheritance":
                 break;
             case "check_command":
@@ -423,17 +426,9 @@ class CentreonHostGroupService extends CentreonObject
                 $params[3] = $tmp[0];
                 break;
             case "notes":
-                $extended = true;
-                break;
             case "notes_url":
-                $extended = true;
-                break;
             case "action_url":
-                $extended = true;
-                break;
             case "icon_image":
-                $extended = true;
-                break;
             case "icon_image_alt":
                 $extended = true;
                 break;
@@ -445,7 +440,8 @@ class CentreonHostGroupService extends CentreonObject
         }
         if ($extended == false) {
             $updateParams = array($params[2] => $params[3]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             if ($params[2] != "graph_id") {
                 $params[2] = "esi_" . $params[2];
@@ -463,6 +459,7 @@ class CentreonHostGroupService extends CentreonObject
             }
             $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
             $extended->update($objectId, array($params[2] => $params[3]));
+            return array();
         }
     }
 
@@ -920,10 +917,17 @@ class CentreonHostGroupService extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $filters["service_register"] = $this->register;
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
 
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array("service_register" => $this->register);
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
         $hostRel = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
         $elements = $hostRel->getMergedParameters(
             array("hg_name"),
@@ -944,11 +948,10 @@ class CentreonHostGroupService extends CentreonObject
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
-                    $tmp_id = $element[$param];
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        CentreonServiceTemplate::getInstance()->export($tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -962,18 +965,15 @@ class CentreonHostGroupService extends CentreonObject
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
-                        $action_tmp = 'TP';
                         $tmpObj = $tpObj;
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
-                        $action_tmp = 'CMD';
                         $tmpObj = $commandObj;
                     }
                     if (isset($tmpObj)) {
                         $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
-                            $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $tmpObj::getInstance()->export($value);
                         }
                         unset($tmpObj);
                     }
@@ -1039,7 +1039,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                CentreonContactGroup::getInstance()->export($element['cg_name']);
                 echo $this->action . $this->delim
                     . "addcontactgroup" . $this->delim
                     . $element['hg_name'] . $this->delim
@@ -1061,7 +1061,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_name']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim

@@ -244,7 +244,11 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
 {
     global $pearDB, $centreon;
     global $form;
+
     $id = null;
+    $hPars = (is_array($hPars) || $hPars instanceof Countable) ? $hPars : [];
+    $hgPars = (is_array($hgPars) || $hgPars instanceof Countable) ? $hgPars : [];
+
     if (isset($form) && !count($hPars) && !count($hgPars)) {
         if (count($params)) {
             $arr = $params;
@@ -1123,7 +1127,7 @@ function insertService($ret = array(), $macro_on_demand = null)
             $service_id["MAX(service_id)"],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            isset($_REQUEST['macroPassword']) ? $_REQUEST['macroPassword'] : null,
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1635,7 +1639,10 @@ function updateServiceContact($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_cs");
     }
-    for ($i = 0; $i < count($ret); $i++) {
+
+    $loopCount = (is_array($ret) || $ret instanceof Countable) ? count($ret) : 0;
+
+    for ($i = 0; $i < $loopCount; $i++) {
         $rq = "INSERT INTO contact_service_relation ";
         $rq .= "(contact_id, service_service_id) ";
         $rq .= "VALUES ";
@@ -1662,6 +1669,11 @@ function updateServiceContactGroup($service_id = null, $ret = array())
     }
 
     $cg = new CentreonContactgroup($pearDB);
+    
+    if (!$ret) {
+        return;
+    }
+    
     for ($i = 0; $i < count($ret); $i++) {
         if (!is_numeric($ret[$i])) {
             $res = $cg->insertLdapGroup($ret[$i]);
@@ -1700,7 +1712,7 @@ function updateServiceNotifs($service_id = null, $ret = array())
     $rq .= "service_notification_options = ";
     isset($ret) && $ret != null ? $rq .= "'" . implode(",", array_keys($ret)) . "' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '" . $service_id . "'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
@@ -1714,7 +1726,7 @@ function updateServiceNotifs_MC($service_id = null)
 
     $rq = "SELECT * FROM service ";
     $rq .= "WHERE service_id = '" . $service_id . "' LIMIT 1";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
     $service = array();
     $service = array_map("myDecodeService", $DBRESULT->fetchRow());
 
@@ -2037,6 +2049,11 @@ function updateServiceTrap($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_traps");
     }
+    
+    if (!$ret) {
+        return;
+    }
+    
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO traps_service_relation ";
         $rq .= "(traps_id, service_id) ";

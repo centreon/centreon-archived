@@ -85,7 +85,7 @@ $attrHostgroups = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
 } elseif ($o == "c") {
@@ -102,41 +102,41 @@ $form->addElement('header', 'information', _("Information"));
 $form->addElement('text', 'dep_name', _("Name"), $attrsText);
 $form->addElement('text', 'dep_description', _("Description"), $attrsText);
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+$tab[] = $form->createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'inherits_parent', null, _("No"), '0');
 $form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 $form->setDefaults(array('inherits_parent' => '1'));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'o',
     '&nbsp;',
     _("Ok/Up"),
     array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'd',
     '&nbsp;',
     _("Down"),
     array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unreachable"),
     array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
     array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
@@ -146,11 +146,11 @@ $tab[] = HTML_QuickForm::createElement(
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
+$tab[] = $form->createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
+$tab[] = $form->createElement('checkbox', 'd', '&nbsp;', _("Down"));
+$tab[] = $form->createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+$tab[] = $form->createElement('checkbox', 'p', '&nbsp;', _("Pending"));
+$tab[] = $form->createElement('checkbox', 'n', '&nbsp;', _("None"));
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup' .

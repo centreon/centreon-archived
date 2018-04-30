@@ -90,7 +90,7 @@ if (count($aMacroDescription) > 0) {
             $macro['description'] . "\n";
         $nbRowMacro++;
     }
-} else {
+} elseif( array_key_exists('command_line', $cmd) ) {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
 
@@ -160,7 +160,7 @@ $attrsTextarea4 = array("rows" => "$nbRowMacro", "cols" => "100", "id" => "listO
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p . '&type=' . $type);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . '&type=' . $type);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Command"));
 } elseif ($o == "c") {
@@ -181,7 +181,7 @@ if (isset($tabCommandType[$type])) {
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 
 foreach ($tabCommandType as $id => $name) {
-    $cmdType[] = HTML_QuickForm::createElement(
+    $cmdType[] = $form->createElement(
         'radio',
         'command_type',
         null,
@@ -219,8 +219,8 @@ $form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
 $form->addElement('button', 'desc_macro', _("Describe macros"), array("onClick" => "manageMacros();"));
 $form->addElement('textarea', 'listOfMacros', _("Macros Descriptions"), $attrsTextarea4)->setAttribute("readonly");
 
-$cmdActivation[] = HTML_QuickForm::createElement('radio', 'command_activate', null, _("Enabled"), '1');
-$cmdActivation[] = HTML_QuickForm::createElement('radio', 'command_activate', null, _("Disabled"), '0');
+$cmdActivation[] = $form->createElement('radio', 'command_activate', null, _("Enabled"), '1');
+$cmdActivation[] = $form->createElement('radio', 'command_activate', null, _("Disabled"), '0');
 $form->addGroup($cmdActivation, 'command_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('command_activate' => '1'));
 

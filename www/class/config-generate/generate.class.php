@@ -83,7 +83,7 @@ class Generate
     {
         $service_instance = Service::getInstance($this->dependencyInjector);
         $host_instance = Host::getInstance($this->dependencyInjector);
-        $services = &$service_instance->getGeneratedServices();
+        $services = $service_instance->getGeneratedServices();
 
         try {
             $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES " .
@@ -107,7 +107,7 @@ class Generate
 
             # Meta services
             if ($localhost == 1) {
-                $meta_services = &MetaService::getInstance($this->dependencyInjector)->getMetaServices();
+                $meta_services = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
                 $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
                 foreach ($meta_services as $meta_id => $meta_service) {
                     $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
@@ -133,7 +133,8 @@ class Generate
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $stmt->execute();
-        $this->current_poller = array_pop($stmt->fetchAll(PDO::FETCH_ASSOC));
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->current_poller = array_pop($result);
         if (is_null($this->current_poller)) {
             throw new Exception("Cannot find poller id '" . $poller_id . "'");
         }
@@ -146,7 +147,8 @@ class Generate
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
         $stmt->execute();
-        $this->current_poller = array_pop($stmt->fetchAll(PDO::FETCH_ASSOC));
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->current_poller = array_pop($result);
         if (is_null($this->current_poller)) {
             throw new Exception("Cannot find poller name '" . $poller_name . "'");
         }

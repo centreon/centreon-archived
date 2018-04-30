@@ -73,7 +73,7 @@ $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Centreon-Broker Configuration"));
 } elseif ($o == "c") {
@@ -105,28 +105,28 @@ $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $at
 $command = $form->addElement('text', 'command_file', _('Command file'), $attrsText);
 
 $timestamp = array();
-$timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("Yes"), 1);
-$timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("No"), 0);
+$timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("Yes"), 1);
+$timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("No"), 0);
 $form->addGroup($timestamp, 'write_timestamp', _("Write timestamp"), '&nbsp;');
 
 $thread_id = array();
-$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("Yes"), 1);
-$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("No"), 0);
+$thread_id[] = $form->createElement('radio', 'write_thread_id', null, _("Yes"), 1);
+$thread_id[] = $form->createElement('radio', 'write_thread_id', null, _("No"), 0);
 $form->addGroup($thread_id, 'write_thread_id', _("Write thread id"), '&nbsp;');
     
 $status = array();
-$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
-$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
+$status[] = $form->createElement('radio', 'activate', null, _("Enabled"), 1);
+$status[] = $form->createElement('radio', 'activate', null, _("Disabled"), 0);
 $form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
 $centreonbroker = array();
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("Yes"), 1);
-$centreonbroker[] = HTML_QuickForm::createElement('radio', 'activate_watchdog', null, _("No"), 0);
+$centreonbroker[] = $form->createElement('radio', 'activate_watchdog', null, _("Yes"), 1);
+$centreonbroker[] = $form->createElement('radio', 'activate_watchdog', null, _("No"), 0);
 $form->addGroup($centreonbroker, 'activate_watchdog', _("Link to cbd service"), '&nbsp;');
 
 $stats_activate = array();
-$stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("Yes"), 1);
-$stats_activate[] = HTML_QuickForm::createElement('radio', 'stats_activate', null, _("No"), 0);
+$stats_activate[] = $form->createElement('radio', 'stats_activate', null, _("Yes"), 1);
+$stats_activate[] = $form->createElement('radio', 'stats_activate', null, _("No"), 0);
 $form->addGroup($stats_activate, 'stats_activate', _("Statistics"), '&nbsp;');
 
 $tags = $cbObj->getTags();

@@ -56,14 +56,14 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
      * @param int $skey
      * @return void
      */
-    public function insert($fkey, $skey)
+    public function insert($fkey, $skey = null)
     {
-        $sql = "SELECT MAX(`order`) as maxorder FROM " .$this->relationTable . " WHERE " .$this->secondKey . " = ?";
+        $sql = "SELECT MAX(`order`) as maxorder FROM " . $this->relationTable . " WHERE " . $this->secondKey . " = ?";
         $res = $this->db->query($sql, array($skey));
         $row = $res->fetch();
         $order = 1;
         if (isset($row['maxorder'])) {
-            $order = $row['maxorder']+1;
+            $order = $row['maxorder'] + 1;
         }
         unset($res);
         $sql = "INSERT INTO $this->relationTable ($this->firstKey, $this->secondKey, `order`) VALUES (?, ?, ?)";
@@ -104,8 +104,16 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
      * @param string $filterType
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public function getMergedParameters(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
@@ -115,18 +123,18 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= "h.".$fparams;
+            $fString .= "h." . $fparams;
         }
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= "h2.".$sparams;
+            $sString .= "h2." . $sparams;
         }
-        $sql = "SELECT ".$fString.$sString."
-        		FROM ".$this->firstObject->getTableName()." h,".$this->relationTable."
-        		JOIN ".$this->secondObject->getTableName(). " h2 ON ".$this->relationTable.".".$this->firstKey." = h2.".$this->secondObject->getPrimaryKey() ."
-        		WHERE h.".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
+        $sql = "SELECT " . $fString . $sString . "
+        		FROM " . $this->firstObject->getTableName() . " h," . $this->relationTable . "
+        		JOIN " . $this->secondObject->getTableName() . " h2 ON " . $this->relationTable . "." . $this->firstKey . " = h2." . $this->secondObject->getPrimaryKey() . "
+        		WHERE h." . $this->firstObject->getPrimaryKey() . " = " . $this->relationTable . "." . $this->secondKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {

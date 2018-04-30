@@ -22,11 +22,13 @@ function isSqlComment($str)
 function getTemplate($dir)
 {
     $libDir = __DIR__ . '/../../../GPL_LIB';
-    require_once $libDir . '/Smarty/libs/Smarty.class.php';
+    $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
+    require_once $smartyDir . 'libs/Smarty.class.php';
     $template = new \Smarty();
     $template->compile_dir = $libDir . '/SmartyCache/compile';
     $template->config_dir = $libDir . '/SmartyCache/config';
     $template->cache_dir = $libDir . '/SmartyCache/cache';
+    $template->plugins_dir[] = $libDir . "/smarty-plugins";
     $template->template_dir = $dir;
     $template->caching = 0;
     $template->compile_check = true;

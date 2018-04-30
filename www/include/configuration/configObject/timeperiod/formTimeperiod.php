@@ -82,7 +82,7 @@ $attrTimeperiods = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Time Period"));
 } elseif ($o == "c") {
@@ -132,8 +132,6 @@ while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["exception_id"];
     $k++;
 }
-
-var_dump($k);
 
 $DBRESULT->closeCursor();
 

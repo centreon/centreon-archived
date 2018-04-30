@@ -37,6 +37,9 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class CentreonWebService
 {
+    const RESULT_HTML = 'html';
+    const RESULT_JSON = 'json';
+
     /**
      * @var CentreonDB|null
      */
@@ -125,7 +128,7 @@ class CentreonWebService
      * Authorize to access to the action
      *
      * @param string $action The action name
-     * @param array $user The current user
+     * @param \CentreonUser $user The current user
      * @param boolean $isInternal If the api is call in internal
      * @return boolean If the user has access to the action
      */
@@ -177,7 +180,7 @@ class CentreonWebService
      * @param mixed $data The values
      * @param integer $code The HTTP code
      */
-    public static function sendResult($data, $code = 200, $format = 'json')
+    public static function sendResult($data, $code = 200, $format = null)
     {
         switch ($code) {
             case 500:
@@ -213,11 +216,12 @@ class CentreonWebService
         }
 
         switch ($format) {
-            case 'html':
+            case static::RESULT_HTML:
                 header('Content-type: text/html');
                 print $data;
                 break;
-            case 'json':
+            case static::RESULT_JSON:
+            case null:
                 header('Content-type: application/json');
                 print json_encode($data);
                 break;
@@ -249,6 +253,7 @@ class CentreonWebService
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
      *
+     * @param \Pimple\Container $dependencyInjector
      * @param CentreonUser $user The current user
      * @param boolean $isInternal If the Rest API call is internal
      */
@@ -288,10 +293,10 @@ class CentreonWebService
 
         /* Initialize the webservice */
         require_once($webService['path']);
-
+        
         $wsObj = new $webService['class']();
 
-        if (method_exists($wsObj, 'finalConstruct')) {
+        if ($wsObj instanceof CentreonWebServiceDiInterface) {
             $wsObj->finalConstruct($dependencyInjector);
         }
 
@@ -300,7 +305,7 @@ class CentreonWebService
         }
 
         if (false === $wsObj->authorize($action, $user, $isInternal)) {
-            static::sendJson('Forbidden', 403);
+            static::sendResult('Forbidden', 403, static::RESULT_JSON);
         }
 
         /* Execute the action */

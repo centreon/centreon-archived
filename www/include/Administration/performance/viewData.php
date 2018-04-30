@@ -41,12 +41,6 @@ require_once './class/centreonBroker.class.php';
 include_once("./include/monitoring/common-Func.php");
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the option dir
  */
 $path = "./include/Administration/performance/";
@@ -285,7 +279,7 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 ?>
     <script type="text/javascript">

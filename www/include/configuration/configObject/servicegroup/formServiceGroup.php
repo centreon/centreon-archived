@@ -93,7 +93,7 @@ $attrHostgroups = array(
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Group"));
 } elseif ($o == "c") {
@@ -140,8 +140,8 @@ $form->addElement('select2', 'sg_tServices', _("Linked Service Templates"), arra
  * Further informations
  */
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
-$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Enabled"), '1');
-$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
+$sgActivation[] = $form->createElement('radio', 'sg_activate', null, _("Enabled"), '1');
+$sgActivation[] = $form->createElement('radio', 'sg_activate', null, _("Disabled"), '0');
 $form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sg_activate' => '1'));
 

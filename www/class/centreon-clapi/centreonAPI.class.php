@@ -42,12 +42,8 @@ require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
+require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 
-if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
-    require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
-} else {
-    require_once realpath(dirname(__FILE__) . "/../Session.class.php");
-}
 
 /**
  * General Centeon Management
@@ -308,7 +304,7 @@ class CentreonAPI
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
 
-        while ($row = $DBRESULT->fetchRow()) {
+        while ($row = $DBRESULT->fetch()) {
             $objectsPath = array_merge(
                 $objectsPath,
                 glob(_CENTREON_PATH_ . 'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
@@ -698,7 +694,7 @@ class CentreonAPI
                 return 1;
             }
 
-            $obj = new $objName($this->dependencyInjector, $this->object);
+            $obj = new $objName($this->dependencyInjector);
 
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
@@ -706,6 +702,7 @@ class CentreonAPI
                 print "Method not implemented into Centreon API.\n";
                 return 1;
             }
+
         } else {
             if (method_exists($this, $action)) {
                 $this->return_code = $this->$action();
@@ -715,6 +712,7 @@ class CentreonAPI
                 $this->return_code = 1;
             }
         }
+
         if ($exit) {
             exit($this->return_code);
         } else {
@@ -803,43 +801,6 @@ class CentreonAPI
     }
 
     /**
-     * Export from a specific object
-     */
-    public function export_filter($action, $filter_id, $filter_name)
-    {
-        $exported = CentreonExported::getInstance();
-
-        if (is_null($action)) {
-            return 0;
-        }
-
-        if (!isset($this->objectTable[$action])) {
-            print "Unknown object : $action\n";
-            $this->setReturnCode(1);
-            $this->close();
-        }
-
-        $exported->ariane_push($action, $filter_id, $filter_name);
-        if ($exported->is_exported($action, $filter_id, $filter_name)) {
-            $exported->ariane_pop();
-            return 0;
-        }
-
-        $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
-            $primaryKey = $this->objectTable[$action]->getObject()->getPrimaryKey();
-            $filters[$primaryKey] = $filter_id;
-        }
-        if (!is_null($filter_name)) {
-            $labelField = $this->objectTable[$action]->getObject()->getUniqueLabelField();
-            $filters[$labelField] = $filter_name;
-        }
-
-        $this->objectTable[$action]->export($filters);
-        $exported->ariane_pop();
-    }
-
-    /**
      * @param $newOption
      */
     public function setOption($newOption)
@@ -858,31 +819,40 @@ class CentreonAPI
 
         $this->initAllObjects();
 
+
         if (isset($this->options['select'])) {
             CentreonExported::getInstance()->set_filter(1);
             CentreonExported::getInstance()->set_options($this->options);
             $selected = $this->options['select'];
+
             if (!is_array($this->options['select'])) {
                 $selected = array($this->options['select']);
             }
+
             foreach ($selected as $select) {
                 $splits = explode(';', $select);
+
+                $splits[0] = isset($splits[0]) ? $splits[0] : null;
+                $splits[1] = isset($splits[1]) ? $splits[1] : null;
+
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                }
-
-                if (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
-                    echo "Unknown object : $splits[0];$splits[1]\n";
-                    $this->setReturnCode(1);
-                    return $this->return_code;
+                } elseif (!is_null($splits[1])) {
+                    $name = $splits[1];
+                    if (isset($splits[2])) {
+                        $name .= ';' . $splits[2];
+                    }
+                    if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
+                        echo "Unknown object : $splits[0];$splits[1]\n";
+                        $this->setReturnCode(1);
+                        $this->close();
+                    } else {
+                        $this->objectTable[$splits[0]]->export($name);
+                    }
                 } else {
-                    $this->export_filter(
-                        $splits[0],
-                        $this->objectTable[$splits[0]]->getObjectId($splits[1]),
-                        $splits[1]
-                    );
+                    $this->objectTable[$splits[0]]->export();
                 }
             }
             return $this->return_code;
@@ -947,8 +917,8 @@ class CentreonAPI
      */
     public function printLegals()
     {
-        $DBRESULT = &$this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
-        $data = &$DBRESULT->fetchRow();
+        $DBRESULT = $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
+        $data = $DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
         print "Copyright Centreon - www.centreon.com\n";
         unset($data);

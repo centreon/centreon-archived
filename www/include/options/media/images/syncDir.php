@@ -48,9 +48,6 @@ $pearDB = new CentreonDB();
  */
 global $regCounter, $gdCounter, $fileRemoved, $dirCreated;
 
-session_start();
-session_write_close();
-
 $sid = session_id();
 if (!isset($sid)) {
     exit;

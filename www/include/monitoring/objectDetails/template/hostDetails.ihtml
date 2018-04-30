@@ -251,7 +251,7 @@
                                                 </td>
                                             </tr>
                                             {/if}
-                                            {if $host_data.current_state != UP}
+                                            {if $host_data.current_state != 'UP'}
                                             {if $aclAct.host_acknowledgement && !$host_data.problem_has_been_acknowledged || $aclAct.host_disacknowledgement && $host_data.problem_has_been_acknowledged || $admin == true}
                                             <tr class='list_one'>
                                                 <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>

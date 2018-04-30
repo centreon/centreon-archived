@@ -64,7 +64,6 @@ class CentreonACLResource extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
-
     const UNSUPPORTED_WILDCARD = "Action does not support the '*' wildcard";
 
     /**
@@ -127,12 +126,11 @@ class CentreonACLResource extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -143,38 +141,36 @@ class CentreonACLResource extends CentreonObject
         $addParams['acl_res_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             $params[1] = "acl_res_" . $params[1];
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -183,7 +179,14 @@ class CentreonACLResource extends CentreonObject
         $params = array("acl_res_id", "acl_res_name", "acl_res_alias", "acl_res_comment", "acl_res_activate");
         $paramString = str_replace("acl_res_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $str = "";
             foreach ($tab as $key => $value) {
@@ -197,8 +200,7 @@ class CentreonACLResource extends CentreonObject
     /**
      * Get Acl Group
      *
-     * @param string $parameters
-     * @return void
+     * @param $aclResName
      * @throws CentreonClapiException
      */
     public function getaclgroup($aclResName)
@@ -305,11 +307,9 @@ class CentreonACLResource extends CentreonObject
     }
 
     /**
-     * Grant
-     *
-     * @param string $type
-     * @param string $arg
-     * @return void
+     * @param $type
+     * @param $arg
+     * @throws CentreonClapiException
      */
     protected function grant($type, $arg)
     {
@@ -431,11 +431,28 @@ class CentreonACLResource extends CentreonObject
     }
 
     /**
-     * @param null $filters
+     * @param null $filterName
+     * @return bool|void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $aclResourceList = $this->object->getList('*', -1, 0, null, null, $filters);
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $aclResourceList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclResourceList as $aclResource) {
@@ -498,7 +515,6 @@ class CentreonACLResource extends CentreonObject
             $aclResourceParams['acl_res_id'],
             $aclResourceParams['acl_res_name']
         );
-
 
         return $grantResources;
     }

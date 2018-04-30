@@ -43,14 +43,13 @@ class Centreon_Object_Relation_Service_Group_Service extends Centreon_Object_Rel
 
     /**
      * Used for inserting relation into database
-     *
      * @param int $fkey
-     * @param int $hostId
-     * @param int $serviceId
-     * @return void
+     * @param null $key
      */
-    public function insert($fkey, $hostId, $serviceId)
+    public function insert($fkey, $key = null)
     {
+        $hostId = $key['hostId'];
+        $serviceId = $key['serviceId'];
         $sql = "INSERT INTO $this->relationTable ($this->firstKey, host_host_id, $this->secondKey) VALUES (?, ?, ?)";
         $this->db->query($sql, array($fkey, $hostId, $serviceId));
     }
@@ -123,7 +122,7 @@ class Centreon_Object_Relation_Service_Group_Service extends Centreon_Object_Rel
      * @param array $arg
      * @throws Exception
      */
-    public function __call($name, $arg)
+    public function __call($name, $arg = array())
     {
         throw new Exception('Unknown method');
     }

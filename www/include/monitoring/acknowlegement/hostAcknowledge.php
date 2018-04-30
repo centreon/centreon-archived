@@ -37,8 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once "HTML/QuickForm.php";
-require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
 require_once "./include/monitoring/common-Func.php";
 require_once "./class/centreonDB.class.php";
 
@@ -64,7 +62,7 @@ if (!$is_admin) {
 }
 
 if ($is_admin || (isset($lcaHostByName[$host_name]))) {
-    $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=".urlencode($host_name));
+    $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p."&host_name=".urlencode($host_name));
 
     $form->addElement('header', 'title', _("Acknowledge a host"));
 

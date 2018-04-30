@@ -82,7 +82,7 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>' .
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an Escalation"));
 } elseif ($o == "c") {
@@ -112,16 +112,16 @@ $form->addElement('select2', 'escalation_period', _("Escalation Period"), array(
 
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+$tab[] = $form->createElement('checkbox', 'd', '&nbsp;', _("Down"));
+$tab[] = $form->createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+$tab[] = $form->createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 $form->addGroup($tab, 'escalation_options1', _("Hosts Escalation Options"), '&nbsp;&nbsp;');
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-$tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+$tab[] = $form->createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+$tab[] = $form->createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+$tab[] = $form->createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+$tab[] = $form->createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 $form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 
 $form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
@@ -208,7 +208,9 @@ $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
 $init = $form->addElement('hidden', 'initialValues');
-$init->setValue(serialize($initialValues));
+if (isset($initialValues)) {
+    $init->setValue(serialize($initialValues));
+}
 
 #
 ## Form Rules
@@ -219,7 +221,7 @@ $form->addRule('first_notification', _("Required Field"), 'required');
 $form->addRule('last_notification', _("Required Field"), 'required');
 $form->addRule('notification_interval', _("Required Field"), 'required');
 $form->addRule('esc_cgs', _("Required Field"), 'required');
-$form->addRule('dep_hostChilds', _("Required Field"), 'required');
+// $form->addRule('dep_hostChilds', _("Required Field"), 'required'); - Fields is not added so rule is not needed
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('esc_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));

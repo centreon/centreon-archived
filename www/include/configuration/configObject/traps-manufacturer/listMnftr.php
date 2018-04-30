@@ -79,7 +79,7 @@ $tpl->assign("headerMenu_options", _("Options"));
  */
 $query = "SELECT * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($query);
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines

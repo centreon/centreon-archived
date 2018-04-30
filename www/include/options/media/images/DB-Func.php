@@ -527,7 +527,7 @@ function getListDirectory($filter = null)
     $query .= "ORDER BY dir_name";
     $list_dir = array();
     $dbresult = $pearDB->query($query);
-    while ($row = $dbresult->fetchRow(DB_FETCHMODE_ASSOC)) {
+    while ($row = $dbresult->fetchRow(PDO::FETCH_ASSOC)) {
         $list_dir[$row['dir_id']] = $row['dir_name'];
     }
     $dbresult->closeCursor();

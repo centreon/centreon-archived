@@ -75,7 +75,7 @@ if ($resetFilter) {
 }
 
 if (!isset($o) || empty($o)) {
-    $o = $_SESSION['monitoring_service_status'];
+    $o = isset($_SESSION['monitoring_service_status']) ? $_SESSION['monitoring_service_status'] : null;
 }
 
 foreach ($myinputsGet as $key => $value) {
@@ -236,7 +236,7 @@ if (!isset($_GET['o'])) {
     $sSetOrderInMemory = "0";
 }
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");

@@ -38,13 +38,6 @@ if (!isset($centreon)) {
 }
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the option dir
  */
 $path = "./include/configuration/configGenerateTraps/";

@@ -216,7 +216,7 @@ function insertServiceGroupDependency($ret = array())
     $fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
     $fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
     $fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-    $fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
+    $fields["execution_failure_criteria"] = (isset($ret["execution_failure_criteria"]) ? implode(",", array_keys($ret["execution_failure_criteria"])) : '');
     $fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
     $fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
     $fields["dep_sgParents"] = "";
@@ -305,6 +305,9 @@ function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = 
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_servicegroupParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -329,6 +332,9 @@ function updateServiceGroupDependencyServiceGroupChilds($dep_id = null, $ret = a
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_servicegroupChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);

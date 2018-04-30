@@ -69,7 +69,7 @@ $attrSelect2    = array("style" => "width: 50px;");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 /*
@@ -118,8 +118,8 @@ $form->addElement('select', 'rrdtool_watermark_fontsize', _("Font size"), $fontS
  */
 $attrEnable = array('onclick' => 'toggleRrdcached(this)');
 $form->addElement('header', 'rrdcached_title', _("Rrdcached configuration : work only with Centreon Broker"));
-$rrdcachedEnable[] = HTML_QuickForm::createElement('radio', 'rrdcached_enable', null, _("Yes"), '1', $attrEnable);
-$rrdcachedEnable[] = HTML_QuickForm::createElement('radio', 'rrdcached_enable', null, _("No"), '0', $attrEnable);
+$rrdcachedEnable[] = $form->createElement('radio', 'rrdcached_enable', null, _("Yes"), '1', $attrEnable);
+$rrdcachedEnable[] = $form->createElement('radio', 'rrdcached_enable', null, _("No"), '0', $attrEnable);
 $form->addGroup($rrdcachedEnable, 'rrdcached_enable', _("Enable RRDCached"), '&nbsp;');
 $form->addElement('text', 'rrdcached_port', _('TCP Port'), $attrsText2);
 $form->addElement('text', 'rrdcached_unix_path', _('UNIX Socket path'), $attrsText);
@@ -145,7 +145,7 @@ $form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one optio
 $form->addRule('rrdcached_port', _('The port must be numeric'), 'numeric');
 
 $form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
-$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
+// $form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
 
 /*
  * Smarty template Init

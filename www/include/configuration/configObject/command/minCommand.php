@@ -90,7 +90,7 @@ $DBRESULT->closeCursor();
 $attrsText = array("size" => "35");
 $attrsTextarea = array("rows" => "9", "cols" => "80");
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("View command definition"));
 
 /*
@@ -109,8 +109,8 @@ if ($cmd["command_type"] == "1") {
 }
 
 
-$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+$cmdType[] = $form->createElement('radio', 'command_type', null, _("Notification"), '1');
+$cmdType[] = $form->createElement('radio', 'command_type', null, _("Check"), '2');
 
 $v1 = $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 $v1->freeze();
@@ -132,7 +132,9 @@ $form->setConstants(array(
     "command_type" => $cmd["command_type"]["command_type"]
 ));
 
-$form->setDefaults(array("command_id1" => $cmd["command_id"]));
+if (isset($cmd['command_id'])) {
+    $form->setDefaults(['command_id1' => $cmd['command_id']]);
+}
 
 /*
 	 * Further informations

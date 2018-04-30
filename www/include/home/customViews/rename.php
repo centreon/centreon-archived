@@ -48,7 +48,6 @@ if (!isset($_SESSION['centreon'])) {
 }
 
 $centreon = $_SESSION['centreon'];
-$action = $_REQUEST['action'];
 $db = new CentreonDB();
 
 if (CentreonSession::checkSession(session_id(), $db) == 0) {

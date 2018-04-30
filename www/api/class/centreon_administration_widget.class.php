@@ -36,18 +36,13 @@
 require_once _CENTREON_PATH_ . "/www/class/centreonDBInstance.class.php";
 require_once _CENTREON_PATH_ . '/www/class/centreonWidget.class.php';
 require_once dirname(__FILE__) . "/webService.class.php";
+require_once dirname(__FILE__) . '/../interface/di.interface.php';
+require_once dirname(__FILE__) . '/../trait/diAndUtilis.trait.php';
 
-class CentreonAdministrationWidget extends CentreonWebService
+class CentreonAdministrationWidget extends CentreonWebService implements CentreonWebServiceDiInterface
 {
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+
+    use CentreonWebServiceDiAndUtilisTrait;
 
     /**
      * Get the list of installed widgets
@@ -61,7 +56,7 @@ class CentreonAdministrationWidget extends CentreonWebService
             $q = $this->arguments['q'];
         }
 
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
         $widgetInfo = $factory->newInformation();
         $widgets = $widgetInfo->getAvailableList($q);
 
@@ -92,7 +87,7 @@ class CentreonAdministrationWidget extends CentreonWebService
                 throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = array((int)$limit, (int)$this->arguments['page_limit']);
+            $range = array((int) $limit, (int) $this->arguments['page_limit']);
         } else {
             $range = array();
         }
@@ -114,7 +109,7 @@ class CentreonAdministrationWidget extends CentreonWebService
             $name = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
         $widgetInstaller = $factory->newInstaller($name);
 
         return $widgetInstaller->install();
@@ -132,7 +127,7 @@ class CentreonAdministrationWidget extends CentreonWebService
             $name = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
         $widgetUpgrader = $factory->newUpgrader($name);
 
         return $widgetUpgrader->upgrade();
@@ -150,7 +145,7 @@ class CentreonAdministrationWidget extends CentreonWebService
             $name = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Widget\Factory();
+        $factory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $this->utils);
         $widgetInstaller = $factory->newRemover($name);
 
         return $widgetInstaller->remove();
@@ -160,11 +155,11 @@ class CentreonAdministrationWidget extends CentreonWebService
      * Authorize to access to the action
      *
      * @param string $action The action name
-     * @param array $user The current user
+     * @param \CentreonUser $user The current user
      * @param boolean $isInternal If the api is call in internal
      * @return boolean If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal)
+    public function authorize($action, $user, $isInternal = false)
     {
         if (parent::authorize($action, $user, $isInternal)) {
             return true;

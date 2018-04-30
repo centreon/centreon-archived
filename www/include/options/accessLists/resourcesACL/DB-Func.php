@@ -334,7 +334,7 @@ function insertLCA()
         "'" . (isset($ret["all_servicegroups"]["all_servicegroups"])
             ? $pearDB->escape($ret["all_servicegroups"]["all_servicegroups"])
             : 0) . "', " .
-        "'" . $pearDB->escape($ret["acl_res_activate"]["acl_res_activate"]) . "', " .
+        "'" . $pearDB->escape(isset($ret["acl_res_activate"]) ? $ret["acl_res_activate"]["acl_res_activate"] : '') . "', " .
         "'1', " .
         "'" . $pearDB->escape($ret["acl_res_comment"]) . "')";
     $DBRESULT = $pearDB->query($rq);

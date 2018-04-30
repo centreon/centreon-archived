@@ -76,11 +76,10 @@ class CentreonContactGroup extends CentreonObject
     }
 
     /**
-     * List contact groups
-     *
-     * @param $string $parameters
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -96,12 +95,11 @@ class CentreonContactGroup extends CentreonObject
     }
 
     /**
-     * Add contact group
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -112,27 +110,28 @@ class CentreonContactGroup extends CentreonObject
         $addParams['cg_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Update contact groups
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (!preg_match("/^cg_/", $params[1])) {
                 $params[1] = "cg_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -203,7 +202,7 @@ class CentreonContactGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL($this->dependencyInjector);
+                $acl = new CentreonACL();
                 $acl->reload(true);
             }
         } else {
@@ -216,13 +215,20 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        parent::export($filters);
+        if (!parent::export($filterName)) {
+            return false;
+        }
+
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact($this->dependencyInjector);
         $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
         $cgFieldName = $this->object->getUniqueLabelField();
         $cFieldName = $contactObj->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$cgFieldName] = $filterName;
+        }
         $elements = $relObj->getMergedParameters(
             array($cgFieldName),
             array($cFieldName, "contact_id"),
@@ -234,7 +240,7 @@ class CentreonContactGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_alias']);
+            CentreonContact::getInstance()->export($element['contact_alias']);
             echo $this->action . $this->delim . "addcontact" .
                 $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
                 $this->delim . $element['contact_alias'] . "\n";

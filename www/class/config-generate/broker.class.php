@@ -175,7 +175,7 @@ class Broker extends AbstractObjectXML
                 // We search the BlockId
                 $blockId = 0;
                 for ($i = count($value); $i > 0; $i--) {
-                    if ($value[$i]['config_key'] == 'blockId') {
+                    if (isset($value[$i]['config_key']) && $value[$i]['config_key'] == 'blockId') {
                         $blockId = $value[$i]['config_value'];
                         break;
                     }

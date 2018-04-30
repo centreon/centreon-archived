@@ -110,7 +110,7 @@ class CentreonUtils
      * @param bool $or
      * @return string
      */
-    public function conditionBuilder($query, $condition, $or = false)
+    public static function conditionBuilder($query, $condition, $or = false)
     {
         if (preg_match('/ WHERE /', $query)) {
             if ($or === true) {
@@ -168,7 +168,7 @@ class CentreonUtils
      * @param string $str
      * @return string;
      */
-    public function operandToMysqlFormat($str)
+    public static function operandToMysqlFormat($str)
     {
         $result = "";
         switch ($str) {
@@ -210,18 +210,20 @@ class CentreonUtils
      * @param string $key
      * @return array
      */
-    public function mergeWithInitialValues($form, $key)
+    public static function mergeWithInitialValues($form, $key)
     {
         $init = array();
-        $initForm = $form->getElement('initialValues');
-        $c = get_class($initForm);
-        if (!is_null($form) && $c != "HTML_QuickForm_Error") {
+        try {
+            $initForm = $form->getElement('initialValues');
             $initialValues = unserialize($initForm->getValue());
-            if (count($initialValues) && isset($initialValues[$key])) {
+            if (!empty($initialValues) && isset($initialValues[$key])) {
                 $init = $initialValues[$key];
             }
+            $result = array_merge((array)$form->getSubmitValue($key), $init);
+        } catch (HTML_QuickForm_Error $e) {
+            $result = (array) $form->getSubmitValue($key);
         }
-        return array_merge((array)$form->getSubmitValue($key), $init);
+        return $result;
     }
 
     /**
@@ -233,7 +235,7 @@ class CentreonUtils
      *                             otherwise values will be used
      * @return string
      */
-    public function toStringWithQuotes($arr = array(), $transformKey = true)
+    public static function toStringWithQuotes($arr = array(), $transformKey = true)
     {
         $string = "";
         $first = true;

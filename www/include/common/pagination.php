@@ -137,6 +137,10 @@ if (isset($_REQUEST['hostgroups'])) {
     $url_var .= '&hostgroups=' . $_REQUEST['hostgroups'];
 }
 
+if (!isset($path)) {
+    $path = null;
+}
+
 /*
  * Smarty template Init
  */
@@ -247,7 +251,7 @@ if ($rows != 0) {
         }
     </SCRIPT>
 <?php
-$form = new HTML_QuickForm(
+$form = new HTML_QuickFormCustom(
     'select_form',
     'GET',
     "?p=" . $p . "&search_type_service=" . $search_type_service . "&search_type_host=" . $search_type_host
@@ -284,14 +288,23 @@ if (isset($_GET['host_name'])) {
     $host_name = null;
 }
 isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
+isset($order) ? true : $order = null;
 
 $tpl->assign("host_name", $host_name);
 $tpl->assign("status", $status);
-$tpl->assign("limite", $limite);
+$tpl->assign("limite", isset($limite) ? $limite : null);
 $tpl->assign("begin", $num);
 $tpl->assign("end", $limit);
 $tpl->assign("pagin_page", _("Page"));
-$tpl->assign("order", $_GET["order"]);
+$tpl->assign("order", $order);
 $tpl->assign("tab_order", $tab_order);
 $tpl->assign('form', $renderer->toArray());
+
+
+!$tpl->get_template_vars('firstPage') ? $tpl->assign('firstPage', null) : null;
+!$tpl->get_template_vars('pagePrev') ? $tpl->assign('pagePrev', null) : null;
+!$tpl->get_template_vars('pageArr') ? $tpl->assign('pageArr', null) : null;
+!$tpl->get_template_vars('pageNext') ? $tpl->assign('pageNext', null) : null;
+!$tpl->get_template_vars('lastPage') ? $tpl->assign('lastPage', null) : null;
+
 $tpl->display("pagination.ihtml");

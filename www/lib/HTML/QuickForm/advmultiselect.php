@@ -41,8 +41,6 @@
  * @since     File available since Release 0.4.0
  */
 
-require_once 'HTML/QuickForm/select.php';
-
 /**
  * Basic error codes
  *
@@ -272,14 +270,13 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
      * @return     void
      * @since      version 0.4.0 (2005-06-25)
      */
-    function HTML_QuickForm_advmultiselect($elementName = null, $elementLabel = null,
+    function __construct($elementName = null, $elementLabel = null,
                                            $options = null, $attributes = null,
                                            $sort = null)
     {
         $opts    = $options;
         $options = null;  // prevent to use the default select element load options
-        $this->HTML_QuickForm_select($elementName, $elementLabel,
-            $options, $attributes);
+        parent::__construct($elementName, $elementLabel, $options, $attributes);
 
         // allow to load options at once and take care of fancy attributes
         $this->load($opts);
@@ -725,7 +722,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
             $attrHidden = $this->_getAttrString($this->_attributesHidden);
 
             // prepare option tables to be displayed as in POST order
-            $append = count($this->_values);
+            $append = is_array($this->_values) ? count($this->_values) : 0;
             if ($append > 0) {
                 $arrHtmlSelected = array_fill(0, $append, ' ');
             } else {
@@ -802,8 +799,11 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
             $strHtmlSelected = "<select$attrSelected>". PHP_EOL;
             if ($selected_count > 0) {
                 foreach ($arrHtmlSelected as $data) {
-                    $strHtmlSelected
-                        .= $tabs . $tab
+                    if ( !isset($data['attr']) || !isset($data['text']) ) {
+                        continue;
+                    }
+
+                    $strHtmlSelected .= $tabs . $tab
                         . '<option' . $this->_getAttrString($data['attr']) . '>'
                         . $data['text'] . '</option>' . PHP_EOL;
                 }
@@ -816,8 +816,11 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
             $strHtmlHidden = "<select$attrHidden>". PHP_EOL;
             if (count($arrHtmlHidden) > 0) {
                 foreach ($arrHtmlHidden as $data) {
-                    $strHtmlHidden
-                        .= $tabs . $tab
+                    if ( !isset($data['attr']) || !isset($data['text']) ) {
+                        continue;
+                    }
+
+                    $strHtmlHidden .= $tabs . $tab
                         . '<option' . $this->_getAttrString($data['attr']) . '>'
                         . $data['text'] . '</option>' . PHP_EOL;
                 }
@@ -1079,7 +1082,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
      * @throws     PEAR_Error
      * @see        load()
      */
-    function loadArray($arr, $values = null)
+    function loadArray(array $arr, $values = null)
     {
         if (!is_array($arr)) {
             return PEAR::throwError('Argument 1 of HTML_QuickForm_advmultiselect::' .
@@ -1171,7 +1174,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
 }
 
 if (class_exists('HTML_QuickForm')) {
-    HTML_QuickForm::registerElementType('advmultiselect',
+    (new HTML_QuickForm)->registerElementType('advmultiselect',
         'HTML/QuickForm/advmultiselect.php', 'HTML_QuickForm_advmultiselect');
 }
 ?>

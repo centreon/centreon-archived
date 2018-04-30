@@ -42,16 +42,13 @@ if (!isset($oreon)) {
 
 require_once "./include/monitoring/common-Func.php";
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 unset($tpl);
 unset($path);
 
 /*
  * Time period select
  */
-$form = new HTML_QuickForm('form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('form', 'post', "?p=".$p);
 
 /*
  * Get Poller List

@@ -112,7 +112,7 @@ if ($search) {
 
 
 $DBRESULT = $pearDB->query($rq);
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -141,7 +141,7 @@ for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_name" => myDecode($trap["traps_name"]),
         "RowMenu_link" => "?p=" . $p . "&o=c&traps_id=" . $trap['traps_id'],
         "RowMenu_desc" => myDecode(substr($trap["traps_oid"], 0, 40)),
-        "RowMenu_status" => $tabStatus[$trap["traps_status"]],
+        "RowMenu_status" => isset($tabStatus[$trap["traps_status"]]) ? $tabStatus[$trap["traps_status"]] : $tabStatus[3],
         "RowMenu_args" => myDecode($trap["traps_args"]),
         "RowMenu_manufacturer" => myDecode($mnftr["alias"]),
         "RowMenu_options" => $moptions
