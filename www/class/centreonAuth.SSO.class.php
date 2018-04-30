@@ -120,7 +120,7 @@ class CentreonAuthSSO extends CentreonAuth
         }
     }
 
-    protected function checkPassword($password, $token, $autoimport = false)
+    protected function checkPassword($password, $token = "", $autoimport = false)
     {
         if ($this->sso_mandatory == 1) {
             # Mode LDAP autoimport. Need to call it
