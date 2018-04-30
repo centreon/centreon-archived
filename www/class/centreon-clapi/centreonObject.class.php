@@ -39,6 +39,7 @@ require_once "centreonAPI.class.php";
 require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_ . "/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 
 abstract class CentreonObject
 {
@@ -54,6 +55,7 @@ abstract class CentreonObject
     const OBJECTNOTLINKED = "Objects are not linked";
 
     private $centreon_api = null;
+    protected static $instances;
 
     /**
      * Db adapter
@@ -115,6 +117,12 @@ abstract class CentreonObject
      * @var array
      */
     protected $exportExcludedParams;
+    /**
+     * cache to store object ids by object names
+     *
+     * @var array
+     */
+    protected $objectIds = array();
 
     /**
      * Constructor
@@ -201,9 +209,13 @@ abstract class CentreonObject
      */
     public function getObjectId($name)
     {
+        if (isset($this->objectIds[$name])) {
+            return $this->objectIds[$name];
+        }
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
         if (count($ids)) {
-            return $ids[0];
+            $this->objectIds[$name] = $ids[0];
+            return $this->objectIds[$name];
         }
         return 0;
     }
@@ -247,9 +259,7 @@ abstract class CentreonObject
     }
 
     /**
-     * Checks if parameters are correct
-     *
-     * @throws Exception
+     * @throws CentreonClapiException
      */
     protected function checkParameters()
     {
@@ -265,12 +275,14 @@ abstract class CentreonObject
     }
 
     /**
-     * Add Action
-     *
-     * @return int
+     * @param $parameters
+     * @return mixed
      */
-    public function add()
+    public function add($parameters)
     {
+
+        $this->initInsertParameters($parameters);
+
         $id = $this->object->insert($this->params);
         $this->addAuditLog(
             'a',
@@ -278,7 +290,20 @@ abstract class CentreonObject
             $this->params[$this->object->getUniqueLabelField()],
             $this->params
         );
+        if (method_exists($this, "insertRelations")) {
+            $this->insertRelations($id);
+        }
         return $id;
+    }
+
+
+    /**
+     * @param $parameters
+     * @return mixed
+     */
+    public function initInsertParameters($parameters)
+    {
+        return $parameters;
     }
 
     /**
@@ -317,42 +342,60 @@ abstract class CentreonObject
     }
 
     /**
-     * Set Param
-     *
-     * @param $objectId
-     * @param array $params
+     * @param array $parameters
      * @throws CentreonClapiException
      */
-    public function setparam($objectId, $params = array())
+    public function setparam($parameters = array())
     {
-        if (isset($params[$this->object->getUniqueLabelField()])
-            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true
-        ) {
-            throw new CentreonClapiException(self::NAMEALREADYINUSE);
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
         }
-        $this->object->update($objectId, $params);
-        $uniqueField = $this->object->getUniqueLabelField();
-        $p = $this->object->getParameters($objectId, $uniqueField);
-        if (isset($p[$uniqueField])) {
-            $this->addAuditLog(
-                'c',
-                $objectId,
-                $p[$uniqueField],
-                $params
-            );
+
+        if (!empty($params)) {
+            $uniqueLabel = $this->object->getUniqueLabelField();
+            $objectId = $params['objectId'];
+            unset($params['objectId']);
+
+            if (isset($params[$uniqueLabel])
+                && $this->objectExists($params[$uniqueLabel], $objectId) == true
+            ) {
+                throw new CentreonClapiException(self::NAMEALREADYINUSE);
+            }
+
+            $this->object->update($objectId, $params);
+            $p = $this->object->getParameters($objectId, $uniqueLabel);
+            if (isset($p[$uniqueLabel])) {
+                $this->addAuditLog(
+                    'c',
+                    $objectId,
+                    $p[$uniqueLabel],
+                    $params
+                );
+            }
         }
+
     }
 
     /**
      * Shows list
      *
      * @param array $params
+     * @param array $filters
      * @return void
      */
     public function show($params = array(), $filters = array())
     {
         echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -404,15 +447,61 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-    /**
-     * Export data
-     *
-     * @param string $filters
-     * @return void
-     */
-    public function export($filters = null)
+    protected function canBeExported($filterName = null)
     {
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($this->action)) {
+            return false;
+        }
+
+        if (is_null($filterName)) {
+            return true;
+        }
+
+        $filterId = $this->getObjectId($filterName);
+        $exported->ariane_push($this->action, $filterId, $filterName);
+        if ($exported->is_exported($this->action, $filterId, $filterName)) {
+            $exported->ariane_pop();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Export from a specific object
+     *
+     * @param $filterName
+     * @return bool
+     */
+    public function export($filterName = null)
+    {
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $filterId = $this->getObjectId($filterName);
+        $labelField = $this->getObject()->getUniqueLabelField();
+
+        $filters = array();
+        if (!is_null($filterId) && $filterId !== 0) {
+            $primaryKey = $this->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filterId;
+        }
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -434,16 +523,21 @@ abstract class CentreonObject
                 }
             }
         }
+
+        CentreonExported::getInstance()->ariane_pop();
+        return true;
     }
 
     /**
      * Insert audit log
      *
-     * @param string $actionType
-     * @param int $objId
-     * @param string $objName
+     * @param $actionType
+     * @param $objId
+     * @param $objName
      * @param array $objValues
-     * @param string|null $objectType - The object type to log if is null use the object type of the class
+     * @param null $objectType
+     * @return null
+     * @throws CentreonClapiException
      */
     public function addAuditLog($actionType, $objId, $objName, $objValues = array(), $objectType = null)
     {
@@ -538,5 +632,24 @@ abstract class CentreonObject
         }
         $dbResult->closeCursor();
         return $name;
+    }
+
+    /**
+     * @param null $dependencyInjector
+     * @return mixed
+     */
+    public static function getInstance($dependencyInjector = null)
+    {
+        $class = get_called_class();
+
+        if (is_null($dependencyInjector)) {
+            $dependencyInjector = loadDependencyInjector();
+        }
+
+        if (!isset(self::$instances[$class])) {
+            self::$instances[$class] = new $class($dependencyInjector);
+        }
+
+        return self::$instances[$class];
     }
 }

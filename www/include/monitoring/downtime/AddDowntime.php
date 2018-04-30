@@ -53,6 +53,7 @@ $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
 
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
+$resource_id = isset($resource_id) ? $resource_id : 0;
 
 if (!$centreon->user->access->checkAction("host_schedule_downtime")
     && !$centreon->user->access->checkAction("service_schedule_downtime")) {
@@ -69,7 +70,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     /*
      * Form begin
      */
-    $form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+    $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
     /*
      * Indicator basic information
@@ -90,7 +91,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     }
 
     if (!isset($_GET['host_id'])) {
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'downtimeType',
             null,
@@ -98,7 +99,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             '1',
             array($disabled, 'id' => 'host', 'onclick' => "toggleParams('host');")
         );
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'downtimeType',
             null,
@@ -106,7 +107,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             '2',
             array($disabled, 'id' => 'service', 'onclick' => "toggleParams('service');")
         );
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'downtimeType',
             null,
@@ -114,7 +115,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             '0',
             array($disabled, 'id' => 'hostgroup', 'onclick' => "toggleParams('hostgroup');")
         );
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'downtimeType',
             null,
@@ -122,7 +123,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             '3',
             array($disabled, 'id' => 'servicegroup', 'onclick' => "toggleParams('servicegroup');")
         );
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'downtimeType',
             null,
@@ -136,9 +137,9 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         // the user can choose to set a downtime based on the host time or the centreon user time.
         /*
         $host_or_centreon_time[] =
-        HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
+        $form->createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
         $host_or_centreon_time[] =
-        HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
+        $form->createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
         $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');
         $form->setDefaults(array('host_or_centreon_time' => '0'));
         */
@@ -238,8 +239,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     }
     $form->setDefaults(array('duration_scale' => $defaultScale));
 
-    $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
-    $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
+    $with_services[] = $form->createElement('radio', 'with_services', null, _("Yes"), '1');
+    $with_services[] = $form->createElement('radio', 'with_services', null, _("No"), '0');
     $form->addGroup($with_services, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
 
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
@@ -324,11 +325,11 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         }
 
         $dt_w_services = false;
-        if ($values['with_services']['with_services'] == 1) {
+        if (isset($values['with_services']) && $values['with_services']['with_services'] == 1) {
             $dt_w_services = true;
         }
 
-        if ($values['downtimeType']['downtimeType'] == 1) {
+        if (isset($values['downtimeType']) && $values['downtimeType']['downtimeType'] == 1) {
             /*
              * Set a downtime for only host
              */
@@ -350,7 +351,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                     $host_or_centreon_time
                 );
             }
-        } elseif ($values['downtimeType']['downtimeType'] == 0) {
+        } elseif ($values['downtimeType']['downtimeType'] == 0 && isset($_POST['hostgroup_id']) && is_array($_POST['hostgroup_id'])) {
             /*
              * Set a downtime for hostgroup
              */

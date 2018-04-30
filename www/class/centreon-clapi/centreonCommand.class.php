@@ -97,13 +97,11 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
-     * Display all commands
-     *
-     * @param string $parameters
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
-        $filters = array();
         if (isset($parameters)) {
             $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
@@ -120,17 +118,18 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
-     * Add a command
-     *
-     * @param string $parameters
+     * @param $parameters
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
+
         $params = explode($this->delim, $parameters);
+
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
         $addParams = array();
         $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         if (!isset($this->typeConversion[$params[self::ORDER_TYPE]])) {
@@ -143,22 +142,22 @@ class CentreonCommand extends CentreonObject
         $addParams['command_line'] = $params[self::ORDER_COMMAND];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set parameters
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+
+        if ($objectId != 0) {
             if (!preg_match("/^command_/", $params[1])) {
                 if (!in_array($params[1], array('graph', 'enable_shell', 'connector_id'))) {
                     $params[1] = "command_" . $params[1];
@@ -182,7 +181,8 @@ class CentreonCommand extends CentreonObject
                 $params[2] = $tmp[0];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -208,15 +208,30 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
-     * Export data
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $filterName
+     * @return bool|void
+     * @throws CentreonClapiException
      */
-
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters);
+
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {

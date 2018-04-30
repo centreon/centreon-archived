@@ -101,7 +101,7 @@ $rq1 .= " GROUP BY state";
 $hostCounter = 0;
 $host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0);
 $DBRESULT = $obj->DBC->query($rq1);
-while ($data = $DBRESULT->fetchRow()) {
+while ($data = $DBRESULT->fetch()) {
     $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
     $hostCounter += $host_stat[$data["state"]];
 }
@@ -139,8 +139,8 @@ if (!$obj->is_admin) {
         ") ";
 }
 $DBRESULT = $obj->DBC->query($query_svc_status);
-$svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
-$DBRESULT->free();
+$svc_stat = array_map("myDecodeToInteger", $DBRESULT->fetch());
+$DBRESULT->closeCursor();
 $serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"]
     + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"]
     + $svc_stat["PENDING_TOTAL"];

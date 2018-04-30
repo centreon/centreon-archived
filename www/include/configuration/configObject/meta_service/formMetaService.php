@@ -145,7 +145,7 @@ $attrContactgroups = array(
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Meta Service"));
 } elseif ($o == "c") {
@@ -167,8 +167,8 @@ $form->addElement('select', 'calcul_type', _("Calculation Type"), $calType);
 $form->addElement('select', 'data_source_type', _('Data Source Type'), $dsType);
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
+$tab[] = $form->createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
+$tab[] = $form->createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
 $form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
 $form->setDefaults(array('meta_select_mode' => array('meta_select_mode' => '1')));
 
@@ -197,9 +197,9 @@ $form->addElement('text', 'retry_check_interval', _("Retry Check Interval"), $at
  */
 $form->addElement('header', 'notification', _("Notification"));
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("No"), '0');
-$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Default"), '2');
+$tab[] = $form->createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'notifications_enabled', null, _("No"), '0');
+$tab[] = $form->createElement('radio', 'notifications_enabled', null, _("Default"), '2');
 $form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 $form->setDefaults(array('notifications_enabled' => '2'));
 
@@ -232,11 +232,11 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'notification_period', _("Notification Period"), array(), $attrTimeperiod2);
 
-$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
+$msNotifOpt[] = $form->createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+$msNotifOpt[] = $form->createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+$msNotifOpt[] = $form->createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+$msNotifOpt[] = $form->createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+$msNotifOpt[] = $form->createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
 
 $form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
@@ -245,8 +245,8 @@ $form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbs
  */
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
-$msActivation[] = HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Enabled"), '1');
-$msActivation[] = HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Disabled"), '0');
+$msActivation[] = $form->createElement('radio', 'meta_activate', null, _("Enabled"), '1');
+$msActivation[] = $form->createElement('radio', 'meta_activate', null, _("Disabled"), '0');
 $form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('meta_activate' => '1'));
 $form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);

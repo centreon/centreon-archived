@@ -47,8 +47,8 @@ require_once "Centreon/Object/Relation/Acl/Group/Action.php";
  */
 class CentreonACLAction extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_DESCRIPTION       = 1;
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_DESCRIPTION = 1;
     const UNKNOWN_ACTION = "Unknown action";
     protected $relObject;
     protected $aclGroupObj;
@@ -112,12 +112,11 @@ class CentreonACLAction extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -128,42 +127,41 @@ class CentreonACLAction extends CentreonObject
         $addParams['acl_action_description'] = $params[self::ORDER_DESCRIPTION];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $params[1] = "acl_action_".$params[1];
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
+            $params[1] = "acl_action_" . $params[1];
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
+
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("acl_action_id", "acl_action_name", "acl_action_description", "acl_action_activate");
         $paramString = str_replace("acl_action_", "", implode($this->delim, $params));
@@ -180,10 +178,9 @@ class CentreonACLAction extends CentreonObject
     }
 
     /**
-     * Split params
-     *
-     * @param string $parameters
+     * @param $parameters
      * @return array
+     * @throws CentreonClapiException
      */
     protected function splitParams($parameters)
     {
@@ -193,16 +190,14 @@ class CentreonACLAction extends CentreonObject
         }
         $aclActionId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($params[0]));
         if (!count($aclActionId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[0]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
         return array($aclActionId[0], $params[1]);
     }
 
     /**
-     * Get Acl Group
-     *
-     * @param string $parameters
-     * @return void
+     * @param $aclActionName
+     * @throws CentreonClapiException
      */
     public function getaclgroup($aclActionName)
     {
@@ -211,7 +206,7 @@ class CentreonACLAction extends CentreonObject
         }
         $aclActionId = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($aclActionName));
         if (!count($aclActionId)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$aclActionName);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $aclActionName);
         }
         $groupIds = $this->relObject->getacl_group_idFromacl_action_id($aclActionId[0]);
         echo "id;name" . "\n";
@@ -224,10 +219,8 @@ class CentreonACLAction extends CentreonObject
     }
 
     /**
-     * Grant action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function grant($parameters)
     {
@@ -259,10 +252,8 @@ class CentreonACLAction extends CentreonObject
     }
 
     /**
-     * Revoke action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function revoke($parameters)
     {
@@ -288,9 +279,29 @@ class CentreonACLAction extends CentreonObject
         }
     }
 
-    public function export($filters = null)
+    /**
+     * @param null $filterName
+     * @return bool|void
+     */
+    public function export($filterName = null)
     {
-        $aclActionRuleList = $this->object->getList('*', -1, 0, null, null, $filters);
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $aclActionRuleList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclActionRuleList as $aclActionRule) {
@@ -325,7 +336,6 @@ class CentreonACLAction extends CentreonObject
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ruleId', $aclActionRuleId);
         $stmt->execute();
-
         $aclActionList = $stmt->fetchAll();
 
         foreach ($aclActionList as $aclAction) {
@@ -333,7 +343,6 @@ class CentreonACLAction extends CentreonObject
                 $aclActionName . $this->delim .
                 $aclAction['acl_action_name'] . $this->delim . "\n";
         }
-
 
         return $grantActions;
     }

@@ -98,7 +98,7 @@ $attrHosttemplates = array(
 /*
  * Create formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a host category"));
 } elseif ($o == "c") {
@@ -158,8 +158,8 @@ if (!$oreon->user->admin) {
  */
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('textarea', 'hc_comment', _("Comments"), $attrsTextarea);
-$hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Enabled"), '1');
-$hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Disabled"), '0');
+$hcActivation[] = $form->createElement('radio', 'hc_activate', null, _("Enabled"), '1');
+$hcActivation[] = $form->createElement('radio', 'hc_activate', null, _("Disabled"), '0');
 $form->addGroup($hcActivation, 'hc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hc_activate' => '1'));
 

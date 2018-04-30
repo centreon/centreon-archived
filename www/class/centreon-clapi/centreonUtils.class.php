@@ -100,10 +100,8 @@ class CentreonUtils
     }
 
     /**
-     * Get Image Id
-     *
-     * @param string $imagename
-     * @param int|null
+     * @param $imagename
+     * @return null
      */
     public function getImageId($imagename)
     {
@@ -115,8 +113,7 @@ class CentreonUtils
             return null;
         }
 
-        $query = "SELECT img.img_id " .
-            "FROM view_img_dir dir, view_img_dir_relation rel, view_img img " .
+        $query = "SELECT img.img_id FROM view_img_dir dir, view_img_dir_relation rel, view_img img " .
             "WHERE dir.dir_id = rel.dir_dir_parent_id " .
             "AND rel.img_img_id = img.img_id " .
             "AND img.img_path = '" . $imagename . "' " .

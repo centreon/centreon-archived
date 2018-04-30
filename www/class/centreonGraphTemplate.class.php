@@ -48,7 +48,7 @@ class CentreonGraphTemplate
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 

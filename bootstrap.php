@@ -101,5 +101,5 @@ $configFiles = $dependencyInjector['finder']
     ->in(__DIR__ . '/config');
 foreach ($configFiles as $configFile) {
     $configFileName = $configFile->getBasename();
-    require_once __DIR__ . '/config/' . $configFileName;
+    require __DIR__ . '/config/' . $configFileName;
 }

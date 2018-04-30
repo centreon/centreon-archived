@@ -63,13 +63,7 @@ $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $tpl = new Smarty();
 $tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('select_form', 'GET', 'main.php');
+$form = new HTML_QuickFormCustom('select_form', 'GET', 'main.php');
 
 $form->addElement('header', 'title', _("Set downtimes"));
 

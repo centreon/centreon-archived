@@ -86,7 +86,7 @@ $attrServices = array(
 );
 
 # Form begin
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
 } elseif ($o == "c") {
@@ -101,48 +101,48 @@ $form->addElement('text', 'dep_name', _("Name"), $attrsText);
 $form->addElement('text', 'dep_description', _("Description"), $attrsText);
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+$tab[] = $form->createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'inherits_parent', null, _("No"), '0');
 $form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 $form->setDefaults(array('inherits_parent' => '1'));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'o',
     '&nbsp;',
     _("Ok"),
     array('id' => 'sOk', 'onClick' => 'uncheckAllS(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
     array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
     array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
     array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
     array('id' => 'sPending', 'onClick' => 'uncheckAllS(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
@@ -152,42 +152,42 @@ $tab[] = HTML_QuickForm::createElement(
 
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 $tab = array();
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'o',
     '&nbsp;',
     _("Ok"),
     array('id' => 'sOk2', 'onClick' => 'uncheckAllS2(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'w',
     '&nbsp;',
     _("Warning"),
     array('id' => 'sWarning2', 'onClick' => 'uncheckAllS2(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unknown"),
     array('id' => 'sUnknown2', 'onClick' => 'uncheckAllS2(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'c',
     '&nbsp;',
     _("Critical"),
     array('id' => 'sCritical2', 'onClick' => 'uncheckAllS2(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
     array('id' => 'sPending2', 'onClick' => 'uncheckAllS2(this);')
 );
-$tab[] = HTML_QuickForm::createElement(
+$tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',

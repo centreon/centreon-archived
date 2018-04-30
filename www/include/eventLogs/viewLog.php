@@ -37,13 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 $user_params = array(
     "log_filter_host" => true,
     "log_filter_svc" => true,
@@ -164,7 +157,7 @@ if (isset($_GET['poller'])) {
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('FormPeriod', 'get', "?p=" . $p);
+$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=" . $p);
 $form->addElement('header', 'title', _("Choose the source"));
 
 $periods = array(

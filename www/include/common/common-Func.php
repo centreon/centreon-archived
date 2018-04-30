@@ -118,6 +118,14 @@ function myDecode($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
+/*
+ * Decode outputting integer values
+ */
+function myDecodeToInteger($arg)
+{
+    return intval(html_entity_decode($arg, ENT_QUOTES, "UTF-8"));
+}
+
 function getStatusColor($pearDB)
 {
     $colors = array();
@@ -162,7 +170,7 @@ function initSmartyTpl($path = null, $tpl = null, $subDir = null)
     $tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
     $tpl->config_dir = "../GPL_LIB/SmartyCache/config";
     $tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
-
+    $tpl->plugins_dir[] = "../GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
@@ -178,7 +186,7 @@ function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centr
     $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
     $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
     $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
-
+    $tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
@@ -303,8 +311,8 @@ function getMyHostIDByAddress($host_address = null)
         $query = "SELECT host_id, host_address, host_template_model_htm_id FROM host " .
             "WHERE host_name = '" . CentreonDB::escape($host_address) . "' or host_address = '" .
             CentreonDB::escape($host_address) . "' LIMIT 1";
-        $DBRESULT = &$pearDB->query($query);
-        $row = &$DBRESULT->fetchRow();
+        $DBRESULT = $pearDB->query($query);
+        $row = $DBRESULT->fetchRow();
         if ($row["host_id"]) {
             return html_entity_decode($row["host_id"], ENT_QUOTES, "UTF-8");
         } elseif ($row["host_template_model_htm_id"]) {

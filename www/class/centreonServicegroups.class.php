@@ -42,7 +42,7 @@ class CentreonServicegroups
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $DB;
 

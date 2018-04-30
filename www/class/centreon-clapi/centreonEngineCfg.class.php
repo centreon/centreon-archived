@@ -170,12 +170,11 @@ class CentreonEngineCfg extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -187,23 +186,22 @@ class CentreonEngineCfg extends CentreonObject
         $addParams['nagios_comment'] = $params[self::ORDER_COMMENT];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        $objectId = parent::add();
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             $commandColumns = array(
                 'global_host_event_handler',
                 'global_service_event_handler',
@@ -220,7 +218,6 @@ class CentreonEngineCfg extends CentreonObject
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
-                $commandName = $matches[1];
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
                     $res = $commandObj->getIdByParameter($commandObj->getUniqueLabelField(), $params[2]);
@@ -243,7 +240,8 @@ class CentreonEngineCfg extends CentreonObject
                     }
                 }
                 $updateParams = array($params[1] => $params[2]);
-                parent::setparam($objectId, $updateParams);
+                $updateParams['objectId'] = $objectId;
+                return $updateParams;
             }
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
@@ -251,11 +249,10 @@ class CentreonEngineCfg extends CentreonObject
     }
 
     /**
-     * Show
-     *
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -282,12 +279,31 @@ class CentreonEngineCfg extends CentreonObject
     /**
      * Export
      *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
-        $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
+
         foreach ($elements as $element) {
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";
@@ -350,6 +366,10 @@ class CentreonEngineCfg extends CentreonObject
         }
     }
 
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
     public function addbrokermodule($parameters)
     {
         $params = explode($this->delim, $parameters);
@@ -392,6 +412,10 @@ class CentreonEngineCfg extends CentreonObject
         }
     }
 
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
     public function delbrokermodule($parameters)
     {
         $params = explode($this->delim, $parameters);

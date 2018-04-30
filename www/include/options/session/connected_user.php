@@ -41,9 +41,9 @@ $path = "./include/options/session/";
 
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
-session_start();
-$sid = $_GET['session'];
+
 if (isset($_GET["o"]) && $_GET["o"] == "k") {
+    $sid = $_GET['session'];
     $pearDB->query("DELETE FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");

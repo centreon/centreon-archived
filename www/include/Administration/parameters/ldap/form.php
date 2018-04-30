@@ -53,7 +53,7 @@ if (isset($_REQUEST['ar_id'])) {
 /**
  * Ldap form
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p . "&o=" . $o);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . "&o=" . $o);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 
@@ -65,19 +65,19 @@ $form->addElement('header', 'ldap', _("General information"));
 $form->addElement('text', 'ar_name', _('Configuration name'), $attrsText);
 $form->addElement('textarea', 'ar_description', _('Description'), $attrsTextarea);
 
-$ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
-$ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
+$ldapEnable[] = $form->createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
+$ldapEnable[] = $form->createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
 $form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentication"), '&nbsp;');
 
-$ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("Yes"), '1');
-$ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("No"), '0');
+$ldapStorePassword[] = $form->createElement('radio', 'ldap_store_password', null, _("Yes"), '1');
+$ldapStorePassword[] = $form->createElement('radio', 'ldap_store_password', null, _("No"), '0');
 $form->addGroup($ldapStorePassword, 'ldap_store_password', _("Store LDAP password"), '&nbsp;');
 
-$ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("Yes"), '1');
-$ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("No"), '0');
+$ldapAutoImport[] = $form->createElement('radio', 'ldap_auto_import', null, _("Yes"), '1');
+$ldapAutoImport[] = $form->createElement('radio', 'ldap_auto_import', null, _("No"), '0');
 $form->addGroup($ldapAutoImport, 'ldap_auto_import', _("Auto import users"), '&nbsp;');
 
-$ldapUseDns[] = HTML_QuickForm::createElement(
+$ldapUseDns[] = $form->createElement(
     'radio',
     'ldap_srv_dns',
     null,
@@ -85,7 +85,7 @@ $ldapUseDns[] = HTML_QuickForm::createElement(
     '1',
     array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
 );
-$ldapUseDns[] = HTML_QuickForm::createElement(
+$ldapUseDns[] = $form->createElement(
     'radio',
     'ldap_srv_dns',
     null,
@@ -95,11 +95,11 @@ $ldapUseDns[] = HTML_QuickForm::createElement(
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
-$ldapDnsUseSsl[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
-$ldapDnsUseSsl[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
+$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
+$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
 $form->addGroup($ldapDnsUseSsl, 'ldap_dns_use_ssl', _("Use SSL connection"), '&nbsp;');
-$ldapDnsUseTls[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_tls', null, _("Yes"), '1');
-$ldapDnsUseTls[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
+$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("Yes"), '1');
+$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
 $form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 $form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 

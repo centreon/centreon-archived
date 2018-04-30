@@ -128,7 +128,7 @@ class ServiceTemplate extends AbstractService
     {
         $host = Host::getInstance($this->dependencyInjector);
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
-        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForStpl($service_id);
+        $this->service_cache[$service_id]['sg'] = $servicegroup->getServiceGroupsForStpl($service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->current_host_id, $sg['host_host_id'])) {
                 $servicegroup->addServiceInSg(

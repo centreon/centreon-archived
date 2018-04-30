@@ -74,12 +74,11 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters = null)
+    public function initInsertParameters($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -93,7 +92,6 @@ class CentreonTrap extends CentreonObject
         $addParams['traps_oid'] = $params[self::ORDER_OID];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
@@ -120,13 +118,11 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param null $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -135,7 +131,9 @@ class CentreonTrap extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if ($params[1] == "manufacturer" || $params[1] == "vendor") {
                 $params[1] = "manufacturer_id";
                 $params[2] = $this->manufacturerObj->getId($params[2]);
@@ -151,18 +149,18 @@ class CentreonTrap extends CentreonObject
             }
             $params[2] = str_replace("<br/>", "\n", $params[2]);
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     *
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -205,7 +203,14 @@ class CentreonTrap extends CentreonObject
         }
         $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $params = array('tmo_id', 'tmo_string', 'tmo_regexp', 'tmo_status', 'tmo_order');
-        $elements = $matchObj->getList($params, -1, 0, 'tmo_order', 'ASC', array('trap_id' => $trapId));
+        $elements = $matchObj->getList(
+            $params,
+            -1,
+            0,
+            'tmo_order',
+            'ASC',
+            array('trap_id' => $trapId)
+        );
         $status = array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
         echo "id" . $this->delim . "string" . $this->delim . "regexp" . $this->delim .
             "status" . $this->delim . "order\n";
@@ -219,10 +224,8 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Add matching rule
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function addmatching($parameters = null)
     {
@@ -321,9 +324,27 @@ class CentreonTrap extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -349,7 +370,15 @@ class CentreonTrap extends CentreonObject
                 }
             }
             $matchingObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
-            $matchingProps = $matchingObj->getList("*", -1, 0, null, null, array('trap_id' => $element['traps_id']));
+            $matchingLabelField = $matchingObj->getUniqueLabelField();
+            $matchingProps = $matchingObj->getList(
+                "*",
+                -1,
+                0,
+                $matchingLabelField,
+                'ASC',
+                array('trap_id' => $element['traps_id'])
+            );
             foreach ($matchingProps as $prop) {
                 echo $this->action . $this->delim .
                     "addmatching" . $this->delim .

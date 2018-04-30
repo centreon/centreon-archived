@@ -40,12 +40,6 @@ if (!isset($centreon)) {
 $path = "./include/reporting/dashboard";
 
 /*
- * Required Pear Lib
- */
-require_once "HTML/QuickForm.php";
-require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
-
-/*
  * Require Centreon Class
  */
 require_once "./class/centreonDuration.class.php";
@@ -263,7 +257,7 @@ $tpl->assign('period_choice', $period_choice);
 /*
  * Period Selection form
  */
-$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p);
+$formPeriod = new HTML_QuickFormCustom('FormPeriod', 'post', "?p=".$p);
 $formPeriod->addElement('select', 'period', "", $periodList, array("id" => "presetPeriod"));
 $formPeriod->addElement('hidden', 'timeline', "1");
 $formPeriod->addElement(

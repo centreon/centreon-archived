@@ -62,7 +62,7 @@ foreach ($tab_nagios_server as $key => $name) {
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 $form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));

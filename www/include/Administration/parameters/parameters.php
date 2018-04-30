@@ -42,20 +42,13 @@ $gopt_id = filter_input(
     'gopt_id',
     FILTER_SANITIZE_STRING
 );
-if (is_null($cg)) {
+if ((!isset($cg) || is_null($cg))) {
     $gopt_id = filter_input(
         INPUT_POST,
         'gopt_id',
         FILTER_SANITIZE_STRING
     );
 }
-    
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /*
  * Path to the option dir

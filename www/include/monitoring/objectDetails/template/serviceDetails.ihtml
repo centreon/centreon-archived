@@ -451,7 +451,7 @@
                                 {/if}
                                 </td>
                             </tr>
-                        {if $service_data.current_state != OK}
+                        {if $service_data.current_state != 'OK'}
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_en_acknowledge}</td>
                                 <td class="ListColLeft ColPopup">

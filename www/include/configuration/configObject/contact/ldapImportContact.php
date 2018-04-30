@@ -48,7 +48,7 @@ $attrsText2 = array("size" => "5");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("LDAP Import"));
 
 /*
@@ -68,8 +68,8 @@ $link = "LdapSearch()";
 $form->addElement("button", "ldap_search_button", _("Search"), array("class" => "btc bt_success", "onClick" => $link));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
+$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 $form->setDefaults(array('action' => '1'));
 
@@ -135,7 +135,7 @@ if ($form->validate()) {
 
 $action = $form->getSubmitValue("action");
 
-if ($valid && $action["action"]["action"]) {
+if ($valid && isset($action["action"]) && $action["action"]) {
     require_once($path . "listContact.php");
 } else {
     /*

@@ -56,7 +56,7 @@ $tplist[0] = _("Select Timeperiod...");
 while ($row = $DBRESULT->fetchRow()) {
     $tplist[$row['tp_id']] = $row['tp_name'];
 }
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p . "&o=s");
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p . "&o=s");
 $attrs1 = array('onchange' => "javascript: setTP(this.form.elements['tp_id'].value); submit();");
 $form->addElement('select', 'tp_id', null, $tplist, $attrs1);
 $form->setDefaults(array('tp_id' => null));

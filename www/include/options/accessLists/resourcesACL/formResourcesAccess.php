@@ -223,7 +223,7 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an ACL"));
 } elseif ($o == "c") {
@@ -242,15 +242,15 @@ $form->addElement('text', 'acl_res_name', _("Access list name"), $attrsText);
 $form->addElement('text', 'acl_res_alias', _("Description"), $attrsText2);
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Enabled"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Disabled"), '0');
+$tab[] = $form->createElement('radio', 'acl_res_activate', null, _("Enabled"), '1');
+$tab[] = $form->createElement('radio', 'acl_res_activate', null, _("Disabled"), '0');
 $form->addGroup($tab, 'acl_res_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_res_activate' => '1'));
 
 /*
  * All ressources
  */
-$allHosts[] = HTML_QuickForm::createElement(
+$allHosts[] = $form->createElement(
     'checkbox',
     'all_hosts',
     '&nbsp;',
@@ -259,7 +259,7 @@ $allHosts[] = HTML_QuickForm::createElement(
 );
 $form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
 
-$allHostgroups[] = HTML_QuickForm::createElement(
+$allHostgroups[] = $form->createElement(
     'checkbox',
     'all_hostgroups',
     '&nbsp;',
@@ -268,7 +268,7 @@ $allHostgroups[] = HTML_QuickForm::createElement(
 );
 $form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
-$allServiceGroups[] = HTML_QuickForm::createElement(
+$allServiceGroups[] = $form->createElement(
     'checkbox',
     'all_servicegroups',
     '&nbsp;',

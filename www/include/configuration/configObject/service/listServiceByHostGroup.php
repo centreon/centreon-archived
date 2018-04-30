@@ -41,10 +41,11 @@ include_once("./class/centreonUtils.class.php");
 
 $mediaObj = new CentreonMedia($pearDB);
 
-if (isset($_POST["hostgroups"])) {
-    $searchHG = $_POST["hostgroups"];
+if (isset($_POST['hostgroups'])) {
+    $searchHG = $_POST['hostgroups'];
     $centreon->svc_hostgroup_search = $searchHG;
-    if ($_POST["searchH"] != "") {
+
+    if (isset($_POST['searchH']) && $_POST['searchH'] != '') {
         $search_type_host = 1;
         $centreon->search_type_host = 1;
     }
@@ -245,7 +246,7 @@ if ($searchS || $searchHG) {
 }
 $DBRESULT = $pearDB->query($query);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -297,7 +298,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-    if (count($tplArr)) {
+    if ($tplArr && count($tplArr)) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);

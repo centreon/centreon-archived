@@ -8,7 +8,7 @@ class CentreonMetrics
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 

@@ -43,13 +43,7 @@ if (!isset($centreon)) {
  */
 $ecObj = new CentreonExternalCommand($centreon);
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Path to the configuration dir

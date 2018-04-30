@@ -54,7 +54,8 @@ abstract class CentreonSeverityAbstract extends CentreonObject
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (!is_numeric($params[1])) {
                 throw new CentreonClapiException('Incorrect severity level parameters');
             }
@@ -67,7 +68,9 @@ abstract class CentreonSeverityAbstract extends CentreonObject
                 'level' => $level,
                 'icon_id' => $iconId
             );
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            parent::setparam($updateParams);
+
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -85,8 +88,15 @@ abstract class CentreonSeverityAbstract extends CentreonObject
         if (count($params) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            parent::setparam($objectId, array('level' => null, 'icon_id' => null));
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
+            $updateParams = array(
+                'level' => null,
+                'icon_id' => null
+            );
+            $updateParams['objectId'] = $objectId;
+            parent::setparam($updateParams);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }

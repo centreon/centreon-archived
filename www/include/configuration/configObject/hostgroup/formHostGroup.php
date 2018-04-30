@@ -96,7 +96,7 @@ $attrHostgroups = array(
 /*
  * Create formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host Group"));
 } elseif ($o == "c") {
@@ -161,8 +161,8 @@ $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
-$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
-$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
+$hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Enabled"), '1');
+$hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Disabled"), '0');
 $form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hg_activate' => '1'));
 

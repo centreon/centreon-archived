@@ -65,7 +65,7 @@ $moduleInfo = $moduleInfoObj->getConfiguration($name);
 $moduleInstalledInfo = $moduleInfoObj->getInstalledInformation($name);
 
 $elemArr = array();
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 $form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
 $redirect = $form->addElement('hidden', 'o');
@@ -76,6 +76,8 @@ if (!is_null($id)) {
 }
 
 $upgradeAvailable = false;
+$upgrade_infosTxt = false;
+
 if ($moduleInstalledInfo["mod_release"] != $moduleInfo["mod_release"]) {
     $upgradeAvailable = true;
 }
@@ -88,14 +90,15 @@ if ($form->validate()) {
         $centreon->initHooks();
     }
     
-    $upgradePath = _CENTREON_PATH_ . "www/modules/". $moduleinfo["name"] . "/UPGRADE/" . $filename;
+    // @todo need to set default value of filename
+    $filename = isset($filename) ? $filename : '';
+    
+    $upgradePath = _CENTREON_PATH_ . "www/modules/". $moduleInfo["name"] . "/UPGRADE/" . $filename;
 
     if (is_dir($upgradePath . "/infos") && is_file($upgradePath . "/infos/infos.txt")) {
         $infos_streams = file($upgradePath . "/infos/infos.txt");
         $infos_streams = implode("<br />", $infos_streams);
         $upgrade_infosTxt = $infos_streams;
-    } else {
-        $upgrade_infosTxt = false;
     }
 }
 
