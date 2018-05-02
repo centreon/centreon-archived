@@ -46,13 +46,6 @@ include_once "./include/monitoring/external_cmd/cmd.php";
  */
 $continue = true;
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 $path = "./include/monitoring/status/Hosts/";
 $path_hg = "./include/monitoring/status/HostGroups/";
 

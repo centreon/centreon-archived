@@ -43,11 +43,8 @@ if (!isset($centreon)) {
  */
 $ecObj = new CentreonExternalCommand($centreon);
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/* QuickForm field; File is classmaped in composer.json */
+require_once 'HTML/QuickForm/select2.php';
 
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 

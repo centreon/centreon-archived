@@ -243,8 +243,8 @@ $form->addRule('name', _("Compulsory Name"), 'required');
 $form->addRule('ds_name', _("Required Field"), 'required');
 $form->addRule('name', _("Name already in use for this Host/Service"), 'existName');
 $form->addRule('ds_name', _("Data Source already in use for this Host/Service"), 'existDs');
-$color_mode[] = HTML_QuickForm::createElement('radio', 'ds_color_line_mode', null, _("Random"), '1');
-$color_mode[] = HTML_QuickForm::createElement('radio', 'ds_color_line_mode', null, _("Manual"), '0');
+$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _("Random"), '1');
+$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _("Manual"), '0');
 $form->addGroup($color_mode, 'ds_color_line_mode', _("Color line mode"));
 $form->registerRule('color_line_enabled', 'callback', 'color_line_enabled');
 $form->addRule(

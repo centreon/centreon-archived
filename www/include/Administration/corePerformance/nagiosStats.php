@@ -42,11 +42,11 @@ if (!isset($oreon)) {
 
 require_once "./include/monitoring/common-Func.php";
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 unset($tpl);
 unset($path);
+
+/* QuickForm field; File is classmaped in composer.json */
+require_once 'HTML/QuickForm/select2.php';
 
 /*
  * Time period select
