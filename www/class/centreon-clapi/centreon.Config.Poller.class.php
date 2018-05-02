@@ -578,7 +578,7 @@ class CentreonConfigPoller
                 if (!is_null($centreonBrokerDirCfg)) {
                     if (!is_dir($centreonBrokerDirCfg)) {
                         if (!mkdir($centreonBrokerDirCfg, 0755)) {
-                            throw new Exception(
+                            throw new \Exception(
                                 sprintf(
                                     _("Centreon Broker's configuration directory '%s' does not exist and could not be "
                                         . "created for monitoring engine '%s'. Please check it's path or create it"),
@@ -591,7 +591,7 @@ class CentreonConfigPoller
                     foreach ($listBrokerFile as $fileCfg) {
                         $succeded = @copy($fileCfg, rtrim($centreonBrokerDirCfg, "/") . '/' . basename($fileCfg));
                         if (!$succeded) {
-                            throw new Exception(
+                            throw new \Exception(
                                 sprintf(
                                     _("Could not write to Centreon Broker's configuration file '%s' for monitoring "
                                         . "engine '%s'. Please add writing permissions for the webserver's user"),
