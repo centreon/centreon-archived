@@ -7,4 +7,5 @@ Developer
 
    writemodule
    writewidget
+   writestreamconnector
    translatecentreon

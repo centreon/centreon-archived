@@ -16,7 +16,7 @@ Première étape
 
 #. Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
 #. Choisissez les collecteurs sur lesquels exporter la configuration
-#. Cliquez sur **Appliquez la configurartion**
+#. Cliquez sur **Appliquez la configuration**
 
 .. image:: /images/guide_utilisateur/configuration/poller_menu_generate.png
     :align: center

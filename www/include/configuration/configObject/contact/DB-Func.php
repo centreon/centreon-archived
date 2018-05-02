@@ -56,7 +56,7 @@ function testContactExistence($name = null)
 
     $DBRESULT = $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '" . htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'");
     $contact = $DBRESULT->fetchRow();
-   
+
     if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id) {
         return true;
     } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $id) {
@@ -81,7 +81,7 @@ function testAliasExistence($alias = null)
 
     $DBRESULT = $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'");
     $contact = $DBRESULT->fetchRow();
-    
+
     if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id) {
         return true;
     } elseif ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $id) {
@@ -123,10 +123,10 @@ function keepOneContactAtLeast($ct_id = null)
     /*
      * Get activated contacts
      */
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid 
-            FROM contact 
-            WHERE contact_activate = '1' 
-            AND contact_oreon = '1' 
+    $DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid
+            FROM contact
+            WHERE contact_activate = '1'
+            AND contact_oreon = '1'
             AND contact_id <> '" . $pearDB->escape($contact_id) . "'");
     $contacts = $DBRESULT->fetchRow();
 
@@ -157,7 +157,7 @@ function enableContactInDB($contact_id = null, $contact_arr = array())
 
     foreach ($contact_arr as $key => $value) {
         $DBRESULT = $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '" . intval($key). "'");
-        
+
         $DBRESULT2 = $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
 
@@ -185,10 +185,10 @@ function disableContactInDB($contact_id = null, $contact_arr = array())
     foreach ($contact_arr as $key => $value) {
         if (keepOneContactAtLeast($key)) {
             $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '" . intval($key) . "'");
-            
+
             $DBRESULT2 = $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '" . intval($key) . "' LIMIT 1");
             $row = $DBRESULT2->fetchRow();
-            
+
             $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "disable");
         }
     }
@@ -311,11 +311,11 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
 function updateContactInDB($contact_id = null, $from_MC = false)
 {
     global $form;
-    
+
     if (!$contact_id) {
         return;
     }
-    
+
     $ret = $form->getSubmitValues();
     # Global function to use
     if ($from_MC) {
@@ -395,7 +395,8 @@ function insertContact($ret = array())
             "`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
             "`contact_alias` , `contact_autologin_key` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
             "`contact_host_notification_options` , `contact_service_notification_options` , " .
-            "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`, `contact_register`, `contact_enable_notifications` , " .
+            "`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `reach_api`, `reach_api_rt`, " .
+            "`contact_register`, `contact_enable_notifications` , " .
             "`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
             "`contact_ldap_dn`, `contact_location`, `contact_address1`, `contact_address2`, " .
             "`contact_address3`, `contact_address4`, `contact_address5`, `contact_address6`)" .
@@ -439,6 +440,9 @@ function insertContact($ret = array())
         isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != null ? $rq .= "'" . $ret["contact_oreon"]["contact_oreon"] . "', " : $rq .= " '1', ";
     }
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null ? $rq .= $ret["reach_api"]["reach_api"] . ", " : $rq .= " 0, ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= $ret["reach_api_rt"]["reach_api_rt"] . ", "
+        : $rq .= " 0, ";
     isset($ret["contact_register"]) && $ret["contact_register"] != null ? $rq .= "'" . $ret["contact_register"] . "', " : $rq .= " '1', ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != null ? $rq .= "'" . $ret["contact_enable_notifications"]["contact_enable_notifications"] . "', " : $rq .= "NULL, ";
     isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != null ? $rq .= "'" . $ret["contact_admin"]["contact_admin"] . "', " : $rq .= "'0', ";
@@ -468,7 +472,7 @@ function insertContact($ret = array())
             $ret["contact_passwd"] = $ret["contact_passwd2"] = $utilsObject->encodePass($ret["contact_passwd"], 'md5');
         }
     }
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("contact", $contact_id["MAX(contact_id)"], $ret["contact_name"], "a", $fields);
@@ -495,7 +499,7 @@ function updateContact($contact_id = null, $from_MC = false)
     $rq .= "timeperiod_tp_id2 = ";
     isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != null ? $rq .= "'" . $ret["timeperiod_tp_id2"] . "', " : $rq .= "NULL, ";
     # If we are doing a MC, we don't have to set name and alias field
-    
+
     if (!$from_MC) {
         $rq .= "contact_name = ";
         isset($ret["contact_name"]) && $ret["contact_name"] != null ? $rq .= "'" . $ret["contact_name"] . "', " : $rq .= "NULL, ";
@@ -531,6 +535,10 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != null ? $rq .= "'" . $ret["contact_oreon"]["contact_oreon"] . "', " : $rq .= "NULL, ";
     $rq .= "reach_api = ";
     isset($ret["reach_api"]["reach_api"]) && $ret["reach_api"]["reach_api"] != null ? $rq .= "'" . $ret["reach_api"]["reach_api"] . "', " : $rq .= "NULL, ";
+    $rq .= "reach_api_rt = ";
+    isset($ret["reach_api_rt"]["reach_api_rt"]) && $ret["reach_api_rt"]["reach_api_rt"] != null
+        ? $rq .= "'" . $ret["reach_api_rt"]["reach_api_rt"] . "', "
+        : $rq .= "NULL, ";
     $rq .= "contact_enable_notifications = ";
     isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] != null ? $rq .= "'" . $ret["contact_enable_notifications"]["contact_enable_notifications"] . "', " : $rq .= "NULL, ";
     $rq .= "contact_admin = ";
@@ -566,7 +574,7 @@ function updateContact($contact_id = null, $from_MC = false)
     if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);
     }
-    
+
     if (isset($ret["contact_passwd"])) {
         if ($encryptType == 1) {
             $ret["contact_passwd"] = $ret["contact_passwd2"] = $utilsObject->encodePass($ret["contact_passwd"], 'md5');
@@ -585,13 +593,13 @@ function updateContact($contact_id = null, $from_MC = false)
 function updateContact_MC($contact_id = null)
 {
     global $form, $pearDB, $centreon, $encryptType;
-    
+
     if (!$contact_id) {
         return;
     }
 
     $utilsObject = new CentreonUtils();
-    
+
     $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE contact SET ";
@@ -684,7 +692,7 @@ function updateContact_MC($contact_id = null)
 
         $DBRESULT2 = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id='" . intval($contact_id) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
-        
+
         /* Prepare value for changelog */
         $fields = CentreonLogAction::prepareChanges($ret);
         $centreon->CentreonLogAction->insertLog("contact", $contact_id, $row["contact_name"], "mc", $fields);
@@ -694,7 +702,7 @@ function updateContact_MC($contact_id = null)
 function updateContactHostCommands($contact_id = null, $ret = array())
 {
     global $form, $pearDB;
-    
+
     if (!$contact_id) {
         return;
     }
@@ -869,7 +877,7 @@ function insertLdapContactInDB($tmpContacts = array())
         }
         $tmpContacts["contact_name"][$select_key] = str_replace(array(" ", ","), array("_", "_"), $tmpContacts["contact_name"][$select_key]);
         $arId = $tmpContacts["ar_id"][$select_key];
-        
+
         if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key])) {
             $tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
             $tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
