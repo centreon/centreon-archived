@@ -37,6 +37,5 @@
             "CentreonLegacy\\": "src/CentreonLegacy/"
         },
         "files" : ["GPL_LIB/smarty-plugins/block.t.php"]
-
     }
 }
