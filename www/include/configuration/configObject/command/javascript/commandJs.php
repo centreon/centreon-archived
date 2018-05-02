@@ -45,7 +45,7 @@ function goPopup() {
 
     listArea = document.getElementById('listOfArg');
     tmpStr = listArea.value;
-    tmpStr = tmpStr.replace(reg, ";;;");
+    tmpStr = encodeURIComponent(tmpStr.replace(reg, ";;;"));
     cmd_line = document.getElementById('command_line').value;
 
     Modalbox.show('./include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr, {title: 'Argument description', width:800});
@@ -101,10 +101,10 @@ function setMacrosDescriptions() {
             }
             tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
     }
-        
+
     listArea.cols= 100;
     listArea.rows= i;
-        
+
     listArea.value = tmpStr2;
     listDiv.style.visibility = "visible";
     Modalbox.hide();
