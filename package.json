@@ -63,6 +63,9 @@
     "redux-thunk": "^2.2.0",
     "styled-components": "^3.1.5"
   },
+  "jest": {
+    "testResultsProcessor": "jest-junit"
+  },
   "jest-junit": {
     "suiteName": "jest tests",
     "output": "./jest-test-results.xml"
