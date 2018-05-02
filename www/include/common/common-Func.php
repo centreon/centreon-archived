@@ -162,7 +162,7 @@ function initSmartyTpl($path = null, $tpl = null, $subDir = null)
     $tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
     $tpl->config_dir = "../GPL_LIB/SmartyCache/config";
     $tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
-
+    $tpl->plugins_dir[] = "../GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
