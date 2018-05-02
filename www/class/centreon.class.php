@@ -70,6 +70,9 @@ class Centreon
     public $hostgroup;
     public $host_id;
 
+    /**
+     * @var \CentreonUser
+     */
     public $user;
     public $CentreonGMT;
     public $CentreonLogAction;

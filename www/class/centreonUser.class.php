@@ -136,7 +136,7 @@ class CentreonUser
 
     /**
      *
-     * @param type $pearDB
+     * @param \CentreonDB $pearDB
      * @return int
      */
     public function getAllTopology($pearDB)
@@ -155,8 +155,8 @@ class CentreonUser
     /**
      * Check if user is admin or had ACL
      *
-     * @param type $sid
-     * @param type $pearDB
+     * @param string $sid
+     * @param \CentreonDB $pearDB
      */
     public function checkUserStatus($sid = null, $pearDB)
     {
