@@ -41,7 +41,7 @@ class CentreonPerformanceService
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $dbMon;
 

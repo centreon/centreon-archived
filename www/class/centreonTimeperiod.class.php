@@ -40,7 +40,7 @@ class CentreonTimeperiod
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 

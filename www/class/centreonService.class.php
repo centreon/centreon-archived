@@ -45,19 +45,19 @@ class CentreonService
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $dbMon;
 
     /**
      *
-     * @var type
+     * @var \CentreonInstance
      */
     protected $instanceObj;
 

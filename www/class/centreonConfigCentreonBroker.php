@@ -51,7 +51,7 @@ class CentreonConfigCentreonBroker
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $db;
 

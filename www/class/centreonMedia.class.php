@@ -43,7 +43,7 @@ class CentreonMedia
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 
