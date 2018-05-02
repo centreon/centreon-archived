@@ -315,7 +315,7 @@ class CentreonContactgroup
             $row = $res->fetchRow();
             return $row['cg_name'];
         } else {
-            throw Exception('No contact group name found');
+            throw new \Exception('No contact group name found');
         }
     }
 
