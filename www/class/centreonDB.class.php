@@ -246,7 +246,7 @@ class CentreonDB extends \PDO
                 $string = str_replace('*', "\*", $string);
                 $this->log->insertLog(2, " QUERY : " . $string);
             }
-            throw new \PDOException($e);
+            throw new \PDOException($e->getMessage(), $e->getCode());
         }
 
         return $sth;
@@ -272,7 +272,7 @@ class CentreonDB extends \PDO
             if ($this->debug) {
                 $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
             }
-            throw new \PDOException($e);
+            throw new \PDOException($e->getMessage(), $e->getCode());
         }
 
         return $rows;
