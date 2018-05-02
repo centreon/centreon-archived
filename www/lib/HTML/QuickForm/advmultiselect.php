@@ -41,8 +41,6 @@
  * @since     File available since Release 0.4.0
  */
 
-require_once 'HTML/QuickForm/select.php';
-
 /**
  * Basic error codes
  *
@@ -1079,7 +1077,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
      * @throws     PEAR_Error
      * @see        load()
      */
-    function loadArray($arr, $values = null)
+    function loadArray(array $arr, $values = null)
     {
         if (!is_array($arr)) {
             return PEAR::throwError('Argument 1 of HTML_QuickForm_advmultiselect::' .
@@ -1171,7 +1169,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
 }
 
 if (class_exists('HTML_QuickForm')) {
-    HTML_QuickForm::registerElementType('advmultiselect',
+    (new HTML_QuickForm)->registerElementType('advmultiselect',
         'HTML/QuickForm/advmultiselect.php', 'HTML_QuickForm_advmultiselect');
 }
 ?>

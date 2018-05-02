@@ -155,7 +155,7 @@ $form->addRule('name', _("Compulsory Name"), 'required');
 $form->addRule('vertical_label', _("Required Field"), 'required');
 $form->addRule('width', _("Required Field"), 'required');
 $form->addRule('height', _("Required Field"), 'required');
-$form->addRule('title', _("Required Field"), 'required');
+// $form->addRule('title', _("Required Field"), 'required'); - Field is not declared so rule is not needed
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
