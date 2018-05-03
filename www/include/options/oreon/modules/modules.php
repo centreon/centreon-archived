@@ -57,12 +57,6 @@ if ($name !== null) {
 }
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the options dir
  */
 $path = "./include/options/oreon/modules/";

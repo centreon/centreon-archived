@@ -276,8 +276,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
     {
         $opts    = $options;
         $options = null;  // prevent to use the default select element load options
-        $this->HTML_QuickForm_select($elementName, $elementLabel,
-            $options, $attributes);
+        parent::__construct($elementName, $elementLabel, $options, $attributes);
 
         // allow to load options at once and take care of fancy attributes
         $this->load($opts);
