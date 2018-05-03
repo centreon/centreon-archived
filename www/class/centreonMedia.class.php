@@ -64,11 +64,6 @@ class CentreonMedia
     {
         $this->db = $db;
         $this->filenames = array();
-        
-        $archive = '/usr/share/centreon/zip4e/doc.zip';
-        $archive = '/usr/share/centreon/zip4e/doc.tar.gz';
-        print_r( static::getFilesFromArchive($archive) );
-        exit;
     }
 
     /**
