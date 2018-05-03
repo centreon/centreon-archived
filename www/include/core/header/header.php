@@ -34,7 +34,7 @@
  */
 
 if (!defined('SMARTY_DIR')) {
-    define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+    define('SMARTY_DIR', realpath('../vendor/smarty/smarty/libs/') . '/');
 }
 
 /*

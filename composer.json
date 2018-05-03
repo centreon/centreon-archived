@@ -29,7 +29,8 @@
         "pimple/pimple": "~3.0",
         "symfony/filesystem": "~2.6",
         "symfony/finder": "~2.6",
-        "openpsa/quickform": "3.3.*"
+        "openpsa/quickform": "3.3.*",
+        "smarty/smarty": "~2.6"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +39,7 @@
         "classmap": [
             "vendor/openpsa/quickform/lib/HTML",
             "www/lib/HTML/QuickForm/select2.php"
-        ]
+        ],
+        "files" : ["GPL_LIB/smarty-plugins/block.t.php"]
     }
 }
