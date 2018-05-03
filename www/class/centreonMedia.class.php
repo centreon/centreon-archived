@@ -33,9 +33,6 @@
  *
  */
 
-require_once("Archive/Tar.php");
-require_once("Archive/Zip.php");
-
 /**
  *  Class used for managing images
  */
@@ -67,6 +64,11 @@ class CentreonMedia
     {
         $this->db = $db;
         $this->filenames = array();
+        
+        $archive = '/usr/share/centreon/zip4e/doc.zip';
+        $archive = '/usr/share/centreon/zip4e/doc.tar.gz';
+        print_r( static::getFilesFromArchive($archive) );
+        exit;
     }
 
     /**
@@ -292,20 +294,34 @@ class CentreonMedia
         if (!in_array(strtolower($extension), $allowedExt)) {
             throw new Exception('Unknown extension');
         }
+
         if (strtolower($extension) == 'zip') {
-            $archiveObj = new Archive_Zip($archiveFile);
+            $archiveObj = new \ZipArchive;
+            $res = $archiveObj->open($archiveFile);
+
+            if ($res !== TRUE) {
+                throw new Exception('Could not read archive');
+            }
+
+            for ($i = 0; $i < $archiveObj->numFiles; $i++) {
+                $files[] = $archiveObj->statIndex($i)['name'];
+            }
         } else {
-            $archiveObj = new Archive_Tar($archiveFile);
+            $archiveObj = new \Archive_Tar($archiveFile);
+            $elements = $archiveObj->listContent();
+
+            foreach ($elements as $element) {
+                $files[] = $element['filename'];
+            }
         }
-        $elements = $archiveObj->listContent();
-        foreach ($elements as $element) {
-            $files[] = $element['filename'];
-        }
+
         if (!count($files)) {
             throw new Exception('Archive file is empty');
         }
+
         if (strtolower($extension) == 'zip') {
-            $archiveObj->extract(array('add_path' => dirname($archiveFile)));
+            $archiveObj->extractTo(dirname($archiveFile), $files);
+            $archiveObj->close();
         } else {
             if (false === $archiveObj->extractList($files, dirname($archiveFile))) {
                 throw new Exception('Could not extract files');

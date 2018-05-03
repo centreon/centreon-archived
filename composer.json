@@ -30,12 +30,15 @@
         "symfony/filesystem": "~2.6",
         "symfony/finder": "~2.6",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6"
+        "smarty/smarty": "~2.6",
+        "pear/pear": "^1.10",
+        "pear/archive_tar": "^1.4"
     },
     "autoload": {
         "psr-4": {
             "CentreonLegacy\\": "src/CentreonLegacy/"
         },
+        "classmap": ["vendor/pear/archive_tar/Archive/Tar.php"],
         "files" : ["GPL_LIB/smarty-plugins/block.t.php"]
 
     }
