@@ -140,8 +140,8 @@ $form->addElement('select2', 'cg_acl_groups', _("Linked ACL groups"), array(), $
  * Further informations
  */
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
-$cgActivation[] = HTML_QuickForm::createElement('radio', 'cg_activate', null, _("Enabled"), '1');
-$cgActivation[] = HTML_QuickForm::createElement('radio', 'cg_activate', null, _("Disabled"), '0');
+$cgActivation[] = $form->createElement('radio', 'cg_activate', null, _("Enabled"), '1');
+$cgActivation[] = $form->createElement('radio', 'cg_activate', null, _("Disabled"), '0');
 $form->addGroup($cgActivation, 'cg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('cg_activate' => '1'));
 $form->addElement('textarea', 'cg_comment', _("Comments"), $attrsTextarea);

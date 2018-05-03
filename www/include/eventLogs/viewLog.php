@@ -37,12 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
+/* QuickForm field; File is classmaped in composer.json */
 require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $user_params = array(
     "log_filter_host" => true,

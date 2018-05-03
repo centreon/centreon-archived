@@ -131,8 +131,8 @@ $attrServicetemplate1 = array_merge(
 
 $form->addElement('select2', 'sc_svcTpl', _("Linked Templates"), array(), $attrServicetemplate1);
 
-$sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
-$sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
+$sc_activate[] = $form->createElement('radio', 'sc_activate', null, _("Enabled"), '1');
+$sc_activate[] = $form->createElement('radio', 'sc_activate', null, _("Disabled"), '0');
 $form->addGroup($sc_activate, 'sc_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sc_activate' => '1'));
 

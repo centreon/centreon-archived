@@ -161,8 +161,8 @@ $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
-$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
-$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
+$hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Enabled"), '1');
+$hgActivation[] = $form->createElement('radio', 'hg_activate', null, _("Disabled"), '0');
 $form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('hg_activate' => '1'));
 
