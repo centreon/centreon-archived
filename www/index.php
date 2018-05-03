@@ -38,7 +38,7 @@ require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
 
 $etc = _CENTREON_ETC_;
 
-define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+define('SMARTY_DIR', realpath('../vendor/smarty/smarty/libs/') . '/');
 
 ini_set('display_errors', 'Off');
 
