@@ -10,6 +10,7 @@ $constants = array(
     '_CENTREON_LOG_' => '@CENTREON_LOG@',
     '_CENTREON_VARLIB_' => '@CENTREON_VARLIB@'
 );
+
 foreach ($constants as $name => $value) {
     if (!defined($name)) {
         define($name, $value);

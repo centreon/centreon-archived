@@ -3,3 +3,4 @@
 nbproject/
 /vendor/
 composer.lock
+config/centreon.config.php
