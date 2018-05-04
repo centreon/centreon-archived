@@ -302,11 +302,10 @@ class CentreonMedia
                 $files[] = $archiveObj->statIndex($i)['name'];
             }
         } else {
-            $archiveObj = new \Archive_Tar($archiveFile);
-            $elements = $archiveObj->listContent();
+            $archiveObj = new \PharData($archiveFile, \Phar::KEY_AS_FILENAME);
 
-            foreach ($elements as $element) {
-                $files[] = $element['filename'];
+            foreach($archiveObj as $file) {
+                $files[] = $file->getFilename();
             }
         }
 
@@ -318,7 +317,7 @@ class CentreonMedia
             $archiveObj->extractTo(dirname($archiveFile), $files);
             $archiveObj->close();
         } else {
-            if (false === $archiveObj->extractList($files, dirname($archiveFile))) {
+            if (false === $archiveObj->extractTo(dirname($archiveFile), $files)) {
                 throw new Exception('Could not extract files');
             }
         }

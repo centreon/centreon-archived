@@ -26,13 +26,12 @@
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
+        "ext-phar": "*",
         "pimple/pimple": "~3.0",
         "symfony/filesystem": "~2.6",
         "symfony/finder": "~2.6",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6",
-        "pear/pear": "^1.10",
-        "pear/archive_tar": "^1.4"
+        "smarty/smarty": "~2.6"
     },
     "autoload": {
         "psr-4": {
