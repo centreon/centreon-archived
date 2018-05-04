@@ -127,6 +127,12 @@ if (($o == "c" || $o == "w") && $service_id) {
     }
 }
 
+/**
+ * define variable to avoid null count
+ */
+
+$aMacros = array();
+
 if (($o == "c" || $o == "w") && $service_id) {
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
