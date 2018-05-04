@@ -70,10 +70,8 @@ $traps_id = $inputs["traps_id"];
 $select = $inputs["select"];
 $dupNbr = $inputs["dupNbr"];
 
-/* Pear library */
-require_once "HTML/QuickForm.php";
+/* QuickForm field; File is classmaped in composer.json */
 require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /* Path to the configuration dir */
 $path = "./include/configuration/configObject/traps/";

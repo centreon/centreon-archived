@@ -40,12 +40,6 @@ if (!isset($centreon)) {
 $path = "./include/reporting/dashboard";
 
 /*
- * Required Pear Lib
- */
-require_once "HTML/QuickForm.php";
-require_once "HTML/QuickForm/Renderer/ArraySmarty.php";
-
-/*
  * Require Centreon Class
  */
 require_once "./class/centreonDuration.class.php";

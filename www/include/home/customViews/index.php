@@ -37,12 +37,8 @@ require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
-/**
- * Quickform
- */
-require_once 'HTML/QuickForm.php';
+/* QuickForm field; File is classmaped in composer.json */
 require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 try {
     $db = new CentreonDB();
@@ -136,17 +132,17 @@ try {
     $formAddView->addElement('text', 'name', _("Name"), $attrsText);
 
     $createLoad = array();
-    $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Create new view "), 'create');
-    $createLoad[] = HTML_QuickForm::createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
+    $createLoad[] = $formAddView->createElement('radio', 'create_load', null, _("Create new view "), 'create');
+    $createLoad[] = $formAddView->createElement('radio', 'create_load', null, _("Load from existing view"), 'load');
     $formAddView->addGroup($createLoad, 'create_load', _("create or load"), '&nbsp;');
     $formAddView->setDefaults(array('create_load[create_load]' => 'create'));
 
     /**
      * Layout
      */
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("1 Column"), 'column_1');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
     $formAddView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formAddView->setDefaults(array('layout[layout]' => 'column_1'));
 
@@ -189,9 +185,9 @@ try {
      * Layout
      */
     $layouts = array();
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("1 Column"), 'column_1');
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
-    $layouts[] = HTML_QuickForm::createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("1 Column"), 'column_1');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("2 Columns"), 'column_2');
+    $layouts[] = $formAddView->createElement('radio', 'layout', null, _("3 Columns"), 'column_3');
     $formEditView->addGroup($layouts, 'layout', _("Layout"), '&nbsp;');
     $formEditView->setDefaults(array('layout[layout]' => 'column_1'));
 

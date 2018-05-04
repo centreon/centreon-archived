@@ -41,8 +41,6 @@
  * @since     File available since Release 0.4.0
  */
 
-require_once 'HTML/QuickForm/select.php';
-
 /**
  * Basic error codes
  *
@@ -278,8 +276,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
     {
         $opts    = $options;
         $options = null;  // prevent to use the default select element load options
-        $this->HTML_QuickForm_select($elementName, $elementLabel,
-            $options, $attributes);
+        parent::__construct($elementName, $elementLabel, $options, $attributes);
 
         // allow to load options at once and take care of fancy attributes
         $this->load($opts);
@@ -1079,7 +1076,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
      * @throws     PEAR_Error
      * @see        load()
      */
-    function loadArray($arr, $values = null)
+    function loadArray(array $arr, $values = null)
     {
         if (!is_array($arr)) {
             return PEAR::throwError('Argument 1 of HTML_QuickForm_advmultiselect::' .
@@ -1171,7 +1168,7 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
 }
 
 if (class_exists('HTML_QuickForm')) {
-    HTML_QuickForm::registerElementType('advmultiselect',
+    (new HTML_QuickForm)->registerElementType('advmultiselect',
         'HTML/QuickForm/advmultiselect.php', 'HTML_QuickForm_advmultiselect');
 }
 ?>

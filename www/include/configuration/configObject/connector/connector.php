@@ -41,12 +41,8 @@ require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
 $path = _CENTREON_PATH_ . 'www/include/configuration/configObject/connector/';
 require_once $path . "DB-Func.php";
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
+/* QuickForm field; File is classmaped in composer.json */
 require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $connectorObj = new CentreonConnector($pearDB);
 
