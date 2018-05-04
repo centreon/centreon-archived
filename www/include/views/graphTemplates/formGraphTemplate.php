@@ -135,6 +135,8 @@ $steps = array(
 $sel = $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 if ($o == "c" || $o == "a") {
+    $nameColor = isset($nameColor) ? $nameColor : '';
+    $attrsText5 = isset($attrsText5) ? $attrsText5 : '';
     $form->addElement('button', $nameColor . '_modify', _("Modify"), $attrsText5);
 }
 

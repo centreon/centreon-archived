@@ -518,7 +518,7 @@ function updateDirectory($dir_id, $dir_alias, $dir_comment = "")
 function getListDirectory($filter = null)
 {
     global $pearDB;
-
+    
     $query = "SELECT dir_id, dir_name " .
         "FROM view_img_dir ";
     if (!is_null($filter) && strlen($filter) > 0) {
