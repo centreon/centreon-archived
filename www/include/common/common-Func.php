@@ -118,6 +118,14 @@ function myDecode($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
+/*
+ * Decode outputting integer values
+ */
+function myDecodeToInteger($arg)
+{
+    return intval(html_entity_decode($arg, ENT_QUOTES, "UTF-8"));
+}
+
 function getStatusColor($pearDB)
 {
     $colors = array();
