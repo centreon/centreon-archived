@@ -3,3 +3,4 @@
 nbproject/
 /vendor/
 composer.lock
+GPL_LIB/SmartyCache/*

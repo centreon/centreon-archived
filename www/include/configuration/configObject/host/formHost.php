@@ -127,6 +127,12 @@ function allInSameInstance($hosts, $instanceId)
  * Database retrieve information for Host
  */
 $host = array();
+
+/**
+ * define macros as empty array to avoid null counting
+ */
+$aMacros = array();
+
 if (($o == "c" || $o == "w") && $host_id) {
     $DBRESULT = $pearDB->query("SELECT * 
                                 FROM host, extended_host_information ehi 
@@ -219,6 +225,7 @@ $cdata->addJsData('clone-values-macro', htmlspecialchars(
     json_encode($aMacros),
     ENT_QUOTES
 ));
+
 $cdata->addJsData('clone-count-macro', count($aMacros));
 /*
  * Preset values of host templates

@@ -89,7 +89,7 @@ class CentreonWiki extends CentreonWebService
      * @param boolean $isInternal If the api is call in internal
      * @return boolean If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal)
+    public function authorize($action, $user, $isInternal = false)
     {
         if (parent::authorize($action, $user, $isInternal)) {
             return true;
