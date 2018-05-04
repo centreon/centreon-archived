@@ -37,7 +37,9 @@
         "psr-4": {
             "CentreonLegacy\\": "src/CentreonLegacy/"
         },
-        "classmap": ["vendor/pear/archive_tar/Archive/Tar.php"],
-        "files" : ["GPL_LIB/smarty-plugins/block.t.php"]
+        "files" : [
+            "GPL_LIB/smarty-plugins/block.t.php",
+            "www/lib/HTML/QuickForm/QuickForm.php"
+        ]
     }
 }
