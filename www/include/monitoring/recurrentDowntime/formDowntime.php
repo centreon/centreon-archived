@@ -135,8 +135,8 @@ $form->addElement('header', 'linkManagement', _("Links Management"));
 $form->addElement('text', 'downtime_name', _("Name"), $attrsText);
 $form->addElement('text', 'downtime_description', _("Alias"), $attrsTextLong);
 
-$donwtime_activate[] = HTML_QuickForm::createElement('radio', 'downtime_activate', null, _("Yes"), '1');
-$donwtime_activate[] = HTML_QuickForm::createElement('radio', 'downtime_activate', null, _("No"), '0');
+$donwtime_activate[] = $form->createElement('radio', 'downtime_activate', null, _("Yes"), '1');
+$donwtime_activate[] = $form->createElement('radio', 'downtime_activate', null, _("No"), '0');
 $form->addGroup($donwtime_activate, 'downtime_activate', _("Enable"), '&nbsp;');
 $form->setDefaults(array('downtime_activate' => '1'));
 

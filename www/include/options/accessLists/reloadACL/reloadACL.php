@@ -41,8 +41,6 @@ $path = "./include/options/accessLists/reloadACL/";
 
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 session_start();
 session_write_close();

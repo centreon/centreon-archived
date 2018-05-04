@@ -176,8 +176,8 @@ echo $ams1->getElementJs(false);
 
 // Further informations
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Enabled"), '1');
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
+$groupActivation[] = $form->createElement('radio', 'acl_action_activate', null, _("Enabled"), '1');
+$groupActivation[] = $form->createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
 $form->addGroup($groupActivation, 'acl_action_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_action_activate' => '1'));
 

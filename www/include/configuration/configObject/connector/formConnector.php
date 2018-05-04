@@ -124,8 +124,8 @@ try {
     $form->addElement('select2', 'command_id', _("Used by command"), array(), $attrCommands);
 
     $cntStatus = array();
-    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');
-    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Disabled"), '0');
+    $cntStatus[] = $form->createElement('radio', 'connector_status', null, _("Enabled"), '1');
+    $cntStatus[] = $form->createElement('radio', 'connector_status', null, _("Disabled"), '0');
     $form->addGroup($cntStatus, 'connector_status', _("Connector Status"), '&nbsp;&nbsp;');
 
     if (isset($cnt['connector_status']) && is_numeric($cnt['connector_status'])) {

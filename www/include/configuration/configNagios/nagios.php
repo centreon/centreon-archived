@@ -49,12 +49,8 @@ isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
 isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-
-
-/* Pear library */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+/* QuickForm field; File is classmaped in composer.json */
+require_once 'HTML/QuickForm/select2.php';
 
 /* Path to the configuration dir */
 $path = "./include/configuration/configNagios/";

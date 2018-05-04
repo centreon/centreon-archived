@@ -70,12 +70,6 @@ $currentServerMicroTime = $sDate->getTimestamp();
  */
 $path = "./include/views/graphs/";
 
-/*
- * Include Pear Lib
- */
-
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /*
  * Smarty template Init
