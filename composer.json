@@ -39,7 +39,7 @@
         },
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
-            "www/lib/HTML/QuickForm/QuickForm.php"
+            "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php"
         ]
     }
 }
