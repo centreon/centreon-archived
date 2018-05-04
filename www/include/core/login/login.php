@@ -35,12 +35,6 @@
 
 require_once $centreon_path . "/bootstrap.php";
 
-/*
- * Adding requirements
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 /**
  * Path to the configuration dir
  */
