@@ -85,7 +85,14 @@ class CentreonSession
         }
     }
 
-    public function checkSession($sessionId, $pearDB)
+    /**
+     * Check user session status
+     * 
+     * @param string $sessionId
+     * @param \CentreonDB $pearDB
+     * @return int
+     */
+    public static function checkSession($sessionId, CentreonDB $pearDB)
     {
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
         $DBRESULT = $pearDB->query(
