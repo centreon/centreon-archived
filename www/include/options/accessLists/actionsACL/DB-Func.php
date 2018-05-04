@@ -237,7 +237,7 @@ function insertAction($ret)
     $rq .= "VALUES ";
     $rq .= "('" . htmlentities($ret["acl_action_name"], ENT_QUOTES, "UTF-8") . "', '" .
         htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8") . "', '" .
-        htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES, "UTF-8") . "')";
+        htmlentities((isset($ret["acl_action_activate"]) ? $ret["acl_action_activate"]["acl_action_activate"] : ''), ENT_QUOTES, "UTF-8") . "')";
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
     $cg_id = $DBRESULT->fetchRow();
