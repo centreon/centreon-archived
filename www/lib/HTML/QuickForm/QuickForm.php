@@ -1,5 +1,6 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+namespace QuickFormCustom;
 
 require_once realpath(dirname(__FILE__) . '/../../../../vendor/autoload.php');
 require_once 'PEAR.php';
@@ -26,88 +27,7 @@ require_once 'PEAR.php';
  * @link        http://pear.php.net/package/HTML_QuickForm
  */
 
-/**
- * Element types known to HTML_QuickForm
- * @see HTML_QuickForm::registerElementType(), HTML_QuickForm::getRegisteredTypes(),
- *      HTML_QuickForm::isTypeRegistered()
- * @global array $GLOBALS ['HTML_QUICKFORM_ELEMENT_TYPES']
- */
-$GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES'] =
-    array(
-        'group' => array('HTML/QuickForm/group.php', 'HTML_QuickForm_group'),
-        'hidden' => array('HTML/QuickForm/hidden.php', 'HTML_QuickForm_hidden'),
-        'reset' => array('HTML/QuickForm/reset.php', 'HTML_QuickForm_reset'),
-        'checkbox' => array('HTML/QuickForm/checkbox.php', 'HTML_QuickForm_checkbox'),
-        'customcheckbox' => array('HTML/QuickForm/customcheckbox.php', 'HTML_QuickForm_customcheckbox'),
-        'file' => array('HTML/QuickForm/file.php', 'HTML_QuickForm_file'),
-        'image' => array('HTML/QuickForm/image.php', 'HTML_QuickForm_image'),
-        'password' => array('HTML/QuickForm/password.php', 'HTML_QuickForm_password'),
-        'radio' => array('HTML/QuickForm/radio.php', 'HTML_QuickForm_radio'),
-        'button' => array('HTML/QuickForm/button.php', 'HTML_QuickForm_button'),
-        'submit' => array('HTML/QuickForm/submit.php', 'HTML_QuickForm_submit'),
-        'select' => array('HTML/QuickForm/select.php', 'HTML_QuickForm_select'),
-        'select2' => array('HTML/QuickForm/select2.php', 'HTML_QuickForm_select2'),
-        'tags' => array('HTML/QuickForm/tags.php', 'HTML_QuickForm_tags'),
-        'hiddenselect' => array('HTML/QuickForm/hiddenselect.php', 'HTML_QuickForm_hiddenselect'),
-        'text' => array('HTML/QuickForm/text.php', 'HTML_QuickForm_text'),
-        'textarea' => array('HTML/QuickForm/textarea.php', 'HTML_QuickForm_textarea'),
-        'link' => array('HTML/QuickForm/link.php', 'HTML_QuickForm_link'),
-        'advcheckbox' => array('HTML/QuickForm/advcheckbox.php', 'HTML_QuickForm_advcheckbox'),
-        'date' => array('HTML/QuickForm/date.php', 'HTML_QuickForm_date'),
-        'static' => array('HTML/QuickForm/static.php', 'HTML_QuickForm_static'),
-        'header' => array('HTML/QuickForm/header.php', 'HTML_QuickForm_header'),
-        'html' => array('HTML/QuickForm/html.php', 'HTML_QuickForm_html'),
-        'hierselect' => array('HTML/QuickForm/hierselect.php', 'HTML_QuickForm_hierselect'),
-        'autocomplete' => array('HTML/QuickForm/autocomplete.php', 'HTML_QuickForm_autocomplete'),
-        'xbutton' => array('HTML/QuickForm/xbutton.php', 'HTML_QuickForm_xbutton')
-    );
-
-/**
- * Validation rules known to HTML_QuickForm
- * @see HTML_QuickForm::registerRule(), HTML_QuickForm::getRegisteredRules(),
- *      HTML_QuickForm::isRuleRegistered()
- * @global array $GLOBALS ['_HTML_QuickForm_registered_rules']
- */
-$GLOBALS['_HTML_QuickForm_registered_rules'] = array(
-    'required' => array('html_quickform_rule_required', 'HTML/QuickForm/Rule/Required.php'),
-    'maxlength' => array('html_quickform_rule_range', 'HTML/QuickForm/Rule/Range.php'),
-    'minlength' => array('html_quickform_rule_range', 'HTML/QuickForm/Rule/Range.php'),
-    'rangelength' => array('html_quickform_rule_range', 'HTML/QuickForm/Rule/Range.php'),
-    'email' => array('html_quickform_rule_email', 'HTML/QuickForm/Rule/Email.php'),
-    'regex' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'lettersonly' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'alphanumeric' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'numeric' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'nopunctuation' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'nonzero' => array('html_quickform_rule_regex', 'HTML/QuickForm/Rule/Regex.php'),
-    'callback' => array('html_quickform_rule_callback', 'HTML/QuickForm/Rule/Callback.php'),
-    'token' => array('html_quickform_rule_token', 'HTML/QuickForm/Rule/Token.php'),
-    'compare' => array('html_quickform_rule_compare', 'HTML/QuickForm/Rule/Compare.php')
-);
-
-// {{{ error codes
-
-/**#@+
- * Error codes for HTML_QuickForm
- *
- * Codes are mapped to textual messages by errorMessage() method, if you add a
- * new code be sure to add a new message for it to errorMessage()
- *
- * @see HTML_QuickForm::errorMessage()
- */
-define('QUICKFORM_OK', 1);
-define('QUICKFORM_ERROR', -1);
-define('QUICKFORM_INVALID_RULE', -2);
-define('QUICKFORM_NONEXIST_ELEMENT', -3);
-define('QUICKFORM_INVALID_FILTER', -4);
-define('QUICKFORM_UNREGISTERED_ELEMENT', -5);
-define('QUICKFORM_INVALID_ELEMENT_NAME', -6);
-define('QUICKFORM_INVALID_PROCESS', -7);
-define('QUICKFORM_DEPRECATED', -8);
-define('QUICKFORM_INVALID_DATASOURCE', -9);
-/**#@-*/
-
-// }}}
+use \HTML_QuickForm as VendorHTML_QuickForm;
 
 /**
  * Create, validate and process HTML forms
@@ -119,7 +39,7 @@ define('QUICKFORM_INVALID_DATASOURCE', -9);
  * @author      Alexey Borzov <avb@php.net>
  * @version     Release: 3.2.14
  */
-class HTML_QuickForm extends HTML_Common
+class HTML_QuickForm extends VendorHTML_QuickForm
 {
     // {{{ properties
 
@@ -293,6 +213,7 @@ class HTML_QuickForm extends HTML_Common
         $attributes = null,
         $trackSubmit = false
     ) {
+        parent::__construct($attributes);
         $method = (strtoupper($method) == 'GET') ? 'get' : 'post';
         $action = ($action == '') ? $_SERVER['PHP_SELF'] : $action;
         $target = empty($target) ? array() : array('target' => $target);
@@ -1524,7 +1445,7 @@ class HTML_QuickForm extends HTML_Common
      * @param    array $b array which will be merged into first one
      * @return   array   merged array
      */
-    public function arrayMerge($a, $b)
+    public static function arrayMerge($a, $b)
     {
         foreach ($b as $k => $v) {
             if (is_array($v)) {
@@ -1554,7 +1475,7 @@ class HTML_QuickForm extends HTML_Common
      * @access    public
      * @return    boolean
      */
-    public function isTypeRegistered($type)
+    public static function isTypeRegistered($type)
     {
         return isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES'][strtolower($type)]);
     } // end func isTypeRegistered
@@ -2229,7 +2150,7 @@ class HTML_QuickForm extends HTML_Common
      * @return bool     whether $value is an error
      * @static
      */
-    public function isError($value)
+    public static function isError($value)
     {
         return (is_object($value) && is_a($value, 'html_quickform_error'));
     } // end func isError
@@ -2245,7 +2166,7 @@ class HTML_QuickForm extends HTML_Common
      * @return  string  error message
      * @static
      */
-    public function errorMessage($value)
+    public static function errorMessage($value)
     {
         // make the variable static so that it only has to do the defining on the first call
         static $errorMessages;
