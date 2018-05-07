@@ -113,10 +113,10 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | number         | page number                                |
 +----------------+--------------------------------------------+
-| order          | the order type (selected in the field list)| 
+| order          | the order type (selected in the field list)|
 +----------------+--------------------------------------------+
 
-Field list : 
+Field list :
 
 +--------------------------+------------------------------------------+
 | Fields                   | Description                              |
@@ -235,10 +235,10 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | number         | page number                                |
 +----------------+--------------------------------------------+
-| order          | the order type (selected in the field list)| 
+| order          | the order type (selected in the field list)|
 +----------------+--------------------------------------------+
 
-Field list : 
+Field list :
 
 +--------------------------+------------------------------------------+
 | Fields                   | Description                              |
@@ -326,7 +326,7 @@ Field list :
 | criticality              | criticality fo this service              |
 +--------------------------+------------------------------------------±
 
-Example: 
+Example:
 
 Using GET method and the URL below:  ::
 
@@ -338,9 +338,11 @@ Submit results
 
 You can use the centreon API ti submit information to the monitoring engine. All information that you sublit will be forwarded to the centreon engine poller that host the configuration.
 
-To provide information, Centreon need to have specific and mandatory information. 
+To provide information, Centreon need to have specific and mandatory information.
 
-For the host submission please fournish the following information : 
+The user must be admin or have access to "Reach API Configuration".
+
+For the host submission please fournish the following information :
 
 +------------------+------------------------------------------+
 | Fields           | Description                              |
@@ -350,16 +352,17 @@ For the host submission please fournish the following information :
 | service          | service description                      |
 +------------------+------------------------------------------±
 | status           | status id (0, 1, 2, 3)                   |
+|                  | or ok, warning, critical, unknown        |
 +------------------+------------------------------------------±
 | output           | a specific message                       |
 +------------------+------------------------------------------±
 | perfdata         | all performance metric following the     |
-|                  | nagios plugin API                        |
+| (optional)       | nagios plugin API                        |
 +------------------+------------------------------------------±
-| uptdatetime      | the check time (timestamp)               |
+| updatetime      | the check time (timestamp)                |
 +------------------+------------------------------------------±
 
-For the service submission please fournish the following information : 
+For the service submission please fournish the following information :
 
 +------------------+------------------------------------------+
 | Fields           | Description                              |
@@ -370,7 +373,7 @@ For the service submission please fournish the following information :
 +------------------+------------------------------------------±
 | output           | a specific message                       |
 +------------------+------------------------------------------±
-| uptdatetime      | the check time (timestamp)               |
+| updatetime       | the check time (timestamp)               |
 +------------------+------------------------------------------±
 
 To send status, please use the following URL using POST method:  ::
@@ -391,35 +394,22 @@ To send status, please use the following URL using POST method:  ::
 
 **Body:** ::
 
- {
-  "results": [{ 	
-  	"updatetime": "1523872945",
-  	"host": "server-1",
-  	"service": "service-passif",
-  	"status": "0",
-  	"output": "Output 1",
-  	"perfdata": "perf=1"
-  },
-  { 	
-  	"updatetime": "1523872945",
-  	"host": "server-2",
-  	"service": "service-passif",
-  	"status": "1",
-  	"output": "Output 2",
-  	"perfdata": "perf=2"
-  },
-  { 	
-  	"updatetime": "1523872945",
-  	"host": "server-3",
-  	"service": "service-passif",
-  	"status": "2",
-  	"output": "Output 3",
-  	"perfdata": "perf=1"
-  }]
- }
- 
 
-Configuration 
+{
+  "results": [
+    {
+      "code": 202,
+      "message": "The status send to the engine"
+    },
+    {
+      "code": 404,
+      "message": "The service is not present."
+    }
+  ]
+}
+
+
+Configuration
 -------------
 
 Getting started
@@ -450,7 +440,7 @@ Using POST method and the URL below:  ::
   {
     "action": "show",
     "object": "HOST"
-  }  
+  }
 
 * The key **action** corresponds to the option **-a** in Centreon CLAPI, the value **show** corresponds to the **-a** option value.
 * The key **object** corresponds to the option **-o** in Centreon CLAPI, the value **HOST** corresponds to the **-o** option value.
@@ -458,7 +448,7 @@ Using POST method and the URL below:  ::
 The equivalent action using Centreon CLAPI is: ::
 
    [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a show
-  
+
 
 **Response:**
 The response is a json flow listing all hosts and formated as below: ::
@@ -478,7 +468,7 @@ The response is a json flow listing all hosts and formated as below: ::
       "alias": "mail-neptune-frontend",
       "address": "mail-neptune-frontend",
       "activate": "1"
-    },    
+    },
     {
       "id": "14",
       "name": "srvi-mysql01",
@@ -811,7 +801,7 @@ Set instance poller
    }
 
 
-Get macro 
+Get macro
 ##########
 
 **POST**  ::
@@ -842,7 +832,7 @@ Get macro
 
 
 
-**Response** 
+**Response**
 Here is a response example ::
 
    {
@@ -904,7 +894,7 @@ Set macro
 To edit an existing custom marco, The MacroName used on the body should be defined on the Custom Marco of the choosen host. If the marco doesn't exist, it will be created.
 
 **Response** ::
- 
+
  {
   "result": []
  }
@@ -939,7 +929,7 @@ Delete macro
     "values": "mail-uranus-frontend;MacroName"
   }
 
-The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host. 
+The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host.
 
 **Response** ::
 
@@ -981,7 +971,7 @@ Get template
 
 **Response**
 Here is a response example ::
- 
+
  {
   "result": [
     {
@@ -1035,7 +1025,7 @@ The MyHostTemplate used on the body should exist as a host template. The new tem
 **Response** ::
   {
   "result": []
-  } 
+  }
 
 
 
@@ -1068,7 +1058,7 @@ Add template
     "values": "mail-uranus-frontend;MyHostTemplate"
   }
 
-The MyHostTemplate used on the body should exist as a host template. The new template is added without erasing template already linked 
+The MyHostTemplate used on the body should exist as a host template. The new template is added without erasing template already linked
 
 **Response** ::
   {
@@ -1105,7 +1095,7 @@ Delete template
     "values": "mail-uranus-frontend;MyHostTemplate"
   }
 
-The MyHostTemplate used on the body should exist as a host template. 
+The MyHostTemplate used on the body should exist as a host template.
 
 **Response** ::
   {
@@ -1180,7 +1170,7 @@ Get parent
 
 
 **Response** ::
-  
+
  {
   "result": [
     {
@@ -1189,7 +1179,7 @@ Get parent
     }
   ]
  }
- 
+
 
 Add parent
 ##########
@@ -1358,7 +1348,7 @@ Get contact group
     }
   ]
   }
-  
+
 
 
 
@@ -1528,7 +1518,7 @@ Get contact
       "name": "user-mail"
     }
   ]
-  } 
+  }
 
 
 Add contact
@@ -2236,7 +2226,7 @@ Instances ( Pollers)
  * del
  * setparam
  * gethosts
- 
+
 
 Service templates
 ~~~~~~~~~~~~~~~~~

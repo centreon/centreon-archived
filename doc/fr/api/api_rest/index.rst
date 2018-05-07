@@ -336,9 +336,11 @@ Submit results
 
 You can use the centreon API ti submit information to the monitoring engine. All information that you sublit will be forwarded to the centreon engine poller that host the configuration.
 
-To provide information, Centreon need to have specific and mandatory information. 
+To provide information, Centreon need to have specific and mandatory information.
 
-For the host submission please fournish the following information : 
+The user must be admin or have access to "Reach API Configuration".
+
+For the host submission please fournish the following information :
 
 +------------------+------------------------------------------+
 | Fields           | Description                              |
@@ -348,16 +350,17 @@ For the host submission please fournish the following information :
 | service          | service description                      |
 +------------------+------------------------------------------±
 | status           | status id (0, 1, 2, 3)                   |
+|                  | or ok, warning, critical, unknown        |
 +------------------+------------------------------------------±
 | output           | a specific message                       |
 +------------------+------------------------------------------±
 | perfdata         | all performance metric following the     |
-|                  | nagios plugin API                        |
+| (optional)       | nagios plugin API                        |
 +------------------+------------------------------------------±
-| uptdatetime      | the check time (timestamp)               |
+| updatetime       | the check time (timestamp)               |
 +------------------+------------------------------------------±
 
-For the service submission please fournish the following information : 
+For the service submission please fournish the following information :
 
 +------------------+------------------------------------------+
 | Fields           | Description                              |
@@ -368,7 +371,7 @@ For the service submission please fournish the following information :
 +------------------+------------------------------------------±
 | output           | a specific message                       |
 +------------------+------------------------------------------±
-| uptdatetime      | the check time (timestamp)               |
+| updatetime       | the check time (timestamp)               |
 +------------------+------------------------------------------±
 
 To send status, please use the following URL using POST method:  ::
@@ -390,32 +393,18 @@ To send status, please use the following URL using POST method:  ::
 **Body:** ::
 
  {
-  "results": [{ 	
-  	"updatetime": "1523872945",
-  	"host": "server-1",
-  	"service": "service-passif",
-  	"status": "0",
-  	"output": "Output 1",
-  	"perfdata": "perf=1"
-  },
-  { 	
-  	"updatetime": "1523872945",
-  	"host": "server-2",
-  	"service": "service-passif",
-  	"status": "1",
-  	"output": "Output 2",
-  	"perfdata": "perf=2"
-  },
-  { 	
-  	"updatetime": "1523872945",
-  	"host": "server-3",
-  	"service": "service-passif",
-  	"status": "2",
-  	"output": "Output 3",
-  	"perfdata": "perf=1"
-  }]
+  "results": [
+    {
+      "code": 202,
+      "message": "The status send to the engine"
+    },
+    {
+      "code": 404,
+      "message": "The service is not present."
+    }
+  ]
  }
- 
+
 
 Configuration
 -------------
@@ -2232,7 +2221,7 @@ Instances ( Pollers)
  * del
  * setparam
  * gethosts
- 
+
 
 Service templates
 ~~~~~~~~~~~~~~~~~
