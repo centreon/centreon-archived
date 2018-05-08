@@ -57,11 +57,6 @@ $path = _CENTREON_PATH_ . "/www/include/monitoring/external_cmd/popup/";
 $tpl = new Smarty();
 $tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 
 /*
@@ -91,7 +86,7 @@ $persistent = $user_params["ack_persistent"];
 $force_check = $user_params["force_check"];
 $ack_services = $user_params["ack_services"];
 */
-$form = new HTML_QuickForm('select_form', 'GET', 'main.php');
+$form = new HTML_QuickFormCustom('select_form', 'GET', 'main.php');
 
 $form->addElement('header', 'title', _("Acknowledge problems"));
 

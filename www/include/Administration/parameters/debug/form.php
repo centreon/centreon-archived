@@ -48,7 +48,7 @@ $attrsText        = array("size"=>"40");
 $attrsText2        = array("size"=>"5");
 $attrsAdvSelect = null;
 
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 $form->addElement('header', 'title', _("Modify General Options"));
 $form->addElement('header', 'debug', _("Debug"));
 

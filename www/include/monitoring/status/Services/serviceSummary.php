@@ -79,7 +79,7 @@ $tpl->assign("mon_last_check", _("Last Check"));
 $tpl->assign("mon_duration", _("Duration"));
 $tpl->assign("mon_status_information", _("Status information"));
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");

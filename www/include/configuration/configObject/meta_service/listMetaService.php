@@ -96,7 +96,7 @@ if ($search) {
 }
 $DBRESULT = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 /*
  * Different style between each lines

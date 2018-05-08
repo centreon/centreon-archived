@@ -159,7 +159,7 @@ if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('FormPeriod', 'get', "?p=".$p);
+$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=".$p);
 $form->addElement('header', 'title', _("Choose the source to graph"));
 
 $periods = array(

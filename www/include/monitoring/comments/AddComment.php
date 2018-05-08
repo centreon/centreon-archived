@@ -66,7 +66,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
     /*
      * Form begin
      */
-    $form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+    $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
     /*
      * Indicator basic information

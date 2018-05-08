@@ -135,7 +135,7 @@ $attrServicetemplates = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $trapObj->setForm($form);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Trap definition"));

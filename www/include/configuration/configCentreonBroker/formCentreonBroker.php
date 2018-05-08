@@ -73,7 +73,7 @@ $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Centreon-Broker Configuration"));
 } elseif ($o == "c") {

@@ -77,7 +77,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 /**
  * Form
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Resource"));
 } elseif ($o == "c") {

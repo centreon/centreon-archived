@@ -70,7 +70,7 @@ if (file_exists($moduleInfoObj->getModulePath() . "/infos/infos.txt")) {
     $tpl->assign("module_infosTxt", false);
 }
 
-$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form1 = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
 if ($form1->validate()) {
     $moduleInstaller = $moduleFactory->newInstaller($name);

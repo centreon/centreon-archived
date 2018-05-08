@@ -160,7 +160,7 @@ $attrsTextarea4 = array("rows" => "$nbRowMacro", "cols" => "100", "id" => "listO
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p . '&type=' . $type);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . '&type=' . $type);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Command"));
 } elseif ($o == "c") {

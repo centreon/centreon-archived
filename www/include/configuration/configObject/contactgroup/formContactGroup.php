@@ -95,7 +95,7 @@ $attrAclgroups = array(
 /*
  * form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Contact Group"));
 } elseif ($o == "c") {

@@ -63,7 +63,7 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
  *
  */
 
-$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
 
 $items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
 $select = $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));

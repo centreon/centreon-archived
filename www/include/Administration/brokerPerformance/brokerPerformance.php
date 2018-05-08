@@ -190,7 +190,7 @@ function parseStatsFile($statfile)
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$form = new HTML_QuickForm('form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'post', "?p=" . $p);
 
 /*
  * Get Poller List
