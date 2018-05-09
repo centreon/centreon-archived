@@ -45,13 +45,10 @@ require_once "./include/monitoring/common-Func.php";
 unset($tpl);
 unset($path);
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 /*
  * Time period select
  */
-$form = new HTML_QuickForm('form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('form', 'post', "?p=".$p);
 
 /*
  * Get Poller List

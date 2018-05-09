@@ -50,9 +50,6 @@ if (!isset($centreon)) {
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 $args = array();
 $str = "";
 $nb_arg = 0;
@@ -82,7 +79,7 @@ $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*Basic info */
-$form = new HTML_QuickForm('Form', 'post');
+$form = new HTML_QuickFormCustom('Form', 'post');
 $form->addElement('header', 'title', _("Argument Descriptions"));
 $form->addElement('header', 'information', _("Arguments"));
 

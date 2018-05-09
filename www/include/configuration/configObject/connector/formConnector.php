@@ -87,7 +87,7 @@ try {
 
     $availableConnectors_list = return_plugin($oreon->optGen["cengine_path_connectors"]);
 
-    $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
     $form->addElement('header', 'information', _('General information'));
     if ($o == "a") {

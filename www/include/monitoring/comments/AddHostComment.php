@@ -96,7 +96,7 @@ if ($centreon->user->access->checkAction("host_comment")) {
     /*
 	 * Form begin
 	 */
-    $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
     if ($o == "ah") {
         $form->addElement('header', 'title', _("Add a comment for Host"));
     }

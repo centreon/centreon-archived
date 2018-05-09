@@ -43,10 +43,7 @@ if (!isset($centreon)) {
  */
 $ecObj = new CentreonExternalCommand($centreon);
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Path to the configuration dir

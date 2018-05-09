@@ -50,9 +50,6 @@ isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
 isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
 $cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 /*
  * Path to the configuration dir
  */

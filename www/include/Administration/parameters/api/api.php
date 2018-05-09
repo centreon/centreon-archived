@@ -37,8 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once 'HTML/QuickForm/select2.php';
-
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
@@ -52,7 +50,7 @@ $attrsAdvSelect = null;
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify Centcore options"));
 
 /*

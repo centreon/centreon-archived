@@ -86,7 +86,7 @@ $attrServicetemplates = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Category"));
 } elseif ($o == "c") {

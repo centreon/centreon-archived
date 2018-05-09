@@ -53,7 +53,7 @@ isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
 /*
  * FORMS
  */
-$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
 
 $host_name = getMyHostName($host_id);
 $items = $centreon->user->access->getHostServices($pearDBO, $host_id);

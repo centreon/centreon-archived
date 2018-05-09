@@ -89,11 +89,8 @@ if (!$is_admin && $host_id) {
 }
 
 if (($is_admin || $flag_acl) && $host_id) {
-    #Pear library
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-    $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+    $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=".$p);
     $form->addElement('header', 'title', _("Command Options"));
 
     $return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");

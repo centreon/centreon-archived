@@ -98,7 +98,7 @@ $DBRESULT = $pearDB->query("SELECT *
 
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines

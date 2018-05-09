@@ -70,9 +70,6 @@ $traps_id = $inputs["traps_id"];
 $select = $inputs["select"];
 $dupNbr = $inputs["dupNbr"];
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 /* Path to the configuration dir */
 $path = "./include/configuration/configObject/traps/";
 

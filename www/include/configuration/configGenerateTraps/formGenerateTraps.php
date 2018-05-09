@@ -77,7 +77,7 @@ if ($n > 1) {
  */
 $attrSelect = array("style" => "width: 220px;");
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 /*
  * Init Header for tables in template
  */

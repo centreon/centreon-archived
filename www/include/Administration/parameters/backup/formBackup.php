@@ -60,7 +60,7 @@ $attrsText2 = array("size" => "3");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * General Options

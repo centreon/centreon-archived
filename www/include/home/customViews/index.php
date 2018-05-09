@@ -37,9 +37,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 try {
     $db = new CentreonDB();
     $viewObj = new CentreonCustomView($centreon, $db);
@@ -111,7 +108,7 @@ try {
     $template->assign('views', $views);
     $template->assign('empty', $i);
 
-    $formAddView = new HTML_QuickForm(
+    $formAddView = new HTML_QuickFormCustom(
         'formAddView',
         'post',
         "?p=103",
@@ -168,7 +165,7 @@ try {
     /**
      * Form for edit view
      */
-    $formEditView = new HTML_QuickForm(
+    $formEditView = new HTML_QuickFormCustom(
         'formEditView',
         'post',
         "?p=103",
@@ -213,7 +210,7 @@ try {
     /**
      * Form share view
      */
-    $formShareView = new HTML_QuickForm(
+    $formShareView = new HTML_QuickFormCustom(
         'formShareView',
         'post',
         "?p=103",
@@ -299,7 +296,7 @@ try {
      * Form add widget
      */
     $widgetObj = new CentreonWidget($centreon, $db);
-    $formAddWidget = new HTML_QuickForm(
+    $formAddWidget = new HTML_QuickFormCustom(
         'formAddWidget',
         'post',
         "?p=103",

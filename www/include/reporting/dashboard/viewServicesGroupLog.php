@@ -53,7 +53,7 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
  * FORMS
  */
 
-$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
 
 $items = getAllServicesgroupsForReporting($search);
 $form->addElement('select', 'item', _("Service Group"), $items, array("onChange" =>"this.form.submit();"));

@@ -103,7 +103,7 @@ include_once("./class/centreonDB.class.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl('./include/monitoring/downtime/', $tpl, "template/");
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tab_downtime_svc = array();
 

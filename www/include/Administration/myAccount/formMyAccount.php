@@ -37,12 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 require_once "./include/common/common-Func.php";
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Path to the configuration dir
@@ -80,7 +77,7 @@ $langs = array();
 $langs = getLangs();
 $attrsText = array("size" => "35");
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Change my settings"));
 
 $form->addElement('header', 'information', _("General Information"));

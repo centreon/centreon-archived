@@ -115,7 +115,7 @@ $attrServicegroups = array(
 /*
  * Init QuickFrom
  */
-$form = new HTML_QuickForm('form_dt', 'post', "?p=$p");
+$form = new HTML_QuickFormCustom('form_dt', 'post', "?p=$p");
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a downtime"));
 } elseif ($o == "c") {
