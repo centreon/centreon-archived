@@ -45,6 +45,8 @@ session_start();
 session_write_close();
 
 try {
+  
+    require_once _CENTREON_PATH_ . "vendor/smarty/smarty/libs/Smarty.class.php";
 
     if (!isset($_SESSION['centreon'])) {
         throw new Exception('No session found');
