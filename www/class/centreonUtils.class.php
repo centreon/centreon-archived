@@ -213,15 +213,17 @@ class CentreonUtils
     public function mergeWithInitialValues($form, $key)
     {
         $init = array();
-        $initForm = $form->getElement('initialValues');
-        $c = get_class($initForm);
-        if (!is_null($form) && $c != "HTML_QuickForm_Error") {
+        try {
+            $initForm = $form->getElement('initialValues');
             $initialValues = unserialize($initForm->getValue());
-            if (count($initialValues) && isset($initialValues[$key])) {
+            if (!empty($initialValues) && isset($initialValues[$key])) {
                 $init = $initialValues[$key];
             }
+            $result = array_merge((array)$form->getSubmitValue($key), $init);
+        } catch (HTML_QuickForm_Error $e) {
+            $result = [];
         }
-        return array_merge((array)$form->getSubmitValue($key), $init);
+        return $result;
     }
 
     /**
