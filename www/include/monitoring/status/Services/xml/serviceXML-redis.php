@@ -234,13 +234,13 @@ function build_search_rows(&$result) {
   $retval = array();
   $numRows = $result[0];
 
-  for ($i = 1; $i < count($result); $i += 2) {
-    $retval[$i - 1] = array();
-    $val = &$retval[$i - 1];
+  for ($i = 1, $k = 0; $i < count($result); $i += 2, $k++) {
+    $retval[$k] = array();
+    $val = &$retval[$k];
     for ($j = 0; $j < count($result[$i + 1]); $j += 2) {
       $val[$result[$i + 1][$j]] = $result[$i + 1][$j + 1];
     }
-    setSearchDefaultSvcFields($retval[$i - 1]);
+    setSearchDefaultSvcFields($val);
   }
   return $retval;
 }

@@ -197,6 +197,14 @@ function getServiceTemplateCategoryList($service_id = null)
     }
 }
 
+/**
+ * Retrieves host's services matching the service group
+ *
+ * @param $host_id: The host's id
+ * @param $groupstr: The service group
+ *
+ * @returns A dictionary of the form { service descr => service id }
+ */
 function getACLSGForHost($host_id, $groupstr)
 {
     global $sgCache;
@@ -368,7 +376,9 @@ function hostIsAuthorized($host_id, $group_id)
 }
 
 /*
- * Retreive service description
+ * Retreive service descriptions
+ * The return value is an dictionary of the form
+ *   { service_description => service_id }
  */
 function getMyHostServicesByName($host_id = null)
 {
@@ -384,7 +394,7 @@ function getMyHostServicesByName($host_id = null)
             if (isset($svcCache[$service_id])) {
                 $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
                 $service_description = str_replace('#BS#', '\\', $service_description);
-                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
+                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
             }
         }
     }
@@ -410,7 +420,7 @@ function getMetaServices($resId, $db, $metaObj)
         $hostId = $metaObj->getRealHostId();
         while ($row = $res->fetchRow()) {
             $svcId = $metaObj->getRealServiceId($row['meta_id']);
-            $arr['_Module_Meta']['meta_' . $row['meta_id']] = "$hostId,$svcId";
+            $arr[$hostId]['meta_' . $row['meta_id']] = "$hostId,$svcId";
         }
     }
     return $arr;
@@ -426,3 +436,4 @@ function getModulesExtensionsPaths($db)
     
     return $extensionsPaths;
 }
+

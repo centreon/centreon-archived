@@ -40,7 +40,7 @@ define('LDAP_UPDATE_PERIOD', 3600);
 include_once 'DB.php';
 
 require_once realpath(dirname(__FILE__) . '/../config/centreon.config.php');
-include_once _CENTREON_PATH_ . '/cron/centAcl-Func.php';
+include_once _CENTREON_PATH_ . '/cron/centAcl-Func-redis.php';
 include_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 include_once _CENTREON_PATH_ . '/www/class/centreonLDAP.class.php';
 include_once _CENTREON_PATH_ . '/www/class/centreonMeta.class.php';
@@ -541,14 +541,16 @@ try {
                 }
                 $DBRESULT3->free();
 
+                /* key = host id ; value = host name */
                 foreach ($tmpH as $key => $value) {
+                    // FIXME DBR: Ici on utilise sgCache
                     $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2['acl_res_id'], $authorizedCategories);
                     foreach ($tab as $desc => $id) {
                         if (isset($sgElem[$value]) && isset($sgElem[$value][$desc])) {
-                            if (!isset($tabElem[$value])) {
-                                $tabElem[$value] = array();
+                            if (!isset($tabElem[$key])) {
+                                $tabElem[$key] = array();
                             }
-                            $tabElem[$value][$desc] = $key . ',' . $id;
+                            $tabElem[$key][$desc] = $key . ',' . $id;
                         }
                     }
                     unset($tab);
@@ -566,11 +568,11 @@ try {
                 foreach ($Host as $key => $value) {
                     $redis->setbit('aclh:' . $acl_group_id, $key, 1);
                     $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2['acl_res_id'], $authorizedCategories);
-                    if (!isset($tabElem[$value])) {
-                        $tabElem[$value] = array();
+                    if (!isset($tabElem[$key])) {
+                        $tabElem[$key] = array();
                     }
                     foreach ($tab as $desc => $id) {
-                        $tabElem[$value][$desc] = $key . ',' . $id;
+                        $tabElem[$key][$desc] = $key . ',' . $id;
                     }
                     unset($tab);
                 }
@@ -585,6 +587,7 @@ try {
                 }
 
                 $str = '';
+                /* FIXME DBR: Let's store all the services with their ACL */
                 if (count($tabElem)) {
                     $i = 0;
                     foreach ($tabElem as $host => $svc_list) {
@@ -596,10 +599,12 @@ try {
                             $str .= " ({$singleId}, NULL, {$acl_group_id}) ";
                         }
                         foreach ($svc_list as $desc => $t) {
+                            $id_tmp = explode(',', $t);
+                            print('acls:' . $acl_group_id . ':' . $host . ', ' . $id_tmp[1] . ", 1\n");
+                            $redis->setbit('acls:' . $acl_group_id . ':' . $host, $id_tmp[1], 1);
                             if ($str != '') {
                                 $str .= ', ';
                             }
-                            $id_tmp = preg_split("/\,/", $t);
                             $str .= "('" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
                             $i++;
                             if ($i >= 1000) {
