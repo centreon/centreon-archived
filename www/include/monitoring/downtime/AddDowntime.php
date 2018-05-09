@@ -53,6 +53,7 @@ $host_acl_id = preg_split('/,/', str_replace("'", "", $hostStr));
 
 $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
+$resource_id = isset($resource_id) ? $resource_id : 0;
 
 if (!$centreon->user->access->checkAction("host_schedule_downtime")
     && !$centreon->user->access->checkAction("service_schedule_downtime")) {

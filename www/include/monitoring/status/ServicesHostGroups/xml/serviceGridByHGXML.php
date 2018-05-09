@@ -59,6 +59,9 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
     exit();
 }
 
+$statusService = isset($statusService) ? $statusService : null;
+$statusFilter = isset($statusFilter) ? $statusFilter : null;
+
 /* Store in session the last type of call */
 $_SESSION['monitoring_serviceByHg_status'] = $statusService;
 $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;

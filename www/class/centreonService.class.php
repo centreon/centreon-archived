@@ -1042,14 +1042,15 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
-
         $hostgroup = false;
+        $hostIdList = array();
+        $serviceIdList = array();
+        $values = is_array($values) ? $values : [];
+
         if (isset($options['hostgroup']) && $options['hostgroup'] == true) {
             $hostgroup = true;
         }
 
-        $hostIdList = array();
-        $serviceIdList = array();
         foreach ($values as $value) {
             if (strpos($value, '-')) {
                 $tmpValue = explode('-', $value);

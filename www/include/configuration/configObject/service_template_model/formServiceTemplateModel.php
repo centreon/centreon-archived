@@ -112,6 +112,7 @@ if (($o == "c" || $o == "w") && $service_id) {
  * Preset values of macros
  */
 $cdata = CentreonData::getInstance();
+$aMacros = isset($aMacros) ? $aMacros : [];
 
 $cdata->addJsData('clone-values-macro', htmlspecialchars(
     json_encode($aMacros),

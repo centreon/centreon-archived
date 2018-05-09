@@ -39,6 +39,9 @@ if (!isset($centreon)) {
 
 include_once("./class/centreonUtils.class.php");
 
+$hostgroupsFilter = isset($hostgroupsFilter) ? $hostgroupsFilter : null;
+$statusHostFilter = isset($statusHostFilter) ? $statusHostFilter : null;
+
 /*
  * Object init
  */
