@@ -71,7 +71,7 @@ $attrsTextarea = array("rows" => "3", "cols" => "30");
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Graph Template"));
 } elseif ($o == "c") {

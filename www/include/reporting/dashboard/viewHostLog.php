@@ -59,7 +59,7 @@ isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UT
 /*
  * Host Selection
  */
-$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
+$formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=".$p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 

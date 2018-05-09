@@ -358,7 +358,7 @@ $TemplateValues = array();
  * For a shitty reason, Quickform set checkbox with stal[o] name
  */ 
 unset($_POST['o']);
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 $form->registerRule('validate_childs', 'function', 'childSameInstance');
 $form->registerRule('validate_parents', 'function', 'parentSameInstance');

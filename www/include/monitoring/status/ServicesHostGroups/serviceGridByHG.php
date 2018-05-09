@@ -99,7 +99,7 @@ $tpl->assign('pollerStr', _('Poller'));
 $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 $tpl->assign('hgStr', _('Hostgroup'));
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $form->addElement(
     'select',

@@ -207,7 +207,7 @@ $attrAclgroups = array(
     'linkedObject' => 'centreonAclGroup'
 );
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
 } elseif ($o == "c") {

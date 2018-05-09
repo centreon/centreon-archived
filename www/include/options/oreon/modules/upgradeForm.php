@@ -65,7 +65,7 @@ $moduleInfo = $moduleInfoObj->getConfiguration($name);
 $moduleInstalledInfo = $moduleInfoObj->getInstalledInformation($name);
 
 $elemArr = array();
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
 $form->addElement('submit', 'upgrade', _("Upgrade"), array("class" => "btc bt_success"));
 $redirect = $form->addElement('hidden', 'o');

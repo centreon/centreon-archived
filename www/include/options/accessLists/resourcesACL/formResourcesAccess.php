@@ -223,7 +223,7 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an ACL"));
 } elseif ($o == "c") {

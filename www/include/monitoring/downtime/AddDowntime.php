@@ -69,7 +69,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     /*
      * Form begin
      */
-    $form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+    $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
     /*
      * Indicator basic information

@@ -40,9 +40,6 @@ if (!isset($oreon)) {
     exit();
 }
 
-/* QuickForm field; File is classmaped in composer.json */
-require_once 'HTML/QuickForm/select2.php';
-
 /*
  * Path to the option dir
  */

@@ -87,7 +87,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $res = $pearDB->query("SELECT DISTINCT * FROM session");
 $session_data = array();
 $cpt = 0;
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
 
 while ($r = $res->fetchRow()) {
     $resUser = $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");

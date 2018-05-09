@@ -61,7 +61,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "40");
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add Group"));
 } elseif ($o == "c") {
