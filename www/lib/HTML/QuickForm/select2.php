@@ -143,7 +143,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param array $attributes
      * @param string $sort
      */
-    public function HTML_QuickForm_select2(
+    public function __construct(
         $elementName = null,
         $elementLabel = null,
         $options = null,
