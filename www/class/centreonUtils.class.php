@@ -210,7 +210,7 @@ class CentreonUtils
      * @param string $key
      * @return array
      */
-    public function mergeWithInitialValues($form, $key)
+    public static function mergeWithInitialValues($form, $key)
     {
         $init = array();
         try {
@@ -235,7 +235,7 @@ class CentreonUtils
      *                             otherwise values will be used
      * @return string
      */
-    public function toStringWithQuotes($arr = array(), $transformKey = true)
+    public static function toStringWithQuotes($arr = array(), $transformKey = true)
     {
         $string = "";
         $first = true;
