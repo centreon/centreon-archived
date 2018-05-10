@@ -325,11 +325,11 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         }
 
         $dt_w_services = false;
-        if ($values['with_services']['with_services'] == 1) {
+        if (isset($values['with_services']) && $values['with_services']['with_services'] == 1) {
             $dt_w_services = true;
         }
 
-        if ($values['downtimeType']['downtimeType'] == 1) {
+        if (isset($values['downtimeType']) && $values['downtimeType']['downtimeType'] == 1) {
             /*
              * Set a downtime for only host
              */
@@ -351,7 +351,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                     $host_or_centreon_time
                 );
             }
-        } elseif ($values['downtimeType']['downtimeType'] == 0) {
+        } elseif ($values['downtimeType']['downtimeType'] == 0 && isset($_POST['hostgroup_id']) && is_array($_POST['hostgroup_id'])) {
             /*
              * Set a downtime for hostgroup
              */

@@ -887,7 +887,13 @@ function updateContactHostCommands($contact_id = null, $ret = array())
         $ret = $form->getSubmitValue("contact_hostNotifCmds");
     }
 
-    for ($i = 0; $i < count($ret); $i++) {
+    if (is_array($ret) || $ret instanceof Countable) {
+        $resultsCount = count($ret);
+    } else {
+        $resultsCount = 0;
+    }
+
+    for ($i = 0; $i < $resultsCount; $i++) {
         $rq = "INSERT INTO contact_hostcommands_relation ";
         $rq .= "(contact_contact_id, command_command_id) ";
         $rq .= "VALUES ";
@@ -946,7 +952,14 @@ function updateContactServiceCommands($contact_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("contact_svNotifCmds");
     }
-    for ($i = 0; $i < count($ret); $i++) {
+
+    if (is_array($ret) || $ret instanceof Countable) {
+        $resultsCount = count($ret);
+    } else {
+        $resultsCount = 0;
+    }
+
+    for ($i = 0; $i < $resultsCount; $i++) {
         $rq = "INSERT INTO contact_servicecommands_relation ";
         $rq .= "(contact_contact_id, command_command_id) ";
         $rq .= "VALUES ";
