@@ -799,8 +799,11 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
             $strHtmlSelected = "<select$attrSelected>". PHP_EOL;
             if ($selected_count > 0) {
                 foreach ($arrHtmlSelected as $data) {
-                    $strHtmlSelected
-                        .= $tabs . $tab
+                    if ( !isset($data['attr']) || !isset($data['text']) ) {
+                        continue;
+                    }
+
+                    $strHtmlSelected .= $tabs . $tab
                         . '<option' . $this->_getAttrString($data['attr']) . '>'
                         . $data['text'] . '</option>' . PHP_EOL;
                 }
@@ -813,8 +816,11 @@ class HTML_QuickForm_advmultiselect extends HTML_QuickForm_select
             $strHtmlHidden = "<select$attrHidden>". PHP_EOL;
             if (count($arrHtmlHidden) > 0) {
                 foreach ($arrHtmlHidden as $data) {
-                    $strHtmlHidden
-                        .= $tabs . $tab
+                    if ( !isset($data['attr']) || !isset($data['text']) ) {
+                        continue;
+                    }
+
+                    $strHtmlHidden .= $tabs . $tab
                         . '<option' . $this->_getAttrString($data['attr']) . '>'
                         . $data['text'] . '</option>' . PHP_EOL;
                 }

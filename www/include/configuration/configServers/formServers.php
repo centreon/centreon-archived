@@ -40,6 +40,7 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
+$monitoring_engines = [];
 
 if (!$centreon->user->admin && $server_id && count($serverResult)) {
     if (!isset($serverResult[$server_id])) {
