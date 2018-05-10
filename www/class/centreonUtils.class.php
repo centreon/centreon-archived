@@ -110,7 +110,7 @@ class CentreonUtils
      * @param bool $or
      * @return string
      */
-    public function conditionBuilder($query, $condition, $or = false)
+    public static function conditionBuilder($query, $condition, $or = false)
     {
         if (preg_match('/ WHERE /', $query)) {
             if ($or === true) {
@@ -168,7 +168,7 @@ class CentreonUtils
      * @param string $str
      * @return string;
      */
-    public function operandToMysqlFormat($str)
+    public static function operandToMysqlFormat($str)
     {
         $result = "";
         switch ($str) {
