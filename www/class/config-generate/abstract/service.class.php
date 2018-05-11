@@ -154,7 +154,7 @@ abstract class AbstractService extends AbstractObject
             return 1;
         }
 
-        $service['macros'] = &Macro::getInstance($this->dependencyInjector)
+        $service['macros'] = Macro::getInstance($this->dependencyInjector)
             ->getServiceMacroByServiceId($service['service_id']);
         return 0;
     }
@@ -176,7 +176,7 @@ abstract class AbstractService extends AbstractObject
             $service['contacts'] = "";
         } else {
             $contact = Contact::getInstance($this->dependencyInjector);
-            $service['contacts_cache'] = &$contact->getContactForService($service['service_id']);
+            $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
             $contact_result = '';
             $contact_result_append = '';
             foreach ($service['contacts_cache'] as $contact_id) {
@@ -207,7 +207,7 @@ abstract class AbstractService extends AbstractObject
             $service['contact_groups'] = "";
         } else {
             $cg = Contactgroup::getInstance($this->dependencyInjector);
-            $service['contact_groups_cache'] = &$cg->getCgForService($service['service_id']);
+            $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
             $cg_result = '';
             $cg_result_append = '';
             foreach ($service['contact_groups_cache'] as $cg_id) {

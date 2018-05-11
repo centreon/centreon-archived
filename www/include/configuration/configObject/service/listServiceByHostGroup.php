@@ -41,10 +41,11 @@ include_once("./class/centreonUtils.class.php");
 
 $mediaObj = new CentreonMedia($pearDB);
 
-if (isset($_POST["hostgroups"])) {
-    $searchHG = $_POST["hostgroups"];
+if (isset($_POST['hostgroups'])) {
+    $searchHG = $_POST['hostgroups'];
     $centreon->svc_hostgroup_search = $searchHG;
-    if ($_POST["searchH"] != "") {
+
+    if (isset($_POST['searchH']) && $_POST['searchH'] != '') {
         $search_type_host = 1;
         $centreon->search_type_host = 1;
     }

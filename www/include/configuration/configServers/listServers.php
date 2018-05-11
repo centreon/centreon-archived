@@ -59,6 +59,8 @@ if ($is_admin == 0) {
     } else {
         $can_generate = 0;
     }
+} else {
+    $can_generate = 0;
 }
 
 /*

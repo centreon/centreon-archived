@@ -75,7 +75,7 @@ if ($resetFilter) {
 }
 
 if (!isset($o) || empty($o)) {
-    $o = $_SESSION['monitoring_service_status'];
+    $o = isset($_SESSION['monitoring_service_status']) ? $_SESSION['monitoring_service_status'] : null;
 }
 
 foreach ($myinputsGet as $key => $value) {

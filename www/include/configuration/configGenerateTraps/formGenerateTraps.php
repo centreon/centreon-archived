@@ -56,7 +56,8 @@ $tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
                                                   'conditions' => array('ns_activate' => 1)));
 
 /* Sort the list of poller server */
-$pollersId = explode(',', $_GET['poller']);
+$pollersId = isset($_GET['poller']) ? explode(',', $_GET['poller']) : [];
+
 foreach ($tab_nagios_server as $key => $name) {
     if (in_array($key, $pollersId)) {
         $tab_nagios_server[$key] = $name;
