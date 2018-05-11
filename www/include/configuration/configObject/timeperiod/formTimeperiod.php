@@ -133,8 +133,6 @@ while ($multiTp = $DBRESULT->fetchRow()) {
     $k++;
 }
 
-var_dump($k);
-
 $DBRESULT->closeCursor();
 
 /*

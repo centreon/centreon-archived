@@ -546,7 +546,8 @@ class CentreonConfigPoller
             $msg_copy = "";
             foreach (glob($this->nagiosCFGPath . '/' . $poller_id . "/*.cfg") as $filename) {
                 $bool = @copy($filename, $Nagioscfg["cfg_dir"] . "/" . basename($filename));
-                $filename = array_pop(explode("/", $filename));
+                $result = explode("/", $filename);
+                $filename = array_pop($result);
                 if (!$bool) {
                     $msg_copy .= $this->display_copying_file($filename, " - " . _("movement") . " KO");
                     $return = 1;

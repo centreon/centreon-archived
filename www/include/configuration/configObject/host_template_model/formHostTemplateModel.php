@@ -37,6 +37,7 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $hostObj = new CentreonHost($pearDB);
+$hTpls = isset($hTpls) ? $hTpls : [];
 
 #
 ## Database retrieve information for Host
