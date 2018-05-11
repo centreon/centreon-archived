@@ -148,7 +148,7 @@ class Generate
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->current_poller = array_pop($resutl);
+        $this->current_poller = array_pop($result);
         if (is_null($this->current_poller)) {
             throw new Exception("Cannot find poller name '" . $poller_name . "'");
         }
