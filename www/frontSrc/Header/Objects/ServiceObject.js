@@ -1,10 +1,10 @@
 import React from 'react'
-import Button from 'material-ui/Button'
-import Grid from 'material-ui/Grid'
-import { withStyles } from 'material-ui/styles'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import { withStyles } from '@material-ui/core/styles'
 import numeral from 'numeral'
-import Popover from 'material-ui/Popover'
-import Typography from 'material-ui/Typography'
+import Popover from '@material-ui/core/Popover'
+import Typography from '@material-ui/core/Typography'
 import ServiceIcon from "../icons/ServiceIcon"
 
 const styles = theme => ({
