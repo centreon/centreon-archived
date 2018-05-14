@@ -7,7 +7,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import HostObject from '../HostObjectContainer'
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 Enzyme.configure({ adapter: new Adapter() })
 
