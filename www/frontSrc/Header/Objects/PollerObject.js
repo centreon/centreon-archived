@@ -1,9 +1,9 @@
 import React from 'react'
-import Button from 'material-ui/Button'
-import Grid from 'material-ui/Grid'
-import { withStyles } from 'material-ui/styles'
-import Popover from 'material-ui/Popover'
-import Typography from 'material-ui/Typography'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import { withStyles } from '@material-ui/core/styles'
+import Popover from '@material-ui/core/Popover'
+import Typography from '@material-ui/core/Typography'
 import PollerIcon from "../icons/PollerIcon"
 
 const styles = theme => ({

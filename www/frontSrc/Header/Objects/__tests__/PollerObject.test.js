@@ -1,14 +1,13 @@
 /* eslint-env jest */
 import React from 'react'
 import Enzyme from 'enzyme'
-import { shallow, mount, render } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import toJson from 'enzyme-to-json'
 import Adapter from 'enzyme-adapter-react-16'
 import PollerObject from '../PollerObjectContainer'
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
-import renderer from 'react-test-renderer'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 Enzyme.configure({ adapter: new Adapter() })
 
