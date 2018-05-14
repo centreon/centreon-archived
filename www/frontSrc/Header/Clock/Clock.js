@@ -23,7 +23,7 @@ const styles = theme => ({
 })
 
 const ClockComponent = ({classes, currentTime}) => (
-      <div className={classes.moment}>
+      <div className={classes.moment} id='clock'>
         <div className={classes.headerDate}> {currentTime.date} </div>
         <div className={classes.headerTime}>{currentTime.time}</div>
       </div>
