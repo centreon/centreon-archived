@@ -34,11 +34,7 @@
  */
 
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
-
-require_once __DIR__ . "/../../../GPL_LIB/Smarty/libs/Smarty.class.php";
-require_once __DIR__ . "/../../lib/HTML/QuickForm.php";
-require_once __DIR__ . "/../../lib/HTML/QuickForm/advmultiselect.php";
-require_once __DIR__ . "/../../lib/HTML/QuickForm/Renderer/ArraySmarty.php";
+require_once realpath(dirname(__FILE__) . '/../../../') . '/GPL_LIB/smarty-plugins/block.t.php';
 
 class CentreonConfigurationBroker extends CentreonConfigurationObjects
 {
@@ -95,6 +91,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
         $tpl->config_dir = $libDir . '/SmartyCache/config';
         $tpl->cache_dir = $libDir . '/SmartyCache/cache';
         $tpl->template_dir = _CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/';
+        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
         $tpl->caching = 0;
         $tpl->compile_check = true;
         $tpl->force_compile = true;
