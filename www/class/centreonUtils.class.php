@@ -221,7 +221,7 @@ class CentreonUtils
             }
             $result = array_merge((array)$form->getSubmitValue($key), $init);
         } catch (HTML_QuickForm_Error $e) {
-            $result = [];
+            $result = (array) $form->getSubmitValue($key);
         }
         return $result;
     }
