@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import ServiceObject from './Objects/ServiceObjectContainer'
 import HostObject from './Objects/HostObjectContainer'
 import PollerObject from './Objects/PollerObjectContainer'
-import UserProfile from './User/UserProfileContrainer'
+import UserProfile from './User/UserProfileContainer'
 import Logo from './Logo/LogoContainer'
 
 const styles = theme => ({

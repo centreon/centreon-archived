@@ -1,7 +1,7 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
-import { MenuItem } from '@material-ui/core/MenuItem'
+import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import Grid from '@material-ui/core/Grid'
 import Popover from '@material-ui/core/Popover'
@@ -109,9 +109,9 @@ const UserProfile = ({
         </Typography>
       </div>
 
-        <MenuItem onClick={handleAutologin}>
-          <Bookmark className={classes.icon}/> Add to bookmark
-        </MenuItem>
+      <MenuItem onClick={handleAutologin}>
+        <Bookmark className={classes.icon}/> Add to bookmark
+      </MenuItem>
       <MenuItem onClick={handleNotification}>
         {soundNotif ?
           <VolumeMute className={classes.icon} />
@@ -126,6 +126,6 @@ const UserProfile = ({
       </div>
     </Popover>
   </Grid>
-    )
+)
 
 export default withStyles(styles)(UserProfile)
