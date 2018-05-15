@@ -22,6 +22,8 @@ class HTML_QuickFormCustom extends HTML_QuickForm
         parent::__construct($formName, $method, $action, $target, $attributes, $trackSubmit);
 
         $this->addFormRule([$this, 'checkSecurityToken']);
+
+        $this->loadCustomElementsInGlobal();
     }
 
     /**
@@ -33,6 +35,29 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     {
         $this->createSecurityToken();
         parent::accept($renderer);
+    }
+
+    /**
+     * Creates a new form element of the given type.
+     *
+     * This method accepts variable number of parameters, their
+     * meaning and count depending on $elementType
+     *
+     * @param     string     $elementType    type of element to add (text, textarea, file...)
+     * @return    HTML_QuickForm_Element
+     * @throws    HTML_QuickForm_Error
+     */
+    public function &createElement($elementType)
+    {
+        if ($elementType == 'radio') { // If element is radio we'll load our custom class type
+            $elementType = 'radio_custom';
+        }
+
+        $parentMethod = [get_parent_class($this), __FUNCTION__];
+        $arguments = array_slice(func_get_args(), 1); // Get all arguments except the first one
+        array_unshift($arguments, $elementType); // Add the modified element type name
+
+        return call_user_func_array($parentMethod, $arguments);
     }
 
     /**
@@ -112,6 +137,17 @@ class HTML_QuickFormCustom extends HTML_QuickForm
                 unset($_SESSION['x-centreon-token'][$tokenKey]);
                 unset($_SESSION['x-centreon-token-generated-at'][(string)$key]);
             }
+        }
+    }
+
+    /**
+     * Add additional custom element types to $GLOBALS
+     */
+    private function loadCustomElementsInGlobal()
+    {
+        // Add custom radio element type which will load our own radio HTML class
+        if ( !isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom']) ) {
+            $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'] = 'HTML_QuickForm_radio_Custom';
         }
     }
 }
