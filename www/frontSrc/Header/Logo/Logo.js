@@ -3,24 +3,26 @@ import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
 const styles = theme => ({
-  root: {
+  logoRoot: {
     display: 'flex',
-    flexDirection: 'row',
+    alignItems: 'center',
+    height: '100%',
+  },
+  root: {
     padding: '0 14px',
   },
   logo: {
     height: '100%',
     width: '100%',
-    verticalAlign: 'middle',
   },
 })
 
 const Logo = ({classes }) => (
-  <Grid item xs>
+  <div className={classes.logoRoot}>
     <div className={classes.root}>
       <img src='./img/centreon.png' className={classes.logo} alt='logo centreon' />
     </div>
-  </Grid>
+  </div>
 )
 
 export default withStyles(styles)(Logo)

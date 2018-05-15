@@ -1,17 +1,14 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 import numeral from 'numeral'
-import Avatar from '@material-ui/core/Avatar'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
-import HostIcon from "../icons/HostIcon"
+import HostIcon from "../Icons/HostIcon"
 
 const styles = theme => ({
   root: {
-    position: 'relative',
-    margin: '0 12px',
+    fontFamily: theme.font.openSans,
     '&:before': {
       width: 1,
       height: 30,
@@ -121,6 +118,7 @@ const HostObject = (
   }) => (
   <div className={classes.root}>
     <HostIcon
+      id='hostIcon'
       viewBox="6 156 600 600"
       className={classes.icon}
       aria-label='Hosts status'
@@ -143,6 +141,7 @@ const HostObject = (
       {numeral(unreachable.unhandled).format('0a')}
     </Button>
     <Popover
+      id='hostPopover'
       open={open}
       anchorEl={anchorEl}
       anchorReference='anchorEl'
