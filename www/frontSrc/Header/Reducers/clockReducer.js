@@ -7,12 +7,10 @@ import {
 
 export default function clockReducer (
   state = {
-    data: {
-      refreshTime: 120000,
-      dataFetched: false,
-      isFetching: false,
-      date: null
-    },
+    refreshTime: 120000,
+    dataFetched: false,
+    isFetching: false,
+    date: null
   },
   action
 ) {

@@ -1,16 +1,14 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 import numeral from 'numeral'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
-import ServiceIcon from "../icons/ServiceIcon"
+import ServiceIcon from "../Icons/ServiceIcon"
 
 const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
-    margin: '0 12px',
     '&:before': {
       width: 1,
       height: 30,
@@ -116,6 +114,7 @@ const ServiceObject = ({
 }) => (
   <div className={classes.root}>
       <ServiceIcon
+        id='serviceIcon'
         viewBox="284 -284 600 600"
         className={classes.icon}
         aria-haspopup="true"
@@ -139,6 +138,7 @@ const ServiceObject = ({
       </Button>
 
       <Popover
+        id='servicePopover'
         open={open}
         anchorEl={anchorEl}
         anchorReference='anchorEl'
