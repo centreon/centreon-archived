@@ -1,18 +1,17 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
-import PollerIcon from "../icons/PollerIcon"
+import PollerIcon from "../Icons/PollerIcon"
 
 const styles = theme => ({
   root: {
-    position: 'relative',
     fontFamily: theme.font.openSans,
-    display: 'inline-flex',
-    verticalAlign: 'middle',
-    margin: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    margin: '16px 6px',
   },
   'a': {
     color: '#0072CE',
@@ -97,7 +96,7 @@ const styles = theme => ({
 })
 
 const PollerObject = (
-  {classes, iconColor, message, total, anchorEl, open, handleClose, handleOpen, className,
+  {classes, iconColor, message, total, anchorEl, open, handleClose, handleOpen,
     database, latency, stability
   }) => (
   <div className={classes.root}>

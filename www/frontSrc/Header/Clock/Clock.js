@@ -3,12 +3,11 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   profileRoot: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
+    alignSelf: 'center',
     fontFamily: theme.font.openSans,
   },
   moment: {
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     margin: '10px 0px',
   },
   headerDate: {
