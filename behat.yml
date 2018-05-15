@@ -327,6 +327,6 @@ default:
       paths: [ %paths.base%/features/URI.feature ]
       contexts: [ URIContext ]
 
-    uri:
-      paths: [ %paths.base%/features/TopCounterPlatformStatus.feature ]
-      contexts: [ TopCounterPlatformStatusContext ]
+    newheaderfeatureflipping:
+      paths: [ %paths.base%/features/NewHeaderFeatureFlipping.feature ]
+      contexts: [ NewHeaderFeatureFlippingContext ]
