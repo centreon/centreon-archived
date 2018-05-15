@@ -4,7 +4,7 @@ import UserProfile from './UserProfile'
 import { getUser, getDisabledSoundNotif, getEnabledSoundNotif, getaAutologin } from "../../webservices/userApi"
 import 'moment-timezone'
 
-class UserProfileContrainer extends Component {
+class UserProfileContainer extends Component {
 
   constructor(props) {
     super(props)
@@ -111,4 +111,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfileContrainer)
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileContainer)
