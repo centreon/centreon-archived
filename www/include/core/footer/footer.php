@@ -249,7 +249,7 @@ function featureDisable() {
     validateFeature(
         "<?php echo $featureToAsk[0]['name']; ?>",
         "<?php echo $featureToAsk[0]['version']; ?>",
-        true
+        false
     );
     testingFeature.centreonPopin("close");
 }
