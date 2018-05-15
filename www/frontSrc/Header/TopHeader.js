@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import Grid from '@material-ui/core/Grid'
 import AppBar from '@material-ui/core/AppBar'
 import grey from '@material-ui/core/colors/grey'
 import { withStyles } from '@material-ui/core/styles'
@@ -7,8 +6,10 @@ import PropTypes from 'prop-types'
 import ServiceObject from './Objects/ServiceObjectContainer'
 import HostObject from './Objects/HostObjectContainer'
 import PollerObject from './Objects/PollerObjectContainer'
-import UserProfile from './User/UserProfileContrainer'
+import UserProfile from './User/UserProfileContainer'
 import Logo from './Logo/LogoContainer'
+import Clock from './Clock/ClockContainer'
+
 
 const styles = theme => ({
   root: {
@@ -16,6 +17,15 @@ const styles = theme => ({
     zIndex: 1,
     fontFamily: theme.font.openSans,
     overflow: 'hidden'
+  },
+  container: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(12, 1fr)',
+    gridGap: `${theme.spacing.unit * 3}px`,
+  },
+  clockUserContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -40,20 +50,28 @@ class TopHeader extends Component {
     return (
       <div className={classes.root}>
         <AppBar position="static" className={classes.appBar}>
-          <Grid
-            container
-            spacing={40}
-            alignItems="center"
-            direction="row"
-          >
-            <Logo />
-            <Grid item xs={12} sm={6} className={classes.objectContainer}>
+          <div className={classes.container}>
+            <div style={{ gridColumnEnd: 'span 2' }}>
+              <Logo />
+            </div>
+            <div style={{ gridColumnEnd: 'span 3' }}>
+            </div>
+            <div style={{ gridColumnEnd: 'span 1' }}>
               <PollerObject />
+            </div>
+            <div style={{ gridColumnEnd: 'span 2' }}>
               <HostObject />
+            </div>
+            <div style={{ gridColumnEnd: 'span 2' }}>
               <ServiceObject />
-            </Grid>
-            <UserProfile />
-          </Grid>
+            </div>
+            <div style={{ gridColumnEnd: 'span 2' }}>
+              <div className={classes.clockUserContainer}>
+                <Clock />
+                <UserProfile />
+              </div>
+            </div>
+          </div>
         </AppBar>
       </div>
     )

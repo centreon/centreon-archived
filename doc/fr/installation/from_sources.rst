@@ -690,7 +690,7 @@ Installation des dépendances PHP
 Tout d'abord, vous devez installer l'installeur de dépendance PHP **composer**.
 Composer peut être téléchargé `ici <https://getcomposer.org/download/>` (celui-ci est également disponible dans les dépôts EPEL).
 
-Une fois que composer est installé, rendez vous dans les répertoire centreon (habituellement /usr/share/centreon/) et exécutez la commande suivante :
+Une fois que composer est installé, rendez-vous dans les répertoires Centreon (habituellement /usr/share/centreon/) et exécutez la commande suivante :
 
  ::
 

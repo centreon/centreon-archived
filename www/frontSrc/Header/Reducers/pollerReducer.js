@@ -29,7 +29,7 @@ export default function pollerReducer (
             total: action.data.database.critical,
             message: 'All database poller updates are not active'
           },
-          ['warning']: {
+          warning: {
             total: action.data.database.warning,
             message: 'Some database poller updates are not active'
           },

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PollerIcon from "../icons/PollerIcon"
 import PollerObject from './PollerObject'
 import {connect} from "react-redux"
 import {getPollers} from "../../webservices/pollerApi"
@@ -46,27 +45,24 @@ class PollerObjectContainer extends Component {
   setPollerState = (database, latency, stability) => {
     const pollerState = {
       color: '#88B917',
-      className: '',
     }
 
     if (database.critical > 0 || latency.critical > 0 || stability.critical > 0) {
       pollerState.color = '#E00B3D'
-      pollerState.className = 'errorNotif'
     } else if (database.warning > 0 || latency.warning > 0 || stability.warning > 0) {
       pollerState.color = '#FF9A13'
-      pollerState.className = 'warningNotif'
     }
 
     return pollerState
   }
 
-  render = () => {
+  render () {
     const { anchorEl } = this.state
     const open = !!anchorEl
     const { database, latency, stability, total, dataFetched, error } = this.props.poller
 
     if (dataFetched) {
-      const {color, className} = this.setPollerState(stability, database, latency)
+      const {color} = this.setPollerState(stability, database, latency)
       return (
         <PollerObject
           handleClose={this.handleClose}
@@ -74,7 +70,6 @@ class PollerObjectContainer extends Component {
           open={open}
           anchorEl={anchorEl}
           iconColor={color ? color : '#BCBDC0'}
-          className={className ? className : ''}
           database={database ? database : {critical: '...', warning: '...'}}
           latency={latency ? latency : {critical: '...', warning: '...'}}
           stability={stability ? stability : {critical: '...', warning: '...'}}
@@ -84,13 +79,17 @@ class PollerObjectContainer extends Component {
     } else {
       if (error === false && error != null) {
         return (
-          <PollerIcon
+          <PollerObject
             open={false}
             id='pollerIcon'
             alt="poller icon"
-            style={{width: 34,height: 34}}
-            viewBox="6 156 600 600"
-            nativeColor='#BCBDC0'
+            nativeColor='#A7A9AC'
+            style={{cursor: 'none'}}
+            iconColor='#A7A9AC'
+            database={{critical: '...', warning: '...'}}
+            latency={{critical: '...', warning: '...'}}
+            stability={{critical: '...', warning: '...'}}
+            total='...'
           />
         )
       } else {
