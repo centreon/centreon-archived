@@ -622,7 +622,9 @@ if ($o != "mc") {
     $form->addRule('contact_email', _("Valid Email"), 'required');
     $form->addRule('contact_oreon', _("Required Field"), 'required');
     $form->addRule('contact_lang', _("Required Field"), 'required');
-    $form->addRule('contact_admin', _("Required Field"), 'required');
+    if ($centreon->user->admin) {
+        $form->addRule('contact_admin', _("Required Field"), 'required');
+    }
     $form->addRule('contact_auth_type', _("Required Field"), 'required');
 
     if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
