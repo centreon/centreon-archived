@@ -105,6 +105,7 @@ const PollerObject = (
       id='pollerIcon'
       alt="poller icon"
       aria-haspopup="true"
+      aria-label='Pollers status'
       onClick={handleOpen}
       viewBox="6 156 600 600"
       className={classes.icon}
@@ -169,7 +170,7 @@ const PollerObject = (
         </Typography>
       </div>
       <div className={classes.objectDetails}>
-        <Button className={classes.primaryButton} href="./main.php?p=609">
+        <Button className={classes.primaryButton} aria-label='Pollers configuration' href="./main.php?p=609">
           Configure pollers
         </Button>
       </div>
