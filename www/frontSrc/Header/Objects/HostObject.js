@@ -123,6 +123,7 @@ const HostObject = (
     <HostIcon
       viewBox="6 156 600 600"
       className={classes.icon}
+      aria-label='Hosts status'
       aria-haspopup="true"
       onClick={handleOpen}
     />
@@ -132,10 +133,12 @@ const HostObject = (
     }
 
     <Button variant="fab" href={down.url}
+            aria-label='Down hosts'
             className={(classes.status, classes.errorStatus)}>
       {numeral(down.unhandled).format('0a')}
     </Button>
     <Button variant="fab" mini href={unreachable.url}
+            aria-label='Unreachable hosts'
             className={( classes.status, classes.unreachableStatus)}>
       {numeral(unreachable.unhandled).format('0a')}
     </Button>
