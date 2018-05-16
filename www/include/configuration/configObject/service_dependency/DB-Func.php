@@ -325,6 +325,9 @@ function updateServiceDependencyServiceParents($dep_id = null, $ret = array())
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_serviceParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -352,6 +355,9 @@ function updateServiceDependencyServiceChilds($dep_id = null, $ret = array())
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_serviceChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -382,6 +388,9 @@ function updateServiceDependencyHostChildren($dep_id = null, $ret = array())
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_hostChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);

@@ -305,6 +305,9 @@ function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = 
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_servicegroupParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
@@ -329,6 +332,9 @@ function updateServiceGroupDependencyServiceGroupChilds($dep_id = null, $ret = a
     }
     global $form;
     global $pearDB;
+    if (!count($ret)) {
+        $ret = $form->getSubmitValues();
+    }
     $rq = "DELETE FROM dependency_servicegroupChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
     $DBRESULT = $pearDB->query($rq);
