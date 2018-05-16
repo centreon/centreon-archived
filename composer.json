@@ -26,7 +26,9 @@
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
+        "php": ">=7.0.0",
         "ext-phar": "*",
+        "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "~3.0",
         "symfony/filesystem": "~2.6",
         "symfony/finder": "~2.6",
