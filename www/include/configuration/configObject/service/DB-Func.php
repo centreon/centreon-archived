@@ -1662,6 +1662,11 @@ function updateServiceContactGroup($service_id = null, $ret = array())
     }
 
     $cg = new CentreonContactgroup($pearDB);
+    
+    if (!$ret) {
+        return;
+    }
+    
     for ($i = 0; $i < count($ret); $i++) {
         if (!is_numeric($ret[$i])) {
             $res = $cg->insertLdapGroup($ret[$i]);
@@ -1700,7 +1705,7 @@ function updateServiceNotifs($service_id = null, $ret = array())
     $rq .= "service_notification_options = ";
     isset($ret) && $ret != null ? $rq .= "'" . implode(",", array_keys($ret)) . "' " : $rq .= "NULL ";
     $rq .= "WHERE service_id = '" . $service_id . "'";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
@@ -2037,6 +2042,11 @@ function updateServiceTrap($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_traps");
     }
+    
+    if (!$ret) {
+        return;
+    }
+    
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO traps_service_relation ";
         $rq .= "(traps_id, service_id) ";
