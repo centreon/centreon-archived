@@ -78,6 +78,7 @@ const UserProfile = ({
         aria-haspopup="true"
         onClick={handleOpen}
         className={classes.avatarButton}
+        aria-label='User Profile'
       >
         <Avatar className={classes.avatar}>
           {initial}
@@ -105,7 +106,7 @@ const UserProfile = ({
           {user.fullname}
         </Typography>
         <Typography variant="caption" gutterBottom>
-          as {user.username} <a href="./main.php?p=50104&o=c" className={classes.profileLink}>Edit profile </a>
+          as {user.username} <a href="./main.php?p=50104&o=c" aria-label='Edit profile' className={classes.profileLink}>Edit profile </a>
         </Typography>
       </div>
 
@@ -120,7 +121,7 @@ const UserProfile = ({
         {soundNotif ? 'Disable sound notification' : 'Enable sound notification'}
       </MenuItem>
       <div className={classes.menuFooter}>
-        <Button className={classes.logoutButton} href="index.php?disconnect=1">
+        <Button className={classes.logoutButton} aria-label='Logout' href="index.php?disconnect=1">
           Sign out
         </Button>
       </div>

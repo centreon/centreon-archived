@@ -119,17 +119,21 @@ const ServiceObject = ({
         viewBox="284 -284 600 600"
         className={classes.icon}
         aria-haspopup="true"
+        aria-label='Services status'
         onClick={handleOpen}
       />
       <Button variant="fab" href={critical.url}
+              aria-label='Critical services'
               className={(classes.status, classes.errorStatus)}>
         {numeral(critical.unhandled).format('0a')}
       </Button>
       <Button variant="fab" mini  href={warning.url}
+              aria-label='Warning services'
               className={( classes.status, classes.warningStatus)}>
         {numeral(warning.unhandled).format('0a')}
       </Button>
       <Button variant="fab" mini color="primary"  href={unknown.url}
+              aria-label='Unknown services'
               className={(classes.status, classes.unknownStatus)}>
         {numeral(unknown.unhandled).format('0a')}
       </Button>
