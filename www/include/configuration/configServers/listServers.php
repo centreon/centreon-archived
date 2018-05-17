@@ -185,7 +185,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     */
     $confChangedMessage = _("N/A");
     if ($config["ns_activate"]) {
-        $hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
+        $hasChanged = checkChangeState($config['id'], (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null));
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 

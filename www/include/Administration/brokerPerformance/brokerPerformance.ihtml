@@ -58,7 +58,7 @@
                         </div>
                         {/if}
                     {/foreach}
-                    {if count($io_infos.filters)}
+                    {if $io_infos.filters && count($io_infos.filters)}
                     <div class="informations">
                         <span class="info_name">{$lang.filters}</span>
                         <p class="info_name" id="filters_{$io_name}">

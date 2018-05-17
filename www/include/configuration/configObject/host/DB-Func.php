@@ -777,7 +777,7 @@ function insertHostInDB($ret = array(), $macro_on_demand = null)
         "type" => 'HOST',
         'id' => $host_id,
         "action" => "ADD",
-        "access_grp_id" => $ret["acl_groups"]
+        "access_grp_id" => (isset($ret["acl_groups"]) ? $ret["acl_groups"] : null),
     ));
     insertHostExtInfos($host_id, $ret);
     return ($host_id);
@@ -2142,7 +2142,7 @@ function updateHostNotifs($host_id = null, $ret = array())
     $rq .= "host_notification_options  = ";
     isset($ret) && $ret != null ? $rq .= "'" . implode(",", array_keys($ret)) . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $DBRESULT = &$pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 // For massive change. incremental mode
@@ -2193,7 +2193,7 @@ function updateHostNotifOptionInterval($host_id = null, $ret = array())
     $rq .= "host_notification_interval = ";
     isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $DBRESULT = &$pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 /**
@@ -2213,7 +2213,7 @@ function updateHostNotifOptionInterval_MC($host_id = null)
         $rq = "UPDATE host SET ";
         $rq .= "host_notification_interval = '" . $ret . "' ";
         $rq .= "WHERE host_id = '" . $host_id . "'";
-        $DBRESULT = &$pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
@@ -2235,7 +2235,7 @@ function updateHostNotifOptionTimeperiod($host_id = null, $ret = array())
     $rq .= "timeperiod_tp_id2 = ";
     isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $DBRESULT = &$pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 /**
@@ -2255,7 +2255,7 @@ function updateHostNotifOptionTimeperiod_MC($host_id = null)
         $rq = "UPDATE host SET ";
         $rq .= "timeperiod_tp_id2 = '" . $ret . "' ";
         $rq .= "WHERE host_id = '" . $host_id . "'";
-        $DBRESULT = &$pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
@@ -2278,7 +2278,7 @@ function updateHostNotifOptionFirstNotificationDelay($host_id = null, $ret = arr
     $rq .= "host_first_notification_delay = ";
     isset($ret) && $ret != null ? $rq .= "'" . $ret . "' " : $rq .= "NULL ";
     $rq .= "WHERE host_id = '" . $host_id . "'";
-    $DBRESULT = &$pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
 }
 
 /**
@@ -2299,7 +2299,7 @@ function updateHostNotifOptionFirstNotificationDelay_MC($host_id = null)
         $rq = "UPDATE host SET ";
         $rq .= "host_first_notification_delay = '" . $ret . "' ";
         $rq .= "WHERE host_id = '" . $host_id . "'";
-        $DBRESULT = &$pearDB->query($rq);
+        $DBRESULT = $pearDB->query($rq);
     }
 }
 
@@ -2367,13 +2367,16 @@ function updateHostHostGroup($host_id, $ret = array())
     $DBRESULT = $pearDB->query($rq);
     isset($ret["host_hgs"]) ? $ret = $ret["host_hgs"] : $ret = $form->getSubmitValue("host_hgs");
     $hgsNEW = array();
-    for ($i = 0; $i < count($ret); $i++) {
-        $rq = "INSERT INTO hostgroup_relation ";
-        $rq .= "(hostgroup_hg_id, host_host_id) ";
-        $rq .= "VALUES ";
-        $rq .= "('" . $ret[$i] . "', '" . $host_id . "')";
-        $DBRESULT = $pearDB->query($rq);
-        $hgsNEW[$ret[$i]] = $ret[$i];
+    
+    if ($ret) {
+        for ($i = 0; $i < count($ret); $i++) {
+            $rq = "INSERT INTO hostgroup_relation ";
+            $rq .= "(hostgroup_hg_id, host_host_id) ";
+            $rq .= "VALUES ";
+            $rq .= "('" . $ret[$i] . "', '" . $host_id . "')";
+            $DBRESULT = $pearDB->query($rq);
+            $hgsNEW[$ret[$i]] = $ret[$i];
+        }
     }
 
     // Special Case, delete relation between host/service,
@@ -2452,6 +2455,11 @@ function updateHostHostCategory($host_id, $ret = array())
 
     $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : $ret = $form->getSubmitValue("host_hcs");
     $hcsNEW = array();
+    
+    if (!$ret) {
+        return;
+    }
+    
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO hostcategories_relation ";
         $rq .= "(hostcategories_hc_id, host_host_id) ";
@@ -2575,13 +2583,15 @@ function updateHostTemplateService($host_id = null)
         $DBRESULT2 = $pearDB->query($rq);
         $ret = array();
         $ret = $form->getSubmitValue("host_svTpls");
-        for ($i = 0; $i < count($ret); $i++) {
-            if (isset($ret[$i]) && $ret[$i] != "") {
-                $rq = "INSERT INTO host_service_relation ";
-                $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-                $rq .= "VALUES ";
-                $rq .= "(NULL, '" . $host_id . "', NULL, '" . $ret[$i] . "')";
-                $DBRESULT2 = $pearDB->query($rq);
+        if ($ret) {
+            for ($i = 0; $i < count($ret); $i++) {
+                if (isset($ret[$i]) && $ret[$i] != "") {
+                    $rq = "INSERT INTO host_service_relation ";
+                    $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+                    $rq .= "VALUES ";
+                    $rq .= "(NULL, '" . $host_id . "', NULL, '" . $ret[$i] . "')";
+                    $DBRESULT2 = $pearDB->query($rq);
+                }
             }
         }
     } elseif ($centreon->user->get_version() >= 3) {

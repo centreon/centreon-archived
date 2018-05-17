@@ -463,9 +463,9 @@ class CentreonTraps
         $rq .= "'" . $this->db->escape($ret["manufacturer_id"]) . "',";
         $rq .= "'" . $this->db->escape($ret["traps_log"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_exec_interval"]) . "', ";
-        $rq .= "'" . $this->db->escape($ret["traps_exec_interval_type"]) . "', ";
-        $rq .= "'" . $this->db->escape($ret["traps_exec_method"]) . "', ";
-        $rq .= "'" . $this->db->escape($ret["traps_downtime"]) . "', ";
+        $rq .= "'" . $this->db->escape(isset($ret["traps_exec_interval_type"]) ? $ret["traps_exec_interval_type"] : '') . "', ";
+        $rq .= "'" . $this->db->escape(isset($ret["traps_exec_method"]) ? $ret["traps_exec_method"] : '') . "', ";
+        $rq .= "'" . $this->db->escape(isset($ret["traps_downtime"]) ? $ret["traps_downtime"] : '') . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_output_transform"]) . "', ";
         $rq .= "'" . $this->db->escape($ret['traps_advanced_treatment_default']) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_timeout"]) . "', ";

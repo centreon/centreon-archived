@@ -298,7 +298,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-    if (count($tplArr)) {
+    if ($tplArr && count($tplArr)) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);

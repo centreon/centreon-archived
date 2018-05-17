@@ -458,8 +458,6 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
             if ($i != 0) {
                 $rq .= ", ";
             }
-            $rq .= " ('" . $hg_id . "', '" . $ret[$i] . "')";
-            $hostsNEW[$ret[$i]] = $ret[$i];
         }
     }
     if ($i != 0) {

@@ -1726,7 +1726,7 @@ function updateServiceNotifs_MC($service_id = null)
 
     $rq = "SELECT * FROM service ";
     $rq .= "WHERE service_id = '" . $service_id . "' LIMIT 1";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
     $service = array();
     $service = array_map("myDecodeService", $DBRESULT->fetchRow());
 
