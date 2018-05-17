@@ -33,6 +33,25 @@
  *
  */
 
+/**
+ * bitfieldIsOn: Returns a boolean telling if the bit at position $idx
+ * is on or off.
+ * @param $field the bitfield given as a string
+ * @param $idx the position to check
+ *
+ * @returns a boolean
+ */
+function bitfieldIsOn($field, $idx) {
+    $pos = $idx % 8;
+    $row = ($idx - $pos) / 8;
+    if ($row < strlen($field)) {
+        if (ord($field[$row]) & (128 >> $pos)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /*
  * Init functions
  */
@@ -433,7 +452,7 @@ function getModulesExtensionsPaths($db)
     while ($row = $res->fetchRow()) {
         $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/extensions/acl/'));
     }
-    
+
     return $extensionsPaths;
 }
 
