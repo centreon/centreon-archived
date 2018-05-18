@@ -225,8 +225,7 @@ try {
      */
 
     $tabGroups = array();
-    $groupStr = "";
-    $query = "SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
+    $query = "SELECT DISTINCT acl_groups.acl_group_id " .
         "FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
         "WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
         "AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
@@ -236,11 +235,7 @@ try {
 
     $DBRESULT1 = $pearDB->query($query);
     while ($result = $DBRESULT1->fetchRow()) {
-        $tabGroups[$result["acl_group_id"]] = 1;
-        if ($groupStr != '') {
-            $groupStr .= ",";
-        }
-        $groupStr = $result["acl_group_id"];
+        $tabGroups[$result['acl_group_id']] = 1;
     }
     $DBRESULT1->free();
     unset($result);
@@ -263,11 +258,9 @@ try {
         $res->free();
         
         $hostCache = array();
-        $hostNameCache = array();
         $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
             $hostCache[$h["host_id"]] = $h["host_name"];
-            $hostNameCache[$h["host_name"]] = $h["host_id"];
         }
         $DBRESULT->free();
         unset($h);
