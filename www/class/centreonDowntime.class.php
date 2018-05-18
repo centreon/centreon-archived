@@ -49,6 +49,7 @@ class CentreonDowntime
     protected $localCmdFile = '';
     protected $remoteCommands;
     protected $remoteCmdFile = '';
+    protected $remoteCmdDir = '';
     protected $varlib;
     protected $periods = null;
     protected $downtimes = null;
@@ -65,7 +66,7 @@ class CentreonDowntime
         $this->localCommands = array();
         $this->remoteCommands = array();
         if (!is_null($varlib)) {
-            $this->remoteCmdFile = $varlib . '/centcore.cmd';
+            $this->remoteCmdDir = $varlib . '/centcore';
         }
     }
 
