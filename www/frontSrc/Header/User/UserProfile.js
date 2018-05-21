@@ -1,22 +1,19 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
-import { MenuItem } from '@material-ui/core/MenuItem'
+import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
-import Grid from '@material-ui/core/Grid'
 import Popover from '@material-ui/core/Popover'
 import Button from '@material-ui/core/Button'
 import Bookmark from '@material-ui/icons/Bookmark'
 import VolumeUp from '@material-ui/icons/VolumeUp'
 import VolumeMute from '@material-ui/icons/VolumeMute'
 import Typography from '@material-ui/core/Typography'
-import Clock from '../Clock/ClockContainer'
 
 const styles = theme => ({
   profileRoot: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    fontFamily: theme.font.openSans,
+    alignSelf: 'center',
+    margin: '10px 0px',
   },
   avatarButton: {
     alignSelf: 'center',
@@ -72,21 +69,20 @@ const UserProfile = ({
     soundNotif,
     anchorEl
   }) => (
-  <Grid item xs={12} sm={3}>
-    <div className={classes.profileRoot}>
+  <div className={classes.profileRoot}>
       <IconButton
         aria-haspopup="true"
         onClick={handleOpen}
         className={classes.avatarButton}
+        id="userIcon"
         aria-label='User Profile'
       >
         <Avatar className={classes.avatar}>
           {initial}
         </Avatar>
       </IconButton>
-      <Clock />
-    </div>
     <Popover
+      id="userPopover"
       open={open}
       anchorEl={anchorEl}
       anchorReference='anchorEl'
@@ -110,10 +106,10 @@ const UserProfile = ({
         </Typography>
       </div>
 
-        <MenuItem onClick={handleAutologin}>
+        <MenuItem onClick={handleAutologin} id='autologinAction'>
           <Bookmark className={classes.icon}/> Add to bookmark
         </MenuItem>
-      <MenuItem onClick={handleNotification}>
+      <MenuItem onClick={handleNotification} id='notifAction'>
         {soundNotif ?
           <VolumeMute className={classes.icon} />
           : <VolumeUp className={classes.icon} />
@@ -126,7 +122,7 @@ const UserProfile = ({
         </Button>
       </div>
     </Popover>
-  </Grid>
+  </div>
     )
 
 export default withStyles(styles)(UserProfile)
