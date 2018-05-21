@@ -226,10 +226,16 @@ class CentreonGraphService extends CentreonGraph
         }
 
         /* Transform XML to values */
+        $useXmlErrors = libxml_use_internal_errors(true);
         $xml = simplexml_load_string($str);
+
         if (false === $xml) {
             throw new RuntimeException();
         }
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($useXmlErrors);
+
         $rows = $xml->xpath("//xport/data/row");
         foreach ($rows as $row) {
             $time = null;
