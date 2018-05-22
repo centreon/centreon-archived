@@ -307,6 +307,7 @@ So it is time to improve our Stream Connector:
       file:write(output)
       file:close()
     end
+  end
 
   function write(d)
     for k,v in pairs(d) do
@@ -315,7 +316,6 @@ So it is time to improve our Stream Connector:
     return true
   end
   
-  end
 
 Did you notice that expression `local file,err = io.open(logFile, 'a')`?
 
@@ -447,6 +447,7 @@ Let's complete our Lua script:
       file:write(output)
       file:close()
     end
+  end
 
   function write(d)
     local output = ""
@@ -481,7 +482,7 @@ Let's complete our Lua script:
     end
       return false
   end
-  end
+
 
 Just several remarks on this new script before showing what we get.
 
