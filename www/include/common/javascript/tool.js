@@ -140,13 +140,19 @@ function toggleDisplay(id)
 function checkUncheckAll(theElement)
 {
     jQuery(theElement).parents('tr').nextAll().find('input[type=checkbox]').each(function() {
+
         if (theElement.checked && !jQuery(this).attr('checked')) {
             jQuery(this).attr('checked',true);
+            jQuery(this).prop( "checked", true);
+
             if (typeof(_selectedElem) != 'undefined') {
                 putInSelectedElem(jQuery(this).attr('id'));
             }
         } else if (!theElement.checked && jQuery(this).attr('checked')) {
+        	
             jQuery(this).attr('checked', false);
+            jQuery(this).prop( "checked", false);
+
             if (typeof(_selectedElem) != 'undefined') {
                 removeFromSelectedElem(jQuery(this).attr('id'));
             }
