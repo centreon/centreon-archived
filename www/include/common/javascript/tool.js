@@ -143,7 +143,7 @@ function checkUncheckAll(theElement)
 
         if (theElement.checked && !jQuery(this).attr('checked')) {
             jQuery(this).attr('checked',true);
-            jQuery(this).prop( "checked", true);
+            jQuery(this).prop("checked", true);
 
             if (typeof(_selectedElem) != 'undefined') {
                 putInSelectedElem(jQuery(this).attr('id'));
@@ -151,7 +151,7 @@ function checkUncheckAll(theElement)
         } else if (!theElement.checked && jQuery(this).attr('checked')) {
         	
             jQuery(this).attr('checked', false);
-            jQuery(this).prop( "checked", false);
+            jQuery(this).prop("checked", false);
 
             if (typeof(_selectedElem) != 'undefined') {
                 removeFromSelectedElem(jQuery(this).attr('id'));
