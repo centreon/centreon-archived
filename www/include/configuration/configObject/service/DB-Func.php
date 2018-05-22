@@ -244,7 +244,11 @@ function testServiceExistence($name = null, $hPars = array(), $hgPars = array(),
 {
     global $pearDB, $centreon;
     global $form;
+
     $id = null;
+    $hPars = (is_array($hPars) || $hPars instanceof Countable) ? $hPars : [];
+    $hgPars = (is_array($hgPars) || $hgPars instanceof Countable) ? $hgPars : [];
+
     if (isset($form) && !count($hPars) && !count($hgPars)) {
         if (count($params)) {
             $arr = $params;
@@ -1635,7 +1639,10 @@ function updateServiceContact($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_cs");
     }
-    for ($i = 0; $i < count($ret); $i++) {
+
+    $loopCount = (is_array($ret) || $ret instanceof Countable) ? count($ret) : 0;
+
+    for ($i = 0; $i < $loopCount; $i++) {
         $rq = "INSERT INTO contact_service_relation ";
         $rq .= "(contact_id, service_service_id) ";
         $rq .= "VALUES ";
@@ -1719,7 +1726,7 @@ function updateServiceNotifs_MC($service_id = null)
 
     $rq = "SELECT * FROM service ";
     $rq .= "WHERE service_id = '" . $service_id . "' LIMIT 1";
-    $DBRESULT =& $pearDB->query($rq);
+    $DBRESULT = $pearDB->query($rq);
     $service = array();
     $service = array_map("myDecodeService", $DBRESULT->fetchRow());
 

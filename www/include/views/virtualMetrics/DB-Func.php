@@ -65,7 +65,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
 
     $sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
     $sql .= "vmetric_name = '" . ($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name) . "' ";
-    $sql .= "AND index_id = '" . ($index_id == null ? $gsvs["index_id"] : $index_id) . "'";
+    $sql .= "AND index_id = '" . (isset($gsvs["index_id"]) && $index_id == null ? $gsvs["index_id"] : $index_id) . "'";
     try {
         $DBRESULT = $pearDB->query($sql);
     } catch (\PDOException $e) {
@@ -77,7 +77,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
 
     $sql = "SELECT metric_id FROM metrics WHERE ";
     $sql .= "metric_name = '" . ($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name) . "' ";
-    $sql .= "AND index_id = '" . ($index_id == null ? $gsvs["index_id"] : $index_id) . "'";
+    $sql .= "AND index_id = '" . (isset($gsvs["index_id"]) && $index_id == null ? $gsvs["index_id"] : $index_id) . "'";
     try {
         $DBRESULT = $pearDBO->query($sql);
     } catch (\PDOException $e) {

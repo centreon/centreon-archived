@@ -798,7 +798,7 @@ function updateODSConfigData()
     if (!isset($ret["autodelete_rrd_db"])) {
         $ret["autodelete_rrd_db"] = 0;
     }
-    if ($ret["purge_interval"] <= 20) {
+    if (!isset($ret["purge_interval"]) || $ret["purge_interval"] <= 20) {
         $ret["purge_interval"] = 20;
     }
     if (!isset($ret["archive_log"])) {
@@ -829,7 +829,7 @@ function updateODSConfigData()
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`reporting_retention` = '".$ret["reporting_retention"]."',
                 `audit_log_option` = '".$ret["audit_log_option"]."',
-				`storage_type` = '".$ret["storage_type"]."', 
+				`storage_type` = '".(isset($ret["storage_type"]) ? $ret["storage_type"] : null)."', 
                 `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
                 `len_storage_comments` = '".$ret["len_storage_comments"]."' "
                 . " WHERE `id` = 1 LIMIT 1 ;";

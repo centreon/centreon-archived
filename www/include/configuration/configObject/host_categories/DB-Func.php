@@ -359,13 +359,15 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
         ? $ret = $ret["hc_hostsTemplate"]
         : $ret = $form->getSubmitValue("hc_hostsTemplate");
     $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
-    for ($i = 0; $i < count($ret); $i++) {
-        if ($i != 0) {
-            $rq .= ", ";
-        }
-        $rq .= " ('" . $hc_id . "', '" . $ret[$i] . "')";
+    if ($ret) {
+        for ($i = 0; $i < count($ret); $i++) {
+            if ($i != 0) {
+                $rq .= ", ";
+            }
+            $rq .= " ('" . $hc_id . "', '" . $ret[$i] . "')";
 
-        $hostsNEW[$ret[$i]] = $ret[$i];
+            $hostsNEW[$ret[$i]] = $ret[$i];
+        }
     }
     if ($i != 0) {
         $DBRESULT = $pearDB->query($rq);

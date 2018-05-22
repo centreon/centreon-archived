@@ -221,7 +221,7 @@ $form = new HTML_QuickFormCustom(
     'GET',
     "?p=" . $p . "&search_type_service=" . $search_type_service . "&search_type_host=" . $search_type_host
 );
-$selLim =& $form->addElement(
+$selLim = $form->addElement(
     'select',
     'l',
     _("Rows"),

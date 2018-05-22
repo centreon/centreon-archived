@@ -62,8 +62,8 @@ echo (isset($search_output) && $search_output != "" ? $search_output : (isset($c
 
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';
-var _sort_type='<?php echo $sort_type?>';
-var _order='<?php echo $order?>';
+var _sort_type='<?php echo isset($sort_type) ? $sort_type : ''; ?>';
+var _order='<?php echo isset($order) ? $order : ''; ?>';
 var _date_time_format_status='<?php echo addslashes(_("Y/m/d H:i:s"))?>';
 var _o='<?php echo (isset($obis) && $obis) ? $obis : $o;?>';
 var _p='<?php echo $p?>';

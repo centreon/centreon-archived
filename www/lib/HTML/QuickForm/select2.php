@@ -399,6 +399,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
             } catch (\Exception $e) {
                 print $e->getMessage();
+                return;
             }
 
             foreach ($finalDataset as $dataSet) {
