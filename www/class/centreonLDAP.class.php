@@ -852,8 +852,8 @@ class CentreonLdapAdmin
         if (isset($_REQUEST['address'])) {
             $addressList = $_REQUEST['address'];
             $portList = $_REQUEST['port'];
-            $sslList = $_REQUEST['ssl'];
-            $tlsList = $_REQUEST['tls'];
+            $sslList = isset($_REQUEST['ssl']) ? $_REQUEST['ssl'] : null;
+            $tlsList = isset($_REQUEST['tls']) ? $_REQUEST['tls'] : null;
             $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {

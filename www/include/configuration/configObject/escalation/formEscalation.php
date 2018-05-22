@@ -208,7 +208,9 @@ $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
 $init = $form->addElement('hidden', 'initialValues');
-$init->setValue(serialize($initialValues));
+if (isset($initialValues)) {
+    $init->setValue(serialize($initialValues));
+}
 
 #
 ## Form Rules

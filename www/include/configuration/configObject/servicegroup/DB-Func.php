@@ -291,17 +291,19 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
 
     /* service templates */
     $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
-    for ($i = 0; $i < count($retTmp); $i++) {
-        if (isset($retTmp[$i]) && $retTmp[$i]) {
-            $t = preg_split("/\-/", $retTmp[$i]);
-            $query = "SELECT servicegroup_sg_id service FROM servicegroup_relation " .
-                "WHERE host_host_id = " . $t[0] . " AND service_service_id = " . $t[1] .
-                " AND servicegroup_sg_id = " . $sg_id;
-            $resTest = $pearDB->query($query);
-            if (!$resTest->rowCount()) {
-                $query = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) " .
-                    "VALUES ('" . $t[0] . "', '" . $t[1] . "', '" . $sg_id . "')";
-                $pearDB->query($query);
+    if ($retTmp) { 
+        for ($i = 0; $i < count($retTmp); $i++) {
+            if (isset($retTmp[$i]) && $retTmp[$i]) {
+                $t = preg_split("/\-/", $retTmp[$i]);
+                $query = "SELECT servicegroup_sg_id service FROM servicegroup_relation " .
+                    "WHERE host_host_id = " . $t[0] . " AND service_service_id = " . $t[1] .
+                    " AND servicegroup_sg_id = " . $sg_id;
+                $resTest = $pearDB->query($query);
+                if (!$resTest->rowCount()) {
+                    $query = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) " .
+                        "VALUES ('" . $t[0] . "', '" . $t[1] . "', '" . $sg_id . "')";
+                    $pearDB->query($query);
+                }
             }
         }
     }

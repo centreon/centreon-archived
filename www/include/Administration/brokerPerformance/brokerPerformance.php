@@ -136,9 +136,11 @@ function parseStatsFile($statfile)
                 }
 
             if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
+                $keySepByDash = explode('-', $key);
+                $keySepBySpace = explode(' ', $key);
                 $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
-                $result['io'][$matches[1]]['type'] = end(explode('-', $key));
-                $result['io'][$matches[1]]['id'] = end(explode(' ', $key));
+                $result['io'][$matches[1]]['type'] = end($keySepByDash);
+                $result['io'][$matches[1]]['id'] = end($keySepBySpace);
                 $result['io'][$matches[1]]['id'] = rtrim($result['io'][$matches[1]]['id'], ')');
 
 

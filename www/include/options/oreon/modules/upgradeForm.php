@@ -76,6 +76,8 @@ if (!is_null($id)) {
 }
 
 $upgradeAvailable = false;
+$upgrade_infosTxt = false;
+
 if ($moduleInstalledInfo["mod_release"] != $moduleInfo["mod_release"]) {
     $upgradeAvailable = true;
 }
@@ -94,8 +96,6 @@ if ($form->validate()) {
         $infos_streams = file($upgradePath . "/infos/infos.txt");
         $infos_streams = implode("<br />", $infos_streams);
         $upgrade_infosTxt = $infos_streams;
-    } else {
-        $upgrade_infosTxt = false;
     }
 }
 

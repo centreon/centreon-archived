@@ -185,10 +185,8 @@ class CentreonHomeCustomview extends CentreonWebService
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Compare.class.php";
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Sort.class.php";
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Date.class.php";
-        require_once __DIR__ . "/../../../GPL_LIB/Smarty/libs/Smarty.class.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm/advmultiselect.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm/Renderer/ArraySmarty.php";
+        $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
+        require_once $smartyDir . 'libs/Smarty.class.php';
 
         global $centreon;
 
@@ -225,6 +223,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->config_dir = $libDir . '/SmartyCache/config';
         $tpl->cache_dir = $libDir . '/SmartyCache/cache';
         $tpl->template_dir = _CENTREON_PATH_ . '/www/include/home/customViews/';
+        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
         $tpl->caching = 0;
         $tpl->compile_check = true;
         $tpl->force_compile = true;

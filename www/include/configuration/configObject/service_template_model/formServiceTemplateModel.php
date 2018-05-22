@@ -492,14 +492,14 @@ $form->addElement('select2', 'service_cgs', _("Implied Contact Groups"), array()
 
 if ($o == "mc") {
     $mc_mod_notifopt_first_notification_delay = array();
-    $mc_mod_notifopt_first_notification_delay[] = &$form->createElement(
+    $mc_mod_notifopt_first_notification_delay[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_first_notification_delay',
         null,
         _("Incremental"),
         '0'
     );
-    $mc_mod_notifopt_first_notification_delay[] = &$form->createElement(
+    $mc_mod_notifopt_first_notification_delay[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_first_notification_delay',
         null,
@@ -521,14 +521,14 @@ $form->addElement('text', 'service_recovery_notification_delay', _("Recovery not
 
 if ($o == "mc") {
     $mc_mod_notifopt_notification_interval = array();
-    $mc_mod_notifopt_notification_interval[] = &$form->createElement(
+    $mc_mod_notifopt_notification_interval[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_notification_interval',
         null,
         _("Incremental"),
         '0'
     );
-    $mc_mod_notifopt_notification_interval[] = &$form->createElement(
+    $mc_mod_notifopt_notification_interval[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_notification_interval',
         null,
@@ -548,14 +548,14 @@ $form->addElement('text', 'service_notification_interval', _("Notification Inter
 
 if ($o == "mc") {
     $mc_mod_notifopt_timeperiod = array();
-    $mc_mod_notifopt_timeperiod[] = &$form->createElement(
+    $mc_mod_notifopt_timeperiod[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_timeperiod',
         null,
         _("Incremental"),
         '0'
     );
-    $mc_mod_notifopt_timeperiod[] = &$form->createElement(
+    $mc_mod_notifopt_timeperiod[] = $form->createElement(
         'radio',
         'mc_mod_notifopt_timeperiod',
         null,
@@ -576,8 +576,8 @@ $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), arra
 
 if ($o == "mc") {
     $mc_mod_notifopts = array();
-    $mc_mod_notifopts[] = &$form->createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
-    $mc_mod_notifopts[] = &$form->createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
+    $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
+    $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
     $form->addGroup($mc_mod_notifopts, 'mc_mod_notifopts', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_notifopts' => '0'));
 }
