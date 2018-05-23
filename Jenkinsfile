@@ -163,7 +163,7 @@ try {
     build job: 'des-mbi-bundle-centos7', wait: false
   }
 } catch(e) {
-  if (env.BRANCH_NAME == '2.8.x' && !(${e} =~ /^.+FlowInterruptedException\$/)) {
+  if (env.BRANCH_NAME == '2.8.x') {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
         message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
