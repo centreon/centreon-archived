@@ -27,8 +27,8 @@ Le serveur central enregistre également des paramètres additionnels pour chaqu
 
 Gestion de l'information :
 
-* Chaque utilisateur peut accéder à ses informations via le menu **Administration > Parameters > MyAccount**
-* Les utilisateur peuvent être créés, modifiés et supprimés depuis le menu **Configuration > Users** par un utilisateur possédant les droits nécessaires.
+* Chaque utilisateur peut accéder à ses informations via le menu **Administration > Paramètres > Mon compte**
+* Les utilisateur peuvent être créés, modifiés et supprimés depuis le menu **Configuration >  Utilisateurs** par un utilisateur possédant les droits nécessaires.
 
 Journalisation des actions utilisateur
 --------------------------------------
