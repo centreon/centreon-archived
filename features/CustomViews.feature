@@ -7,14 +7,12 @@ Feature: Custom views
         Given I am logged in a Centreon server with some widgets
 
 # public views
-    @critical
     Scenario: Share public custom view
         Given a publicly shared custom view
         When a user wishes to add a new custom view
         Then he can add the public view
         And he cannot modify the content of the shared view
 
-    @critical
     Scenario: Remove public share
         Given a publicly shared custom view
         And a user is using the public view
@@ -22,7 +20,6 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the public view again
 
-    @critical
     Scenario: Remove public share by owner
         Given a publicly shared custom view
         And a user is using the public view
@@ -30,14 +27,12 @@ Feature: Custom views
         Then the view is not visible anymore for the user
 
 # user shared locked views
-    @critical
     Scenario: Share read-only custom view with users
         Given a custom view shared in read only with a user
         When the user wishes to add a new custom view
         Then he can add the shared view
         And he cannot modify the content of the shared view
 
-    @critical
     Scenario: Remove read-only custom view shared with users
         Given a custom view shared in read only with a user
         And the user is using the shared view
@@ -45,14 +40,12 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the shared view again
 
-    @critical
     Scenario: Update a read only custom view shared with users
         Given a custom view shared in read only with a user
         And the user is using the shared view
         When the owner modifies the custom view
         Then the changes are reflected on all users displaying the custom view
 
-    @critical
     Scenario: Delete a shared custom view
         Given a custom view shared in read only with a user
         And the user is using the shared view
@@ -60,13 +53,11 @@ Feature: Custom views
         Then the view is removed for all users displaying the custom view
 
 # user shared not locked views
-    @critical
     Scenario: Modify a shared view
         Given a shared custom view
         When the user is using the shared view
         Then he can modify the content of the shared view
 
-    @critical
     Scenario: Remove an unlocked shared view
         Given a shared custom view
         And the user is using the shared view
@@ -74,7 +65,6 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the shared view again
 
-    @critical
     Scenario: Modify an unlocked shared view and applies changes
         Given a shared custom view
         And the user is using the shared view
@@ -82,7 +72,6 @@ Feature: Custom views
         Then the changes are reflected on all users displaying the custom view
         #Then a warning is shown to the user who wants to apply the changes
 
-    @critical
     Scenario: Deletion of an unlocked shared view
         Given a shared custom view
         And the user is using the shared view
@@ -91,14 +80,12 @@ Feature: Custom views
         And the view is removed for the owner
 
 # contact groups shared locked views
-    @critical
     Scenario: Share read-only custom view with groups
         Given a custom view shared in read only with a group
         When the user wishes to add a new custom view
         Then he can add the shared view
         And he cannot modify the content of the shared view
 
-    @critical
     Scenario: Remove read-only custom view shared with groups
         Given a custom view shared in read only with a group
         And the user is using the shared view
@@ -106,14 +93,12 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the shared view again
 
-    @critical
     Scenario: Update a read only custom view shared with groups
         Given a custom view shared in read only with a group
         And the user is using the shared view
         When the owner modifies the custom view
         Then the changes are reflected on all users displaying the custom view
 
-    @critical
     Scenario: Delete a shared custom view with groups
         Given a custom view shared in read only with a group
         And the user is using the shared view
@@ -121,13 +106,11 @@ Feature: Custom views
         Then the view is removed for all users displaying the custom view
 
 # contact groups shared not locked views
-    @critical
     Scenario: Modify a shared view with groups
         Given a shared custom view with a group
         When the user is using the shared view
         Then he can modify the content of the shared view
 
-    @critical
     Scenario: Remove an unlocked shared view with groups
         Given a shared custom view with a group
         And the user is using the shared view
@@ -135,7 +118,6 @@ Feature: Custom views
         Then the view is not visible anymore
         And the user can use the shared view again
 
-    @critical
     Scenario: Modify an unlocked shared view with groups and applies changes
         Given a shared custom view with a group
         And the user is using the shared view
@@ -143,7 +125,6 @@ Feature: Custom views
         Then the changes are reflected on all users displaying the custom view
         #Then a warning is shown to the user who wants to apply the changes
 
-    @critical
     Scenario: Deletion of an unlocked shared view with groups
         Given a shared custom view with a group
         And the user is using the shared view
