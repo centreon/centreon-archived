@@ -1,54 +1,54 @@
 .. _gdpr_compliance:
 
 ===============
-GDPR Compliance
+Conformité RGPD
 ===============
 
-Information Centreon customers should know to prepare for their GDPR Compliance
-===============================================================================
+Information pour les utilisateurs Centreon afin de préparer leur conformité RGPD
+================================================================================
 
-In a Managed Service Provider (MSP) context, the Centreon platform delivers monitoring services to the MSP's customers.
+Dans un contexte de fournisseur de services d'infogérance (MSP), la plate-forme Centreon délivre un service de supervision aux clients du fournisseur.
 
-Storing User Identification information
----------------------------------------
+Stockage des informations d'identification de l'utilisateur
+-----------------------------------------------------------
 
-For each MSP's customer, the Centreon Central Server stores in its SQL database the identification information of the users that can access the monitoring service:
+Pour chaque client du fournisseur, le serveur Centreon central stocke en base de données les informations d'identification de l'utilisateur afin d'accéder au serveur de supervision :
 
-* name
-* alias (login), password
-* email address
-* phone number (optional, for notification purpose)
+* nom (name)
+* pseudo (alias/login), mot de passe
+* adresse mail
+* numéro de téléphone (optionnel, pour notification associée)
 
-The Central Server also stores the service parameters of each user:
+Le serveur central enregistre également des paramètres additionnels pour chaque utilisateur :
 
-* default language, timezone
-* notification parameters
-* ACL groups
+* langue, fuseau horaire
+* paramétrage de la notification
+* groupes de contrôle d'accès (ACL)
 
-Information management:
+Gestion de l'information :
 
-* Each user can access to his/her own information from the Administration/Parameters/MyAccount menu.
-* The users can be created, changed or deleted from the Configuration/Users menu by any user which ACL grant access to this menu.
+* Chaque utilisateur peut accéder à ses informations via le menu **Administration > Parameters > MyAccount**
+* Les utilisateur peuvent être créés, modifiés et supprimés depuis le menu **Configuration > Users** par un utilisateur possédant les droits nécessaires.
 
-Logging User actions
---------------------
+Journalisation des actions utilisateur
+--------------------------------------
 
-If a user is allowed to change the monitoring configuration (as defined by its ACL), a log message with the user alias is stored on the Centreon Central Server SQL database each time a configuration action is performed by this user:
+Si un utilisateur possède les droits de configuration de la supervision (défini dans les accès utilisateur), une entrée dans le journal stockée en base de données et liée à son compte utilisateur sera présente pour chaque modification réalisée : 
 
-* These logs can be listed in the Administration/Logs menu, filtered by user.
-* These logs can only be deleted by accessing the SQL database and deleting any relevant record.
+* L'accès aux journaux est disponible via le menu **Administration > Logs** avec possibilité de filtrer par utilisateur.
+* Ces journaux ne peuvent être supprimés qu'en accédant à la base de données SQL et en supprimant tout enregistrement pertinent.
 
-HTTP Transactions
+Transactions HTTP
 -----------------
 
-Centreon recommends securing the monitoring platform by activating the HTTPS mode on the Apache server. A signed official certificate is required to ensure a minimum level of security.
+Centreon recommande de sécuriser l'accès à la plate-forme de surveillance en activant le mode HTTPS sur le serveur Apache. Un certificat officiel signé est requis pour assurer un niveau de sécurité minimum.
 
-Authentication
---------------
+Authentification
+----------------
 
-In order to stay consistent with your security policy and to better manage user lifecycle and approvals, Centreon has an option to enable linking to an Active Directory or LDAP directory. Centreon recommends enabling this option and not using a local account.
+Afin de rester cohérent avec votre politique de sécurité et de mieux gérer le cycle de vie et les approbations des utilisateurs, Centreon dispose d'une option pour activer la liaison vers un annuaire Active Directory ou LDAP. Centreon recommande d'activer cette option et de ne pas utiliser un compte local.
 
-Backup
-------
+Sauvegarde
+----------
 
-Centreon provides a Centreon data extraction module to enable the implementation of a supervisory data backup policy. Centreon strongly recommends to set up this module and especially not to leave the data on the supervision platform.
+Centreon fournit un module d'extraction de données Centreon pour permettre la mise en place d'une politique de sauvegarde des données de supervision. Centreon recommande fortement d'activer ce module et surtout d'exporter la sauvegarde sur un serveur tiers.
