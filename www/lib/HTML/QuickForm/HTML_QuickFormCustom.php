@@ -141,6 +141,65 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     }
 
     /**
+     * Adds a validation rule for the given field
+     *
+     * If the element is in fact a group, it will be considered as a whole.
+     * To validate grouped elements as separated entities,
+     * use addGroupRule instead of addRule.
+     *
+     * @param    string     $element       Form element name
+     * @param    string     $message       Message to display for invalid data
+     * @param    string     $type          Rule type, use getRegisteredRules() to get types
+     * @param    string     $format        (optional)Required for extra rule data
+     * @param    string     $validation    (optional)Where to perform validation: "server", "client"
+     * @param    boolean    $reset         Client-side validation: reset the form element to its original value if there is an error?
+     * @param    boolean    $force         Force the rule to be applied, even if the target form element does not exist
+     * @throws   HTML_QuickForm_Error
+     */
+    public function addRule($element, $message, $type, $format=null, $validation='server', $reset = false, $force = false)
+    {
+        if (!$force) {
+            if (!is_array($element) && !$this->elementExists($element)) {
+                trigger_error("Element '$element' does not exist");
+            } elseif (is_array($element)) {
+                foreach ($element as $el) {
+                    if (!$this->elementExists($el)) {
+                        trigger_error("Element '$el' does not exist");
+                    }
+                }
+            }
+        }
+        if (false === ($newName = $this->isRuleRegistered($type, true))) {
+            throw new HTML_QuickForm_Error("Rule '$type' is not registered", QUICKFORM_INVALID_RULE);
+        } elseif (is_string($newName)) {
+            $type = $newName;
+        }
+        if (is_array($element)) {
+            $dependent = $element;
+            $element   = array_shift($dependent);
+        } else {
+            $dependent = null;
+        }
+        if ($type == 'required' || $type == 'uploadedfile') {
+            $this->_required[] = $element;
+        }
+        if (!isset($this->_rules[$element])) {
+            $this->_rules[$element] = array();
+        }
+        if ($validation == 'client') {
+            $this->updateAttributes(array('onsubmit' => 'try { var myValidator = validate_' . $this->_attributes['id'] . '; } catch(e) { return true; } return myValidator(this);'));
+        }
+        $this->_rules[$element][] = array(
+            'type'        => $type,
+            'format'      => $format,
+            'message'     => $message,
+            'validation'  => $validation,
+            'reset'       => $reset,
+            'dependent'   => $dependent
+        );
+    }
+
+    /**
      * Add additional custom element types to $GLOBALS
      */
     private function loadCustomElementsInGlobal()
