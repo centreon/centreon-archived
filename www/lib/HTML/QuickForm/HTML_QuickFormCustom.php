@@ -199,6 +199,42 @@ class HTML_QuickFormCustom extends HTML_QuickForm
         );
     }
 
+
+    /**
+     * Applies a data filter for the given field(s)
+     *
+     * @param    mixed     $element       Form element name or array of such names
+     * @param    mixed     $filter        Callback, either function name or array(&$object, 'method')
+     * @throws   HTML_QuickForm_Error
+     */
+    public function applyFilter($element, $filter)
+    {
+        if (!is_callable($filter)) {
+            trigger_error("Callback function '$filter' does not exist");
+        }
+        if ($element == '__ALL__') {
+            $this->_submitValues = $this->_recursiveFilter($filter, $this->_submitValues);
+        } else {
+            if (!is_array($element)) {
+                $element = array($element);
+            }
+            foreach ($element as $elName) {
+                $value = $this->getSubmitValue($elName);
+                if (null !== $value) {
+                    if (false === strpos($elName, '[')) {
+                        $this->_submitValues[$elName] = $this->_recursiveFilter($filter, $value);
+                    } else {
+                        $idx  = "['" . str_replace(
+                                array('\\', '\'', ']', '['), array('\\\\', '\\\'', '', "']['"),
+                                $elName
+                            ) . "']";
+                        eval("\$this->_submitValues{$idx} = \$this->_recursiveFilter(\$filter, \$value);");
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Add additional custom element types to $GLOBALS
      */
