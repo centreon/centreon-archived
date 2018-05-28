@@ -267,9 +267,10 @@ abstract class CentreonObject
     /**
      * Add Action
      *
+     * @param mixed $parameters
      * @return int
      */
-    public function add()
+    public function add($parameters = NULL)
     {
         $id = $this->object->insert($this->params);
         $this->addAuditLog(
@@ -347,9 +348,10 @@ abstract class CentreonObject
      * Shows list
      *
      * @param array $params
+     * @param array $filters
      * @return void
      */
-    public function show($params = array(), $filters = array())
+    public function show(array $params = NULL, array $filters = NULL)
     {
         echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
