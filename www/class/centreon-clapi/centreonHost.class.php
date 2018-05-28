@@ -1120,6 +1120,7 @@ class CentreonHost extends CentreonObject
     public function export($filters = null)
     {
         $filters["host_register"] = $this->register;
+        $filters['host_id'] = isset($filters['host_id']) ? $filters['host_id'] : null;
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
@@ -1153,7 +1154,7 @@ class CentreonHost extends CentreonObject
                         }
                     }
                 }
-                if ($param != "hostgroup" && $param != "template") {
+                if (isset($element[$param]) && $param != "hostgroup" && $param != "template") {
                     $addStr .= $element[$param];
                 }
             }
@@ -1200,7 +1201,7 @@ class CentreonHost extends CentreonObject
                     echo $this->action . $this->delim
                         . "addparent" . $this->delim
                         . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $elements[$parentId][$this->object->getUniqueLabelField()] . "\n";
+                        . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
                 }
             }
 
@@ -1286,7 +1287,11 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+            $exportContactId = isset($element['contact_id']) ? $element['contact_id'] : null;
+            $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
+
+            $this->api->export_filter('CONTACT', $exportContactId, $exportContactName);
+
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim

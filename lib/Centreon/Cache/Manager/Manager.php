@@ -69,7 +69,7 @@ class Centreon_Cache_Manager
      * @param  array  $sqlParams
      * @return string
      */
-    public function getCacheFileName($sqlQuery, $sqlParams = array())
+    public static function getCacheFileName($sqlQuery, $sqlParams = array())
     {
         $paramString = implode(",", $sqlParams);
         return md5($sqlQuery.$paramString);
