@@ -241,6 +241,8 @@ class DowntimeStartAndStopContext extends CentreonContext
             'location' => $this->timezoneUser
         ));
         $user->save();
+        $this->iAmLoggedOut();
+        $this->iAmLoggedIn();
         $this->reloadAllPollers();
 
         //downtime
