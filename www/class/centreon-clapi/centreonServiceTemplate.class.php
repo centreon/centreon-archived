@@ -907,7 +907,7 @@ class CentreonServiceTemplate extends CentreonObject
                     . $this->stripMacro($macro['svc_macro_name']) . $this->delim
                     . $macro['svc_macro_value'] . "\n";
             }
-            if (count($element['children'])) {
+            if (isset($element['children']) && count($element['children'])) {
                 $this->parseTemplateTree($element['children'], $extendedObj);
             }
         }
@@ -921,6 +921,8 @@ class CentreonServiceTemplate extends CentreonObject
     public function export($filters = null)
     {
         $filters["service_register"] = $this->register;
+        $filters['service_id'] = isset($filters['service_id']) ? $filters['service_id'] : null;
+
         $elements = $this->object->getList(
             "*",
             -1,
@@ -967,7 +969,7 @@ class CentreonServiceTemplate extends CentreonObject
         // contacts
         $contactRel = new \Centreon_Object_Relation_Contact_Service($this->dependencyInjector);
         $filters_contactRel = array("service_register" => $this->register);
-        if (!is_null($filters['service_id'])) {
+        if (isset($filters['service_id']) && !is_null($filters['service_id'])) {
             $filters_contactRel['service_id'] = $filters['service_id'];
         }
         $elements = $contactRel->getMergedParameters(
@@ -981,7 +983,11 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+            $exportContactId = isset($element['contact_id']) ? $element['contact_id'] : null;
+            $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
+
+            $this->api->export_filter('CONTACT', $exportContactId, $exportContactName);
+
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim
@@ -996,7 +1002,7 @@ class CentreonServiceTemplate extends CentreonObject
             0,
             null,
             null,
-            array('svc_svc_id' => $element[$this->object->getPrimaryKey()]),
+            array('svc_svc_id' => isset($element[$this->object->getPrimaryKey()]) ? $element[$this->object->getPrimaryKey()] : null),
             "AND"
         );
         foreach ($macros as $macro) {

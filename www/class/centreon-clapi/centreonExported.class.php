@@ -138,7 +138,7 @@ class CentreonExported
             return 1;
         }
 
-        if (!is_array($this->exported[$object])) {
+        if (!isset($this->exported[$object]) || !is_array($this->exported[$object])) {
             $this->exported[$object] = array();
         }
         $this->exported[$object][$id] = 1;
