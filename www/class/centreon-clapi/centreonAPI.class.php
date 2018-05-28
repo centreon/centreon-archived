@@ -867,6 +867,10 @@ class CentreonAPI
             }
             foreach ($selected as $select) {
                 $splits = explode(';', $select);
+                
+                $splits[0] = isset($splits[0]) ? $splits[0] : null;
+                $splits[1] = isset($splits[1]) ? $splits[1] : null;
+                
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
