@@ -288,7 +288,7 @@ if (isset($_GET['host_name'])) {
     $host_name = null;
 }
 isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
-isset($order) ? TRUE : $order = null;
+isset($order) ? true : $order = null;
 
 $tpl->assign("host_name", $host_name);
 $tpl->assign("status", $status);
