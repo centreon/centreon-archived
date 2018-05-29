@@ -351,7 +351,7 @@ abstract class CentreonObject
      * @param array $filters
      * @return void
      */
-    public function show(array $params = NULL, array $filters = NULL)
+    public function show(array $params = null, array $filters = null)
     {
         echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
         $elements = $this->object->getList($params, -1, 0, null, null, $filters);
