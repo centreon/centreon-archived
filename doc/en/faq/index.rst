@@ -7,4 +7,5 @@ FAQ
 
    administration
    performance
+   gdpr_compliance
 
