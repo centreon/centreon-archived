@@ -5,7 +5,7 @@ From Packages
 =============
 
 Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
-It comes in two operating system flavors, either CentOS 6 or CentOS 7.
+It is supported only on CentOS 7.
 
 .. warning::
    If your centreon contains the centreon knowlegdebase module (AKA Centreon KB),
@@ -70,16 +70,6 @@ If you are already a Centreon ISO user, you need to update your Centreon .repo f
 get software that is part of Centreon 3.4 (namely Centreon Web 2.8 and
 associated components). Run the commands for your operating system.
 
-CentOS 6
-********
-
-::
-
-   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
-
-
 CentOS 7
 ********
 
@@ -88,10 +78,10 @@ CentOS 7
    $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
    $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
    $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
-   
+
 .. warning::
    If you're using Centreon modules Centreon BAM, Centreon MAP4, CentreonMBI or Centreon EPP please contact our Support to have the new repo of each module.
-   
+
 Core components upgrade
 =======================
 
@@ -135,7 +125,7 @@ to load new extension.
  ::
 
    # service httpd restart
-   
+
 Update poller
 *************
 
@@ -143,7 +133,7 @@ Repeat this procedure on all your poller :
 
  * Update repo
  * Update packets
- 
+
 .. warning::
    You must have on all your environment (Central and Poller) the same version of Centreon Engine 1.7 and Centreon Broker 3.0.
 

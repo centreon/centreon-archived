@@ -18,13 +18,6 @@ Les environnements CentOS et RHEL ne possèdent pas en standard sur
 dépôts l'intégralité des dépendances nécessaires à l'installation
 de Centreon. Vous devez ajouter le dépôt *RPM Forge*
 
-Système el6 :
-
-  ::
-
-    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
-    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
-
 Système el7 :
 
  ::
@@ -46,7 +39,7 @@ Puis exécutez les commandes suivantes :
   ::
 
     $ rpm --import RPM-GPG-KEY.dag.txt
-    $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm (vous pouvez adapter la commande pour les systèmes el7)
+    $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
 
 Vous pouvez maintenant installer les dépendances nécessaires :
 

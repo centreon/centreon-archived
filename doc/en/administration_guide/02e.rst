@@ -20,7 +20,7 @@ The following window is displayed:
    :align: center
 
 * **Directory** indicates the directory where Centreon is installed
-* **Centreon Web Directory** field indicates the web directory on which Centreon is installed 
+* **Centreon Web Directory** field indicates the web directory on which Centreon is installed
 * **Limit per page (default)** field defines the number of objects displayed per **Configuration** page
 * **Limit per page for Monitoring** field defines the number of objects displayed per page in the **Monitoring** menu
 * **Graph per page for Performances** field defines the maximum number of displayed charts on **Performance** page
@@ -70,7 +70,7 @@ This part covers the general options of the real time monitoring interface.
 * **Centreon Broker socket path** Centreon Broker socket path for send external command
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
 * **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home** ==> **Home**)
-* **Page refresh interval** field defines the data refreshment interval in the overall view 
+* **Page refresh interval** field defines the data refreshment interval in the overall view
 * The boxes in the **Default acknowledgement settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgement or of a downtime
 
 
@@ -139,7 +139,7 @@ The table below summarises the settings to add an LDAP server:
 .. note::
    Before any import, check the default settings proposed. If you have not selected a Model, you will need to define the search filters manually by filling in the fields.
 
-With Centos 6, it's possible to not check server certificate, follow procedure :
+With CentOS 7, it's possible to not check server certificate, follow procedure :
 
 Add the following line in file "/etc/openldap/ldap.conf" :
 
@@ -151,7 +151,7 @@ Then restart Apache :
 
 ::
 
- /etc/init.d/httpd restart
+  service httpd restart
 
 
 *******
@@ -169,7 +169,7 @@ This part can be used to configure the RRDTool graphs generation engine and the 
 * The fields belonging to the categories **Title Properties**, **Unit Properties**, **Axis Properties**, **Legend Properties** and **Watermark Properties** are used to define the typeface and character size for the property selected
 * **Enable RRDCached** field serves to enable the RRDcached process (only works with the Centreon Broker)
 * **TCP Port** field defines the port on which RRDcached listens (don’t enable the TCP connection)
-* **UNIX Socket path** field defines the path to the Unix socket 
+* **UNIX Socket path** field defines the path to the Unix socket
 
 .. warning::
    Don’t enable RRDCacheD unless your monitoring platform encounters too many disk accesses concerning the writing of data in RRD files.
@@ -187,7 +187,7 @@ This part can be used to configure the enabling of the logging of activity on Ce
 
 * **Logs Directory** field defines the path where event logs will be recorded
 * **Authentication debug** box can be used to log authentications to the Centreon interface
-* **Monitoring Engine Import debug** box enables logging of the scheduler debugging 
+* **Monitoring Engine Import debug** box enables logging of the scheduler debugging
 * **RRDTool debug** box enables logging of the RRDTool graph engine debugging
 * **LDAP User Import debug** box enables logging of debugging of the import of LDAP users
 * **SQL debug** box enables the logging of SQL requests executed by the Centreon interface

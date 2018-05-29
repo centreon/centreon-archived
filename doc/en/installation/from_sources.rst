@@ -16,13 +16,6 @@ Most CentOS users will find easier to install Centreon Web by using
 
 CentOS and RHEL environments do not possess as standard on archives all the dependencies necessary for the installation of Centreon. You should add the *RPM Forge* archive
 
-el6 system:
-
- ::
-
-    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
-    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
-
 el7 system:
 
  ::
@@ -42,7 +35,7 @@ Then perform the following commands:
  ::
 
   $ rpm --import RPM-GPG-KEY.dag.txt
-  $ rpm -Uvh rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm (you can adapt for el7 system)
+  $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
 
 You can now install the necessary prerequisites::
 
