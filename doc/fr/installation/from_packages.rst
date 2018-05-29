@@ -31,14 +31,6 @@ Afin d'installer les logiciels Centreon à partir des dépôts, vous devez au pr
 le fichier lié au dépôt. Exécutez la commande suivante à partir d'un utilisateur possédant les
 droits suffisants.
 
-Pour CentOS 6.
-
-::
-
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
-
-
 Pour CentOS 7.
 
 ::
@@ -146,7 +138,7 @@ Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysqld restart
-   
+
 Lancer les services au démarrage
 --------------------------------
 
@@ -165,7 +157,7 @@ Lancer les commandes suivantes sur le serveur Central.
     # systemctl enable httpd.service
     # systemctl enable snmpd.service
     # systemctl enable mysql.service
-    
+
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande d'activation mysql sur ce dernier.
 

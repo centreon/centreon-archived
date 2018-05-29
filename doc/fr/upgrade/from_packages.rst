@@ -5,7 +5,7 @@ Mise à jour RPM
 ===============
 
 La version 3.4 de Centreon ISO est l'ensemble Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
-Deux versions de Centreon 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
+Centreon est seulement supporté sur CentOS 7.
 
 .. warning::
    Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise
@@ -66,7 +66,7 @@ Avant toute chose, il est préfèrable de s'assurer de l'état et de la consista
  * Serveur(s) Centreon central(aux) ;
  * Serveur(s) de gestion de base de données ;
  * Serveur déporté de reporting Centreon MBI ;
- 
+
 
 **************
 Dépôt Centreon
@@ -76,16 +76,6 @@ Si vous êtes déjà un utilisateur de Centreon ISO, vous devez mettre à jour v
 fichier .repo pour utiliser les logiciels faisant partie de Centreon 3.4
 (essentiellement Centreon Web 2.8 et les composants associés). Entrez
 les commandes suivantes en fonction de votre système d'exploitation.
-
-CentOS 6
-========
-
-::
-
-   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
-
 
 CentOS 7
 ========
@@ -145,7 +135,7 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
    ::
 
    # service httpd restart
-   
+
 4. Mise à jour des poller
 =========================
 
@@ -153,7 +143,7 @@ Executer la même procedure sur vos différent poller :
 
  * Changement des repo
  * Mise à jour des paquets
- 
+
 .. warning::
    Il est impératif que tout vos serveurs (Central et Poller) soient dans les mêmes versions Centreon Engine 1.7, Centreon Broker 3.0
 
@@ -232,7 +222,7 @@ de EMS/EPP.
    Dans ce cas merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
    Il est impératif d'avoir la dernière version de Centreon BAM pour que la mise à jour fonctionne correctement. L'utilisation de l'option suivante est à proscrire :
    # --skip-broken
-   
+
 Mise à jour du dépôt
 ====================
 
