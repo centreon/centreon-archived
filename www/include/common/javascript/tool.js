@@ -193,7 +193,7 @@ function setDisabledRowStyle(img)
 			var img = "enabled.png";
 		}
         jQuery('img[src$="enabled.png"]').each(function(index) {
-            jQuery(this).parent().parent().parent().className('row_disabled');
+            jQuery(this).parent().parent().parent().addClass('row_disabled');
 		});
 	});
 }
