@@ -90,7 +90,10 @@ if ($form->validate()) {
         $centreon->initHooks();
     }
     
-    $upgradePath = _CENTREON_PATH_ . "www/modules/". $moduleinfo["name"] . "/UPGRADE/" . $filename;
+    // @todo need to set default value of filename
+    $filename = isset($filename) ? $filename : '';
+    
+    $upgradePath = _CENTREON_PATH_ . "www/modules/". $moduleInfo["name"] . "/UPGRADE/" . $filename;
 
     if (is_dir($upgradePath . "/infos") && is_file($upgradePath . "/infos/infos.txt")) {
         $infos_streams = file($upgradePath . "/infos/infos.txt");
