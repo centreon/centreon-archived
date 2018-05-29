@@ -53,6 +53,16 @@ class AcknowledgementContext extends CentreonContext
         ));
         $page->save();
         $this->restartAllPollers();
+
+        $page = new MonitoringServicesPage($this);
+        $this->spin(
+            function ($context) use ($page) {
+                $page->scheduleImmediateCheckForcedOnService('_Module_Meta', 'meta_1');
+                return true;
+            },
+            'Could not schedule check.'
+        );
+
         $this->spin(
             function ($context) {
                 $page = new ServiceMonitoringDetailsPage(
