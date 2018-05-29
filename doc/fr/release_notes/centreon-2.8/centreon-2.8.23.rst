@@ -5,28 +5,29 @@ Centreon Web 2.8.23
 Enhancements
 ============
 
-* [API] Add default poller - PR #6098
-* [API] Link host with default poller if unknown poller - PR #6099
-* [ACL] Improve performance - #6056 PR #6107
-* [Documentation] Improve Centreon CLAPI usage - PR #6090 #6091
-* [Documentation] Improve documentation to add a new poller - #6075 PR  #6086
-* [Documentation] Add notice for 64 bits support only - PR #6101
-* [Monitoring] Display links in output and comments  - #5943 PR #6113
+* [Documentation] Correct typo - PR #6202
+* [Documentation] Update icon to add metrics to a meta service - PR #6167
+* [Documentation] Correct typo in documentation about stream connector howto #6261
 
 Bug Fixes
 =========
 
-* [ACL] Allow nested groups filter in ldap configuration - #6127 PR #6128
-* [API] Export specific service, add host before service in CLAPI - PR #6100
-* [API] CLAPI add resource export filter - PR #6125
-* [API] CLAPI Export contact with contact group - PR #6131
-* [API] CLAPI Export service categories - PR #6134
-* [Configuration] SNMP trap poller generation uses ACL - #6043 PR #6069
-* [Custom Views] Fix share custom view - PR #6109
-* [Poller Stats] Poller Statistics Graphs are displayed in first column only - #6003 PR #6122
+* [ACL] fix select all checkbox in acl actions form - PR #6193
+* [Administration] fix purge on pmax partition - PR #6232
+* [Downtimes] fix recurrent downtimes on HG when no SG exist - PR #6201
+
+Security
+========
+
+* Update jquery ui libs +fix compat - PR #6181
 
 Others
 ======
 
-* Update copyright date on the login page - PR #6076
-* Remove multiple debug in Centreon - PR #6138
+* fix(centAcl.php): Dead code removed - PR #6262
+* fix(lib): allow chaining on jquery pagination plugin - PR #6219
+* fix(jQuery): fix broken input in reporting_dashboard - PR #6254
+* fix(style): fix style in widget preferences popin - PR #6197
+* fix(style): fix padding of buttons in custom views page - PR #6198
+* fix(front): retrieve jquery toggle function (renamed to toggleClick) - PR #6217
+* fix(front): fix acl actions checkboxes (check all / uncheck all) - PR #6309
