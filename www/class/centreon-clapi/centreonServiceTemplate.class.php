@@ -505,6 +505,9 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
+        $params[3] = isset($params[3]) ? $params[3] : null;
+
         $elements = $this->object->getList(
             "service_id",
             -1,
