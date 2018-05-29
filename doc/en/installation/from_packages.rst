@@ -32,14 +32,6 @@ Perform the following command from a user with sufficient rights.
 Centreon Repository
 -------------------
 
-For CentOS 6.
-
-::
-
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
-
-
 For CentOS 7.
 
 ::

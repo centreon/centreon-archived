@@ -73,10 +73,10 @@ if (is_null($open_files_limit)) {
     $open_files_limit = 0;
 }
 if ($open_files_limit < 32000) {
-    $return['msg'] = 'If your operating system is based on SystemV (CentOS 6), ' .
-        'add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.<br/>' .
-        'If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the ' .
-        'service file /etc/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).';
+    $return['msg'] = 'If your operating system is based on systemd (CentOS 7, Debian Jessie), add LimitNOFILE=32000 value on the ' .
+        'service file /etc/systemd/system/mariadb.service and reload systemd (systemctl daemon-reload).<br/>' .
+        'If your operating system is based on SystemV, ' .
+        'add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server.';
     echo json_encode($return);
     exit;
 }

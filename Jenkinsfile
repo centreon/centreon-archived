@@ -13,21 +13,7 @@ stage('Source') {
 
 try {
   stage('Unit tests') {
-    parallel 'centos6': {
-      node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh centos6'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-unittest.sh centos7'
@@ -73,13 +59,7 @@ try {
   }
 
   stage('Package') {
-    parallel 'centos6': {
-      node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos6'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-package.sh centos7'
@@ -97,13 +77,7 @@ try {
   }
 
   stage('Bundle') {
-    parallel 'centos6': {
-      node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.5/mon-web-bundle.sh centos6'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-bundle.sh centos7'
@@ -115,22 +89,7 @@ try {
   }
 
   stage('Critical tests') {
-    parallel 'centos6': {
-      node {
-        sh 'cd /opt/centreon-build && git pull && cd -'
-        sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos6 @critical'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-        ])
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'cd /opt/centreon-build && git pull && cd -'
         sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos7 @critical'
@@ -152,22 +111,7 @@ try {
 
   if (env.BRANCH_NAME == 'master') {
     stage('Acceptance tests') {
-      parallel 'centos6': {
-        node {
-          sh 'cd /opt/centreon-build && git pull && cd -'
-          sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos6 ~@critical'
-          step([
-            $class: 'XUnitBuilder',
-            thresholds: [
-              [$class: 'FailedThreshold', failureThreshold: '0'],
-              [$class: 'SkippedThreshold', failureThreshold: '0']
-            ],
-            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-          ])
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
-        }
-      },
-      'centos7': {
+      parallel 'centos7': {
         node {
           sh 'cd /opt/centreon-build && git pull && cd -'
           sh '/opt/centreon-build/jobs/web/3.5/mon-web-acceptance.sh centos7 ~@critical'
@@ -200,7 +144,6 @@ try {
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
     build job: 'centreon-bam/master', wait: false
-    build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
   }
 } catch(e) {

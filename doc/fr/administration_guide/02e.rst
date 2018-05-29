@@ -27,7 +27,7 @@ La fenêtre suivante s'affiche :
 * Le champ **Limite par page pour les pages de supervision** définit le nombre d'objet affiché par page au sein du menu **Supervision**
 * Le champ **Nombre de graphiques par page** définit le nombre maximum de graphiques affichés sur la page de *Performances**
 * Le champ **Nombre d'éléments dans les boîtes de sélection** définit le nombre maximum d'éléments affichés dans chaque boîte de sélection
-* Le champ **Durée d'expiration de la session**, exprimé en minutes, indique la durée maximale d'une session 
+* Le champ **Durée d'expiration de la session**, exprimé en minutes, indique la durée maximale d'une session
 * Le champ **Intervalle de rafraîchissement pour la page des statistiques**, exprimé en secondes, indique l'intervalle de rafraîchissement pour les objets de la page des statistiques
 * Le champ **Intervalle de rafraîchissement pour la page de supervision**, exprimé en secondes, indique l'intervalle de rafraîchissement pour les objets de la page supervision
 * Le champ **Trier les problèmes par** permet de choisir comment trier les différents incidents dans le menu **Supervision**
@@ -71,7 +71,7 @@ Cette partie traite des options générales de l'interface de supervision temps 
 * La liste **Broker utilisé par Centreon** décrit le broker utilisé par la plate-forme Centreon
 * Le champ **Script de démarrage du broker** contient le chemin vers le script de démarrage du broker
 * Le champ **Chemin complet de l'exécutable** contient le chemin vers l'exécutable permettant d'envoyer des mails
-* Les listes **Nombre maximum d'hôtes à afficher** et **Nombre maximum de services à afficher** contiennent le nombre maximal d'hôte ou de services à afficher dans la vue d'ensemble (menu **Accueil** ==> **Accueil**) 
+* Les listes **Nombre maximum d'hôtes à afficher** et **Nombre maximum de services à afficher** contiennent le nombre maximal d'hôte ou de services à afficher dans la vue d'ensemble (menu **Accueil** ==> **Accueil**)
 * Le champ **Intervalle de rafraîchissement de la page** définit l'intervalle de rafraîchissement des données dans la vue d'ensemble
 * Les cases contenues dans les catégories **Options d'acquittement par défaut** et **Options de temps d'arrêt par défaut** définissent les options par défaut qui seront cochées ou non lors de la définition d'un acquittement ou d'un temps d'arrêt
 * Le champ **Durée** permet de définir la durée par défaut d'un temps d'arrêt
@@ -125,7 +125,7 @@ Pour ajouter un nouvel annuaire :
 Le tableau ci-dessous résume les différents paramètres à insérer pour ajouter un serveur LDAP :
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
-|   Colonne               |  Description                                                                                               | 
+|   Colonne               |  Description                                                                                               |
 +=========================+============================================================================================================+
 | Adresse du serveur      | Contient l'adresse IP ou nom DNS du serveur LDAP                                                           |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
@@ -144,7 +144,7 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
     Avant tout import, vérifiez les paramètres par défaut proposés. Si vous n'avez sélectionné aucun modèle, vous devez définir manuellement les filtres de recherches en complétant les champs.
 
 
-Sous centos 6, on peut définir de ne pas vérifier le certificat serveur avec la procédure suivante:
+Sous CentOS 7, on peut définir de ne pas vérifier le certificat serveur avec la procédure suivante:
 
 Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf":
 
@@ -152,11 +152,11 @@ Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf":
 
   TLS_REQCERT never
 
-Puis redémarrez le serveur Apache : 
+Puis redémarrez le serveur Apache :
 
 ::
 
- /etcInit.d/httpd restart
+  service httpd restart
 
 
 *******
