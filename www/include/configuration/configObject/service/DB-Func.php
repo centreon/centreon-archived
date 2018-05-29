@@ -1127,7 +1127,7 @@ function insertService($ret = array(), $macro_on_demand = null)
             $service_id["MAX(service_id)"],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            isset($_REQUEST['macroPassword']) ? $_REQUEST['macroPassword'] : null,
             $macroDescription,
             false,
             $ret["command_command_id"]

@@ -319,7 +319,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-    if (!$tplArr && count($tplArr)) {
+    if ($tplArr && count($tplArr)) {
         foreach ($tplArr as $key => $value) {
             $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
         }
