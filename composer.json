@@ -44,7 +44,9 @@
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
-            "www/lib/HTML/QuickForm/advmultiselect.php"
+            "www/lib/HTML/QuickForm/advmultiselect.php",
+            "www/lib/HTML/QuickForm/tags.php",
+            "www/lib/HTML/QuickForm/customcheckbox.php"
         ]
     }
 }
