@@ -71,7 +71,7 @@ class AcknowledgementContext extends CentreonContext
                     'meta_1'
                 );
                 $props = $page->getProperties();
-                return $props['last_check'];
+                return $props['last_check'] && $props['state'] != 'PENDING';
             },
             'Could not open meta-service monitoring details page.',
             120
