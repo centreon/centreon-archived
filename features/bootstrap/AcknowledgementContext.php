@@ -100,15 +100,22 @@ class AcknowledgementContext extends CentreonContext
      */
     public function iAcknowledgeTheMetaService()
     {
-        $page = new MonitoringServicesPage($this);
-        $page->addAcknowledgementOnService(
-            '_Module_Meta',
-            'meta_1',
-            'Acceptance test.',
-            true,
-            true,
-            true,
-            false
+        $this->spin(
+            function(){
+                $page = new MonitoringServicesPage($this);
+                $page->addAcknowledgementOnService(
+                    '_Module_Meta',
+                    'meta_1',
+                    'Acceptance test.',
+                    true,
+                    true,
+                    true,
+                    false
+                );
+                return true;
+            },
+        'Could not acknowledge the meta-service',
+        60
         );
     }
 
