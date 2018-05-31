@@ -161,10 +161,12 @@ class HTML_QuickFormCustom extends HTML_QuickForm
         if (!$force) {
             if (!is_array($element) && !$this->elementExists($element)) {
                 trigger_error("Element '$element' does not exist");
+                return;
             } elseif (is_array($element)) {
                 foreach ($element as $el) {
                     if (!$this->elementExists($el)) {
                         trigger_error("Element '$el' does not exist");
+                        return;
                     }
                 }
             }
