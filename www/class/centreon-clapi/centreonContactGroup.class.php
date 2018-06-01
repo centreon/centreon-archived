@@ -216,9 +216,9 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filters = null, $exportDependencies = true)
     {
-        parent::export($filters);
+        parent::export($filters, $exportDependencies);
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
         $contactObj = new \Centreon_Object_Contact();
         $cgFieldName = $this->object->getUniqueLabelField();
