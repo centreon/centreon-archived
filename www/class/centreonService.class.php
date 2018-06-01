@@ -1051,12 +1051,14 @@ class CentreonService
         $hostIdList = array();
         $serviceIdList = array();
         foreach ($values as $value) {
-            if (strpos($value, '-')) {
-                $tmpValue = explode('-', $value);
-                $hostIdList[] = $tmpValue[0];
-                $serviceIdList[] = $tmpValue[1];
-            } else {
-                $serviceIdList[] = $value;
+            if (trim($value, '-') != '') {
+                if ((strpos($value, '-') > 0)) {
+                    $tmpValue = explode('-', $value);
+                    $hostIdList[] = $tmpValue[0];
+                    $serviceIdList[] = $tmpValue[1];
+                } else {
+                    $serviceIdList[] = $value;
+                }
             }
         }
 

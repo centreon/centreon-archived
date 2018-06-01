@@ -206,18 +206,17 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     $enableQueryMeta . $aclMetaServices . ') ' .
                     ')  as t_union ' .
                     'ORDER BY fullname ';
-
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryService .= 'LIMIT :offset, :limit';
                     $queryValues['offset'] = $range[0];
                     $queryValues['limit'] = $range[1];
                 }
                 $queryValues['description'] = '%' . $q . '%';
                 $stmt = $this->pearDB->prepare($queryService);
-                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                $stmt->bindValue(':description', $queryValues['description'], PDO::PARAM_STR);
                 if (isset($queryValues['offset'])) {
-                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                    $stmt->bindValue(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindValue(':limit', $queryValues["limit"], PDO::PARAM_INT);
                 }
                 $dbResult = $stmt->execute();
                 break;
@@ -233,17 +232,17 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     $enableQuery . $aclServices .
                     'ORDER BY fullname ';
 
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryService .= 'LIMIT :offset, :limit';
                     $queryValues['offset'] = $range[0];
                     $queryValues['limit'] = $range[1];
                 }
                 $queryValues['description'] = '%' . $q . '%';
                 $stmt = $this->pearDB->prepare($queryService);
-                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                $stmt->bindValue(':description', $queryValues['description'], PDO::PARAM_STR);
                 if (isset($queryValues['offset'])) {
-                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                    $stmt->bindValue(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindValue(':limit', $queryValues["limit"], PDO::PARAM_INT);
                 }
                 $dbResult = $stmt->execute();
                 break;
@@ -257,20 +256,19 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'AND CONCAT("Meta - ", ms.display_name) LIKE :description ' .
                     $enableQueryMeta . $aclMetaServices .
                     'ORDER BY fullname ';
-                if (isset($range)) {
+                if (!empty($range)) {
                     $queryService .= 'LIMIT :offset, :limit';
                     $queryValues['offset'] = $range[0];
                     $queryValues['limit'] = $range[1];
                 }
                 $queryValues['description'] = '%' . $q . '%';
                 $stmt = $this->pearDB->prepare($queryService);
-                $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+                $stmt->bindValue(':description', $queryValues['description'], PDO::PARAM_STR);
                 if (isset($queryValues['offset'])) {
-                    $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-                    $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+                    $stmt->bindValue(':offset', $queryValues["offset"], PDO::PARAM_INT);
+                    $stmt->bindValue(':limit', $queryValues["limit"], PDO::PARAM_INT);
                 }
                 $dbResult = $stmt->execute();
-
                 break;
         }
         if (!$dbResult) {
@@ -316,7 +314,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             'AND s.service_register = "1" ' .
             'AND CONCAT(hg.hg_name, " - ", s.service_description) LIKE :description ' .
             $aclServices . 'ORDER BY fullname ';
-        if (isset($range)) {
+        if (!empty($range)) {
             $queryService .= 'LIMIT :offset,:limit';
             $queryValues['offset'] = $range[0];
             $queryValues['limit'] = $range[1];
@@ -324,10 +322,10 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         $queryValues['description'] = '%' . $q . '%';
 
         $stmt = $this->pearDB->prepare($queryService);
-        $stmt->bindParam(':description', $queryValues['description'], PDO::PARAM_STR);
+        $stmt->bindValue(':description', $queryValues['description'], PDO::PARAM_STR);
         if (isset($queryValues['offset'])) {
-            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $queryValues["offset"], PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $queryValues["limit"], PDO::PARAM_INT);
         }
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -368,7 +366,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             'AND h.host_register = "1" ' .
             'AND esr.escalation_esc_id = :id';
         $stmt = $this->db->prepare($queryService);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
