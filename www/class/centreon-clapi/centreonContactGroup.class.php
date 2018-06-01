@@ -203,7 +203,7 @@ class CentreonContactGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL($this->dependencyInjector);
+                $acl = new CentreonACL();
                 $acl->reload(true);
             }
         } else {
@@ -216,9 +216,9 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filters = null, $exportDependencies = true)
     {
-        parent::export($filters);
+        parent::export($filters, $exportDependencies);
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact($this->dependencyInjector);
         $contactObj = new \Centreon_Object_Contact($this->dependencyInjector);
         $cgFieldName = $this->object->getUniqueLabelField();
