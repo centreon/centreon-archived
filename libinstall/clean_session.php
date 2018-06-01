@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 /*
  * Centreon is developped with GPL Licence 2.0 :
@@ -56,4 +56,3 @@ try {
 }
 
 exit(0);
-
