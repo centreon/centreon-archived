@@ -211,10 +211,10 @@ if (count($featureToAsk) === 1) {
 var testingFeature = jQuery('<div/>')
     .html(
         '<h3>Feature testing</h3>' +
-        '<div style="margin: 2px;">Would you activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+        '<div style="margin: 2px;">Would you like to activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
         '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
         '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
-        '<div style="margin: 2px;">You can give use your feedback on <a href="https://centreon.github.io">Slack</a> ' +
+        '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
         'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
         '<div style="margin-top: 8px; text-align: center;">' +
             '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
