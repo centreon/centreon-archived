@@ -1366,8 +1366,8 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
-                $this->api->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
+                $this->api->export_filter('HG', $helement['hg_id'], $helement['hg_name'], false);
+                $this->api->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name'], false);
             }
         }
     }
