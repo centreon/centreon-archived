@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 /**
  * Copyright 2005-2015 Centreon
@@ -130,4 +130,3 @@ $downtimeObj->sendCommands();
 
 # Purge downtime cache
 $downtimeObj->purgeCache();
-
