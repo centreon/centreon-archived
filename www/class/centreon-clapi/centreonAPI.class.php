@@ -831,8 +831,13 @@ class CentreonAPI
 
     /**
      * Export from a specific object
+     *
+     * @param $action
+     * @param $filter_id
+     * @param $filter_name
+     * @return int
      */
-    public function export_filter($action, $filter_id, $filter_name)
+    public function export_filter($action, $filter_id, $filter_name, $exportDependencies = true)
     {
         $exported = CentreonExported::getInstance();
 
@@ -862,7 +867,7 @@ class CentreonAPI
             $filters[$labelField] = $filter_name;
         }
 
-        $this->objectTable[$action]->export($filters);
+        $this->objectTable[$action]->export($filters, $exportDependencies);
         $exported->ariane_pop();
     }
 

@@ -278,9 +278,12 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filters = null, $exportDependencies = true)
     {
-        parent::export($filters);
+        parent::export($filters, $exportDependencies);
+        if (!$exportDependencies){
+            return;
+        }
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
         $hostObj = new \Centreon_Object_Host();
         $hgFieldName = $this->object->getUniqueLabelField();
@@ -297,8 +300,9 @@ class CentreonHostGroup extends CentreonObject
         );
         foreach ($elements as $element) {
             $this->api->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
-            echo $this->action . $this->delim .
-                "addhost" . $this->delim . $element[$hgFieldName] . $this->delim.$element[$hFieldName] . "\n";
+            echo $this->action . $this->delim
+                ."addhost" . $this->delim
+                . $element[$hgFieldName] . $this->delim.$element[$hFieldName] . "\n";
         }
     }
 }
