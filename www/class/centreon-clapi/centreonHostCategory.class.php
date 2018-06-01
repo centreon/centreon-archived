@@ -242,11 +242,19 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     {
         parent::export($filters);
         $relobj = new \Centreon_Object_Relation_Host_Category_Host();
+        $hcFieldName = $this->object->getUniqueLabelField();
         $elements = $relobj->getMergedParameters(
             array($this->object->getUniqueLabelField()),
-            array("host_name")
+            array("host_name"),
+            -1,
+            0,
+            $hcFieldName,
+            'ASC',
+            $filters,
+            'AND'
         );
         foreach ($elements as $element) {
+            $this->api->export_filter('HC', $element['hc_id'], $element[$hcFieldName]);
             echo $this->action . $this->delim
                 . "addmember" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
