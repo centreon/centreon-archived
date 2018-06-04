@@ -9,6 +9,7 @@ import PollerObject from './Objects/PollerObjectContainer'
 import UserProfile from './User/UserProfileContainer'
 import Logo from './Logo/LogoContainer'
 import Clock from './Clock/ClockContainer'
+import Nav from './Nav/NavContainer'
 
 
 const styles = theme => ({
@@ -55,6 +56,7 @@ class TopHeader extends Component {
               <Logo />
             </div>
             <div style={{ gridColumnEnd: 'span 3' }}>
+              <Nav />
             </div>
             <div style={{ gridColumnEnd: 'span 1' }}>
               <PollerObject />
