@@ -73,11 +73,14 @@ class CentreonTopCounter extends CentreonWebService
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         /* Get the refresh time for top counter */
         $query = 'SELECT `value` FROM options WHERE `key` = "AjaxTimeReloadStatistic"';
-        $res = $this->pearDB->query($query);
-        if (!PEAR::isError($res) && $res->numRows() > 0) {
-            $row = $res->fetchRow();
-            $this->refreshTime = (int)$row['value'];
-        }
+
+        try {
+            $res = $this->pearDB->query($query);
+            if ($res->rowCount() > 0) {
+                $row = $res->fetch();
+                $this->refreshTime = (int)$row['value'];
+            }
+        } catch (\Exception $e) {}
 
         $this->checkAccess();
     }
@@ -105,7 +108,7 @@ class CentreonTopCounter extends CentreonWebService
             $this->hasAccessToPollers = true;
         }
 
-        if ($this->centreonUser->topology['50104'] == '1') {
+        if ($this->centreonUser->access->topology[50104] === 1) {
             $this->hasAccessToProfile = true;
         }
     }
@@ -143,7 +146,7 @@ class CentreonTopCounter extends CentreonWebService
         if (isset($_SESSION['centreon'])) {
             $query = $this->pearDB->prepare('SELECT user_id FROM session WHERE session_id = ?');
             $res = $this->pearDB->execute($query, array(session_id()));
-            if ($res->numRows()) {
+            if ($res->rowCount()) {
                 $logout = false;
             }
         }
@@ -177,14 +180,17 @@ class CentreonTopCounter extends CentreonWebService
 
         /* Get autologinkey */
         $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
-        $res = $this->pearDB->query($query);
-        if (PEAR::isError($res)) {
+
+        try {
+            $res = $this->pearDB->query($query);
+        } catch (\Exception $e) {
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
-        if ($res->numRows() === 0) {
+
+        if ($res->rowCount() === 0) {
             throw new \RestUnauthorizedException('User does not exists.');
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
 
         return array(
             'fullname' => $user->name,
@@ -340,11 +346,13 @@ class CentreonTopCounter extends CentreonWebService
                     AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . '))';
         }
 
-        $res = $this->pearDBMonitoring->query($query);
-        if (PEAR::isError($res)) {
-            throw new \RestInternalServerErrorException();
+        try {
+            $res = $this->pearDBMonitoring->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        $row = $res->fetchRow();
+
+        $row = $res->fetch();
 
         $result = array(
             'down' => array(
@@ -401,11 +409,14 @@ class CentreonTopCounter extends CentreonWebService
                         AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . ')
             )';
         }
-        $res = $this->pearDBMonitoring->query($query);
-        if (PEAR::isError($res)) {
-            throw new \RestInternalServerErrorException();
+
+        try {
+            $res = $this->pearDBMonitoring->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        $row = $res->fetchRow();
+
+        $row = $res->fetch();
 
         $result = array(
             'critical' => array(
@@ -451,15 +462,16 @@ class CentreonTopCounter extends CentreonWebService
             $query .= ' AND id IN (' . $aclPoller . ')';
         }
 
-
-        $res = $this->pearDB->query($query);
-        if (PEAR::isError($res)) {
-            throw new \RestInternalServerErrorException();
+        try {
+            $res = $this->pearDB->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        if ($res->numRows() === 0) {
+
+        if ($res->rowCount() === 0) {
             return array();
         }
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $listPoller[$row['id']] = array(
                 'id' => $row['id'],
                 'name' => $row['name'],
@@ -495,11 +507,14 @@ class CentreonTopCounter extends CentreonWebService
         /* Get status of pollers */
         $query = 'SELECT instance_id, last_alive, running FROM instances
             WHERE deleted = 0 AND instance_id IN (' . join(', ', array_keys($listPoller)) . ')';
-        $res = $this->pearDBMonitoring->query($query);
-        if (PEAR::isError($res)) {
-            throw new \RestInternalServerErrorException();
+
+        try {
+            $res = $this->pearDBMonitoring->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        while ($row = $res->fetchRow()) {
+
+        while ($row = $res->fetch()) {
             /* Test if poller running and activity */
             if (time() - $row['last_alive'] >= $this->timeUnit * 10) {
                 $listPoller[$row['instance_id']]['stability'] = 2;
@@ -522,11 +537,14 @@ class CentreonTopCounter extends CentreonWebService
                 AND n.instance_id = i.instance_id
                 AND i.deleted = 0
                 AND i.instance_id IN (' . join(', ', array_keys($listPoller)) . ')';
-        $res = $this->pearDBMonitoring->query($query);
-        if (PEAR::isError($res)) {
-            throw new \RestInternalServerErrorException();
+
+        try {
+            $res = $this->pearDBMonitoring->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        while ($row = $res->fetchRow()) {
+
+        while ($row = $res->fetch()) {
             if ($row['stat_value'] >= 120) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 2;
                 $listPoller[$row['instance_id']]['database']['time'] = $row['stat_value'];
@@ -565,11 +583,14 @@ class CentreonTopCounter extends CentreonWebService
             "FROM hosts_hostgroups)) OR object_id IN (SELECT DISTINCT hr.hostgroup_hg_id FROM " .
             $conf_centreon['db'] . ".hostgroup_relation hr, " . $conf_centreon['db'] . ".ns_host_relation nhr " .
             "WHERE hr.host_host_id = nhr.host_host_id AND nhr.nagios_server_id = '$pollerId'))))";
-        $dbResult = $this->pearDBMonitoring->query($query);
-        if (PEAR::isError($dbResult)) {
-            throw new \RestInternalServerErrorException();
+
+        try {
+            $dbResult = $this->pearDBMonitoring->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
         }
-        if ($dbResult->numRows()) {
+
+        if ($dbResult->rowCount()) {
             return true;
         }
         return false;

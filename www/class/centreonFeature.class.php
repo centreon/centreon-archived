@@ -177,14 +177,15 @@ class CentreonFeature
         $query = 'SELECT feature_enabled FROM contact_feature
             WHERE contact_id = ' . $userId . ' AND feature = "' . $this->db->escape($name) . '"
                 AND feature_version = "' . $this->db->escape($version) . '"';
-        $res = $this->db->query($query);
-        if (PEAR::isError($res)) {
+        try {
+            $res = $this->db->query($query);
+        } catch (\Exception $e) {
             return true;
         }
-        if ($res->numRows() === 0) {
+        if ($res->rowCount() === 0) {
             return false;
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         return $row['feature_enabled'] == 1;
     }
 }
