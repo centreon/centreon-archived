@@ -201,7 +201,7 @@ const ServiceObject = ({
             <Typography variant="caption" gutterBottom>
               <span className={classes.chip} style={{backgroundColor: '#2AD1D4'}}></span>
               <a htef={pending.url} title="pending services list">
-                {ok.total} Pending services
+                {pending.total} Pending services
               </a>
             </Typography>
           </div> : ''
