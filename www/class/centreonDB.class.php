@@ -143,7 +143,7 @@ class CentreonDB extends \PDO
             }
         }
     }
-    
+
     public function autoCommit($val)
     {
         /* Deprecated */
@@ -228,15 +228,6 @@ class CentreonDB extends \PDO
         }
 
         /*
-    	 * LOG all request
-    	 */
-        if ($this->debug) {
-            $string = str_replace("`", "", $queryString);
-            $string = str_replace('*', "\*", $string);
-            $this->log->insertLog(2, " QUERY : " . $string);
-        }
-
-        /*
     	 * Launch request
     	 */
         $sth = null;
@@ -249,8 +240,13 @@ class CentreonDB extends \PDO
             }
             $this->queryNumber++;
             $this->successQueryNumber++;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+        } catch (\PDOException $e) {
+            if ($this->debug) {
+                $string = str_replace("`", "", $queryString);
+                $string = str_replace('*', "\*", $string);
+                $this->log->insertLog(2, " QUERY : " . $string);
+            }
+            throw new \PDOException($e->getMessage(), $e->getCode());
         }
 
         return $sth;
@@ -272,10 +268,11 @@ class CentreonDB extends \PDO
             $result = $this->query($query_string);
             $rows = $result->fetchAll();
             $this->requestSuccessful++;
-        } catch (\Exception $e) {
+        } catch (\PDOException $e) {
             if ($this->debug) {
                 $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
             }
+            throw new \PDOException($e->getMessage(), $e->getCode());
         }
 
         return $rows;
@@ -313,9 +310,9 @@ class CentreonDB extends \PDO
         }
         return $number;
     }
-    
+
     /*
-     * checks if there is malicious injection 
+     * checks if there is malicious injection
      */
     public static function checkInjection($sString)
     {
