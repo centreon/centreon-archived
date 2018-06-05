@@ -140,6 +140,7 @@ try {
         error('Delivery stage failure.');
       }
     }
+    build job: 'centreon-awie/master', wait: false
     build job: 'centreon-license-manager/master', wait: false
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
