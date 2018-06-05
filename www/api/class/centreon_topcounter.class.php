@@ -328,7 +328,7 @@ class CentreonTopCounter extends CentreonWebService
             SUM(CASE WHEN h.state = 0 THEN 1 ELSE 0 END) AS up_total,
             SUM(CASE WHEN h.state = 1 THEN 1 ELSE 0 END) AS down_total,
             SUM(CASE WHEN h.state = 2 THEN 1 ELSE 0 END) AS unreachable_total,
-            SUM(CASE WHEN h.state = 3 THEN 1 ELSE 0 END) AS pending_total,
+            SUM(CASE WHEN h.state = 4 THEN 1 ELSE 0 END) AS pending_total,
             SUM(CASE WHEN h.state = 1 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END) AS down_unhandled,
             SUM(CASE WHEN h.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
