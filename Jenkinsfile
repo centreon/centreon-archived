@@ -140,6 +140,7 @@ try {
         error('Delivery stage failure.');
       }
     }
+    build job: 'centreon-autodiscovery/master', wait: false
     build job: 'centreon-awie/master', wait: false
     build job: 'centreon-export/master', wait: false
     build job: 'centreon-license-manager/master', wait: false
