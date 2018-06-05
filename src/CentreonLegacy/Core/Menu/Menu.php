@@ -56,7 +56,7 @@ class Menu
     {
         $this->db = $db;
         if (!is_null($user) && !$user->is_admin) {
-            $this->acl = ' AND topology_page IN (' . $user->access->getTopologyString() . ')';
+            $this->acl = ' AND topology_page IN (' . $user->access->getTopologyString() . ') ';
         }
     }
 
@@ -128,91 +128,75 @@ class Menu
     }
 
     /**
-     * Get the level three menu
+     * Get all menu (level 1 to 3)
      *
-     * Without groups
-     *
-     * array(
-     *   array(
-     *     "id" => "201",
-     *     "label" => "My menu",
-     *     "url" => "http://page"
-     *   )
-     * )
-     *
-     * With groups
      *
      * array(
-     *   array(
-     *     "id" => "212",
-     *     "label" => "",
+     *   "1" => array(
+     *     "label" => "<level_one_label>",
+     *     "url" => "<path_to_php_file>"
      *     "children" => array(
-     *       array(
-     *         "id" => "201",
-     *         "label" => "My menu",
-     *         "url" => "http://page"
+     *       "101" => array(
+     *         "label" => "<level_two_label>",
+     *         "url" => "<path_to_php_file>",
+     *         "children" => array(
+     *           "<group_name>" => array(
+     *             "10101" => array(
+     *               "label" => "level_three_label",
+     *               "url" => "<path_to_php_file>"
+     *             )
+     *           )
+     *         )
      *       )
      *     )
      *   )
      * )
      *
-     * @param int $parentId The parent id
      * @return array The menu
      */
-    public function getMenuChildren($parentId = null)
+    public function getMenu()
     {
-        /* Load groups */
-        $groups = $this->getGroups($parentId);
+        $groups = $this->getGroups();
 
-        $query = 'SELECT topology_name, topology_page, topology_url, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NOT NULL';
-        if (is_null($parentId)) {
-            $query .= ' AND topology_parent IS NULL';
-        } else {
-            $query .= ' AND topology_parent = :parent';
-        }
+        $query = 'SELECT topology_name, topology_page, topology_url, topology_group, topology_order topology_parent '
+            . 'FROM topology '
+            . 'WHERE topology_show = "1" '
+            . 'AND topology_page IS NOT NULL';
 
         if (!is_null($this->acl)) {
             $query .= $this->acl;
         }
-        $query .= ' ORDER BY topology_group, topology_order';
+
+        $query .= ' ORDER BY topology_page';
         $stmt = $this->db->prepare($query);
-        if (!is_null($parentId)) {
-            $stmt->bindParam(':parent', $parentId, \PDO::PARAM_INT);
-        }
 
         $stmt->execute();
 
         $menu = array();
-
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $item = array(
-                'id' => $row['topology_page'],
-                'label' => $row['topology_name'],
-                'url' => $row['topology_url']
-            );
-            if (is_null($row['topology_group'])) {
-                $menu[] = $item;
-            } else {
-                /* Find the good group */
-                $found = false;
-                for ($i = 0; $i < count($menu); $i++) {
-                    if ($menu[$i]['id'] === $row['topology_group'] && isset($menu[$i]['children'])) {
-                        $found = true;
-                        $menu[$i]['children'][] = $item;
-                    }
-                }
-                /* If not found add the group with the menu item */
-                if (!$found) {
-                    if (isset($groups[$row['topology_group']])) {
-                        $menu[] = array(
-                            'id' => $row['topology_group'],
-                            'label' => $groups[$row['topology_group']],
-                            'children' => array($item)
-                        );
-                    } else {
-                        $menu[] = $item;
-                    }
+            if (preg_match('/^(\d)$/', $row['topology_page'], $matches)) { // level 1
+                $menu[$row['topology_page']] = array(
+                    'label' => $row['topology_name'],
+                    'url' => $row['topology_url'],
+                    'children' => array()
+                );
+            } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
+                $menu[$matches[1]]['children'][$row['topology_page']] = array(
+                    'label' => $row['topology_name'],
+                    'url' => $row['topology_url'],
+                    'children' => array()
+                );
+            } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 3
+                $levelTwo = $matches[1] . $matches[2];
+                $levelThree = array(
+                    'label' => $row['topology_name'],
+                    'url' => $row['topology_url']
+                );
+                if (!is_null($row['topology_group']) && isset($groups[$row['topology_group']])) {
+                    $menu
+                        [$matches[1]]['children']
+                        [$levelTwo]['children']
+                        [$groups[$row['topology_group']]][$row['topology_page']] = $levelThree;
                 }
             }
         }
@@ -223,28 +207,22 @@ class Menu
     /**
      * Get the list of groups
      *
-     * @param int $parentId The parent id
      * @return array The list of groups
      */
-    public function getGroups($parentId = null)
+    public function getGroups()
     {
-        $query = 'SELECT topology_name, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NULL AND topology_parent = :parent
-            ORDER BY topology_group, topology_order';
-        $stmt = $this->db->prepare($query);
-        if (is_null($parentId)) {
-            $stmt->bindValue(':parent', null, \PDO::PARAM_NULL);
-        } else {
-            $stmt->bindParam(':parent', $parentId, \PDO::PARAM_INT);
-        }
+        $query = 'SELECT topology_name, topology_group FROM topology '
+            . 'WHERE topology_show = "1" '
+            . 'AND topology_page IS NULL '
+            . 'ORDER BY topology_group, topology_order';
+        $result = $this->db->query($query);
 
-        $stmt->execute();
         $groups = array();
-
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
             $groups[$row['topology_group']] = $row['topology_name'];
         }
-        $stmt->closeCursor();
+
+        $result->closeCursor();
 
         return $groups;
     }
