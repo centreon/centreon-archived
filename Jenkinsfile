@@ -155,6 +155,7 @@ try {
         error('Delivery stage failure.');
       }
     }
+    build job: 'centreon-autodiscovery/2.4.x', wait: false
     build job: 'centreon-awie/1.0.x', wait: false
     build job: 'centreon-export/2.3.x', wait: false
     build job: 'centreon-license-manager/1.1.x', wait: false
