@@ -699,9 +699,14 @@ class CentreonCentbrokerCfg extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
 
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array($labelField => $filter_name);
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD".

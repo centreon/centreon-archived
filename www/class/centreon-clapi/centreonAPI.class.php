@@ -866,11 +866,7 @@ class CentreonAPI
                     $this->setReturnCode(1);
                     $this->close();
                 } else {
-                    $this->objectTable[$splits[0]]->export_filter(
-                        $splits[0],
-                        $this->objectTable[$splits[0]]->getObjectId($splits[1]),
-                        $splits[1]
-                    );
+                    $this->objectTable[$splits[0]]->export($splits[1]);
                 }
             }
             return $this->return_code;
@@ -880,7 +876,7 @@ class CentreonAPI
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
-                        $this->objectTable[$oObjet]->export();
+                        $this->objectTable[$oObjet]->export(null);
                     }
                 }
             }

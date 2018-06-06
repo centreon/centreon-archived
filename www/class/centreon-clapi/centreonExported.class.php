@@ -63,6 +63,7 @@ class CentreonExported
     {
         array_push($this->ariane, $object . ':' . $name . ':' . $id);
     }
+
     public function ariane_pop()
     {
         array_pop($this->ariane);
@@ -72,6 +73,7 @@ class CentreonExported
     {
         $this->filter = $value;
     }
+
     public function set_options($options)
     {
         if (isset($options['filter-type'])) {
