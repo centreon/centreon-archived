@@ -399,9 +399,9 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filters = null, $exportDependencies = true)
     {
-        parent::export();
+        parent::export($filters, $exportDependencies);
         $scs = $this->object->getList(
             array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()),
             -1,
