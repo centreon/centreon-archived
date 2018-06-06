@@ -89,7 +89,6 @@ class CentreonHost extends CentreonObject
      * @var Timezone
      */
     protected $timezoneObject;
-
     protected $register;
 
     public static $aDepends = array(
@@ -1178,7 +1177,7 @@ class CentreonHost extends CentreonObject
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
                             if (!is_null($filters['host_id']) && !is_null($action_tmp)) {
-                                $this->api->export_filter($action_tmp, $tmp_id, $value);
+                                $this->export_filter($action_tmp, $tmp_id, $value);
                             }
                         }
                         unset($tmpObj);
@@ -1265,7 +1264,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+            $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
             echo $this->action . $this->delim
                 . "addcontactgroup" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
@@ -1290,7 +1289,7 @@ class CentreonHost extends CentreonObject
             $exportContactId = isset($element['contact_id']) ? $element['contact_id'] : null;
             $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
 
-            $this->api->export_filter('CONTACT', $exportContactId, $exportContactName);
+            $this->export_filter('CONTACT', $exportContactId, $exportContactName);
 
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
@@ -1313,7 +1312,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('HTPL', $element['tpl_id'], $element['template']);
+            $this->export_filter('HTPL', $element['tpl_id'], $element['template']);
             echo $this->action . $this->delim
                 . "addtemplate" . $this->delim
                 . $element['host'] . $this->delim
@@ -1335,7 +1334,7 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('STPL', $helement['service_id'], $helement['service_description']);
+                $this->export_filter('STPL', $helement['service_id'], $helement['service_description']);
             }
 
             # service linked
@@ -1351,7 +1350,7 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('SERVICE', $helement['service_id'], $helement['service_description']);
+                $this->export_filter('SERVICE', $helement['service_id'], $helement['service_description']);
             }
 
             # service hg linked and hostgroups
@@ -1367,8 +1366,8 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
-                $this->api->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
+                $this->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
+                $this->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
             }
         }
     }
