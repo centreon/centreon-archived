@@ -38,6 +38,7 @@ namespace CentreonClapi;
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
+require_once "centreonContactTemplate.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
@@ -122,7 +123,7 @@ class CentreonContact extends CentreonObject
      *
      * @return void
      */
-    public function __construct($db)
+    public function __construct()
     {
         parent::__construct();
         $this->tpObject = new CentreonTimePeriod();
@@ -462,9 +463,17 @@ class CentreonContact extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
-        $filters["contact_register"] = $this->register;
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array(
+            "contact_register" => $this->register,
+            $labelField => $filter_name
+        );
         $elements = $this->object->getList(
             "*",
             -1,
@@ -496,12 +505,12 @@ class CentreonContact extends CentreonObject
                         $parameter = self::HOST_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->export_filter('TP', $tmp_id, $value);
+                        CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "timeperiod_tp_id2") {
                         $parameter = self::SVC_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->export_filter('TP', $tmp_id, $value);
+                        CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
@@ -513,7 +522,7 @@ class CentreonContact extends CentreonObject
                         $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value  = $result[$this->object->getUniqueLabelField()];
-                        $this->export_filter('CONTACTTPL', $tmp_id, $value);
+                        CentreonContactTemplate::getInstance()->export($value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;
                         $result = $this->timezoneObject->getParameters(

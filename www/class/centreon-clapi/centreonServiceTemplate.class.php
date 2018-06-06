@@ -914,9 +914,17 @@ class CentreonServiceTemplate extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
-        $filters["service_register"] = $this->register;
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array(
+            "service_register" => $this->register,
+            $labelField => $filter_name
+        );
         $elements = $this->object->getList(
             "*",
             -1,
@@ -953,7 +961,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
+            CentreonContactGroup::getInstance()->export($element['cg_name']);
             echo $this->action . $this->delim
                 . "addcontactgroup" . $this->delim
                 . $element['service_description'] . $this->delim
@@ -977,7 +985,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+            CentreonContact::getInstance()->export($element['contact_name']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim
@@ -1021,7 +1029,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($telements as $telement) {
-            $this->export_filter('TRAP', $telement['traps_id'], $telement['traps_name']);
+            CentreonTrap::getInstance()->export($telement['traps_name']);
             echo $this->action . $this->delim
                 . "addtrap" . $this->delim
                 . $telement['service_description'] . $this->delim
@@ -1045,7 +1053,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($helements as $helement) {
-            $this->export_filter('HOST', $helement['host_id'], $helement['host_name']);
+            CentreonHost::getInstance()->export($helement['host_name']);
             echo $this->action . $this->delim
                 . "addhosttemplate" . $this->delim
                 . $helement['service_description'] . $this->delim

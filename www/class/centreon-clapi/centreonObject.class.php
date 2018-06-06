@@ -55,6 +55,7 @@ abstract class CentreonObject
     const OBJECTNOTLINKED = "Objects are not linked";
 
     private $centreon_api = null;
+    protected static $instances;
 
     /**
      * Db adapter
@@ -110,6 +111,12 @@ abstract class CentreonObject
      * @var array
      */
     protected $exportExcludedParams;
+    /**
+     * cache to store object ids by object names
+     *
+     * @var array
+     */
+    protected $objectIds = array();
 
     /**
      * Constructor
@@ -184,9 +191,13 @@ abstract class CentreonObject
      */
     public function getObjectId($name)
     {
+        if (isset($this->objectIds[$name])) {
+            return $this->objectIds[$name];
+        }
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
         if (count($ids)) {
-            return $ids[0];
+            $this->objectIds[$name] = $ids[0];
+            return $this->objectIds[$name];
         }
         return 0;
     }
@@ -386,17 +397,53 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-    /**
-     * Export data
-     *
-     * @param string $filters
-     * @return void
-     */
-    public function export($filters = null, $exportDependencies = true)
+    protected function canBeExported($filter_name)
     {
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($this->action)) {
+            return false;
+        }
+
+        $filter_id = $this->getObjectId($splits[1]);
+        $exported->ariane_push($this->action, $filter_id, $filter_name);
+        if ($exported->is_exported($this->action, $filter_id, $filter_name)) {
+            $exported->ariane_pop();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Export from a specific object
+     *
+     * @param $action
+     * @param $filter_id
+     * @param $filter_name
+     * @return int
+     */
+    public function export($filter_name)
+    {
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
+
+        $filter_id = $this->getObjectId($splits[1]);
+
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
+            $primaryKey = $this->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filter_id;
+        }
+        if (!is_null($filter_name)) {
+            $labelField = $this->getObject()->getUniqueLabelField();
+            $filters[$labelField] = $filter_name;
+        }
+
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
                 $addStr .= $this->delim.$element[$param];
@@ -416,42 +463,10 @@ abstract class CentreonObject
                 }
             }
         }
-    }
 
-    /**
-     * Export from a specific object
-     *
-     * @param $action
-     * @param $filter_id
-     * @param $filter_name
-     * @return int
-     */
-    public function export_filter($action, $filter_id, $filter_name, $exportDependencies = true)
-    {
-        $exported = CentreonExported::getInstance();
-
-        if (is_null($action)) {
-            return 0;
-        }
-
-        $exported->ariane_push($action, $filter_id, $filter_name);
-        if ($exported->is_exported($action, $filter_id, $filter_name)) {
-            $exported->ariane_pop();
-            return 0;
-        }
-
-        $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
-            $primaryKey = $this->getObject()->getPrimaryKey();
-            $filters[$primaryKey] = $filter_id;
-        }
-        if (!is_null($filter_name)) {
-            $labelField = $this->getObject()->getUniqueLabelField();
-            $filters[$labelField] = $filter_name;
-        }
-
-        $this->export($filters, $exportDependencies);
         $exported->ariane_pop();
+
+        return true;
     }
 
     /**
@@ -556,5 +571,21 @@ abstract class CentreonObject
         }
         $dbResult->closeCursor();
         return $name;
+    }
+
+    /**
+    *
+    * @param void
+    * @return CentreonObject
+    */
+    public static function getInstance()
+    {
+        $class = get_called_class();
+
+        if (!isset(self::$instances[$class])) {
+            self::$instances[$class] = new $class;
+        }
+
+        return self::$instances[$class];
     }
 }

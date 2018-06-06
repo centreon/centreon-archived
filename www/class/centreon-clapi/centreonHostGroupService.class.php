@@ -914,10 +914,17 @@ class CentreonHostGroupService extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
-        $filters["service_register"] = $this->register;
+        if (!$this->canBeExported($filter_name)) {
+            return 0;
+        }
 
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array(
+            "service_register" => $this->register,
+            $labelField => $filter_name
+        );
         $hostRel = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $hostRel->getMergedParameters(
             array("hg_name"),
@@ -942,7 +949,7 @@ class CentreonHostGroupService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        CentreonServiceTemplate::getInstance()->export($tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -1033,7 +1040,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                CentreonContactGroup::getInstance()->export($element['cg_name']);
                 echo $this->action . $this->delim
                     . "addcontactgroup" . $this->delim
                     . $element['hg_name'] . $this->delim
@@ -1055,7 +1062,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_name']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim

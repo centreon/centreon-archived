@@ -216,9 +216,13 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null, $exportDependencies = true)
+    public function export($filter_name)
     {
-        parent::export($filters, $exportDependencies);
+        if (!parent::export($filter_name)) {
+            return false;
+        }
+        $filters = array($labelField => $filter_name);
+
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
         $contactObj = new \Centreon_Object_Contact();
         $cgFieldName = $this->object->getUniqueLabelField();
@@ -234,7 +238,7 @@ class CentreonContactGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            $this->export_filter('CONTACT', $element['contact_id'], $element['contact_alias']);
+            CentreonContact::getInstance()->export($element['contact_alias']);
             echo $this->action . $this->delim . "addcontact" .
                 $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
                 $this->delim . $element['contact_alias'] . "\n";
