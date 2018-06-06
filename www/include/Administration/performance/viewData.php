@@ -68,7 +68,6 @@ $inputArguments = array(
     'num' => FILTER_SANITIZE_NUMBER_INT,
     'limit' => FILTER_SANITIZE_NUMBER_INT,
     'searchS' => FILTER_SANITIZE_STRING,
-    'search' => FILTER_SANITIZE_STRING,
     'searchP' => FILTER_SANITIZE_STRING,
     'o' => FILTER_SANITIZE_STRING,
     'o1' => FILTER_SANITIZE_STRING,
@@ -90,34 +89,27 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
-        $inputs[$argumentName] = $inputGet[$argumentName];
-    } else {
+    if (!is_null($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
+    } else {
+        $inputs[$argumentName] = $inputGet[$argumentName];
     }
 }
 
-
-if (isset($inputs["searchH"])) {
-    $searchH = $inputs["searchH"];
-    if (isset($oreon->historySearch[$url]) && $oreon->historySearch[$url] != $searchH) {
-        $num = 0;
-        $oreon->historySearch[$url] = $searchH;
-    }
-} elseif (isset($oreon->historySearch[$url])) {
-    $searchH = $oreon->historySearch[$url];
+if (isset($_POST["searchH"])){
+    $num = 0;
+    $searchH = $_POST["searchH"];
+} elseif (isset($_GET['searchH'])) {
+    $searchH = $_GET['searchH'];
 } else {
     $searchH = null;
 }
 
-if (isset($inputs["searchS"])) {
-    $searchS = $inputs["searchS"];
-    if (isset($oreon->historySearchService[$url]) && $oreon->historySearchService[$url] != $searchS) {
-        $num = 0;
-        $oreon->historySearchService[$url] = $searchS;
-    }
-} elseif (isset($oreon->historySearchService[$url])) {
-    $searchS = $oreon->historySearchService[$url];
+if (isset($_POST["searchS"])){
+    $num = 0;
+    $searchS = $_POST["searchS"];
+} elseif (isset($_GET['searchS'])) {
+    $searchS = $_GET['searchS'];
 } else {
     $searchS = null;
 }
