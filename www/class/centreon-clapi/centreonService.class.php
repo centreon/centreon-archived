@@ -1070,7 +1070,7 @@ class CentreonService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        $this->export_filter('STPL', $tmp_id, $tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -1080,7 +1080,7 @@ class CentreonService extends CentreonObject
             }
 
             # Host Filter
-            $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
+            $this->export_filter('HOST', $element['host_id'], $element['host_name']);
 
             $addStr .= "\n";
             echo $addStr;
@@ -1100,7 +1100,7 @@ class CentreonService extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $this->export_filter($action_tmp, $tmp_id, $value);
                         }
                         unset($tmpObj);
                     }
@@ -1169,7 +1169,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $cgelement['service_description'] . $this->delim
@@ -1190,7 +1190,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                $this->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $celement['service_description'] . $this->delim
@@ -1211,7 +1211,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($telements as $telement) {
-                $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+                $this->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $telement['service_description'] . $this->delim

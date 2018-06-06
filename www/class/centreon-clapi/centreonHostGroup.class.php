@@ -299,7 +299,7 @@ class CentreonHostGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
+            $this->export_filter('HOST', $element['host_id'], $element[$hFieldName]);
             echo $this->action . $this->delim
                 ."addhost" . $this->delim
                 . $element[$hgFieldName] . $this->delim.$element[$hFieldName] . "\n";

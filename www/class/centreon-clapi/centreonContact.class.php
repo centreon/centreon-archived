@@ -496,12 +496,12 @@ class CentreonContact extends CentreonObject
                         $parameter = self::HOST_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->api->export_filter('TP', $tmp_id, $value);
+                        $this->export_filter('TP', $tmp_id, $value);
                     } elseif ($parameter == "timeperiod_tp_id2") {
                         $parameter = self::SVC_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->api->export_filter('TP', $tmp_id, $value);
+                        $this->export_filter('TP', $tmp_id, $value);
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
@@ -513,7 +513,7 @@ class CentreonContact extends CentreonObject
                         $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value  = $result[$this->object->getUniqueLabelField()];
-                        $this->api->export_filter('CONTACTTPL', $tmp_id, $value);
+                        $this->export_filter('CONTACTTPL', $tmp_id, $value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;
                         $result = $this->timezoneObject->getParameters(
