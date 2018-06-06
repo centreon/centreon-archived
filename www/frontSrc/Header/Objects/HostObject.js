@@ -9,6 +9,7 @@ import HostIcon from "../Icons/HostIcon"
 const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
+    position: 'relative',
     '&:before': {
       width: 1,
       height: 30,
@@ -73,12 +74,13 @@ const styles = theme => ({
     marginRight: 6,
   },
   pendingStatus: {
-    height: '8px',
-    width: '8px',
+    height: '12px',
+    width: '12px',
     position: 'absolute',
-    top: 42,
-    left: 7,
+    top: 38,
+    left: 6,
     borderRadius: 20,
+    border: '2px solid #E6E6E7',
     backgroundColor: theme.palette.pending.main
   },
   icon: {
@@ -194,7 +196,7 @@ const HostObject = (
         <div className={classes.objectDetails}>
           <Typography variant="caption" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#2AD1D4'}}></span>
-            <a htef={pending.url} title="pending hosts list">
+            <a href={pending.url} title="pending hosts list">
             {pending.total} Pending hosts
             </a>
           </Typography>
