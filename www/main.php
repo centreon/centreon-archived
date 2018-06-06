@@ -171,14 +171,12 @@ if ($acl_page == 1 || $acl_page == 2) {
         if (!$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
-                reset_search_page($url);
             } else {
                 $url = "./include/core/errors/alt_error.php";
             }
         } else {
             if (file_exists($redirect["topology_url"]) && $ret['topology_page']) {
                 $url = $redirect["topology_url"];
-                reset_search_page($url);
             } else {
                 $url = "./include/core/errors/alt_error.php";
             }
