@@ -137,6 +137,22 @@ if (isset($_REQUEST['hostgroups'])) {
     $url_var .= '&hostgroups=' . $_REQUEST['hostgroups'];
 }
 
+/* Start Fix for performance management under administration - parameters */
+if (isset($_REQUEST['searchS'])) {
+    $url_var .= '&searchS=' . $_REQUEST['searchS'];
+    if (isset($_POST['num'])){
+        $num = 0;
+    }
+}
+
+if (isset($_REQUEST['searchH'])) {
+    $url_var .= '&searchH=' . $_REQUEST['searchH'];
+    if (isset($_POST['num'])){
+        $num = 0;
+    }
+}
+/* End Fix for performance management under administration - parameters */
+
 if (!isset($path)) {
     $path = null;
 }
