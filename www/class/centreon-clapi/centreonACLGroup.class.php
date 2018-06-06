@@ -240,8 +240,14 @@ class CentreonACLGroup extends CentreonObject
     /**
      * @param null $filters
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array($labelField => $filter_name);
         $aclGroupList = $this->object->getList('*', -1, 0, null, null, $filters);
 
         $exportLine = '';

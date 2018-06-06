@@ -395,8 +395,15 @@ class CentreonLDAP extends CentreonObject
      * @param null $filter_id
      * @param null $filter_name
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
+        if (!$this->canBeExported($filter_name)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array($labelField => $filter_name);
+
         $configurationLdapObj = new \Centreon_Object_Configuration_Ldap($this->dependencyInjector);
         $serverLdapObj = new \Centreon_Object_Server_Ldap($this->dependencyInjector);
         $ldapList = $this->object->getList('*', -1, 0, null, null, $filters);

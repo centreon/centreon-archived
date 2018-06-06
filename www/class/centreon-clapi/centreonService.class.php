@@ -1063,9 +1063,17 @@ class CentreonService extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
-        $filters["service_register"] = $this->register;
+        if (!$this->canBeExported($filter_name)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array(
+            "service_register" => $this->register,
+            $labelField => $filter_name
+        );
 
         $hostRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $elements = $hostRel->getMergedParameters(
@@ -1189,7 +1197,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                CentreonContactGroup::getInstance()->export($element['cg_name']);
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $cgelement['service_description'] . $this->delim
@@ -1210,7 +1218,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_name']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $celement['service_description'] . $this->delim
@@ -1231,7 +1239,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($telements as $telement) {
-                $this->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+                CentreonTrap::getInstance()->export($element['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $telement['service_description'] . $this->delim

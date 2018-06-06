@@ -1116,10 +1116,17 @@ class CentreonHost extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filter_name)
     {
-        $filters["host_register"] = $this->register;
-        $filters['host_id'] = isset($filters['host_id']) ? $filters['host_id'] : null;
+        if (!$this->canBeExported($filter_name)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array(
+            "host_register" => $this->register,
+            $labelField => $filter_name
+        );
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
@@ -1136,7 +1143,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("host_register" => $this->register),
+                $filters,
                 "AND"
             );
         }
@@ -1177,7 +1184,7 @@ class CentreonHost extends CentreonObject
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
                             if (!is_null($filters['host_id']) && !is_null($action_tmp)) {
-                                $this->export_filter($action_tmp, $tmp_id, $value);
+                                $tmpObj::getInstance()->export($action_tmp, $value);
                             }
                         }
                         unset($tmpObj);
@@ -1264,7 +1271,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
+            CentreonContactGroup::getInstance()->export('CG', $element['cg_name']);
             echo $this->action . $this->delim
                 . "addcontactgroup" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
@@ -1286,11 +1293,8 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $exportContactId = isset($element['contact_id']) ? $element['contact_id'] : null;
             $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
-
-            $this->export_filter('CONTACT', $exportContactId, $exportContactName);
-
+            CentreonContact::getInstance()->export('CONTACT', $exportContactName);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
@@ -1312,7 +1316,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->export_filter('HTPL', $element['tpl_id'], $element['template']);
+            CentreonHostTemplate::getInstance()->export('HTPL', $element['template']);
             echo $this->action . $this->delim
                 . "addtemplate" . $this->delim
                 . $element['host'] . $this->delim
@@ -1334,7 +1338,7 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->export_filter('STPL', $helement['service_id'], $helement['service_description']);
+                CentreonServiceTemplate::getInstance()->export('STPL', $helement['service_description']);
             }
 
             # service linked
@@ -1350,7 +1354,7 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->export_filter('SERVICE', $helement['service_id'], $helement['service_description']);
+                CentreonService::getInstance()->export('SERVICE', $helement['service_description']);
             }
 
             # service hg linked and hostgroups
@@ -1366,8 +1370,8 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
-                $this->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
+                CentreonHostGroup::getInstance()->export('HG', $helement['hg_name']);
+                CentreonHostGroupService::getInstance()->export('HGSERVICE', $helement['hg_name']);
             }
         }
     }
