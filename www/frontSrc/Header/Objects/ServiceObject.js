@@ -9,6 +9,7 @@ import ServiceIcon from "../Icons/ServiceIcon"
 const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
+    position: 'relative',
     '&:before': {
       width: 1,
       height: 30,
@@ -77,6 +78,16 @@ const styles = theme => ({
     display: 'inline-table',
     marginRight: 6,
   },
+  pendingStatus: {
+    height: '12px',
+    width: '12px',
+    position: 'absolute',
+    top: 38,
+    left: 6,
+    borderRadius: 20,
+    border: '2px solid #E6E6E7',
+    backgroundColor: theme.palette.pending.main
+  },
   icon: {
     width: 34,
     height: 34,
@@ -121,6 +132,10 @@ const ServiceObject = ({
         aria-label='Services status'
         onClick={handleOpen}
       />
+    {pending.total > 0 ?
+      <span className={classes.pendingStatus} ></span>
+      : ''
+    }
       <Button variant="fab" href={critical.url}
               aria-label='Critical services'
               className={(classes.status, classes.errorStatus)}>
@@ -200,7 +215,7 @@ const ServiceObject = ({
           <div className={classes.objectDetails}>
             <Typography variant="caption" gutterBottom>
               <span className={classes.chip} style={{backgroundColor: '#2AD1D4'}}></span>
-              <a htef={pending.url} title="pending services list">
+              <a href={pending.url} title="pending services list">
                 {pending.total} Pending services
               </a>
             </Typography>
