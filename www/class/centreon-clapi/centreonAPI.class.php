@@ -830,48 +830,6 @@ class CentreonAPI
     }
 
     /**
-     * Export from a specific object
-     *
-     * @param $action
-     * @param $filter_id
-     * @param $filter_name
-     * @return int
-     */
-    public function export_filter($action, $filter_id, $filter_name, $exportDependencies = true)
-    {
-        $exported = CentreonExported::getInstance();
-
-        if (is_null($action)) {
-            return 0;
-        }
-
-        if (!isset($this->objectTable[$action])) {
-            print "Unknown object : $action\n";
-            $this->setReturnCode(1);
-            $this->close();
-        }
-
-        $exported->ariane_push($action, $filter_id, $filter_name);
-        if ($exported->is_exported($action, $filter_id, $filter_name)) {
-            $exported->ariane_pop();
-            return 0;
-        }
-
-        $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
-            $primaryKey = $this->objectTable[$action]->getObject()->getPrimaryKey();
-            $filters[$primaryKey] = $filter_id;
-        }
-        if (!is_null($filter_name)) {
-            $labelField = $this->objectTable[$action]->getObject()->getUniqueLabelField();
-            $filters[$labelField] = $filter_name;
-        }
-
-        $this->objectTable[$action]->export($filters, $exportDependencies);
-        $exported->ariane_pop();
-    }
-
-    /**
      * @param $newOption
      */
     public function setOption($newOption)
@@ -903,14 +861,12 @@ class CentreonAPI
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                }
-
-                if (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
+                } elseif (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
                     echo "Unknown object : $splits[0];$splits[1]\n";
                     $this->setReturnCode(1);
-                    return $this->return_code;
+                    $this->close();
                 } else {
-                    $this->export_filter(
+                    $this->objectTable[$splits[0]]->export_filter(
                         $splits[0],
                         $this->objectTable[$splits[0]]->getObjectId($splits[1]),
                         $splits[1]

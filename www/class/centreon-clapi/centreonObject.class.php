@@ -39,6 +39,7 @@ require_once "centreonAPI.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 
 abstract class CentreonObject
 {
@@ -415,6 +416,42 @@ abstract class CentreonObject
                 }
             }
         }
+    }
+
+    /**
+     * Export from a specific object
+     *
+     * @param $action
+     * @param $filter_id
+     * @param $filter_name
+     * @return int
+     */
+    public function export_filter($action, $filter_id, $filter_name, $exportDependencies = true)
+    {
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($action)) {
+            return 0;
+        }
+
+        $exported->ariane_push($action, $filter_id, $filter_name);
+        if ($exported->is_exported($action, $filter_id, $filter_name)) {
+            $exported->ariane_pop();
+            return 0;
+        }
+
+        $filters = array();
+        if (!is_null($filter_id) && $filter_id !== 0) {
+            $primaryKey = $this->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filter_id;
+        }
+        if (!is_null($filter_name)) {
+            $labelField = $this->getObject()->getUniqueLabelField();
+            $filters[$labelField] = $filter_name;
+        }
+
+        $this->export($filters, $exportDependencies);
+        $exported->ariane_pop();
     }
 
     /**

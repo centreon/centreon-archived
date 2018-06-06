@@ -942,7 +942,7 @@ class CentreonHostGroupService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        $this->export_filter('STPL', $tmp_id, $tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -967,7 +967,7 @@ class CentreonHostGroupService extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $this->export_filter($action_tmp, $tmp_id, $value);
                         }
                         unset($tmpObj);
                     }
@@ -1033,7 +1033,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                $this->export_filter('CG', $element['cg_id'], $element['cg_name']);
                 echo $this->action . $this->delim
                     . "addcontactgroup" . $this->delim
                     . $element['hg_name'] . $this->delim
@@ -1055,7 +1055,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                $this->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim
