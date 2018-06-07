@@ -857,16 +857,23 @@ class CentreonAPI
             }
             foreach ($selected as $select) {
                 $splits = explode(';', $select);
+
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                } elseif (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
-                    echo "Unknown object : $splits[0];$splits[1]\n";
-                    $this->setReturnCode(1);
-                    $this->close();
-                } else {
-                    $this->objectTable[$splits[0]]->export($splits[1]);
+                } elseif (isset($splits[1])) {
+                    $name = $splits[1];
+                    if (isset($splits[2])) {
+                        $name .= ';' . $splits[2];
+                    }
+                    if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
+                        echo "Unknown object : $splits[0];$splits[1]\n";
+                        $this->setReturnCode(1);
+                        $this->close();
+                    } else {
+                        $this->objectTable[$splits[0]]->export($name);
+                    }
                 }
             }
             return $this->return_code;
