@@ -1114,9 +1114,6 @@ class CentreonService extends CentreonObject
                 $addStr .= $element[$param];
             }
 
-            # Host Filter
-            CentreonHost::getInstance()->export($element['host_name']);
-
             $addStr .= "\n";
             echo $addStr;
 
