@@ -143,7 +143,7 @@ class CentreonService extends CentreonObject
             return $this->objectIds[$name];
         }
 
-        if (preg_match('/^.+;.+$/', $name, $matches)) {
+        if (preg_match('/^(.+);(.+)$/', $name, $matches)) {
             $ids = $this->getHostAndServiceId($matches[1], $matches[2]);
             if (isset($ids[1])) {
                 $this->objectIds[$name] = $ids[1];
