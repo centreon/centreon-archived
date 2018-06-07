@@ -216,9 +216,9 @@ class CentreonContactGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!parent::export($filter_name)) {
+        if (!parent::export($filterName)) {
             return false;
         }
 
@@ -227,8 +227,8 @@ class CentreonContactGroup extends CentreonObject
         $cgFieldName = $this->object->getUniqueLabelField();
         $cFieldName = $contactObj->getUniqueLabelField();
         $filters = array();
-        if (!is_null($filter_name)) {
-            $filters[$cgFieldName] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters[$cgFieldName] = $filterName;
         }
         $elements = $relObj->getMergedParameters(
             array($cgFieldName),
