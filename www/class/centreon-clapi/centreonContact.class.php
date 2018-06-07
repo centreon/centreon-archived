@@ -470,10 +470,10 @@ class CentreonContact extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array(
-            "contact_register" => $this->register,
-            $labelField => $filter_name
-        );
+        $filters = array("contact_register" => $this->register);
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
         $elements = $this->object->getList(
             "*",
             -1,

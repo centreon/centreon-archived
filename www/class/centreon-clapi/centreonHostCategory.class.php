@@ -246,7 +246,10 @@ class CentreonHostCategory extends CentreonSeverityAbstract
 
         $relobj = new \Centreon_Object_Relation_Host_Category_Host();
         $hcFieldName = $this->object->getUniqueLabelField();
-        $filters = array($hcFieldName => $filter_name);
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$hcFieldName] = $filter_name;
+        }
         $elements = $relobj->getMergedParameters(
             array($hcFieldName),
             array("host_name"),

@@ -341,7 +341,7 @@ class CentreonResourceCfg extends CentreonObject
         $labelField = $this->object->getUniqueLabelField();
         $elements = $this->object->getList();
 
-        if (!empty($filer_name)) {
+        if (!is_null($filter_name) && !empty($filter_name)) {
             $nbElements = count($elements);
             for ($i = 0; $i < $nbElements; $i++) {
                 if ($elements[$i][$labelField] != $filter_name) {

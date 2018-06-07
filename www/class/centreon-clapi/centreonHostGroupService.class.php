@@ -921,10 +921,10 @@ class CentreonHostGroupService extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array(
-            "service_register" => $this->register,
-            $labelField => $filter_name
-        );
+        $filters = array("service_register" => $this->register);
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
         $hostRel = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $hostRel->getMergedParameters(
             array("hg_name"),
@@ -974,7 +974,7 @@ class CentreonHostGroupService extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->export_filter($action_tmp, $tmp_id, $value);
+                            $tmpObj::getInstance()->export($value);
                         }
                         unset($tmpObj);
                     }
