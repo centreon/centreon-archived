@@ -348,7 +348,7 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
-                $contactObj = new CentreonContact($this->db);
+                $contactObj = new CentreonContact();
                 $params[2] = $contactObj->getContactID($params[2]);
             }
             $this->db->query(
