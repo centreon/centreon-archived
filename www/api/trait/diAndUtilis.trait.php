@@ -33,36 +33,30 @@
  *
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . '/class/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
-require_once dirname(__FILE__) . '/interface/di.interface.php';
+use Pimple\Container;
+use CentreonLegacy\Core\Utils\Factory;
 
+trait CentreonWebServiceDiAndUtilisTrait
+{
 
-$pearDB = new CentreonDB();
-ini_set("session.gc_maxlifetime", "31536000");
+    /**
+     * @var \Pimple\Container
+     */
+    private $dependencyInjector;
 
-CentreonSession::start(1);
+    /**
+     * @var \CentreonLegacy\Core\Utils\Factory
+     */
+    private $utils;
 
-if (false === isset($_SESSION["centreon"])) {
-    CentreonWebService::sendResult("Unauthorized", 401);
+    /**
+     * {@inheritdoc}
+     */
+    public function finalConstruct(Container $dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
+
+        $utilsFactory = new Factory($dependencyInjector);
+        $this->utils = $utilsFactory->newUtils();
+    }
 }
-
-$pearDB = new CentreonDB();
-
-/*
- * Define Centreon var alias
- */
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
-}
-
-if (false === isset($centreon) || false === is_object($centreon)) {
-    CentreonWebService::sendResult("Unauthorized", 401);
-}
-
-CentreonWebService::router($dependencyInjector, $centreon->user, true);
