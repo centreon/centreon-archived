@@ -1118,16 +1118,16 @@ class CentreonHost extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!$this->canBeExported($filterName)) {
             return 0;
         }
 
         $labelField = $this->object->getUniqueLabelField();
         $filters = array("host_register" => $this->register);
-        if (!is_null($filter_name)) {
-            $filters[$labelField] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
 
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
@@ -1264,8 +1264,8 @@ class CentreonHost extends CentreonObject
 
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host();
         $filters_cgRel = array("host_register" => $this->register);
-        if (!is_null($filter_name)) {
-            $filters_cgRel['host_name'] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters_cgRel['host_name'] = $filterName;
         }
         $elements = $cgRel->getMergedParameters(
             array("cg_name", "cg_id"),
@@ -1286,8 +1286,8 @@ class CentreonHost extends CentreonObject
         }
         $contactRel = new \Centreon_Object_Relation_Contact_Host();
         $filters_contactRel = array("host_register" => $this->register);
-        if (!is_null($filter_name)) {
-            $filters_contactRel['host_name'] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters_contactRel['host_name'] = $filterName;
         }
         $elements = $contactRel->getMergedParameters(
             array("contact_alias", "contact_id"),
@@ -1308,8 +1308,8 @@ class CentreonHost extends CentreonObject
         }
         $htplRel = new \Centreon_Object_Relation_Host_Template_Host();
         $filters_htplRel = array("h.host_register" => $this->register);
-        if (!is_null($filter_name)) {
-            $filters_htplRel['h.host_name'] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters_htplRel['h.host_name'] = $filterName;
         }
         $elements = $htplRel->getMergedParameters(
             array("host_name as host"),
@@ -1330,7 +1330,7 @@ class CentreonHost extends CentreonObject
         }
 
         // Filter only
-        if (!is_null($filter_name)) {
+        if (!is_null($filterName)) {
             # service templates linked
             $hostRel = new \Centreon_Object_Relation_Host_Service();
             $helements = $hostRel->getMergedParameters(
@@ -1340,7 +1340,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 0, "host_name" => $filter_name),
+                array("service_register" => 0, "host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {
@@ -1356,11 +1356,11 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 1, "host_name" => $filter_name),
+                array("service_register" => 1, "host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {
-                CentreonService::getInstance()->export($filter_name . ';' . $helement['service_description']);
+                CentreonService::getInstance()->export($filterName . ';' . $helement['service_description']);
             }
 
             # service hg linked and hostgroups
@@ -1372,7 +1372,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("host_name" => $filter_name),
+                array("host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {

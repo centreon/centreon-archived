@@ -422,10 +422,8 @@ abstract class CentreonObject
     /**
      * Export from a specific object
      *
-     * @param $action
-     * @param $filter_id
-     * @param $filter_name
-     * @return int
+     * @param $filterName
+     * @return bool
      */
     public function export($filterName)
     {

@@ -1067,17 +1067,17 @@ class CentreonService extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!$this->canBeExported($filterName)) {
             return false;
         }
 
         $labelField = $this->object->getUniqueLabelField();
         $filters = array("service_register" => $this->register);
         $filterId = null;
-        if (!is_null($filter_name)) {
-            $filterId = $this->getObjectId($filter_name);
+        if (!is_null($filterName)) {
+            $filterId = $this->getObjectId($filterName);
             $filters['service_id'] = $filterId;
         }
 

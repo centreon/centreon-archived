@@ -426,16 +426,16 @@ class CentreonACLResource extends CentreonObject
     /**
      * @param null $filters
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!$this->canBeExported($filterName)) {
             return false;
         }
 
         $labelField = $this->object->getUniqueLabelField();
         $filters = array();
-        if (!is_null($filter_name)) {
-            $filters[$labelField] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
         $aclResourceList = $this->object->getList('*', -1, 0, null, null, $filters);
 

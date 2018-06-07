@@ -827,10 +827,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Export
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
         // generic add & setparam
-        if (!parent::export($filter_name)) {
+        if (!parent::export($filterName)) {
             return false;
         }
 

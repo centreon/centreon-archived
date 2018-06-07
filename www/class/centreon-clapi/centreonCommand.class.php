@@ -214,16 +214,16 @@ class CentreonCommand extends CentreonObject
      * @return void
      */
 
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!$this->canBeExported($filterName)) {
             return false;
         }
 
         $labelField = $this->object->getUniqueLabelField();
         $filters = array();
-        if (!is_null($filter_name)) {
-            $filters[$labelField] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
         $elements = $this->object->getList(
             "*",
