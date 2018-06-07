@@ -35,7 +35,7 @@
 
 namespace CentreonClapi;
 
-require_once __DIR__ . "/centreonContact.class.php";
+require_once "centreonContact.class.php";
 
 class CentreonContactTemplate extends CentreonContact
 {

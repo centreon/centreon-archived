@@ -38,7 +38,6 @@ namespace CentreonClapi;
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
-require_once "centreonContactTemplate.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timezone/Timezone.php";

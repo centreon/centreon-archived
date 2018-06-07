@@ -1065,7 +1065,6 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($helements as $helement) {
-            CentreonHostTemplate::getInstance()->export($helement['host_name']);
             echo $this->action . $this->delim
                 . "addhosttemplate" . $this->delim
                 . $helement['service_description'] . $this->delim
