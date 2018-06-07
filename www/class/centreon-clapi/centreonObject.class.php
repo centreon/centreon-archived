@@ -429,7 +429,7 @@ abstract class CentreonObject
      */
     public function export($filterName)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!$this->canBeExported($filterName)) {
             return false;
         }
 
