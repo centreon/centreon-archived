@@ -41,7 +41,7 @@ require_once "Centreon/Object/Timezone/Timezone.php";
 class CentreonTimezone extends CentreonObject
 {
     /**
-     * CentreonRtDowntime constructor.
+     * CentreonTimezone constructor.
      */
     public function __construct()
     {
