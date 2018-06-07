@@ -280,7 +280,7 @@ class CentreonHostGroup extends CentreonObject
      */
     public function export($filter_name)
     {
-        if (!$this->canBeExported($filter_name)) {
+        if (!parent::export($filter_name)) {
             return false;
         }
 
