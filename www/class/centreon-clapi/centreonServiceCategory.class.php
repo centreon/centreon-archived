@@ -406,13 +406,17 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
         }
 
         $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
         $scs = $this->object->getList(
             array($this->object->getPrimaryKey(), $labelField),
             -1,
             0,
             null,
             null,
-            array($labelField => $filter_name)
+            $filters
         );
         $relobj = new \Centreon_Object_Relation_Service_Category_Service();
         $hostServiceRel = new \Centreon_Object_Relation_Host_Service();

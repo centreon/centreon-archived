@@ -397,7 +397,7 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-    protected function canBeExported($filter_name)
+    protected function canBeExported($filterName = null)
     {
         $exported = CentreonExported::getInstance();
 
@@ -405,9 +405,13 @@ abstract class CentreonObject
             return false;
         }
 
-        $filter_id = $this->getObjectId($splits[1]);
-        $exported->ariane_push($this->action, $filter_id, $filter_name);
-        if ($exported->is_exported($this->action, $filter_id, $filter_name)) {
+        if (is_null($filterName)) {
+            return true;
+        }
+
+        $filterId = $this->getObjectId($filterName);
+        $exported->ariane_push($this->action, $filterId, $filterName);
+        if ($exported->is_exported($this->action, $filterId, $filterName)) {
             $exported->ariane_pop();
             return false;
         }
@@ -423,22 +427,22 @@ abstract class CentreonObject
      * @param $filter_name
      * @return int
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
         if (!$this->canBeExported($filter_name)) {
             return false;
         }
 
-        $filter_id = $this->getObjectId($splits[1]);
+        $filterId= $this->getObjectId($filterName);
 
         $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
+        if (!is_null($filterId) && $filterId !== 0) {
             $primaryKey = $this->getObject()->getPrimaryKey();
-            $filters[$primaryKey] = $filter_id;
+            $filters[$primaryKey] = $filterId;
         }
-        if (!is_null($filter_name)) {
+        if (!is_null($filterName)) {
             $labelField = $this->getObject()->getUniqueLabelField();
-            $filters[$labelField] = $filter_name;
+            $filters[$labelField] = $filterName;
         }
 
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
@@ -464,7 +468,7 @@ abstract class CentreonObject
             }
         }
 
-        $exported->ariane_pop();
+        CentreonExported::getInstance()->ariane_pop();
 
         return true;
     }

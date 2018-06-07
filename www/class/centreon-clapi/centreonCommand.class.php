@@ -221,14 +221,17 @@ class CentreonCommand extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array($labelField => $filter_name);
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
         $elements = $this->object->getList(
             "*",
             -1,
             0,
             null,
             null,
-            array($filters => $filter_name)
+            $filters
         );
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";

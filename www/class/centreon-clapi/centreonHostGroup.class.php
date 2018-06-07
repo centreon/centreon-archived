@@ -285,17 +285,19 @@ class CentreonHostGroup extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array($labelField => $filter_name);
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
         $hostObj = new \Centreon_Object_Host();
-        $hgFieldName = $this->object->getUniqueLabelField();
         $hFieldName = $hostObj->getUniqueLabelField();
         $elements = $relObj->getMergedParameters(
-            array($hgFieldName),
+            array($labelField),
             array($hFieldName, 'host_id'),
             -1,
             0,
-            $hgFieldName,
+            $labelField,
             'ASC',
             $filters,
             'AND'
@@ -303,7 +305,7 @@ class CentreonHostGroup extends CentreonObject
         foreach ($elements as $element) {
             echo $this->action . $this->delim
                 ."addhost" . $this->delim
-                . $element[$hgFieldName] . $this->delim.$element[$hFieldName] . "\n";
+                . $element[$labelField] . $this->delim . $element[$hFieldName] . "\n";
         }
     }
 }

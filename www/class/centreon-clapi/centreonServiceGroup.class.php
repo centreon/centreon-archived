@@ -327,7 +327,10 @@ class CentreonServiceGroup extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array($labelField => $filter_name);
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
 
         $sgs = $this->object->getList(
             array($this->object->getPrimaryKey(), $labelField),

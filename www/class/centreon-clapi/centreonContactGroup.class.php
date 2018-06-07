@@ -221,7 +221,11 @@ class CentreonContactGroup extends CentreonObject
         if (!parent::export($filter_name)) {
             return false;
         }
-        $filters = array($labelField => $filter_name);
+
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
 
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
         $contactObj = new \Centreon_Object_Contact();

@@ -132,6 +132,31 @@ class CentreonService extends CentreonObject
     }
 
     /**
+     * Get Object Id
+     *
+     * @param string $name
+     * @return int
+     */
+    public function getObjectId($name)
+    {
+        if (isset($this->objectIds[$name])) {
+            return $this->objectIds[$name];
+        }
+
+        if (preg_match('/^.+;.+$/', $name, $matches)) {
+            $ids = $this->getHostAndServiceId($matches[1], $matches[2]);
+            if (isset($ids[1])) {
+                $this->objectIds[$name] = $ids[1];
+                return $this->objectIds[$name];
+            }
+        } else {
+            return parent::getObjectId($name);
+        }
+
+        return 0;
+    }
+
+    /**
      * Return the host id and service id if the combination does exist
      *
      * @param string $host
@@ -1049,10 +1074,12 @@ class CentreonService extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array(
-            "service_register" => $this->register,
-            $labelField => $filter_name
-        );
+        $filters = array("service_register" => $this->register);
+        $filterId = null;
+        if (!is_null($filter_name)) {
+            $filterId = $this->getObjectId($filter_name);
+            $filters['service_id'] = $filterId;
+        }
 
         $hostRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostRel->getMergedParameters(
@@ -1078,7 +1105,7 @@ class CentreonService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        CentreonServiceTemplate::getInstance()->export($tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -1088,7 +1115,7 @@ class CentreonService extends CentreonObject
             }
 
             # Host Filter
-            $this->export_filter('HOST', $element['host_id'], $element['host_name']);
+            CentreonHost::getInstance()->export($element['host_name']);
 
             $addStr .= "\n";
             echo $addStr;
@@ -1108,7 +1135,7 @@ class CentreonService extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->export_filter($action_tmp, $tmp_id, $value);
+                            $tmpObj::getInstance()->export($value);
                         }
                         unset($tmpObj);
                     }
