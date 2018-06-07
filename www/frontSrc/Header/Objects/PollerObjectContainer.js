@@ -43,14 +43,14 @@ class PollerObjectContainer extends Component {
   }
 
   setPollerState = (database, latency, stability) => {
-    const pollerState = {
-      color: '#88B917',
+    let pollerState = '#88B917'
+
+    if (database.warning.total > 0 || latency.warning.total > 0 || stability.warning.total > 0) {
+      pollerState = '#FF9A13'
     }
 
-    if (database.critical > 0 || latency.critical > 0 || stability.critical > 0) {
-      pollerState.color = '#E00B3D'
-    } else if (database.warning > 0 || latency.warning > 0 || stability.warning > 0) {
-      pollerState.color = '#FF9A13'
+    if (database.critical.total > 0 || latency.critical.total > 0 || stability.critical.total > 0) {
+      pollerState = '#E00B3D'
     }
 
     return pollerState
@@ -62,7 +62,7 @@ class PollerObjectContainer extends Component {
     const { database, latency, stability, total, dataFetched, error } = this.props.poller
 
     if (dataFetched) {
-      const {color} = this.setPollerState(stability, database, latency)
+      const color = this.setPollerState(stability, database, latency)
       return (
         <PollerObject
           handleClose={this.handleClose}
