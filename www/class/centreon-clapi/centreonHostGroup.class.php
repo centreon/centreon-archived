@@ -278,16 +278,16 @@ class CentreonHostGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_name)
+    public function export($filterName)
     {
-        if (!parent::export($filter_name)) {
+        if (!parent::export($filterName)) {
             return false;
         }
 
         $labelField = $this->object->getUniqueLabelField();
         $filters = array();
-        if (!is_null($filter_name)) {
-            $filters[$labelField] = $filter_name;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
         $relObj = new \Centreon_Object_Relation_Host_Group_Host();
         $hostObj = new \Centreon_Object_Host();
