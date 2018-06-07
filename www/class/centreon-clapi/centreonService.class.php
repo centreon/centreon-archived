@@ -730,7 +730,7 @@ class CentreonService extends CentreonObject
                 array(
                     'svc_macro_value' => $params[3],
                     'is_password' => $params[4],
-                    'description' => $params[5]
+                    'description' => isset($params[5]) ? $params[5] : ''
                 )
             );
         } else {
@@ -740,7 +740,7 @@ class CentreonService extends CentreonObject
                     'svc_macro_name' => $this->wrapMacro($params[2]),
                     'svc_macro_value' => $params[3],
                     'is_password' => $params[4],
-                    'description' => $params[5],
+                    'description' => isset($params[5]) ? $params[5] : '',
                     'macro_order' => $macroOrder
                 )
             );
@@ -1402,6 +1402,7 @@ class CentreonService extends CentreonObject
                     $arr[$i]['svc_macro_name'] = $matches[1];
                     $arr[$i]['svc_macro_value'] = $row['svc_macro_value'];
                     $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : null;
+                    $arr[$i]['is_password'] = $row['is_password'] ? 1 : null;
                     $arr[$i]['description'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     if (!is_null($template)) {

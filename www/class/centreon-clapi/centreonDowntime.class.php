@@ -123,6 +123,7 @@ class CentreonDowntime extends CentreonObject
     public function show($parameters = null)
     {
         $filters = array();
+        $filter = array();
         if (isset($parameters) && $parameters !== '') {
             $filter = explode(';', $parameters);
             $filters = array($this->object->getUniqueLabelField() => "%" . $filter[0] . "%");

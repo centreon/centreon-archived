@@ -539,7 +539,10 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($macroList)) {
             $macroObj->update(
                 $macroList[0][$macroObj->getPrimaryKey()],
-                array('svc_macro_value' => $params[2], 'description' => $params[3])
+                array(
+                    'svc_macro_value' => $params[2],
+                    'description' => isset($params[3]) ? $params[3] : ''
+                )
             );
         } else {
             $macroObj->insert(
@@ -547,7 +550,7 @@ class CentreonServiceTemplate extends CentreonObject
                     'svc_svc_id' => $elements[0]['service_id'],
                     'svc_macro_name' => $this->wrapMacro($params[1]),
                     'svc_macro_value' => $params[2],
-                    'description' => $params[3]
+                    'description' => isset($params[3]) ? $params[3] : ''
                 )
             );
         }
