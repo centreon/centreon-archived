@@ -1049,7 +1049,7 @@ class CentreonDependency extends CentreonObject
      * Export
      *
      */
-    public function export()
+    public function export($filterName)
     {
         $this->exportHostDep();
         $this->exportServiceDep();

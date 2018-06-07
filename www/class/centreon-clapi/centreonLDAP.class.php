@@ -402,7 +402,10 @@ class CentreonLDAP extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array($labelField => $filter_name);
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$labelField] = $filter_name;
+        }
 
         $configurationLdapObj = new \Centreon_Object_Configuration_Ldap($this->dependencyInjector);
         $serverLdapObj = new \Centreon_Object_Server_Ldap($this->dependencyInjector);
