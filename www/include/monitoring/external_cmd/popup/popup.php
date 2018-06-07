@@ -35,6 +35,10 @@
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
+require_once _CENTREON_PATH_ . 'vendor/autoload.php';
+$smartyDir = _CENTREON_PATH_ . 'vendor/smarty/smarty/';
+require_once $smartyDir . 'libs/Smarty.class.php';
+
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
@@ -65,8 +69,6 @@ if (isset($sid)) {
 }
 
 define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
-
-require_once SMARTY_DIR . "Smarty.class.php";
 
 $o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
 $p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");
