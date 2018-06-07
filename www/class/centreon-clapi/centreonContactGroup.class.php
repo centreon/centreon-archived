@@ -222,15 +222,14 @@ class CentreonContactGroup extends CentreonObject
             return false;
         }
 
-        $filters = array();
-        if (!is_null($filter_name)) {
-            $filters[$labelField] = $filter_name;
-        }
-
         $relObj = new \Centreon_Object_Relation_Contact_Group_Contact();
         $contactObj = new \Centreon_Object_Contact();
         $cgFieldName = $this->object->getUniqueLabelField();
         $cFieldName = $contactObj->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filter_name)) {
+            $filters[$cgFieldName] = $filter_name;
+        }
         $elements = $relObj->getMergedParameters(
             array($cgFieldName),
             array($cFieldName, "contact_id"),
