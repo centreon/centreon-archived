@@ -627,7 +627,7 @@ class CentreonDependency extends CentreonObject
         }
 
         $strParents = implode('|', $parents) . $this->delim;
-        $strChildren .= implode('|', $hostChildren) . "|";
+        $strChildren = implode('|', $hostChildren) . "|";
         $strChildren .= implode('|', $serviceChildren);
         echo str_replace("||", "|", $strParents . trim($strChildren, "|")) . "\n";
     }
