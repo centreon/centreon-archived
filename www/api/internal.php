@@ -41,6 +41,8 @@ require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/interface/di.interface.php';
 
+error_reporting(0);
+ini_set('display_errors', 0);
 
 $pearDB = new CentreonDB();
 ini_set("session.gc_maxlifetime", "31536000");
