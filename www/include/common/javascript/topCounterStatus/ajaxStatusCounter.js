@@ -34,7 +34,8 @@
 
  // JavaScript Document
 
-var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter.php";
+//var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter-redis.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {
@@ -187,7 +188,7 @@ function reloadStatusCounter(_reload_time) {
 					document.getElementById("img_pollingState").title = _error_pollingState;
 					document.getElementById("img_latency").title = _error_latency;
 					document.getElementById("img_activity").title = _error_activity;
-                                        
+
 					if (_statistic_latency === '0') {
                         document.getElementById("latency").style.backgroundColor = "#88b917";
 					} else if (_statistic_latency === '1') {

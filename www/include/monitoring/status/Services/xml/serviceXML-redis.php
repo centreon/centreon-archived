@@ -222,105 +222,237 @@ $obj->setCriticality($criticality_id);
 //(isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
 //$request .= " LIMIT " . ($num * $limit) . "," . $limit;
 
-/** * **************************************************
- * Get Pagination Rows
- */
-//$DBRESULT = $obj->DBC->query($request);
-//$numRows = $obj->DBC->numberRows();
+function build_search_rows(&$result, $block) {
+    $retval = array();
+    $i = 0;
+    $size = count($block);
 
-$numRows = 0;
-function build_search_rows(&$result) {
-  global $numRows;
-  $retval = array();
-  $numRows = $result[0];
-
-  for ($i = 1, $k = 0; $i < count($result); $i += 2, $k++) {
-    $retval[$k] = array();
-    $val = &$retval[$k];
-    for ($j = 0; $j < count($result[$i + 1]); $j += 2) {
-      $val[$result[$i + 1][$j]] = $result[$i + 1][$j + 1];
+    $tmp = array();
+    foreach ($result as $d) {
+        $tmp[$block[$i]] = $d;
+        $i++;
+        if ($i >= $size) {
+            $retval[] = $tmp;
+            $i = 0;
+            $tmp = array();
+        }
     }
-    setSearchDefaultSvcFields($val);
-  }
-  return $retval;
+    if (!empty($tmp))
+        $retval[] = $tmp;
+    return $retval;
 }
 
-function build_aggregate_rows(&$result) {
-  global $numRows;
-  $retval = array();
-  error_log("BUILD ROWS: numRows = $result[0]");
-  $numRows = $result[0];
-  error_log("BUILD ROWS TYPE: numRows = " . gettype($numRows));
+$filter = array();
+$src_array = array();
 
-  for ($i = 1; $i < count($result); $i++) {
-    $retval[$i - 1] = array();
-    $val = &$retval[$i - 1];
-    for ($j = 0; $j < count($result[$i]); $j += 2) {
-      $val[$result[$i][$j]] = $result[$i][$j + 1];
-    }
-  }
-  return $retval;
-}
-
-$filter = '';
-
-if (isset($statusService)) {
+if ($statusService == 'svcpb' || $statusService == 'svc_unhandled') {
     if ($statusService == 'svcpb') {
-        $filter .= ' @current_state:[1 3]';
+        $filter[] = 'current_state';
+        if (!empty($statusFilter)) {
+            $s = array(
+                    'ok' => 5,  // Do not show ok
+                    'warning' => 1,
+                    'critical' => 2,
+                    'unknown' => 3,
+                    'pending' => 5  // Do not show pending
+                    );
+            $filter[] = 'EQUAL';
+            $filter[] = $s[$statusFilter];
+        }
+        else {
+            $filter[] = 'MATCH';
+            $filter[] = '[1-3]';
+        }
     }
-    elseif ($statusService == 'svc_unhandled') {
-        $filter .= ' @current_state:[1 3] @state_type:[1 1] @acknowledged:[0 0] @scheduled_downtime_depth:[0 0]';
+    else {
+        $filter[] = 'current_state';
+        if (!empty($statusFilter)) {
+            $s = array(
+                    'ok' => 5,  // Do not show ok
+                    'warning' => 1,
+                    'critical' => 2,
+                    'unknown' => 3,
+                    'pending' => 5  // Do not show pending
+                    );
+            $filter[] = 'EQUAL';
+            $filter[] = $s[$statusFilter];
+        }
+        else {
+            $filter[] = 'MATCH';
+            $filter[] = '[1-3]';
+        }
+        $filter[] = 'state_type';
+        $filter[] = 'EQUAL';
+        $filter[] = '1';
+        $filter[] = 'acknowledged';
+        $filter[] = 'EQUAL';
+        $filter[] = '0';
+        $filter[] = 'scheduled_downtime_depth';
+        $filter[] = 'EQUAL';
+        $filter[] = '0';
     }
+}
+elseif (!empty($statusFilter)) {
+    $s = array(
+            'ok' => 0,
+            'warning' => 1,
+            'critical' => 2,
+            'unknown' => 3,
+            'pending' => 4
+            );
+    $filter[] = 'current_state';
+    $filter[] = 'EQUAL';
+    $filter[] = $s[$statusFilter];
 }
 
 if (isset($instance) && $instance > 0) {
-  $filter .= ' @poller_id:{'.$instance.'}';
+    $filter[] = 'poller_id';
+    $filter[] = 'EQUAL';
+    $filter[] = $instance;
 }
 
 if (isset($hostgroups) && $hostgroups > 0) {
-  $filter .= ' @host_groups:{'.$hostgroups.'}';
+    $src_array[] = 'hgs:' . $hostgroups;
+}
+
+if (isset($servicegroups) && $servicegroups > 0) {
+    $src_array[] = 'sg:' . $servicegroups;
 }
 
 if (!empty($search)) {
-  $filter .= " @service_description:'$search'";
+    $filter[] = 'display_name';
+    $filter[] = 'MATCH';
+    $filter[] = '*' . $search . '*';
 }
 
 if (!empty($search_host)) {
-  $filter .= " @host_name:'$search_host'";
+    $filter[] = 'host_name';
+    $filter[] = 'MATCH';
+    $filter[] = '*' . $search_host . '*';
 }
 
 if (!empty($search_output)) {
-  $filter .= " @plugin_output:'$search_output'";
+    $filter[] = 'plugin_output';
+    $filter[] = 'MATCH';
+    $filter[] = '*' . $search_output . '*';
 }
 
-if (!empty($statusFilter)) {
-  $s = array(
-      "ok" => 0,
-      "warning" => 1,
-      "critical" => 2,
-      "unknown" => 3,
-      "pending" => 4
-  );
-  $tmp = $s[$statusFilter];
-  $filter .= " @current_state:[$tmp $tmp]";
+//if (!$obj->is_admin) {
+//    $filter .= ' @acl_groups:{' . implode('|', array_keys($obj->grouplist)) . '}';
+//}
+
+if (empty($src_array)) {
+    $src = 'services';
+}
+else {
+    $src = uniqid('services_src_');
+    array_unshift($src_array, $src);
+    call_user_func_array(array($redis, 'sUnionStore'), $src_array);
+    $redis->setTimeout($src, 60);
 }
 
-if (empty($filter)) {
-  $filter = '*';
+$store = uniqid('services_');
+
+$get_params = array(
+        'TABULAR.GET',
+        $src,
+        $num * $limit,
+        $num * $limit + $limit - 1,
+        'STORE', $store,
+);
+
+if ($sort_type == 'host_name') {
+    $t = ($order == 'ASC') ? 'ALPHA' : 'REVALPHA';
+    $get_params = array_merge($get_params,
+        array('SORT', 2, 'host_name', $t, 'service_description', 'ALPHA'));
 }
+else if ($sort_type == 'service_description') {
+    $t = ($order == 'ASC') ? 'ALPHA' : 'REVALPHA';
+    $get_params = array_merge($get_params,
+        array('SORT', 2, 'service_description', $t, 'host_name', 'ALPHA'));
+}
+else {
+    $ty = array(
+        'current_state' => array(
+            'current_state',
+            'NUM',
+            ),
+        'last_state_change' => array(
+            'last_state_change',
+            'NUM',
+            ),
+        'last_check' => array(
+            'last_check',
+            'NUM',
+            ),
+        'current_attempt' => array(
+            'current_check_attempt',
+            'NUM',
+            ),
+        'plugin_output' => array(
+            'plugin_output',
+            'ALPHA',
+            ),
+    );
+    $t = ($order == 'ASC') ? $ty[$sort_type][1] : 'REV' . $ty[$sort_type][1];
+    $get_params = array_merge($get_params,
+        array('SORT', 3, $ty[$sort_type][0], $t, 'host_name', 'ALPHA', 'service_description', 'ALPHA'));
+}
+if (!empty($filter)) {
+    error_log('FILTER1: ' . print_r($filter, true));
+    array_unshift($filter, 'FILTER', count($filter) / 3);
+    error_log('FILTER2: ' . print_r($filter, true));
+    $get_params = array_merge($get_params, $filter);
+}
+error_log('###########################################');
+error_log(print_r($get_params, true));
 
-error_log("FT.AGGREGATE services $filter SORTBY 2 @host_name @service_description LOAD 4 @host_name @service_description @plugin_output @host_id LIMIT " . ($num * $limit) . " $limit");
-$RESULT = $redis->rawCommand('FT.SEARCH', 'services', $filter, 'SORTBY', 'service_description', 'LIMIT', $num * $limit, $limit);
-//$RESULT = $redis->rawCommand(
-//    'FT.AGGREGATE', 'services', $filter,
-//    'SORTBY', 1, '@service_description',
-//    'LOAD', 11, '@host_name', '@service_description', '@plugin_output', '@host_id', '@service_id', '@flapping', '@notes', '@notes_url', '@action_url', '@flap_detection', '@acknowledged',
-//    'LIMIT', $num * $limit, $limit);
+$RESULT = call_user_func_array(array($redis, 'rawCommand'), $get_params);
 
-error_log(print_r($RESULT, true));
+error_log(implode(' ', $get_params));
 
-$rows = build_search_rows($RESULT);
-//$rows = build_aggregate_rows($RESULT);
+$field = array(
+        'acknowledged',
+        'active_checks',
+        'current_check_attempt',
+        'current_state',
+        'display_name',
+        'event_handler_enabled',
+        'flap_detection',
+        'flapping',
+        'host_id',
+        'host_name',
+        'icon_image',
+        'last_check',
+        'last_hard_state_change',
+        'last_state_change',
+        'max_check_attempts',
+        'next_check',
+        'notify',
+        'passive_checks',
+        'plugin_output',
+        'poller_id',
+        'scheduled_downtime_depth',
+        'service_description',
+        'service_id',
+        'state_type',
+        );
+
+$field1 = array('SORT', $store, 'BY', 'NOSORT');
+foreach ($field as $f) {
+    $field1[] = 'GET';
+    $field1[] = '*->' . $f;
+}
+$RESULT = call_user_func_array(array($redis, 'rawCommand'), $field1);
+error_log(implode(' ', $field1));
+
+$redis->unlink($store);
+
+$numRows = $redis->get($store . ':size');
+error_log("NUM ROWS: " . $numRows);
+$redis->unlink($store . ':size');
+
+$rows = build_search_rows($RESULT, $field);
 
 error_log('######################################################');
 error_log(print_r($rows, true));
@@ -428,9 +560,7 @@ function setSearchDefaultSvcFields(&$row) {
 }
 
 foreach ($rows as $row) {
-    $passive = 0;
-    $active = 1;
-    $last_check = ' ';
+    assert(!empty($row));
     $duration = ' ';
 
     /* Split plugin_output */
@@ -739,28 +869,31 @@ foreach ($rows as $row) {
     /**
      * Get Service Graph index
      */
-    if (!isset($graphs[$hid]) || !isset($graphs[$hid][$row['service_id']])) {
-        $request2 = 'SELECT DISTINCT service_id, id '
-            . 'FROM index_data, metrics '
-            . 'WHERE metrics.index_id = index_data.id '
-            . 'AND host_id = ' . $hid . ' '
-            . 'AND service_id = ' . $row['service_id'] . ' '
-            . 'AND index_data.hidden = \'0\' ';
-        $DBRESULT2 = $obj->DBC->query($request2);
-        while ($dataG = $DBRESULT2->fetchRow()) {
+    if ($hid != '') {
+        if ((!isset($graphs[$hid]) || !isset($graphs[$hid][$row['service_id']]))) {
+            $request2 = 'SELECT DISTINCT service_id, id '
+                . 'FROM index_data, metrics '
+                . 'WHERE metrics.index_id = index_data.id '
+                . 'AND host_id = ' . $hid . ' '
+                . 'AND service_id = ' . $row['service_id'] . ' '
+                . 'AND index_data.hidden = \'0\' ';
+            $DBRESULT2 = $obj->DBC->query($request2);
+            error_log($request2);
+            while ($dataG = $DBRESULT2->fetchRow()) {
+                if (!isset($graphs[$hid])) {
+                    $graphs[$hid] = array();
+                }
+                $graphs[$hid][$dataG['service_id']] = $dataG['id'];
+            }
             if (!isset($graphs[$hid])) {
                 $graphs[$hid] = array();
             }
-            $graphs[$hid][$dataG['service_id']] = $dataG['id'];
         }
-        if (!isset($graphs[$hid])) {
-            $graphs[$hid] = array();
-        }
+        $obj->XML->writeElement(
+            'svc_index',
+            (isset($graphs[$hid][$row['service_id']]) ? $graphs[$hid][$row['service_id']] : 0)
+        );
     }
-    $obj->XML->writeElement(
-        'svc_index',
-        (isset($graphs[$hid][$row['service_id']]) ? $graphs[$hid][$row['service_id']] : 0)
-    );
     $obj->XML->endElement();
 }
 
