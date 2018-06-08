@@ -74,7 +74,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
         $moduleId = $this->getModuleId($moduleName);
 
         if (!$moduleId) {
-            throw new \Exception('The module not installed');
+            throw new \Exception('The module is not installed');
         }
 
         $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
@@ -98,7 +98,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
         $moduleId = $this->getModuleId($moduleName);
 
         if (!$moduleId) {
-            throw new \Exception('The module not installed');
+            throw new \Exception('The module is not installed');
         }
 
         $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
@@ -122,7 +122,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
 
         $result = $this->dependencyInjector['configuration_db']->query($sql, $params);
 
-        $row = $result->fetchRow();
+        $row = $result->fetch();
         $moduleId = null;
 
         if ($row) {
