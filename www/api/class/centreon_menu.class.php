@@ -53,11 +53,6 @@ class CentreonMenu extends CentreonWebService
             throw new \RestUnauthorizedException('Session does not exists.');
         }
 
-        if (!isset($this->arguments['page']) || !is_numeric($this->arguments['page'])) {
-            throw new \RestBadRequestException('Missing type argument or bad type page.');
-        }
-        $page = $this->arguments['page'];
-
         $menu = new Menu($this->pearDB, $_SESSION['centreon']->user);
 
         return $menu->getMenu();

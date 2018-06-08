@@ -45,6 +45,10 @@ class Menu
      * @var string The query filter for ACL
      */
     protected $acl = null;
+    /**
+     * @var int The current topology page
+     */
+    protected $currentPage = null;
 
     /**
      * Constructor
@@ -55,8 +59,11 @@ class Menu
     public function __construct($db, $user = null)
     {
         $this->db = $db;
-        if (!is_null($user) && !$user->is_admin) {
-            $this->acl = ' AND topology_page IN (' . $user->access->getTopologyString() . ') ';
+        if (!is_null($user)) {
+            $this->currentPage = $user->getCurrentPage();
+            if (!$user->is_admin) {
+                $this->acl = ' AND topology_page IN (' . $user->access->getTopologyString() . ') ';
+            }
         }
     }
 
@@ -172,25 +179,47 @@ class Menu
 
         $stmt->execute();
 
+        $currentLevelOne = null;
+        $currentLevelTwo = null;
+        $currentLevelThree = null;
+        if (!is_null($this->currentPage)) {
+            $currentLevelOne = substr($this->currentPage, 0, 1);
+            $currentLevelTwo = substr($this->currentPage, 1, 2);
+            $currentLevelThree = substr($this->currentPage, 2, 2);
+        }
+
         $menu = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $active = false;
             if (preg_match('/^(\d)$/', $row['topology_page'], $matches)) { // level 1
+                if (!is_null($currentLevelOne) && $currentLevelOne == $row['topology_page']) {
+                    $active = true;
+                }
                 $menu[$row['topology_page']] = array(
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
+                    'active' => $active,
                     'children' => array()
                 );
             } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
+                if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
+                    $active = true;
+                }
                 $menu[$matches[1]]['children'][$row['topology_page']] = array(
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
+                    'active' => $active,
                     'children' => array()
                 );
             } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 3
+                if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
+                    $active = true;
+                }
                 $levelTwo = $matches[1] . $matches[2];
                 $levelThree = array(
                     'label' => $row['topology_name'],
-                    'url' => $row['topology_url']
+                    'url' => $row['topology_url'],
+                    'active' => $active
                 );
                 if (!is_null($row['topology_group']) && isset($groups[$row['topology_group']])) {
                     $menu
