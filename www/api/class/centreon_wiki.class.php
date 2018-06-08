@@ -74,8 +74,7 @@ class CentreonWiki extends CentreonWebService
     public function postDeletePage()
     {
         $wikiApi = new WikiApi();
-        $result =  $wikiApi->deletePage($this->arguments['title']);
-
+        $result = $wikiApi->deletePage($this->arguments['title']);
         return array(
             'result' => $result
         );
