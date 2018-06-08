@@ -31,11 +31,14 @@ class NavContainer extends Component {
     const { data, dataFetched } = this.props.nav
 
     if (dataFetched) {
-      const key = data.reduce((acc, item) => {
-        if (item.active) acc = item.key
+      //console.log(this.props.nav)
+      const key = Object.keys(data).reduce((acc, item) => {
+        if (data[item].active) acc = item.key
         return acc
       },0)
+
       const activeItemKey = value !== key ? key : value
+
         return <Nav
           value={value}
           items={data}

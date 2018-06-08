@@ -72,49 +72,75 @@ const Nav = (
           onChange={handleChange}
           classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
         >
-          <Tab disableRipple
-            icon={<HomeIcon viewBox="6 156 600 600" className={classes.navIcons}/>}
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          />
-          <Tab
-            icon={<MonitoringIcon viewBox="0 0 600 600"/>}
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          />
-          <Tab
-            icon={<ReportingIcon viewBox="0 0 600 600"/>}
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          />
-          <Tab
-            icon={<ConfigurationIcon viewBox="0 0 600 600"/>}
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          />
-          <Tab
-            icon={<AdministrationIcon viewBox="6 156 600 600"/>}
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          />
+          {
+            Object.keys(items).map((item) => {
+              const Components = {
+                'Home': {
+                  component: HomeIcon,
+                  viewBox: '6 156 600 600',
+                  className: classes.navIcons
+                },
+                'Monitoring': {
+                  component: MonitoringIcon,
+                  viewBox: '0 0 600 600',
+                  className: null
+                },
+                'Reporting': {
+                  component: ReportingIcon,
+                  viewBox: '0 0 600 600',
+                  className: null
+                },
+                'Configuration': {
+                  component: ConfigurationIcon,
+                  viewBox: '0 0 600 600',
+                  className: null
+                },
+                'Administration': {
+                  component: AdministrationIcon,
+                  viewBox: '6 156 600 600',
+                  className: null
+                },
+
+              }
+              const i = items[item]
+              const Icon = Components[i.label].component || HomeIcon
+
+              return (
+                <Tab disableRipple key={item}
+                     icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className} />}
+                     classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                />
+              )
+            }
+            )
+          }
         </Tabs>
         {
-          items.map((item, index) => {
-            if(value === index) {
-              return (
-                <div className={classes.wrapper} key={index}>
-                  <div className={classes.secondLevel} key={index} style={{ backgroundColor: item.color }}>
-                    {
-                      item.children.map((secondItem, i) => {
-                        return <SecondLevel
+          Object.keys(items).map((item, index) => {
+            console.log(items[item].children)
+            /*if(value === index) {
+
+              item.children.map((secondItem, i) => {
+                console.log('1',secondItem)
+                return (
+                  <div className={classes.wrapper}>
+                    <div className={classes.secondLevel} key={index} style={{ backgroundColor: item.color }}>
+                      <SecondLevel
                         key={i}
                         id={i}
                         item={secondItem}
                         open={open}
-                        />
-                      })
-                    }
+                      />
+                    </div>
                   </div>
-                </div>
-              )
-            }
+                )
+              })
+            }*/
           })
         }
+        <div className={classes.secondLevel} key={1} style={{ backgroundColor: '#009FDF' }}>
+          hello
+        </div>
       </div>
 )
 
