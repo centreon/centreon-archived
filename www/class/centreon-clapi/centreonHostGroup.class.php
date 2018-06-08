@@ -240,7 +240,7 @@ class CentreonHostGroup extends CentreonObject
                 $relationTable = array();
                 foreach ($relations as $rel) {
                     $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
-                    if ($tab[0] != '') {
+                    if (isset($tab[0]) && $tab[0] != '') {
                         $relationTable[] = $tab[0];
                     } else {
                         if ($rel != '') {

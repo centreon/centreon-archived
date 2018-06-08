@@ -49,25 +49,33 @@ require_once _CENTREON_PATH_ . '/www/class/centreon-clapi/centreonAPI.class.php'
 /**
  * Class wrapper for CLAPI to expose in REST
  */
-class CentreonClapi extends CentreonWebService
+class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiInterface
 {
 
+    /**
+     * @var \Pimple\Container
+     */
     private $dependencyInjector;
 
     /**
-     * Constructor
+     * {@inheritdoc}
      */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
     public function finalConstruct(\Pimple\Container $dependencyInjector)
     {
         $this->dependencyInjector = $dependencyInjector;
     }
 
+    /**
+     * Post
+     * 
+     * @global \Centreon $centreon
+     * @global array $conf_centreon
+     * @return array
+     * @throws \RestBadRequestException
+     * @throws \RestNotFoundException
+     * @throws \RestConflictException
+     * @throws \RestInternalServerErrorException
+     */
     public function postAction()
     {
         global $centreon;
