@@ -142,15 +142,19 @@ class Menu
      *   "1" => array(
      *     "label" => "<level_one_label>",
      *     "url" => "<path_to_php_file>"
+     *     "active" => "<true|false>"
+     *     "color" => "<color_code>"
      *     "children" => array(
      *       "101" => array(
      *         "label" => "<level_two_label>",
      *         "url" => "<path_to_php_file>",
+     *         "active" => "<true|false>"
      *         "children" => array(
      *           "<group_name>" => array(
      *             "10101" => array(
      *               "label" => "level_three_label",
      *               "url" => "<path_to_php_file>"
+     *               "active" => "<true|false>"
      *             )
      *           )
      *         )
@@ -199,6 +203,7 @@ class Menu
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
                     'active' => $active,
+                    'color' => $this->getColor($row['topology_page']),
                     'children' => array()
                 );
             } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
@@ -254,5 +259,40 @@ class Menu
         $result->closeCursor();
 
         return $groups;
+    }
+
+    /**
+     * Get menu color
+     *
+     * @param int $pageId The page id
+     * @return string color
+     */
+    public function getColor($pageId)
+    {
+        switch($pageId) {
+            case '1':
+                $color = '#009fdf';
+                break;
+            case '2':
+                $color = '#43b02a';
+                break;
+            case '3':
+                $color = '#df9403';
+                break;
+            case '4':
+                $color = '#009fdf';
+                break;
+            case '5':
+                $color = '#009fdf';
+                break;
+            case '6':
+                $color = '#009fdf';
+                break;
+            default:
+                $color = '#009fdf';
+                break;
+        }
+
+        return $color;
     }
 }
