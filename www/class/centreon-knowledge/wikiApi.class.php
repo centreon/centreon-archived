@@ -277,6 +277,9 @@ class WikiApi
             $tries++;
         }
 
+        //remove cookies related to this action
+        unlink('/tmp/CURLCOOKIE*');
+
         if (isset($deleteResult->error)){
             return false;
         } elseif (isset($deleteResult->delete)) {
