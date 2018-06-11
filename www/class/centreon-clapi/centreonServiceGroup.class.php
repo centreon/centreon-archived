@@ -320,7 +320,7 @@ class CentreonServiceGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filterName)
+    public function export($filterName = null)
     {
         if (!parent::export($filterName)) {
             return false;

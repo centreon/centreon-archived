@@ -240,7 +240,7 @@ class CentreonACLGroup extends CentreonObject
     /**
      * @param null $filters
      */
-    public function export($filterName)
+    public function export($filterName = null)
     {
         if (!$this->canBeExported($filterName)) {
             return false;

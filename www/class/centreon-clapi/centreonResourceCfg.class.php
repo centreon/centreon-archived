@@ -318,7 +318,7 @@ class CentreonResourceCfg extends CentreonObject
     /**
      * @param array $arg
      */
-    public function export($filterName)
+    public function export($filterName = null)
     {
         if (!$this->canBeExported($filterName)) {
             return 0;
