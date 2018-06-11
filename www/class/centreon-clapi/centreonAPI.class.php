@@ -883,7 +883,7 @@ class CentreonAPI
             if (count($this->aExport) > 0) {
                 foreach ($this->aExport as $oObjet) {
                     if (method_exists($this->objectTable[$oObjet], 'export')) {
-                        $this->objectTable[$oObjet]->export(null);
+                        $this->objectTable[$oObjet]->export();
                     }
                 }
             }

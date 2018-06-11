@@ -386,7 +386,7 @@ class CentreonACLMenu extends CentreonObject
     /**
      * @param array $filters
      */
-    public function export($filterName)
+    public function export($filterName = null)
     {
         if (!$this->canBeExported($filterName)) {
             return false;

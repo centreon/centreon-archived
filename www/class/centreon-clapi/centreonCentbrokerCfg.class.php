@@ -699,7 +699,7 @@ class CentreonCentbrokerCfg extends CentreonObject
      *
      * @return void
      */
-    public function export($filterName)
+    public function export($filterName = null)
     {
         if (!$this->canBeExported($filterName)) {
             return false;
