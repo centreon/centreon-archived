@@ -144,7 +144,6 @@ try {
     build job: 'centreon-awie/master', wait: false
     build job: 'centreon-export/master', wait: false
     build job: 'centreon-license-manager/master', wait: false
-    build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
     build job: 'centreon-bam/master', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
