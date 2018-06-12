@@ -135,7 +135,7 @@ if ($form->validate()) {
 
 $action = $form->getSubmitValue("action");
 
-if ($valid && $action["action"]["action"]) {
+if ($valid && isset($action["action"]) && $action["action"]) {
     require_once($path . "listContact.php");
 } else {
     /*
