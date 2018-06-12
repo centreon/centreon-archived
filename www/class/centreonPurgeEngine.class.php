@@ -200,7 +200,7 @@ class CentreonPurgeEngine
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $table . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
             try {
-                $DBRESULT2 =& $this->dbCentstorage->query($request);
+                $DBRESULT2 = $this->dbCentstorage->query($request);
             } catch (\PDOException $e) {
                 throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
                     . $table . ", " . $e->getMessage() . "\n");
