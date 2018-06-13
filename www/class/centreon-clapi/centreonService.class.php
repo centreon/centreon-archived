@@ -1113,9 +1113,10 @@ class CentreonService extends CentreonObject
             $filters,
             "AND"
         );
+
+        $commandObj = CentreonCommand::getInstance();
+        $tpObj = CentreonTimePeriod::getInstance();
         $extendedObj = new \Centreon_Object_Service_Extended($this->dependencyInjector);
-        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
-        $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
@@ -1148,10 +1149,12 @@ class CentreonService extends CentreonObject
                         $tmpObj = $commandObj;
                     }
                     if (isset($tmpObj)) {
-                        $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
-                        if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+
+                        $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
+                        if (isset($tmp) && isset($tmp[$tmpLabelField])) {
                             $tmp_id = $value;
-                            $value = $tmp[$tmpObj->getUniqueLabelField()];
+                            $value = $tmp[$tmpLabelField];
                             $tmpObj::getInstance()->export($value);
                         }
                         unset($tmpObj);

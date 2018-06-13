@@ -921,9 +921,8 @@ class CentreonServiceTemplate extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -1054,7 +1053,7 @@ class CentreonServiceTemplate extends CentreonObject
         // hosts
         $hostRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $filters_hostRel = array("service_register" => $this->register);
-        if (!is_null($filters['service_id'])) {
+        if (isset($filters['service_id']) && !is_null($filters['service_id'])) {
             $filters_hostRel['service_id'] = $filters['service_id'];
         }
         $helements = $hostRel->getMergedParameters(

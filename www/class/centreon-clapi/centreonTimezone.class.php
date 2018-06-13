@@ -43,9 +43,9 @@ class CentreonTimezone extends CentreonObject
     /**
      * CentreonTimezone constructor.
      */
-    public function __construct()
+    public function __construct(\Pimple\Container $dependencyInjector)
     {
-        parent::__construct();
-        $this->object = new \Centreon_Object_Timezone();
+        parent::__construct($dependencyInjector);
+        $this->object = new \Centreon_Object_Timezone($dependencyInjector);
     }
 }

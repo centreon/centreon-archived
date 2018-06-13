@@ -127,6 +127,8 @@ class CentreonCommand extends CentreonObject
      */
     public function add($parameters)
     {
+
+
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);

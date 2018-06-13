@@ -487,7 +487,6 @@ abstract class CentreonObject
         }
 
         CentreonExported::getInstance()->ariane_pop();
-
         return true;
     }
 
@@ -596,16 +595,19 @@ abstract class CentreonObject
     }
 
     /**
-    *
-    * @param void
-    * @return CentreonObject
-    */
-    public static function getInstance()
+     * @param null $dependencyInjector
+     * @return mixed
+     */
+    public static function getInstance($dependencyInjector = null)
     {
         $class = get_called_class();
 
+        if (is_null($dependencyInjector)) {
+            $dependencyInjector = loadDependencyInjector();
+        }
+
         if (!isset(self::$instances[$class])) {
-            self::$instances[$class] = new $class;
+            self::$instances[$class] = new $class($dependencyInjector);
         }
 
         return self::$instances[$class];
