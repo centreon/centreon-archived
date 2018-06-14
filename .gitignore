@@ -5,5 +5,7 @@ nbproject/
 composer.lock
 GPL_LIB/SmartyCache/*
 www/install/tmp/*
+!www/img/media/.keep
+www/img/media/*
 !www/install/tmp/.gitkeep
 www/install/install.conf.php
