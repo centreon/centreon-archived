@@ -410,8 +410,7 @@ class CentreonAPI
         $action = null,
         $centreon_path = null,
         $options = null
-    )
-    {
+    ) {
         if (is_null(self::$_instance)) {
             self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
         }
@@ -874,6 +873,8 @@ class CentreonAPI
                     } else {
                         $this->objectTable[$splits[0]]->export($name);
                     }
+                } else {
+                    $this->objectTable[$splits[0]]->export();
                 }
             }
             return $this->return_code;
