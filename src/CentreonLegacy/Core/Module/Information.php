@@ -169,6 +169,10 @@ class Information
 
             $configuration = $this->utils->requireConfiguration($modulePath . '/conf.php');
 
+            if (!isset($configuration[$moduleName])) {
+                continue;
+            }
+
             $licenseFile = $modulePath . '/license/merethis_lic.zl';
             $list[$moduleName] = $configuration[$moduleName];
             $list[$moduleName]['license_expiration'] = $this->licenseObj->getLicenseExpiration($licenseFile);
