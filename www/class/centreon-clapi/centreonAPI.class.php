@@ -851,6 +851,8 @@ class CentreonAPI
                     } else {
                         $this->objectTable[$splits[0]]->export($name);
                     }
+                } else {
+                    $this->objectTable[$splits[0]]->export();
                 }
             }
             return $this->return_code;
