@@ -87,12 +87,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * Display all Host Groups
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -281,9 +279,8 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * Add service type dependency
-     *
-     * @param array $params
+     * @param $params
+     * @throws CentreonClapiException
      */
     protected function addServiceDependency($params)
     {
@@ -360,24 +357,25 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * Set params
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (in_array($params[1], array('comment', 'name', 'description')) && !preg_match("/^dep_/", $params[1])) {
                 $params[1] = "dep_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -857,10 +855,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToDelete
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToDelete
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function delHostgroupRelations($depId, $objectToDelete, $relType)
     {
@@ -877,10 +875,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToDelete
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToDelete
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function delServicegroupRelations($depId, $objectToDelete, $relType)
     {
@@ -897,10 +895,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToDelete
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToDelete
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function delMetaRelations($depId, $objectToDelete, $relType)
     {
@@ -918,10 +916,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToDelete
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToDelete
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function delHostRelations($depId, $objectToDelete, $relType)
     {
@@ -961,10 +959,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToDelete
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToDelete
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function delServiceRelations($depId, $objectToDelete, $relType)
     {
@@ -1008,9 +1006,7 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * Delete parent
-     *
-     * @param string $parameters | dep_name;parents_to_delete
+     * @param $parameters
      */
     public function delparent($parameters)
     {

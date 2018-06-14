@@ -78,6 +78,8 @@ class CentreonHostGroupService extends CentreonObject
         'SERVICE'
     );
 
+    protected $hgId;
+
     /**
      * Constructor
      *
@@ -162,12 +164,10 @@ class CentreonHostGroupService extends CentreonObject
     }
 
     /**
-     * Display all services
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array('service_register' => $this->register);
         if (isset($parameters)) {
@@ -283,13 +283,11 @@ class CentreonHostGroupService extends CentreonObject
     }
 
     /**
-     * Add a service
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -303,7 +301,7 @@ class CentreonHostGroupService extends CentreonObject
         if (!count($tmp)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_HOSTNAME]);
         }
-        $hgId = $tmp[0];
+        $this->hgId = $tmp[0];
         $addParams = array();
         $addParams['service_description'] = $params[self::ORDER_SVCDESC];
         $template = $params[self::ORDER_SVCTPL];
@@ -321,14 +319,20 @@ class CentreonHostGroupService extends CentreonObject
         }
         $addParams['service_template_model_stm_id'] = $tmp[0][$this->object->getPrimaryKey()];
         $this->params = array_merge($this->params, $addParams);
-        $serviceId = parent::add();
+    }
 
+    /**
+     * @param $serviceId
+     */
+    function insertRelations($serviceId)
+    {
         $relObject = new \Centreon_Object_Relation_Host_Group_Service($this->dependencyInjector);
-        $relObject->insert($hgId, $serviceId);
+        $relObject->insert($this->hgId, $serviceId);
 
         $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
     }
+
 
     /**
      * Set parameters
@@ -337,7 +341,7 @@ class CentreonHostGroupService extends CentreonObject
      * @return void
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
@@ -367,7 +371,6 @@ class CentreonHostGroupService extends CentreonObject
         $commandObject = new CentreonCommand($this->dependencyInjector);
         switch ($params[2]) {
             case "contact_additive_inheritance":
-                break;
             case "cg_additive_inheritance":
                 break;
             case "check_command":
@@ -423,17 +426,9 @@ class CentreonHostGroupService extends CentreonObject
                 $params[3] = $tmp[0];
                 break;
             case "notes":
-                $extended = true;
-                break;
             case "notes_url":
-                $extended = true;
-                break;
             case "action_url":
-                $extended = true;
-                break;
             case "icon_image":
-                $extended = true;
-                break;
             case "icon_image_alt":
                 $extended = true;
                 break;
@@ -445,7 +440,8 @@ class CentreonHostGroupService extends CentreonObject
         }
         if ($extended == false) {
             $updateParams = array($params[2] => $params[3]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             if ($params[2] != "graph_id") {
                 $params[2] = "esi_" . $params[2];
@@ -463,6 +459,7 @@ class CentreonHostGroupService extends CentreonObject
             }
             $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
             $extended->update($objectId, array($params[2] => $params[3]));
+            return array();
         }
     }
 

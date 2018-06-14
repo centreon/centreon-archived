@@ -259,9 +259,7 @@ abstract class CentreonObject
     }
 
     /**
-     * Checks if parameters are correct
-     *
-     * @throws Exception
+     * @throws CentreonClapiException
      */
     protected function checkParameters()
     {
@@ -277,12 +275,14 @@ abstract class CentreonObject
     }
 
     /**
-     * Add Action
-     *
-     * @return int
+     * @param $parameters
+     * @return mixed
      */
-    public function add()
+    public function add($parameters)
     {
+
+        $this->initInsertParameters($parameters);
+
         $id = $this->object->insert($this->params);
         $this->addAuditLog(
             'a',
@@ -290,7 +290,20 @@ abstract class CentreonObject
             $this->params[$this->object->getUniqueLabelField()],
             $this->params
         );
+        if (method_exists($this, "insertRelations")) {
+            $this->insertRelations($id);
+        }
         return $id;
+    }
+
+
+    /**
+     * @param $parameters
+     * @return mixed
+     */
+    public function initInsertParameters($parameters)
+    {
+        return $parameters;
     }
 
     /**
@@ -329,30 +342,40 @@ abstract class CentreonObject
     }
 
     /**
-     * Set Param
-     *
-     * @param $objectId
-     * @param array $params
+     * @param array $parameters
      * @throws CentreonClapiException
      */
-    public function setparam($objectId, $params = array())
+    public function setparam($parameters = array())
     {
-        if (isset($params[$this->object->getUniqueLabelField()])
-            && $this->objectExists($params[$this->object->getUniqueLabelField()], $objectId) == true
-        ) {
-            throw new CentreonClapiException(self::NAMEALREADYINUSE);
+        if (method_exists($this, "initUpdateParameters")) {
+            $params = $this->initUpdateParameters($parameters);
+        } else {
+            $params = $parameters;
         }
-        $this->object->update($objectId, $params);
-        $uniqueField = $this->object->getUniqueLabelField();
-        $p = $this->object->getParameters($objectId, $uniqueField);
-        if (isset($p[$uniqueField])) {
-            $this->addAuditLog(
-                'c',
-                $objectId,
-                $p[$uniqueField],
-                $params
-            );
+
+        if (!empty($params)) {
+            $uniqueLabel = $this->object->getUniqueLabelField();
+            $objectId = $params['objectId'];
+            unset($params['objectId']);
+
+            if (isset($params[$uniqueLabel])
+                && $this->objectExists($params[$uniqueLabel], $objectId) == true
+            ) {
+                throw new CentreonClapiException(self::NAMEALREADYINUSE);
+            }
+
+            $this->object->update($objectId, $params);
+            $p = $this->object->getParameters($objectId, $uniqueLabel);
+            if (isset($p[$uniqueLabel])) {
+                $this->addAuditLog(
+                    'c',
+                    $objectId,
+                    $p[$uniqueLabel],
+                    $params
+                );
+            }
         }
+
     }
 
     /**
@@ -451,7 +474,7 @@ abstract class CentreonObject
             return false;
         }
 
-        $filterId= $this->getObjectId($filterName);
+        $filterId = $this->getObjectId($filterName);
 
         $filters = array();
         if (!is_null($filterId) && $filterId !== 0) {

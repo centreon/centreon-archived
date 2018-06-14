@@ -74,12 +74,11 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters = null)
+    public function initInsertParameters($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -93,7 +92,6 @@ class CentreonTrap extends CentreonObject
         $addParams['traps_oid'] = $params[self::ORDER_OID];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
@@ -120,13 +118,11 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param null $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -135,7 +131,9 @@ class CentreonTrap extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if ($params[1] == "manufacturer" || $params[1] == "vendor") {
                 $params[1] = "manufacturer_id";
                 $params[2] = $this->manufacturerObj->getId($params[2]);
@@ -151,18 +149,18 @@ class CentreonTrap extends CentreonObject
             }
             $params[2] = str_replace("<br/>", "\n", $params[2]);
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     *
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -219,10 +217,8 @@ class CentreonTrap extends CentreonObject
     }
 
     /**
-     * Add matching rule
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function addmatching($parameters = null)
     {

@@ -147,11 +147,10 @@ class CentreonLDAP extends CentreonObject
     }
 
     /**
-     * Show list of ldap configurations
-     *
-     * @return void
+     * @param array $params
+     * @param array $filters
      */
-    public function show()
+    public function show($params = array(), $filters = array())
     {
         $sql = "SELECT ar_id, ar_name, ar_description, ar_enable
         	FROM auth_ressource
@@ -168,10 +167,8 @@ class CentreonLDAP extends CentreonObject
     }
 
     /**
-     * Show server
-     *
-     * @param string $arName
-     * @return void
+     * @param null $arName
+     * @throws CentreonClapiException
      */
     public function showserver($arName = null)
     {
@@ -320,9 +317,9 @@ class CentreonLDAP extends CentreonObject
      * @param string $parameters
      * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function setparam($parameters = array())
     {
-        if (!isset($parameters)) {
+        if (empty($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $params = explode($this->delim, $parameters);

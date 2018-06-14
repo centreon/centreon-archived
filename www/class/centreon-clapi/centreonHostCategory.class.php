@@ -76,15 +76,14 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * List host categories
-     *
-     * @param $string $parameters
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array('hc_id', 'hc_name', 'hc_alias', 'level');
         $paramString = str_replace("hc_", "", implode($this->delim, $params));
@@ -99,11 +98,11 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * Add host category
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -114,28 +113,30 @@ class CentreonHostCategory extends CentreonSeverityAbstract
         $addParams['hc_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Update host category
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (!preg_match("/^hc_/", $params[1])) {
-                $params[1] = "hc_".$params[1];
+                $params[1] = "hc_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -183,13 +184,13 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             $args = explode($this->delim, $arg[0]);
             $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hcIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $categoryId = $hcIds[0];
 
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
-                echo "id".$this->delim."name"."\n";
+                echo "id" . $this->delim . "name" . "\n";
                 foreach ($tab as $value) {
                     $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                     echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
@@ -204,7 +205,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
                 foreach ($relations as $rel) {
                     $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                     if (!count($tab)) {
-                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $rel);
                     }
                     $relationTable[] = $tab[0];
                 }

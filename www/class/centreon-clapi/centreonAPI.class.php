@@ -42,12 +42,8 @@ require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
+require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 
-if (file_exists(realpath(dirname(__FILE__) . "/../centreonSession.class.php"))) {
-    require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
-} else {
-    require_once realpath(dirname(__FILE__) . "/../Session.class.php");
-}
 
 /**
  * General Centeon Management
@@ -308,7 +304,7 @@ class CentreonAPI
         $objectsPath = array();
         $DBRESULT = $this->DB->query("SELECT name FROM modules_informations");
 
-        while ($row = $DBRESULT->fetchRow()) {
+        while ($row = $DBRESULT->fetch()) {
             $objectsPath = array_merge(
                 $objectsPath,
                 glob(_CENTREON_PATH_ . 'www/modules/' . $row['name'] . '/centreon-clapi/class/*.php')
@@ -698,7 +694,7 @@ class CentreonAPI
                 return 1;
             }
 
-            $obj = new $objName($this->dependencyInjector, $this->object);
+            $obj = new $objName($this->dependencyInjector);
 
             if (method_exists($obj, $action) || method_exists($obj, "__call")) {
                 $this->return_code = $obj->$action($this->variables);
@@ -706,6 +702,7 @@ class CentreonAPI
                 print "Method not implemented into Centreon API.\n";
                 return 1;
             }
+
         } else {
             if (method_exists($this, $action)) {
                 $this->return_code = $this->$action();
@@ -715,6 +712,7 @@ class CentreonAPI
                 $this->return_code = 1;
             }
         }
+
         if ($exit) {
             exit($this->return_code);
         } else {
@@ -821,13 +819,16 @@ class CentreonAPI
 
         $this->initAllObjects();
 
+
         if (isset($this->options['select'])) {
             CentreonExported::getInstance()->set_filter(1);
             CentreonExported::getInstance()->set_options($this->options);
             $selected = $this->options['select'];
+
             if (!is_array($this->options['select'])) {
                 $selected = array($this->options['select']);
             }
+
             foreach ($selected as $select) {
                 $splits = explode(';', $select);
 
@@ -838,7 +839,7 @@ class CentreonAPI
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                } elseif (isset($splits[1])) {
+                } elseif (!is_null($splits[1])) {
                     $name = $splits[1];
                     if (isset($splits[2])) {
                         $name .= ';' . $splits[2];

@@ -144,7 +144,7 @@ class CentreonServiceTemplate extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array('service_register' => $this->register);
         if (isset($parameters)) {
@@ -213,13 +213,11 @@ class CentreonServiceTemplate extends CentreonObject
     }
 
     /**
-     * Add a service template
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -248,11 +246,17 @@ class CentreonServiceTemplate extends CentreonObject
             $addParams['service_template_model_stm_id'] = $tmp[0][$this->object->getPrimaryKey()];
         }
         $this->params = array_merge($this->params, $addParams);
-        $serviceId = parent::add();
+    }
 
+    /**
+     * @param $serviceId
+     */
+    function insertRelations($serviceId)
+    {
         $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
     }
+
 
     /**
      * Delete service template
@@ -283,13 +287,11 @@ class CentreonServiceTemplate extends CentreonObject
     }
 
     /**
-     * Set parameters
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
@@ -368,21 +370,12 @@ class CentreonServiceTemplate extends CentreonObject
                 $params[2] = $tmp[0];
                 break;
             case "contact_additive_inheritance":
-                break;
             case "cg_additive_inheritance":
                 break;
             case "notes":
-                $extended = true;
-                break;
             case "notes_url":
-                $extended = true;
-                break;
             case "action_url":
-                $extended = true;
-                break;
             case "icon_image":
-                $extended = true;
-                break;
             case "icon_image_alt":
                 $extended = true;
                 break;
@@ -402,7 +395,8 @@ class CentreonServiceTemplate extends CentreonObject
         }
         if ($extended == false) {
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             if ($params[1] != "graph_id") {
                 $params[1] = "esi_" . $params[1];
@@ -420,6 +414,7 @@ class CentreonServiceTemplate extends CentreonObject
             }
             $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
             $extended->update($objectId, array($params[1] => $params[2]));
+            return array();
         }
     }
 

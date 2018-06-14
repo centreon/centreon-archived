@@ -222,17 +222,17 @@ class CentreonContact extends CentreonObject
     }
 
     /**
-     * Display all contacts
-     *
-     * @param string $search
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array('contact_register' => $this->register);
         if (isset($parameters)) {
             $parameters = str_replace(" ", "_", $parameters);
             $filters[$this->object->getUniqueLabelField()] = "%" . $parameters . "%";
         }
+
         $params = array(
             'contact_id',
             'contact_name',
@@ -253,17 +253,16 @@ class CentreonContact extends CentreonObject
     }
 
     /**
-     * Add a contact
-     *
-     * @param string $parameters
+     * @param $parameters
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
         $addParams = array();
         $params[self::ORDER_UNIQUENAME] = str_replace(" ", "_", $params[self::ORDER_UNIQUENAME]);
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
@@ -287,24 +286,23 @@ class CentreonContact extends CentreonObject
         $addParams['contact_auth_type'] = $params[self::ORDER_AUTHTYPE];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set parameters
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        $objectId = $this->getObjectId($params[self::ORDER_NAME]);
         $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
-        if (($objectId = $this->getObjectId($params[self::ORDER_NAME])) != 0) {
+
+        if ($objectId != 0) {
             $regularParam = true;
             if ($params[1] == self::HOST_NOTIF_TP) {
                 $params[1] = "timeperiod_tp_id";
@@ -371,8 +369,10 @@ class CentreonContact extends CentreonObject
 
             if ($regularParam == true) {
                 $updateParams = array($params[1] => $params[2]);
-                parent::setparam($objectId, $updateParams);
+                $updateParams['objectId'] = $objectId;
+                return $updateParams;
             }
+            return array();
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -512,7 +512,7 @@ class CentreonContact extends CentreonObject
                         $parameter = "template";
                         $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
-                        $value  = $result[$this->object->getUniqueLabelField()];
+                        $value = $result[$this->object->getUniqueLabelField()];
                         CentreonContactTemplate::getInstance()->export($value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;

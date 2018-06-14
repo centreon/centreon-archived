@@ -112,6 +112,11 @@ class CentreonHost extends CentreonObject
         's' => 'Downtime Scheduled'
     );
 
+    protected $templateIds;
+    protected $hostgroupIds;
+    protected $instanceId;
+
+
     /**
      * Constructor
      *
@@ -202,12 +207,10 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Display all hosts
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array('host_register' => $this->register);
         if (isset($parameters)) {
@@ -223,13 +226,11 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Add a contact
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -240,12 +241,12 @@ class CentreonHost extends CentreonObject
         $addParams['host_alias'] = $params[self::ORDER_ALIAS];
         $addParams['host_address'] = $params[self::ORDER_ADDRESS];
         $templates = explode("|", $params[self::ORDER_TEMPLATE]);
-        $templateIds = array();
+        $this->templateIds = array();
         foreach ($templates as $template) {
             if ($template) {
                 $tmp = $this->object->getIdByParameter($this->object->getUniqueLabelField(), $template);
                 if (count($tmp)) {
-                    $templateIds[] = $tmp[0];
+                    $this->templateIds[] = $tmp[0];
                 } else {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $template);
                 }
@@ -253,6 +254,7 @@ class CentreonHost extends CentreonObject
         }
         $instanceName = $params[self::ORDER_POLLER];
         $instanceObject = new \Centreon_Object_Instance($this->dependencyInjector);
+        $this->instanceId = null;
         if ($this->action == "HOST") {
             if ($instanceName) {
                 $tmp = $instanceObject->getIdByParameter($instanceObject->getUniqueLabelField(), $instanceName);
@@ -266,19 +268,19 @@ class CentreonHost extends CentreonObject
                         throw new CentreonClapiException(self::OBJECT_NOT_FOUND . " :" . $instanceName);
                     }
                 }
-                $instanceId = $tmp[0];
+                $this->instanceId = $tmp[0];
             } else {
                 throw new CentreonClapiException(self::MISSING_INSTANCE);
             }
         }
         $hostgroups = explode("|", $params[self::ORDER_HOSTGROUP]);
-        $hostgroupIds = array();
+        $this->hostgroupIds = array();
         $hostgroupObject = new \Centreon_Object_Host_Group($this->dependencyInjector);
         foreach ($hostgroups as $hostgroup) {
             if ($hostgroup) {
                 $tmp = $hostgroupObject->getIdByParameter($hostgroupObject->getUniqueLabelField(), $hostgroup);
                 if (count($tmp)) {
-                    $hostgroupIds[] = $tmp[0];
+                    $this->hostgroupIds[] = $tmp[0];
                 } else {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostgroup);
                 }
@@ -286,24 +288,32 @@ class CentreonHost extends CentreonObject
         }
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        $hostId = parent::add();
+
+    }
+
+    /**
+     * @param $hostId
+     */
+    public function insertRelations($hostId)
+    {
         $i = 1;
         $templateRelationObject = new \Centreon_Object_Relation_Host_Template_Host($this->dependencyInjector);
-        foreach ($templateIds as $templateId) {
+        foreach ($this->templateIds as $templateId) {
             $templateRelationObject->insert($templateId, $hostId, $i);
             $i++;
         }
         $hostgroupRelationObject = new \Centreon_Object_Relation_Host_Group_Host($this->dependencyInjector);
-        foreach ($hostgroupIds as $hostgroupId) {
+        foreach ($this->hostgroupIds as $hostgroupId) {
             $hostgroupRelationObject->insert($hostgroupId, $hostId);
         }
-        if (isset($instanceId)) {
+        if (!is_null($this->instanceId)) {
             $instanceRelationObject = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
-            $instanceRelationObject->insert($instanceId, $hostId);
+            $instanceRelationObject->insert($this->instanceId, $hostId);
         }
         $extended = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $hostId));
     }
+
 
     /**
      * Del Action
@@ -503,19 +513,19 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Set parameters
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             $extended = false;
             $commandObject = new CentreonCommand($this->dependencyInjector);
             switch ($params[1]) {
@@ -549,26 +559,12 @@ class CentreonHost extends CentreonObject
                 case "flap_detection_options":
                     break;
                 case "notes":
-                    $extended = true;
-                    break;
                 case "notes_url":
-                    $extended = true;
-                    break;
                 case "action_url":
-                    $extended = true;
-                    break;
                 case "icon_image":
-                    $extended = true;
-                    break;
                 case "icon_image_alt":
-                    $extended = true;
-                    break;
                 case "statusmap_image":
-                    $extended = true;
-                    break;
                 case "2d_coords":
-                    $extended = true;
-                    break;
                 case "3d_coords":
                     $extended = true;
                     break;
@@ -599,9 +595,11 @@ class CentreonHost extends CentreonObject
                     }
                     break;
             }
+
             if ($extended == false) {
                 $updateParams = array($params[1] => $params[2]);
-                parent::setparam($objectId, $updateParams);
+                $updateParams['objectId'] = $objectId;
+                return $updateParams;
             } else {
                 $params[1] = "ehi_" . $params[1];
                 if ($params[1] == "ehi_icon_image"
@@ -619,6 +617,7 @@ class CentreonHost extends CentreonObject
                 }
                 $extended = new \Centreon_Object_Host_Extended($this->dependencyInjector);
                 $extended->update($objectId, array($params[1] => $params[2]));
+                return array();
             }
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
@@ -903,10 +902,12 @@ class CentreonHost extends CentreonObject
                 );
                 $result = $res->fetchAll();
                 if (!count($result)) {
-                    $serviceDesc = array('service_description' => $params['service_alias'],
+                    $serviceDesc = array(
+                        'service_description' => $params['service_alias'],
                         'service_activate' => '1',
                         'service_register' => '1',
-                        'service_template_model_stm_id' => $serviceTemplateId);
+                        'service_template_model_stm_id' => $serviceTemplateId
+                    );
                     $svcId = $svcObj->insert($serviceDesc);
                     $hostSvcRel->insert($hostId, $svcId);
                     $serviceDesc['service_hPars'] = $hostId;
@@ -1207,9 +1208,9 @@ class CentreonHost extends CentreonObject
             if (isset($parentShip[$element[$this->object->getPrimaryKey()]])) {
                 foreach ($parentShip[$element[$this->object->getPrimaryKey()]] as $parentId) {
                     echo $this->action . $this->delim
-                        . "addparent" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
+                    . "addparent" . $this->delim
+                    . $element[$this->object->getUniqueLabelField()] . $this->delim
+                    . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
                 }
             }
 

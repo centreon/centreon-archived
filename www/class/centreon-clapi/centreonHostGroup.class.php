@@ -79,12 +79,10 @@ class CentreonHostGroup extends CentreonObject
     }
 
     /**
-     * Display all Host Groups
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -100,13 +98,11 @@ class CentreonHostGroup extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters = null)
+    public function initInsertParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -117,7 +113,6 @@ class CentreonHostGroup extends CentreonObject
         $addParams['hg_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
@@ -139,12 +134,11 @@ class CentreonHostGroup extends CentreonObject
 
 
     /**
-     * Set params
-     *
      * @param null $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
 
@@ -152,7 +146,8 @@ class CentreonHostGroup extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (($params[1] == "icon_image" || $params[1] == "map_icon_image")) {
                 $params[2] = $this->getIdIcon($params[2]);
             }
@@ -161,7 +156,8 @@ class CentreonHostGroup extends CentreonObject
             }
 
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -179,7 +175,7 @@ class CentreonHostGroup extends CentreonObject
         $row = $res->fetch();
         $dirId = $row['dir_id'];
 
-        $query = 'SELECT img_id FROM view_img WHERE img_path = "' . $iconData[1] .'"';
+        $query = 'SELECT img_id FROM view_img WHERE img_path = "' . $iconData[1] . '"';
         $res = $this->db->query($query);
         $row = $res->fetch();
         $iconId = $row['img_id'];

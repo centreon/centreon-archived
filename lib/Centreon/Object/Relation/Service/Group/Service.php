@@ -123,7 +123,7 @@ class Centreon_Object_Relation_Service_Group_Service extends Centreon_Object_Rel
      * @param array $arg
      * @throws Exception
      */
-    public function __call($name, $arg)
+    public function __call($name, $arg = array())
     {
         throw new Exception('Unknown method');
     }
