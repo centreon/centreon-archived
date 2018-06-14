@@ -43,14 +43,13 @@ class Centreon_Object_Relation_Service_Group_Host_Group_Service extends Centreon
 
     /**
      * Used for inserting relation into database
-     *
      * @param int $fkey
-     * @param int $hgId
-     * @param int $serviceId
-     * @return void
+     * @param null $key
      */
-    public function insert($fkey, $hgId, $serviceId)
+    public function insert($fkey, $key = null)
     {
+        $hgId = $key['hostId'];
+        $serviceId = $key['serviceId'];
         $sql = "INSERT INTO $this->relationTable ($this->firstKey, hostgroup_hg_id, $this->secondKey) VALUES (?, ?, ?)";
         $this->db->query($sql, array($fkey, $hgId, $serviceId));
     }

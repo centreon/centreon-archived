@@ -303,7 +303,8 @@ class CentreonServiceGroup extends CentreonObject
                             }
                         }
                         if ($insert == true) {
-                            $relobj->insert($sgId, $relation[$hstring], $relation['service_id']);
+                            $key = array('hostId' => $relation[$hstring], 'serviceId' => $relation['service_id']);
+                            $relobj->insert($sgId, $key);
                         }
                     }
                 }
