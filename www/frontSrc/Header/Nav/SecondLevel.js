@@ -28,8 +28,8 @@ const styles = theme => ({
     backgroundColor: '#FFF',
     padding: 10,
     borderRadius: 2,
-    boxShadow: `0px 3px 5px -1px rgba(0, 0, 0, 0.2), 
-                0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
+    boxShadow: `0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+                0px 6px 10px 0px rgba(0, 0, 0, 0.14),
                 0px 1px 18px 0px rgba(0, 0, 0, 0.12)`,
   }
 })
@@ -51,25 +51,25 @@ class SecondLevel extends Component {
 
   render = () => {
     const { tooltipOpen } = this.state
-    const { classes, id, item, key} = this.props
+    const { classes, id, item, key } = this.props
     const aria = `tooltip-${id}`
 
     return (
       <div className={classes.wrapper} id={key}>
         <Typography id={aria} variant="body2" className={classes.navTypo} gutterBottom> {item.label} </Typography>
-
-        {item.children.length > 0 ?
-          <Tooltip placement="bottom"
-                   isOpen={tooltipOpen}
-                   target={aria}
-                   autohide={false}
-                   toggle={this.toggle}
-                   className={classes.tooltip}>
-            <ThirdLevel
-              thirdLevelArray={item.children}
-            />
-          </Tooltip>
-          : null}
+        {
+          Object.keys(item.children).length > 0 &&
+            <Tooltip placement="bottom"
+                    isOpen={tooltipOpen}
+                    target={aria}
+                    autohide={false}
+                    toggle={this.toggle}
+                    className={classes.tooltip}>
+              <ThirdLevel
+                thirdLevelArray={item.children}
+              />
+            </Tooltip>
+          }
       </div>
     )
   }

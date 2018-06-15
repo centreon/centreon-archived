@@ -33,30 +33,30 @@ const styles = theme => ({
   },
 })
 
-const ThirdLevel = (
-  {classes,
-    key,
-    thirdLevelArray,})  => (
-
+const ThirdLevel = ({classes, key, thirdLevelArray})  => (
   <div className={classes.thirdLevel} key={key} >
-    { thirdLevelArray.map((item, i) => {
-      if (item.hasOwnProperty('children')) {
-
-        return (
-          <div  className={classes.thirdLevelContent}>
-            <Typography key={i} variant="subheading" className={classes.typoGroup} gutterBottom>{item.label}</Typography>
-            {
-              item.children.map((item2, i2) => {
-                return <Typography key={i2} className={classes.typoItem} gutterBottom>{item2.label}</Typography>
-              })
-            }
-          </div>
+  {
+    Object.keys(thirdLevelArray).map((item, i) => {
+      return (
+        <div  className={classes.thirdLevelContent}>
+        { item != 'orphans' &&
+          <Typography variant="subheading" className={classes.typoGroup} gutterBottom>
+            {item}
+          </Typography>
+        }
+        {
+          Object.keys(thirdLevelArray[item]).map((item2, i2) => (
+            <Typography
+              key={i2}
+              className={classes.typoItem}
+              gutterBottom>{thirdLevelArray[item][item2].label}
+            </Typography>
+          ))
+        }
+        </div>
       )
-      } else return (
-          <Typography key={i} className={classes.typoItem} >{item.label}</Typography>
-      )
-    }
-    )}
+    })
+  }
   </div>
 )
 export default withStyles(styles)(ThirdLevel)

@@ -226,11 +226,16 @@ class Menu
                     'url' => $row['topology_url'],
                     'active' => $active
                 );
-                if (!is_null($row['topology_group']) && isset($groups[$row['topology_group']])) {
+                if (!is_null($row['topology_group']) && isset($groups[$levelTwo][$row['topology_group']])) {
                     $menu
                         [$matches[1]]['children']
                         [$levelTwo]['children']
-                        [$groups[$row['topology_group']]][$row['topology_page']] = $levelThree;
+                        [$groups[$levelTwo][$row['topology_group']]][$row['topology_page']] = $levelThree;
+                } else {
+                    $menu
+                        [$matches[1]]['children']
+                        [$levelTwo]['children']
+                        ['orphans'][$row['topology_page']] = $levelThree;
                 }
             }
         }
@@ -245,7 +250,7 @@ class Menu
      */
     public function getGroups()
     {
-        $query = 'SELECT topology_name, topology_group FROM topology '
+        $query = 'SELECT topology_name, topology_parent, topology_group FROM topology '
             . 'WHERE topology_show = "1" '
             . 'AND topology_page IS NULL '
             . 'ORDER BY topology_group, topology_order';
@@ -253,7 +258,7 @@ class Menu
 
         $groups = array();
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            $groups[$row['topology_group']] = $row['topology_name'];
+            $groups[$row['topology_parent']][$row['topology_group']] = $row['topology_name'];
         }
 
         $result->closeCursor();
@@ -271,25 +276,22 @@ class Menu
     {
         switch($pageId) {
             case '1':
-                $color = '#009fdf';
+                $color = '#2B9E93';
                 break;
             case '2':
-                $color = '#43b02a';
+                $color = '#85B446';
                 break;
             case '3':
-                $color = '#df9403';
-                break;
-            case '4':
-                $color = '#009fdf';
+                $color = '#E4932C';
                 break;
             case '5':
-                $color = '#009fdf';
+                $color = '#17387B';
                 break;
             case '6':
-                $color = '#009fdf';
+                $color = '#319ED5';
                 break;
             default:
-                $color = '#009fdf';
+                $color = '#319ED5';
                 break;
         }
 
