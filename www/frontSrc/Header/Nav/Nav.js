@@ -118,6 +118,21 @@ const Nav = (
         {
           Object.keys(items).map((item, index) => {
             console.log(items[item].children)
+            item.children.map((secondItem, i) => {
+              console.log('1',secondItem)
+              return (
+                <div className={classes.wrapper}>
+                  <div className={classes.secondLevel} key={index} style={{ backgroundColor: item.color }}>
+                    <SecondLevel
+                      key={i}
+                      id={i}
+                      item={secondItem}
+                      open={open}
+                    />
+                  </div>
+                </div>
+              )
+            })
             /*if(value === index) {
 
               item.children.map((secondItem, i) => {
@@ -138,9 +153,11 @@ const Nav = (
             }*/
           })
         }
+        {/*
         <div className={classes.secondLevel} key={1} style={{ backgroundColor: '#009FDF' }}>
           hello
         </div>
+        */}
       </div>
 )
 
