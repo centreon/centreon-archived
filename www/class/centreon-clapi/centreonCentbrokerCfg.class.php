@@ -82,9 +82,10 @@ class CentreonCentbrokerCfg extends CentreonObject
 
     /**
      * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -95,20 +96,22 @@ class CentreonCentbrokerCfg extends CentreonObject
         $addParams['ns_nagios_server'] = $this->instanceObj->getInstanceId($params[self::ORDER_INSTANCE]);
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
      * @param $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if ($params[1] == "instance" || $params[1] == "ns_nagios_server") {
                 $params[1] = "ns_nagios_server";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
@@ -125,17 +128,18 @@ class CentreonCentbrokerCfg extends CentreonObject
                 }
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     * @param string $parameters
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -506,7 +510,8 @@ class CentreonCentbrokerCfg extends CentreonObject
      * User help method
      * Get Field list from Type
      *
-     * @return void
+     * @param $typeName
+     * @throws CentreonClapiException
      */
     public function getFieldList($typeName)
     {
@@ -538,7 +543,8 @@ class CentreonCentbrokerCfg extends CentreonObject
      * User help method
      * Get Value list from Selectbox name
      *
-     * @return void
+     * @param $selectName
+     * @throws CentreonClapiException
      */
     public function getValueList($selectName)
     {
@@ -608,6 +614,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!isset($row['config_value'])) {
             return false;
         }
+
         list($tagId, $typeId) = explode('_', $row['config_value']);
         $sql = "SELECT fieldtype, cf.cb_field_id, ct.cb_module_id
         		FROM cb_type_field_relation ctfr, cb_field cf, cb_type ct
@@ -689,13 +696,29 @@ class CentreonCentbrokerCfg extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            'AND'
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD" .
                 $this->delim . $element['config_name'] .

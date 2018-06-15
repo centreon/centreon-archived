@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2018 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,37 +35,17 @@
 
 namespace CentreonClapi;
 
-require_once "centreonHost.class.php";
+require_once "centreonObject.class.php";
+require_once "Centreon/Object/Timezone/Timezone.php";
 
-class CentreonHostTemplate extends CentreonHost
+class CentreonTimezone extends CentreonObject
 {
-    public static $aDepends = array(
-        'CMD',
-        'TP',
-        'TRAP',
-        'INSTANCE'
-    );
-
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonTimezone constructor.
      */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
-        $this->params['host_register'] = '0';
-        $this->register = 0;
-        $this->action = "HTPL";
-    }
-
-    /**
-     * Will throw an exception if set instance is called
-     *
-     * @throws CentreonClapiException
-     */
-    public function setinstance($parameters = null)
-    {
-        throw new CentreonClapiException(self::UNKNOWN_METHOD);
+        $this->object = new \Centreon_Object_Timezone($dependencyInjector);
     }
 }

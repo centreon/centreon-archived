@@ -190,21 +190,17 @@ class CentreonConfigPoller
     }
 
     /**
-     *
-     * Reload a server
-     * @param unknown_type $variables
+     * @param $variables
+     * @return mixed
      */
     public function pollerReload($variables)
     {
-        $return_value = 0;
-
         if (!isset($variables)) {
             print "Cannot get poller";
             exit(1);
         }
 
         $poller_id = $this->getPollerId($variables);
-
         $this->testPollerId($poller_id);
 
         /*
@@ -295,7 +291,6 @@ class CentreonConfigPoller
         }
 
         $this->testPollerId($variables);
-
         $poller_id = $this->getPollerId($variables);
 
         /*
@@ -322,7 +317,6 @@ class CentreonConfigPoller
         $host = $DBRESULT->fetchRow();
         $DBRESULT->closeCursor();
 
-        $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_restart = exec(
                 escapeshellcmd("sudo service " . $nagios_init_script . " restart"),
@@ -334,7 +328,7 @@ class CentreonConfigPoller
             $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         }
         print $msg_restart . "\n";
-        $DBRESULT = $this->_DB->query(
+        $this->_DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
             . "' WHERE `id` = '" . $this->_DB->escape($poller_id) . "' LIMIT 1"
         );
@@ -641,7 +635,6 @@ class CentreonConfigPoller
     public function getApacheUser()
     {
         /* Change files owner */
-        $setFilesOwner = 1;
         $installFile = "/etc/centreon/instCentWeb.conf";
 
         if (file_exists($installFile)) {
