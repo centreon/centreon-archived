@@ -505,12 +505,10 @@ class CentreonContact extends CentreonObject
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter == "timeperiod_tp_id") {
                         $parameter = self::HOST_NOTIF_TP;
-                        $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
                         CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "timeperiod_tp_id2") {
                         $parameter = self::SVC_NOTIF_TP;
-                        $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
                         CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "contact_lang") {
@@ -521,7 +519,6 @@ class CentreonContact extends CentreonObject
                         $parameter = "servicenotifopt";
                     } elseif ($parameter == "contact_template_id") {
                         $parameter = "template";
-                        $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value = $result[$this->object->getUniqueLabelField()];
                         CentreonContactTemplate::getInstance()->export($value);

@@ -318,11 +318,6 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             }
             $relationTable[] = $elements[0]['service_id'];
         }
-        $existingRelationIds = $relobj->getTargetIdFromSourceId(
-            $relobj->getSecondKey(),
-            $relobj->getFirstKey(),
-            array($categoryId)
-        );
 
         foreach ($excludedList as $excluded) {
             $relobj->delete($categoryId, $excluded['service_id']);
@@ -376,12 +371,6 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             }
             $relationTable[] = $tab[0]['service_id'];
         }
-
-        $existingRelationIds = $relobj->getTargetIdFromSourceId(
-            $relobj->getSecondKey(),
-            $relobj->getFirstKey(),
-            array($categoryId)
-        );
 
         foreach ($excludedList as $excluded) {
             $relobj->delete($categoryId, $excluded['service_id']);

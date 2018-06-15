@@ -218,7 +218,6 @@ class CentreonEngineCfg extends CentreonObject
             } elseif ($params[1] == "broker_module") {
                 $this->setBrokerModule($objectId, $params[2]);
             } elseif (preg_match('/(' . implode('|', $commandColumns) . ')/', $params[1], $matches)) {
-                $commandName = $matches[1];
                 if ($params[2]) {
                     $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
                     $res = $commandObj->getIdByParameter($commandObj->getUniqueLabelField(), $params[2]);
@@ -304,7 +303,7 @@ class CentreonEngineCfg extends CentreonObject
             $filters,
             "AND"
         );
-        $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
+
         foreach ($elements as $element) {
             /* ADD action */
             $addStr = $this->action . $this->delim . "ADD";

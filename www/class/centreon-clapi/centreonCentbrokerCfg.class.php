@@ -614,6 +614,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!isset($row['config_value'])) {
             return false;
         }
+
         list($tagId, $typeId) = explode('_', $row['config_value']);
         $sql = "SELECT fieldtype, cf.cb_field_id, ct.cb_module_id
         		FROM cb_type_field_relation ctfr, cb_field cf, cb_type ct

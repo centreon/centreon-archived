@@ -617,20 +617,7 @@ class CentreonService extends CentreonObject
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDescription);
         }
-        $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
-        $macroList = $macroObj->getList(
-            array(
-                "svc_macro_name",
-                "svc_macro_value",
-                "is_password",
-                "description"
-            ),
-            -1,
-            0,
-            null,
-            null,
-            array("svc_svc_id" => $elements[0]['service_id'])
-        );
+
         $aListTemplate = $this->getListTemplates($this->db, $elements[0]['service_id']);
 
         if (!isset($cmdId)) {
@@ -868,7 +855,6 @@ class CentreonService extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        $rel = new \Centreon_Object_Relation_Service_Category_Service($this->dependencyInjector);
         $hostServiceRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $elements = $hostServiceRel->getMergedParameters(
             array('host_id'),
@@ -1082,7 +1068,6 @@ class CentreonService extends CentreonObject
             return false;
         }
 
-        $labelField = $this->object->getUniqueLabelField();
         $filters = array("service_register" => $this->register);
         $filterId = null;
         if (!is_null($filterName)) {
@@ -1111,7 +1096,6 @@ class CentreonService extends CentreonObject
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim;
                 if ($param == "service_template_model_stm_id") {
-                    $tmp_id = $element[$param];
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
@@ -1130,10 +1114,8 @@ class CentreonService extends CentreonObject
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
-                        $action_tmp = 'TP';
                         $tmpObj = $tpObj;
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
-                        $action_tmp = 'CMD';
                         $tmpObj = $commandObj;
                     }
                     if (isset($tmpObj)) {
@@ -1141,7 +1123,6 @@ class CentreonService extends CentreonObject
                         $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
                         $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
                         if (isset($tmp) && isset($tmp[$tmpLabelField])) {
-                            $tmp_id = $value;
                             $value = $tmp[$tmpLabelField];
                             $tmpObj::getInstance()->export($value);
                         }
@@ -1300,13 +1281,10 @@ class CentreonService extends CentreonObject
      */
     public function getMacros($iServiceId, $aListTemplate, $iIdCommande)
     {
-        $aMacro = array();
-        $macroArray = array();
         $aMacroInService = array();
 
         //Get macro attached to the service
         $macroArray = $this->getCustomMacroInDb($iServiceId);
-        $iNb = count($macroArray);
 
         //Get macro attached to the template
         $aMacroTemplate = array();

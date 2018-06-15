@@ -738,7 +738,6 @@ class CentreonHost extends CentreonObject
         if (($hostId = $this->getObjectId($hostName)) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName);
         }
-        $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
 
         $aTemplates = $this->getTemplateChain($hostId, array(), -1, true, "host_name,host_id,command_command_id");
         if (!isset($cmdId)) {
@@ -970,7 +969,6 @@ class CentreonHost extends CentreonObject
         if (!$this->register) {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
-        $params = explode($this->delim, $hostName);
         if (($hostId = $this->getObjectId($hostName)) == 0) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName);
         }
@@ -1172,7 +1170,6 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
-        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
         $instanceRel = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
         $parentShip = array();
@@ -1224,7 +1221,6 @@ class CentreonHost extends CentreonObject
                         $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
                         $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
                         if (isset($tmp) && isset($tmp[$tmpLabelField])) {
-                            $tmp_id = $value;
                             $value = $tmp[$tmpLabelField];
                             if (!is_null($action_tmp)) {
                                 $tmpObj::getInstance()->export($value);
@@ -1517,10 +1513,7 @@ class CentreonHost extends CentreonObject
      */
     public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande)
     {
-        $aMacro = array();
-        $macroArray = array();
         $aMacroInCommande = array();
-        $aMacroInService = array();
 
         //Get macro attached to the host
         $macroArray = $this->getCustomMacroInDb($iHostId);
