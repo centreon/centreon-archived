@@ -268,7 +268,7 @@ class CentreonResourceCfg extends CentreonObject
             if (isset($object[0][$this->object->getPrimaryKey()])) {
                 $objectId = $object[0][$this->object->getPrimaryKey()];
             } else {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
             }
         }
         $this->object->delete($objectId);
@@ -325,7 +325,8 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * @param array $arg
+     * @param null $filterName
+     * @return bool|int|void
      */
     public function export($filterName = null)
     {
@@ -334,7 +335,13 @@ class CentreonResourceCfg extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $elements = $this->object->getList();
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC'
+        );
 
         if (!is_null($filterName) && !empty($filterName)) {
             $nbElements = count($elements);

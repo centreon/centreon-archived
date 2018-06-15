@@ -88,7 +88,14 @@ class CentreonServiceGroup extends CentreonObject
         $params = array('sg_id', 'sg_name', 'sg_alias');
         $paramString = str_replace("sg_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $tab = array_map('html_entity_decode', $tab);
             $tab = array_map('utf8_encode', $tab);
@@ -337,8 +344,8 @@ class CentreonServiceGroup extends CentreonObject
             array($this->object->getPrimaryKey(), $labelField),
             -1,
             0,
-            null,
-            null,
+            $labelField,
+            'ASC',
             $filters
         );
         $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service($this->dependencyInjector);

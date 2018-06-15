@@ -136,7 +136,14 @@ class CentreonACLMenu extends CentreonObject
         $paramString = str_replace("acl_", "", $paramString);
         $paramString = str_replace("comments", "comment", $paramString);
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $str = "";
             foreach ($tab as $key => $value) {
@@ -332,7 +339,6 @@ class CentreonACLMenu extends CentreonObject
         }
     }
 
-
     /**
      * Grant menu
      *
@@ -357,7 +363,6 @@ class CentreonACLMenu extends CentreonObject
         }
     }
 
-
     /**
      * Revoke menu
      *
@@ -379,7 +384,8 @@ class CentreonACLMenu extends CentreonObject
     }
 
     /**
-     * @param array $filters
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -392,7 +398,14 @@ class CentreonACLMenu extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $aclMenuList = $this->object->getList('*', -1, 0, null, null, $filters);
+        $aclMenuList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclMenuList as $aclMenu) {
@@ -407,7 +420,6 @@ class CentreonACLMenu extends CentreonObject
             if (!empty($aclMenu['acl_comments'])) {
                 $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim;
             }
-
 
             $exportLine .= 'activate' . $this->delim . $aclMenu['acl_topo_activate'] . $this->delim . "\n";
             $exportLine .= $this->grantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);

@@ -203,7 +203,14 @@ class CentreonTrap extends CentreonObject
         }
         $matchObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
         $params = array('tmo_id', 'tmo_string', 'tmo_regexp', 'tmo_status', 'tmo_order');
-        $elements = $matchObj->getList($params, -1, 0, 'tmo_order', 'ASC', array('trap_id' => $trapId));
+        $elements = $matchObj->getList(
+            $params,
+            -1,
+            0,
+            'tmo_order',
+            'ASC',
+            array('trap_id' => $trapId)
+        );
         $status = array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
         echo "id" . $this->delim . "string" . $this->delim . "regexp" . $this->delim .
             "status" . $this->delim . "order\n";
@@ -329,7 +336,15 @@ class CentreonTrap extends CentreonObject
             $filters[$labelField] = $filterName;
         }
 
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -355,7 +370,15 @@ class CentreonTrap extends CentreonObject
                 }
             }
             $matchingObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
-            $matchingProps = $matchingObj->getList("*", -1, 0, null, null, array('trap_id' => $element['traps_id']));
+            $matchingLabelField = $matchingObj->getUniqueLabelField();
+            $matchingProps = $matchingObj->getList(
+                "*",
+                -1,
+                0,
+                $matchingLabelField,
+                'ASC',
+                array('trap_id' => $element['traps_id'])
+            );
             foreach ($matchingProps as $prop) {
                 echo $this->action . $this->delim .
                     "addmatching" . $this->delim .

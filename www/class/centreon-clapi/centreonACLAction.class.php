@@ -294,7 +294,14 @@ class CentreonACLAction extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $aclActionRuleList = $this->object->getList('*', -1, 0, null, null, $filters);
+        $aclActionRuleList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclActionRuleList as $aclActionRule) {
@@ -329,7 +336,6 @@ class CentreonACLAction extends CentreonObject
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ruleId', $aclActionRuleId);
         $stmt->execute();
-
         $aclActionList = $stmt->fetchAll();
 
         foreach ($aclActionList as $aclAction) {
@@ -337,7 +343,6 @@ class CentreonACLAction extends CentreonObject
                 $aclActionName . $this->delim .
                 $aclAction['acl_action_name'] . $this->delim . "\n";
         }
-
 
         return $grantActions;
     }

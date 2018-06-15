@@ -510,7 +510,8 @@ class CentreonCentbrokerCfg extends CentreonObject
      * User help method
      * Get Field list from Type
      *
-     * @return void
+     * @param $typeName
+     * @throws CentreonClapiException
      */
     public function getFieldList($typeName)
     {
@@ -542,7 +543,8 @@ class CentreonCentbrokerCfg extends CentreonObject
      * User help method
      * Get Value list from Selectbox name
      *
-     * @return void
+     * @param $selectName
+     * @throws CentreonClapiException
      */
     public function getValueList($selectName)
     {
@@ -693,9 +695,8 @@ class CentreonCentbrokerCfg extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -708,7 +709,15 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            'AND'
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD" .
                 $this->delim . $element['config_name'] .

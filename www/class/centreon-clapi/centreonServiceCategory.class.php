@@ -414,8 +414,8 @@ class CentreonServiceCategory extends CentreonSeverityAbstract
             array($this->object->getPrimaryKey(), $labelField),
             -1,
             0,
-            null,
-            null,
+            $labelField,
+            'ASC',
             $filters
         );
         $relobj = new \Centreon_Object_Relation_Service_Category_Service($this->dependencyInjector);

@@ -115,8 +115,8 @@ class CentreonManufacturer extends CentreonObject
     /**
      * Will generate traps from a mib file
      *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function generatetraps($parameters = null)
     {
@@ -155,8 +155,9 @@ class CentreonManufacturer extends CentreonObject
     /**
      * Get id from name
      *
-     * @param string $name
-     * @return int
+     * @param $name
+     * @return mixed
+     * @throws CentreonClapiException
      */
     public function getId($name)
     {

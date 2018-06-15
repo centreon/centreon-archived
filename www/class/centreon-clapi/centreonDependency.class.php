@@ -106,7 +106,14 @@ class CentreonDependency extends CentreonObject
         );
         $paramString = str_replace("dep_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -633,8 +640,9 @@ class CentreonDependency extends CentreonObject
     /**
      * Add relations
      *
-     * @param string $parameters
+     * @param $parameters
      * @param string $relType
+     * @throws CentreonClapiException
      */
     protected function addRelations($parameters, $relType = 'parent')
     {
@@ -675,10 +683,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToInsert
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToInsert
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function addHostgroupRelations($depId, $objectToInsert, $relType)
     {
@@ -693,10 +701,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToInsert
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToInsert
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function addServicegroupRelations($depId, $objectToInsert, $relType)
     {
@@ -711,10 +719,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToInsert
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToInsert
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function addMetaRelations($depId, $objectToInsert, $relType)
     {
@@ -730,10 +738,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToInsert
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToInsert
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function addHostRelations($depId, $objectToInsert, $relType)
     {
@@ -768,10 +776,10 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     *
-     * @param int $depId
-     * @param string $objectToInsert
-     * @param string $relType | 'parent' or 'child'
+     * @param $depId
+     * @param $objectToInsert
+     * @param $relType
+     * @throws CentreonClapiException
      */
     protected function addServiceRelations($depId, $objectToInsert, $relType)
     {
@@ -811,10 +819,9 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
-     * Delete relations
-     *
-     * @param string $parameters
-     * @param string $relType | 'parent' or 'child'
+     * @param $parameters
+     * @param string $relType
+     * @throws CentreonClapiException
      */
     protected function deleteRelations($parameters, $relType = 'parent')
     {

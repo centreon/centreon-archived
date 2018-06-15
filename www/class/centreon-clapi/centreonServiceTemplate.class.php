@@ -141,8 +141,8 @@ class CentreonServiceTemplate extends CentreonObject
     /**
      * Display all service templates
      *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
     public function show($parameters = null, $filters = array())
     {
@@ -163,7 +163,15 @@ class CentreonServiceTemplate extends CentreonObject
             'service_active_checks_enabled',
             'service_passive_checks_enabled'
         );
-        $elements = $this->object->getList($paramsSvc, -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            $paramsSvc,
+            -1,
+            0,
+            null,
+            null,
+            $filters,
+            "AND"
+        );
         $paramSvcString = str_replace("service_", "", implode($this->delim, $paramsSvc));
         $paramSvcString = str_replace("command_command_id", "check command", $paramSvcString);
         $paramSvcString = str_replace("command_command_id_arg", "check command arguments", $paramSvcString);
@@ -564,10 +572,18 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $elements = $this->object->getList("service_id", -1, 0, null, null, array(
-            'service_description' => $params[0],
-            'service_register' => 0
-        ), "AND");
+        $elements = $this->object->getList(
+            "service_id",
+            -1,
+            0,
+            null,
+            null,
+            array(
+                'service_description' => $params[0],
+                'service_register' => 0
+            ),
+            "AND"
+        );
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
         }
@@ -590,9 +606,8 @@ class CentreonServiceTemplate extends CentreonObject
     }
 
     /**
-     * Set severity
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setseverity($parameters)
     {
@@ -634,9 +649,8 @@ class CentreonServiceTemplate extends CentreonObject
     }
 
     /**
-     * Unset severity
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function unsetseverity($parameters)
     {
@@ -937,8 +951,8 @@ class CentreonServiceTemplate extends CentreonObject
             "*",
             -1,
             0,
-            "service_template_model_stm_id",
-            null,
+            $labelField,
+            'ASC',
             $filters,
             "AND"
         );

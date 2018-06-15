@@ -802,9 +802,8 @@ class CentreonService extends CentreonObject
     }
 
     /**
-     * Set severity
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setseverity($parameters)
     {
@@ -859,9 +858,8 @@ class CentreonService extends CentreonObject
     }
 
     /**
-     * Unset severity
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function unsetseverity($parameters)
     {
@@ -1075,9 +1073,8 @@ class CentreonService extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -1182,12 +1179,14 @@ class CentreonService extends CentreonObject
                     }
                 }
             }
+
+            $macrosLabelField = $macroObj->getUniqueLabelField();
             $macros = $macroObj->getList(
                 "*",
                 -1,
                 0,
-                null,
-                null,
+                $macrosLabelField,
+                'ASC',
                 array('svc_svc_id' => $element[$this->object->getPrimaryKey()]),
                 "AND"
             );
@@ -1328,13 +1327,11 @@ class CentreonService extends CentreonObject
             }
         }
 
-
         // Get macro attached to the command
         if (!empty($iIdCommande)) {
             $oCommand = new CentreonCommand($this->dependencyInjector);
             $aMacroInService[] = $oCommand->getMacroByIdAndType($iIdCommande, 'service');
         }
-
 
         //filter a macro
         $aTempMacro = array();
@@ -1368,9 +1365,7 @@ class CentreonService extends CentreonObject
             }
         }
 
-
         $aFinalMacro = $this->macro_unique($aTempMacro);
-
         return $aFinalMacro;
     }
 
@@ -1409,6 +1404,10 @@ class CentreonService extends CentreonObject
         return $arr;
     }
 
+    /**
+     * @param $aTempMacro
+     * @return array
+     */
     public function macro_unique($aTempMacro)
     {
         $storedMacros = array();
@@ -1435,6 +1434,10 @@ class CentreonService extends CentreonObject
         return $finalMacros;
     }
 
+    /**
+     * @param $storedMacros
+     * @param $finalMacros
+     */
     private function addInfosToMacro($storedMacros, &$finalMacros)
     {
         foreach ($finalMacros as &$finalMacro) {
@@ -1457,6 +1460,11 @@ class CentreonService extends CentreonObject
         }
     }
 
+    /**
+     * @param $storedMacros
+     * @param $finalMacro
+     * @return string
+     */
     private function getInheritedDescription($storedMacros, $finalMacro)
     {
         $description = "";
@@ -1478,12 +1486,20 @@ class CentreonService extends CentreonObject
         return $description;
     }
 
+    /**
+     * @param $finalMacro
+     * @param $description
+     */
     private function setInheritedDescription(&$finalMacro, $description)
     {
         $finalMacro['description'] = $description;
         $finalMacro['macroDescription'] = $description;
     }
 
+    /**
+     * @param $tplValue
+     * @param $finalMacro
+     */
     private function setTplValue($tplValue, &$finalMacro)
     {
         if ($tplValue) {
@@ -1495,6 +1511,11 @@ class CentreonService extends CentreonObject
         }
     }
 
+    /**
+     * @param $storedMacro
+     * @param bool $getFirst
+     * @return bool
+     */
     private function findTplValue($storedMacro, $getFirst = false)
     {
         if ($getFirst) {
@@ -1514,7 +1535,6 @@ class CentreonService extends CentreonObject
         }
         return false;
     }
-
 
     /**
      * Return the list of template
@@ -1550,6 +1570,12 @@ class CentreonService extends CentreonObject
         }
     }
 
+    /**
+     * @param $macroA
+     * @param $macroB
+     * @param bool $getFirst
+     * @return mixed
+     */
     private function comparaPriority($macroA, $macroB, $getFirst = true)
     {
         $arrayPrio = array('direct' => 3, 'fromTpl' => 2, 'fromService' => 1);

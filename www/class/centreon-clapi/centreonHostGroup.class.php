@@ -91,7 +91,14 @@ class CentreonHostGroup extends CentreonObject
         $params = array('hg_id', 'hg_name', 'hg_alias');
         $paramString = str_replace("hg_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -191,9 +198,8 @@ class CentreonHostGroup extends CentreonObject
     /**
      * Magic method
      *
-     * @param string $name
-     * @param array $args
-     * @return void
+     * @param $name
+     * @param $arg
      * @throws CentreonClapiException
      */
     public function __call($name, $arg)

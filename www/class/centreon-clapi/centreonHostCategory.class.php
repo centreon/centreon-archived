@@ -88,7 +88,14 @@ class CentreonHostCategory extends CentreonSeverityAbstract
         $params = array('hc_id', 'hc_name', 'hc_alias', 'level');
         $paramString = str_replace("hc_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             if (!$tab['level']) {
                 $tab['level'] = 'none';
@@ -163,10 +170,9 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * Magic method for get/set/add/del relations
-     *
-     * @param string $name
-     * @param array $arg
+     * @param $name
+     * @param $arg
+     * @throws CentreonClapiException
      */
     public function __call($name, $arg)
     {

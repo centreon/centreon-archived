@@ -137,7 +137,14 @@ class CentreonACLGroup extends CentreonObject
         $params = array("acl_group_id", "acl_group_name", "acl_group_alias", "acl_group_activate");
         $paramString = str_replace("acl_group_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $str = "";
             foreach ($tab as $key => $value) {
@@ -237,7 +244,8 @@ class CentreonACLGroup extends CentreonObject
     }
 
     /**
-     * @param null $filters
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -250,7 +258,14 @@ class CentreonACLGroup extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $aclGroupList = $this->object->getList('*', -1, 0, null, null, $filters);
+        $aclGroupList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclGroupList as $aclGroup) {
@@ -347,7 +362,7 @@ class CentreonACLGroup extends CentreonObject
             array($objectFieldName),
             -1,
             0,
-            null,
+            $objectFieldName,
             'ASC',
             array($comparisonKey1 => $aclGroupId),
             'AND'

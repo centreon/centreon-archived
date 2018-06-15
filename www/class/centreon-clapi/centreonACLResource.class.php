@@ -64,7 +64,6 @@ class CentreonACLResource extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
-
     const UNSUPPORTED_WILDCARD = "Action does not support the '*' wildcard";
 
     /**
@@ -180,7 +179,14 @@ class CentreonACLResource extends CentreonObject
         $params = array("acl_res_id", "acl_res_name", "acl_res_alias", "acl_res_comment", "acl_res_activate");
         $paramString = str_replace("acl_res_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $str = "";
             foreach ($tab as $key => $value) {
@@ -194,8 +200,7 @@ class CentreonACLResource extends CentreonObject
     /**
      * Get Acl Group
      *
-     * @param string $parameters
-     * @return void
+     * @param $aclResName
      * @throws CentreonClapiException
      */
     public function getaclgroup($aclResName)
@@ -426,7 +431,8 @@ class CentreonACLResource extends CentreonObject
     }
 
     /**
-     * @param null $filters
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -439,7 +445,14 @@ class CentreonACLResource extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $aclResourceList = $this->object->getList('*', -1, 0, null, null, $filters);
+        $aclResourceList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclResourceList as $aclResource) {
@@ -502,7 +515,6 @@ class CentreonACLResource extends CentreonObject
             $aclResourceParams['acl_res_id'],
             $aclResourceParams['acl_res_name']
         );
-
 
         return $grantResources;
     }

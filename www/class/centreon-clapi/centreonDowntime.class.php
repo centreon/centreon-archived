@@ -473,9 +473,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * List resources
-     *
-     * @param int downtime id
+     * @param $downtimeId
+     * @return string
      */
     public function listServiceGroups($downtimeId)
     {
@@ -495,9 +494,8 @@ class CentreonDowntime extends CentreonObject
 
 
     /**
-     * List resources
-     *
-     * @param int downtime id
+     * @param $downtimeId
+     * @return string
      */
     public function listResources($downtimeId)
     {
@@ -566,9 +564,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set host
-     *
-     * @param string $parameters | downtime name; host names separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function sethost($parameters)
     {
@@ -607,9 +604,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set host groups
-     *
-     * @param string $parameters | downtime name; host group names separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function sethostgroup($parameters)
     {
@@ -639,7 +635,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add service to downtime
      *
-     * @param string $parameters | downtime name; host_name,service_description separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function addservice($parameters)
     {
@@ -971,7 +968,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add period
      *
-     * @param array $p
+     * @param $p
+     * @throws CentreonClapiException
      */
     protected function insertPeriod($p)
     {
@@ -1021,9 +1019,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Get preiods from downtime id
      *
-     * @param  int $downtimeId
-     * @param  int $position
-     * @return array
+     * @param $downtimeId
+     * @param null $position
+     * @return mixed
+     * @throws CentreonClapiException
      */
     protected function getPeriods($downtimeId, $position = null)
     {
@@ -1051,10 +1050,11 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add resource to downtime
      *
-     * @param string $parameters | downtime name; resource names separated by "|" character
-     * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param $parameters
+     * @param $object
+     * @param $relTable
+     * @param $relField
+     * @throws CentreonClapiException
      */
     protected function addGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -1097,10 +1097,11 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete resource from downtime
      *
-     * @param string $parameters | downtime name; resource name separated by "|" character
-     * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param $parameters
+     * @param $object
+     * @param $relTable
+     * @param $relField
+     * @throws CentreonClapiException
      */
     protected function delGenericRelation($parameters, $object, $relTable, $relField)
     {

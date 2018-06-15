@@ -213,13 +213,23 @@ class CentreonHost extends CentreonObject
     public function show($parameters = null, $filters = array())
     {
         $filters = array('host_register' => $this->register);
+
+        $labelField = $this->object->getUniqueLabelField();
         if (isset($parameters)) {
-            $filters[$this->object->getUniqueLabelField()] = "%" . $parameters . "%";
+            $filters[$labelField] = "%" . $parameters . "%";
         }
         $params = array('host_id', 'host_name', 'host_alias', 'host_address', 'host_activate');
         $paramString = str_replace("host_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters,
+            "AND"
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -627,7 +637,8 @@ class CentreonHost extends CentreonObject
     /**
      * Set severity
      *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setseverity($parameters)
     {
@@ -667,9 +678,8 @@ class CentreonHost extends CentreonObject
     }
 
     /**
-     * Unset severity
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function unsetseverity($parameters)
     {
@@ -736,7 +746,6 @@ class CentreonHost extends CentreonObject
         }
         $macroList = $this->getMacros($hostId, false, $aTemplates, $cmdId);
 
-
         echo "macro name;macro value;is_password;description;source\n";
         foreach ($macroList as $macro) {
             $source = "direct";
@@ -772,12 +781,27 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
-        $macroList = $macroObj->getList($macroObj->getPrimaryKey(), -1, 0, null, null, array(
-            "host_host_id" => $hostId,
-            "host_macro_name" => $this->wrapMacro($params[1])
-        ), "AND");
+        $macroList = $macroObj->getList(
+            $macroObj->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "host_host_id" => $hostId,
+                "host_macro_name" => $this->wrapMacro($params[1])
+            ),
+            "AND"
+        );
 
-        $maxOrder = $macroObj->getList('max(macro_order)', -1, 0, null, null, array("host_host_id" => $hostId));
+        $maxOrder = $macroObj->getList(
+            'max(macro_order)',
+            -1,
+            0,
+            null,
+            null,
+            array("host_host_id" => $hostId)
+        );
         if (empty($maxOrder)) {
             $macroOrder = 0;
         } else {
@@ -834,10 +858,18 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
-        $macroList = $macroObj->getList($macroObj->getPrimaryKey(), -1, 0, null, null, array(
-            "host_host_id" => $hostId,
-            "host_macro_name" => $this->wrapMacro($params[1])
-        ), "AND");
+        $macroList = $macroObj->getList(
+            $macroObj->getPrimaryKey(),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "host_host_id" => $hostId,
+                "host_macro_name" => $this->wrapMacro($params[1])
+            ),
+            "AND"
+        );
         if (count($macroList)) {
             $macroObj->delete($macroList[0][$macroObj->getPrimaryKey()]);
         }
@@ -1130,7 +1162,15 @@ class CentreonHost extends CentreonObject
             $filters[$labelField] = $filterName;
         }
 
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);

@@ -280,7 +280,8 @@ class CentreonEngineCfg extends CentreonObject
     /**
      * Export
      *
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -294,7 +295,15 @@ class CentreonEngineCfg extends CentreonObject
             $filters[$labelField] = $filterName;
         }
 
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         $tpObj = new \Centreon_Object_Timeperiod($this->dependencyInjector);
         foreach ($elements as $element) {
             /* ADD action */
@@ -358,6 +367,10 @@ class CentreonEngineCfg extends CentreonObject
         }
     }
 
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
     public function addbrokermodule($parameters)
     {
         $params = explode($this->delim, $parameters);

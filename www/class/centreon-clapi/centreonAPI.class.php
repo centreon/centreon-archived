@@ -917,8 +917,8 @@ class CentreonAPI
      */
     public function printLegals()
     {
-        $DBRESULT = &$this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
-        $data = &$DBRESULT->fetchRow();
+        $DBRESULT = $this->DB->query("SELECT * FROM informations WHERE `key` = 'version'");
+        $data = $DBRESULT->fetchRow();
         print "Centreon version " . $data["value"] . " - ";
         print "Copyright Centreon - www.centreon.com\n";
         unset($data);

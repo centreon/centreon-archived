@@ -225,11 +225,11 @@ class CentreonCommand extends CentreonObject
             $filters[$labelField] = $filterName;
         }
         $elements = $this->object->getList(
-            "*",
+            '*',
             -1,
             0,
-            null,
-            null,
+            $labelField,
+            'ASC',
             $filters
         );
         foreach ($elements as $element) {

@@ -176,8 +176,9 @@ class CentreonInstance extends CentreonObject
     /**
      * Get instance Id
      *
-     * @param string $name
-     * @return int
+     * @param $name
+     * @return mixed
+     * @throws CentreonClapiException
      */
     public function getInstanceId($name)
     {

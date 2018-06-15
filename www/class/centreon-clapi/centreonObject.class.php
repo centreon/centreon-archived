@@ -388,7 +388,14 @@ abstract class CentreonObject
     public function show($params = array(), $filters = array())
     {
         echo str_replace("_", " ", implode($this->delim, $params)) . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -475,6 +482,7 @@ abstract class CentreonObject
         }
 
         $filterId = $this->getObjectId($filterName);
+        $labelField = $this->getObject()->getUniqueLabelField();
 
         $filters = array();
         if (!is_null($filterId) && $filterId !== 0) {
@@ -482,11 +490,18 @@ abstract class CentreonObject
             $filters[$primaryKey] = $filterId;
         }
         if (!is_null($filterName)) {
-            $labelField = $this->getObject()->getUniqueLabelField();
             $filters[$labelField] = $filterName;
         }
 
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -516,11 +531,13 @@ abstract class CentreonObject
     /**
      * Insert audit log
      *
-     * @param string $actionType
-     * @param int $objId
-     * @param string $objName
+     * @param $actionType
+     * @param $objId
+     * @param $objName
      * @param array $objValues
-     * @param string|null $objectType - The object type to log if is null use the object type of the class
+     * @param null $objectType
+     * @return null
+     * @throws CentreonClapiException
      */
     public function addAuditLog($actionType, $objId, $objName, $objValues = array(), $objectType = null)
     {

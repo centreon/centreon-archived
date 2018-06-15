@@ -362,8 +362,8 @@ class CentreonLDAP extends CentreonObject
     /**
      * Set server param
      *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function setparamserver($parameters = null)
     {
@@ -387,9 +387,8 @@ class CentreonLDAP extends CentreonObject
 
 
     /**
-     * Export data
-     *
      * @param null $filterName
+     * @return bool|int|void
      */
     public function export($filterName = null)
     {
@@ -405,7 +404,14 @@ class CentreonLDAP extends CentreonObject
 
         $configurationLdapObj = new \Centreon_Object_Configuration_Ldap($this->dependencyInjector);
         $serverLdapObj = new \Centreon_Object_Server_Ldap($this->dependencyInjector);
-        $ldapList = $this->object->getList('*', -1, 0, null, null, $filters);
+        $ldapList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         foreach ($ldapList as $ldap) {
             echo $this->action . $this->delim . "ADD" . $this->delim
@@ -419,7 +425,16 @@ class CentreonLDAP extends CentreonObject
 
 
             $filters = array('`auth_ressource_id`' => $ldap['ar_id']);
-            $ldapServerList = $serverLdapObj->getList('*', -1, 0, null, null, $filters);
+
+            $ldapServerLabelField = $serverLdapObj->getUniqueLabelField();
+            $ldapServerList = $serverLdapObj->getList(
+                '*',
+                -1,
+                0,
+                $ldapServerLabelField,
+                'ASC',
+                $filters
+            );
 
             foreach ($ldapServerList as $server) {
                 echo $this->action . $this->delim . "ADDSERVER" . $this->delim
@@ -432,7 +447,16 @@ class CentreonLDAP extends CentreonObject
 
 
             $filters = array('`ar_id`' => $ldap['ar_id']);
-            $ldapConfigurationList = $configurationLdapObj->getList('*', -1, 0, null, null, $filters);
+
+            $ldapConfigurationLabelField = $configurationLdapObj->getUniqueLabelField();
+            $ldapConfigurationList = $configurationLdapObj->getList(
+                '*',
+                -1,
+                0,
+                $ldapConfigurationLabelField,
+                'ASC',
+                $filters
+            );
 
             foreach ($ldapConfigurationList as $configuration) {
                 if ($configuration['ari_name'] != 'ldap_dns_use_ssl' &&

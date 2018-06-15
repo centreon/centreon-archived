@@ -159,7 +159,9 @@ class CentreonContact extends CentreonObject
     /**
      * Get contact ID
      *
-     * @param unknown_type $contact_name
+     * @param null $contact_name
+     * @return mixed
+     * @throws CentreonClapiException
      */
     public function getContactID($contact_name = null)
     {
@@ -175,7 +177,8 @@ class CentreonContact extends CentreonObject
     /**
      * Validate Name format
      *
-     * @param string $name
+     * @param $name
+     * @return mixed
      */
     protected function validateName($name)
     {
@@ -246,7 +249,15 @@ class CentreonContact extends CentreonObject
         $paramString = str_replace("contact_", "", implode($this->delim, $params));
         $paramString = str_replace("oreon", "gui access", $paramString);
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters,
+            "AND"
+        );
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . "\n";
         }
@@ -456,8 +467,8 @@ class CentreonContact extends CentreonObject
     /**
      * Export data
      *
-     * @param string $parameters
-     * @return void
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -474,8 +485,8 @@ class CentreonContact extends CentreonObject
             "*",
             -1,
             0,
-            null,
-            null,
+            $labelField,
+            'ASC',
             $filters,
             "AND"
         );
