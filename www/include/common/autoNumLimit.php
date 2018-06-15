@@ -54,6 +54,7 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
         $limit = myDecode($gopt["value"]);
     }
 }
+
 if (!empty($centreon->historyLimit) &&
     !empty($centreon->historyLimit[$url]) &&
     $limit != $centreon->historyLimit[$url]
@@ -68,5 +69,9 @@ if (!empty($centreon->historyLimit) &&
 } else {
     $num = 0;
 }
+
+/* cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT) */
+$limit = (int)$limit;
+$num = (int)$num;
 
 global $search;
