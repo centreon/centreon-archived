@@ -351,9 +351,18 @@ if ($is_admin) {
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
 
+/**
+ * Add new header feature testing variable
+ */
+$newHeader = $centreonFeature->featureActive('Header', 2, $centreon->user->user_id);
+$tpl->assign('newHeader', $newHeader);
+
 /*
  * Display
  */
 $tpl->display("BlockHeader.ihtml");
-$tpl->display("menu.ihtml");
-count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : $tpl->display("noLeftMenu.ihtml");
+
+if (!$newHeader) {
+    $tpl->display("menu.ihtml");
+    count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : $tpl->display("noLeftMenu.ihtml");
+}
