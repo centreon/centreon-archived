@@ -66,28 +66,23 @@ const styles = theme => ({
 const Components = {
   'Home': {
     component: HomeIcon,
-    viewBox: '6 156 600 600',
-    className: classes.navIcons
+    viewBox: '6 156 600 600'
   },
   'Monitoring': {
     component: MonitoringIcon,
-    viewBox: '0 0 600 600',
-    className: null
+    viewBox: '0 0 600 600'
   },
   'Reporting': {
     component: ReportingIcon,
-    viewBox: '0 0 600 600',
-    className: null
+    viewBox: '0 0 600 600'
   },
   'Configuration': {
     component: ConfigurationIcon,
-    viewBox: '0 0 600 600',
-    className: null
+    viewBox: '0 0 600 600'
   },
   'Administration': {
     component: AdministrationIcon,
-    viewBox: '6 156 600 600',
-    className: null
+    viewBox: '6 156 600 600'
   }
 }
 
@@ -106,7 +101,7 @@ const Nav = ({classes, items, value, handleChange, open}) => (
           return (
             <Tab
               disableRipple key={item} value={item}
-              icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className}/>}
+              icon={<Icon viewBox={Components[i.label].viewBox}/>}
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             />
           )
