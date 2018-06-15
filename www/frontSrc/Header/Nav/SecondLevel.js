@@ -59,12 +59,15 @@ class SecondLevel extends Component {
         <Typography id={aria} variant="body2" className={classes.navTypo} gutterBottom> {item.label} </Typography>
         {
           Object.keys(item.children).length > 0 &&
-            <Tooltip placement="bottom"
-                    isOpen={tooltipOpen}
-                    target={aria}
-                    autohide={false}
-                    toggle={this.toggle}
-                    className={classes.tooltip}>
+            <Tooltip
+              placement="bottom"
+              isOpen={tooltipOpen}
+              target={aria}
+              autohide={false}
+              delay={{show: 0, hide: 50}}
+              toggle={this.toggle}
+              className={classes.tooltip}
+            >
               <ThirdLevel
                 thirdLevelArray={item.children}
               />

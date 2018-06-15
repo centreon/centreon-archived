@@ -65,6 +65,11 @@ require_once("./include/core/menu/menuJS.php");
 require_once _CENTREON_PATH_ . 'www/class/centreonMenu.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 
+/**
+ * Add new header feature testing variable
+ */
+$newHeader = $centreonFeature->featureActive('Header', 2, $centreon->user->user_id);
+
 $centreonMenu = new CentreonMenu(new CentreonLang(_CENTREON_PATH_, $centreon));
 
 /*
@@ -350,11 +355,6 @@ if ($is_admin) {
     $tpl->assign("tab_user", $tab_user);
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
-
-/**
- * Add new header feature testing variable
- */
-$newHeader = $centreonFeature->featureActive('Header', 2, $centreon->user->user_id);
 $tpl->assign('newHeader', $newHeader);
 
 /*
