@@ -40,7 +40,11 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
       return (
         <div  className={classes.thirdLevelContent}>
         { item != 'orphans' &&
-          <Typography variant="subheading" className={classes.typoGroup} gutterBottom>
+          <Typography
+            variant="subheading"
+            className={classes.typoGroup}
+            gutterBottom
+          >
             {item}
           </Typography>
         }
@@ -49,7 +53,10 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
             <Typography
               key={i2}
               className={classes.typoItem}
-              gutterBottom>{thirdLevelArray[item][item2].label}
+              gutterBottom
+              onClick={() => {window.location.href = "main.php?p=" + item2}}
+            >
+              {thirdLevelArray[item][item2].label}
             </Typography>
           ))
         }

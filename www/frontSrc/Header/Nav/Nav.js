@@ -64,7 +64,7 @@ const styles = theme => ({
 })
 
 const Nav = (
-  {classes, items, value, handleChange, handlePopoverClose, handlePopoverOpen, open
+  {classes, items, value, handleChange, open
   }) => (
       <div className={classes.root}>
         <Tabs
@@ -106,9 +106,10 @@ const Nav = (
               const Icon = Components[i.label].component || HomeIcon
 
               return (
-                <Tab disableRipple key={item}
-                     icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className} />}
-                     classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+                <Tab
+                  disableRipple key={item} value={item}
+                  icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className}/>}
+                  classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
                 />
               )
             }
@@ -117,7 +118,7 @@ const Nav = (
         </Tabs>
         {
           Object.keys(items).map((item, index) => {
-            if(value === index) {
+            if (item == value) {
               return (
                 <div className={classes.wrapper}>
                   <div className={classes.secondLevel} key={index} style={{ backgroundColor: items[item].color }}>

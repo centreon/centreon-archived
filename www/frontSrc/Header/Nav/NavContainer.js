@@ -9,7 +9,7 @@ class NavContainer extends Component {
     super(props)
     this.state = {
       tooltipOpen: false,
-      value: 0,
+      value: null,
     }
   }
   componentDidMount = () =>  {
@@ -27,28 +27,31 @@ class NavContainer extends Component {
   }
 
   render = () => {
-    const {  value, tooltipOpen } = this.state
+    const { value, tooltipOpen } = this.state
     const { data, dataFetched } = this.props.nav
 
     if (dataFetched) {
-      //console.log(this.props.nav)
-      const key = Object.keys(data).reduce((acc, item) => {
-        if (data[item].active) acc = item.key
-        return acc
-      },0)
+      const activeItemKey = value === null ?
+        Object.keys(data).reduce((acc, item) => {
+          if (data[item].active) {
+            acc = item
+          }
+          return acc
+        }, 1)
+        : value
 
-      const activeItemKey = value !== key ? key : value
-
-        return <Nav
-          value={value}
-          items={data}
-          key={activeItemKey}
-          handleChange={this.handleChange}
-          toggle={this.toggle}
-          tooltipOpen={tooltipOpen}
-          open={open}
-        />
-    } else return null
+      return <Nav
+        value={activeItemKey}
+        items={data}
+        key={activeItemKey}
+        handleChange={this.handleChange}
+        toggle={this.toggle}
+        tooltipOpen={tooltipOpen}
+        open={open}
+      />
+    } else {
+      return null
+    }
   }
 }
 

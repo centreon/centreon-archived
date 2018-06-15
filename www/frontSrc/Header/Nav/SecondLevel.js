@@ -49,6 +49,10 @@ class SecondLevel extends Component {
     })
   }
 
+  handleClick = (page) => {
+    window.location.href = "main.php?p=" + page;
+  }
+
   render = () => {
     const { tooltipOpen } = this.state
     const { classes, id, item, key } = this.props
@@ -56,7 +60,15 @@ class SecondLevel extends Component {
 
     return (
       <div className={classes.wrapper} id={key}>
-        <Typography id={aria} variant="body2" className={classes.navTypo} gutterBottom> {item.label} </Typography>
+        <Typography
+          id={aria}
+          variant="body2"
+          className={classes.navTypo}
+          gutterBottom
+          onClick={() => this.handleClick(id)}
+        >
+          {item.label}
+        </Typography>
         {
           Object.keys(item.children).length > 0 &&
             <Tooltip
