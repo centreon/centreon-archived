@@ -396,7 +396,7 @@ function hostIsAuthorized($host_id, $group_id)
 
 /*
  * Retreive service descriptions
- * The return value is an dictionary of the form
+ * The return value is a dictionary of the form
  *   { service_description => service_id }
  */
 function getMyHostServicesByName($host_id = null)
