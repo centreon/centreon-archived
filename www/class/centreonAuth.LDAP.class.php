@@ -108,20 +108,16 @@ class CentreonAuthLDAP
      */
     public function checkPassword()
     {
-        /*
-         * Check if it's a new user
-         */
-        $newUser = false;
         if (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '') {
             $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
-            $newUser = true;
+
         /* Validate if user exists in this resource */
         } elseif (isset($this->contactInfos['contact_ldap_dn'])
             && $this->contactInfos['contact_ldap_dn'] != ''
             && $this->ldap->findUserDn(
                 $this->contactInfos['contact_alias']
             ) !== $this->contactInfos['contact_ldap_dn']) {
-            return 2;
+            return 0;
         }
 
         /*
@@ -185,10 +181,6 @@ class CentreonAuthLDAP
                     if ($this->debug) {
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
                     }
-                    /*if ($this->firstCheck && $this->updateUserDn()) {
-                        $this->firstCheck = false;
-                        return $this->checkPassword();
-                    }*/
                     return 0;
                     break;
             }
@@ -211,7 +203,6 @@ class CentreonAuthLDAP
             $userDn = $this->ldap->findUserDn(
                 html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8')
             );
-
             if (false === $userDn) {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " .
                     html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
@@ -287,6 +278,18 @@ class CentreonAuthLDAP
                     return false;
                 }
                 $this->contactInfos['contact_ldap_dn'] = $userDn;
+
+                /*
+                 * try to update user groups from AD
+                 */
+                try {
+                    include_once(realpath(dirname(__FILE__) .  '/centreonContactgroup.class.php'));
+                    $cgs = new CentreonContactgroup($this->pearDB);
+                    $cgs->syncWithLdap();
+                } catch (\Exception $e) {
+                    $this->CentreonLog->insertLog(3, 'Error in updating ldap groups');
+                }
+
                 return true;
             } else {
                 /*
