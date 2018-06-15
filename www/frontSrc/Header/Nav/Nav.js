@@ -63,84 +63,82 @@ const styles = theme => ({
   },
 })
 
-const Nav = (
-  {classes, items, value, handleChange, open
-  }) => (
-      <div className={classes.root}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-        >
-          {
-            Object.keys(items).map((item) => {
-              const Components = {
-                'Home': {
-                  component: HomeIcon,
-                  viewBox: '6 156 600 600',
-                  className: classes.navIcons
-                },
-                'Monitoring': {
-                  component: MonitoringIcon,
-                  viewBox: '0 0 600 600',
-                  className: null
-                },
-                'Reporting': {
-                  component: ReportingIcon,
-                  viewBox: '0 0 600 600',
-                  className: null
-                },
-                'Configuration': {
-                  component: ConfigurationIcon,
-                  viewBox: '0 0 600 600',
-                  className: null
-                },
-                'Administration': {
-                  component: AdministrationIcon,
-                  viewBox: '6 156 600 600',
-                  className: null
-                },
+const Components = {
+  'Home': {
+    component: HomeIcon,
+    viewBox: '6 156 600 600',
+    className: classes.navIcons
+  },
+  'Monitoring': {
+    component: MonitoringIcon,
+    viewBox: '0 0 600 600',
+    className: null
+  },
+  'Reporting': {
+    component: ReportingIcon,
+    viewBox: '0 0 600 600',
+    className: null
+  },
+  'Configuration': {
+    component: ConfigurationIcon,
+    viewBox: '0 0 600 600',
+    className: null
+  },
+  'Administration': {
+    component: AdministrationIcon,
+    viewBox: '6 156 600 600',
+    className: null
+  }
+}
 
-              }
-              const i = items[item]
-              const Icon = Components[i.label].component || HomeIcon
+const Nav = ({classes, items, value, handleChange, open}) => (
+  <div className={classes.root}>
+    <Tabs
+      value={value}
+      onChange={handleChange}
+      classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+    >
+      {
+        Object.keys(items).map((item) => {
+          const i = items[item]
+          const Icon = Components[i.label].component || HomeIcon
 
-              return (
-                <Tab
-                  disableRipple key={item} value={item}
-                  icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className}/>}
-                  classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-                />
-              )
-            }
-            )
-          }
-        </Tabs>
-        {
-          Object.keys(items).map((item, index) => {
-            if (item == value) {
-              return (
-                <div className={classes.wrapper}>
-                  <div className={classes.secondLevel} key={index} style={{ backgroundColor: items[item].color }}>
-                  {
-                    Object.keys(items[item].children).map((secondItem, i) => {
-                      return (
-                        <SecondLevel
-                          key={secondItem}
-                          id={secondItem}
-                          item={items[item].children[secondItem]}
-                          open={open}
-                        />
-                      )
-                    })
-                  }
-                  </div>
-                </div>
-              )
-            }
-          })
+          return (
+            <Tab
+              disableRipple key={item} value={item}
+              icon={<Icon viewBox={Components[i.label].viewBox} className={Components[i.label].className}/>}
+              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            />
+          )
         }
-      </div>
+        )
+      }
+    </Tabs>
+    {
+      Object.keys(items).map((item, index) => {
+        if (item == value) {
+          return (
+            <div className={classes.wrapper}>
+              <div className={classes.secondLevel} key={index} style={{ backgroundColor: items[item].color }}>
+              {
+                Object.keys(items[item].children).map((secondItem) => {
+                  return (
+                    <SecondLevel
+                      key={secondItem}
+                      id={secondItem}
+                      item={items[item].children[secondItem]}
+                      open={open}
+                    />
+                  )
+                })
+              }
+              </div>
+            </div>
+          )
+        }
+      })
+    }
+  </div>
 )
 
 export default withStyles(styles)(Nav)
