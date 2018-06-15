@@ -73,7 +73,7 @@ class CentreonContactgroup
         $query .= " ORDER BY a.cg_name";
 
         $res = $this->db->query($query);
-        while ($contactgroup = $res->fetchRow()) {
+        while ($contactgroup = $res->fetch()) {
             $contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
             if ($withLdap && isset($contactgroup['cg_ldap_dn']) && $contactgroup['cg_ldap_dn'] != "") {
                 $contactgroups[$contactgroup["cg_id"]] = $this->formatLdapContactgroupName(
@@ -109,11 +109,11 @@ class CentreonContactgroup
 
         $query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'";
         $res = $this->db->query($query);
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         if ($row['value'] == 1) {
             $query = "SELECT ar_id, ar_name FROM auth_ressource WHERE ar_enable = '1'";
             $ldapres = $this->db->query($query);
-            while ($ldaprow = $ldapres->fetchRow()) {
+            while ($ldaprow = $ldapres->fetch()) {
                 $ldap = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
                 $ldap->connect(null, $ldaprow['ar_id']);
                 $cg_ldap = $ldap->listOfGroups();
@@ -167,7 +167,7 @@ class CentreonContactgroup
             WHERE cg_name = '" . $this->db->escape($cg_name) . "'";
         $res = $this->db->query($queryCheck);
         if ($res->rowCount() == 1) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             return $row['cg_id'];
         }
         $ldap = new CentreonLDAP($this->db, null, $ar_id);
@@ -190,7 +190,7 @@ class CentreonContactgroup
         } catch (\PDOException $e) {
             return 0;
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         /*
          * Reset ldap build cache time
          */
@@ -216,13 +216,34 @@ class CentreonContactgroup
         /*
          * Connect to LDAP Server
          */
-        while ($ldaprow = $ldapres->fetchRow()) {
+        while ($ldaprow = $ldapres->fetch()) {
             $ldapConn = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
             $connectionResult = $ldapConn->connect();
             if (false != $connectionResult) {
                 $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup
                     WHERE cg_type = 'ldap' AND ar_id = " . $ldaprow['ar_id']);
-                while ($row = $res->fetchRow()) {
+
+
+                /**
+                 * insert groups from ldap into centreon
+                 */
+                $registeredGroupsFromDB = $res->fetchAll();
+                $registeredGroups = [];
+                foreach ($registeredGroupsFromDB as $registeredGroupFromDB){
+                    $registeredGroups[] = $registeredGroupFromDB['cg_name'];
+                }
+                $ldapGroups = $ldapConn->listOfGroups();
+                $toInsertGroups = array_diff($ldapGroups, $registeredGroups);
+
+                foreach ($toInsertGroups as $toInsertGroup){
+                    $this->insertLdapGroup('['.$ldaprow['ar_id'].']'.$toInsertGroup);
+                }
+
+                $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup
+                    WHERE cg_type = 'ldap' AND ar_id = " . $ldaprow['ar_id']);
+
+
+                while ($row = $res->fetch()) {
                     /*
                      * Test is the group a not move or delete in ldap
                      */
@@ -266,19 +287,19 @@ class CentreonContactgroup
 
                     $contact = '';
                     foreach ($members as $member) {
-                        $contact = $this->db->quote($member) . ',';
+                        $contact .= $this->db->quote($member) . ',';
                     }
                     $contact = rtrim($contact, ",");
 
                     $queryContact = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn IN ('" . $contact . "')";
+                        WHERE contact_ldap_dn IN (" . $contact . ")";
                     try {
                         $resContact = $this->db->query($queryContact);
                     } catch (\PDOException $e) {
                         $msg[] = "Error in getting contact id form members.";
                         continue;
                     }
-                    while ($rowContact = $resContact->fetchRow()) {
+                    while ($rowContact = $resContact->fetch()) {
                         $queryAddRelation = "INSERT INTO contactgroup_contact_relation
                             (contactgroup_cg_id, contact_contact_id)
             	            VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
@@ -312,7 +333,7 @@ class CentreonContactgroup
         $query = "SELECT cg_name FROM contactgroup WHERE cg_id = " . CentreonDB::escape($cgId) . " LIMIT 1";
         $res = $this->db->query($query);
         if ($res->rowCount()) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             return $row['cg_name'];
         } else {
             throw new \Exception('No contact group name found');
@@ -345,7 +366,7 @@ class CentreonContactgroup
                 } catch (\PDOException $e) {
                     return false;
                 }
-                $row = $res->fetchRow();
+                $row = $res->fetch();
                 if ($row['nb'] != 0) {
                     return false;
                 }
