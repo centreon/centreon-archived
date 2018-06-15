@@ -222,6 +222,27 @@ class CentreonContactgroup
             if (false != $connectionResult) {
                 $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup
                     WHERE cg_type = 'ldap' AND ar_id = " . $ldaprow['ar_id']);
+
+
+                /**
+                 * insert groups from ldap into centreon
+                 */
+                $registeredGroupsFromDB = $res->fetchAll();
+                $registeredGroups = [];
+                foreach ($registeredGroupsFromDB as $registeredGroupFromDB){
+                    $registeredGroups[] = $registeredGroupFromDB['cg_name'];
+                }
+                $ldapGroups = $ldapConn->listOfGroups();
+                $toInsertGroups = array_diff($ldapGroups, $registeredGroups);
+
+                foreach ($toInsertGroups as $toInsertGroup){
+                    $this->insertLdapGroup('['.$ldaprow['ar_id'].']'.$toInsertGroup);
+                }
+
+                $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup
+                    WHERE cg_type = 'ldap' AND ar_id = " . $ldaprow['ar_id']);
+
+
                 while ($row = $res->fetchRow()) {
                     /*
                      * Test is the group a not move or delete in ldap
@@ -266,12 +287,12 @@ class CentreonContactgroup
 
                     $contact = '';
                     foreach ($members as $member) {
-                        $contact = $this->db->quote($member) . ',';
+                        $contact .= $this->db->quote($member) . ',';
                     }
                     $contact = rtrim($contact, ",");
 
                     $queryContact = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn IN ('" . $contact . "')";
+                        WHERE contact_ldap_dn IN (" . $contact . ")";
                     try {
                         $resContact = $this->db->query($queryContact);
                     } catch (\PDOException $e) {

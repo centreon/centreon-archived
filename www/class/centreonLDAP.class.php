@@ -477,20 +477,44 @@ class CentreonLDAP
             return array();
         }
         $groupdn = str_replace('\\', '\\\\', $groupdn);
-        $filter = '(&' . preg_replace('/%s/', '*', $this->userSearchInfo['filter']) .
-            '(' . $this->userSearchInfo['group'] . '=' . $this->replaceFilter($groupdn) . '))';
-        $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
-        if (false === $result) {
-            restore_error_handler();
-            return array();
-        }
-        $entries = ldap_get_entries($this->ds, $result);
-        $nbEntries = $entries["count"];
         $list = array();
-        for ($i = 0; $i < $nbEntries; $i++) {
-            $list[] = $entries[$i]['dn'];
+        if (!empty($this->userSearchInfo['group'])) {
+            /**
+             * we have specific parameter for user to denote groups he belongs to
+             */
+            $filter = '(&' . preg_replace('/%s/', '*', $this->userSearchInfo['filter']) .
+                '(' . $this->userSearchInfo['group'] . '=' . $this->replaceFilter($groupdn) . '))';
+            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+
+            if (false === $result) {
+                restore_error_handler();
+                return array();
+            }
+            $entries = ldap_get_entries($this->ds, $result);
+            $nbEntries = $entries["count"];
+            for ($i = 0; $i < $nbEntries; $i++) {
+                $list[] = $entries[$i]['dn'];
+            }
+            restore_error_handler();
+        } else {
+            /**
+             * we get list of members by group
+             */
+            $filter = preg_replace('/%s/', $this->getCnFromDn($groupdn), $this->groupSearchInfo['filter']);
+            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+
+            if (false === $result) {
+                restore_error_handler();
+                return array();
+            }
+            $entries = ldap_get_entries($this->ds, $result);
+            $nbEntries = !empty($entries[0]['member']['count']) ? $entries[0]['member']['count'] : 0;
+            for ($i = 0; $i < $nbEntries; $i++) {
+                $list[] = $entries[0]['member'][$i];
+            }
+            restore_error_handler();
         }
-        restore_error_handler();
+
         return $list;
     }
 
@@ -782,6 +806,18 @@ class CentreonLDAP
     private function setErrorHandler()
     {
         set_error_handler('errorLdapHandler');
+    }
+
+    /**
+     * get cn from dn
+     */
+    private function getCnFromDn($dn)
+    {
+
+        if (preg_match('/(?i:(?<=cn=)).*?(?=,[A-Za-z]{0,2}=|$)/', $dn, $dnArray)) {
+            return !empty($dnArray) ? $dnArray[0] : false;
+        }
+        return false;
     }
 }
 

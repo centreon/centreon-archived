@@ -203,7 +203,6 @@ class CentreonAuthLDAP
             $userDn = $this->ldap->findUserDn(
                 html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8')
             );
-
             if (false === $userDn) {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " .
                     html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
@@ -279,6 +278,18 @@ class CentreonAuthLDAP
                     return false;
                 }
                 $this->contactInfos['contact_ldap_dn'] = $userDn;
+
+                /*
+                 * try to update user groups from AD
+                 */
+                try {
+                    include_once(realpath(dirname(__FILE__) .  '/centreonContactgroup.class.php'));
+                    $cgs = new CentreonContactgroup($this->pearDB);
+                    $cgs->syncWithLdap();
+                } catch (\Exception $e) {
+                    $this->CentreonLog->insertLog(3, 'Error in updating ldap groups');
+                }
+
                 return true;
             } else {
                 /*
