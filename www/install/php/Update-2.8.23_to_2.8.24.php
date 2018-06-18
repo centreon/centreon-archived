@@ -39,6 +39,13 @@
  */
 $needUpgrade = "false";
 
+/**
+ * Declaring a global param to avoid centAcl.php to disconnect the DBs until the update is achieved
+ */
+if (!defined('UPGRADE_PROCESS')) {
+    define('UPGRADE_PROCESS', 'True');
+}
+
 $unlockTable = 'UNLOCK TABLES';
 $stmt = $pearDB->query($unlockTable);
 $stmt = $pearDBO->query($unlockTable);
@@ -105,7 +112,5 @@ if ($needUpgrade === "true") {
 
     $updateQuery = 'UPDATE acl_groups SET acl_group_changed = 1';
     $stmt = $pearDB->query($updateQuery);
-
-    require_once realpath(dirname(__FILE__) . "/../../../cron/centAcl.php");
 }
 ?>
