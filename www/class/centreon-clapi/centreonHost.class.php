@@ -324,7 +324,6 @@ class CentreonHost extends CentreonObject
         $extended->insert(array($extended->getUniqueLabelField() => $hostId));
     }
 
-
     /**
      * Del Action
      * Must delete services as well
@@ -1172,7 +1171,6 @@ class CentreonHost extends CentreonObject
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
         $instanceRel = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
-        $parentShip = array();
 
         if ($this->register) {
             $instElements = $instanceRel->getMergedParameters(
@@ -1186,6 +1184,13 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
         }
+
+        /* Init parentship */
+        $parentShip = array();
+        if ($this->register == 1) {
+            $parentShip = $this->getHostListByParent($elements);
+        }
+
         foreach ($elements as $element) {
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
@@ -1238,9 +1243,6 @@ class CentreonHost extends CentreonObject
             }
 
             // Set parentship
-            if ($this->register == 1) {
-                $parentShip = $this->getHostListByParent($elements);
-            }
             if (isset($parentShip[$element[$this->object->getPrimaryKey()]])) {
                 foreach ($parentShip[$element[$this->object->getPrimaryKey()]] as $parentId) {
                     echo $this->action . $this->delim
