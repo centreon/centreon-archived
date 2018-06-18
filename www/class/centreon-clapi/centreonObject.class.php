@@ -280,7 +280,6 @@ abstract class CentreonObject
      */
     public function add($parameters)
     {
-
         $this->initInsertParameters($parameters);
 
         $id = $this->object->insert($this->params);
@@ -290,10 +289,10 @@ abstract class CentreonObject
             $this->params[$this->object->getUniqueLabelField()],
             $this->params
         );
+
         if (method_exists($this, "insertRelations")) {
             $this->insertRelations($id);
         }
-        return $id;
     }
 
 
