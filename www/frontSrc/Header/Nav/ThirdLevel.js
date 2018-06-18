@@ -27,6 +27,7 @@ const styles = theme => ({
     color: '#818285'
   },
   typoItem: {
+    cursor: 'pointer',
     color: '#231F20',
     paddingLeft: 6,
     fontSize: 13
