@@ -34,83 +34,63 @@
  *
  */
 
-/**
- * Checking if the DB is already upgraded
+/*
+ * Create tempory table to delete duplicate entries
  */
-$needUpgrade = "false";
+$query = 'CREATE TABLE `centreon_acl_new` ( ' .
+    '`group_id` int(11) NOT NULL, ' .
+    '`host_id` int(11) NOT NULL, ' .
+    '`service_id` int(11) DEFAULT NULL, ' .
+    'UNIQUE KEY (`group_id`,`host_id`,`service_id`), ' .
+    'KEY `index1` (`host_id`,`service_id`,`group_id`) ' .
+    ') ENGINE=InnoDB DEFAULT CHARSET=utf8 ';
+$pearDBO->query($query);
 
 /**
- * Declaring a global param to avoid centAcl.php to disconnect the DBs until the update is achieved
+ * Checking if centAcl.php is running and waiting 2min for it to stop before locking cron_operation table
  */
-if (!defined('UPGRADE_PROCESS')) {
-    define('UPGRADE_PROCESS', 'True');
-}
-
-$unlockTable = 'UNLOCK TABLES';
-$stmt = $pearDB->query($unlockTable);
-$stmt = $pearDBO->query($unlockTable);
-
-$showKeysQuery = 'SHOW FIELDS FROM centreon_acl';
-$result = $pearDBO->query($showKeysQuery);
-
-$row = array();
-while ($row = $result->fetchRow()) {
-    if ($row['Key'] === "MUL") {
-        $needUpgrade = "true";
-    }
-}
-
-if ($needUpgrade === "true") {
-    /**
-     * Checking if centAcl.php is running and waiting 2min for it to stop before locking cron_operation table
-     */
-    $i = 0;
-    while ($i < 120) {
-        $searchStatus = 'SELECT running FROM cron_operation WHERE `name` = \'centAcl.php\'';
-        $result = $pearDB->query($searchStatus);
-        $row = array();
-        while ($row = $result->fetchRow()) {
-            if ($row['running'] == "1") {
-                sleep(1);
-            } else {
-                $lockTable = 'LOCK TABLES cron_operation READ';
-                $stmt = $pearDB->query($lockTable);
-                break;
-            }
-        }
-        $i++;
-    }
-
-    /**
-    * Retrieving index occurrences, dropping keys and centreon_acl table's data
-    */
-    $stmt = $pearDBO->query($unlockTable);
-
-    $searchIndex = 'SHOW INDEX FROM centreon_acl WHERE Key_name LIKE \'index%\'';
-    $stmt = $pearDBO->query($searchIndex);
-
-    $queryValues = array();
+$query = "SELECT running FROM cron_operation WHERE `name` = 'centAcl.php'";
+$i = 0;
+while ($i < 120) {
+    $i++;
+    $result = $pearDB->query($query);
     while ($row = $result->fetchRow()) {
-        $queryValues[$row['Key_name']] = $row['Key_name'];
+        if ($row['running'] == "1") {
+            sleep(1);
+        } else {
+            break(2);
+        }
     }
-
-    foreach ($queryValues as $key => $value) {
-        $dropQuery = 'ALTER TABLE centreon_acl DROP KEY ' . $value;
-        $stmt = $pearDBO->query($dropQuery);
-    }
-
-    $truncateQuery = 'TRUNCATE centreon_acl';
-    $stmt = $pearDBO->query($truncateQuery);
-
-    /**
-     * Updating DBs and reloading cron_operation
-     */
-    $add_query = 'ALTER TABLE centreon_acl ADD PRIMARY KEY (`group_id`,`host_id`,`service_id`)';
-    $stmt = $pearDBO->query($add_query);
-
-    $stmt = $pearDB->query($unlockTable);
-
-    $updateQuery = 'UPDATE acl_groups SET acl_group_changed = 1';
-    $stmt = $pearDB->query($updateQuery);
 }
-?>
+
+/**
+ * Lock centAcl cron during upgrade
+ */
+$query = "UPDATE cron_operation SET running = '1' WHERE `name` = 'centAcl.php'";
+$pearDB->query($query);
+
+/**
+ * Copy data from old table to new table with duplicate entries deletion
+ */
+$query = 'INSERT INTO centreon_acl_new (group_id, host_id, service_id) ' .
+    'SELECT group_id, host_id, service_id FROM centreon_acl ' .
+    'GROUP BY group_id, host_id, service_id';
+$pearDBO->query($query);
+
+/**
+ * Drop old table with duplicate entries
+ */
+$query = 'DROP TABLE centreon_acl';
+$pearDBO->query($query);
+
+/**
+ * Rename temporary table to stable table
+ */
+$query = 'ALTER TABLE centreon_acl_new RENAME TO centreon_acl';
+$pearDBO->query($query);
+
+/**
+ * Unlock centAcl cron during upgrade
+ */
+$query = "UPDATE cron_operation SET running = '0' WHERE `name` = 'centAcl.php'";
+$pearDB->query($query);
