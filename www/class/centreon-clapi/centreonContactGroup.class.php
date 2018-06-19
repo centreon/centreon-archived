@@ -202,7 +202,7 @@ class CentreonContactGroup extends CentreonObject
                         }
                     }
                 }
-                $acl = new CentreonACL();
+                $acl = new \CentreonClapi\CentreonACL($this->dependencyInjector);
                 $acl->reload(true);
             }
         } else {
