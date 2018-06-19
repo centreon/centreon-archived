@@ -293,9 +293,10 @@ class CentreonService
      *  @param string $string
      *  @param int $antiLoop
      *  @param int $instanceId
+     *  @param array $data
      *  @return string
      */
-    public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId = null)
+    public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId = null, $data = null)
     {
         $rq = "SELECT service_register FROM service WHERE service_id = '" . $svc_id . "' LIMIT 1";
         $DBRES = $this->db->query($rq);
@@ -308,19 +309,49 @@ class CentreonService
          * replace if not template
          */
         if ($row['service_register'] == 1) {
-            if (preg_match('/\$SERVICEDESC\$/', $string)) {
-                $string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string);
-            }
-            if (!is_null($instanceId) && preg_match("\$INSTANCENAME\$", $string)) {
-                $string = str_replace("\$INSTANCENAME\$", $this->instanceObj->getParam($instanceId, 'name'), $string);
-            }
-            if (!is_null($instanceId) && preg_match("\$INSTANCEADDRESS\$", $string)) {
-                $string = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $this->instanceObj->getParam($instanceId, 'ns_ip_address'),
-                    $string
-                );
-            }
+            $string = str_replace(
+                "\$SERVICEDESC\$",
+                count($data['description']) 
+                    ? $data['description'] 
+                    : $this->getServiceDesc($svc_id),
+                $string
+            );
+            $string = str_replace(
+                "\$SERVICESTATEID\$",
+                count($data['state']) 
+                    ? $data['state'] 
+                    : $this->getParameters($svc_id, 'state'),
+                $string
+            );
+            $string = str_replace(
+                "\$HOSTADDRESS\$",
+                count($data['address']) ? $data['address'] : "",
+                $string
+            );
+            $string = str_replace(
+                "\$HOSTNAME\$",
+                count($data["name"]) ? $data["name"] : "",
+                $string
+            );
+            $string = str_replace(
+                "\$HOSTALIAS\$",
+                count($data["alias"]) ? $data["alias"] : "",
+                $string
+            );
+            $string = str_replace(
+                "\$INSTANCENAME\$",
+                count($data['instance_name'])
+                    ? $data['instance_name']
+                    : $this->instanceObj->getParam($instanceId, 'name'),
+                $string
+            );
+            $string = str_replace(
+                "\$INSTANCEADDRESS\$",
+                count($data['instance_name'])
+                    ? $data['instance_name']
+                    : $this->instanceObj->getParam($instanceId, 'ns_ip_address'),
+                $string
+            );
         }
         $matches = array();
         $pattern = '|(\$_SERVICE[0-9a-zA-Z\_\-]+\$)|';

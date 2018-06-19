@@ -431,45 +431,42 @@ if (!PEAR::isError($DBRESULT)) {
             $obj->XML->text(CentreonUtils::escapeSecure(urlencode($data["name"])), true, false);
             $obj->XML->endElement();
 
-            $hostNotesUrl = "none";
-            if ($data["h_notes_url"]) {
-                $hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
-                $hostNotesUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostNotesUrl);
-                $hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
-                $hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
-                $hostNotesUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostNotesUrl);
-                $hostNotesUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostNotesUrl);
-                $hostNotesUrl = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
-                    $hostNotesUrl
-                );
-            }
-            $obj->XML->writeElement(
-                "hnu",
-                CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostNotesUrl))
-            );
+            $hostNotesUrl = ($data["h_notes_url"] != "")
+                ? CentreonUtils::escapeSecure(
+                    $obj->hostObj->replaceMacroInString(
+                        $data["name"],
+                        $data["h_notes_url"],
+                        null,
+                        $data
+                    )
+                )
+                : "none";
+            $obj->XML->writeElement("hnu", $hostNotesUrl);
 
-            $hostActionUrl = "none";
-            if ($data["h_action_url"]) {
-                $hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
-                $hostActionUrl = str_replace("\$HOSTALIAS\$", $data["alias"], $hostActionUrl);
-                $hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
-                $hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
-                $hostActionUrl = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data["host_state"]], $hostActionUrl);
-                $hostActionUrl = str_replace("\$HOSTSTATEID\$", $data["host_state"], $hostActionUrl);
-                $hostActionUrl = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
-                    $hostActionUrl
-                );
-            }
-            $obj->XML->writeElement(
-                "hau",
-                CentreonUtils::escapeSecure($obj->hostObj->replaceMacroInString($data["name"], $hostActionUrl))
-            );
+            $hostActionUrl = ($data["h_action_url"] != "")
+                ? CentreonUtils::escapeSecure(
+                    $obj->hostObj->replaceMacroInString(
+                        $data["name"],
+                        $data["h_action_url"],
+                        null,
+                        $data
+                    )
+                )
+                : "none";
+            $obj->XML->writeElement("hau", $hostActionUrl);
 
-            $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($data["h_notes"]));
+            $hostNotes = ($data["h_notes"] != "")
+                ? CentreonUtils::escapeSecure(
+                    $obj->hostObj->replaceMacroInString(
+                        $data["name"],
+                        $data["h_notes"],
+                        null,
+                        $data
+                    )
+                )
+                : "none";
+            $obj->XML->writeElement("hnn", $hostNotes);
+
             $obj->XML->writeElement("hico", $data["h_icon_images"]);
             $obj->XML->writeElement("hip", CentreonUtils::escapeSecure($data["address"]));
             $obj->XML->writeElement("hdtm", $data["h_scheduled_downtime_depth"]);
@@ -538,97 +535,64 @@ if (!PEAR::isError($DBRESULT)) {
         $obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
         if ($data["notes"] != "") {
-            $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
-            $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
-            if (isset($data["alias"]) && $data["alias"]) {
-                $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
-            }
-            if (isset($data['address']) && $data['address']) {
-                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
-            }
-            if (isset($data['instance_name']) && $data['instance_name']) {
-                $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
-                $data["notes"] = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                    $data["notes"]
-                );
-            }
-            $obj->XML->writeElement("snn", CentreonUtils::escapeSecure($data["notes"]));
+            $data["notes"] = str_replace(
+                "\$SERVICESTATE\$",
+                $obj->statusService[$data["state"]],
+                $data["notes"]
+            );
+            $data["notes"] = CentreonUtils::escapeSecure(
+                $obj->serviceObj->replaceMacroInString(
+                    $data["service_id"],
+                    $data["notes"],
+                    null,
+                    null,
+                    $data
+                )
+            );
         } else {
-            $obj->XML->writeElement("snn", 'none');
+            $data["notes"] = "none";
         }
+        $obj->XML->writeElement("snn", $data["notes"]);
 
         if ($data["notes_url"] != "") {
-            $data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
-            $data["notes_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["notes_url"]);
             $data["notes_url"] = str_replace(
                 "\$SERVICESTATE\$",
                 $obj->statusService[$data["state"]],
                 $data["notes_url"]
             );
-            $data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
-            if (isset($data["alias"]) && $data["alias"]) {
-                $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
-            }
-            if (isset($data['address']) && $data['address']) {
-                $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes_url"]);
-            }
-            if (isset($data['instance_name']) && $data['instance_name']) {
-                $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
-                $data["notes_url"] = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                    $data["notes_url"]
-                );
-            }
-            $obj->XML->writeElement("snu", CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"])));
-        } else {
-            $obj->XML->writeElement("snu", 'none');
-        }
-
-        if ($data["action_url"] != "") {
-            $data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
-            $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
-            $data["action_url"] = str_replace("\$SERVICESTATE\$", $obj->statusService[$data["state"]], $data["action_url"]);
-            $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
-            if (isset($data["alias"]) && $data["alias"]) {
-                $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
-            }
-            if (isset($data['address']) && $data['address']) {
-                $data["action_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
-            }
-            if (isset($data['instance_name']) && $data['instance_name']) {
-                $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
-                $data["action_url"] = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
-                    $data["action_url"]
-                );
-            }
-            $obj->XML->writeElement(
-                "sau",
-                CentreonUtils::escapeSecure(
-                    $obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])
+            $data["notes_url"] = CentreonUtils::escapeSecure(
+                $obj->serviceObj->replaceMacroInString(
+                    $data["service_id"],
+                    $data["notes_url"],
+                    null,
+                    null,
+                    $data
                 )
             );
         } else {
-            $obj->XML->writeElement("sau", 'none');
+            $data["notes_url"] = "none";
         }
+        $obj->XML->writeElement("snu", $data["notes_url"]);
 
-        if ($data["notes"] != "") {
-            $data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
-            $data["notes"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
-            if (isset($data["alias"]) && $data["alias"]) {
-                $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
-            }
-            if (isset($data['address']) && $data['address']) {
-                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
-            }
-            $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($data["notes"]));
+        if ($data["action_url"] != "") {
+            $data["action_url"] = str_replace(
+                "\$SERVICESTATE\$",
+                $obj->statusService[$data["state"]],
+                $data["action_url"]
+            );
+            $data["action_url"] = CentreonUtils::escapeSecure(
+                $obj->serviceObj->replaceMacroInString(
+                    $data["service_id"],
+                    $data["action_url"],
+                    null,
+                    null,
+                    $data
+                )
+            );
         } else {
-            $obj->XML->writeElement("sn", 'none');
+            $data["action_url"] = "none";
         }
+        $obj->XML->writeElement("sau", $data["action_url"]);
 
         $obj->XML->writeElement("fd", $data["flap_detection"]);
         $obj->XML->writeElement("ha", $data["h_acknowledged"]);

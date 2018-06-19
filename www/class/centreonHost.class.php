@@ -548,9 +548,10 @@ class CentreonHost
      * @param mixed $hostParam
      * @param string $string
      * @param int $antiLoop
+     * @param array $data
      * @return string
      */
-    public function replaceMacroInString($hostParam, $string, $antiLoop = null)
+    public function replaceMacroInString($hostParam, $string, $antiLoop = null, $data = null)
     {
         if (is_numeric($hostParam)) {
             $host_id = $hostParam;
@@ -571,29 +572,35 @@ class CentreonHost
          * replace if not template
          */
         if ($row['host_register'] == 1) {
-            if (strpos($string, "\$HOSTADDRESS$")) {
-                $string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
-            }
-            if (strpos($string, "\$HOSTNAME$")) {
-                $string = str_replace("\$HOSTNAME\$", $this->getHostName($host_id), $string);
-            }
-            if (strpos($string, "\$HOSTALIAS$")) {
-                $string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
-            }
-            if (preg_match("\$INSTANCENAME\$", $string)) {
-                $string = str_replace(
-                    "\$INSTANCENAME\$",
-                    $this->instanceObj->getParam($this->getHostPollerId($host_id), 'name'),
-                    $string
-                );
-            }
-            if (preg_match("\$INSTANCEADDRESS\$", $string)) {
-                $string = str_replace(
-                    "\$INSTANCEADDRESS\$",
-                    $this->instanceObj->getParam($this->getHostPollerId($host_id), 'ns_ip_address'),
-                    $string
-                );
-            }
+            $string = str_replace(
+                "\$HOSTADDRESS\$",
+                count($data['address']) ? $data['address'] : $this->getHostAddress($host_id),
+                $string
+            );
+            $string = str_replace(
+                "\$HOSTNAME\$",
+                count($data["name"]) ? $data["name"] : $this->getHostName($host_id),
+                $string
+            );
+            $string = str_replace(
+                "\$HOSTALIAS\$",
+                count($data["alias"]) ? $data["alias"] : $this->getHostAlias($host_id),
+                $string
+            );
+            $string = str_replace(
+                "\$INSTANCENAME\$",
+                count($data['instance_name'])
+                    ? $data['instance_name']
+                    : $this->instanceObj->getParam($this->getHostPollerId($host_id), 'name'),
+                $string
+            );
+            $string = str_replace(
+                "\$INSTANCEADDRESS\$",
+                count($data['instance_name'])
+                    ? $data['instance_name']
+                    : $this->instanceObj->getParam($this->getHostPollerId($host_id), 'ns_ip_address'),
+                $string
+            );
         }
         unset($row);
 
