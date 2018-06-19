@@ -645,10 +645,8 @@ try {
     /*
      * Close connection to databases
      */
-    if (defined('UPGRADE_PROCESS') && UPGRADE_PROCESS !== 'True') {
-        $pearDB->disconnect();
-        $pearDBO->disconnect();
-    }
+    $pearDB->disconnect();
+    $pearDBO->disconnect();
 
 } catch (Exception $e) {
     programExit($e->getMessage());
