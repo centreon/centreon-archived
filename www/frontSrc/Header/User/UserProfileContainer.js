@@ -52,7 +52,9 @@ class UserProfileContainer extends Component {
 
   handleNotification = () => {
     const { soundNotif } = this.state
-    soundNotif === true ? this.props.stopSonoreNotification() : this.props.startSonoreNotification()
+    const { startSonoreNotification, stopSonoreNotification } = this.props
+
+    soundNotif === true ? stopSonoreNotification() : startSonoreNotification()
 
     this.setState({
       soundNotif: !soundNotif
@@ -68,9 +70,15 @@ class UserProfileContainer extends Component {
   }
 
   render () {
-    const { user } = this.props
-    const { anchorEl, initial, soundNotif } = this.state
+    const { user, dataFetched } = this.props
+    const { anchorEl, initial } = this.state
     const open = Boolean(anchorEl)
+
+    if (dataFetched) {
+      this.setState({
+        soundNotif: user.soundNotificationsEnabled
+      })
+    }
 
     return (
       <UserProfile
@@ -78,7 +86,7 @@ class UserProfileContainer extends Component {
         handleOpen={this.handleOpen}
         handleNotification={this.handleNotification}
         handleAutologin={this.handleAutologin}
-        soundNotif={soundNotif}
+        soundNotif={this.state.soundNotif}
         initial={initial}
         user={user}
         open={open}

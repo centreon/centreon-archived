@@ -15,7 +15,9 @@ import {
 
 export default function userReducer (
   state = {
-    data: {}
+    data: {},
+    dataFetched: false,
+    isFetching: false,
   },
   action
 ) {
@@ -23,17 +25,23 @@ export default function userReducer (
   switch (action.type) {
     case REQUEST_USER:
       return {
-        ...state
+        ...state,
+        dataFetched: false,
+        isFetching: true,
       }
     case REQUEST_USER_SUCCESS:
       return {
         ...state,
-        data: action.data
+        data: action.data,
+        dataFetched: true,
+        isFetching: false,
       }
     case REQUEST_USER_FAIL:
       return {
         ...state,
-        err: action.error
+        err: action.error,
+        isFetching: false,
+        dataFetched: false,
       }
     case REQUEST_ENABLED_NOTIF:
       return {

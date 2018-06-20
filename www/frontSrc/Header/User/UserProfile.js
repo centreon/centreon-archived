@@ -110,10 +110,7 @@ const UserProfile = ({
           <Bookmark className={classes.icon}/> Add to bookmark
         </MenuItem>
       <MenuItem onClick={handleNotification} id='notifAction'>
-        {soundNotif ?
-          <VolumeMute className={classes.icon} />
-          : <VolumeUp className={classes.icon} />
-        }
+        <VolumeUp className={classes.icon} />
         {soundNotif ? 'Disable sound notification' : 'Enable sound notification'}
       </MenuItem>
       <div className={classes.menuFooter}>
