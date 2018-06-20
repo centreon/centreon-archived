@@ -49,12 +49,20 @@ $mediaObj = new CentreonMedia($pearDB);
 /*
  * Search
  */
-$SearchTool = null;
-$search = "";
-if (isset($_POST['searchHg']) && $_POST['searchHg']) {
+$searchFilterQuery = null;
+$mainQueryParameters = [];
+$search = '';
+
+if (isset($_POST['searchHg'])) {
     $search = $_POST['searchHg'];
-    $SearchTool = " (hg_name LIKE '%" . $pearDB->escape($search)
-        . "%' OR hg_alias LIKE '%" . $pearDB->escape($search) . "%') AND ";
+    $centreon->host_group_search = $search;
+} elseif (isset($centreon->host_group_search) && $centreon->host_group_search != '') {
+    $search = $centreon->host_group_search;
+}
+
+if ($search != '') {
+    $mainQueryParameters[':search_string'] = "%{$search}%";
+    $searchFilterQuery = " (hg_name LIKE :search_string OR hg_alias LIKE :search_string) AND ";
 }
 
 /*
@@ -84,15 +92,15 @@ $tpl->assign("headerMenu_options", _("Options"));
  */
 $rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image
            FROM hostgroup
-           WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
+           WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
-    " ORDER BY hg_name LIMIT " . $num * $limit . ", $limit";
-$DBRESULT = $pearDB->query($rq);
+    ' ORDER BY hg_name LIMIT ' . $num * $limit . ", {$limit}";
+$DBRESULT = $pearDB->query($rq, $mainQueryParameters);
 
 /*
  * Pagination
  */
-$rows = $pearDB->numberRows();
+$rows = $DBRESULT->rowCount();
 include("./include/common/checkPagination.php");
 
 $search = tidySearchKey($search, $advanced_search);
@@ -107,7 +115,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
     $moptions = "";
     if ($hg["hg_activate"]) {
@@ -148,7 +156,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
     $DBRESULT2 = $pearDB->query($rq);
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
-    while ($row = $DBRESULT2->fetchRow()) {
+    while ($row = $DBRESULT2->fetch()) {
         if ($row['host_activate']) {
             $nbrhostActArr[$row['host_id']] = true;
         } else {
