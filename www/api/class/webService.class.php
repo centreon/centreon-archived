@@ -222,8 +222,8 @@ class CentreonWebService
                 break;
             case static::RESULT_JSON:
             case null:
-                header('Content-type: application/json');
-                print json_encode($data);
+                header('Content-type: application/json;charset=utf-8');
+                print json_encode($data, JSON_UNESCAPED_UNICODE);
                 break;
         }
 
