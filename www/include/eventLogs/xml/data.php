@@ -33,13 +33,6 @@
  *
  */
 
-/*
- * XML tag
- */
-stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") ?
-    header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
-header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"');
-
 /** ****************************
  * Include configurations files
  */
@@ -212,7 +205,7 @@ $search_service = isset($inputs["search_service"]) ? htmlentities($inputs["searc
 $export = isset($inputs["export"]) ? htmlentities($inputs["export"], ENT_QUOTES, "UTF-8") : 0;
 
 $start = 0;
-$end = 0;
+$end = time();
 
 if ($engine == "true") {
     $ok = "false";
@@ -519,12 +512,16 @@ $req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
         logs.status, 
         logs.type, 
         logs.instance_name
-        FROM logs " . $innerJoinEngineLog .
-    ((!$is_admin) ?
-        " inner join centreon_acl acl on (logs.host_id = acl.host_id AND (acl.service_id IS NULL OR "
-        . " acl.service_id = logs.service_id)) "
-        . " WHERE acl.group_id IN (" . $access->getAccessGroupsString() . ") AND " : "WHERE ")
-    . " logs.ctime > '$start' AND logs.ctime <= '$end' $whereOutput $msg_req";
+        FROM logs " . $innerJoinEngineLog
+    . (
+        !$is_admin ?
+        " INNER JOIN centreon_acl acl ON (logs.host_id = acl.host_id AND (acl.service_id IS NULL OR "
+            . " acl.service_id = logs.service_id)) "
+            . " WHERE acl.group_id IN (" . $access->getAccessGroupsString() . ") AND " :
+        "WHERE "
+    )
+    . " logs.ctime > '{$start}' AND logs.ctime <= '{$end}' {$whereOutput} {$msg_req}"
+;
 
 /*
  * Add Host
@@ -824,4 +821,13 @@ $buffer->writeElement("P", _("Poller"), 0);
 
 $buffer->endElement();
 $buffer->endElement();
+
+
+/*
+ * XML tag
+ */
+stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") ?
+    header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
+header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"');
+
 $buffer->output();
