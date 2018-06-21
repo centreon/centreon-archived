@@ -10,7 +10,7 @@
 # SVN: $Id$
 
 # debug ?
-#set -x 
+#set -x
 
 echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
@@ -43,13 +43,21 @@ locate_mail
 locate_cron_d
 locate_logrotate_d
 locate_php_bin
+locate_composer_bin
 locate_pear
 locate_perl
+
+## Check PHP version
+check_php_version "${PHP_MIN_VERSION}"
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+check_php_modules
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
 
 ## Config apache
 check_httpd_directory
 check_user_apache
 check_group_apache
+
 
 ## Ask for centreon user
 check_centreon_group
@@ -89,8 +97,13 @@ configureSUDO "$INSTALL_DIR_CENTREON/examples"
 ## Config Apache
 configureApache "$INSTALL_DIR_CENTREON/examples"
 
+## Ask for fpm-php service
+locate_fpm_php_service
+yes_no_default "$(gettext "Do you want to restart your FPM-PHP service ?")"
+[ $? -eq 0 ] && ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" restart &>/dev/null
+
 ## Create temps folder and copy all src into
-copyInTempFile 2>>$LOG_FILE 
+copyInTempFile 2>>$LOG_FILE
 
 ## InstallCentreon
 
@@ -112,9 +125,18 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
-cp -Rf $TMP_DIR/src/config $TMP_DIR/final
+mkdir -p $TMP_DIR/final/config
+cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
+cp -f $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/final/config/centreon.config.php
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
-cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
+cp -Rf $TMP_DIR/src/src $TMP_DIR/final
+
+## Prepare and copy composer module
+OLDPATH=$(pwd)
+cd $TMP_DIR/src/
+${BIN_COMPOSER} install --no-dev
+cd "${OLDPATH}"
+cp -Rf $TMP_DIR/src/vendor $TMP_DIR/final
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -149,7 +171,7 @@ check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
 log "INFO" "$( gettext "Copying www/install/insertBaseConf.sql in final directory")"
 cp $TMP_DIR/work/www/install/insertBaseConf.sql \
     $TMP_DIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
-    
+
 ### Chagne Macro for sql update file
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "Update*.sql" "file_sql_temp"
@@ -170,7 +192,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
         $TMP_DIR/src/$file > $TMP_DIR/work/$file
         [ $? -ne 0 ] && flg_error=1
     log "MACRO" "$(gettext "Copy in final dir") : $file"
-    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
 check_result $flg_error "$(gettext "Change macros for sql update files")"
 
@@ -196,7 +218,7 @@ ${CAT} "$file_php_temp" | while read file ; do
         $TMP_DIR/src/$file > $TMP_DIR/work/$file
         [ $? -ne 0 ] && flg_error=1
     log "MACRO" "$(gettext "Copy in final dir") : $file"
-    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
@@ -250,7 +272,7 @@ done
 check_result $flg_error "$(gettext "Change macros for perl binary")"
 
 ### Step 3: Change right on monitoringengine_etcdir
-log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
+log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
     -g "$MONITORINGENGINE_GROUP" -d 775 \
@@ -263,7 +285,7 @@ find "$MONITORINGENGINE_ETC" -type f -print | \
 find "$MONITORINGENGINE_ETC" -type f -print | \
     xargs -I '{}' ${CHOWN} "$MONITORINGENGINE_USER":"$MONITORINGENGINE_GROUP" '{}' >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
-check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
+check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 
 ### Change right to broker_etcdir
 log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
@@ -288,7 +310,7 @@ if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     find "$BROKER_ETC" -type f -print | \
         xargs -I '{}' ${CHOWN} "$BROKER_USER":"$BROKER_GROUP" '{}' >> "$LOG_FILE" 2>&1
     [ $? -ne 0 ] && flg_error=1
-    check_result $flg_error "$(gettext "Change right on") $BROKER_ETC" 
+    check_result $flg_error "$(gettext "Change right on") $BROKER_ETC"
 fi
 
 if [ "$upgrade" = "1" ]; then
@@ -309,6 +331,9 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     $TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
+cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
+
 echo_info "$(gettext "Change right for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
 check_result $? "$(gettext "Change right for install directory")"
@@ -326,8 +351,8 @@ check_result $? "$(gettext "Change right for install directory")"
 cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
-cp -f $TMP_DIR/final/composer.json $INSTALL_DIR_CENTREON/composer.json >> "$LOG_FILE" 2>&1
-$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
+cp -Rf $TMP_DIR/final/vendor $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/vendor
 
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
@@ -626,6 +651,37 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
     $TMP_DIR/src/lib/Centreon/ \
     $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
+
+## Prepare to install all pear modules needed.
+# use check_pear.php script
+echo -e "\n$line"
+echo -e "$(gettext "Pear Modules")"
+echo -e "$line"
+pear_module="0"
+first=1
+while [ "$pear_module" -eq 0 ] ; do
+    check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+    if [ "$?" -ne 0 ] ; then
+            if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
+                if [ "$first" -eq 0 ] ; then
+                    echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
+                fi
+                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+                [ "$?" -eq 0 ] && PEAR_AUTOINST=1
+            fi
+        if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
+            upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                PEAR_AUTOINST=0
+                first=0
+            else
+            pear_module="1"
+            fi
+    else
+        echo_success "$(gettext "All PEAR modules")" "$ok"
+        pear_module="1"
+    fi
+done
 
 ## Create configfile for web install
 createConfFile
