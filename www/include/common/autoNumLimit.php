@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,34 +37,42 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (isset($_POST["limit"]) && $_POST["limit"]) {
-    $limit = $_POST["limit"];
-} elseif (isset($_GET["limit"])) {
-    $limit = $_GET["limit"];
-} elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
+$limitNotInRequestParameter = !isset($_POST['limit']) && !isset($_GET['limit']);
+$historyLimitNotDefault = isset($centreon->historyLimit[$url]) && $centreon->historyLimit[$url] !== 30;
+$sessionLimitKey = "results_limit_{$url}";
+
+if (isset($_POST['limit']) && $_POST['limit']) {
+    $limit = $_POST['limit'];
+} elseif (isset($_GET['limit'])) {
+    $limit = $_GET['limit'];
+} elseif ($limitNotInRequestParameter && $historyLimitNotDefault) {
     $limit = $centreon->historyLimit[$url];
+} elseif (isset($_SESSION[$sessionLimitKey])) {
+    $limit = $_SESSION[$sessionLimitKey];
 } else {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
         $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-        $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $gopt = $DBRESULT->fetch();
+        $limit = myDecode($gopt['value']);
     } else {
         $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-        $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $gopt = $DBRESULT->fetch();
+        $limit = myDecode($gopt['value']);
     }
 }
+
+$_SESSION[$sessionLimitKey] = $limit;
 
 if (!empty($centreon->historyLimit) &&
     !empty($centreon->historyLimit[$url]) &&
     $limit != $centreon->historyLimit[$url]
 ) {
     $num = 0;
-} elseif (isset($_POST["num"]) && $_POST["num"]) {
-    $num = $_POST["num"];
-} elseif (isset($_GET["num"]) && $_GET["num"]) {
-    $num = $_GET["num"];
-} elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
+} elseif (isset($_POST['num']) && $_POST['num']) {
+    $num = $_POST['num'];
+} elseif (isset($_GET['num']) && $_GET['num']) {
+    $num = $_GET['num'];
+} elseif (!isset($_POST['num']) && !isset($_GET['num']) && isset($centreon->historyPage[$url])) {
     $num = $centreon->historyPage[$url];
 } else {
     $num = 0;
