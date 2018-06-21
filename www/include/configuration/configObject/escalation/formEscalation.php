@@ -56,24 +56,6 @@ $hosts = $acl->getHostAclConf(
     )
 );
 
-/* notification contact groups */
-$notifCgs = array();
-$cg = new CentreonContactgroup($pearDB);
-if ($oreon->user->admin) {
-    $notifCgs = $cg->getListContactgroup(true);
-} else {
-    $cgAcl = $acl->getContactGroupAclConf(
-        array(
-            'fields'  => array('cg_id', 'cg_name'),
-            'get_row' => 'cg_name',
-            'keys'    => array('cg_id'),
-            'order'   => array('cg_name')
-        )
-    );
-    $cgLdap = $cg->getListContactgroup(true, true);
-    $notifCgs = array_intersect_key($cgLdap, $cgAcl);
-}
-
 /*
  * Database retrieve information for Escalation
  */
@@ -123,11 +105,6 @@ while ($meta = $DBRESULT->fetchRow()) {
     $metas[$meta["meta_id"]] = $meta["meta_name"];
 }
 $DBRESULT->free();
-
-# Contact Groups comes from DB -> Store in $cgs Array
-$cgs = array();
-$cg = new CentreonContactgroup($pearDB);
-$cgs = $cg->getListContactgroup(true);
 
 # TimePeriods comes from DB -> Store in $tps Array
 $tps = array();
