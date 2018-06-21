@@ -125,7 +125,9 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
-cp -Rf $TMP_DIR/src/config $TMP_DIR/final
+mkdir -p $TMP_DIR/final/config
+cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
+cp -f $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/final/config/centreon.config.php
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
