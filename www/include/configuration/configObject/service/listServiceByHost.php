@@ -39,6 +39,9 @@ if (!isset($centreon)) {
 
 include_once("./class/centreonUtils.class.php");
 
+$hostgroupsFilter = isset($hostgroupsFilter) ? $hostgroupsFilter : null;
+$statusHostFilter = isset($statusHostFilter) ? $statusHostFilter : null;
+
 /*
  * Object init
  */
@@ -249,7 +252,7 @@ if (!($DBRESULT->rowCount())) {
 }
 
 include("./include/common/checkPagination.php");
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /**
  * Different style between each lines
@@ -316,7 +319,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-    if (count($tplArr)) {
+    if ($tplArr && count($tplArr)) {
         foreach ($tplArr as $key => $value) {
             $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
         }

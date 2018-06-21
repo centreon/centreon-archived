@@ -45,9 +45,9 @@ require_once "Centreon/Object/Manufacturer/Manufacturer.php";
  */
 class CentreonManufacturer extends CentreonObject
 {
-    const ORDER_UNIQUENAME        = 0;
-    const ORDER_ALIAS             = 1;
-    const FILE_NOT_FOUND          = "Could not find file";
+    const ORDER_UNIQUENAME = 0;
+    const ORDER_ALIAS = 1;
+    const FILE_NOT_FOUND = "Could not find file";
 
     /**
      * Constructor
@@ -65,12 +65,11 @@ class CentreonManufacturer extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -81,45 +80,43 @@ class CentreonManufacturer extends CentreonObject
         $addParams['alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Show
-     *
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array("id", "name", "alias");
         parent::show($params, $filters);
     }
 
     /**
-     * Set parameter
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $values = array($params[1] => $params[2]);
-        parent::setparam($this->getId($params[0]), $values);
+        $updateParams = array($params[1] => $params[2]);
+        $updateParams['objectId'] = $this->getId($params[0]);
+        return $updateParams;
     }
 
     /**
      * Will generate traps from a mib file
      *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @throws CentreonClapiException
      */
     public function generatetraps($parameters = null)
     {
@@ -129,16 +126,16 @@ class CentreonManufacturer extends CentreonObject
         }
         $vendorId = $this->getId($params[0]);
         $mibFile = $params[1];
-        $tmpMibFile = "/tmp/".basename($mibFile);
+        $tmpMibFile = "/tmp/" . basename($mibFile);
         if (!is_file($mibFile)) {
-            throw new CentreonClapiException(self::FILE_NOT_FOUND.": ".$mibFile);
+            throw new CentreonClapiException(self::FILE_NOT_FOUND . ": " . $mibFile);
         }
         copy($mibFile, $tmpMibFile);
         $centreonDir = CentreonUtils::getCentreonDir();
         passthru("export MIBS=ALL && $centreonDir/bin/snmpttconvertmib --in=$tmpMibFile --out=$tmpMibFile.conf");
         passthru("$centreonDir/bin/centFillTrapDB -f $tmpMibFile.conf -m $vendorId");
         unlink($tmpMibFile);
-        unlink($tmpMibFile.".conf");
+        unlink($tmpMibFile . ".conf");
     }
 
     /**
@@ -158,8 +155,9 @@ class CentreonManufacturer extends CentreonObject
     /**
      * Get id from name
      *
-     * @param string $name
-     * @return int
+     * @param $name
+     * @return mixed
+     * @throws CentreonClapiException
      */
     public function getId($name)
     {

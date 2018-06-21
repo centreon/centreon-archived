@@ -37,7 +37,7 @@ class CentreonLocale
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
     

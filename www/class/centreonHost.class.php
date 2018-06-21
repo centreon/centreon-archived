@@ -46,7 +46,7 @@ class CentreonHost
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 

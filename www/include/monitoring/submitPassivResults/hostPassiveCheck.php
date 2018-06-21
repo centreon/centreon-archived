@@ -64,11 +64,8 @@ if (!$is_admin) {
 $hostTab = array();
 
 if ($is_admin || ($flag_acl && !$is_admin)) {
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/advmultiselect.php';
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-    $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+    $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=".$p);
     $form->addElement('header', 'title', _("Command Options"));
 
     $hosts = array($host_name=>$host_name);

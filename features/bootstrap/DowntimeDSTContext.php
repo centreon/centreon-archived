@@ -323,7 +323,6 @@ class DowntimeDSTContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $scheduled = false;
                 $return = $context->container->execute(
                     "cat /var/log/centreon-engine/centengine.log",
                     'web'
@@ -334,16 +333,16 @@ class DowntimeDSTContext extends CentreonContext
                     $output,
                     $matches
                 )) {
-                    $startTimestamp = end($matches[1]);
-                    $endTimestamp = end($matches[2]);
+                    $startTimestamp = $matches[1];
+                    $endTimestamp = $matches[2];
                     $dateStart = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateStart->setTimestamp($startTimestamp);
                     $dateEnd = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateEnd->setTimestamp($endTimestamp);
-                    if ($dateStart->format('Y-m-d H:i') == $context->downtimeProperties['expected_start'] &&
-                        $dateEnd->format('Y-m-d H:i') == $context->downtimeProperties['expected_end'] &&
-                        ($endTimestamp - $startTimestamp) == $context->downtimeProperties['expected_duration']) {
-                        $scheduled = true;
+                    if ($dateStart->format('Y-m-d H:i') != $context->downtimeProperties['expected_start'] ||
+                        $dateEnd->format('Y-m-d H:i') != $context->downtimeProperties['expected_end'] ||
+                        ($endTimestamp - $startTimestamp) != $context->downtimeProperties['expected_duration']) {
+                        throw new \Exception('Downtime external command parameters are wrong (start, end or duration)');
                     }
                     $storageDb = $context->getStorageDatabase();
                     $res = $storageDb->query(
@@ -352,11 +351,13 @@ class DowntimeDSTContext extends CentreonContext
                         "AND end_time = " . $endTimestamp
                     );
                     if (!$res->fetch()) {
-                        $scheduled = false;
+                        throw new \Exception('Downtime does not exist in storage database');
                     }
+                } else {
+                    throw new \Exception('Downtime external command does not exist in centengine logs');
                 }
 
-                return $scheduled;
+                return true;
             },
             'Downtime is not scheduled',
             10

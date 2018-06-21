@@ -33,10 +33,6 @@
  *
  */
 
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 $path = "./include/options/oreon/widgets/";
 
 require_once $path . "list.php";

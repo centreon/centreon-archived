@@ -99,7 +99,7 @@ $rq = "SELECT *
        LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -128,7 +128,7 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
         "maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $resource['resource_id'] . "]' />";
     $elemArr[$i] = array(
-        "order" => $tabResources[1],
+        "order" => isset($tabResources[1]) ? $tabResources[1] : null,
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($resource["resource_name"]),

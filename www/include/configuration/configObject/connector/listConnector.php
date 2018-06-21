@@ -46,7 +46,7 @@ try {
 
     $tpl->assign('mode_access', $lvl_access);
 
-    $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
     $tpl->assign('msg', array(
         "addL"=>"?p=".$p."&o=a",

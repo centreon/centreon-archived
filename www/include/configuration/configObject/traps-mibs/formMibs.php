@@ -56,7 +56,7 @@ function myDecodeMib($arg)
 /*
  * Init Formulary
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Import SNMP traps from MIB file"));
 
 /*

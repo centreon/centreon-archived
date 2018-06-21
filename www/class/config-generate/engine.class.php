@@ -358,7 +358,8 @@ class Engine extends AbstractObject
         $this->stmt_engine->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt_engine->execute();
 
-        $this->engine = array_pop($this->stmt_engine->fetchAll(PDO::FETCH_ASSOC));
+        $result = $this->stmt_engine->fetchAll(PDO::FETCH_ASSOC);
+        $this->engine = array_pop($result);
         if (is_null($this->engine)) {
             throw new Exception("Cannot get engine configuration for poller id (maybe not activate) '" .
                 $poller_id . "'");

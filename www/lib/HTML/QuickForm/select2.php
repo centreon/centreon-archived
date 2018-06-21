@@ -37,7 +37,7 @@
 /**
  * Base class for form elements
  */
-require_once 'HTML/QuickForm/select.php';
+//require_once 'HTML/QuickForm/select.php';
 
 /**
  * Description of select2
@@ -143,7 +143,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      * @param array $attributes
      * @param string $sort
      */
-    public function HTML_QuickForm_select2(
+    public function __construct(
         $elementName = null,
         $elementLabel = null,
         $options = null,
@@ -155,7 +155,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
         $this->_allowClear = true;
-        $this->HTML_QuickForm_select($elementName, $elementLabel, $options, $attributes);
+        parent::__construct($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = null;
         $this->_defaultDatasetOptions = array();
@@ -298,6 +298,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     public function getJsInit()
     {
         $allowClear = 'true';
+        $additionnalJs = '';
+
         if (false === $this->_allowClear || $this->_flagFrozen) {
             $allowClear = 'false';
         }
@@ -397,6 +399,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
             } catch (\Exception $e) {
                 print $e->getMessage();
+                return;
             }
 
             foreach ($finalDataset as $dataSet) {
@@ -528,7 +531,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 }
 
 if (class_exists('HTML_QuickForm')) {
-    HTML_QuickForm::registerElementType(
+    (new HTML_QuickForm)->registerElementType(
         'select2',
         'HTML/QuickForm/select2.php',
         'HTML_QuickForm_select2'

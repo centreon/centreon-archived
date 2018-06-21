@@ -74,8 +74,7 @@ class CentreonWiki extends CentreonWebService
     public function postDeletePage()
     {
         $wikiApi = new WikiApi();
-        $result =  $wikiApi->deletePage($this->arguments['title']);
-
+        $result = $wikiApi->deletePage($this->arguments['title']);
         return array(
             'result' => $result
         );
@@ -85,11 +84,11 @@ class CentreonWiki extends CentreonWebService
      * Authorize to access to the action
      *
      * @param string $action The action name
-     * @param array $user The current user
+     * @param \CentreonUser $user The current user
      * @param boolean $isInternal If the api is call in internal
      * @return boolean If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal)
+    public function authorize($action, $user, $isInternal = false)
     {
         if (parent::authorize($action, $user, $isInternal)) {
             return true;

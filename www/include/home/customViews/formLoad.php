@@ -81,14 +81,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "40");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />' .
     '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-/**
- * Quickform
- */
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=103");
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
 $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("General Information"));
 

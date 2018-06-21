@@ -58,12 +58,6 @@ function searchUserName($user_name)
 }
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the configuration dir
  */
 $path = "./include/Administration/configChangelog/";
@@ -115,7 +109,7 @@ if (isset($_POST["otype"])) {
 /*
  * Init QuickForm
  */
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
 
 /*
  * Init Smarty

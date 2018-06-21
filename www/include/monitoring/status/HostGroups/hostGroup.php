@@ -69,7 +69,7 @@ $tpl->assign("mon_duration", _("Duration"));
 $tpl->assign("mon_status_information", _("Status information"));
 $tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_listing'));
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=".$p);
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");

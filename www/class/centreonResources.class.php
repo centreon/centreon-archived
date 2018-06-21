@@ -76,7 +76,7 @@ class CentreonResources
     
     /**
      *
-     * @param type $db
+     * @param \CentreonDB $db
      * @param string $name
      * @return array
      * @throws Exception

@@ -48,7 +48,11 @@ $title = _('Release notes');
 if (is_file('../RELEASENOTES.html')) {
     $contents = "<div id='releasenotes'></div>";
 } else {
-    $contents = "<textarea cols='100' rows='30' readonly>".file_get_contents('../RELEASENOTES')."</textarea>";
+    $releasenotesContent = '';
+    if (file_exists('../RELEASENOTES')) {
+        $releasenotesContent = file_get_contents('../RELEASENOTES');
+    }
+    $contents = "<textarea cols='100' rows='30' readonly>".$releasenotesContent."</textarea>";
 }
 
 $template->assign('step', STEP_NUMBER);

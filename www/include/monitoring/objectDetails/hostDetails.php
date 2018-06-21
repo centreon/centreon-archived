@@ -426,7 +426,9 @@ if (!$is_admin && !$haveAccess) {
             $host_status[$host_name]["scheduled_downtime_depth"] = 1;
         }
 
-        $host_status[$host_name]["comments"] = $hostDB["host_comment"];
+        if (isset($hostDB)) {
+            $host_status[$host_name]["comments"] = $hostDB["host_comment"];
+        }
 
         if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name])) {
             foreach ($tab_host_service[$host_name] as $key_name => $s) {
@@ -560,7 +562,11 @@ if (!$is_admin && !$haveAccess) {
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
-        $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
+
+        if (isset($hostDB)) {
+            $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
+        }
+
         $tpl->assign("url_id", $url_id);
         $tpl->assign("host_id", $host_id);
         $tpl->assign("graphs", $graphLists);
@@ -637,8 +643,11 @@ if (!$is_admin && !$haveAccess) {
             $actionurl
         );
         $tpl->assign("h_ext_action_url", CentreonUtils::escapeSecure($actionurl));
-        $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
-        $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+
+        if (isset($hostDB)) {
+            $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
+            $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+        }
 
         /*
          * Dynamics tools

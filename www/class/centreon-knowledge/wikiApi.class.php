@@ -72,10 +72,12 @@ class WikiApi
     private function getCurl()
     {
         $curl = curl_init();
-
+        $cookiefile = tempnam("/tmp", "CURLCOOKIE");
         curl_setopt($curl, CURLOPT_URL, $this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiefile);
+        curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiefile);
         if($this->noSslCertificate == 1){
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -114,11 +116,20 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_HEADER, true);
 
         // Get Connection Cookie/Token
-        $postfields = array(
-            'action' => 'login',
-            'format' => 'json',
-            'lgname' => $this->username
-        );
+        if ($this->version >= 1.27) {
+            $postfields = array(
+                'action' => 'query',
+                'meta' => 'tokens',
+                'format' => 'json',
+                'type' => 'login'
+            );
+        } else {
+            $postfields = array(
+                'action' => 'login',
+                'format' => 'json',
+                'lgname' => $this->username
+            );
+        }
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
@@ -128,6 +139,7 @@ class WikiApi
 
         // Get cookies
         preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
+
         $this->cookies = array_merge($this->cookies, $matches[1]);
         $cookies = implode('; ', $this->cookies);
         curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
@@ -135,13 +147,20 @@ class WikiApi
         $result = json_decode($body, true);
 
         $token = '';
-        if (isset($result['login']['lgtoken'])) {
-            $token = $result['login']['lgtoken'];
+        if (isset($result['query']['tokens']['logintoken'])) {
+            $token = $result['query']['tokens']['logintoken'];
         } elseif (isset($result['login']['token'])) {
             $token = $result['login']['token'];
         }
 
         // Launch Connection
+
+        $postfields = [
+            'action' => 'login',
+            'lgname' => $this->username,
+            'format' => 'json'
+        ];
+
         $postfields['lgpassword'] = $this->password;
         $postfields['lgtoken'] = $token;
 
@@ -183,10 +202,6 @@ class WikiApi
 
     public function getMethodToken($method = 'delete', $title = '')
     {
-        if (isset($this->tokens[$method])) {
-            return $this->tokens[$method];
-        }
-
         if ($this->version >= 1.24) {
             $postfields = array(
                 'action' => 'query',
@@ -211,10 +226,14 @@ class WikiApi
         }
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
+
         $result = json_decode($result, true);
 
         if ($this->version >= 1.24) {
             $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
+            if ($this->tokens[$method] == '+/'){
+                $this->tokens[$method] = $this->getMethodToken('delete',$title);
+            }
         } elseif ($this->version >= 1.20) {
             $this->tokens[$method] = $result['tokens'][$method . 'token'];
         } else {
@@ -227,7 +246,7 @@ class WikiApi
 
     public function movePage($oldTitle = '', $newTitle = '')
     {
-        $this->login();
+        $login = $this->login();
 
         $token = $this->getMethodToken('move', $oldTitle);
 
@@ -244,22 +263,26 @@ class WikiApi
         return true;
     }
 
+    /**
+     * API Endpoint for deleting Knowledgebase Page
+     * @param string $title
+     * @return bool
+     */
     public function deletePage($title = '')
     {
-        $this->login();
+        $tries = 0;
+        $deleteResult = $this->deleteMWPage($title);
+        while ($tries < 5 && isset($deleteResult->error)){
+            $deleteResult = $this->deleteMWPage($title);
+            $tries++;
+        }
 
-        $token = $this->getMethodToken('delete', $title);
+        //remove cookies related to this action
+        unlink('/tmp/CURLCOOKIE*');
 
-        if ($token) {
-            $postfields = array(
-                'action' => 'delete',
-                'title' => $title,
-                'token' => $token
-            );
-
-            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
-            curl_exec($this->curl);
-
+        if (isset($deleteResult->error)){
+            return false;
+        } elseif (isset($deleteResult->delete)) {
             return true;
         } else {
             return false;
@@ -472,5 +495,27 @@ class WikiApi
             "SET esi_notes_url = '" . $valueToAdd . "' " .
             "WHERE service_service_id = '" . $tuple['service_id'] . "' ";
         $this->db->query($queryUpdate);
+    }
+
+    /**
+     * make a call to mediawiki api to delete a page
+     * @param string $title
+     * @return array
+     */
+    private function deleteMWPage($title='')
+    {
+        $this->login();
+
+        $token = $this->getMethodToken('delete', $title);
+
+        $postfields = array(
+            'action' => 'delete',
+            'title' => $title,
+            'token' => $token,
+            'format' => 'json'
+        );
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
+        $result = curl_exec($this->curl);
+        return json_decode($result);
     }
 }

@@ -59,6 +59,8 @@ if ($is_admin == 0) {
     } else {
         $can_generate = 0;
     }
+} else {
+    $can_generate = 0;
 }
 
 /*
@@ -139,7 +141,7 @@ $rows = $pearDB->numberRows();
 
 include("./include/common/checkPagination.php");
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -183,7 +185,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     */
     $confChangedMessage = _("N/A");
     if ($config["ns_activate"]) {
-        $hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
+        $hasChanged = checkChangeState($config['id'], (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null));
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 

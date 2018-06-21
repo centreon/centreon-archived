@@ -54,7 +54,7 @@ class Service extends AbstractService
     private function getServiceGroups($service_id, $host_id, $host_name)
     {
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
-        $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForService($host_id, $service_id);
+        $this->service_cache[$service_id]['sg'] = $servicegroup->getServiceGroupsForService($host_id, $service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$value) {
             if (is_null($value['host_host_id']) || $host_id == $value['host_host_id']) {
                 $servicegroup->addServiceInSg(
@@ -167,7 +167,10 @@ class Service extends AbstractService
                 : null;
         }
 
-        $this->service_cache[$service_id]['has_tpl_contacts'] = $services_tpl[$service_tpl_top_id]['has_tpl_contacts'];
+        $this->service_cache[$service_id]['has_tpl_contacts'] = isset($services_tpl[$service_tpl_top_id]['has_tpl_contacts']) ?
+            $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] :
+            null
+        ;
         $this->service_cache[$service_id]['has_tpl_contact_groups'] =
             $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'];
     }

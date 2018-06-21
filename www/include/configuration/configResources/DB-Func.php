@@ -46,6 +46,7 @@ function testExistence($name = null, $instanceId = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('resource_id');
         $instances = $form->getSubmitValue('instance_id');
+        $instances = (!empty($instances)) ? $instances : [];
     } elseif (!is_null($instanceId) && $instanceId) {
         $instances = array($instanceId);
     }

@@ -77,13 +77,11 @@ class CentreonACLMenu extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -94,42 +92,40 @@ class CentreonACLMenu extends CentreonObject
         $addParams['acl_topo_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if ($params[1] == "comment") {
                 $params[1] = "acl_comments";
             } else {
                 $params[1] = "acl_topo_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
     /**
-     * Show
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -140,7 +136,14 @@ class CentreonACLMenu extends CentreonObject
         $paramString = str_replace("acl_", "", $paramString);
         $paramString = str_replace("comments", "comment", $paramString);
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             $str = "";
             foreach ($tab as $key => $value) {
@@ -336,7 +339,6 @@ class CentreonACLMenu extends CentreonObject
         }
     }
 
-
     /**
      * Grant menu
      *
@@ -361,7 +363,6 @@ class CentreonACLMenu extends CentreonObject
         }
     }
 
-
     /**
      * Revoke menu
      *
@@ -383,11 +384,28 @@ class CentreonACLMenu extends CentreonObject
     }
 
     /**
-     * @param array $filters
+     * @param null $filterName
+     * @return bool|void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $aclMenuList = $this->object->getList('*', -1, 0, null, null, $filters);
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $aclMenuList = $this->object->getList(
+            '*',
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters
+        );
 
         $exportLine = '';
         foreach ($aclMenuList as $aclMenu) {
@@ -402,7 +420,6 @@ class CentreonACLMenu extends CentreonObject
             if (!empty($aclMenu['acl_comments'])) {
                 $exportLine .= 'comment' . $this->delim . $aclMenu['acl_comments'] . $this->delim;
             }
-
 
             $exportLine .= 'activate' . $this->delim . $aclMenu['acl_topo_activate'] . $this->delim . "\n";
             $exportLine .= $this->grantMenu($aclMenu['acl_topo_id'], $aclMenu['acl_topo_name']);
@@ -443,7 +460,7 @@ class CentreonACLMenu extends CentreonObject
         $stmt->execute();
         $grantedTopologyList = $stmt->fetchAll();
 
-        if (!empty($grantedTopologyList) && isset($grantedTopologyList)){
+        if (!empty($grantedTopologyList) && isset($grantedTopologyList)) {
             foreach ($grantedTopologyList as $grantedTopology) {
                 $grantedTopologyBreadCrumb = $this->topologyObj->getBreadCrumbFromTopology(
                     $grantedTopology['topology_page'],

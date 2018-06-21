@@ -43,7 +43,7 @@ class CentreonHostgroups
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $DB;
 

@@ -41,13 +41,7 @@ isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
 $cG ? $contact_id = $cG : $contact_id = $cP;
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Path to the configuration dir

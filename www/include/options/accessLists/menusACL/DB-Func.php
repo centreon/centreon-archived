@@ -224,7 +224,7 @@ function insertLCA()
     $rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate, acl_comments) ";
     $rq .= "VALUES ('" . $pearDB->escape($ret["acl_topo_name"]) . "', '" .
         $pearDB->escape($ret["acl_topo_alias"]) . "', '" .
-        $pearDB->escape($ret["acl_topo_activate"]["acl_topo_activate"]) . "', '" .
+        $pearDB->escape(isset($ret["acl_topo_activate"]) ? $ret["acl_topo_activate"]["acl_topo_activate"] : '') . "', '" .
         $pearDB->escape($ret['acl_comments']) . "')";
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM `acl_topology`");

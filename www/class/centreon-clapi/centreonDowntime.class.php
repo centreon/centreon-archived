@@ -118,11 +118,13 @@ class CentreonDowntime extends CentreonObject
 
     /**
      * @param null $parameters
+     * @param array $filters
      * @throws CentreonClapiException
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
+        $filter = array();
         if (isset($parameters) && $parameters !== '') {
             $filter = explode(';', $parameters);
             $filters = array($this->object->getUniqueLabelField() => "%" . $filter[0] . "%");
@@ -180,13 +182,11 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param  string $parameters
-     * @return void
+     * @param null $parameters
+     * @return mixed|void
      * @throws CentreonClapiException
      */
-    public function add($parameters = null)
+    public function initInsertParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -197,28 +197,28 @@ class CentreonDowntime extends CentreonObject
         $addParams['dt_description'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Set params
-     *
-     * @param  string $parameters
-     * @return void
+     * @param null $parameters
+     * @return array
      * @throws CentreonClapiException
      */
-    public function setparam($parameters = null)
+    public function initUpdateParameters($parameters = null)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (!preg_match("/^dt_/", $params[1])) {
                 $params[1] = "dt_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -473,9 +473,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * List resources
-     *
-     * @param int downtime id
+     * @param $downtimeId
+     * @return string
      */
     public function listServiceGroups($downtimeId)
     {
@@ -495,9 +494,8 @@ class CentreonDowntime extends CentreonObject
 
 
     /**
-     * List resources
-     *
-     * @param int downtime id
+     * @param $downtimeId
+     * @return string
      */
     public function listResources($downtimeId)
     {
@@ -566,9 +564,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set host
-     *
-     * @param string $parameters | downtime name; host names separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function sethost($parameters)
     {
@@ -607,9 +604,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set host groups
-     *
-     * @param string $parameters | downtime name; host group names separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function sethostgroup($parameters)
     {
@@ -639,7 +635,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add service to downtime
      *
-     * @param string $parameters | downtime name; host_name,service_description separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function addservice($parameters)
     {
@@ -703,9 +700,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set service
-     *
-     * @param string $parameters | downtime name; host_name,service_description separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setservice($parameters)
     {
@@ -722,9 +718,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Delete service from downtime
-     *
-     * @param string $parameters | downtime name; host_name,service_description separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function delservice($parameters)
     {
@@ -796,9 +791,8 @@ class CentreonDowntime extends CentreonObject
     }
 
     /**
-     * Set service groups
-     *
-     * @param string $parameters | downtime name; service group names separated by "|" character
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function setservicegroup($parameters)
     {
@@ -828,10 +822,12 @@ class CentreonDowntime extends CentreonObject
     /**
      * Export
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
         // generic add & setparam
-        parent::export($filters);
+        if (!parent::export($filterName)) {
+            return false;
+        }
 
         // handle host relationships
         $this->exportHostRel();
@@ -972,7 +968,8 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add period
      *
-     * @param array $p
+     * @param $p
+     * @throws CentreonClapiException
      */
     protected function insertPeriod($p)
     {
@@ -1022,9 +1019,10 @@ class CentreonDowntime extends CentreonObject
     /**
      * Get preiods from downtime id
      *
-     * @param  int $downtimeId
-     * @param  int $position
-     * @return array
+     * @param $downtimeId
+     * @param null $position
+     * @return mixed
+     * @throws CentreonClapiException
      */
     protected function getPeriods($downtimeId, $position = null)
     {
@@ -1052,10 +1050,11 @@ class CentreonDowntime extends CentreonObject
     /**
      * Add resource to downtime
      *
-     * @param string $parameters | downtime name; resource names separated by "|" character
-     * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param $parameters
+     * @param $object
+     * @param $relTable
+     * @param $relField
+     * @throws CentreonClapiException
      */
     protected function addGenericRelation($parameters, $object, $relTable, $relField)
     {
@@ -1098,10 +1097,11 @@ class CentreonDowntime extends CentreonObject
     /**
      * Delete resource from downtime
      *
-     * @param string $parameters | downtime name; resource name separated by "|" character
-     * @param Centreon_Object $object
-     * @param string $relTable
-     * @param string $relField
+     * @param $parameters
+     * @param $object
+     * @param $relTable
+     * @param $relField
+     * @throws CentreonClapiException
      */
     protected function delGenericRelation($parameters, $object, $relTable, $relField)
     {

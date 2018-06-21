@@ -304,7 +304,7 @@ function insertServer($ret = array())
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog(
         "poller",
-        $poller["MAX(id)"],
+        isset($poller["MAX(id)"]) ? $poller["MAX(id)"] : null,
         CentreonDB::escape($ret["name"]),
         "a",
         $fields

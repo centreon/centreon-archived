@@ -89,14 +89,7 @@ $tpl = initSmartyTpl($path, $tpl, "template/");
 
 include_once("./class/centreonDB.class.php");
 
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tab_comments_svc = array();
 

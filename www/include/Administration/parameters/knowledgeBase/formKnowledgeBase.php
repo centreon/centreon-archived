@@ -48,7 +48,7 @@ $attrsAdvSelect = null;
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Knowledge base form

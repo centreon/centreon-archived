@@ -45,7 +45,7 @@ if (!isset($oreon)) {
  */
 $displayHSOptions = 0;
 
-$form_search = new HTML_QuickForm('quickSearchForm', 'POST', "?p=" . $p . "&o=" . $o);
+$form_search = new HTML_QuickFormCustom('quickSearchForm', 'POST', "?p=" . $p . "&o=" . $o);
 if (isset($_POST["search"])) {
     $search = $_POST["search"];
 } elseif (isset($_GET["search"])) {

@@ -211,7 +211,7 @@ if (!isset($_GET['o'])) {
 
 $sDefaultOrder = "0";
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $form->addElement(
     'select',

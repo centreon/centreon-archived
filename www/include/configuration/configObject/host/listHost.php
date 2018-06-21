@@ -62,6 +62,7 @@ while ($ehi = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 if (isset($_POST["searchH"])) {
+    $num = 0;
     $search = $_POST["searchH"];
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET["searchH"])) {
@@ -200,7 +201,7 @@ $DBRESULT->closeCursor();
  * Init Formulary
  */
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines

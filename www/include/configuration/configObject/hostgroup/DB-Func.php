@@ -448,7 +448,9 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     $hgNEW = array();
 
     $rq = "INSERT INTO hostgroup_hg_relation (hg_parent_id, hg_child_id) VALUES ";
-    for ($i = 0; $i < count($ret); $i++) {
+    $loopCount = (is_array($ret) || $ret instanceof Countable) ? count($ret) : 0;
+
+    for ($i = 0; $i < $loopCount; $i++) {
         $query = "SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = " . $hg_id .
             " AND hg_child_id = " . $ret[$i];
         $resTest = $pearDB->query($query);
@@ -456,8 +458,6 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
             if ($i != 0) {
                 $rq .= ", ";
             }
-            $rq .= " ('" . $hg_id . "', '" . $ret[$i] . "')";
-            $hostsNEW[$ret[$i]] = $ret[$i];
         }
     }
     if ($i != 0) {

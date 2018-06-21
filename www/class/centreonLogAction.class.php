@@ -333,7 +333,7 @@ class CentreonLogAction
         return $object_type_tab;
     }
 
-    public function prepareChanges($ret)
+    public static function prepareChanges($ret)
     {
         global $pearDB;
 

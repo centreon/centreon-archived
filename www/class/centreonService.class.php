@@ -45,19 +45,19 @@ class CentreonService
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $dbMon;
 
     /**
      *
-     * @var type
+     * @var \CentreonInstance
      */
     protected $instanceObj;
 
@@ -1042,25 +1042,22 @@ class CentreonService
      */
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
-
         $hostgroup = false;
+        $hostIdList = array();
+        $serviceIdList = array();
+        $values = is_array($values) ? $values : [];
+
         if (isset($options['hostgroup']) && $options['hostgroup'] == true) {
             $hostgroup = true;
         }
 
-        $hostIdList = array();
-        $serviceIdList = array();
-        if (!empty($values)) {
-            foreach ($values as $value) {
-                if (trim($value, '-') != '') {
-                    if ((strpos($value, '-') > 0)) {
-                        $tmpValue = explode('-', $value);
-                        $hostIdList[] = $tmpValue[0];
-                        $serviceIdList[] = $tmpValue[1];
-                    } else {
-                        $serviceIdList[] = $value;
-                    }
-                }
+        foreach ($values as $value) {
+            if (strpos($value, '-')) {
+                $tmpValue = explode('-', $value);
+                $hostIdList[] = $tmpValue[0];
+                $serviceIdList[] = $tmpValue[1];
+            } else {
+                $serviceIdList[] = $value;
             }
         }
 

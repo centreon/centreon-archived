@@ -91,13 +91,13 @@ class centreonGraphPoller
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $db;
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $dbMonitoring;
 
@@ -121,8 +121,8 @@ class centreonGraphPoller
 
     /**
      *
-     * @param type $db
-     * @param type $dbMonitoring
+     * @param \CentreonDB $db
+     * @param \CentreonDB $dbMonitoring
      * @param type $pollerId
      * @param type $userId
      * @param type $start

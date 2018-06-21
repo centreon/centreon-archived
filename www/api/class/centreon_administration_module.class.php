@@ -34,16 +34,12 @@
  */
 
 require_once dirname(__FILE__) . "/webService.class.php";
+require_once dirname(__FILE__) . '/../interface/di.interface.php';
+require_once dirname(__FILE__) . '/../trait/diAndUtilis.trait.php';
 
-class CentreonAdministrationModule extends CentreonWebService
+class CentreonAdministrationModule extends CentreonWebService implements CentreonWebServiceDiInterface
 {
-    /**
-     * CentreonAdministrationModule constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    use CentreonWebServiceDiAndUtilisTrait;
 
     /**
      * @return int
@@ -54,11 +50,11 @@ class CentreonAdministrationModule extends CentreonWebService
         if (!isset($this->arguments['name'])) {
             throw new \Exception('Missing argument : name');
         } else {
-            $name = $this->arguments['name'];
+            $moduleName = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory();
-        $moduleInstaller = $factory->newInstaller($name);
+        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $moduleInstaller = $factory->newInstaller($moduleName);
 
         return $moduleInstaller->install();
     }
@@ -72,11 +68,17 @@ class CentreonAdministrationModule extends CentreonWebService
         if (!isset($this->arguments['name'])) {
             throw new \Exception('Missing argument : name');
         } else {
-            $name = $this->arguments['name'];
+            $moduleName = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory();
-        $moduleUpgrader = $factory->newUpgrader($name);
+        $moduleId = $this->getModuleId($moduleName);
+
+        if (!$moduleId) {
+            throw new \Exception('The module is not installed');
+        }
+
+        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $moduleUpgrader = $factory->newUpgrader($moduleName, $moduleId);
 
         return $moduleUpgrader->upgrade();
     }
@@ -90,12 +92,43 @@ class CentreonAdministrationModule extends CentreonWebService
         if (!isset($this->arguments['name'])) {
             throw new \Exception('Missing argument : name');
         } else {
-            $name = $this->arguments['name'];
+            $moduleName = $this->arguments['name'];
         }
 
-        $factory = new \CentreonLegacy\Core\Module\Factory();
-        $moduleRemover = $factory->newRemover($name);
+        $moduleId = $this->getModuleId($moduleName);
+
+        if (!$moduleId) {
+            throw new \Exception('The module is not installed');
+        }
+
+        $factory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $this->utils);
+        $moduleRemover = $factory->newRemover($moduleName, $moduleId);
 
         return $moduleRemover->remove();
+    }
+
+    /**
+     * Get module ID if has been installed
+     * 
+     * @param string $moduleName
+     * @return string|null
+     */
+    private function getModuleId($moduleName)
+    {
+        $sql = 'SELECT id FROM modules_informations WHERE name = :name';
+        $params = [
+            'name' => $moduleName,
+        ];
+
+        $result = $this->dependencyInjector['configuration_db']->query($sql, $params);
+
+        $row = $result->fetch();
+        $moduleId = null;
+
+        if ($row) {
+            $moduleId = $row['id'];
+        }
+
+        return $moduleId;
     }
 }

@@ -101,7 +101,7 @@ $DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagio
                             ORDER BY nagios_name
                             LIMIT " . $num * $limit . ", " . $limit);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines

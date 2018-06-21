@@ -87,7 +87,7 @@ $eTemplate = "<table style='border:0px;'><tr><td>{unselected}</td><td align='cen
     "{remove}</td><td>{selected}</td></tr></table>";
 
 // Form begin
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an Action"));
 } elseif ($o == "c") {
@@ -176,8 +176,8 @@ echo $ams1->getElementJs(false);
 
 // Further informations
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Enabled"), '1');
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
+$groupActivation[] = $form->createElement('radio', 'acl_action_activate', null, _("Enabled"), '1');
+$groupActivation[] = $form->createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
 $form->addGroup($groupActivation, 'acl_action_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_action_activate' => '1'));
 

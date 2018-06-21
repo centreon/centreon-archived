@@ -93,7 +93,7 @@ if ($search) {
 }
 $res = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl

@@ -89,7 +89,7 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
  * Form begin
  */
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add an ACL"));
 } elseif ($o == "c") {
@@ -123,8 +123,8 @@ $ams1->setElementTemplate($eTemplate);
 echo $ams1->getElementJs(false);
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
+$tab[] = $form->createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
+$tab[] = $form->createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
 $form->addGroup($tab, 'acl_topo_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_topo_activate' => '1'));
 
@@ -173,7 +173,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
     $acl_topos2[$a]['readonly'] = $topo1['readonly'];
     $acl_topos2[$a]["childs"] = array();
 
-    $acl_topos[] = HTML_QuickForm::createElement(
+    $acl_topos[] = $form->createElement(
         'checkbox',
         $topo1["topology_id"],
         null,
@@ -195,7 +195,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
         $acl_topos2[$a]["childs"][$b]['readonly'] = $topo2['readonly'];
         $acl_topos2[$a]["childs"][$b]["childs"] = array();
 
-        $acl_topos[] = HTML_QuickForm::createElement(
+        $acl_topos[] = $form->createElement(
             'checkbox',
             $topo2["topology_id"],
             null,
@@ -228,7 +228,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
             $acl_topos2[$a]["childs"][$b]["childs"][$c]['readonly'] = $topo3['readonly'];
             $acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
 
-            $acl_topos[] = HTML_QuickForm::createElement(
+            $acl_topos[] = $form->createElement(
                 'checkbox',
                 $topo3["topology_id"],
                 null,

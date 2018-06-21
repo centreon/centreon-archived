@@ -125,7 +125,7 @@ $sgSearchSelect .= '</select>';
 $tpl->assign("sgSearchSelect", $sgSearchSelect);
 
 
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");

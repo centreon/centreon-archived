@@ -181,9 +181,10 @@ class CentreonRtDowntime extends CentreonObject
 
     /**
      * @param null $parameters
+     * @param array $filter
      * @throws CentreonClapiException
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filter = array())
     {
         if ($parameters !== '') {
             $parsedParameters = $this->parseShowparameters($parameters);

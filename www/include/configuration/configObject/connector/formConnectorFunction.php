@@ -60,7 +60,12 @@ function return_plugin($rep)
                     && substr($filename, -1)!= "~"
                     && substr($filename, -1) != "#"
                 ) {
-                    $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                    if ( isset($oreon) ) {
+                        $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                    } else {
+                        $key = substr($rep."/".$filename, 0);
+                    }
+
                     $availableConnectors[$key] = $key;
                 }
             }

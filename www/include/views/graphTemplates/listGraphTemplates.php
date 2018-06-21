@@ -72,7 +72,7 @@ $rq = "SELECT graph_id, name, default_tpl1, vertical_label, base, split_componen
     "FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
 $res = $pearDB->query($rq);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /*
  * Different style between each lines
  */

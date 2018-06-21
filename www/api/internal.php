@@ -33,14 +33,16 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/bootstrap.php';
+require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
+require_once dirname(__FILE__) . '/interface/di.interface.php';
 
+error_reporting(0);
+ini_set('display_errors', 0);
 
 $pearDB = new CentreonDB();
 ini_set("session.gc_maxlifetime", "31536000");

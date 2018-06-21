@@ -112,7 +112,7 @@ $tpl->assign("headerMenu_options", _("Options"));
  */
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines
@@ -149,8 +149,8 @@ foreach ($contacts as $contact) {
         $contact['contact_id'] . "]' />";
 
     $contact_type = 0;
-    if ($contact["contact_register"]) {
-        if ($contact["contact_admin"] == 1) {
+    if (isset($contact['contact_register']) && $contact['contact_register']) {
+        if ($contact['contact_admin'] == 1) {
             $contact_type = 1;
         } else {
             $contact_type = 2;

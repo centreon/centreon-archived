@@ -67,7 +67,8 @@ class MetaHost extends AbstractObject
             ");
         $stmt->bindParam(':host_name', $host_name, PDO::PARAM_STR);
         $stmt->execute();
-        return array_pop($stmt->fetchAll(PDO::FETCH_COLUMN));
+        $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_pop($result);
     }
 
     public function generateObject($host_id)
