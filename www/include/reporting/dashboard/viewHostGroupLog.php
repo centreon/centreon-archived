@@ -63,7 +63,7 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
  *
  */
 
-$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
 
 $items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
 $select = $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
@@ -130,9 +130,9 @@ if (isset($id) && $id != "NULL") {
 
     $tpl->assign("components", $hostgroupFinalStats);
     $tpl->assign('period_name', _("From"));
-    $tpl->assign('date_start', date(_("d/m/Y H:i"), $start_date));
+    $tpl->assign('date_start', $start_date);
     $tpl->assign('to', _("to"));
-    $tpl->assign('date_end', date(_("d/m/Y H:i"), $end_date));
+    $tpl->assign('date_end', $end_date);
     $tpl->assign('period', $period);
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $id);

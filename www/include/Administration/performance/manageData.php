@@ -36,17 +36,10 @@
 if (!isset($centreon)) {
     exit();
 }
-
 include("./include/common/autoNumLimit.php");
 
 require_once './class/centreonDuration.class.php';
 include_once("./include/monitoring/common-Func.php");
-
-/*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /* 
  * Path to the option dir

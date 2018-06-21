@@ -35,11 +35,11 @@
 
 /**
  *
- * @param type $errno The error num
- * @param type $errstr The error message
- * @param type $errfile The error file
- * @param type $errline The error line
- * @param type $errcontext
+ * @param int $errno The error num
+ * @param string $errstr The error message
+ * @param string $errfile The error file
+ * @param int $errline The error line
+ * @param array $errcontext
  * @return boolean
  */
 function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
@@ -68,9 +68,9 @@ class CentreonLDAP
 
     /**
      * Constructor
-     * @param type $pearDB The database connection
-     * @param type $CentreonLog The logging object
-     * @param type $arId
+     * @param \CentreonDB $pearDB The database connection
+     * @param \CentreonLog $CentreonLog The logging object
+     * @param string $arId
      */
     public function __construct($pearDB, $CentreonLog = null, $arId = null)
     {
@@ -92,7 +92,10 @@ class CentreonLDAP
         }
 
         $dbresult = $this->db->query(
-            "SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')"
+            "SELECT `key`, `value` 
+            FROM `options` 
+            WHERE `key` 
+            IN ('debug_ldap_import', 'debug_path')"
         );
         while ($row = $dbresult->fetchRow()) {
             if ($row['key'] == 'debug_ldap_import') {
@@ -123,9 +126,9 @@ class CentreonLDAP
             $dns_query = '_ldap._tcp';
             $dbresult = $this->db->query(
                 "SELECT `ari_value` 
-                                           FROM auth_ressource_info 
-                                           WHERE `ari_name` = 'ldap_dns_use_domain' 
-                                           AND ar_id = " . $this->db->escape($arId)
+                FROM auth_ressource_info 
+                WHERE `ari_name` = 'ldap_dns_use_domain' 
+                AND ar_id = " . $this->db->escape($arId)
             );
             $row = $dbresult->fetchRow();
             $dbresult->closeCursor();
@@ -146,9 +149,9 @@ class CentreonLDAP
         } else {
             $dbresult = $this->db->query(
                 "SELECT ldap_host_id, host_address
-                                           FROM auth_ressource_host
-                                           WHERE auth_ressource_id = " . $this->db->escape($arId) . "
-                                           ORDER BY host_order"
+                FROM auth_ressource_host
+                WHERE auth_ressource_id = " . $this->db->escape($arId) . "
+                ORDER BY host_order"
             );
             while ($row = $dbresult->fetchRow()) {
                 $ldap = array();
@@ -468,18 +471,51 @@ class CentreonLDAP
      */
     public function listUserForGroup($groupdn)
     {
-        if (trim($this->groupSearchInfo['member']) == '') {
+        $this->setErrorHandler();
+        if (trim($this->userSearchInfo['filter']) == '') {
+            restore_error_handler();
             return array();
         }
-        $group = $this->getEntry($groupdn, $this->groupSearchInfo['member']);
+        $groupdn = str_replace('\\', '\\\\', $groupdn);
         $list = array();
-        if (!isset($group[$this->groupSearchInfo['member']])) {
-            return $list;
-        } elseif (is_array($group[$this->groupSearchInfo['member']])) {
-            return $group[$this->groupSearchInfo['member']];
+        if (!empty($this->userSearchInfo['group'])) {
+            /**
+             * we have specific parameter for user to denote groups he belongs to
+             */
+            $filter = '(&' . preg_replace('/%s/', '*', $this->userSearchInfo['filter']) .
+                '(' . $this->userSearchInfo['group'] . '=' . $this->replaceFilter($groupdn) . '))';
+            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+
+            if (false === $result) {
+                restore_error_handler();
+                return array();
+            }
+            $entries = ldap_get_entries($this->ds, $result);
+            $nbEntries = $entries["count"];
+            for ($i = 0; $i < $nbEntries; $i++) {
+                $list[] = $entries[$i]['dn'];
+            }
+            restore_error_handler();
         } else {
-            return array($group[$this->groupSearchInfo['member']]);
+            /**
+             * we get list of members by group
+             */
+            $filter = preg_replace('/%s/', $this->getCnFromDn($groupdn), $this->groupSearchInfo['filter']);
+            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+
+            if (false === $result) {
+                restore_error_handler();
+                return array();
+            }
+            $entries = ldap_get_entries($this->ds, $result);
+            $nbEntries = !empty($entries[0]['member']['count']) ? $entries[0]['member']['count'] : 0;
+            for ($i = 0; $i < $nbEntries; $i++) {
+                $list[] = $entries[0]['member'][$i];
+            }
+            restore_error_handler();
         }
+
+        return $list;
     }
 
     /**
@@ -698,8 +734,8 @@ class CentreonLDAP
     {
         $dbresult = $this->db->query(
             "SELECT use_ssl, use_tls, host_port as port
-                                       FROM auth_ressource_host
-                                       WHERE ldap_host_id = " . CentreonDB::escape($id)
+            FROM auth_ressource_host
+            WHERE ldap_host_id = " . CentreonDB::escape($id)
         );
         $row = $dbresult->fetchRow();
         return $row;
@@ -737,9 +773,9 @@ class CentreonLDAP
             return $this->constuctCache[$id];
         }
         $query = "SELECT ari_name, ari_value 
-                  FROM auth_ressource_info 
-                  WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
-                  AND ar_id = " . CentreonDB::escape($id);
+                 FROM auth_ressource_info 
+                 WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
+                 AND ar_id = " . CentreonDB::escape($id);
         $dbresult = $this->db->query($query);
         $infos = array();
         while ($row = $dbresult->fetchRow()) {
@@ -770,6 +806,18 @@ class CentreonLDAP
     private function setErrorHandler()
     {
         set_error_handler('errorLdapHandler');
+    }
+
+    /**
+     * get cn from dn
+     */
+    private function getCnFromDn($dn)
+    {
+
+        if (preg_match('/(?i:(?<=cn=)).*?(?=,[A-Za-z]{0,2}=|$)/', $dn, $dnArray)) {
+            return !empty($dnArray) ? $dnArray[0] : false;
+        }
+        return false;
     }
 }
 
@@ -840,8 +888,8 @@ class CentreonLdapAdmin
         if (isset($_REQUEST['address'])) {
             $addressList = $_REQUEST['address'];
             $portList = $_REQUEST['port'];
-            $sslList = $_REQUEST['ssl'];
-            $tlsList = $_REQUEST['tls'];
+            $sslList = isset($_REQUEST['ssl']) ? $_REQUEST['ssl'] : null;
+            $tlsList = isset($_REQUEST['tls']) ? $_REQUEST['tls'] : null;
             $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {
@@ -883,25 +931,25 @@ class CentreonLdapAdmin
         if (!count($gopt) && isset($options['ar_name']) && isset($options['ar_description'])) {
             $this->db->query(
                 "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable) 
-                                   VALUES ('" . $this->db->escape($options['ar_name']) . "', 
-                                           '" . $this->db->escape($options['ar_description']) . "', 
-                                           'ldap', 
-                                           '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "')"
+                VALUES ('" . $this->db->escape($options['ar_name']) . "', 
+                        '" . $this->db->escape($options['ar_description']) . "', 
+                        'ldap', 
+                        '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "')"
             );
             $maxArIdSql = "SELECT MAX(ar_id) as last_id
-                FROM auth_ressource
-                WHERE ar_name = '" . $this->db->escape($options['ar_name']) . "'";
+                          FROM auth_ressource
+                          WHERE ar_name = '" . $this->db->escape($options['ar_name']) . "'";
             $res = $this->db->query($maxArIdSql);
             $row = $res->fetchRow();
             $arId = $row['last_id'];
             unset($res);
         } else {
             $this->db->query(
-                "UPDATE auth_ressource SET 
-                                   ar_name = '" . $this->db->escape($options['ar_name']) . "', 
-                                   ar_description = '" . $this->db->escape($options['ar_description']) . "', 
-                                   ar_enable = '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "'
-                                   WHERE ar_id = " . $this->db->escape($arId)
+                "UPDATE auth_ressource 
+                SET ar_name = '" . $this->db->escape($options['ar_name']) . "', 
+                ar_description = '" . $this->db->escape($options['ar_description']) . "', 
+                ar_enable = '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "'
+                WHERE ar_id = " . $this->db->escape($arId)
             );
         }
 
@@ -915,14 +963,14 @@ class CentreonLdapAdmin
             }
             if (isset($gopt[$key])) {
                 $query = "UPDATE `auth_ressource_info` 
-                              SET `ari_value` = '" . $this->db->escape($value, false) . "' 
-                              WHERE `ari_name` = '" . $this->db->escape($key) . "' 
-                              AND ar_id = " . $this->db->escape($arId);
+                         SET `ari_value` = '" . $this->db->escape($value, false) . "' 
+                         WHERE `ari_name` = '" . $this->db->escape($key) . "' 
+                         AND ar_id = " . $this->db->escape($arId);
             } else {
                 $query = "INSERT INTO `auth_ressource_info`
-                    (`ar_id`, `ari_name`, `ari_value`) 
-                    VALUES (" . $this->db->escape($arId) . ", '" . $this->db->escape($key) . "', '" .
-                    $this->db->escape($value, false) . "')";
+                         (`ar_id`, `ari_name`, `ari_value`) 
+                         VALUES (" . $this->db->escape($arId) . ", '" . $this->db->escape($key) . "', '" .
+                         $this->db->escape($value, false) . "')";
             }
             $this->db->query($query);
         }
@@ -940,8 +988,8 @@ class CentreonLdapAdmin
     {
         $gopt = array();
         $query = "SELECT `ari_name`, `ari_value` 
-                      FROM `auth_ressource_info`
-                      WHERE ar_id = " . $this->db->escape($arId);
+                 FROM `auth_ressource_info`
+                 WHERE ar_id = " . $this->db->escape($arId);
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
@@ -961,12 +1009,12 @@ class CentreonLdapAdmin
         $use_ssl = isset($params['use_ssl']) ? 1 : 0;
         $use_tls = isset($params['use_tls']) ? 1 : 0;
         $sql = "INSERT INTO auth_ressource_host " .
-            "(auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order) " .
-            "VALUES ($arId, '" . $this->db->escape($params['hostname']) . "', '" .
-            $this->db->escape($params['port']) . "', " .
-            $use_ssl . ", " .
-            $use_tls . ", '" .
-            $this->db->escape($params['order']) . "')";
+               "(auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order) " .
+               "VALUES ($arId, '" . $this->db->escape($params['hostname']) . "', '" .
+               $this->db->escape($params['port']) . "', " .
+               $use_ssl . ", " .
+               $use_tls . ", '" .
+               $this->db->escape($params['order']) . "')";
         $this->db->query($sql);
     }
 
@@ -984,14 +1032,14 @@ class CentreonLdapAdmin
         }
         $use_ssl = isset($params['use_ssl']) ? 1 : 0;
         $use_tls = isset($params['use_tls']) ? 1 : 0;
-        $sql = "UPDATE auth_ressource_host SET 
-                    host_address = '" . $this->db->escape($params['hostname']) . "',
-                    host_port = '" . $this->db->escape($params['port']) . "',
-                    host_order = '" . $this->db->escape($params['order']) . "', 
-                    use_ssl = " . $use_ssl . ", 
-                    use_tls = " . $use_tls . "
-                    WHERE ldap_host_id = " . $this->db->escape($params['id']) . "
-                    AND auth_ressource_id = " . $arId;
+        $sql = "UPDATE auth_ressource_host 
+               SET host_address = '" . $this->db->escape($params['hostname']) . "',
+               host_port = '" . $this->db->escape($params['port']) . "',
+               host_order = '" . $this->db->escape($params['order']) . "', 
+               use_ssl = " . $use_ssl . ", 
+               use_tls = " . $use_tls . "
+               WHERE ldap_host_id = " . $this->db->escape($params['id']) . "
+               AND auth_ressource_id = " . $arId;
         $this->db->query($sql);
     }
 
@@ -1050,7 +1098,7 @@ class CentreonLdapAdmin
                 if (isset($config[$key])) {
                     $sth = $this->db->query(
                         "UPDATE auth_ressource_info SET ari_value = '" . $this->db->escape($value) . "'
-                    WHERE ar_id = " . CentreonDB::escape($id) . " AND ari_name = '" . $this->db->escape($key) . "'"
+                        WHERE ar_id = " . CentreonDB::escape($id) . " AND ari_name = '" . $this->db->escape($key) . "'"
                     );
                 } else {
                     $sth = $this->db->query(
@@ -1075,7 +1123,9 @@ class CentreonLdapAdmin
     public function getTemplate($id = 0)
     {
         if ($id == 0) {
-            $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
+            $queryTemplate = "SELECT ar_id 
+                             FROM auth_ressource 
+                             WHERE ar_type = 'ldap_tmpl'";
             $res = $this->db->query($queryTemplate);
             if ($res->rowCount() == 0) {
                 return array();
@@ -1084,8 +1134,8 @@ class CentreonLdapAdmin
             $id = $row['ar_id'];
         }
         $query = "SELECT ari_name, ari_value
-			FROM auth_ressource_info
-			WHERE ar_id = " . CentreonDB::escape($id);
+			     FROM auth_ressource_info
+			     WHERE ar_id = " . CentreonDB::escape($id);
         $res = $this->db->query($query);
         $list = array();
         while ($row = $res->fetchRow()) {
@@ -1184,7 +1234,8 @@ class CentreonLdapAdmin
         if (count($configList)) {
             $this->db->query(
                 "DELETE FROM auth_ressource 
-                WHERE ar_id IN (" . implode(',', $configList) . ")"
+                WHERE ar_id 
+                IN (" . implode(',', $configList) . ")"
             );
         }
     }
@@ -1201,8 +1252,8 @@ class CentreonLdapAdmin
         if (count($configList)) {
             $this->db->query(
                 "UPDATE auth_ressource 
-                                   SET ar_enable = '" . $this->db->escape($status) . "'
-                                   WHERE ar_id IN (" . implode(',', $configList) . ")"
+                SET ar_enable = '" . $this->db->escape($status) . "'
+                WHERE ar_id IN (" . implode(',', $configList) . ")"
             );
         }
     }
@@ -1217,8 +1268,8 @@ class CentreonLdapAdmin
     {
         $res = $this->db->query(
             "SELECT host_address, host_port, use_ssl, use_tls
-                                FROM auth_ressource_host
-                                WHERE auth_ressource_id = " . $this->db->escape($arId) .
+            FROM auth_ressource_host
+            WHERE auth_ressource_id = " . $this->db->escape($arId) .
             " ORDER BY host_order"
         );
         $arr = array();

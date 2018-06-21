@@ -41,14 +41,9 @@ $path = "./include/options/accessLists/reloadACL/";
 
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-session_start();
-session_write_close();
-
-$sid = session_id();
 if (isset($_GET["o"]) && $_GET["o"] == "r") {
+    $sid = session_id();
     $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");
     $pearDB->query("UPDATE acl_resources SET changed = '1'");
     $msg = new CentreonMsg();
@@ -92,7 +87,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $res = $pearDB->query("SELECT DISTINCT * FROM session");
 $session_data = array();
 $cpt = 0;
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
 
 while ($r = $res->fetchRow()) {
     $resUser = $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");

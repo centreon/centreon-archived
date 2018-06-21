@@ -114,7 +114,7 @@ $DBRESULT = $pearDB->query($query);
 
 $search = tidySearchKey($search, $advanced_search);
 
-$form = new HTML_QuickForm('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /*
  * Different style between each lines
  */
@@ -166,7 +166,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $tplArr = array();
     $tplStr = "";
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
-    if (count($tplArr)) {
+
+    if ((is_array($tplArr) || $tplArr instanceof Countable) && count($tplArr)) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);

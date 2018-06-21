@@ -51,10 +51,13 @@ abstract class CentreonSeverityAbstract extends CentreonObject
     public function setseverity($parameters)
     {
         $params = explode($this->delim, $parameters);
+        $uniqueLabel = $params[self::ORDER_UNIQUENAME];
         if (count($params) < 3) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+        $objectId = $this->getObjectId($uniqueLabel);
+
+        if ($objectId != 0) {
             if (!is_numeric($params[1])) {
                 throw new CentreonClapiException('Incorrect severity level parameters');
             }
@@ -67,7 +70,15 @@ abstract class CentreonSeverityAbstract extends CentreonObject
                 'level' => $level,
                 'icon_id' => $iconId
             );
-            parent::setparam($objectId, $updateParams);
+
+            $this->object->update($objectId, $updateParams);
+            $this->addAuditLog(
+                'c',
+                $objectId,
+                $uniqueLabel,
+                $updateParams
+            );
+
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
@@ -82,11 +93,27 @@ abstract class CentreonSeverityAbstract extends CentreonObject
     public function unsetseverity($parameters)
     {
         $params = explode($this->delim, $parameters);
+        $uniqueLabel = $params[self::ORDER_UNIQUENAME];
         if (count($params) < 1) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            parent::setparam($objectId, array('level' => null, 'icon_id' => null));
+
+        $objectId = $this->getObjectId($uniqueLabel);
+        if ($objectId != 0) {
+            $updateParams = array(
+                'level' => null,
+                'icon_id' => null
+            );
+            $updateParams['objectId'] = $objectId;
+            parent::setparam($updateParams);
+
+            $this->object->update($objectId, $updateParams);
+            $this->addAuditLog(
+                'c',
+                $objectId,
+                $uniqueLabel,
+                $updateParams
+            );
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }

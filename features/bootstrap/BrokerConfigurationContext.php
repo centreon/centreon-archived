@@ -40,15 +40,20 @@ class BrokerConfigurationContext extends CentreonContext
 
         $this->spin(
             function ($context) use ($page) {
-                return $context->getSession()->getPage()->has('css', 'tbody#output_1 tr.list_one td input.v_required');
+                return $context->getSession()->getPage()->has('css', 'tr.list_one td input.v_required');
             }
         );
 
-        $this->assertFind('css', 'tbody#output_1 tr.list_one td input.v_required')->setValue($this->luaProperties['name']);
-        $this->assertFind('css', 'tbody#output_1 tr.list_two td input.v_required')->setValue($this->luaProperties['path']);
-        $this->selectInList('tbody#output_1 tr:nth-child(1) td.FormRowValue:nth-child(2) select', $this->luaProperties['metricType']);
-        $this->assertFind('css', 'tbody#output_1 tr.list_one:nth-child(2) td:nth-child(2).FormRowValue input')->setValue($this->luaProperties['metricName']);
-        $this->assertFind('css', 'tbody#output_1 tr:nth-child(1) td.FormRowValue input.v_number')->setValue($this->luaProperties['metricValue']);
+        $this->assertFind('css', 'tr.list_one td input.v_required')->setValue($this->luaProperties['name']);
+        $this->assertFind('css', 'tr.list_two td input.v_required')->setValue($this->luaProperties['path']);
+        $this->selectInList(
+            'tbody#output_1 tr:nth-child(1) td.FormRowValue:nth-child(2) select',
+            $this->luaProperties['metricType']
+        );
+        $this->assertFind('css', 'tbody#output_1 tr.list_one:nth-child(2) td:nth-child(2).FormRowValue input')
+            ->setValue($this->luaProperties['metricName']);
+        $this->assertFind('css', 'tbody#output_1 tr:nth-child(1) td.FormRowValue input.v_number')
+            ->setValue($this->luaProperties['metricValue']);
 
         $this->currentPage->save();
     }

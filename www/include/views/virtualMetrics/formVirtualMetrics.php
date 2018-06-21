@@ -104,7 +104,7 @@ $attrServices = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Virtual Metric"));
 } elseif ($o == "c") {
@@ -199,7 +199,7 @@ if ($o == "w") {
     // Modify
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array(
-        "onClick" => "javascript:resetLists(" . $vmetric["host_id"] . "," . $vmetric["index_id"] . ");",
+        "onClick" => "javascript:resetLists(" . (isset($vmetric["host_id"]) ? $vmetric["host_id"] : null) . "," . $vmetric["index_id"] . ");",
         "class" => "btc bt_default"
     ));
     $form->setDefaults($vmetric);

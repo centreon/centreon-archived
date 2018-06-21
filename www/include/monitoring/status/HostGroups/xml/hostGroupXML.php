@@ -194,6 +194,7 @@ while ($data = $DBRESULT->fetchRow()) {
 /*
  * Get Pagination Rows
  */
+$stats = isset($stats) ? $stats : [];
 $numRows = count($stats);
 
 $obj->XML->startElement("reponse");

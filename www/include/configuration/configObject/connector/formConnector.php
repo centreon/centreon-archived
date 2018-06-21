@@ -85,9 +85,9 @@ try {
     unset($row);
     $DBRESULT->closeCursor();
 
-    $availableConnectors_list = return_plugin($oreon->optGen["cengine_path_connectors"]);
+    $availableConnectors_list = return_plugin((isset($oreon->optGen["cengine_path_connectors"]) ? $oreon->optGen["cengine_path_connectors"] : null));
 
-    $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
     $form->addElement('header', 'information', _('General information'));
     if ($o == "a") {
@@ -105,8 +105,8 @@ try {
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?'
-        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id&id='
-        . $connector_id,
+        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id'
+        . (isset($connector_id) ? "&id={$connector_id}" : ''),
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?'
         . 'object=centreon_configuration_command&action=list',
         'linkedObject' => 'centreonCommand'
@@ -124,8 +124,8 @@ try {
     $form->addElement('select2', 'command_id', _("Used by command"), array(), $attrCommands);
 
     $cntStatus = array();
-    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');
-    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Disabled"), '0');
+    $cntStatus[] = $form->createElement('radio', 'connector_status', null, _("Enabled"), '1');
+    $cntStatus[] = $form->createElement('radio', 'connector_status', null, _("Disabled"), '0');
     $form->addGroup($cntStatus, 'connector_status', _("Connector Status"), '&nbsp;&nbsp;');
 
     if (isset($cnt['connector_status']) && is_numeric($cnt['connector_status'])) {
@@ -175,7 +175,7 @@ try {
         $connectorValues['description'] = $tab['connector_description'];
         $connectorValues['command_line'] = $tab['command_line'];
         $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
-        $connectorValues['command_id'] = $tab['command_id'];
+        $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
         $connectorId = $tab['connector_id'];
         
         if ($form->getSubmitValue("submitA")) {

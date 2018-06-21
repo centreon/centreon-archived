@@ -48,7 +48,7 @@ class CentreonDBStatement extends \PDOStatement
         $this->fetchAll = null;
     }
 
-    public function fetch()
+    public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
         if (is_null($this->fetchAll)) {
             return parent::fetch();

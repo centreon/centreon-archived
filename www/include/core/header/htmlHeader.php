@@ -52,6 +52,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
     <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet"
@@ -79,17 +80,14 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     ?>
     <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
-        <!--<script type="text/javascript">jQuery.noConflict();</script>-->
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
-        <script type="text/javascript"
-                src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui-tabs-rotate.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/jquery.noty.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/themes/default.js"></script>
         <script type="text/javascript"
@@ -105,6 +103,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                 src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
         <script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
@@ -116,6 +116,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
     <script src="./include/common/javascript/numeral.min.js"></script>
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
+    <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
+    <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
     <?php
 
     /*

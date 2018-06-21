@@ -67,7 +67,7 @@ $attrsAdvSelect = null;
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 /*
@@ -138,10 +138,10 @@ $form->addElement('select', 'problem_sort_type', _("Sort problems by"), $sort_ty
 $sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
 $form->addElement('select', 'problem_sort_order', _("Order sort problems"), $sort_order);
 
-$options1[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$options1[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nbsp;');
 
-$options2[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$options2[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 
 
@@ -162,14 +162,14 @@ $form->addElement('password', 'proxy_password', _("Proxy password"), $attrsText)
 /**
  * Charts options
  */
-$displayDowntimeOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$displayDowntimeOnChart[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup(
     $displayDowntimeOnChart,
     'display_downtime_chart',
     _("Display downtime and acknowledgment on chart"),
     '&nbsp;&nbsp;'
 );
-$displayCommentOnChart[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$displayCommentOnChart[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup(
     $displayCommentOnChart,
     'display_comment_chart',
@@ -180,7 +180,7 @@ $form->addGroup(
 /*
  * SSO
  */
-$sso_enable[] = HTML_QuickForm::createElement(
+$sso_enable[] = $form->createElement(
     'checkbox',
     'yes',
     '&nbsp;',
@@ -192,8 +192,8 @@ $sso_enable[] = HTML_QuickForm::createElement(
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
 
 $sso_mode = array();
-$sso_mode[] = HTML_QuickForm::createElement('radio', 'sso_mode', null, _("SSO only"), '0');
-$sso_mode[] = HTML_QuickForm::createElement('radio', 'sso_mode', null, _("Mixed"), '1');
+$sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("SSO only"), '0');
+$sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("Mixed"), '1');
 $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
 $form->setDefaults(array('sso_mode'=>'1'));
 
@@ -204,14 +204,13 @@ $form->addElement('text', 'sso_username_replace', _('SSO pattern replace login')
 $form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
 $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 
-$options3[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+$options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
 /*
  * Support Email
  */
 $form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
-
 
 
 $form->applyFilter('__ALL__', 'myTrim');
@@ -228,9 +227,9 @@ $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-$form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path');
-$form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
-$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+// $form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
+// $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
+// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
 
 /*
  * Smarty template Init

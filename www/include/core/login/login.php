@@ -35,12 +35,6 @@
 
 require_once $centreon_path . "/bootstrap.php";
 
-/*
- * Adding requirements
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 /**
  * Path to the configuration dir
  */
@@ -55,7 +49,7 @@ $release = $DBRESULT->fetchRow();
 /**
  * Defining Login Form
  */
-$form = new HTML_QuickForm('Form', 'post', './index.php');
+$form = new HTML_QuickFormCustom('Form', 'post', './index.php');
 $form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
 $form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
 $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));

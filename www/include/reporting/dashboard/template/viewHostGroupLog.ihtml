@@ -16,7 +16,7 @@
 			<form {$formItem.attributes} style="margin:0px;padding:0px;">
 				&nbsp;{$formItem.item.label}:&nbsp;&nbsp;{$formItem.item.html}{$formItem.hidden}
 				{if $date_start != 0}
-					&nbsp;&nbsp;&nbsp;{$period_name} {$date_start} {$to} {$date_end}
+					&nbsp;&nbsp;&nbsp;{$period_name} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end}</span>
 				{/if}
 			</form>
 		</td>
@@ -146,8 +146,11 @@
 	</tr>
 </table>
 
-<script>
 {literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+
     jQuery("#StartDate").datepicker({
         maxDate: '-1',
         onSelect : function(data){  

@@ -86,11 +86,13 @@ class CentreonServicetemplates extends CentreonService
     }
 
     /**
-     * @param array $values
-     * @param array $options
+     * @param array  $values
+     * @param array  $options
+     * @param string $register
+     *
      * @return array|type
      */
-    public function getObjectForSelect2($values = array(), $options = array())
+    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
         $serviceList = array();
         if (isset($options['withHosttemplate']) && $options['withHosttemplate'] === true) {

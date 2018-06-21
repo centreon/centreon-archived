@@ -38,7 +38,8 @@
                             {foreach from=$item item=partition}
                                 <tr class={cycle values="list_one, list_two"}>
                                     <td class="FormRowField">{$partition.PARTITION_NAME}</td>
-                                    <td class="FormRowValue">{$partition.CREATE_TIME}</td>
+                                    <!-- converting the db formatted date to timestamp then using a class to call moment-->
+                                    <td class="FormRowValue isTimestamp">{$partition.CREATE_TIME|strtotime}</td>
                                     <td class="FormRowValue">{$partition.TABLE_ROWS}</td>
                                     <td class="FormRowValue">{$partition.DATA_LENGTH} {t}MB{/t}</td>
                                     <td class="FormRowValue">{$partition.INDEX_LENGTH} {t}MB{/t}</td>
@@ -103,3 +104,10 @@
         </td>
     </tr>
 </table>
+
+{literal}
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
+{/literal}

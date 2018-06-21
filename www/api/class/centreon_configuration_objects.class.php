@@ -265,4 +265,21 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
         return $tmpValues;
     }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param \CentreonUser $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
+        }
+
+        return $user->hasAccessRestApiConfiguration();
+    }
 }

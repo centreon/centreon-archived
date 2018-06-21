@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.9.0');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '18.9.0');
 
 --
 -- Contenu de la table `contact`
@@ -542,7 +542,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (1, 'filters', '', 0, NULL),
 (2, 'metrics_column', 'Metrics column', 1, NULL),
 (3, 'status_column', 'Status column', 1, NULL),
-(4, 'lua_parameters', 'lua parameters', 1, NULL);
+(4, 'lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
 (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
@@ -802,7 +802,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 62, 0, 16),
 (32, 29, 1, 1),
 (32, 70, 0, 2),
-(33, 74, 0, 1),
+(33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
 (33, 71, 0, 4);
@@ -811,7 +811,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameters__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`

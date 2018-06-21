@@ -53,6 +53,11 @@ class CentreonHomeCustomview extends CentreonWebService
     {
         global $centreon;
         $views = array();
+        $q = array();
+        if (isset($this->arguments['q']) && $this->arguments['q'] != '') {
+            $q[] = '%' . $this->arguments['q'] . '%';
+        }
+
         $query = 'SELECT custom_view_id, name FROM (' .
             'SELECT cv.custom_view_id, cv.name FROM custom_views cv ' .
             'INNER JOIN custom_view_user_relation cvur ON cv.custom_view_id = cvur.custom_view_id ' .
@@ -69,10 +74,14 @@ class CentreonHomeCustomview extends CentreonWebService
             'WHERE d.custom_view_id NOT IN (' .
             'SELECT cvur2.custom_view_id FROM custom_view_user_relation cvur2 ' .
             'WHERE cvur2.user_id = ' . $centreon->user->user_id . ' ' .
-            'AND cvur2.is_consumed = 1) ';
+            'AND cvur2.is_consumed = 1) ' .
+            (count($q) > 0 ? 'AND d.name like ? ' : '') .
+            'ORDER BY name';
 
-        $dbResult = $this->pearDB->query($query);
-        while ($row = $dbResult->fetch()) {
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->execute($q);
+
+        while ($row = $stmt->fetch()) {
             $views[] = array(
                 'id' => $row['custom_view_id'],
                 'text' => $row['name']
@@ -176,10 +185,8 @@ class CentreonHomeCustomview extends CentreonWebService
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Compare.class.php";
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Sort.class.php";
         require_once _CENTREON_PATH_ . "www/class/centreonWidget/Params/Date.class.php";
-        require_once __DIR__ . "/../../../GPL_LIB/Smarty/libs/Smarty.class.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm/advmultiselect.php";
-        require_once __DIR__ . "/../../lib/HTML/QuickForm/Renderer/ArraySmarty.php";
+        $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
+        require_once $smartyDir . 'libs/Smarty.class.php';
 
         global $centreon;
 
@@ -216,6 +223,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->config_dir = $libDir . '/SmartyCache/config';
         $tpl->cache_dir = $libDir . '/SmartyCache/cache';
         $tpl->template_dir = _CENTREON_PATH_ . '/www/include/home/customViews/';
+        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
         $tpl->caching = 0;
         $tpl->compile_check = true;
         $tpl->force_compile = true;
@@ -311,5 +319,18 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->assign('url', $url);
 
         return $tpl->fetch("widgetParam.html");
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        return true;
     }
 }

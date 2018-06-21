@@ -545,24 +545,25 @@ Instance timeout
   Default is 300 seconds.
 
 ===========
-LUA Outputs
+Lua Outputs
 ===========
 
-LUA *Outputs* send metrics information into a script by a key-value system. The LUA script should be
- on your server.
+Lua *Outputs* send metrics information into a script by a key-value system.
+The Lua script should be on your server.
 
 Path
-  The path of the lua script in your server.
+  The path of the Lua script in your server.
 Filter category
   The categories of events accepted by this Output. If empty, no restriction on events accepted.
-  If filled, only events of the given type will be processed. Output that accept data from
-  Centreon Engines’ Broker module should be set to accept only ‘Neb’ events.
+  If filled, only events of the given type will be processed. Outputs that accept data from
+  Centreon Engine's Broker module should be set to accept only ‘Neb’ events.
 
-*metric lua
+*Lua parameter*
+
 Type
-  Type of the value of the metric.
+  Type of the metric value.
 Name/Key
-  Name of the value of the metric.
+  Name of the metric value.
 Value
   Value of the metric.
 

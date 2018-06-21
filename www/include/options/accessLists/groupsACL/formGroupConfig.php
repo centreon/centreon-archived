@@ -179,7 +179,7 @@ $eTemplate = '<table><tr>'
     . '<td><div class="ams">{label_3}</div>{selected}</td>'
     . '</tr></table>';
 
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Group"));
 } elseif ($o == "c") {
@@ -292,14 +292,14 @@ echo $ams1->getElementJs(false);
  * Further informations
  */
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Enabled"), '1');
-$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Disabled"), '0');
+$groupActivation[] = $form->createElement('radio', 'acl_group_activate', null, _("Enabled"), '1');
+$groupActivation[] = $form->createElement('radio', 'acl_group_activate', null, _("Disabled"), '0');
 $form->addGroup($groupActivation, 'acl_group_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('acl_group_activate' => '1'));
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
+$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 $form->setDefaults(array('action' => '1'));
 

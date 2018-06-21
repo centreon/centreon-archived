@@ -13,7 +13,7 @@
 			<xsl:element name='tr'>
 				<xsl:attribute name='class'><xsl:value-of select="@class"/></xsl:attribute>
 				<td style="padding: 4px;"><xsl:value-of select="author"/></td>
-				<td style="padding: 4px;"><xsl:value-of select="entrytime"/></td>
+				<td style="padding: 4px;" class="isTimestamp"><xsl:value-of select="entrytime"/></td>
 				<td style="padding: 4px;"><xsl:value-of select="persistent"/></td>
 				<td style="padding: 4px;"><xsl:value-of select="sticky"/></td>				
 				<td style="padding: 4px;"><xsl:value-of select="comment"/></td>

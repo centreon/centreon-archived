@@ -207,8 +207,8 @@
                 <div class="toggle_wrapper inactive" id="rotationTabs">
                 <div id='rotation_timer'></div>
                 <div id='timer_value'></div>
-                <div class="button_group_center">
-                    <input type='button' value='{t}Apply{/t}' class="btc bt_success" onClick='submitRotation();'/>
+                <div class="button_group button_group_center">
+                    <input type='button' value='{t}Apply{/t}' class="btc bt_success bt_widget" onClick='submitRotation();'/>
                 </div>
             </div>
             </div>
@@ -224,8 +224,7 @@
                 {t}No view available. To create a new view, please click "Add view" button.{/t}
             </h4>
         </div>
-        <ul class="tabs_header">
-        </ul>
+        <ul class="tabs_header"></ul>
     </div>
 </div>
 <div hidden>
@@ -253,6 +252,10 @@
 </div>
 <script>
 {literal}
+
+var rotationTimeout;
+var rotationTimer = {/literal}{$rotationTimer}{literal};
+
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
   if (jQuery('#tabs .tabs_header > li').length > 0) {
@@ -313,7 +316,7 @@ function deleteTab(viewId) {
   });
 
   if (jQuery('#tabs .tabs_header > li').length > 0) {
-    jQuery('#tabs').tabs('select', 1);
+    jQuery('#tabs').tabs('option', 'active', 1);
   }
 
   infoEmptyTab();
@@ -370,7 +373,7 @@ function submitAddView() {
               public: (jQuery('#formAddView input[name="public"]:checked').length ? true : false),
               nbCols: jQuery('#formAddView input[name="layout[layout]"]:checked').val()
             });
-            jQuery("#tabs").tabs('select', getTabPos(viewId));
+            jQuery("#tabs").tabs('option', 'active', getTabPos(viewId));
             jQuery('#formAddView').parents('.toggle_wrapper').hide();
         }else{
             jQuery('#formAddView').parents('.toggle_wrapper').hide();
@@ -441,7 +444,7 @@ function submitAddWidget() {
 /* Delete action */
 function submitDeleteView() {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -465,7 +468,7 @@ function submitDeleteView() {
 /* Set default action */
 function submitSetDefaultView() {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -493,7 +496,7 @@ function submitRotation() {
       var view = response.getElementsByTagName('custom_view_id');
       var error = response.getElementsByTagName('error');
       if (typeof(view) != 'undefined') {
-        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
+        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
         jQuery('#rotation_timer').parents('.toggle_wrapper').hide();
       } else if (typeof(err) != 'undefined') {
         var errorMsg = err.item(0).firstChild.data;
@@ -506,7 +509,7 @@ function submitRotation() {
 function submitShareView()
 {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   var lockedUsers = jQuery("#formShareView").find('select[name="locked_user_id[]"]').val();
   lockedUsers = (lockedUsers == null) ? [] : lockedUsers.filter(function (elem) {return elem !== '';});
@@ -608,7 +611,7 @@ function toggleEdit(show) {
 function removeUserFromView(user_id) {
 
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -638,7 +641,7 @@ function removeUserFromView(user_id) {
 
 function removeUsergroupFromView(usergroup_id) {
   var viewId = jQuery(
-    jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+    jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
   ).data('cvId');
   jQuery.ajax({
     type: "POST",
@@ -667,10 +670,11 @@ function removeUsergroupFromView(usergroup_id) {
 }
 
 jQuery(function () {
+  jQuery('#tabs').tabs();
   toggleEdit(defaultShow);
 
   /* Initialize buttons */
-  jQuery('.addView').button({ icons : { primary: 'ui-icon-plus'}}).on('click', function () {
+  jQuery('.addView').button({icon: "ui-icon-plus"}).on('click', function () {
     //reset select2
     jQuery("#formAddView #viewLoad").empty().append($('<option>'));
     //reset add view form
@@ -700,7 +704,7 @@ jQuery(function () {
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
     var viewId = jQuery(
-      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+      jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
     ).data('cvId');
     jQuery("#locked_user_id option").remove();
     jQuery("#unlocked_user_id option").remove();
@@ -764,7 +768,6 @@ jQuery(function () {
   /* Initialize tabs */
   jQuery(".ui-tabs-panel").css('overflow', 'auto');
 
-  var rotationTimer = {/literal}{$rotationTimer}{literal};
   jQuery("#rotation_timer").slider({
     value: rotationTimer,
     min: 0,
@@ -780,7 +783,7 @@ jQuery(function () {
 
   /* Add event for close all form */
   jQuery(document).on('click', function (e) {
-    /* 
+    /*
      * if were are in dropdown selection or popin select all.
      */
     if (jQuery(e.target).parents('.cntn').length === 0 &&
@@ -793,7 +796,7 @@ jQuery(function () {
 
   jQuery('.editView').on('click', function () {
     var tabActive = jQuery(
-      jQuery('#tabs .ui-tabs-selected.ui-state-active')[0]
+      jQuery('#tabs .ui-tabs-tab.ui-state-active')[0]
     );
 
     jQuery('#formEditView input[name="custom_view_id"]').val(tabActive.data('cvId'));
@@ -847,21 +850,21 @@ jQuery(function () {
     method: 'get',
     methodType: 'json',
     success: function (data) {
-      jQuery.each(data.tabs, function (idx, tab) {
-        addTab(tab, true);
-      });
+
       if (data.tabs.length > 0) {
-        jQuery("#tabs").tabs({
-          ajaxOptions: { async: true },
-          select: function() {
-            jQuery('.viewBody').empty();
-          },
-          selected: -1
+        jQuery('#tabs').tabs("destroy");
+
+        jQuery.each(data.tabs, function (idx, tab) {
+          addTab(tab, true);
         });
+
+        jQuery("#tabs").tabs({
+          active: getTabPos(data.current)
+        });
+        jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
       }
-      jQuery("#tabs").tabs('select', getTabPos(data.current));
+
       infoEmptyTab();
-      jQuery("#tabs").tabs('rotate', (rotationTimer * 1000));
     }
   });
 

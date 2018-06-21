@@ -407,8 +407,9 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         $query .= " AND h.enabled = 1 ";
 
         if (
-            in_array($this->sortType, explode(',', $this->arguments['fields'])) ||
-            is_null($this->arguments['fields'])
+            !isset($this->arguments['fields']) ||
+            is_null($this->arguments['fields']) ||
+            in_array($this->sortType, explode(',', $this->arguments['fields']))
         ) {
             $q = 'ASC';
             if (isset($this->order) && strtoupper($this->order) === 'DESC') {

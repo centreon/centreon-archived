@@ -142,7 +142,7 @@ $DBRESULT->closeCursor();
 
 $userUrl = "main.php?p=50104&o=c";
 
-$logDate = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
+$logDate = time();
 $logOutUrl = "index.php?disconnect=1";
 
 /*
@@ -287,7 +287,7 @@ if ($level1 && $level2 && $level3) {
 $tpl->assign("UserInfoUrl", $userUrl);
 $tpl->assign("UserName", $centreon->user->get_alias());
 $tpl->assign("Date", $logDate);
-$tpl->assign("LogOut", $logOut);
+$tpl->assign("myLocale", $centreon->user->get_lang());
 $tpl->assign("LogOutUrl", $logOutUrl);
 $tpl->assign("Menu1Color", "menu_1");
 $tpl->assign("Menu1ID", "menu1_bgcolor");

@@ -137,7 +137,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "40");
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Monitoring Engine Configuration File"));
 } elseif ($o == "c") {
@@ -153,8 +153,8 @@ $form->addElement('header', 'information', _("Information"));
 $form->addElement('text', 'nagios_name', _("Configuration Name"), $attrsText);
 $form->addElement('textarea', 'nagios_comment', _("Comments"), $attrsTextarea);
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("Enabled"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("Disabled"), '0');
+$nagTab[] = $form->createElement('radio', 'nagios_activate', null, _("Enabled"), '1');
+$nagTab[] = $form->createElement('radio', 'nagios_activate', null, _("Disabled"), '0');
 $form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 
 $form->addElement('select', 'nagios_server_id', _("Linked poller"), $nagios_server);
@@ -190,55 +190,55 @@ $form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsTe
  * Enable / Disable functionalities
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_notifications', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_notifications', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_notifications', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_notifications', _("Notification Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_service_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_service_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_service_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'execute_service_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'execute_service_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'execute_service_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'execute_service_checks', _("Service Check Execution Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_service_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_service_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_service_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'accept_passive_service_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'accept_passive_service_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'accept_passive_service_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'accept_passive_service_checks', _("Passive Service Check Acceptance Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'execute_host_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'execute_host_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'execute_host_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'execute_host_checks', _("Host Check Execution Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'accept_passive_host_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'accept_passive_host_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'accept_passive_host_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'accept_passive_host_checks', _("Passive Host Check Acceptance Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_check_result_path', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_check_result_path', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("No"), '0');
 $form->addGroup($nagTab, 'use_check_result_path', _("Status"), '&nbsp;');
 
 /* *****************************************************
  * Log Rotation Method
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("None"), 'n');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Hourly"), 'h');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Daily"), 'd');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Weekly"), 'w');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_rotation_method', null, _("Monthly"), 'm');
+$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("None"), 'n');
+$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Hourly"), 'h');
+$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Daily"), 'd');
+$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Weekly"), 'w');
+$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Monthly"), 'm');
 $form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
 $form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 
@@ -246,9 +246,9 @@ $form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2
  * External Commands
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_external_commands', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'check_external_commands', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'check_external_commands', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'check_external_commands', null, _("Default"), '2');
 $form->addGroup($nagTab, 'check_external_commands', _("External Command Check Option"), '&nbsp;');
 
 $form->addElement('text', 'command_check_interval', _("External Command Check Interval"), $attrsText3);
@@ -264,23 +264,23 @@ $form->addElement('text', 'lock_file', _("Lock File"), $attrsText2);
  * Retention
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'retain_state_information', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'retain_state_information', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'retain_state_information', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'retain_state_information', null, _("Default"), '2');
 $form->addGroup($nagTab, 'retain_state_information', _("State Retention Option"), '&nbsp;');
 $form->addElement('text', 'state_retention_file', _("State Retention File"), $attrsText2);
 $form->addElement('text', 'retention_update_interval', _("Automatic State Retention Update Interval"), $attrsText3);
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_program_state', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_program_state', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_program_state', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_retained_program_state', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_retained_program_state', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_retained_program_state', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_retained_program_state', _("Use Retained Program State Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_retained_scheduling_info', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_retained_scheduling_info', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
 $form->addGroup(
     $nagTab,
     'use_retained_scheduling_info',
@@ -332,50 +332,50 @@ $form->addElement(
  * logging options
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_syslog', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_syslog', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_syslog', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_syslog', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_syslog', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_syslog', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_syslog', _("Syslog Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_notifications', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_notifications', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_notifications', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_notifications', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_notifications', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_notifications', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_notifications', _("Notification Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_service_retries', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_service_retries', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_service_retries', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_service_retries', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_service_retries', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_service_retries', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_service_retries', _("Service Check Retry Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_host_retries', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_host_retries', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_host_retries', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_host_retries', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_host_retries', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_host_retries', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_host_retries', _("Host Retry Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_event_handlers', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_event_handlers', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_event_handlers', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_event_handlers', _("Event Handler Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_external_commands', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_external_commands', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_external_commands', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_external_commands', _("External Command Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'log_passive_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_passive_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_passive_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_pid', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_pid', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'log_pid', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'log_pid', null, _("No"), '0');
 $form->addGroup($nagTab, 'log_pid', _("Enable logging pid information"), '&nbsp;');
 
 /* *****************************************************
@@ -400,24 +400,24 @@ $form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reape
 $form->addElement('text', 'max_check_result_reaper_time', _("Maximum Check Result Reaper Time"), $attrsText3);
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'translate_passive_host_checks', _("Translate Passive Host Checks Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'passive_host_checks_are_soft', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'passive_host_checks_are_soft', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'passive_host_checks_are_soft', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'passive_host_checks_are_soft', null, _("Default"), '2');
 $form->addGroup($nagTab, 'passive_host_checks_are_soft', _("Passive Host Checks Are SOFT Option"), '&nbsp;');
 
 /* *****************************************************
  * Auto Rescheduling Option
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'auto_reschedule_checks', _("Auto-Rescheduling Option"), '&nbsp;');
 
 $form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
@@ -427,16 +427,16 @@ $form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Windo
  * Aggressive host checking
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
 $form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
 
 /* *****************************************************
  * Flapping management.
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_flap_detection', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_flap_detection', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_flap_detection', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'enable_flap_detection', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_flap_detection', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'enable_flap_detection', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_flap_detection', _("Flap Detection Option"), '&nbsp;');
 
 $form->addElement('text', 'low_service_flap_threshold', _("Low Service Flap Threshold"), $attrsText3);
@@ -448,9 +448,9 @@ $form->addElement('text', 'high_host_flap_threshold', _("High Host Flap Threshol
  * SOFT dependencies options
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'soft_state_dependencies', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'soft_state_dependencies', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'soft_state_dependencies', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'soft_state_dependencies', null, _("Default"), '2');
 $form->addGroup($nagTab, 'soft_state_dependencies', _("Soft Service Dependencies Option"), '&nbsp;');
 
 /* *****************************************************
@@ -468,16 +468,16 @@ $form->addElement('text', 'perfdata_timeout', _("Performance Data Processor Comm
  * OCSP / OCHP
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Default"), '2');
 $form->addGroup($nagTab, 'obsess_over_services', _("Obsess Over Services Option"), '&nbsp;');
 $form->addElement('select', 'ocsp_command', _("Obsessive Compulsive Service Processor Command"), $checkCmds);
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
 $form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
 $form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
 
@@ -485,9 +485,9 @@ $form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Process
  * Perfdata configuration parameters
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'process_performance_data', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'process_performance_data', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'process_performance_data', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'process_performance_data', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'process_performance_data', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'process_performance_data', null, _("Default"), '2');
 $form->addGroup($nagTab, 'process_performance_data', _("Performance Data Processing Option"), '&nbsp;');
 
 $form->addElement('select', 'host_perfdata_command', _("Host Performance Data Processing Command"), $checkCmds);
@@ -510,15 +510,15 @@ $form->addElement(
 );
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Append"), 'a');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Write"), 'w');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'host_perfdata_file_mode', null, _("Append"), 'a');
+$nagTab[] = $form->createElement('radio', 'host_perfdata_file_mode', null, _("Write"), 'w');
+$nagTab[] = $form->createElement('radio', 'host_perfdata_file_mode', null, _("Default"), '2');
 $form->addGroup($nagTab, 'host_perfdata_file_mode', _("Host Performance Data File Mode"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Append"), 'a');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Write"), 'w');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'service_perfdata_file_mode', null, _("Append"), 'a');
+$nagTab[] = $form->createElement('radio', 'service_perfdata_file_mode', null, _("Write"), 'w');
+$nagTab[] = $form->createElement('radio', 'service_perfdata_file_mode', null, _("Default"), '2');
 $form->addGroup($nagTab, 'service_perfdata_file_mode', _("Service Performance Data File Mode"), '&nbsp;');
 
 $form->addElement(
@@ -551,30 +551,30 @@ $form->addElement(
  * Check orphaned
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_services', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_services', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_services', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_services', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_services', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_services', null, _("Default"), '2');
 $form->addGroup($nagTab, 'check_for_orphaned_services', _("Orphaned Service Check Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_hosts', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_hosts', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_for_orphaned_hosts', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_hosts', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_hosts', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'check_for_orphaned_hosts', null, _("Default"), '2');
 $form->addGroup($nagTab, 'check_for_orphaned_hosts', _("Orphaned Host Check Option"), '&nbsp;');
 
 /* *****************************************************
  * Freshness
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'check_service_freshness', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'check_service_freshness', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'check_service_freshness', null, _("Default"), '2');
 $form->addGroup($nagTab, 'check_service_freshness', _("Service Freshness Check Option"), '&nbsp;');
 $form->addElement('text', 'service_freshness_check_interval', _("Service Freshness Check Interval"), $attrsText3);
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'check_host_freshness', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'check_host_freshness', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'check_host_freshness', null, _("Default"), '2');
 $form->addGroup($nagTab, 'check_host_freshness', _("Host Freshness Check Option"), '&nbsp;');
 $form->addElement('text', 'host_freshness_check_interval', _("Host Freshness Check Interval"), $attrsText3);
 $form->addElement('text', 'additional_freshness_latency', _("Additional freshness latency"), $attrsText3);
@@ -595,15 +595,15 @@ $form->addElement('text', 'illegal_object_name_chars', _("Illegal Object Name Ch
 $form->addElement('text', 'illegal_macro_output_chars', _("Illegal Macro Output Characters"), $attrsText2);
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_regexp_matching', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_regexp_matching', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_regexp_matching', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_regexp_matching', _("Regular Expression Matching Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_true_regexp_matching', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_true_regexp_matching', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_true_regexp_matching', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_true_regexp_matching', _("True Regular Expression Matching Option"), '&nbsp;');
 
 /* *****************************************************
@@ -628,23 +628,23 @@ $cloneSet[] = $form->addElement(
 $form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
+$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 
 /*
  * Predictive dependancy options
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_predictive_host_dependency_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_predictive_host_dependency_checks', _("Predictive Host Dependency Checks"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement(
+$nagTab[] = $form->createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
+$nagTab[] = $form->createElement(
     'radio',
     'enable_predictive_service_dependency_checks',
     null,
@@ -669,21 +669,21 @@ $form->addElement('text', 'cached_service_check_horizon', _("Cached Service Chec
  * Tunning
  */
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_large_installation_tweaks', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'enable_environment_macros', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("No"), '0');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Default"), '2');
+$nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("Default"), '2');
 $form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
 /* ****************************************************
@@ -693,8 +693,8 @@ $form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $att
 $form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _("Yes"), '1');
-$nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'daemon_dumps_core', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'daemon_dumps_core', null, _("No"), '0');
 $form->addGroup($nagTab, 'daemon_dumps_core', _('Daemon core dumps'), '&nbsp;');
 
 $verboseOptions = array(
@@ -721,7 +721,7 @@ $debugLevel["1024"] = _("Comments");
 $debugLevel["2048"] = _("Macros");
 foreach ($debugLevel as $key => $val) {
     if ($key == "-1" || $key == "0") {
-        $debugCheck[] = HTML_QuickForm::createElement(
+        $debugCheck[] = $form->createElement(
             'checkbox',
             $key,
             '&nbsp;',
@@ -729,7 +729,7 @@ foreach ($debugLevel as $key => $val) {
             array("id" => "debug" . $key, "onClick" => "unCheckOthers(this.id);")
         );
     } else {
-        $debugCheck[] = HTML_QuickForm::createElement(
+        $debugCheck[] = $form->createElement(
             'checkbox',
             $key,
             '&nbsp;',

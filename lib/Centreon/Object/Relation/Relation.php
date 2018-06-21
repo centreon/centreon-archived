@@ -153,14 +153,24 @@ abstract class Centreon_Object_Relation
      * @param array $firstTableParams
      * @param array $secondTableParams
      * @param int $count
-     * @param string $order
+     * @param int $offset
+     * @param null $order
      * @param string $sort
      * @param array $filters
      * @param string $filterType
-     * @return array
+     * @return false|mixed
+     * @throws Exception
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
-    {
+    public function getMergedParameters(
+        $firstTableParams = array(),
+        $secondTableParams = array(),
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
@@ -170,18 +180,20 @@ abstract class Centreon_Object_Relation
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= $this->firstObject->getTableName().".".$fparams;
+            $fString .= $this->firstObject->getTableName() . "." . $fparams;
         }
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= $this->secondObject->getTableName().".".$sparams;
+            $sString .= $this->secondObject->getTableName() . "." . $sparams;
         }
-        $sql = "SELECT ".$fString.$sString."
-        		FROM ".$this->firstObject->getTableName().",".$this->secondObject->getTableName().",".$this->relationTable."
-        		WHERE ".$this->firstObject->getTableName().".".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey."
-        		AND ".$this->relationTable.".".$this->secondKey." = ".$this->secondObject->getTableName().".".$this->secondObject->getPrimaryKey();
+        $sql = "SELECT " . $fString . $sString . " FROM " . $this->firstObject->getTableName() . "," .
+            $this->secondObject->getTableName() . "," . $this->relationTable .
+            " WHERE " . $this->firstObject->getTableName() . "." .
+            $this->firstObject->getPrimaryKey() . " = " . $this->relationTable . "." . $this->firstKey .
+            " AND " . $this->relationTable . "." . $this->secondKey . " = " . $this->secondObject->getTableName() .
+            "." . $this->secondObject->getPrimaryKey();
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {

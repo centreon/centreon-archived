@@ -51,7 +51,7 @@ class CentreonConfigCentreonBroker
 
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     private $db;
 
@@ -329,7 +329,7 @@ class CentreonConfigCentreonBroker
         $tag = $this->getTagName($tagId);
         $this->nbSubGroup = 1;
 
-        $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
+        $qf = new HTML_QuickFormCustom('form_' . $formId, 'post', '?p=' . $page);
 
         $qf->addElement(
             'text',
@@ -391,7 +391,7 @@ class CentreonConfigCentreonBroker
                     }
 
                     foreach ($this->getListValues($field['id']) as $key => $value) {
-                        $tmpRadio[] = HTML_QuickForm::createElement(
+                        $tmpRadio[] = $qf->createElement(
                             'radio',
                             $field['fieldname'],
                             null,

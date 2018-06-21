@@ -53,18 +53,25 @@ $sid = session_id();
 
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
-    $currentTime = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $centreon->user->getMyGMT());
-    $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = ?", array($sid));
-    if ($DBRESULT->rowCount()) {
+    $currentTime = $centreon->CentreonGMT->getCurrentTime(time(), $centreon->user->getMyGMT());
+
+
+
+    $stmt = $pearDB->prepare("SELECT user_id FROM session WHERE session_id = ?");
+    $stmt->execute(array($sid));
+
+    if ($stmt->rowCount()) {
+
         $buffer->writeElement("state", "ok");
     } else {
         $buffer->writeElement("state", "nok");
     }
 } else {
-    $currentTime = date(_("Y/m/d G:i"));
+    $currentTime = date_format('%c',time());
     $buffer->writeElement("state", "nok");
 }
 $buffer->writeElement("time", $currentTime);
+$buffer->writeElement("timezone", $centreon->CentreonGMT->getActiveTimezone($centreon->user->getMyGMT()));
 $buffer->endElement();
 
 header('Content-Type: text/xml');

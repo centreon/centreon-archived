@@ -53,6 +53,16 @@ class AcknowledgementContext extends CentreonContext
         ));
         $page->save();
         $this->restartAllPollers();
+
+        $page = new MonitoringServicesPage($this);
+        $this->spin(
+            function ($context) use ($page) {
+                $page->scheduleImmediateCheckForcedOnService('_Module_Meta', 'meta_1');
+                return true;
+            },
+            'Could not schedule check.'
+        );
+
         $this->spin(
             function ($context) {
                 $page = new ServiceMonitoringDetailsPage(
@@ -61,7 +71,7 @@ class AcknowledgementContext extends CentreonContext
                     'meta_1'
                 );
                 $props = $page->getProperties();
-                return $props['last_check'];
+                return $props['last_check'] && $props['state'] != 'PENDING';
             },
             'Could not open meta-service monitoring details page.',
             120

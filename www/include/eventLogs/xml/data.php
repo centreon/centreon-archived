@@ -238,12 +238,12 @@ if ($EndDate != "" && $EndTime == "") {
 if ($StartDate != "") {
     preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
     preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
-    $start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+    $start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 if ($EndDate != "") {
     preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
     preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
-    $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
+    $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 
 $period = 86400;
@@ -790,8 +790,8 @@ if (isset($req) && $req) {
         $buffer->writeElement("real_name", $log["host_name"], false);
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);
-        $buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
-        $buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
+        $buffer->writeElement("date", $log["ctime"]);
+        $buffer->writeElement("time", $log["ctime"]);
         $buffer->writeElement("output", $log["output"]);
         $buffer->writeElement("contact", $log["notification_contact"], false);
         $buffer->writeElement("contact_cmd", $log["notification_cmd"], false);

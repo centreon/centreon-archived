@@ -298,7 +298,7 @@ if (isset($_GET["acknowledge"])) {
                     document.getElementById(decodeURIComponent(keyz))
                 ) {
                     if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                        _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                        _getVar += '&select[' + keyz + ']=1';
                     }
                 }
             }

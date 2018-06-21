@@ -66,7 +66,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
     /*
      * Form begin
      */
-    $form = new HTML_QuickForm('Form', 'POST', "?p=" . $p);
+    $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
     /*
      * Indicator basic information
@@ -82,7 +82,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
         $host_name = $hObj->getHostName($_GET['host_id']);
     }
     if (!isset($_GET['host_id'])) {
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'commentType',
             null,
@@ -90,7 +90,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
             '1',
             array('id' => 'host', 'onclick' => "toggleParams('host');")
         );
-        $dtType[] = HTML_QuickForm::createElement(
+        $dtType[] = $form->createElement(
             'radio',
             'commentType',
             null,
@@ -118,7 +118,7 @@ if (!$centreon->user->access->checkAction("service_comment")) {
                 'multiple' => true,
                 'linkedObject' => 'centreonService'
             );
-            $form->addElement('select2', 'service_id', _("Services"), array($disabled), $attrServices);
+            $form->addElement('select2', 'service_id', _("Services"), array(), $attrServices);
         }
     }
 

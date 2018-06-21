@@ -100,6 +100,7 @@ $help["location"] = dgettext(
     "to Greenwich Mean Time (GMT) in hours."
 );
 $help["reach_api"] = dgettext("help", "Allow this user to access to Centreon Rest API with its account.");
+$help["reach_api_rt"] = dgettext("help", "Allow this user to access to Centreon Rest API Realtime with its account.");
 
 /*
  * Additional Information

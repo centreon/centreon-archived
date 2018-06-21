@@ -58,13 +58,6 @@ if ($o == "c" && $service_id == null) {
 }
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/select2.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the configuration dir
  */
 $path = "./include/configuration/configObject/service_template_model/";

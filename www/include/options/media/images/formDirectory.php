@@ -109,7 +109,7 @@ $attrsTextarea    = array("rows"=>"5", "cols"=>"40");
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 if ($o == "cd") {
     $form->addElement('header', 'title', _("Modify directory"));
     $form->addElement('autocomplete', 'dir_name', _("Directory name"), $directories);
@@ -122,8 +122,8 @@ if ($o == "cd") {
 }
 
 $tab = array();
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
+$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Action"), '&nbsp;');
 $form->setDefaults(array('action' => '1'));
 

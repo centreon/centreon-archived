@@ -67,8 +67,8 @@
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-            <td class="ListColLeft">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == w}</a>{/if}</td>
-            <td class="ListColCenter">{if $mode_access == w}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == w}</a>{/if}</td>
+            <td class="ListColLeft">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == 'w'}</a>{/if}</td>
+            <td class="ListColCenter">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
             <td class="ListColCenter">
               <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
@@ -81,8 +81,9 @@
                 </span>
             </td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
-            <td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
+            <!-- using a class to format the timestamp -->
+            <td class="ListColCenter isTimestamp">{$elemArr[elem].RowMenu_startTime}</td>
+            <td class="ListColCenter isTimestamp"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
@@ -127,5 +128,8 @@
 
     setDisabledRowStyle();
 
+
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
 </script>
 {/literal}

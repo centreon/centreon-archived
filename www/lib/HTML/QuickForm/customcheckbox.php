@@ -3,7 +3,7 @@
 
 /**
  * HTML class for a checkbox type field
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE: This source file is subject to version 3.01 of the PHP license
@@ -24,13 +24,8 @@
  */
 
 /**
- * Base class for <input /> form elements
- */
-require_once 'HTML/QuickForm/checkbox.php';
-
-/**
  * HTML class for a checkbox type field
- * 
+ *
  * @category    HTML
  * @package     HTML_QuickForm
  * @author      Adam Daniel <adaniel1@eesus.jnj.com>
@@ -41,26 +36,11 @@ require_once 'HTML/QuickForm/checkbox.php';
  */
 class HTML_QuickForm_customcheckbox extends HTML_QuickForm_checkbox
 {
-    var $checkboxTemplate;
-    
-    /**
-     * Class constructor
-     * 
-     * @param     string    $elementName    (optional)Input field name attribute
-     * @param     string    $elementLabel   (optional)Input field value
-     * @param     string    $text           (optional)Checkbox display text
-     * @param     mixed     $attributes     (optional)Either a typical HTML attribute string 
-     *                                      or an associative array
-     * @since     1.0
-     * @access    public
-     * @return    void
-     */
-    function HTML_QuickForm_customcheckbox($elementName=null, $elementLabel=null, $text='', $attributes=null)
-    {
-        HTML_QuickForm_checkbox::HTML_QuickForm_checkbox($elementName, $elementLabel, $text, $attributes);
-    }
-    
-    function toHtml()
+
+    public $checkboxTemplate;
+
+
+    public function toHtml()
     {
         $oldHtml = parent::toHtml();
         $matches = array(
@@ -73,9 +53,17 @@ class HTML_QuickForm_customcheckbox extends HTML_QuickForm_checkbox
         );
         return str_replace($matches, $replacements, $this->checkboxTemplate);
     }
-    
-    function setCheckboxTemplate($checkboxTemplate)
+
+    public function setCheckboxTemplate($checkboxTemplate)
     {
         $this->checkboxTemplate = $checkboxTemplate;
     }
+}
+
+if (class_exists('HTML_QuickForm')) {
+    (new HTML_QuickForm)->registerElementType(
+        'customcheckbox',
+        'HTML/QuickForm/customcheckbox.php',
+        'HTML_QuickForm_customcheckbox'
+    );
 }

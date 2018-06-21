@@ -74,7 +74,7 @@ $tpl->assign("headerMenu_name", _("Group Name"));
  */
 $query = "SELECT * FROM traps_group $SearchTool ORDER BY traps_group_name LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($query);
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
  * Different style between each lines

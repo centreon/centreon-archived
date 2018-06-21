@@ -37,7 +37,7 @@ Feature: Downtime start and stop
     Given a flexible downtime on a monitored element
     And the flexible downtime is started
     When the downtime duration is finished
-    Then the downtime is stopped
+    Then the flexible downtime is stopped
 
   Scenario: Configure recurrent downtime
     Given a recurrent downtime on an other timezone service

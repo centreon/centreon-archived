@@ -105,7 +105,7 @@ $formData = array('contact' => $contact_id);
 /*
  * Create select form
  */
-$form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $form->addElement(
     'select',

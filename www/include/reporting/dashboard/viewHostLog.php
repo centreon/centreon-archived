@@ -59,7 +59,7 @@ isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UT
 /*
  * Host Selection
  */
-$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
+$formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=".$p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
@@ -118,9 +118,9 @@ if (isset($id) && $id != "NULL") {
     $tpl->assign("components_avg", array_pop($hostServicesStats));
     $tpl->assign("components", $hostServicesStats);
     $tpl->assign("period_name", _("From"));
-    $tpl->assign("date_start", date(_("d/m/Y H:i"), $start_date));
+    $tpl->assign("date_start", $start_date);
     $tpl->assign("to", _("to"));
-    $tpl->assign("date_end", date(_("d/m/Y H:i"), $end_date));
+    $tpl->assign("date_end", $end_date);
     $tpl->assign("period", $period);
     $tpl->assign("host_id", $id);
     $tpl->assign("Alert", _("Alert"));

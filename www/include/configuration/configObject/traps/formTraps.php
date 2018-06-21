@@ -135,7 +135,7 @@ $attrServicetemplates = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $trapObj->setForm($form);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Trap definition"));
@@ -349,9 +349,9 @@ $form->addElement('select', 'traps_advanced_treatment_default', _("Advanced matc
     2 => _("If match, disable submit")
 ), array('id' => 'traps_advanced_treatment'));
 
-$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
-$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
-$excecution_type[] = HTML_QuickForm::createElement(
+$excecution_type[] = $form->createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
+$excecution_type[] = $form->createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
+$excecution_type[] = $form->createElement(
     'radio',
     'traps_exec_interval_type',
     null,
@@ -360,13 +360,13 @@ $excecution_type[] = HTML_QuickForm::createElement(
 );
 $form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
 
-$excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
-$excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
+$excecution_method[] = $form->createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
+$excecution_method[] = $form->createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
 $form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
 
-$downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("None"), '0');
-$downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
-$downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("History"), '2');
+$downtime[] = $form->createElement('radio', 'traps_downtime', null, _("None"), '0');
+$downtime[] = $form->createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
+$downtime[] = $form->createElement('radio', 'traps_downtime', null, _("History"), '2');
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
 
 /*

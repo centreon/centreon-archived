@@ -55,6 +55,7 @@ class CentreonResourceCfg extends CentreonObject
 
     protected $instanceObj;
     protected $relObj;
+    protected $instanceIds;
     public static $aDepends = array(
         'INSTANCE'
     );
@@ -70,7 +71,8 @@ class CentreonResourceCfg extends CentreonObject
         $this->instanceObj = new CentreonInstance($dependencyInjector);
         $this->relObj = new \Centreon_Object_Relation_Instance_Resource($dependencyInjector);
         $this->object = new \Centreon_Object_Resource($dependencyInjector);
-        $this->params = array('resource_line' => '',
+        $this->params = array(
+            'resource_line' => '',
             'resource_comment' => '',
             'resource_activate' => '1'
         );
@@ -122,12 +124,11 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Add action
-     *
-     * @param string $parameters
-     * @return void
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -141,12 +142,12 @@ class CentreonResourceCfg extends CentreonObject
         $addParams = array();
         $instanceNames = explode("|", $params[self::ORDER_INSTANCE]);
 
-        $instanceIds = array();
+        $this->instanceIds = array();
         foreach ($instanceNames as $instanceName) {
-            $instanceIds[] = $this->instanceObj->getInstanceId($instanceName);
+            $this->instanceIds[] = $this->instanceObj->getInstanceId($instanceName);
         }
 
-        foreach ($instanceIds as $instanceId) {
+        foreach ($this->instanceIds as $instanceId) {
             if ($this->isUnique($params[self::ORDER_UNIQUENAME], $instanceId) == false) {
                 throw new CentreonClapiException(self::MACRO_ALREADY_IN_USE);
             }
@@ -156,18 +157,22 @@ class CentreonResourceCfg extends CentreonObject
         $addParams['resource_line'] = $params[self::ORDER_VALUE];
         $addParams['resource_comment'] = $params[self::ORDER_COMMENT];
         $this->params = array_merge($this->params, $addParams);
-        $resourceId = parent::add();
-        $this->setRelations($resourceId, $instanceIds);
     }
 
     /**
-     * Set Parameters
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $resourceId
      */
-    public function setparam($parameters)
+    function insertRelations($resourceId)
+    {
+        $this->setRelations($resourceId, $this->instanceIds);
+    }
+
+    /**
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
+     */
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
@@ -199,16 +204,14 @@ class CentreonResourceCfg extends CentreonObject
             }
             $params[1] = "resource_" . $params[1];
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         }
     }
 
     /**
-     * Add poller to cfg file
-     *
-     * @param string $parameters
-     * @return void
-     * @throws Exception
+     * @param $parameters
+     * @throws CentreonClapiException
      */
     public function addPoller($parameters)
     {
@@ -250,11 +253,8 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Del Action
-     *
-     * @param int $objectId
-     * @return void
-     * @throws Exception
+     * @param string $objectName
+     * @throws CentreonClapiException
      */
     public function del($objectName)
     {
@@ -268,19 +268,17 @@ class CentreonResourceCfg extends CentreonObject
             if (isset($object[0][$this->object->getPrimaryKey()])) {
                 $objectId = $object[0][$this->object->getPrimaryKey()];
             } else {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
             }
         }
         $this->object->delete($objectId);
     }
 
     /**
-     * Show
-     *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
@@ -327,13 +325,33 @@ class CentreonResourceCfg extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool|int|void
      */
-    public function export()
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList();
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC'
+        );
+
+        if (!is_null($filterName) && !empty($filterName)) {
+            $nbElements = count($elements);
+            for ($i = 0; $i < $nbElements; $i++) {
+                if ($elements[$i][$labelField] != $filterName) {
+                    unset($elements[$i]);
+                }
+            }
+        }
+
         foreach ($elements as $element) {
             $instanceIds = $this->relObj->getinstance_idFromresource_id(
                 trim($element[$this->object->getPrimaryKey()])

@@ -35,33 +35,30 @@
  */
 
 /**
- * Base class for form elements
- */ 
-require_once 'HTML/QuickForm/select2.php';
-
-/**
  * Description of tags
  *
  * @author Toufik MECHOUET
  */
 class HTML_QuickForm_tags extends HTML_QuickForm_select2
 {
- 
+
     /**
-     * 
+     *
      * @param string $elementName
      * @param string $elementLabel
      * @param array $options
      * @param array $attributes
      * @param string $sort
      */
-    function HTML_QuickForm_tags(
+    public function __construct(
         $elementName = null,
         $elementLabel = null,
         $options = null,
         $attributes = null,
         $sort = null
     ) {
+        global $centreon;
+
         $this->_ajaxSource = false;
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
@@ -73,18 +70,16 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $this->_allowClear = false;
         $this->_pagination = $centreon->optGen['selectPaginationSize'];
         $this->parseCustomAttributes($attributes);
-        $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
-        
+
+        parent::__construct($elementName, $elementLabel, $options, $attributes);
     }
-    
-   
+
     /**
-     * 
+     *
      * @return string
      */
-    function getJsInit()
+    public function getJsInit()
     {
-
         $allowClear = 'true';
         if (false === $this->_allowClear || $this->_flagFrozen) {
             $allowClear = 'false';
@@ -120,8 +115,6 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
             . ' }'
             . ' }); ';
 
-
-
         $javascriptString = '<script>
             jQuery(function () {
                 var $currentSelect2Object'. $this->getName() . ' = jQuery("#' . $this->getName() . '").centreonSelect2({
@@ -135,18 +128,17 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
                         disabled: ' . $disabled . '
                     }
                 });
-                
+
                 ' . $additionnalJs . '
             });
          </script>';
 
         return $javascriptString;
     }
-    
 }
 
 if (class_exists('HTML_QuickForm')) {
-    HTML_QuickForm::registerElementType(
+    (new HTML_QuickForm)->registerElementType(
         'tags',
         'HTML/QuickForm/tags.php',
         'HTML_QuickForm_tags'

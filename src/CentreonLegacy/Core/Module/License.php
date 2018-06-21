@@ -57,11 +57,11 @@ class License extends Module
      *
      * @return array
      */
-    private function parseLicenseFile()
+    private function parseLicenseFile($licenseFile)
     {
         $info = array();
 
-        $lines = preg_split('/\n/', file_get_contents($this->licenseFile));
+        $lines = preg_split('/\n/', file_get_contents($licenseFile));
         foreach ($lines as $line) {
             if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
                 $info[$match[1]] = $match[2];
@@ -84,7 +84,7 @@ class License extends Module
             } else {
                 $zend_info = $this->parseLicenseFile($licenseFile);
             }
-            $licenseExpiration = date("d/m/Y", strtotime($zend_info['Expires']));
+            $licenseExpiration = strtotime($zend_info['Expires']);
         } else {
             $licenseExpiration = _("N/A");
         }

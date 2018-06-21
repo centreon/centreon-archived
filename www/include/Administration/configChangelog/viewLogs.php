@@ -58,12 +58,6 @@ function searchUserName($user_name)
 }
 
 /*
- * Pear library
- */
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
-/*
  * Path to the configuration dir
  */
 $path = "./include/Administration/configChangelog/";
@@ -115,7 +109,7 @@ if (isset($_POST["otype"])) {
 /*
  * Init QuickForm
  */
-$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
 
 /*
  * Init Smarty
@@ -205,7 +199,7 @@ while ($res = $DBRESULT->fetchRow()) {
             if ($tmp != -1) {
                 if (isset($tmp['h'])) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = split(',', $tmp2["h"]);
+                    $tabHost = explode(',', $tmp2["h"]);
                     if (count($tabHost) == 1) {
                         $host_name = $centreon->CentreonLogAction->getHostName($tmp2["h"]);
                     } elseif (count($tabHost) > 1) {
@@ -216,7 +210,7 @@ while ($res = $DBRESULT->fetchRow()) {
                     }
                 } elseif (isset($tmp['hg'])) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = split(',', $tmp2["hg"]);
+                    $tabHost = explode(',', $tmp2["hg"]);
                     if (count($tabHost) == 1) {
                         $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
                     } elseif (count($tabHost) > 1) {
@@ -232,7 +226,7 @@ while ($res = $DBRESULT->fetchRow()) {
         if ($res['object_type'] == "service") {
             if (isset($host_name) && $host_name != '') {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -245,7 +239,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hosts) && count($hosts) != 1) {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -258,7 +252,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hg_name) && $hg_name != '') {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -271,7 +265,7 @@ while ($res = $DBRESULT->fetchRow()) {
                 );
             } elseif (isset($hostgroups) && count($hostgroups) != 1) {
                 $elemArray[] = array(
-                    "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                    "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
@@ -289,7 +283,7 @@ while ($res = $DBRESULT->fetchRow()) {
             unset($hostgroups);
         } else {
             $elemArray[] = array(
-                "date" => date('Y/m/d H:i:s', $res['action_log_date']),
+                "date" => $res['action_log_date'],
                 "type" => $res['object_type'],
                 "object_name" => $objectName,
                 "action_log_id" => $res['action_log_id'],

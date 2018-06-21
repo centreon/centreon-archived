@@ -17,9 +17,18 @@ Permissions
 -----------
 
 To perform API calls using a specific Centreon user, you need permissions to do so.
-You have to edit user settings on the menu **Configuration > Users > Contacts/Users**,
-edit user and on second tab check box **Reach API**.
 
+There are two types of permission:
+
+You can give access to the configuration for a specific Centreon user. To do so you have
+to edit user settings on the menu **Configuration > Users > Contacts/Users**,
+edit user and on second tab check box **Reach API Configuration**.
+
+You can give access to the realtime for a specific Centreon user. To do so you have
+to edit user settings on the menu **Configuration > Users > Contacts/Users**,
+edit user and on second tab check box **Reach API Realtime**.
+
+If you want both then check **both** checkboxes
 
 Authentication
 ----------------

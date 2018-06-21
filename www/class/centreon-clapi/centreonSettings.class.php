@@ -66,7 +66,8 @@ class CentreonSettings extends CentreonObject
             'centstorage' => array('values' => array('0', '1')),
             'enable_perfdata_sync' => array('values' => array('0', '1')),
             'enable_logs_sync' => array('values' => array('0', '1')),
-            'gmt' => array('format' => self::ISSTRING,
+            'gmt' => array(
+                'format' => self::ISSTRING,
                 'getterFormatMethod' => 'getTimezonenameFromId',
                 'setterFormatMethod' => 'getTimezoneIdFromName'
             ),
@@ -83,60 +84,56 @@ class CentreonSettings extends CentreonObject
             'enable_autologin' => array('values' => array('0', '1')),
             'interval_length' => array('format' => self::ISNUM),
             'enable_gmt' => array('values' => array('0', '1')),
-            'nagios_path_img'  => array('format' => self::ISSTRING),
+            'nagios_path_img' => array('format' => self::ISSTRING),
             'broker_correlator_script' => array('format' => self::ISSTRING),
-             );
+        );
     }
 
-   /**
-    * Display unsupported method
-    *
-    * @param string $method
-    * @return void
-    */
+    /**
+     * Display unsupported method
+     *
+     * @param string $method
+     * @return void
+     */
     protected function unsupportedMethod($method)
     {
         echo sprintf("The %s method is not supported on this object\n", $method);
     }
 
     /**
-     * Display all editable options
-     *
-     * @param string $parameters
+     * @param null $params
+     * @param array $filters
      */
-    public function show($filter = null)
+    public function show($params = null, $filters = array())
     {
         $sql = "SELECT `key`, `value` FROM `options` ORDER BY `key`";
         $stmt = $this->db->query($sql);
         $res = $stmt->fetchAll();
-        echo "parameter".$this->delim."value\n";
+        echo "parameter" . $this->delim . "value\n";
         foreach ($res as $row) {
             if (isset($this->authorizedOptions[$row['key']])) {
                 if (isset($this->authorizedOptions[$row['key']]['getterFormatMethod'])) {
                     $method = $this->authorizedOptions[$row['key']]['getterFormatMethod'];
                     $row['value'] = $this->$method($row['value']);
                 }
-                echo $row['key'].$this->delim.$row['value']."\n";
+                echo $row['key'] . $this->delim . $row['value'] . "\n";
             }
         }
     }
 
     /**
-     * Add method is disabled
-     *
-     * @return void
+     * @param null $parameters
+     * @return int|mixed|void
      */
-    public function add()
+    public function add($parameters = null)
     {
         $this->unsupportedMethod(__FUNCTION__);
     }
 
     /**
-     * Del method is disabled
-     *
-     * @return void
+     * @param null $objectName
      */
-    public function del()
+    public function del($objectName = null)
     {
         $this->unsupportedMethod(__FUNCTION__);
     }
@@ -172,7 +169,7 @@ class CentreonSettings extends CentreonObject
 
         if (isset($this->authorizedOptions[$key]['values']) &&
             !in_array($value, $this->authorizedOptions[$key]['values'])) {
-                throw new CentreonClapiException(self::VALUENOTALLOWED);
+            throw new CentreonClapiException(self::VALUENOTALLOWED);
         }
 
         if (isset($this->authorizedOptions[$key]['setterFormatMethod'])) {

@@ -174,19 +174,19 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->endElement();
     $obj->XML->writeElement("state_type", $obj->stateTypeFull[$data["state_type"]]);
     $obj->XML->writeElement("state_type_name", _("State Type"), 0);
-    $obj->XML->writeElement("last_check", $obj->GMT->getDate($dateFormat, $data["last_check"]));
+    $obj->XML->writeElement("last_check", $data["last_check"]);
     $obj->XML->writeElement("last_check_name", _("Last Check"), 0);
-    $obj->XML->writeElement("last_state_change", $obj->GMT->getDate($dateFormat, $data["last_state_change"]));
+    $obj->XML->writeElement("last_state_change", $data["last_state_change"]);
     $obj->XML->writeElement("last_state_change_name", _("Last State Change"), 0);
     $obj->XML->writeElement("duration", $duration);
     $obj->XML->writeElement("duration_name", _("Current State Duration"), 0);
-    $obj->XML->writeElement("last_notification", $obj->GMT->getDate($dateFormat, $last_notification));
+    $obj->XML->writeElement("last_notification", $last_notification);
     $obj->XML->writeElement("last_notification_name", _("Last Notification"), 0);
     $obj->XML->writeElement("current_notification_number", $data["notification_number"]);
     $obj->XML->writeElement("current_notification_number_name", _("Current Notification Number"), 0);
     $obj->XML->writeElement("is_downtime", ($data["scheduled_downtime_depth"] > 0 ? $obj->en[1] : $obj->en[0]));
     $obj->XML->writeElement("is_downtime_name", _("In Scheduled Downtime?"), 0);
-    $obj->XML->writeElement("last_update", $obj->GMT->getDate($dateFormat, time()));
+    $obj->XML->writeElement("last_update", time());
     $obj->XML->writeElement("last_update_name", _("Last Update"), 0);
     $obj->XML->writeElement("ico", $data["icon_image"]);
     $obj->XML->writeElement("timezone_name", _("Timezone"));
@@ -197,18 +197,18 @@ if ($data = $DBRESULT->fetchRow()) {
         $status = _('DOWN');
         $status_date = 0;
         if (isset($data["last_time_down"]) && $status_date < $data["last_time_down"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_down"]);
+            $status_date = $data["last_time_down"];
             $status = _('DOWN');
         }
         if (isset($data["last_time_unreachable"]) && $status_date < $data["last_time_unreachable"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_unreachable"]);
+            $status_date = $data["last_time_unreachable"];
             $status = _('UNREACHABLE');
         }
     } else {
         $status = _('OK');
         $status_date = 0;
         if ($data["last_time_up"]) {
-            $status_date = $obj->GMT->getDate($dateFormat, $data["last_time_up"]);
+            $status_date = $data["last_time_up"];
         }
     }
     if ($status_date == 0) {

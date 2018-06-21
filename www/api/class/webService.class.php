@@ -37,6 +37,9 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class CentreonWebService
 {
+    const RESULT_HTML = 'html';
+    const RESULT_JSON = 'json';
+
     /**
      * @var CentreonDB|null
      */
@@ -122,6 +125,23 @@ class CentreonWebService
     }
 
     /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param \CentreonUser $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if ($isInternal || $user->admin) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get webservice
      *
      * @param string $object
@@ -160,7 +180,7 @@ class CentreonWebService
      * @param mixed $data The values
      * @param integer $code The HTTP code
      */
-    public static function sendResult($data, $code = 200, $format = 'json')
+    public static function sendResult($data, $code = 200, $format = null)
     {
         switch ($code) {
             case 500:
@@ -196,13 +216,14 @@ class CentreonWebService
         }
 
         switch ($format) {
-            case 'html':
+            case static::RESULT_HTML:
                 header('Content-type: text/html');
                 print $data;
                 break;
-            case 'json':
-                header('Content-type: application/json');
-                print json_encode($data);
+            case static::RESULT_JSON:
+            case null:
+                header('Content-type: application/json;charset=utf-8');
+                print json_encode($data, JSON_UNESCAPED_UNICODE);
                 break;
         }
 
@@ -231,8 +252,12 @@ class CentreonWebService
      * Route the webservice to the good method
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @param CentreonUser $user The current user
+     * @param boolean $isInternal If the Rest API call is internal
      */
-    public static function router(\Pimple\Container $dependencyInjector)
+    public static function router(\Pimple\Container $dependencyInjector, $user, $isInternal = false)
     {
         global $pearDB;
 
@@ -268,15 +293,19 @@ class CentreonWebService
 
         /* Initialize the webservice */
         require_once($webService['path']);
-
+        
         $wsObj = new $webService['class']();
 
-        if (method_exists($wsObj, 'finalConstruct')) {
+        if ($wsObj instanceof CentreonWebServiceDiInterface) {
             $wsObj->finalConstruct($dependencyInjector);
         }
 
         if (false === method_exists($wsObj, $action)) {
             static::sendResult("Method not found", 404);
+        }
+
+        if (false === $wsObj->authorize($action, $user, $isInternal)) {
+            static::sendResult('Forbidden', 403, static::RESULT_JSON);
         }
 
         /* Execute the action */

@@ -76,20 +76,26 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * List host categories
-     *
-     * @param $string $parameters
+     * @param null $parameters
+     * @param array $filters
      */
-    public function show($parameters = null)
+    public function show($parameters = null, $filters = array())
     {
         $filters = array();
         if (isset($parameters)) {
-            $filters = array($this->object->getUniqueLabelField() => "%".$parameters."%");
+            $filters = array($this->object->getUniqueLabelField() => "%" . $parameters . "%");
         }
         $params = array('hc_id', 'hc_name', 'hc_alias', 'level');
         $paramString = str_replace("hc_", "", implode($this->delim, $params));
         echo $paramString . "\n";
-        $elements = $this->object->getList($params, -1, 0, null, null, $filters);
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $tab) {
             if (!$tab['level']) {
                 $tab['level'] = 'none';
@@ -99,11 +105,11 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * Add host category
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return mixed|void
+     * @throws CentreonClapiException
      */
-    public function add($parameters)
+    public function initInsertParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -114,28 +120,30 @@ class CentreonHostCategory extends CentreonSeverityAbstract
         $addParams['hc_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-        parent::add();
     }
 
     /**
-     * Update host category
-     *
-     * @param string $parameters
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
      */
-    public function setparam($parameters)
+    public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+
+        $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
+        if ($objectId != 0) {
             if (!preg_match("/^hc_/", $params[1])) {
-                $params[1] = "hc_".$params[1];
+                $params[1] = "hc_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
-            parent::setparam($objectId, $updateParams);
+            $updateParams['objectId'] = $objectId;
+            return $updateParams;
         } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$params[self::ORDER_UNIQUENAME]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
     }
 
@@ -162,10 +170,9 @@ class CentreonHostCategory extends CentreonSeverityAbstract
     }
 
     /**
-     * Magic method for get/set/add/del relations
-     *
-     * @param string $name
-     * @param array $arg
+     * @param $name
+     * @param $arg
+     * @throws CentreonClapiException
      */
     public function __call($name, $arg)
     {
@@ -183,13 +190,13 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             $args = explode($this->delim, $arg[0]);
             $hcIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
             if (!count($hcIds)) {
-                throw new CentreonClapiException(self::OBJECT_NOT_FOUND .":".$args[0]);
+                throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
             $categoryId = $hcIds[0];
 
             if ($matches[1] == "get") {
                 $tab = $relobj->getTargetIdFromSourceId($relobj->getSecondKey(), $relobj->getFirstKey(), $hcIds);
-                echo "id".$this->delim."name"."\n";
+                echo "id" . $this->delim . "name" . "\n";
                 foreach ($tab as $value) {
                     $tmp = $obj->getParameters($value, array($obj->getUniqueLabelField()));
                     echo $value . $this->delim . $tmp[$obj->getUniqueLabelField()] . "\n";
@@ -204,7 +211,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
                 foreach ($relations as $rel) {
                     $tab = $obj->getIdByParameter($obj->getUniqueLabelField(), array($rel));
                     if (!count($tab)) {
-                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":".$rel);
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $rel);
                     }
                     $relationTable[] = $tab[0];
                 }
@@ -238,13 +245,27 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        parent::export($filters);
+        if (!parent::export($filterName)) {
+            return false;
+        }
+
         $relobj = new \Centreon_Object_Relation_Host_Category_Host($this->dependencyInjector);
+        $hcFieldName = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$hcFieldName] = $filterName;
+        }
         $elements = $relobj->getMergedParameters(
-            array($this->object->getUniqueLabelField()),
-            array("host_name")
+            array($hcFieldName),
+            array("host_name"),
+            -1,
+            0,
+            $hcFieldName,
+            'ASC',
+            $filters,
+            'AND'
         );
         foreach ($elements as $element) {
             echo $this->action . $this->delim

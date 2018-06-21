@@ -33,11 +33,14 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . 'bootstrap.php';
+require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
+require_once dirname(__FILE__) . '/interface/di.interface.php';
+
+error_reporting(0);
+ini_set('display_errors', 0);
 
 $pearDB = $dependencyInjector['configuration_db'];
 
@@ -67,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 
     /* Check if user exists in contact table */
     $reachAPI = 0;
-    $query = "SELECT contact_id, reach_api, contact_admin FROM contact " .
+    $query = "SELECT contact_id, reach_api, reach_api_rt, contact_admin FROM contact " .
         "WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?";
     $res = $pearDB->prepare($query);
     $res->execute(array($_POST['username']));
@@ -76,6 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
+               $reachAPI = 1;
+            } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
                 $reachAPI = 1;
             }
         }
@@ -116,4 +121,4 @@ if (is_null($userInfos)) {
 $centreon = new Centreon($userInfos);
 $oreon = $centreon;
 
-CentreonWebService::router($dependencyInjector);
+CentreonWebService::router($dependencyInjector, $centreon->user);

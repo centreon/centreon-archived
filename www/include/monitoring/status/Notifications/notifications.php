@@ -119,14 +119,14 @@ if (!isset($_SESSION['centreon_notification_preferences'])) {
          WHERE cp_key LIKE 'monitoring%notification%'
          AND cp_contact_id = '" . $obj->DB->escape($user_id) . "'");
     $notification_preferences = array();
-    while ($row_pref = $res_pref->fetchRow()) {
+    while ($row_pref = $res_pref->fetch()) {
         $notification_preferences[$row_pref['cp_key']] = $row_pref['cp_value'];
     }
     $_SESSION['centreon_notification_preferences'] = $notification_preferences;
 } else {
     $notification_preferences = $_SESSION['centreon_notification_preferences'];
 }
-while ($row = $res->fetchRow()) {
+while ($row = $res->fetch()) {
     $obj->XML->startElement("message");
     if ($row['description']) {
         if (isset($notification_preferences['monitoring_svc_notification_' . $row['state']])) {

@@ -112,7 +112,7 @@ if (isset($res)) {
         $xml->startElement('ack');
         $xml->writeAttribute('class', $rowClass);
         $xml->writeElement('author', $row['author']);
-        $xml->writeElement('entrytime', $centreonGMT->getDate('Y/m/d H:i:s', $row['entry_time']));
+        $xml->writeElement('entrytime', $row['entry_time']);
         $xml->writeElement('comment', $row['comment_data']);
         $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
         $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));

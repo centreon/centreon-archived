@@ -117,7 +117,9 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
 
     if (preg_match('/' . $command_line_with_macro . '/', $executed_check_command, $matches)) {
         for ($i = 1; $i <= count($matches); $i++) {
-            $executed_check_command = str_replace($matches[$i], '***', $executed_check_command);
+            if ( isset($matches[$i]) ) {
+                $executed_check_command = str_replace($matches[$i], '***', $executed_check_command);
+            }
         }
     }
 

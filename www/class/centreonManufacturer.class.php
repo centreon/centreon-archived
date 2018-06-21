@@ -40,7 +40,7 @@ class CentreonManufacturer
 {
     /**
      *
-     * @var type
+     * @var \CentreonDB
      */
     protected $db;
 

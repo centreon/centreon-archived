@@ -390,40 +390,27 @@ if (!$is_admin && !$haveAccess) {
 
         $host_status[$host_name]["status_class"] =
             $tab_color_host[strtolower($host_status[$host_name]["current_state"])];
-        $host_status[$host_name]["last_check"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_check"]
-            );
-        $host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"]
-            ? $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"])
-            : "";
-        !$host_status[$host_name]["last_notification"]
-            ? $host_status[$host_name]["last_notification"] = ""
-            : $host_status[$host_name]["last_notification"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_notification"]
-            );
-        !$host_status[$host_name]["next_notification"]
-            ? $host_status[$host_name]["next_notification"] = ""
-            : $host_status[$host_name]["next_notification"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["next_notification"]
-            );
+
+        if (!$host_status[$host_name]["next_check"]) {
+            $host_status[$host_name]["next_check"] = "";
+        }
+
+        if (!$host_status[$host_name]["last_notification"]) {
+            $host_status[$host_name]["last_notification"] = "";
+        }
+
+        if (!$host_status[$host_name]["next_notification"]) {
+            $host_status[$host_name]["next_notification"] = "";
+        }
+
         !$host_status[$host_name]["last_state_change"]
             ? $host_status[$host_name]["duration"] = ""
             : $host_status[$host_name]["duration"] =
             CentreonDuration::toString(time() - $host_status[$host_name]["last_state_change"]);
-        !$host_status[$host_name]["last_state_change"]
-            ? $host_status[$host_name]["last_state_change"] = ""
-            : $host_status[$host_name]["last_state_change"] =
-            $centreon->CentreonGMT->getDate(
-                _("Y/m/d - H:i:s"),
-                $host_status[$host_name]["last_state_change"]
-            );
-        $host_status[$host_name]["last_update"] = $centreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), time());
+
+        if (!$host_status[$host_name]["last_state_change"]) {
+            $host_status[$host_name]["last_state_change"] = "";
+        }
 
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
@@ -439,7 +426,9 @@ if (!$is_admin && !$haveAccess) {
             $host_status[$host_name]["scheduled_downtime_depth"] = 1;
         }
 
-        $host_status[$host_name]["comments"] = $hostDB["host_comment"];
+        if (isset($hostDB)) {
+            $host_status[$host_name]["comments"] = $hostDB["host_comment"];
+        }
 
         if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name])) {
             foreach ($tab_host_service[$host_name] as $key_name => $s) {
@@ -573,7 +562,11 @@ if (!$is_admin && !$haveAccess) {
         $tpl->assign("en_acknowledge", $en_acknowledge);
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
-        $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
+
+        if (isset($hostDB)) {
+            $tpl->assign("h", CentreonUtils::escapeSecure($hostDB));
+        }
+
         $tpl->assign("url_id", $url_id);
         $tpl->assign("host_id", $host_id);
         $tpl->assign("graphs", $graphLists);
@@ -650,8 +643,11 @@ if (!$is_admin && !$haveAccess) {
             $actionurl
         );
         $tpl->assign("h_ext_action_url", CentreonUtils::escapeSecure($actionurl));
-        $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
-        $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+
+        if (isset($hostDB)) {
+            $tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
+            $tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+        }
 
         /*
          * Dynamics tools

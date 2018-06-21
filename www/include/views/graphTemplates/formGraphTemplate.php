@@ -71,7 +71,7 @@ $attrsTextarea = array("rows" => "3", "cols" => "30");
 #
 ## Form begin
 #
-$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Graph Template"));
 } elseif ($o == "c") {
@@ -135,6 +135,8 @@ $steps = array(
 $sel = $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 if ($o == "c" || $o == "a") {
+    $nameColor = isset($nameColor) ? $nameColor : '';
+    $attrsText5 = isset($attrsText5) ? $attrsText5 : '';
     $form->addElement('button', $nameColor . '_modify', _("Modify"), $attrsText5);
 }
 
@@ -155,7 +157,7 @@ $form->addRule('name', _("Compulsory Name"), 'required');
 $form->addRule('vertical_label', _("Required Field"), 'required');
 $form->addRule('width', _("Required Field"), 'required');
 $form->addRule('height', _("Required Field"), 'required');
-$form->addRule('title', _("Required Field"), 'required');
+// $form->addRule('title', _("Required Field"), 'required'); - Field is not declared so rule is not needed
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));

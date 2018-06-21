@@ -246,7 +246,7 @@ function insertGroup($ret)
         . "VALUES "
         . "('" . htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8") . "', "
         . "'" . htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8") . "', "
-        . "'" . htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8") . "') ";
+        . "'" . htmlentities((isset($ret["acl_group_activate"]) ? $ret["acl_group_activate"]["acl_group_activate"] : ''), ENT_QUOTES, "UTF-8") . "') ";
     $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
     $cg_id = $DBRESULT->fetchRow();
