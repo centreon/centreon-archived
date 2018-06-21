@@ -69,6 +69,8 @@ class Centreon
     public $template;
     public $hostgroup;
     public $host_id;
+    public $host_group_search;
+    public $host_list_search;
 
     /**
      * @var \CentreonUser

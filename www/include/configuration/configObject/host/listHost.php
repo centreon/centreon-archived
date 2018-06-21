@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
-require_once("./include/common/autoNumLimit.php");
-require_once(_CENTREON_PATH_ . "/www/class/centreonHost.class.php");
+include_once('./class/centreonUtils.class.php');
+require_once('./include/common/autoNumLimit.php');
+require_once(_CENTREON_PATH_ . '/www/class/centreonHost.class.php');
 
 /*
  * Init Host Method
@@ -55,18 +55,21 @@ $mediaObj = new CentreonMedia($pearDB);
  * Get Extended informations
  */
 $ehiCache = array();
-$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
-    $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
-}
-$DBRESULT->closeCursor();
+$DBRESULT = $pearDB->query('SELECT ehi_icon_image, host_host_id FROM extended_host_information');
 
-if (isset($_POST["searchH"])) {
+while ($ehi = $DBRESULT->fetch()) {
+    $ehiCache[$ehi['host_host_id']] = $ehi['ehi_icon_image'];
+}
+
+$DBRESULT->closeCursor();
+$mainQueryParameters = [];
+
+if (isset($_POST['searchH'])) {
     $num = 0;
-    $search = $_POST["searchH"];
+    $search = $_POST['searchH'];
     $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET["searchH"])) {
-    $search = $_GET["searchH"];
+} elseif (isset($_GET['searchH'])) {
+    $search = $_GET['searchH'];
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
@@ -77,40 +80,40 @@ if (isset($_POST["searchH"])) {
 /*
  * Get Poller -> used for poller section in host display list
  */
-if (isset($_POST["poller"])) {
-    $poller = $_POST["poller"];
-} elseif (isset($_GET["poller"])) {
-    $poller = $_GET["poller"];
+if (isset($_POST['poller'])) {
+    $poller = $_POST['poller'];
+} elseif (isset($_GET['poller'])) {
+    $poller = $_GET['poller'];
 } elseif (isset($centreon->poller) && $centreon->poller) {
     $poller = $centreon->poller;
 } else {
     $poller = 0;
 }
 
-if (isset($_POST["hostgroup"])) {
-    $hostgroup = $_POST["hostgroup"];
-} elseif (isset($_GET["hostgroup"])) {
-    $hostgroup = $_GET["hostgroup"];
+if (isset($_POST['hostgroup'])) {
+    $hostgroup = $_POST['hostgroup'];
+} elseif (isset($_GET['hostgroup'])) {
+    $hostgroup = $_GET['hostgroup'];
 } elseif (isset($centreon->hostgroup) && $centreon->hostgroup) {
     $hostgroup = $centreon->hostgroup;
 } else {
     $hostgroup = 0;
 }
 
-if (isset($_POST["template"])) {
-    $template = $_POST["template"];
-} elseif (isset($_GET["template"])) {
-    $template = $_GET["template"];
+if (isset($_POST['template'])) {
+    $template = $_POST['template'];
+} elseif (isset($_GET['template'])) {
+    $template = $_GET['template'];
 } elseif (isset($centreon->template) && $centreon->template) {
     $template = $centreon->template;
 } else {
     $template = 0;
 }
 
-if (isset($_POST["status"])) {
-    $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
-    $status = $_GET["status"];
+if (isset($_POST['status'])) {
+    $status = $_POST['status'];
+} elseif (isset($_GET['status'])) {
+    $status = $_GET['status'];
 } else {
     $status = -1;
 }
@@ -129,7 +132,7 @@ $statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </opt
 $statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
 $statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
 
-$sqlFilterCase = "";
+$sqlFilterCase = '';
 if ($status == 1) {
     $sqlFilterCase = " AND host_activate = '1' ";
 } elseif ($status == 0 && $status != "") {
@@ -139,20 +142,21 @@ if ($status == 1) {
 /*
  * Search active
  */
-$SearchTool = "";
+$searchFilterQuery = '';
 if (isset($search) && $search) {
     $search = str_replace('_', "\_", $search);
-    $SearchTool = "(h.host_name LIKE '%" . $pearDB->escape($search) . "%'
-                    OR host_alias LIKE '%" . $pearDB->escape($search) . "%'
-                    OR host_address LIKE '%" . $pearDB->escape($search) . "%') AND ";
+    $mainQueryParameters[':search_string'] = "%{$search}%";
+    $searchFilterQuery = '(h.host_name LIKE :search_string
+                        OR host_alias LIKE :search_string
+                        OR host_address LIKE :search_string) AND ';
 }
 
 if ($template) {
-    $templateFROM = ", host_template_relation htr ";
-    $templateWHERE = " htr.host_host_id = h.host_id AND htr.host_tpl_id = '$template' AND ";
+    $templateFROM = ', host_template_relation htr ';
+    $templateWHERE = " htr.host_host_id = h.host_id AND htr.host_tpl_id = '{$template}' AND ";
 } else {
-    $templateFROM = "";
-    $templateWHERE = "";
+    $templateFROM = '';
+    $templateWHERE = '';
 }
 /*
  * Smarty template Init
@@ -179,21 +183,22 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Host list
  */
 $nagios_server = array();
-$DBRESULT = $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns " .
-    ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'ns.id', $aclPollerString) : "") .
-    " ORDER BY ns.name");
-while ($relation = $DBRESULT->fetchRow()) {
-    $nagios_server[$relation["id"]] = $relation["name"];
+$DBRESULT = $pearDB->query('SELECT ns.name, ns.id FROM nagios_server ns ' .
+    ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'ns.id', $aclPollerString) : '') .
+    ' ORDER BY ns.name');
+
+while ($relation = $DBRESULT->fetch()) {
+    $nagios_server[$relation['id']] = $relation['name'];
 }
 $DBRESULT->closeCursor();
 unset($relation);
 
 $tab_relation = array();
 $tab_relation_id = array();
-$DBRESULT = $pearDB->query("SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr");
+$DBRESULT = $pearDB->query('SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr');
 while ($relation = $DBRESULT->fetchRow()) {
-    $tab_relation[$relation["host_host_id"]] = $nagios_server[$relation["nagios_server_id"]];
-    $tab_relation_id[$relation["host_host_id"]] = $relation["nagios_server_id"];
+    $tab_relation[$relation['host_host_id']] = $nagios_server[$relation['nagios_server_id']];
+    $tab_relation_id[$relation['host_host_id']] = $relation['nagios_server_id'];
 }
 $DBRESULT->closeCursor();
 
@@ -201,13 +206,13 @@ $DBRESULT->closeCursor();
  * Init Formulary
  */
 
-$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 
 /*
  * Different style between each lines
  */
 
-$style = "one";
+$style = 'one';
 
 /*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
@@ -216,12 +221,12 @@ $style = "one";
 /*
  * Select hosts
  */
-$aclFrom = "";
-$aclCond = "";
+$aclFrom = '';
+$aclCond = '';
 if (!$centreon->user->admin) {
-    $aclFrom = ", $aclDbName.centreon_acl acl";
-    $aclCond = " AND h.host_id = acl.host_id AND acl.service_id IS NULL AND acl.group_id IN ("
-        . $acl->getAccessGroupsString() . ") ";
+    $aclFrom = ", {$aclDbName}.centreon_acl acl";
+    $aclCond = ' AND h.host_id = acl.host_id AND acl.service_id IS NULL AND acl.group_id IN ('
+        . $acl->getAccessGroupsString() . ') ';
 }
 
 if ($hostgroup) {
@@ -229,41 +234,41 @@ if ($hostgroup) {
         $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
                                 host_address, host_activate, host_template_model_htm_id
                                 FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
+                                WHERE $searchFilterQuery $templateWHERE host_register = '1'
                                 AND h.host_id = ns_host_relation.host_host_id
                                 AND ns_host_relation.nagios_server_id = '$poller'
                                 AND h.host_id = hr.host_host_id
                                 AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit);
+                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit, $mainQueryParameters);
     } else {
         $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
                                 host_address, host_activate, host_template_model_htm_id
                                 FROM host h, hostgroup_relation hr $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
+                                WHERE $searchFilterQuery $templateWHERE host_register = '1'
                                 AND h.host_id = hr.host_host_id
                                 AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit);
+                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit, $mainQueryParameters);
     }
 } else {
     if ($poller) {
         $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
                                 host_address, host_activate, host_template_model_htm_id
                                 FROM host h, ns_host_relation $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
+                                WHERE $searchFilterQuery $templateWHERE host_register = '1'
                                 AND h.host_id = ns_host_relation.host_host_id
                                 AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit);
+                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit, $mainQueryParameters);
     } else {
         $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
                                 host_address, host_activate, host_template_model_htm_id
                                 FROM host h $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit);
+                                WHERE $searchFilterQuery $templateWHERE host_register = '1' $sqlFilterCase $aclCond
+                                ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit, $mainQueryParameters);
     }
 }
 
-$rows = $pearDB->numberRows();
-include("./include/common/checkPagination.php");
+$rows = $DBRESULT->rowCount();
+include('./include/common/checkPagination.php');
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -434,7 +439,7 @@ unset($options);
 
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
 $options = "<option value='0'></options>";
-while ($data = $DBRESULT->fetchRow()) {
+while ($data = $DBRESULT->fetch()) {
     $options .= "<option value='" . $data["host_id"] . "' "
         . (($template == $data["host_id"]) ? 'selected' : "") . ">" . $data["host_name"] . "</option>";
 }
