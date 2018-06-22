@@ -30,7 +30,7 @@
                   "    }",
                   "    ",
                   "    helpers.testJson = function testJson() {",
-                  "        tests[\"Content-Type header is application/json\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
+                  "        tests[\"Content-Type header is application/json\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json;charset=utf-8';",
                   "        ",
                   "        let result;",
                   "        try {",
@@ -6053,7 +6053,7 @@
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result = jsonData.result;",
@@ -6139,7 +6139,7 @@
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result = jsonData.result;",
@@ -6227,7 +6227,7 @@
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   ""
                 ]
               }
