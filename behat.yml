@@ -105,6 +105,10 @@ default:
       paths: [ %paths.base%/features/DowntimeDST.feature ]
       contexts: [ DowntimeDSTContext ]
 
+    downtime_recurrent:
+      paths: [ %paths.base%/features/DowntimeRecurrent.feature ]
+      contexts: [ DowntimeRecurrentContext ]
+
     command_arguments:
       paths: [ %paths.base%/features/CommandArguments.feature ]
       contexts: [ CommandArgumentsContext ]
@@ -292,7 +296,7 @@ default:
     meta_service_dependency_configuration:
       paths: [ %paths.base%/features/MetaServiceDependencyConfiguration.feature ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
-    
+
     test_proxy_configuration:
       paths: [ %paths.base%/features/TestProxyConfiguration.feature ]
       contexts: [ TestProxyConfigurationContext ]
@@ -304,3 +308,7 @@ default:
     traps_snmp_group_configuration:
       paths: [ %paths.base%/features/TrapsSNMPGroupConfiguration.feature ]
       contexts: [ TrapsSNMPGroupConfigurationContext ]
+
+    uri:
+      paths: [ %paths.base%/features/URI.feature ]
+      contexts: [ URIContext ]

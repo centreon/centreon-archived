@@ -45,4 +45,16 @@ class Centreon_Object_Instance extends Centreon_Object
     protected $table = "nagios_server";
     protected $primaryKey = "id";
     protected $uniqueLabelField = "name";
+
+    public function getDefaultInstance()
+    {
+        $res = $this->db->query("SELECT `name` FROM `nagios_server` WHERE `is_default` = 1");
+        if( $res->rowCount() == 0) {
+            $res = $this->db->query("SELECT `name` FROM `nagios_server` WHERE `localhost` = '1'");
+        }
+
+        $row = $res->fetch();
+        return $row['name'];
+    }
+
 }

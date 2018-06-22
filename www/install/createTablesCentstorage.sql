@@ -12,11 +12,11 @@
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `centreon_acl` (
-  `host_id` int(11) DEFAULT NULL,
+  `group_id` int(11) NOT NULL,
+  `host_id` int(11) NOT NULL,
   `service_id` int(11) DEFAULT NULL,
-  `group_id` int(11) DEFAULT NULL,
-  KEY `index1` (`group_id`,`host_id`,`service_id`),
-  KEY `index2` (`host_id`,`service_id`,`group_id`)
+  UNIQUE KEY (`group_id`,`host_id`,`service_id`),
+  KEY `index1` (`host_id`,`service_id`,`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -6,6 +6,7 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/jquery.ui.widget.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-process.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.iframe-transport.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.xdr-transport.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.postmessage-transport.js"></script>
@@ -54,10 +55,9 @@
             {if $elemArr[elem].RowMenu_link_delete}
 				<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{t}Do you confirm the deletion?{/t}')"><img src='./img/icons/delete.png' class='ico-16 margin_right' title='{t}Uninstall Module{/t}' alt='{t}Uninstall Module{/t}'></a>
 			{/if}
-			
 		</td>
 	</tr>
-	{/section}	
+	{/section}
 </table>
 
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
@@ -75,7 +75,7 @@
                 {
                     mydata: 1,
                     mydata2: 2
-                }, 
+                },
                 success: function(data, textStatus, jqXHR)
                 {
                     var myResponse = jQuery.xml2json(data);
@@ -88,7 +88,7 @@
             });
         });
     }
-    
+
     function displayResults(moduleList) {
         for (var i = 0; i < moduleList.length; i++) {
             module = moduleList[i];

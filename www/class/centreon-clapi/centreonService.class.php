@@ -1078,8 +1078,13 @@ class CentreonService extends CentreonObject
                 }
                 $addStr .= $element[$param];
             }
+
+            # Host Filter
+            $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
+
             $addStr .= "\n";
             echo $addStr;
+
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
@@ -1100,8 +1105,7 @@ class CentreonService extends CentreonObject
                         unset($tmpObj);
                     }
                     $value = CentreonUtils::convertLineBreak($value);
-                    # Host Filter
-                    $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
+
                     if ($this->getClapiActionName($parameter) != "host_id") {
                         echo $this->action . $this->delim . "setparam" . $this->delim
                             . $element['host_name'] . $this->delim
@@ -1216,15 +1220,13 @@ class CentreonService extends CentreonObject
         }
     }
 
-
-
     /**
-     *
-     * @param type $pearDB
-     * @param integer $service_id
-     * @param string $macroInput
-     * @param string $macroValue
-     * @param boolean $cmdId
+     * @param $pearDB
+     * @param $service_id
+     * @param $macroInput
+     * @param $macroValue
+     * @param bool $cmdId
+     * @return bool
      */
     public function hasMacroFromServiceChanged($pearDB, $service_id, &$macroInput, &$macroValue, $cmdId = false)
     {

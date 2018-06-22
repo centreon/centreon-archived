@@ -49,7 +49,7 @@
 		<td class="ListColLeft"><a href='./main.php?p=202&o=svcd&host_name={$tcs.host_name_link}&service_description={$tcs.service_description}'>{$tcs.service_description}</a></td>
 		<td class="ListColCenter">{$tcs.entry_time}</td>
 		<td class="ListColCenter">{$tcs.author}</td>
-		<td class="ListColNoWrap">{$tcs.data}</td>
+		<td class="ListColNoWrap containsURI">{$tcs.data}</td>
 		<td class="ListColCenter">{$tcs.persistent}</td>
 	</tr>
 	{/foreach}

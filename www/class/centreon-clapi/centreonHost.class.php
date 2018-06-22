@@ -253,7 +253,14 @@ class CentreonHost extends CentreonObject
             if ($instanceName) {
                 $tmp = $instanceObject->getIdByParameter($instanceObject->getUniqueLabelField(), $instanceName);
                 if (!count($tmp)) {
-                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $instanceName);
+                    $defaultInstanceName = $instanceObject->getDefaultInstance();
+                    $tmp = $instanceObject->getIdByParameter(
+                        $instanceObject->getUniqueLabelField(),
+                        $defaultInstanceName
+                    );
+                    if (!count($tmp)) {
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . " :" . $instanceName);
+                    }
                 }
                 $instanceId = $tmp[0];
             } else {
@@ -891,11 +898,20 @@ class CentreonHost extends CentreonObject
                 );
                 $result = $res->fetchAll();
                 if (!count($result)) {
-                    $svcId = $svcObj->insert(array('service_description' => $params['service_alias'],
+                    $serviceDesc = array('service_description' => $params['service_alias'],
                         'service_activate' => '1',
                         'service_register' => '1',
-                        'service_template_model_stm_id' => $serviceTemplateId));
+                        'service_template_model_stm_id' => $serviceTemplateId);
+                    $svcId = $svcObj->insert($serviceDesc);
                     $hostSvcRel->insert($hostId, $svcId);
+                    $serviceDesc['service_hPars'] = $hostId;
+                    $this->addAuditLog(
+                        'a',
+                        $svcId,
+                        $params['service_alias'],
+                        $serviceDesc,
+                        'SERVICE'
+                    );
                     $svcExtended->insert(array($svcExtended->getUniqueLabelField() => $svcId));
                 }
                 unset($res);

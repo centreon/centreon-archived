@@ -1003,6 +1003,11 @@ div.menuLeft {
     background: #fff !important;
 }
 
+.ui-state-default a {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
     color: #00a499 !important;
 }
@@ -1751,6 +1756,10 @@ span.state_badge {
     background: transparent !important;
 }
 
+#colorbox {
+    outline: none;
+}
+
 #cboxContent {
     border-radius: 4px;
     border: 1px solid #a7a8ac;
@@ -1767,6 +1776,7 @@ span.state_badge {
     width: 18px !important;
     right: -10px !important;
     border-radius: 10px;
+    border-width: 0px;
 }
 
 /* ColorBox CSS */
@@ -2171,7 +2181,7 @@ textarea.default-textarea {
 .graphZone {
     margin-bottom: 40px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
 }

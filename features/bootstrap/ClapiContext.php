@@ -78,6 +78,15 @@ class ClapiContext extends CentreonContext
         $fileCompare = trim(file_get_contents($this->file['compare'], FILE_USE_INCLUDE_PATH));
 
         if ($fileLocal != $fileCompare) {
+            exec(
+                'diff ' . $this->file['localpath'] . ' ' . $this->file['compare'],
+                $output
+            );
+            file_put_contents(
+                $this->composeFiles['log_directory'] . '/' .
+                    date('Y-m-d-H-i') . '-diffClapi.txt',
+                implode("\n", $output)
+            );
             throw new \Exception('Configuration not imported');
         }
     }

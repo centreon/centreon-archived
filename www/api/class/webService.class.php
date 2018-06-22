@@ -122,6 +122,23 @@ class CentreonWebService
     }
 
     /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if ($isInternal || $user->admin) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get webservice
      *
      * @param string $object
@@ -220,8 +237,11 @@ class CentreonWebService
      * Route the webservice to the good method
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
+     *
+     * @param CentreonUser $user The current user
+     * @param boolean $isInternal If the Rest API call is internal
      */
-    public static function router()
+    public static function router($user, $isInternal = false)
     {
         global $pearDB;
 
@@ -258,6 +278,10 @@ class CentreonWebService
 
         if (false === method_exists($wsObj, $action)) {
             static::sendJson("Method not found", 404);
+        }
+
+        if (false === $wsObj->authorize($action, $user, $isInternal)) {
+            static::sendJson('Forbidden', 403);
         }
 
         /* Execute the action */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,12 +41,12 @@ jQuery(function() {
 function change_macro_input_type(box, must_disable) {
     var tmp = box.id.split('_');
     var macro_dom_id = tmp[1];
-    var input = jQuery("#macroValue_" + macro_dom_id);
+    var input = jQuery("#macroValue_" + macro_dom_id.replace(/(#)/g, "\\$1"));
 
     if (must_disable === true) {
         jQuery(box).parent().hide();
     }
-    
+
     if (typeof input[0] != 'undefined') {
         if (box.checked) {
             input[0].type = 'password';

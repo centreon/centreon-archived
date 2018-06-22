@@ -26,6 +26,9 @@ installer les rpms disponible dans nos dépôts de téléchargement.
 Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
 sera plus complexe à partir des fichiers sources de chaque composant.
 
+.. note::
+    Seuls les systèmes d'exploitation 64bits (x86_64) sont supportés.
+
 SGBD
 ====
 
