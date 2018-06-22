@@ -131,7 +131,8 @@ Timeline.loadJSON = function(url, f) {
         alert("Failed to load json data from " + url + "\n" + statusText);
     };
     var fDone = function(xmlhttp) {
-        f(eval('(' + xmlhttp.responseText + ')'), url);
+        /*f(eval('(' + xmlhttp.responseText + ')'), url); //Now using the more safer JSON.parse */
+        f(JSON.parse(xmlhttp.responseText), url);
     };
     Timeline.XmlHttp.get(url, fError, fDone);
 };

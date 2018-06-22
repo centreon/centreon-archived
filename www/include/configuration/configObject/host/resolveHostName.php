@@ -54,7 +54,9 @@ if (isset($sid)) {
     exit;
 }
 
+$sHostname = filter_var($_GET['hostName'], FILTER_SANITIZE_SPECIAL_CHARS);
+
 /**
  * Resolving host name
  */
-echo gethostbyname($_GET['hostName']);
+echo gethostbyname($sHostname);

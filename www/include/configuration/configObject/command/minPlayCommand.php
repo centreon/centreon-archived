@@ -66,7 +66,7 @@ while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and
 /* Replace HOSTADDRESS by the real content */
 while (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
     if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-        $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+        $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", escapeshellarg($_GET["command_hostaddress"]), $resource_def);
     } else {
         $error_msg .= "\$HOSTADDRESS\$";
     }
