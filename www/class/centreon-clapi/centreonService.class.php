@@ -1122,17 +1122,17 @@ class CentreonService extends CentreonObject
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
                         $action_tmp = 'TP';
-                        $tmpObj = $tpObj;
+                        $tmpObj = CentreonTimePeriod::getInstance();
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
                         $action_tmp = 'CMD';
-                        $tmpObj = $commandObj;
+                        $tmpObj = CentreonCommand::getInstance();
                     }
                     if (isset($tmpObj)) {
-                        $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
-                        if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpObj->getObject()->getUniqueLabelField());
+                        if (isset($tmp) && isset($tmp[$tmpObj->getObject()->getUniqueLabelField()])) {
                             $tmp_id = $value;
-                            $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $tmpObj::getInstance()->export($value);
+                            $value = $tmp[$tmpObj->getObject()->getUniqueLabelField()];
+                            $tmpObj->export($value);
                         }
                         unset($tmpObj);
                     }
