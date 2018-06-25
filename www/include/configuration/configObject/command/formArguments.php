@@ -59,12 +59,13 @@ if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
 }
 
 if (isset($_GET['textArea']) && $_GET['textArea']) {
-    $tab = preg_split("/\;\;\;/", $_GET['textArea']);
+    $textArea = urldecode($_GET['textArea']);
+    $tab = preg_split("/\;\;\;/", $textArea);
     foreach ($tab as $key => $value) {
         $tab2 = preg_split("/\ \:\ /", $value, 2);
         $index = str_replace("ARG", "", $tab2[0]);
         if (isset($tab2[0]) && $tab2[0]) {
-            $args[$index] = $tab2[1];
+            $args[$index] = htmlentities($tab2[1]);
         }
     }
 }
