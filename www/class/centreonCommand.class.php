@@ -253,7 +253,7 @@ class CentreonCommand
             while ($row = $dbResult->fetchRow()) {
                 $arr['id'] = $row['command_macro_id'];
                 $arr['name'] = $row['command_macro_name'];
-                $arr['description'] = $row['command_macro_desciption'];
+                $arr['description'] = htmlentities($row['command_macro_desciption']);
                 $arr['type'] = $sType;
                 $aReturn[] = $arr;
             }
