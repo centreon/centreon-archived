@@ -414,11 +414,11 @@ CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quo
 CMD;setparam;service-notify-by-jabber;enable_shell;0
 CMD;setparam;service-notify-by-jabber;command_activate;1
 CMD;setparam;service-notify-by-jabber;command_locked;0
-CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;
+CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039
 CMD;setparam;submit-host-check-result;enable_shell;0
 CMD;setparam;submit-host-check-result;command_activate;1
 CMD;setparam;submit-host-check-result;command_locked;0
-CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;
+CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039
 CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
