@@ -43,7 +43,7 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchVM']) && $_POST['searchVM']) {
     $search = $_POST['searchVM'];
-    $SearchTool = " WHERE vmetric_name LIKE '%".$search."%'";
+    $SearchTool = " WHERE vmetric_name LIKE '%" . $pearDB->escape($search) . "%'";
 }
 
 $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics".$SearchTool);
@@ -179,7 +179,7 @@ $form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
 $o2->setValue(null);
 $tpl->assign('limit', $limit);
-$tpl->assign('searchVM', $search);
+$tpl->assign('searchVM', htmlentities($search));
 
 /*
  * Apply a template definition
