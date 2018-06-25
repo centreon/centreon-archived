@@ -43,7 +43,7 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchGT']) && $_POST['searchGT']) {
     $search = $_POST['searchGT'];
-    $SearchTool = " WHERE name LIKE '%".$search."%'";
+    $SearchTool = " WHERE name LIKE '%" . $pearDB->escape($search) . "%'";
 }
 
 $res = $pearDB->query("SELECT COUNT(*) FROM giv_graphs_template".$SearchTool);
@@ -140,7 +140,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchGT', $search);
+$tpl->assign('searchGT', htmlentities($search));
 
 /*
  * Apply a template definition
