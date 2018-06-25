@@ -43,16 +43,21 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchVM']) && $_POST['searchVM']) {
     $search = $_POST['searchVM'];
-    $SearchTool = " WHERE vmetric_name LIKE '%" . $search . "%'";
+    $SearchTool = " WHERE vmetric_name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
 }
 
+$stmt = $pearDB->prepare("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+foreach ($queryValues as $key => $value) {
+    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+}
 try {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+    $stmt->execute();
 } catch (\PDOException $e) {
     print "DB Error : " . $e->getMessage();
 }
 
-$tmp = $DBRESULT->fetchRow();
+$tmp = $stmt->fetch();
 $rows = $tmp["COUNT(*)"];
 
 include("./include/common/checkPagination.php");
@@ -226,7 +231,7 @@ $form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
 $o2->setValue(null);
 $tpl->assign('limit', $limit);
-$tpl->assign('searchVM', $search);
+$tpl->assign('searchVM', htmlentities($search));
 
 /*
  * Apply a template definition
