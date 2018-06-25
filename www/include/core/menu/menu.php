@@ -105,7 +105,7 @@ $tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 /*
  * Display Login
  */
-$tpl->assign("user_login", $centreon->user->get_alias());
+$tpl->assign("user_login", htmlentities($centreon->user->get_alias()));
 
 /*
  * Fixe ACL
