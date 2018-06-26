@@ -18,7 +18,7 @@ import {
 const userUrl = './api/internal.php?object=centreon_topcounter&action=user'
 const enableNotifUrl = './include/monitoring/status/Notifications/notifications_action.php?action=start'
 const disableNotifUrl = './include/monitoring/status/Notifications/notifications_action.php?action=stop'
-const autoLoginUrl = './index.php?p=1&autologin=1'
+const autoLoginUrl = './api/internal.php?object=centreon_topcounter&action=autoLoginToken'
 
 export function getUser() {
   return (dispatch) => {
@@ -80,13 +80,16 @@ export function getDisabledSoundNotif() {
   }
 }
 
-export function getaAutologin(username, token) {
-  console.log(autoLoginUrl + '&useralias=' + username + '&token=' + token)
+export function putAutologin(userId, token) {
   return (dispatch) => {
     dispatch(requestAutologin())
 
-    return axios.get(
-      autoLoginUrl + '&useralias=' + username + '&token=' + token
+    return axios.put(
+      autoLoginUrl,
+      {
+        userId: userId,
+        token: token
+      }
     )
       .then(
         res => {
