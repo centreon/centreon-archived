@@ -249,7 +249,7 @@ if (isset($_GET["acknowledge"])) {
         var statusService = jQuery.trim(jQuery('#statusService').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
 
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(
             _addrXML + "?" + '&search=' + _search + '&search_host=' + _host_search +
             '&search_output=' + _output_search + '&num=' + _num + '&limit=' + _limit + '&sort_type=' + _sort_type +

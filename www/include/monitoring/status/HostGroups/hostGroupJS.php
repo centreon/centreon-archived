@@ -103,7 +103,7 @@ $time = time();
             _sort_type + '&order=' + _order + '&date_time_format_status=' + _date_time_format_status +
             '&o=' + _o + '&p=' + _p + '&instance=' + _instance + '&time=<?php print time(); ?>')
         proc.setXslt(_addrXSL);
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         if (handleVisibilityChange()) {
             proc.transform("forAjax");
         }
