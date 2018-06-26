@@ -159,6 +159,34 @@ class CentreonTopCounter extends CentreonWebService
     /**
      * Get the user information
      *
+     * Method PUT
+     */
+    public function putAutoLoginToken()
+    {
+        $userId = $this->arguments['userId'];
+        $autoLoginKey = $this->arguments['token'];
+
+        global $centreon;
+
+        $query = "UPDATE contact SET contact_autologin_key = ? " .
+            "WHERE contact_id = ?";
+
+        $stmt = $this->pearDB->prepare($query);
+        $res = $this->pearDB->execute($stmt, array($autoLoginKey, $userId));
+
+        if (PEAR::isError($res)) {
+            throw new \Exception('Error while update autologinKey ' . $autoLoginKey);
+        }
+
+        /**
+        * Update user object
+        */
+        $centreon->user->setToken($autoLoginKey);
+    }
+
+    /**
+     * Get the user information
+     *
      * Method GET
      */
     public function getUser()
@@ -191,6 +219,7 @@ class CentreonTopCounter extends CentreonWebService
         $row = $res->fetch();
 
         return array(
+            'userId' => $user->user_id,
             'fullname' => $user->name,
             'username' => $user->alias,
             'locale' => $locale,
