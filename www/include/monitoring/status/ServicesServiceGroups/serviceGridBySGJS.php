@@ -174,7 +174,7 @@ if (isset($_GET["acknowledge"])) {
     function goM(_time_reload, _sid, _o) {
         _lock = 1;
         var proc = new Transformation();
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(
             _addrXML + "?" + '&host_search=' + _host_search + '&sg_search=' + _sg_search + '&num=' + _num +
             '&limit=' + _limit + '&sort_type=' + _sort_type + '&order=' + _order +
