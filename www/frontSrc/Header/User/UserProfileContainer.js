@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import UserProfile from './UserProfile'
-import { getUser, getDisabledSoundNotif, getEnabledSoundNotif, getaAutologin } from "../../webservices/userApi"
+import { getUser, getDisabledSoundNotif, getEnabledSoundNotif, putAutologin } from "../../webservices/userApi"
 import 'moment-timezone'
+import AutoLoginToken from '../../legacy/AutoLoginToken'
 
 class UserProfileContainer extends Component {
 
@@ -12,18 +13,24 @@ class UserProfileContainer extends Component {
       anchorEl: null,
       logoutUrl: 'index.php?disconnect=1',
       initial: '',
-      soundNotif: null
-
+      soundNotif: null,
+      token: '',
+      link: location.href + '&autologin=1' + '&useralias='
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props !== nextProps) {
       const initial = this.parseUsername(nextProps.user.fullname)
+      const GeneratedToken =
+        nextProps.user.autologinkey ?
+          nextProps.user.autologinkey
+        : AutoLoginToken.prototype.generatePassword('aKey')
 
       this.setState({
         initial: initial,
-        soundNotif: nextProps.user.soundNotificationsEnabled
+        soundNotif: nextProps.user.soundNotificationsEnabled,
+        token: GeneratedToken
       })
     }
   }
@@ -62,17 +69,22 @@ class UserProfileContainer extends Component {
   }
 
   handleAutologin = () => {
-    const { username, autologinkey } = this.props.user
+    const { autologinkey, userId } = this.props.user
+    const input = document.getElementById("bookmarkLink")
 
-    if (autologinkey !== '') {
-      this.props.autoLogin(username, autologinkey)
+    if (!autologinkey && autologinkey !== this.state.token) {
+      this.props.autoLogin(userId, this.state.token)
     }
+
+    input.select();
+    document.execCommand("copy")
   }
 
   render () {
     const { user, dataFetched } = this.props
-    const { anchorEl, initial } = this.state
+    const { anchorEl, initial, link, token } = this.state
     const open = Boolean(anchorEl)
+    const buildedLink = link + user.username + '&token=' + token
 
     if (dataFetched) {
       this.setState({
@@ -86,6 +98,7 @@ class UserProfileContainer extends Component {
         handleOpen={this.handleOpen}
         handleNotification={this.handleNotification}
         handleAutologin={this.handleAutologin}
+        link={buildedLink}
         soundNotif={this.state.soundNotif}
         initial={initial}
         user={user}
@@ -113,8 +126,8 @@ const mapDispatchToProps = (dispatch) => {
     stopSonoreNotification: () => {
       return dispatch(getDisabledSoundNotif())
     },
-    autoLogin: (username, token) => {
-      return dispatch(getaAutologin(username, token))
+    autoLogin: (userId, token) => {
+      return dispatch(putAutologin(userId, token))
     },
   }
 }

@@ -5,10 +5,9 @@ import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import Popover from '@material-ui/core/Popover'
 import Button from '@material-ui/core/Button'
-import Bookmark from '@material-ui/icons/Bookmark'
-import VolumeUp from '@material-ui/icons/VolumeUp'
-import VolumeMute from '@material-ui/icons/VolumeMute'
 import Typography from '@material-ui/core/Typography'
+import Tooltip from '@material-ui/core/Tooltip'
+import TextField from '@material-ui/core/TextField'
 
 const styles = theme => ({
   profileRoot: {
@@ -47,6 +46,16 @@ const styles = theme => ({
       backgroundColor: theme.palette.error.main,
     }
   },
+  Clipboard: {
+    padding : '8px 16px'
+  },
+  copyButton: {
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    margin: '-1px',
+    borderBottom: '2px solid',
+    padding: '5px 8px',
+  },
   menuFooter: {
     display: 'flex',
     flexDirection: 'row-reverse',
@@ -66,6 +75,7 @@ const UserProfile = ({
     handleClose,
     handleNotification,
     handleAutologin,
+    link,
     soundNotif,
     anchorEl
   }) => (
@@ -105,16 +115,19 @@ const UserProfile = ({
           as {user.username} <a href="./main.php?p=50104&o=c" aria-label='Edit profile' className={classes.profileLink}>Edit profile </a>
         </Typography>
       </div>
-
-        <MenuItem onClick={handleAutologin} id='autologinAction'>
-          <Bookmark className={classes.icon}/> Add to bookmark
-        </MenuItem>
+      <Tooltip id="tooltip-top-start" title="Copy to add to your bookmark" placement="top">
+      <div className={classes.Clipboard}>
+          <TextField id="bookmarkLink" defaultValue={link} />
+          <Button variant="outlined" size="small" color="secondary" onClick={handleAutologin} className={classes.copyButton}>
+            Copy
+          </Button>
+      </div>
+      </Tooltip>
       <MenuItem onClick={handleNotification} id='notifAction'>
-        <VolumeUp className={classes.icon} />
         {soundNotif ? 'Disable sound notification' : 'Enable sound notification'}
       </MenuItem>
       <div className={classes.menuFooter}>
-        <Button className={classes.logoutButton} aria-label='Logout' href="index.php?disconnect=1">
+        <Button className={classes.logoutButton} size="small" aria-label='Logout' href="index.php?disconnect=1">
           Sign out
         </Button>
       </div>
