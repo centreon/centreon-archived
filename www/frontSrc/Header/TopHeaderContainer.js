@@ -35,9 +35,26 @@ const theme = createMuiTheme({
     },
     MuiButton: {
       root: {
-        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif"
+        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+        padding: 6,
+        borderRadius: 3
       }
-    }
+    },
+    MuiInput: {
+      root: {
+        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+      },
+      input: {
+        padding: '6px',
+        borderRadius: '3px',
+        border: '1px solid #bcbdc0'
+      }
+    },
+    MuiTooltip: {
+      tooltip: {
+        fontSize: '11px',
+      }
+    },
   }
 });
 
