@@ -22,8 +22,7 @@ export default function pollerReducer (
         dataFetched: false,
         isFetching: true,
       }
-    c
-      ase REQUEST_POLLERS_STATUS_SUCCESS:
+    case REQUEST_POLLERS_STATUS_SUCCESS:
       return {
         ...state,
         ...action.data,

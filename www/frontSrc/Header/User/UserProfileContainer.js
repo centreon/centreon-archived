@@ -15,7 +15,7 @@ class UserProfileContainer extends Component {
       initial: '',
       soundNotif: null,
       token: '',
-      link: location.href + '&autologin=1' + '&useralias='
+      link: location.href + '?&autologin=1' + '&useralias='
     }
   }
 
