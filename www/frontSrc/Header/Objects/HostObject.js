@@ -38,6 +38,20 @@ const styles = theme => ({
       fontSize: 16
     },
   },
+  okStatus: {
+    margin: '10px 4px',
+    width: 46,
+    height: 46,
+    backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+    },
+    '& span': {
+      fontSize: 16,
+      color: '#fff',
+      fontWeight: '600'
+    },
+  },
   errorStatus: {
     margin: '10px 4px',
     width: 46,
@@ -127,16 +141,19 @@ const HostObject = (
       aria-haspopup="true"
       onClick={handleOpen}
     />
-    {pending.total > 0 ?
-      <span className={classes.pendingStatus} ></span>
-      : ''
+    { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
+    {down.unhandled > 0 && unreachable.unhandled > 0 ?
+      <Button variant="fab" href={down.url}
+              aria-label='Down hosts'
+              className={(classes.status, classes.errorStatus)}>
+        {numeral(down.unhandled).format('0a')}
+      </Button> :
+      <Button variant="fab" href={ok.url}
+              aria-label='Down hosts'
+              className={(classes.status, classes.okStatus)}>
+        {numeral(ok.total).format('0a')}
+      </Button>
     }
-
-    <Button variant="fab" href={down.url}
-            aria-label='Down hosts'
-            className={(classes.status, classes.errorStatus)}>
-      {numeral(down.unhandled).format('0a')}
-    </Button>
     <Button variant="fab" mini href={unreachable.url}
             aria-label='Unreachable hosts'
             className={( classes.status, classes.unreachableStatus)}>
