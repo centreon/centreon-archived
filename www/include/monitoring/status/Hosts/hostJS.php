@@ -206,7 +206,7 @@ if (isset($_GET["acknowledge"])) {
         }
         _oldInputFieldValue = _currentInputFieldValue;
 
-        setTimeout("mainLoopHost()", 250);
+        setTimeout(mainLoopHost, 250);
     }
 
     function initM(_time_reload, _sid, _o) {
@@ -264,7 +264,7 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 
