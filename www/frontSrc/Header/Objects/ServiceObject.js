@@ -29,6 +29,20 @@ const styles = theme => ({
       fontSize: 16
     },
   },
+  okStatus: {
+    margin: '10px 4px',
+    width: 46,
+    height: 46,
+    backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+    },
+    '& span': {
+      fontSize: 16,
+      color: '#fff',
+      fontWeight: '600'
+    },
+  },
   errorStatus: {
     margin: '10px 4px',
     width: 46,
@@ -42,7 +56,6 @@ const styles = theme => ({
       color: '#fff',
       fontWeight: '600'
     },
-
   },
   warningStatus: {
     margin: '10px 4px',
@@ -132,15 +145,19 @@ const ServiceObject = ({
         aria-label='Services status'
         onClick={handleOpen}
       />
-    {pending.total > 0 ?
-      <span className={classes.pendingStatus} ></span>
-      : ''
-    }
+    { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
+    { critical.unhandled > 0 && warning.unhandled > 0 && unknown.unhandled > 0 ?
       <Button variant="fab" href={critical.url}
               aria-label='Critical services'
               className={(classes.status, classes.errorStatus)}>
         {numeral(critical.unhandled).format('0a')}
+      </Button> :
+      <Button variant="fab" href={ok.url}
+              aria-label='ok services'
+              className={(classes.status, classes.okStatus)}>
+        {numeral(ok.total).format('0a')}
       </Button>
+    }
       <Button variant="fab" mini  href={warning.url}
               aria-label='Warning services'
               className={( classes.status, classes.warningStatus)}>
