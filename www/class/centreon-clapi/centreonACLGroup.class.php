@@ -179,12 +179,13 @@ class CentreonACLGroup extends CentreonObject
                 $class = "Centreon_Object_" . ucwords($matches[2]);
             }
             if (class_exists($relclass) && class_exists($class)) {
+                $uniqueLabel = $this->object->getUniqueLabelField();
                 /* Parse arguments */
                 if (!isset($arg[0])) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
                 }
                 $args = explode($this->delim, $arg[0]);
-                $groupIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($args[0]));
+                $groupIds = $this->object->getIdByParameter($uniqueLabel, array($args[0]));
                 if (!count($groupIds)) {
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
                 }
@@ -232,8 +233,24 @@ class CentreonACLGroup extends CentreonObject
                     }
 
                     $updateParams = array('acl_group_changed' => '1');
-                    $updateParams['objectId'] = $groupId;
-                    parent::setparam($updateParams);
+
+                    if (isset($updateParams[$uniqueLabel])
+                        && $this->objectExists($updateParams[$uniqueLabel], $groupId) == true
+                    ) {
+                        throw new CentreonClapiException(self::NAMEALREADYINUSE);
+                    }
+
+                    $this->object->update($groupId, $updateParams);
+                    $p = $this->object->getParameters($groupId, $uniqueLabel);
+                    if (isset($p[$uniqueLabel])) {
+                        $this->addAuditLog(
+                            'c',
+                            $groupId,
+                            $p[$uniqueLabel],
+                            $updateParams
+                        );
+                    }
+
                 }
             } else {
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);
