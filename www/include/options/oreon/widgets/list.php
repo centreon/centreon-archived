@@ -48,20 +48,24 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $labels = array();
-$labels['title'] = _("Title");
-$labels['description'] = _("Description");
-$labels['version'] = _("Version");
-$labels['author'] = _("Author");
-$labels['actions'] = _("Actions");
+$labels['title'] = _('Title');
+$labels['description'] = _('Description');
+$labels['version'] = _('Version');
+$labels['author'] = _('Author');
+$labels['actions'] = _('Actions');
 
+$tpl->assign('hasWidgetsForInstallation', $widgetInfoObj->hasWidgetsForInstallation());
+$tpl->assign('hasWidgetsForUpgrade', $widgetInfoObj->hasWidgetsForUpgrade());
 $tpl->assign('widgets', $widgets);
 $tpl->assign('labels', $labels);
-$tpl->display("list.ihtml");
+$tpl->display('list.ihtml');
 ?>
 <script type='text/javascript'>
 var installConfirmMsg = '<?php echo _('Would you like to install this widget?');?>';
+var installAllConfirmMsg = '<?php echo _('Would you like to install all widgets?');?>';
 var uninstallConfirmMsg = '<?php echo _('Are you sure you want to uninstall this widget?');?>';
 var upgradeConfirmMsg = '<?php echo _('Would you like to upgrade this widget?');?>';
+var upgradeAllConfirmMsg = '<?php echo _('Would you like to upgrade all widgets?');?>';
 var p = '<?php echo $p;?>';
 
 jQuery(function() {
@@ -69,8 +73,16 @@ jQuery(function() {
         forwardAction(installConfirmMsg, 'install', jQuery(this).parent('td').attr('id'));
     });
 
+    jQuery('.installAllBtn').click(function() {
+        forwardAction(installAllConfirmMsg, 'install-all', 'widget_all');
+    });
+
     jQuery('.upgradeBtn').click(function() {
         forwardAction(upgradeConfirmMsg, 'upgrade', jQuery(this).parent('td').attr('id'));
+    });
+
+    jQuery('.upgradeAllBtn').click(function() {
+        forwardAction(upgradeAllConfirmMsg, 'upgrade-all', 'widget_all');
     });
 
     jQuery('.uninstallBtn').click(function() {

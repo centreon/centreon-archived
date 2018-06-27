@@ -38,16 +38,29 @@ namespace CentreonLegacy\Core\Widget;
 class Information
 {
     /**
-     *
      * @var \Pimple\Container
      */
     protected $dependencyInjector;
     
     /**
-     *
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
+
+    /**
+     * @var array
+     */
+    protected $cachedWidgetsList = [];
+
+    /**
+     * @var bool
+     */
+    protected $hasWidgetsForUpgrade = false;
+
+    /**
+     * @var bool
+     */
+    protected $hasWidgetsForInstallation = false;
     
     /**
      *
@@ -251,15 +264,19 @@ class Information
             $widgets[$name]['upgradeable'] = false;
             $widgets[$name]['installed_version'] = _('N/A');
             $widgets[$name]['available_version'] = $widgets[$name]['version'];
+
             unset($widgets[$name]['version']);
+
             if (isset($installedWidgets[$name])) {
                 $widgets[$name]['id'] = $installedWidgets[$name]['widget_model_id'];
                 $widgets[$name]['is_installed'] = true;
                 $widgets[$name]['installed_version'] = $installedWidgets[$name]['version'];
-                $widgets[$name]['upgradeable'] = $this->isUpgradeable(
+                $widgetIsUpgradable = $this->isUpgradeable(
                     $widgets[$name]['available_version'],
                     $widgets[$name]['installed_version']
                 );
+                $widgets[$name]['upgradeable'] = $widgetIsUpgradable;
+                $this->hasWidgetsForUpgrade = $widgetIsUpgradable ?: $this->hasWidgetsForUpgrade;
             }
         }
 
@@ -269,6 +286,9 @@ class Information
                 $widgets[$name]['source_available'] = false;
             }
         }
+
+        $this->hasWidgetsForInstallation = count($availableWidgets) > count($installedWidgets);
+        $this->cachedWidgetsList = $widgets;
 
         return $widgets;
     }
@@ -315,5 +335,33 @@ class Information
     public function getWidgetPath($widgetName = '')
     {
         return $this->utils->buildPath('/widgets/' . $widgetName) . '/';
+    }
+
+    public function hasWidgetsForUpgrade()
+    {
+        return $this->hasWidgetsForUpgrade;
+    }
+
+    public function getUpgradeableList()
+    {
+        $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
+
+        return array_filter($list, function ($widget) {
+            return $widget['upgradeable'];
+        });
+    }
+
+    public function hasWidgetsForInstallation()
+    {
+        return $this->hasWidgetsForInstallation;
+    }
+
+    public function getInstallableList()
+    {
+        $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
+
+        return array_filter($list, function ($widget) {
+            return !$widget['is_installed'];
+        });
     }
 }

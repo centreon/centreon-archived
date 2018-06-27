@@ -69,6 +69,14 @@ try {
             $widgetInstaller = $factory->newInstaller($directory);
             $widgetInstaller->install();
             break;
+        case 'install-all':
+            $widgetsToInstall = $widgetInfoObj->getInstallableList();
+
+            foreach ($widgetsToInstall as $widgetName => $widgetData) {
+                $widgetInstaller = $factory->newInstaller($widgetName);
+                $widgetInstaller->install();
+            }
+            break;
         case 'uninstall':
             $widgetRemover = $factory->newRemover($directory);
             $widgetRemover->remove();
@@ -76,6 +84,14 @@ try {
         case 'upgrade':
             $widgetUpgrader = $factory->newUpgrader($directory);
             $widgetUpgrader->upgrade();
+            break;
+        case 'upgrade-all':
+            $widgetsToUpgrade = $widgetInfoObj->getUpgradeableList();
+
+            foreach ($widgetsToUpgrade as $widgetName => $widgetData) {
+                $widgetUpgrader = $factory->newUpgrader($widgetName);
+                $widgetUpgrader->upgrade();
+            }
             break;
         default:
             throw new Exception('Unknown action');
