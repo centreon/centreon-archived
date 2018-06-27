@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
-
 /**
  * Set the Acl group changed flag to 1
  *
@@ -68,7 +68,7 @@ function testGroupExistence($name = null)
     }
     $query = "SELECT acl_group_id, acl_group_name "
         . "FROM acl_groups "
-        . "WHERE acl_group_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8")."' ";
+        . "WHERE acl_group_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8")."' "; //Seriously ???? CentreonDB::escape($name)
     $DBRESULT = $pearDB->query($query);
     $cg = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id) {

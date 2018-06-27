@@ -97,7 +97,8 @@ if ($cmd == "global_start") {
     if (isset($command->localhostTab[$poller])) {
         shell_exec("sudo service" . $nagios_init_script . " start");
     } else {
-        shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
+    	$command = escapeshellarg("START:".$poller."");
+        shell_exec("echo $command >> $centcore_pipe");
     }
 } else {
     $cmd_tab = $command->getExternalCommandList();

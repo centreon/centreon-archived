@@ -54,7 +54,7 @@ $obis = $o;
 if (isset($_GET["problem"])) {
     $obis .= '_pb';
 }
-if (isset($_GET["acknowledge"])) {
+if (isset($_GET["acknowledge"]) && ctype_digit($_GET["acknowledge"])) {
     $obis .= '_ack_' . $_GET["acknowledge"];
 }
 
