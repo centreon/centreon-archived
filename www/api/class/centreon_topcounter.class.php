@@ -229,7 +229,7 @@ class CentreonTopCounter extends CentreonWebService
      *
      * Method GET
      */
-    public function getPollers_status()
+    public function getPollersStatus()
     {
         if (!$this->hasAccessToPollers) {
             throw new \RestUnauthorizedException("You're not authorized to access poller datas");
@@ -280,7 +280,7 @@ class CentreonTopCounter extends CentreonWebService
      *
      * Method GET
      */
-    public function getPollers_status_list()
+    public function getPollersList()
     {
         $listType = array('configuration', 'stability', 'database', 'latency');
         if (!isset($this->arguments['type']) || !in_array($this->arguments['type'], $listType)) {
@@ -324,7 +324,7 @@ class CentreonTopCounter extends CentreonWebService
                         'id' => $poller['id'],
                         'name' => $poller['name'],
                         'status' => $state,
-                        'infromation' => $info
+                        'information' => $info
                     );
                 }
             }
@@ -395,7 +395,7 @@ class CentreonTopCounter extends CentreonWebService
      *
      * Method GET
      */
-    public function getServices_status()
+    public function getServicesStatus()
     {
         if (!$this->hasAccessToTopCounter) {
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
