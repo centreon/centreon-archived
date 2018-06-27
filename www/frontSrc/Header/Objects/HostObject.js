@@ -142,17 +142,18 @@ const HostObject = (
       onClick={handleOpen}
     />
     { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
-    {down.unhandled > 0 && unreachable.unhandled > 0 ?
+    {down.unhandled == 0 && unreachable.unhandled == 0 ?
+      <Button variant="fab" href={ok.url}
+              aria-label='ok hosts'
+              className={(classes.status, classes.okStatus)}>
+        {numeral(ok.total).format('0a')}
+      </Button> :
       <Button variant="fab" href={down.url}
               aria-label='Down hosts'
               className={(classes.status, classes.errorStatus)}>
         {numeral(down.unhandled).format('0a')}
-      </Button> :
-      <Button variant="fab" href={ok.url}
-              aria-label='Down hosts'
-              className={(classes.status, classes.okStatus)}>
-        {numeral(ok.total).format('0a')}
       </Button>
+
     }
     <Button variant="fab" mini href={unreachable.url}
             aria-label='Unreachable hosts'

@@ -146,16 +146,16 @@ const ServiceObject = ({
         onClick={handleOpen}
       />
     { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
-    { critical.unhandled > 0 && warning.unhandled > 0 && unknown.unhandled > 0 ?
-      <Button variant="fab" href={critical.url}
-              aria-label='Critical services'
-              className={(classes.status, classes.errorStatus)}>
-        {numeral(critical.unhandled).format('0a')}
-      </Button> :
+    { critical.unhandled == 0 && warning.unhandled == 0 && unknown.unhandled == 0 ?
       <Button variant="fab" href={ok.url}
               aria-label='ok services'
               className={(classes.status, classes.okStatus)}>
         {numeral(ok.total).format('0a')}
+      </Button> :
+      <Button variant="fab" href={critical.url}
+              aria-label='Critical services'
+              className={(classes.status, classes.errorStatus)}>
+        {numeral(critical.unhandled).format('0a')}
       </Button>
     }
       <Button variant="fab" mini  href={warning.url}
