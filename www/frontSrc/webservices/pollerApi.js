@@ -1,21 +1,46 @@
 import axios from "axios"
-import { requestPollers, requestPollersSuccess, requestPollersFail } from '../Header/Actions/pollerActions'
+import {
+  requestPollersStatus,
+  requestPollersStatusSuccess,
+  requestPollersStatusFail,
+  requestPollersList,
+  requestPollersListSuccess,
+  requestPollersListFail
+} from '../Header/Actions/pollerActions'
 
-const pollerUrl = './api/internal.php?object=centreon_topcounter&action=pollers_status'
+const pollerStatusUrl = './api/internal.php?object=centreon_topcounter&action=pollersStatus'
+const pollersListUrl = './api/internal.php?object=centreon_topcounter&action=pollersList'
 
-export function getPollers() {
+export function getPollersStatus() {
     return (dispatch) => {
-      dispatch(requestPollers())
-      return axios.get(pollerUrl)
+      dispatch(requestPollersStatus())
+      return axios.get(pollerStatusUrl)
         .then(
           res => {
-            dispatch(requestPollersSuccess(res))
+            dispatch(requestPollersStatusSuccess(res))
           }
         )
         .catch(
           err => {
-            dispatch(requestPollersFail(err))
+            dispatch(requestPollersStatusFail(err))
           }
         )
     }
+}
+
+export function getPollersList() {
+  return (dispatch) => {
+    dispatch(requestPollersList())
+    return axios.get(pollersListUrl)
+      .then(
+        res => {
+          dispatch(requestPollersListSuccess(res))
+        }
+      )
+      .catch(
+        err => {
+          dispatch(requestPollersListFail(err))
+        }
+      )
+  }
 }
