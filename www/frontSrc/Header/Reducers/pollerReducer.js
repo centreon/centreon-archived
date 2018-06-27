@@ -1,7 +1,10 @@
 import {
-  REQUEST_POLLERS,
-  REQUEST_POLLERS_SUCCESS,
-  REQUEST_POLLERS_FAIL,
+  REQUEST_POLLERS_STATUS,
+  REQUEST_POLLERS_STATUS_SUCCESS,
+  REQUEST_POLLERS_STATUS_FAIL,
+  REQUEST_POLLERS_LIST,
+  REQUEST_POLLERS_LIST_SUCCESS,
+  REQUEST_POLLERS_LIST_FAIL,
 } from '../Actions/pollerActions'
 
 export default function pollerReducer (
@@ -13,13 +16,14 @@ export default function pollerReducer (
   },action
 ) {
   switch (action.type) {
-    case REQUEST_POLLERS:
+    case REQUEST_POLLERS_STATUS:
       return {
         ...state,
         dataFetched: false,
         isFetching: true,
       }
-    case REQUEST_POLLERS_SUCCESS:
+    c
+      ase REQUEST_POLLERS_STATUS_SUCCESS:
       return {
         ...state,
         ...action.data,
@@ -61,7 +65,7 @@ export default function pollerReducer (
         error: false,
         refreshTime: action.data.refreshTime * 1000,
       }
-    case REQUEST_POLLERS_FAIL:
+    case REQUEST_POLLERS_STATUS_FAIL:
       return {
         ...state,
         isFetching: false,

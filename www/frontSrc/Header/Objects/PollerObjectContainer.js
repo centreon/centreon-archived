@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PollerObject from './PollerObject'
 import {connect} from "react-redux"
-import {getPollers} from "../../webservices/pollerApi"
+import {getPollersStatus, getPollersList} from "../../webservices/pollerApi"
 
 class PollerObjectContainer extends Component {
 
@@ -13,7 +13,8 @@ class PollerObjectContainer extends Component {
   }
 
   componentDidMount() {
-    this.props.getPollers()
+    this.props.getPollersStatus()
+    this.props.getPollersList()
   }
 
   componentWillUnmount() {
@@ -107,8 +108,11 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getPollers: () => {
-      return dispatch(getPollers())
+    getPollersStatus: () => {
+      return dispatch(getPollersStatus())
+    },
+    getPollersList: () => {
+      return dispatch(getPollersList())
     },
   }
 }
