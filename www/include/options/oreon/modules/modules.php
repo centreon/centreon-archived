@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,16 +37,16 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["list"]) ? $mG = $_GET["list"] : $mG = null;
-isset($_POST["list"]) ? $mP = $_POST["list"] : $mP = null;
+isset($_GET['list']) ? $mG = $_GET['list'] : $mG = null;
+isset($_POST['list']) ? $mP = $_POST['list'] : $mP = null;
 $mG ? $list = $mG : $list = $mP;
 
-isset($_GET["id"]) ? $mG = $_GET["id"] : $mG = null;
-isset($_POST["id"]) ? $mP = $_POST["id"] : $mP = null;
+isset($_GET['id']) ? $mG = $_GET['id'] : $mG = null;
+isset($_POST['id']) ? $mP = $_POST['id'] : $mP = null;
 $mG ? $id = $mG : $id = $mP;
 
-isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = null;
-isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = null;
+isset($_GET['name']) ? $nameG = $_GET['name'] : $nameG = null;
+isset($_POST['name']) ? $nameP = $_POST['name'] : $nameP = null;
 $nameG ? $name = $nameG : $name = $nameP;
 
 $operationType = '';
@@ -59,10 +59,10 @@ if ($name !== null) {
 /*
  * Path to the options dir
  */
-$path = "./include/options/oreon/modules/";
+$path = './include/options/oreon/modules/';
 
-require_once "./include/common/common-Func.php";
-require_once $path ."DB-Func.php";
+require_once './include/common/common-Func.php';
+require_once $path . 'DB-Func.php';
 
 $factory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
 $utils = $factory->newUtils();
@@ -71,19 +71,19 @@ $moduleFactory = new \CentreonLegacy\Core\Module\Factory($dependencyInjector, $u
 $moduleInfoObj = $moduleFactory->newInformation();
 
 if ($list) {
-    require_once($path."listModules.php");
+    require_once($path . 'listModules.php');
 } else {
     switch ($o) {
-        case "i":
-        case "w":
-            require_once($path . "installForm.php");
+        case 'i':
+        case 'w':
+            require_once($path . 'installForm.php');
             break;
-        case "u":
-            require_once($path . "upgradeForm.php");
+        case 'u':
+            require_once($path . 'upgradeForm.php');
             break;
-        case "d":
+        case 'd':
         default:
-            require_once($path . "listModules.php");
+            require_once($path . 'listModules.php');
             break;
     }
 }
