@@ -345,7 +345,7 @@ class CentreonTopCounter extends CentreonWebService
      *
      * Method GET
      */
-    public function getPollersProblems()
+    public function getPollersListIssues()
     {
         if (!$this->hasAccessToPollers) {
             throw new \RestUnauthorizedException("You're not authorized to access poller datas");
@@ -395,74 +395,107 @@ class CentreonTopCounter extends CentreonWebService
         foreach ($pollers as $poller) {
             //stability
             if ($poller['stability'] === 1) {
-                $result['stability']['warning']['pollers'][] = array(
+                $result['stability']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['stability'],
-                    'information' => ''
+                    'freetime' => ''
                 );
                 $staWar++;
             } elseif ($poller['stability'] === 2) {
-                $result['stability']['critical']['pollers'][] = array(
+                $result['stability']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['stability'],
-                    'information' => ''
+                    'freetime' => ''
                 );
                 $staCri++;
             }
 
             //database
             if ($poller['database']['state'] === 1) {
-                $result['database']['warning']['pollers'][] = array(
+                $result['database']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['database']['state'],
-                    'information' => $poller['database']['time']
+                    'freetime' => $poller['database']['time']
                 );
                 $datWar++;
             } elseif ($poller['database']['state'] === 2) {
-                $result['database']['critical']['pollers'][] = array(
+                $result['database']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['database']['state'],
-                    'information' => $poller['database']['time']
+                    'freetime' => $poller['database']['time']
                 );
                 $datCri++;
             }
 
             //latency
             if ($poller['latency']['state'] === 1) {
-                $result['latency']['warning']['pollers'][] = array(
+                $result['latency']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['warning']['state'],
-                    'information' => $poller['warning']['time']
+                    'freetime' => $poller['warning']['time']
                 );
                 $latWar++;
             } elseif ($poller['latency']['state'] === 2) {
-                $result['latency']['critical']['pollers'][] = array(
+                $result['latency']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'status' => $poller['warning']['state'],
-                    'information' => $poller['warning']['time']
+                    'freetime' => $poller['warning']['time']
                 );
                 $latCri++;
             }
         }
 
-        //total
-        $result['stability']['warning']['total'] = $staWar;
-        $result['stability']['critical']['total'] = $staCri;
-        $result['stability']['total'] = $staWar + $staCri;
+        //total and unset empty
+        $staTotal = $staWar + $staCri;
+        if ($staTotal === 0) {
+            unset($result['stability']);
+        } else {
+            if ($staWar === 0) {
+                unset($result['stability']['warning']);
+                $result['stability']['critical']['total'] = $staCri;
+            } elseif ($staCri === 0) {
+                unset($result['stability']['critical']);
+                $result['stability']['warning']['total'] = $staWar;
+            } else {
+                $result['stability']['warning']['total'] = $staWar;
+                $result['stability']['critical']['total'] = $staCri;
+            }
+            $result['stability']['total'] = $staTotal;
+        }
 
-        $result['database']['warning']['total'] = $datWar;
-        $result['database']['warning']['total'] = $datCri;
-        $result['database']['total'] = $datWar + $datCri;
+        $datTotal = $datWar + $datCri;
+        if ($datTotal === 0) {
+            unset($result['database']);
+        } else {
+            if ($datWar === 0) {
+                unset($result['database']['warning']);
+                $result['database']['critical']['total'] = $datCri;
+            } elseif ($datCri === 0) {
+                unset($result['database']['critical']);
+                $result['database']['warning']['total'] = $datWar;
+            } else {
+                $result['database']['warning']['total'] = $datWar;
+                $result['database']['critical']['total'] = $datCri;
+            }
+            $result['database']['total'] = $datTotal;
+        }
 
-        $result['latency']['warning']['total'] = $latWar;
-        $result['latency']['warning']['total'] = $latCri;
-        $result['latency']['total'] = $latWar + $latCri;
+        $latTotal = $latWar + $latCri;
+        if ($latTotal === 0) {
+            unset($result['latency']);
+        } else {
+            if ($latWar === 0) {
+                unset($result['latency']['warning']);
+                $result['latency']['critical']['total'] = $latCri;
+            } elseif ($latCri === 0) {
+                unset($result['latency']['critical']);
+                $result['latency']['warning']['total'] = $latWar;
+            } else {
+                $result['latency']['warning']['total'] = $latWar;
+                $result['latency']['critical']['total'] = $latCri;
+            }
+            $result['latency']['total'] = $latTotal;
+        }
 
         return $result;
     }
