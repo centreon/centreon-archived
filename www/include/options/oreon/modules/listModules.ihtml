@@ -1,3 +1,15 @@
+{if $hasModulesForInstallation}
+	<a href="?p={$p}&o=i&action=install_all">
+		<img class="installAllBtn ico-16 margin_right" src="./img/icons/generate_conf.png" style="cursor: pointer;" title="Install all modules">
+	</a>
+{/if}
+
+{if $hasModulesForUpgrade}
+	<a href="?p={$p}&o=u&action=upgrade_all">
+		<img class="upgradeAllBtn ico-16" src="./img/icons/upgrade.png" style="cursor: pointer;" title="Upgrade all modules">
+	</a>
+{/if}
+
 <table class="ListTable">
 	<tr class="ListHeader">
 		<td class="ListColHeaderLeft">{t}Name{/t}</td>
