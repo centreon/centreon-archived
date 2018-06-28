@@ -29,7 +29,7 @@ class UserProfileContainer extends Component {
 
       this.setState({
         initial: initial,
-        soundNotif: nextProps.user.soundNotificationsEnabled,
+        //soundNotif: nextProps.user.soundNotificationsEnabled,
         token: GeneratedToken
       })
     }
@@ -57,6 +57,9 @@ class UserProfileContainer extends Component {
     this.setState({ anchorEl: null })
   }
 
+  /*
+    Notificatioon sonore Feature removed on 2.8.25 */
+  /*
   handleNotification = () => {
     const { soundNotif } = this.state
     const { startSonoreNotification, stopSonoreNotification } = this.props
@@ -67,6 +70,7 @@ class UserProfileContainer extends Component {
       soundNotif: !soundNotif
     })
   }
+  */
 
   handleAutologin = () => {
     const { autologinkey, userId } = this.props.user
@@ -86,20 +90,20 @@ class UserProfileContainer extends Component {
     const open = Boolean(anchorEl)
     const buildedLink = link + user.username + '&token=' + token
 
+    /*
     if (dataFetched) {
       this.setState({
         soundNotif: user.soundNotificationsEnabled
       })
     }
+    */
 
     return (
       <UserProfile
         handleClose={this.handleClose}
         handleOpen={this.handleOpen}
-        handleNotification={this.handleNotification}
         handleAutologin={this.handleAutologin}
         link={buildedLink}
-        soundNotif={this.state.soundNotif}
         initial={initial}
         user={user}
         open={open}
@@ -120,12 +124,14 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => {
       return dispatch(getUser())
     },
+    /*
     startSonoreNotification: () => {
       return dispatch(getEnabledSoundNotif())
     },
     stopSonoreNotification: () => {
       return dispatch(getDisabledSoundNotif())
     },
+    */
     autoLogin: (userId, token) => {
       return dispatch(putAutologin(userId, token))
     },

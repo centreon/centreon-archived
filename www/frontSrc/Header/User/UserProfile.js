@@ -76,7 +76,6 @@ const UserProfile = ({
     handleNotification,
     handleAutologin,
     link,
-    soundNotif,
     anchorEl
   }) => (
   <div className={classes.profileRoot}>
@@ -123,9 +122,6 @@ const UserProfile = ({
           </Button>
       </div>
       </Tooltip>
-      <MenuItem onClick={handleNotification} id='notifAction'>
-        {soundNotif ? 'Disable sound notification' : 'Enable sound notification'}
-      </MenuItem>
       <div className={classes.menuFooter}>
         <Button className={classes.logoutButton} size="small" aria-label='Logout' href="index.php?disconnect=1">
           Sign out
