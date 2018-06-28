@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,54 +46,76 @@ if (!isset($centreon)) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$tpl->assign("headerMenu_title", _("Module Information"));
-$tpl->assign("headerMenu_title2", _("Upgrade Information"));
-$tpl->assign("headerMenu_rname", _("Real name"));
-$tpl->assign("headerMenu_release", _("Release"));
-$tpl->assign("headerMenu_release_from", _("Base release"));
-$tpl->assign("headerMenu_release_to", _("Final release"));
-$tpl->assign("headerMenu_author", _("Author"));
-$tpl->assign("headerMenu_infos", _("Additional Information"));
-$tpl->assign("headerMenu_isinstalled", _("Installed"));
+$tpl->assign('headerMenu_title', _('Module Information'));
+$tpl->assign('headerMenu_title2', _('Upgrade Information'));
+$tpl->assign('headerMenu_rname', _('Real name'));
+$tpl->assign('headerMenu_release', _('Release'));
+$tpl->assign('headerMenu_release_from', _('Base release'));
+$tpl->assign('headerMenu_release_to', _('Final release'));
+$tpl->assign('headerMenu_author', _('Author'));
+$tpl->assign('headerMenu_infos', _('Additional Information'));
+$tpl->assign('headerMenu_isinstalled', _('Installed'));
+
+if (isset($_GET['action']) && $_GET['action'] == 'install_all') {
+    $installableModules = $moduleInfoObj->getInstallableList();
+    $tpl->assign('output', _('All modules successfully installed.'));
+
+    foreach ($installableModules as $installableModule) {
+        $moduleInstaller = $moduleFactory->newInstaller($installableModule['name']);
+
+        if ( !$moduleInstaller->install() ) {
+            $tpl->assign('output', _('Unable to install module: ' . $installableModule['rname']));
+            break;
+        }
+    }
+
+    $centreon->creatModuleList($pearDB);
+    $centreon->user->access->updateTopologyStr();
+    $centreon->initHooks();
+
+    $tpl->assign('p', $p);
+    $tpl->display('modulesAction.tpl');
+    die;
+}
 
 $moduleInfo = $moduleInfoObj->getConfiguration($name);
 
-$tpl->assign("module_rname", $moduleInfo["rname"]);
-$tpl->assign("module_release", $moduleInfo["mod_release"]);
-$tpl->assign("module_author", $moduleInfo["author"]);
-$tpl->assign("module_infos", $moduleInfo["infos"]);
-if (file_exists($moduleInfoObj->getModulePath() . "/infos/infos.txt")) {
-    $content = file_get_contents($moduleInfo->getModulePath() . "/infos/infos.txt");
-    $content = implode("<br />", $content);
-    $tpl->assign("module_infosTxt", $content);
+$tpl->assign('module_rname', $moduleInfo['rname']);
+$tpl->assign('module_release', $moduleInfo['mod_release']);
+$tpl->assign('module_author', $moduleInfo['author']);
+$tpl->assign('module_infos', $moduleInfo['infos']);
+
+if (file_exists($moduleInfoObj->getModulePath() . '/infos/infos.txt')) {
+    $content = file_get_contents($moduleInfo->getModulePath() . '/infos/infos.txt');
+    $content = implode('<br />', $content);
+    $tpl->assign('module_infosTxt', $content);
 } else {
-    $tpl->assign("module_infosTxt", false);
+    $tpl->assign('module_infosTxt', false);
 }
 
-$form1 = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form1 = new HTML_QuickFormCustom('Form', 'post', "?p={$p}");
 
 if ($form1->validate()) {
     $moduleInstaller = $moduleFactory->newInstaller($name);
-
     $insert_ok = $moduleInstaller->install();
 
     if ($insert_ok) {
-        $tpl->assign("output", _("Module installed and registered"));
+        $tpl->assign('output', _('Module installed and registered'));
 
         /* Rebuild modules in centreon object */
         $centreon->creatModuleList($pearDB);
         $centreon->user->access->updateTopologyStr();
         $centreon->initHooks();
     } else {
-        $tpl->assign("output", _("Unable to install module"));
+        $tpl->assign('output', _('Unable to install module'));
     }
 } elseif ($o == 'i' && !$moduleInfoObj->getInstalledInformation($name)) {
-    $form1->addElement('submit', 'install', _("Install Module"), array("class" => "btc bt_success"));
+    $form1->addElement('submit', 'install', _('Install Module'), array('class' => 'btc bt_success'));
     $redirect = $form1->addElement('hidden', 'o');
-    $redirect->setValue("i");
+    $redirect->setValue('i');
 }
 
-$form1->addElement('submit', 'list', _("Back"), array("class" => "btc bt_default"));
+$form1->addElement('submit', 'list', _('Back'), array('class' => 'btc bt_default'));
 $hid_name = $form1->addElement('hidden', 'name');
 $hid_name->setValue($name);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -103,4 +125,4 @@ $tpl->assign('form1', $renderer->toArray());
 /**
  * Display form
  */
-$tpl->display("installForm.tpl");
+$tpl->display('installForm.tpl');

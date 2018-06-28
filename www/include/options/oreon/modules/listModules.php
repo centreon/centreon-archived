@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,8 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-if ($id && $o == "d") {
+if ($id && $o == 'd') {
     $moduleName = $moduleInfoObj->getNameById($id);
+
     if (!is_null($moduleName)) {
         $removerObj = $moduleFactory->newRemover($moduleName, $id);
         $removerObj->remove();
@@ -50,8 +51,8 @@ if ($id && $o == "d") {
  */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
-
 $modules = $moduleInfoObj->getList();
+
 foreach ($modules as &$module) {
     if ($module['is_installed']) {
         $module['installed'] = _('Yes');
@@ -60,11 +61,13 @@ foreach ($modules as &$module) {
     }
 }
 
-$tpl->assign("p", $p);
-$tpl->assign("modules", $modules);
+$tpl->assign('p', $p);
+$tpl->assign('modules', $modules);
+$tpl->assign('hasModulesForInstallation', $moduleInfoObj->hasModulesForInstallation());
+$tpl->assign('hasModulesForUpgrade', $moduleInfoObj->hasModulesForUpgrade());
 
 /*
  * Apply a template definition
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$tpl->display("listModules.ihtml");
+$tpl->display('listModules.ihtml');
