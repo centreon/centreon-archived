@@ -10,6 +10,7 @@ import {
 
 const pollerStatusUrl = './api/internal.php?object=centreon_topcounter&action=pollersStatus'
 const pollersListUrl = './api/internal.php?object=centreon_topcounter&action=pollersList'
+const pollersListIssuesUrl = './api/internal.php?object=centreon_topcounter&action=pollersListIssues'
 
 export function getPollersStatus() {
     return (dispatch) => {
@@ -31,7 +32,7 @@ export function getPollersStatus() {
 export function getPollersList() {
   return (dispatch) => {
     dispatch(requestPollersList())
-    return axios.get(pollersListUrl)
+    return axios.get(pollersListIssuesUrl)
       .then(
         res => {
           dispatch(requestPollersListSuccess(res))
