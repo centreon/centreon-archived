@@ -104,8 +104,6 @@ abstract class CentreonSeverityAbstract extends CentreonObject
                 'level' => null,
                 'icon_id' => null
             );
-            $updateParams['objectId'] = $objectId;
-            parent::setparam($updateParams);
 
             $this->object->update($objectId, $updateParams);
             $this->addAuditLog(
