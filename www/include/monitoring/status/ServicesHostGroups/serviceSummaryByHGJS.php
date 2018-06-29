@@ -124,7 +124,7 @@ if (isset($_GET["acknowledge"])) {
         }
         _oldInputFieldValue = _currentInputFieldValue;
 
-        setTimeout("mainLoopLocal()", 250);
+        setTimeout(mainLoopLocal, 250);
     }
 
     function initM(_time_reload, _sid, _o) {
@@ -154,7 +154,7 @@ if (isset($_GET["acknowledge"])) {
     function goM(_time_reload, _sid, _o) {
         _lock = 1;
         var proc = new Transformation();
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(
             _addrXML + "?" + '&search=' + _host_search + '&num=' + _num + '&limit=' + _limit + '&sort_type=' +
             _sort_type + '&order=' + _order + '&date_time_format_status=' + _date_time_format_status + '&o=' + _o +
@@ -171,7 +171,7 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
         set_header_title();

@@ -414,7 +414,7 @@ if ($engine == 'false') {
                 '&limit=' + _limit + '&id=' + args;
             proc.setXml(_addr);
             proc.setXslt(_addrXSL);
-            proc.setCallback(formatDateMoment);
+            proc.setCallback(function(t){formatDateMoment(t); proc = null;});
             proc.transform("logView4xml");
         } else {
             if (type == 'CSV') {
@@ -502,7 +502,7 @@ if ($engine == 'false') {
 
             proc.setXml(_addr)
             proc.setXslt(_addrXSL)
-            proc.setCallback(formatDateMoment)
+            proc.setCallback(function(t){formatDateMoment(t); proc = null;});
             proc.transform("logView4xml");
         } else {
             var openid = document.getElementById('openid').innerHTML;

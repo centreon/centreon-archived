@@ -1,5 +1,15 @@
 
+var check_session_interval_id;
+
 function check_session() {
+    if (check_session_interval_id) {
+        clearInterval(check_session_interval_id);
+    }
+
+    check_session_interval_id = setInterval(check_session_callback, <?php echo $tM; ?>);
+}
+
+function check_session_callback() {
  	var xhr2 = null;
 
     if (window.XMLHttpRequest) {
@@ -20,9 +30,14 @@ function check_session() {
 
 function change_status(xhr2) {
 	if (xhr2.readyState != 4 && xhr2.readyState != "complete") {
+		clearInterval(check_session_interval_id);
 		return(0);
 	}
 	var docXML= xhr2.responseXML;
+
+	xhr2.onreadystatechange = null;
+	xhr2 = null;
+
 	var items_state = docXML.getElementsByTagName("state");
 	var items_time = docXML.getElementsByTagName("time");
 	var timezoneItem = docXML.getElementsByTagName("timezone");
@@ -41,7 +56,6 @@ function change_status(xhr2) {
 	} else if (state == "nok") {
 		window.location.replace("./index.php");
 	}
-	setTimeout("check_session()", <?php echo $tM; ?>);
 }
 
 //add the locale timezone and locale to the displayed hours in the header
