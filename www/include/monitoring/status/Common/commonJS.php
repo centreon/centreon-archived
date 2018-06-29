@@ -41,6 +41,9 @@ if (!isset($default_poller)) {
     include_once "./include/monitoring/status/Common/default_poller.php";
 }
 
+//We need to escape $obis as this contains user untrusted values
+include_once "./class/centreonEscaping.class.php";
+
 ?>
 // Dynamique
 var _sid='<?php echo $sid?>';
@@ -65,7 +68,7 @@ var _limit='<?php echo $limit?>';
 var _sort_type='<?php echo $sort_type?>';
 var _order='<?php echo $order?>';
 var _date_time_format_status='<?php echo addslashes(_("Y/m/d H:i:s"))?>';
-var _o='<?php echo (isset($obis) && $obis) ? $obis : $o;?>';
+var _o='<?php echo (isset($obis) && $obis) ? Esc::forJsValue(Esc::forUrlValue($obis)) : $o;?>';
 var _p='<?php echo $p?>';
 
 // Parameters
