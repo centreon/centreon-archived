@@ -81,8 +81,7 @@
                 url: "./include/monitoring/status/Notifications/notifications.php",
                 data: {
                     refresh_rate: refresh_rate
-                },
-                cache: false
+                }
             }).done(function (xml_content) {
                 $(xml_content).find('message').each(function () {
                     if ($(this).attr('output') && handleVisibilityChange()) {
