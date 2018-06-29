@@ -382,7 +382,7 @@ if ($engine == 'false') {
         if (poller_value !== null) {
             urlargs += "&poller=";
             var flagfirst = true;
-            poller_value.each(function (val) {
+            poller_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -489,15 +489,13 @@ if ($engine == 'false') {
                 '&down=' + _down + '&up=' + _up + '&num=' + _num + '&error=' + _error + '&alert=' + _alert +
                 '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
                 '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
-
-
-
+                '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id
                 <?php
                 if (isset($search) && $search) {
-                    print "&search_host=" . $search;
-                } if (isset($search_service) && $search_service) {
-                    print "&search_service=" . $search_service;
+                    print " + &search_host=" . $search;
+                }
+                if (isset($search_service) && $search_service) {
+                    print " + &search_service=" . $search_service;
                 }
                 ?>;
 
@@ -520,7 +518,8 @@ if ($engine == 'false') {
                         <?php
                         if (isset($search) && $search) {
                             print "&search_host=" . $search;
-                        } if (isset($search_service) && $search_service) {
+                        }
+                        if (isset($search_service) && $search_service) {
                             print "&search_service=" . $search_service;
                         }
                         ?> +'&export=1';
@@ -531,14 +530,14 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
+                            print " + &search_host=" . $search;
                             print "&search_host=" . $search;
                         }
                         if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 }
@@ -546,7 +545,7 @@ if ($engine == 'false') {
                 var poller_value = jQuery("#poller_filter").val();
                 var args = "";
                 if (poller_value !== null) {
-                    poller_value.each(function (val) {
+                    poller_value.forEach(function (val) {
                         if (val !== " " && val !== "") {
                             if (args !== "") {
                                 args += ",";
@@ -618,7 +617,7 @@ if ($engine == 'false') {
         if (host_value !== null) {
             urlargs += "&h=";
             var flagfirst = true;
-            host_value.each(function (val) {
+            host_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -636,7 +635,7 @@ if ($engine == 'false') {
         if (service_value !== null) {
             urlargs += "&svc=";
             var flagfirst = true;
-            service_value.each(function (val) {
+            service_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -654,7 +653,7 @@ if ($engine == 'false') {
         if (hg_value !== null) {
             urlargs += "&hg=";
             var flagfirst = true;
-            hg_value.each(function (val) {
+            hg_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -672,7 +671,7 @@ if ($engine == 'false') {
         if (sg_value !== null) {
             urlargs += "&svcg=";
             var flagfirst = true;
-            sg_value.each(function (val) {
+            sg_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -723,11 +722,11 @@ if ($engine == 'false') {
                     dataType: "json",
                     data: "hgid=" + hg_value,
                     success: function (json) {
-                        json.items.each(function (elem) {
+                        json.items.forEach(function (elem) {
                             if (jQuery.inArray(elem.id, host_value) === -1) {
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
-                                existingOptions.each(function (el) {
+                                existingOptions.forEach(function (el) {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
@@ -759,11 +758,11 @@ if ($engine == 'false') {
                     dataType: "json",
                     data: "sgid=" + sg_value,
                     success: function (json) {
-                        json.items.each(function (elem) {
+                        json.items.forEach(function (elem) {
                             if (jQuery.inArray(elem.id, service_value) === -1) {
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;
-                                existingOptions.each(function () {
+                                existingOptions.forEach(function () {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
