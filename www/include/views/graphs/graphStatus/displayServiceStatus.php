@@ -193,7 +193,8 @@ if (!$session->numRows()) {
         $GraphTemplate["vertical_label"] = "sds";
     }
 
-    $command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
+    $command_line .= " --interlaced $base --imgformat PNG --width=" . $GraphTemplate["width"] . 
+        " --height=".$GraphTemplate["height"]." ";
 
     $sdesc = $index_data_ODS['service_description'];
     $hname = $index_data_ODS['host_name'];
@@ -289,8 +290,9 @@ if (!$session->numRows()) {
     $command_line = escape_command("$command_line");
 
     if ($centreon->optGen["debug_rrdtool"] == "1") {
-    	$msg = str_replace("\n", "\\n", str_replace("\r", "\\r", $command_line));
-        error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $msg \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
+        $msg = str_replace("\n", "\\n", str_replace("\r", "\\r", $command_line));
+        error_log("[" . date("d/m/Y H:s") . "] RDDTOOL : $msg \n", 3, 
+            $centreon->optGen["debug_path"] . "rrdtool.log");
     }
 
     $fp = popen($command_line, 'r');

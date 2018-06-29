@@ -112,7 +112,7 @@ function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
 /* By hostgroups */
 if (isset($_POST['host_group_filter'])) {
     foreach ($_POST['host_group_filter'] as $hgId) {
-    	if(!ctype_digit((string)$hgId)) continue;
+    	if (!ctype_digit((string)$hgId)) continue;
         $hosts = getMyHostGroupHosts($hgId);
         foreach ($hosts as $host) {
             $servicesReturn = array_merge($servicesReturn, getServiceGraphByHost($host, $isAdmin, $lca));
@@ -122,7 +122,7 @@ if (isset($_POST['host_group_filter'])) {
 /* By hosts */
 if (isset($_POST['host_selector'])) {
     foreach ($_POST['host_selector'] as $host) {
-    	if(!ctype_digit((string)$host)) continue;
+    	if (!ctype_digit((string)$host)) continue;
         $servicesReturn = array_merge($servicesReturn, getServiceGraphByHost($host, $isAdmin, $lca));
     }
 }
@@ -133,7 +133,7 @@ if (isset($_POST['service_group_filter'])) {
         $services = getMyServiceGroupServices($sgId);
         foreach ($services as $hostSvcId => $svcName) {
             list($hostId, $svcId) = explode('_', $hostSvcId);
-            if(!ctype_digit((string)$hostId) || !ctype_digit((string)$svcId)) continue;
+            if (!ctype_digit((string)$hostId) || !ctype_digit((string)$svcId)) continue;
             $servicesReturn[] = getGraphByService($hostId, $svcId, $svcName, $isAdmin, $lca);
         }
     }
@@ -143,7 +143,7 @@ if (isset($_POST['service_group_filter'])) {
 if (isset($_POST['service_selector'])) {
     foreach ($_POST['service_selector'] as $selectedService) {
         list($hostId, $svcId) = explode('-', $selectedService['id']);
-        if(!ctype_digit((string)$hostId) || !ctype_digit((string)$svcId)) continue;
+        if (!ctype_digit((string)$hostId) || !ctype_digit((string)$svcId)) continue;
         $svcGraph = getGraphByService($hostId, $svcId, $selectedService['text'], $isAdmin, $lca);
         if ($svcGraph !== false) {
             $servicesReturn[] = $svcGraph;

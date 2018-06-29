@@ -38,7 +38,8 @@ include_once("Esc.class.php");
  * 
  * Good usage is to use these functions immediately inline with the surrounding 
  * context. For example, in case of direct echoing $sHostName as a Host Name:
- * <a href="<?php echo Esc::forHtmlAttr("main.php?p=20202&o=hd&host_name=".Esc::forUrlValue($sHostName)); ?>"><?php echo Esc::forHtmlContent($sHostName); ?></a>
+ * <a href="<?php echo Esc::forHtmlAttr("main.php?p=20202&o=hd&host_name=".
+ *       Esc::forUrlValue($sHostName)); ?>"><?php echo Esc::forHtmlContent($sHostName); ?></a>
  * 
  * A lot more information is available on OWASP site, and similar informations 
  * are used in this class file.
@@ -52,7 +53,8 @@ class CentreonEscaping
 		
 	}
 	
-	//TODO: Need to have a look at the sanitizeShellString() function in /www/include/monitoring/external_cmd/functionsPopup.php and potentially add it here
+	//TODO: Need to have a look at the sanitizeShellString() function in
+	//  /www/include/monitoring/external_cmd/functionsPopup.php and potentially add it here
 	
 
 
@@ -63,7 +65,8 @@ class CentreonEscaping
      * http://www.forexample.com/folder/path/file.php?parameter=[INJECT UNTRUSTED STRING HERE]&anotherparameter=etc
      * 
      * Usage:
-     * $sMyUrl = "http://www.forexample.com/folder/path/file.php?parameter=".Esc::forUrlValue($sMyValue)."&anotherparameter=etc";
+     * $sMyUrl = "http://www.forexample.com/folder/path/file.php?parameter=".
+     *      Esc::forUrlValue($sMyValue)."&anotherparameter=etc";
      *
      * @param $sValue string 
      * @return string The escaped string, ready for injection in url parameter 
@@ -73,7 +76,8 @@ class CentreonEscaping
 	static public function forUrlValue($sValue) {
 		//URL-encode according to RFC 3986
 		return rawurlencode($sValue);
-		//There are two functions: rawurlencode() and urlencode(). urlencode() is used for posted data from a WWW form. Using the standards compliant function rawurlencode().
+		//There are two functions: rawurlencode() and urlencode(). urlencode() is used for posted data 
+		//from a WWW form. Using the standards compliant function rawurlencode().
 		//return urlencode($sValue);
 	}
 
@@ -102,7 +106,8 @@ class CentreonEscaping
      * <div>[INJECT UNTRUSTED STRING HERE] <span>[INJECT UNTRUSTED STRING HERE]</span></div>
      *
      * Usage:
-     * $sMyHtmlContent = '<div>'.Esc::forHtmlContent($sMyContent).' <span>'.Esc::forHtmlContent($sMySubContent).'</span></div>';
+     * $sMyHtmlContent = '<div>'.Esc::forHtmlContent($sMyContent).' <span>'.
+     *      Esc::forHtmlContent($sMySubContent).'</span></div>';
      *
      * @param $sValue string 
      * @return string The escaped string, ready for injection in HTML content 
@@ -144,10 +149,12 @@ class CentreonEscaping
 	 *   as it is used everywhere already). The function has been created here for completeness. 
 	 *
 	 * For example, in case for:
-	 * SELECT * FROM hosts WHERE host_name='[INJECT UNTRUSTED STRING HERE]' OR host_alias LIKE '%[INJECT UNTRUSTED STRING HERE]%'
+	 * SELECT * FROM hosts WHERE host_name='[INJECT UNTRUSTED STRING HERE]' OR 
+	 *     host_alias LIKE '%[INJECT UNTRUSTED STRING HERE]%'
 	 *
 	 * Usage:
-	 * $sMyHostsQuery = "SELECT * FROM hosts WHERE host_name='".Esc::forQueryValue($sMyHostName)."' OR host_alias LIKE '%".Esc::forQueryValue($sMyHostName)."%'";
+	 * $sMyHostsQuery = "SELECT * FROM hosts WHERE host_name='".Esc::forQueryValue($sMyHostName)."' 
+	 *     OR host_alias LIKE '%".Esc::forQueryValue($sMyHostName)."%'";
 	 *
 	 * @param $sValue string
 	 * @return string The escaped string, ready for injection in query

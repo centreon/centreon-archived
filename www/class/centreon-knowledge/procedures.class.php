@@ -375,12 +375,12 @@ class procedures
 
             $this->DB->query(
                 "INSERT INTO `text` (old_id, old_text, old_flags) VALUE (NULL, '" .
-            		CentreonDB::escape($text["old_text"]) . "', '" . CentreonDB::escape($text["old_flags"]) . "')"
+                CentreonDB::escape($text["old_text"]) . "', '" . CentreonDB::escape($text["old_flags"]) . "')"
             );
             $this->DB->query(
                 "INSERT INTO `revision` (rev_page, rev_text_id, rev_comment, rev_user_text, rev_timestamp, " .
                 "  rev_len) VALUE ('" . $id["MAX(page_id)"] . "', (SELECT MAX(old_id) FROM text), '" .
-            		CentreonDB::escape($revision["rev_comment"]) . "', '" . CentreonDB::escape($revision["rev_user_text"]) . "','" . $dateTouch .
+                CentreonDB::escape($revision["rev_comment"]) . "', '" . CentreonDB::escape($revision["rev_user_text"]) . "','" . $dateTouch .
                 "','" . $revision["rev_len"] . "')"
             );
         } else {
