@@ -59,9 +59,9 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
                                 WHERE `contact_alias` = ?
                                 AND `contact_activate` = '1'
                                 AND `contact_autologin_key` = ? LIMIT 1");
-    $DBRESULT = $pearDB->execute($DBRESULT, array($_GET["username"], $token));
+    $pearDB->execute($DBRESULT, array($_GET["username"], $token));
     if ($DBRESULT->rowCount()) {
-        $row = $DBRESULT->fetchRow();
+        $row = $DBRESULT->fetch();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->rowCount()) {
             $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
@@ -80,9 +80,9 @@ if (isset($_GET["hostname"]) && isset($_GET["service"])) {
                                  WHERE host_name = ?
                                  AND service_description = ?
                                  LIMIT 1");
-    $DBRESULT = $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
+    $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
     if ($DBRESULT->rowCount()) {
-        $res = $DBRESULT->fetchRow();
+        $res = $DBRESULT->fetch();
         $index = $res["id"];
     } else {
         die('Resource not found');
@@ -94,9 +94,9 @@ if (isset($_GET['chartId'])) {
         die('Resource not found');
     }
     $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
-    $res = $pearDBO->execute($res, array($hostId, $serviceId)); 
+    $pearDBO->execute($res, array($hostId, $serviceId));
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $index = $row['id'];     
     } else {
         die('Resource not found');
@@ -113,7 +113,7 @@ if (!$res->rowCount()) {
     die('Unknown user');
 }
 
-$row = $res->fetchRow();
+$row = $res->fetch();
 $isAdmin = $row['contact_admin'];
 $contactId = $row['contact_id'];
 
@@ -127,7 +127,7 @@ if (!$isAdmin) {
     if (!$res->rowCount()) {
         die('Graph not found');
     }
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     unset($res);
     $hostId = $row['host_id'];
     $serviceId = $row['service_id'];
