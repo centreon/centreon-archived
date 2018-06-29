@@ -58,9 +58,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
     }
 
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -89,7 +88,10 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         if (isset($this->arguments['hostgroup'])) {
             $additionalTables .= ',hostgroup_relation hg ';
             $additionalCondition .= 'AND hg.host_host_id = h.host_id AND hg.hostgroup_hg_id IN (';
-            foreach ($this->arguments['hostgroup'] as $k => $v) {
+            foreach (explode(',',$this->arguments['hostgroup']) as $k => $v) {
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
             }
@@ -125,6 +127,9 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?, ?';
             $queryValues[] = (int)$limit;

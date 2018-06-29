@@ -117,9 +117,9 @@ class CentreonConfigurationObjects extends CentreonWebService
     }
 
     /**
-     *
-     * @param array $externalObject
-     * @param array $values
+     * @param $externalObject
+     * @param $values
+     * @return array
      */
     protected function retrieveExternalObjectDatas($externalObject, $values)
     {
@@ -149,7 +149,7 @@ class CentreonConfigurationObjects extends CentreonWebService
                 for ($i = 1; $i <= count($values); $i++) {
                     $explodedValues .= '?,';
                 }
-                $explodedValues = substr($explodedValues, 0, -1);
+                $explodedValues = rtrim($explodedValues, ',');
             }
 
             $query = "SELECT $externalObject[id], $externalObject[name] " .
@@ -203,6 +203,10 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     protected function retrieveSimpleValues($currentObject, $id, $field)
     {
+        if(!is_numeric($id)){
+            throw new \RestBadRequestException('Error, id must be numerical');
+        }
+
         $tmpValues = array();
 
         $fields = array();
@@ -265,5 +269,22 @@ class CentreonConfigurationObjects extends CentreonWebService
             }
         }
         return $tmpValues;
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
+        }
+
+        return $user->hasAccessRestApiConfiguration();
     }
 }

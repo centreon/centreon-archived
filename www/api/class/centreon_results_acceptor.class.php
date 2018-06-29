@@ -66,7 +66,7 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
     }
 
     /*
-     * Get poller Listing 
+     * Get poller Listing
      */
     private function getPollers()
     {
@@ -235,5 +235,22 @@ class CentreonResultsAcceptor extends CentreonConfigurationObjects
         } else {
             throw new RestBadRequestException('Bad arguments - Cannot find command list');
         }
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
+        }
+
+        return $user->hasAccessRestApiConfiguration();
     }
 }

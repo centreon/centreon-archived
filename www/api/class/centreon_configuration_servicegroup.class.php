@@ -64,10 +64,10 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = (string)'%' . $q . '%';
 
@@ -109,20 +109,29 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getServiceList()
     {
         global $centreon;
         // Check for select2 'q' argument
         $queryValues = array();
-        if (false === isset($this->arguments['sgid'])) {
-            $sgid = '';
-        } else {
+        if (isset($this->arguments['sgid'])) {
+            foreach(explode(',', $this->arguments['sgid']) as $k => $v){
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
+                }
+            }
             $sgid = $this->arguments['sgid'];
+        } else {
+            $sgid = '';
         }
         $queryValues[] = (string)$sgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?, ?';
             $queryValues[] = (int)$limit;

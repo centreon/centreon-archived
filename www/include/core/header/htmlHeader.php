@@ -52,6 +52,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" />
     <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
@@ -82,9 +83,11 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
         <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui-tabs-rotate.js"></script>
         <script type="text/javascript">jQuery.noConflict();</script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
@@ -101,6 +104,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
         <script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
     <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>

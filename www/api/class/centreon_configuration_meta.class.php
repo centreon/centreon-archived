@@ -49,6 +49,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -66,14 +67,17 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
             $queryValues[] = (int)$offset;

@@ -424,10 +424,11 @@ abstract class CentreonObject
      * @param int $objId
      * @param string $objName
      * @param array $objValues
+     * @param string|null $objectType - The object type to log if is null use the object type of the class
      */
-    public function addAuditLog($actionType, $objId, $objName, $objValues = array())
+    public function addAuditLog($actionType, $objId, $objName, $objValues = array(), $objectType = null)
     {
-        $objType = strtoupper($this->action);
+        $objType = is_null($objectType) ? strtoupper($this->action) : $objectType;
         $objectTypes = array(
             'HTPL' => 'host',
             'STPL' => 'service',
@@ -498,5 +499,25 @@ abstract class CentreonObject
                 throw $e;
             }
         }
+    }
+
+
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $dbResult->fetch()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $dbResult->closeCursor();
+        return $name;
     }
 }

@@ -108,7 +108,7 @@ class CentreonContactGroup extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         $addParams['cg_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -234,7 +234,7 @@ class CentreonContactGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element[$cgFieldName]);
+            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_alias']);
             echo $this->action . $this->delim . "addcontact" .
                 $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
                 $this->delim . $element['contact_alias'] . "\n";

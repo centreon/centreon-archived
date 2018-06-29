@@ -57,6 +57,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -80,7 +81,6 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
             'FROM ( ' .
@@ -111,6 +111,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND hg.hostgroup_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['hostgroup'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -124,6 +127,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND sg.servicegroup_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['servicegroup'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, service group id must be numerical');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -136,6 +142,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $additionalCondition .= 'AND i.host_id IN (';
             $explodedValues = '';
             foreach ($this->arguments['host'] as $k => $v) {
+                if (false === is_numeric($v)) {
+                    throw new \RestBadRequestException('Error, host id must be numerical');
+                }
                 $explodedValues .= '?,';
                 $queryValues[] = (int)$v;
                 $additionalValues[] = (int)$v;
@@ -170,6 +179,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT ?, ?';
             $queryValues[] = (int)$limit;
@@ -195,7 +207,8 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
      * @param $additionalCondition
      * @param $additionalValues
      * @param null $aclObj
-     * @return string
+     * @return array
+     * @throws RestBadRequestException
      */
     private function getVirtualServicesCondition(
         $additionalTables,
@@ -222,9 +235,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 $explodedValues = rtrim($explodedValues, ',');
                 $metaServiceCondition .= $explodedValues . ') ';
             }
-        } else {
-            $metaServiceCondition = 'AND s.description LIKE "meta_%" ';
         }
+
+        $metaServiceCondition .= 'AND s.description LIKE "meta_%" ';
 
         $virtualServicesCondition = 'UNION ALL (' .
             'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id ' .
@@ -255,6 +268,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
                     $explodedValues = '';
                     foreach ($virtualServiceIds as $k => $v) {
+                        if (false === is_numeric($v)) {
+                            throw new \RestBadRequestException('Error, virtual service id must be numerical');
+                        }
                         $explodedValues .= '?,';
                         $metaValues[] = (int)$v;
                     }

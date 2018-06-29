@@ -106,7 +106,11 @@ class CentreonMetric extends CentreonWebService
             $q = $this->arguments['q'];
         }
         $queryValues[] = '%' . (string)$q . '%';
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
             $queryValues[] = (int)$offset;
@@ -670,5 +674,18 @@ class CentreonMetric extends CentreonWebService
             $periods[] = $period;
         }
         return $periods;
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        return true;
     }
 }

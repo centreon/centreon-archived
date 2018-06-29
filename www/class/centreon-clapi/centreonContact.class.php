@@ -271,7 +271,7 @@ class CentreonContact extends CentreonObject
         $addParams = array();
         $params[self::ORDER_UNIQUENAME] = str_replace(" ", "_", $params[self::ORDER_UNIQUENAME]);
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
-        $addParams['contact_name'] = $params[self::ORDER_NAME];
+        $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
 
         $algo = $this->utilsObject->detectPassPattern($params[self::ORDER_PASS]);
@@ -367,7 +367,7 @@ class CentreonContact extends CentreonObject
                         }
                     }
                 }
-                if ($params[1] != 'reach_api' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
+                if ($params[1] != 'reach_api' && $params[1] != 'reach_api_rt' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
                     $params[1] = "contact_" . $params[1];
                 }
             }

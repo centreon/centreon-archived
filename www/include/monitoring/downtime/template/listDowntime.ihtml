@@ -80,7 +80,7 @@
 		<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
 		<td class="ListColRight" width="120">{$tds.duration}{if $tds.service_name_link} {$secondes}{/if}</td>
 		<td class="ListColCenter" width="150">{$tds.author_name}</td>
-		<td class="ListColLeft">{$tds.comment_data}</td>
+		<td class="ListColLeft containsURI">{$tds.comment_data}</td>
 		<td class="ListColCenter" width="50">{$tds.was_started}</td>
 		<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
 		{if $view_all == '1'}

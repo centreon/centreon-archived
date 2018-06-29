@@ -63,6 +63,9 @@ class CentreonAdministrationWidget extends CentreonWebService
             $q = $this->arguments['q'];
         }
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = array($limit,$this->arguments['page_limit']);
         } else {
@@ -70,5 +73,22 @@ class CentreonAdministrationWidget extends CentreonWebService
         }
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
         return $widgetObj->getWidgetModels($q, $range);
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
+        }
+
+        return $user->hasAccessRestApiConfiguration();
     }
 }

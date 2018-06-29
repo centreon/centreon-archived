@@ -60,10 +60,13 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
         } else {
             $q = $this->arguments['q'];
         }
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
-        } else {
+        if (isset($this->arguments['t'])) {
+            if(!is_numeric($this->arguments['t'])){
+                throw new \RestBadRequestException('Error, type must be numerical');
+            }
             $t = $this->arguments['t'];
+        } else {
+            $t = '';
         }
 
         $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
@@ -76,6 +79,9 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
             $queryValues[] = (int)$t;
         }
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?, ?';
             $queryValues[] = (int)$limit;

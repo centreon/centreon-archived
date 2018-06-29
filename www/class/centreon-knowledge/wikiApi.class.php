@@ -50,6 +50,7 @@ class WikiApi
     private $loggedIn;
     private $tokens;
     private $cookies;
+    private $noSslCertificate;
 
     /**
      * WikiApi constructor.
@@ -62,6 +63,7 @@ class WikiApi
         $this->url = $config['kb_wiki_url'] . '/api.php';
         $this->username = $config['kb_wiki_account'];
         $this->password = $config['kb_wiki_password'];
+        $this->noSslCertificate = $config['kb_wiki_certificate'];
         $this->curl = $this->getCurl();
         $this->version = $this->getWikiVersion();
         $this->cookies = array();
@@ -74,6 +76,10 @@ class WikiApi
         curl_setopt($curl, CURLOPT_URL, $this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
+        if($this->noSslCertificate == 1){
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
 
         return $curl;
     }

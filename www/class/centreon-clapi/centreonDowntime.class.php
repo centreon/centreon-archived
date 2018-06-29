@@ -268,6 +268,13 @@ class CentreonDowntime extends CentreonObject
         if (count($tmp) != 6) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
+        if (!is_numeric($tmp[3])) {
+            throw new CentreonClapiException('Incorrect fixed parameters');
+        }
+        if (!is_numeric($tmp[4])) {
+            throw new CentreonClapiException('Incorrect duration parameters');
+        }
+
         $p = array();
         $p[':dt_id'] = $this->getObjectId($tmp[0]);
         $p[':start_time'] = $tmp[1];
@@ -303,6 +310,13 @@ class CentreonDowntime extends CentreonObject
         if (count($tmp) != 6) {
             throw new CentreonClapiException('Incorrect number of parameters');
         }
+        if (!is_numeric($tmp[3])) {
+            throw new CentreonClapiException('Incorrect fixed parameters');
+        }
+        if (!is_numeric($tmp[4])) {
+            throw new CentreonClapiException('Incorrect duration parameters');
+        }
+
         $p = array();
         $p[':dt_id'] = $this->getObjectId($tmp[0]);
         $p[':start_time'] = $tmp[1];
@@ -326,6 +340,12 @@ class CentreonDowntime extends CentreonObject
         $tmp = explode($this->delim, $parameters);
         if (count($tmp) != 7) {
             throw new CentreonClapiException('Incorrect number of parameters');
+        }
+        if (!is_numeric($tmp[3])) {
+            throw new CentreonClapiException('Incorrect fixed parameters');
+        }
+        if (!is_numeric($tmp[4])) {
+            throw new CentreonClapiException('Incorrect duration parameters');
         }
         $p = array();
         $p[':dt_id'] = $this->getObjectId($tmp[0]);

@@ -56,6 +56,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
@@ -73,14 +74,17 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
         }
 
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
         $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range = 'LIMIT ?,?';
             $queryValues[] = (int)$offset;
@@ -129,12 +133,16 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['hgid'])) {
-            $hgid = '';
-        } else {
+        if (isset($this->arguments['hgid'])) {
+            foreach(explode(',', $this->arguments['hgid']) as $k => $v){
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
+            }
             $hgid = $this->arguments['hgid'];
+        } else {
+            $hgid = '';
         }
         $queryValues[] = (string)$hgid;
 

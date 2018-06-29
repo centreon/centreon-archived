@@ -278,6 +278,9 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        if (!is_numeric($parameters)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $matchObj = new \Centreon_Object_Trap_Matching();
         $matchObj->delete($parameters);
     }
@@ -298,6 +301,9 @@ class CentreonTrap extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $matchingId = $params[0];
+        if (!is_numeric($matchingId)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $key = $params[1];
         $value = $params[2];
         if ($key == 'trap_id') {

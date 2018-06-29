@@ -17,9 +17,18 @@ Permissions
 -----------
 
 To perform API calls using a specific Centreon user, you need permissions to do so.
-You have to edit user settings on the menu **Configuration > Users > Contacts/Users**,
-edit user and on second tab check box **Reach API**.
 
+There are two types of permission:
+
+You can give access to the configuration for a specific Centreon user. To do so you have
+to edit user settings on the menu **Configuration > Users > Contacts/Users**,
+edit user and on second tab check box **Reach API Configuration**.
+
+You can give access to the realtime for a specific Centreon user. To do so you have
+to edit user settings on the menu **Configuration > Users > Contacts/Users**,
+edit user and on second tab check box **Reach API Realtime**.
+
+If you want both then check **both** checkboxes
 
 Authentication
 ----------------
@@ -87,9 +96,9 @@ You can pass a list of parameters in order to select the data you want.
 |                | separated by a ","                         |
 +----------------+--------------------------------------------+
 | status         | the status of hosts that you want to get   |
-|                | (up, down, unreachable, pending)           |
+|                | (up, down, unreachable, pending, all)      |
 +----------------+--------------------------------------------+
-| hostgroup      | hostgroup filter                           |
+| hostgroup      | hostgroup id filter                        |
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+
@@ -203,11 +212,11 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | status         | the status of services that you want to    |
 |                | get (ok, warning, critical, unknown,       |
-|                | pending)                                   |
+|                | pending, all)                              |
 +----------------+--------------------------------------------+
-| hostgroup      | hostgroup filter                           |
+| hostgroup      | hostgroup id filter                        |
 +----------------+--------------------------------------------+
-| servicegroup   | servicegroup filter                        |
+| servicegroup   | servicegroup id filter                     |
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+

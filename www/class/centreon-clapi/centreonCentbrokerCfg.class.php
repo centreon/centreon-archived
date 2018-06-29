@@ -405,6 +405,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             "AND config_group = ? ";
         $res = $this->db->query($sql, array($configId, $tagName));
 
+        $listName = array();
         while ($list = $res->fetch()) {
             $listName[] = $list['config_value'];
         }

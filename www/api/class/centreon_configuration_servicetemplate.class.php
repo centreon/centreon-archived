@@ -55,19 +55,27 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     {
         $range = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
 
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
+        if (isset($this->arguments['l'])) {
+            $templateType = array('0','1');
+            if (in_array($this->arguments['l'], $templateType)) {
+                $l = $this->arguments['l'];
+            } else {
+                throw new \RestBadRequestException('Error, list parameter');
+            }
         } else {
-            $l = $this->arguments['l'];
+            $l = '0';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $range[] = (int)$offset;
             $range[] = (int)$this->arguments['page_limit'];

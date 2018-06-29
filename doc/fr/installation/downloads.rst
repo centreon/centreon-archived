@@ -10,9 +10,9 @@ Formats
 
 De manière générale, les logiciels Open Sources fournis par Centreon sont disponibles sous 4 formats :
 
-* ISO Linux (recommandé)
-* Paquets RPM (recommandé)
-* Archive OVA
+* ISO Linux basée sur la distribution CentOS v7 (recommandé)
+* Paquets RPM pour les distributions CentOs v6 et v7 (recommandé)
+* Machines virtuelles; basées sur les distributions CentOs v6 et v7, au format OVA
 * Archives contenant les sources
 
 Les paquets RPM sont le meilleur format pour obtenir nos logiciels.
@@ -25,7 +25,7 @@ logiciels et installer ces derniers manuellement.
 La compilation manuelle de certains paquets peut être complexe.
 
 .. note::
-    Centreon recommande l'utilisation de la version packagée Centreon ISO. L'installation est détaillée au chapitre :ref:`A partir de Centreon ISO<firststepsces3>`
+    Centreon recommande l'utilisation de la version packagée Centreon ISO. L'installation est détaillée au chapitre :ref:`A partir de Centreon ISO<installisoel7>`
 
 .. _download_web_src:
 

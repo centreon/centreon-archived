@@ -162,7 +162,7 @@ function addInfo(type) {
                     checkTypeValidity('block_' + type);
                     jQuery("#"+id_name).centreonValidate();
                     clonifyTableFields('parentGroup','displaynamegroup');
-                    addCollapse();
+                    addCollapse(id_name);
                     openNewElem(id_name);
                 }
             }
@@ -207,10 +207,15 @@ function loadedConfiguration() {
 function changeTab(tab) {
     jQuery('#Form').centreonValidate('validate');
     purgeHideInput(tab);
-    initCollapsebyTab(tab);
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
+    jQuery(function() {
+        jQuery.each(jQuery('[data-ontab-fn]'), function () {
+            window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+        });
+    });
+    initCollapsebyTab(tab);
 }
 
 function purgeHideInput(tab) {

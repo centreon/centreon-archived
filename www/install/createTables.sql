@@ -427,6 +427,8 @@ CREATE TABLE `cb_type_field_relation` (
   `cb_fieldset_id` INT,
   `is_required` int(11) NOT NULL DEFAULT '0',
   `order_display` int(11) NOT NULL DEFAULT '0',
+  `jshook_name` VARCHAR(255) DEFAULT NULL,
+  `jshook_arguments` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`cb_type_id`,`cb_field_id`),
   KEY `fk_cb_type_field_relation_1` (`cb_type_id`),
   KEY `fk_cb_type_field_relation_2` (`cb_field_id`),
@@ -747,6 +749,7 @@ CREATE TABLE `contact` (
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
+  `reach_api_rt` int(1) DEFAULT 0,
   `contact_enable_notifications` enum('0','1','2') DEFAULT '2',
   `contact_template_id` int(11) DEFAULT NULL,
   `contact_admin` enum('0','1') DEFAULT '0',
@@ -2291,6 +2294,7 @@ CREATE TABLE ws_token (
   token VARCHAR(100) NOT NULL,
   generate_date DATETIME NOT NULL,
   UNIQUE (token),
+  KEY `index1` (`generate_date`),
   FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

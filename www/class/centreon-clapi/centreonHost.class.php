@@ -232,7 +232,7 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         $addParams['host_alias'] = $params[self::ORDER_ALIAS];
         $addParams['host_address'] = $params[self::ORDER_ADDRESS];
         $templates = explode("|", $params[self::ORDER_TEMPLATE]);
@@ -253,7 +253,14 @@ class CentreonHost extends CentreonObject
             if ($instanceName) {
                 $tmp = $instanceObject->getIdByParameter($instanceObject->getUniqueLabelField(), $instanceName);
                 if (!count($tmp)) {
-                    throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $instanceName);
+                    $defaultInstanceName = $instanceObject->getDefaultInstance();
+                    $tmp = $instanceObject->getIdByParameter(
+                        $instanceObject->getUniqueLabelField(),
+                        $defaultInstanceName
+                    );
+                    if (!count($tmp)) {
+                        throw new CentreonClapiException(self::OBJECT_NOT_FOUND . " :" . $instanceName);
+                    }
                 }
                 $instanceId = $tmp[0];
             } else {
@@ -338,8 +345,7 @@ class CentreonHost extends CentreonObject
     /**
      * Get a parameter
      *
-     * @param string $parameters
-     * @return void
+     * @param null $parameters
      * @throws CentreonClapiException
      */
     public function getparam($parameters = null)
@@ -348,81 +354,147 @@ class CentreonHost extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        $authorizeParam = array(
+            '2d_coords',
+            '3d_coords',
+            'action_url',
+            'activate',
+            'active_checks_enabled',
+            'address',
+            'alias',
+            'check_command',
+            'check_command_arguments',
+            'check_interval',
+            'check_freshness',
+            'check_period',
+            'contact_additive_inheritance',
+            'cg_additive_inheritance',
+            'event_handler',
+            'event_handler_arguments',
+            'event_handler_enabled',
+            'first_notification_delay',
+            'flap_detection_enabled',
+            'flap_detection_options',
+            'host_high_flap_threshold',
+            'host_low_flap_threshold',
+            'icon_image',
+            'icon_image_alt',
+            'max_check_attempts',
+            'name',
+            'notes',
+            'notes_url',
+            'notifications_enabled',
+            'notification_interval',
+            'notification_options',
+            'notification_period',
+            'recovery_notification_delay',
+            'obsess_over_host',
+            'passive_checks_enabled',
+            'process_perf_data',
+            'retain_nonstatus_information',
+            'retain_status_information',
+            'retry_check_interval',
+            'snmp_community',
+            'snmp_version',
+            'stalking_options',
+            'statusmap_image',
+            'host_notification_options',
+            'timezone'
+        );
+        $unknownParam = array();
+
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $extended = false;
-            $field = $params[1];
-            switch ($params[1]) {
-                case "check_command":
-                    $field = "command_command_id";
-                    break;
-                case "check_command_arguments":
-                    $field = "command_command_id_arg1";
-                    break;
-                case "event_handler":
-                    $field = "command_command_id2";
-                    break;
-                case "event_handler_arguments":
-                    $field = "command_command_id_arg2";
-                    break;
-                case "check_period":
-                    $field = "timeperiod_tp_id";
-                    break;
-                case "notification_period":
-                    $field = "timeperiod_tp_id2";
-                    break;
-                case "notes":
-                case "notes_url":
-                case "action_url":
-                case "icon_image":
-                case "icon_image_alt":
-                case "vrml_image":
-                case "statusmap_image":
-                case "2d_coords":
-                case "3d_coords":
-                    $extended = true;
-                    break;
-                case self::HOST_LOCATION:
-                    $field = 'host_location';
-                    break;
-                default:
-                    if (!preg_match("/^host_/", $params[1])) {
-                        $field = "host_" . $params[1];
+            $listParam = explode('|', $params[1]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    $extended = false;
+                    switch ($paramSearch) {
+                        case "check_command":
+                            $field = "command_command_id";
+                            break;
+                        case "check_command_arguments":
+                            $field = "command_command_id_arg1";
+                            break;
+                        case "event_handler":
+                            $field = "command_command_id2";
+                            break;
+                        case "event_handler_arguments":
+                            $field = "command_command_id_arg2";
+                            break;
+                        case "check_period":
+                            $field = "timeperiod_tp_id";
+                            break;
+                        case "notification_period":
+                            $field = "timeperiod_tp_id2";
+                            break;
+                        case "contact_additive_inheritance":
+                        case "cg_additive_inheritance":
+                        case "flap_detection_options":
+                            break;
+                        case "notes":
+                        case "notes_url":
+                        case "action_url":
+                        case "icon_image":
+                        case "icon_image_alt":
+                        case "vrml_image":
+                        case "statusmap_image":
+                        case "2d_coords":
+                        case "3d_coords":
+                            $extended = true;
+                            break;
+                        case self::HOST_LOCATION:
+                            $field = 'host_location';
+                            break;
+                        default:
+                            if (!preg_match("/^host_/", $paramSearch)) {
+                                $field = "host_" . $paramSearch;
+                            }
+                            break;
                     }
-                    break;
+
+                    if (!$extended) {
+                        $ret = $this->object->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    } else {
+                        $field = "ehi_" . $field;
+                        $extended = new \Centreon_Object_Host_Extended();
+                        $ret = $extended->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    }
+
+                    switch ($paramSearch) {
+                        case "check_command":
+                        case "event_handler":
+                            $commandObject = new CentreonCommand();
+                            $field = $commandObject->object->getUniqueLabelField();
+                            $ret = $commandObject->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case "check_period":
+                        case "notification_period":
+                            $tpObj = new CentreonTimePeriod();
+                            $field = $tpObj->object->getUniqueLabelField();
+                            $ret = $tpObj->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case self::HOST_LOCATION:
+                            $field = $this->timezoneObject->getUniqueLabelField();
+                            $ret = $this->timezoneObject->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
             }
-            if ($extended == false) {
-                $ret = $this->object->getParameters($objectId, $field);
-                $ret = $ret[$field];
-            } else {
-                $field = "ehi_" . $field;
-                $extended = new \Centreon_Object_Host_Extended();
-                $ret = $extended->getParameters($objectId, $field);
-                $ret = $ret[$field];
-            }
-            switch ($params[1]) {
-                case "check_command":
-                case "event_handler":
-                    $commandObject = new CentreonCommand();
-                    $field = $commandObject->object->getUniqueLabelField();
-                    $ret = $commandObject->object->getParameters($ret, $field);
-                    $ret = $ret[$field];
-                    break;
-                case "check_period":
-                case "notification_period":
-                    $tpObj = new CentreonTimePeriod();
-                    $field = $tpObj->object->getUniqueLabelField();
-                    $ret = $tpObj->object->getParameters($ret, $field);
-                    $ret = $ret[$field];
-                    break;
-                case self::HOST_LOCATION:
-                    $field = $this->timezoneObject->getUniqueLabelField();
-                    $ret = $this->timezoneObject->getParameters($ret, $field);
-                    $ret = $ret[$field];
-                    break;
-            }
-            echo $ret . "\n";
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
         }
     }
 
@@ -826,11 +898,20 @@ class CentreonHost extends CentreonObject
                 );
                 $result = $res->fetchAll();
                 if (!count($result)) {
-                    $svcId = $svcObj->insert(array('service_description' => $params['service_alias'],
+                    $serviceDesc = array('service_description' => $params['service_alias'],
                         'service_activate' => '1',
                         'service_register' => '1',
-                        'service_template_model_stm_id' => $serviceTemplateId));
+                        'service_template_model_stm_id' => $serviceTemplateId);
+                    $svcId = $svcObj->insert($serviceDesc);
                     $hostSvcRel->insert($hostId, $svcId);
+                    $serviceDesc['service_hPars'] = $hostId;
+                    $this->addAuditLog(
+                        'a',
+                        $svcId,
+                        $params['service_alias'],
+                        $serviceDesc,
+                        'SERVICE'
+                    );
                     $svcExtended->insert(array($svcExtended->getUniqueLabelField() => $svcId));
                 }
                 unset($res);
@@ -1000,7 +1081,7 @@ class CentreonHost extends CentreonObject
 
         $sortedHosts = array();
         while ($hostId = array_pop($hosts)) {
-            if (!in_array($hostId, array_keys($parentShip))) {
+            if (!in_array((int)$hostId, $parentShip)) {
                 $sortedHosts[] = $hostId;
             } else {
                 $parents = $parentShip[$hostId];

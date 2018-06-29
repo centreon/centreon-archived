@@ -99,6 +99,9 @@ class CentreonInstance extends CentreonObject
         $addParams = array();
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['ns_ip_address'] = $params[self::ORDER_ADDRESS];
+        if(!is_numeric($params[self::ORDER_SSH_PORT])){
+            throw new CentreonClapiException('Incorrect port parameters');
+        }
         $addParams['ssh_port'] = $params[self::ORDER_SSH_PORT];
         if ($addParams['ns_ip_address'] == "127.0.0.1" || strtolower($addParams['ns_ip_address']) == "localhost") {
             $this->params['localhost'] = '1';

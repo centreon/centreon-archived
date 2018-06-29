@@ -205,8 +205,8 @@ $aclCond = "";
 if (!$centreon->user->admin) {
     $aclCond = " WHERE acl_group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
-$sql = "SELECT acl_group_id, acl_group_name 
-    FROM acl_groups 
+$sql = "SELECT acl_group_id, acl_group_name
+    FROM acl_groups
     {$aclCond}
     ORDER BY acl_group_name";
 $DBRESULT = $pearDB->query($sql);
@@ -357,7 +357,12 @@ if ($centreon->user->admin) {
     $tab = array();
     $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("Yes"), '1');
     $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("No"), '0');
-    $form->addGroup($tab, 'reach_api', _("Reach API"), '&nbsp;');
+    $form->addGroup($tab, 'reach_api', _("Reach API Configuration"), '&nbsp;');
+
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api_rt', null, _("Yes"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api_rt', null, _("No"), '0');
+    $form->addGroup($tab, 'reach_api_rt', _("Reach API Realtime"), '&nbsp;');
 }
 
 /**
@@ -408,7 +413,12 @@ if ($centreon->optGen['ldap_auth_enable'] == 1) {
     }
 }
 if ($o != "mc") {
-    $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0', "reach_api" => '0'));
+    $form->setDefaults(array(
+        'contact_oreon' => '1',
+        'contact_admin' => '0',
+        'reach_api' => '0',
+        'reach_api_rt' => '0'
+    ));
 }
 $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 
