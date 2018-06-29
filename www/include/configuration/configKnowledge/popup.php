@@ -52,8 +52,6 @@ set_include_path(
     $centreon_path . "www/class/"
 );
 
-require_once "DB.php";
-
 require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
