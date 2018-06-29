@@ -56,23 +56,40 @@ $tpl->assign('headerMenu_author', _('Author'));
 $tpl->assign('headerMenu_infos', _('Additional Information'));
 $tpl->assign('headerMenu_isinstalled', _('Installed'));
 
-if (isset($_GET['action']) && $_GET['action'] == 'install_all') {
+if (isset($_GET['action']) && $_GET['action'] == 'install_upgrade_all') {
     $installableModules = $moduleInfoObj->getInstallableList();
-    $tpl->assign('output', _('All modules successfully installed.'));
+    $upgradableModules = $moduleInfoObj->getUpgradeableList();
+    $installed = [];
+    $upgraded = [];
+    $output = '';
 
     foreach ($installableModules as $installableModule) {
         $moduleInstaller = $moduleFactory->newInstaller($installableModule['name']);
 
         if ( !$moduleInstaller->install() ) {
-            $tpl->assign('output', _('Unable to install module: ' . $installableModule['rname']));
+            $output .= 'Unable to install module: ' . $installableModule['rname'] . '<br>';
             break;
         }
+
+        $output .= 'Successfully installed module: ' . $installableModule['rname'] . '<br>';
+    }
+
+    foreach ($upgradableModules as $upgradableModule) {
+        $moduleUpgrader = $moduleFactory->newUpgrader($upgradableModule['name'], $upgradableModule['id']);
+
+        if ( !$moduleUpgrader->upgrade() ) {
+            $output .= 'Unable to upgrade module: ' . $upgradableModule['rname'] . '<br>';
+            break;
+        }
+
+        $output .= 'Successfully upgraded module: ' . $upgradableModule['rname'] . '<br>';
     }
 
     $centreon->creatModuleList($pearDB);
     $centreon->user->access->updateTopologyStr();
     $centreon->initHooks();
 
+    $tpl->assign('output', $output);
     $tpl->assign('p', $p);
     $tpl->display('modulesAction.tpl');
     die;
