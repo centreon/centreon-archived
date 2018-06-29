@@ -843,6 +843,7 @@ jQuery(function () {
   });
 
   infoEmptyTab();
+  var tabLoops = 0;
 
   /* Load custom views */
   jQuery.ajax({
@@ -858,8 +859,29 @@ jQuery(function () {
           addTab(tab, true);
         });
 
+        var defaultPosition = getTabPos(data.current);
+
         jQuery("#tabs").tabs({
-          active: getTabPos(data.current)
+          active: defaultPosition,
+          beforeLoad: function( event, ui ) {
+            // prevent memory overflow
+            if (tabLoops > 60 && $(event.target).tabs('option', 'active') == defaultPosition) {
+                window.location.reload();
+            }
+          },
+          activate: function( event, ui ) {
+            tabLoops++;
+            columnClass = null;
+            viewId = null;
+            permission = null;
+            ownership = null;
+            idUser = null;
+            deleteView = function(){};
+            deleteWidget = function(){};
+            savePositions = function(){};
+            setDefault = function(){};
+            ui.oldPanel.empty();
+          }
         });
         jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
       }
