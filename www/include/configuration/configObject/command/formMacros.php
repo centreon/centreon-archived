@@ -40,6 +40,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonCommand.class.php";
+require_once _CENTREON_PATH_  . 'bootstrap.php';
 
 session_start();
 session_write_close();
@@ -107,14 +108,13 @@ $subS = $form->addElement(
 /*
  *  Smarty template
  */
-define('SMARTY_DIR', _CENTREON_PATH_ . "/GPL_LIB/Smarty/libs/");
-require_once SMARTY_DIR . "Smarty.class.php";
 
 $tpl = new Smarty();
 $tpl->template_dir = $path;
 $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
 $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
 $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
+$tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
 $tpl->caching = 0;
 $tpl->compile_check = true;
 $tpl->force_compile = true;
