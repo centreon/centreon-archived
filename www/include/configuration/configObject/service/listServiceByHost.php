@@ -223,28 +223,36 @@ if (!$centreon->user->admin) {
 /*
  * Host/service list
  */
-$rq_body = "esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, " .
-    "sv.service_template_model_stm_id, " .
-    "host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
-    "sv.service_retry_check_interval, sv.service_max_check_attempts " .
-    "FROM service sv, host" .
-    ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
-    ($centreon->user->admin ? "" : $acldbname . ".centreon_acl acl, ") .
-    "host_service_relation hsr " .
-    "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-    "WHERE host.host_register = '1' $searchH_SQL $sqlFilterCase2 " .
-    " AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
+$queryFieldsToSelect = 'esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, ' .
+    'sv.service_template_model_stm_id, ' .
+    'host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, ' .
+    'sv.service_retry_check_interval, sv.service_max_check_attempts ';
+$queryTablesToFetch = 'FROM service sv, host' .
+    ((isset($hostgroups) && $hostgroups) ? ', hostgroup_relation hogr, ' : ', ') .
+    ($centreon->user->admin ? '' : $acldbname . '.centreon_acl acl, ') .
+    'host_service_relation hsr ' .
+    'LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id ';
+$queryWhereClause = "WHERE host.host_register = '1' $searchH_SQL $sqlFilterCase2 " .
+    ' AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id ' .
     "AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
-    ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+    ((isset($template) && $template) ? " AND service_template_model_stm_id = '{$template}' " : '') .
     ((isset($hostgroups) && $hostgroups)
-        ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id "
-        : "") .
-    $aclfilter .
+        ? " AND hogr.hostgroup_hg_id = '{$hostgroups}' AND hogr.host_host_id = host.host_id "
+        : '') .
+    $aclfilter;
+$rq_body = $queryFieldsToSelect .
+    $queryTablesToFetch .
+    $queryWhereClause .
     "ORDER BY host.host_name, service_description";
 
-$query = "SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit;
+$query = 'SELECT SQL_CALC_FOUND_ROWS ' . $distinct . $rq_body . ' LIMIT ' . $num * $limit . ', ' . $limit;
 $DBRESULT = $pearDB->query($query);
-$rows = $DBRESULT->rowCount();
+
+$totalRowsQuery = 'SELECT COUNT(*) as count ' . $queryTablesToFetch . $queryWhereClause;
+$rowsCountStatement = $pearDB->query($totalRowsQuery);
+$totalRowsResult = $rowsCountStatement->fetch();
+
+$rows = $totalRowsResult['count'];
 
 if (!($DBRESULT->rowCount())) {
     $query = "SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
