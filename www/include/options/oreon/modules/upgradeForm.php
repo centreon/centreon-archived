@@ -56,28 +56,6 @@ $tpl->assign('headerMenu_author', _('Author'));
 $tpl->assign('headerMenu_infos', _('Additional Information'));
 $tpl->assign('headerMenu_isinstalled', _('Installed'));
 
-if (isset($_GET['action']) && $_GET['action'] == 'upgrade_all') {
-    $upgradableModules = $moduleInfoObj->getUpgradeableList();
-    $tpl->assign('output', _('All modules successfully upgraded.'));
-
-    foreach ($upgradableModules as $upgradableModule) {
-        $moduleUpgrader = $moduleFactory->newUpgrader($upgradableModule['name'], $upgradableModule['id']);
-
-        if ( !$moduleUpgrader->upgrade() ) {
-            $tpl->assign('output', _('Unable to upgrade module: ' . $upgradableModule['rname']));
-            break;
-        }
-    }
-
-    $centreon->creatModuleList($pearDB);
-    $centreon->user->access->updateTopologyStr();
-    $centreon->initHooks();
-
-    $tpl->assign('p', $p);
-    $tpl->display('modulesAction.tpl');
-    die;
-}
-
 if (is_null($name)) {
     $name = $moduleInfoObj->getNameById($id);
 }

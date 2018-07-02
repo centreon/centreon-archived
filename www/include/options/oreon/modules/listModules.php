@@ -52,6 +52,7 @@ if ($id && $o == 'd') {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 $modules = $moduleInfoObj->getList();
+$canUpgradeOrInstallModules = $moduleInfoObj->hasModulesForInstallation() || $moduleInfoObj->hasModulesForUpgrade();
 
 foreach ($modules as &$module) {
     if ($module['is_installed']) {
@@ -63,8 +64,7 @@ foreach ($modules as &$module) {
 
 $tpl->assign('p', $p);
 $tpl->assign('modules', $modules);
-$tpl->assign('hasModulesForInstallation', $moduleInfoObj->hasModulesForInstallation());
-$tpl->assign('hasModulesForUpgrade', $moduleInfoObj->hasModulesForUpgrade());
+$tpl->assign('canUpgradeOrInstallModules', $canUpgradeOrInstallModules);
 
 /*
  * Apply a template definition
