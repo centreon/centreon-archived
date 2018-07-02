@@ -483,6 +483,11 @@ $form->setRequiredNote(_("Required field"));
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$formDefaults = $acl;
+$formDefaults['all_hosts[all_hosts]'] = $formDefaults['all_hosts'];
+$formDefaults['all_hostgroups[all_hostgroups]'] = $formDefaults['all_hostgroups'];
+$formDefaults['all_servicegroups[all_servicegroups]'] = $formDefaults['all_servicegroups'];
+
 if ($o == "w") {
     /*
      * Just watch a LCA information
@@ -491,7 +496,7 @@ if ($o == "w") {
         "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $acl_id . "'",
         "class" => "btc bt_success"
     ));
-    $form->setDefaults($acl);
+    $form->setDefaults($formDefaults);
     $form->freeze();
 } elseif ($o == "c") {
     /*
@@ -499,7 +504,7 @@ if ($o == "w") {
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
-    $form->setDefaults($acl);
+    $form->setDefaults($formDefaults);
 } elseif ($o == "a") {
     /*
      *  Add a LCA information
