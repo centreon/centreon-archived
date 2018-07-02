@@ -1,13 +1,10 @@
-{if $hasModulesForInstallation}
-	<a href="?p={$p}&o=i&action=install_all">
-		<img class="installAllBtn ico-16 margin_right" src="./img/icons/generate_conf.png" style="cursor: pointer;" title="Install all modules">
+{if $canUpgradeOrInstallModules}
+	<br>
+	<a href="?p={$p}&o=i&action=install_upgrade_all" class="btc bt_success" onclick="if(!confirm('Are you sire you want to Install/Upgrade all?')) return false;">
+		Install/Upgrade all
 	</a>
-{/if}
-
-{if $hasModulesForUpgrade}
-	<a href="?p={$p}&o=u&action=upgrade_all">
-		<img class="upgradeAllBtn ico-16" src="./img/icons/upgrade.png" style="cursor: pointer;" title="Upgrade all modules">
-	</a>
+	<br>
+	<br>
 {/if}
 
 <table class="ListTable">
