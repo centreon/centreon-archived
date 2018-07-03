@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,6 +31,7 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -49,7 +50,8 @@ if (!isset($_SESSION["centreon"])) {
     $oreon = $_SESSION["centreon"];
 }
 
-if (!isset($_POST['confList']) || !strlen($_POST['confList']) || !ctype_digit((string)trim(implode("", explode(",", $_POST['confList']))))) {
+if (!isset($_POST['confList']) || !strlen($_POST['confList']) ||
+    !ctype_digit((string)trim(implode("", explode(",", $_POST['confList']))))) {
     exit();
 }
 $confList = $_POST['confList'];
@@ -80,9 +82,7 @@ if ($debug_path == '') {
 }
 
 /* Get ldap users in database */
-$queryGetLdap = 'SELECT contact_alias
-		 FROM contact
-                 WHERE contact_register = 1';
+$queryGetLdap = 'SELECT contact_alias FROM contact WHERE contact_register = 1';
 $res = $pearDB->query($queryGetLdap);
 $listLdapUsers = array();
 if (!PEAR::isError($res)) {
@@ -93,7 +93,6 @@ if (!PEAR::isError($res)) {
 
 $buffer = new CentreonXML();
 $buffer->startElement("reponse");
-
 
 $ids = explode(",", $confList);
 foreach ($ids as $arId) {
@@ -108,9 +107,7 @@ foreach ($ids as $arId) {
         $ldap_search_limit = 0;
         $ldap_search_timeout = 0;
 
-        $query = "SELECT ari_name, ari_value
-                  FROM auth_ressource_info
-    	    	  WHERE ar_id = ?";
+        $query = "SELECT ari_name, ari_value FROM auth_ressource_info WHERE ar_id = ?";
         $stmt = $pearDB->prepare($query);
         $res = $pearDB->execute($stmt, array($arId));
 
@@ -165,9 +162,7 @@ foreach ($ids as $arId) {
                     $searchResult[$i]["name"] = str_replace("\'", "\\\'", $searchResult[$i]["name"]);
 
                     $buffer->startElement("user");
-                    $query = "SELECT `ar_id`, `ar_name` 
-                              FROM auth_ressource
-                              WHERE ar_id = " . $pearDB->escape($arId);
+                    $query = "SELECT `ar_id`, `ar_name` FROM auth_ressource WHERE ar_id = " . $pearDB->escape($arId);
                     $resServer = $pearDB->query($query);
                     $row = $resServer->fetchRow();
                     $buffer->writeAttribute("server", $row['ar_name']);
@@ -221,5 +216,6 @@ $buffer->endElement();
 header('Content-Type: text/xml');
 $buffer->output();
 if (isset($debug_ldap_import) && $debug_ldap_import) {
-    error_log("[" . date("d/m/Y H:s") . "] LDAP Search : XML Output : " . $buffer->output() . "\n", 3, $debug_path . "ldapsearch.log");
+    error_log("[" . date("d/m/Y H:s") . "] LDAP Search : XML Output : " . $buffer->output() .
+        "\n", 3, $debug_path . "ldapsearch.log");
 }

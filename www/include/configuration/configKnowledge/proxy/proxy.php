@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/service.php $
- * SVN : $Id: service.php 8549 2009-07-01 16:20:26Z shotamchay $
  *
  */
 
@@ -82,9 +80,10 @@ if ($proxy->url != "") {
     header("Location: " . $proxy->url);
 } else {
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-        header("Location: $WikiURL/?title=Service_:_".Esc::forUrlValue($_GET["host_name"])."_/_" . Esc::forUrlValue($_GET["service_description"]));
+        header("Location: $WikiURL/?title=Service_:_" . Esc::forUrlValue($_GET["host_name"])."_/_" .
+            Esc::forUrlValue($_GET["service_description"]));
     } else {
-        header("Location: $WikiURL/?title=Host_:_".Esc::forUrlValue($_GET["host_name"]) );
+        header("Location: $WikiURL/?title=Host_:_" . Esc::forUrlValue($_GET["host_name"]) );
     }
 }
 exit();

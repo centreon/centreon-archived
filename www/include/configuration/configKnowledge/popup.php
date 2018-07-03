@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Services/service.php $
- * SVN : $Id: service.php 8549 2009-07-01 16:20:26Z shotamchay $
  *
  */
 
@@ -53,14 +51,11 @@ set_include_path(
 );
 
 require_once "DB.php";
-
 require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
 require_once "centreonDB.class.php";
-
 require_once $centreon_path . "/www/class/centreonEscaping.class.php";
-
 $modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
 
@@ -84,11 +79,6 @@ $proc = new procedures(
 );
 
 if (isset($_GET["template"]) && $_GET["template"] != "") {
-    /*$proc->duplicate(
-        htmlentities($_GET["template"], ENT_QUOTES),
-        htmlentities($_GET["object"], ENT_QUOTES),
-        htmlentities($_GET["type"], ENT_QUOTES)
-    );*/ //This is not how you escape for DB calls within $proc->duplicate().
 	$proc->duplicate($_GET["template"], $_GET["object"], $_GET["type"]);
 }
 
