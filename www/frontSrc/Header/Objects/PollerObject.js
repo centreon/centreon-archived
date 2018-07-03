@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import PollerIcon from "../Icons/PollerIcon"
+import numeral from "numeral"
 
 const styles = theme => ({
   root: {
@@ -30,6 +31,13 @@ const styles = theme => ({
     '& span': {
       fontSize: 16
     },
+  },
+  chip: {
+    height: '10px',
+    width: '10px',
+    borderRadius: 20,
+    display: 'inline-table',
+    marginRight: 6,
   },
   errorStatus: {
     margin: '10px 4px',
@@ -60,12 +68,18 @@ const styles = theme => ({
   popover: {
     pointerEvents: 'none',
   },
+  issuesDetails: {
+    display: 'flex',
+  },
   objectDetails: {
     padding: '10px 16px',
+    maxHeight: '80px',
+    overflowX: 'auto',
     borderBottom: '1px solid #d1d2d4',
-    '&:last-child' : {
-      borderBottom: 'none',
-    }
+  },
+  bottomDetails: {
+    textAlign: 'center',
+    padding: '10px 16px',
   },
   total: {
     float: 'right',
@@ -96,8 +110,8 @@ const styles = theme => ({
 })
 
 const PollerObject = (
-  {classes, iconColor, message, total, anchorEl, open, handleClose, handleOpen,
-    database, latency, stability
+  {classes, iconColor, total, anchorEl, open, handleClose, handleOpen,
+    issues
   }) => (
   <div className={classes.root}>
     <PollerIcon
@@ -127,48 +141,57 @@ const PollerObject = (
       }}
     >
       <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
+        <Typography variant="body1" gutterBottom>
             All pollers
           <span className={classes.total}>{total}</span>
         </Typography>
       </div>
-      <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#e00b3d'}}></span>
-          {stability.critical.message}
-          <span className={classes.total}>{stability.critical.total}</span>
-        </Typography>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#FF9A13'}}></span>
-          {stability.warning.message}
-          <span className={classes.total}>{stability.warning.total}</span>
-        </Typography>
+      <div className={classes.issuesDetails}>
+      {
+        issues ?
+          Object.keys(issues).map((issue, index) => {
+            let message = ''
+
+            if (issue === 'database') {
+              message = 'Database updates not active'
+            } else if (issue === 'stability') {
+              message = 'Pollers not running'
+            } else if (issue === 'latency') {
+              message ='Latency detected'
+            }
+
+            console.log(message)
+            return (
+              <div className={classes.objectDetails} key={index}>
+                <Typography variant='subheading' gutterBottom >
+                  {message}
+                  <span className={classes.total}>{issues[issue].total}</span>
+                </Typography>
+                {
+                  Object.keys(issues[issue]).map((elem, index) => {
+                    if (issues[issue][elem].poller) {
+                      const pollers = issues[issue][elem].poller
+                      return (
+                        pollers.map((poller, i) => {
+                          const color = elem === 'critical' ? '#e00b3d' : '#ff9a13'
+                          return (
+                            <Typography variant='body1' gutterBottom key={i}>
+                              <span className={classes.chip} style={{backgroundColor: color}}></span>
+                              {poller.name}
+                            </Typography>
+                          )
+                        })
+                      )
+                    } else return null
+                  })
+                }
+              </div>
+            )
+          })
+        : null
+      }
       </div>
-      <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#e00b3d'}}></span>
-          {latency.critical.message}
-          <span className={classes.total}>{latency.critical.total}</span>
-        </Typography>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#FF9A13'}}></span>
-          {latency.warning.message}
-          <span className={classes.total}>{latency.warning.total}</span>
-        </Typography>
-      </div>
-      <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#e00b3d'}}></span>
-          {database.critical.message}
-          <span className={classes.total}>{database.critical.total}</span>
-        </Typography>
-        <Typography variant="caption" gutterBottom>
-          <span className={classes.chip} style={{backgroundColor: '#FF9A13'}}></span>
-          {database.warning.message}
-          <span className={classes.total}>{database.warning.total}</span>
-        </Typography>
-      </div>
-      <div className={classes.objectDetails}>
+      <div className={classes.bottomDetails}>
         <Button className={classes.primaryButton} aria-label='Pollers configuration' href="./main.php?p=609">
           Configure pollers
         </Button>
