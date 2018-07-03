@@ -100,7 +100,7 @@ if (!$service_id) {
         "AND end_time > UNIX_TIMESTAMP(NOW()) " .
         "ORDER BY actual_start_time";
     $stmt = $dbb->prepare($query);
-    $res = $dbb->execute($stmt, array($dbb->escape($host_id)));
+    $dbb->execute($stmt, array($dbb->escape($host_id)));
 } else {
     $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed " .
         "FROM downtimes " .
@@ -110,10 +110,10 @@ if (!$service_id) {
         "AND end_time > UNIX_TIMESTAMP(NOW()) " .
         "ORDER BY actual_start_time";
     $stmt = $dbb->prepare($query);
-    $res = $dbb->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
+    $dbb->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }
 $rowClass = "list_one";
-while ($row = $res->fetch()) {
+while ($row = $stmt->fetch()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);

@@ -953,25 +953,26 @@ var func_hidePOPUP = function(event) {
 /* Use 'name' attribute to get xml/xsl infos */
 var func_displayGenericInfo = function(event) {
     var self = event.currentTarget,
-        position = jQuery('#' + $(self).attr('id')).offset();
+        position = jQuery('#' + $(self).attr('id')).offset(),
+        $self = $(self);
 
-    if (jQuery('#popup-container-display-' + $(self).attr('id')).length == 0) {
-            popup_counter['popup-container-display-' + $(self).attr('id')] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).attr('id') + '" style="display: none"></div>');
+    if (jQuery('#popup-container-display-' + $self.attr('id')).length == 0) {
+            popup_counter['popup-container-display-' + $self.attr('id')] = 1;
+            jQuery('.popup_volante').append('<div id="popup-container-display-' + $self.attr('id') + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + $(self).attr('id')] += 1;
+            popup_counter['popup-container-display-' + $self.attr('id')] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).attr('id')).width() + 10);
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $self.attr('id')).width() + 10);
     jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
-    var elements = $(self).name.split('|');
+    var elements = $self.attr('name').split('|');
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     proc_popup.setXml(elements[0]);
     proc_popup.setXslt(elements[1]);
-    proc_popup.transform('popup-container-display-' + $(self).attr('id'));
+    proc_popup.transform('popup-container-display-' + $self.attr('id'));
 };
 
 // Monitoring Refresh management Options
