@@ -1,7 +1,7 @@
 <?php
-/**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+/*
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
-
 
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
@@ -56,11 +56,11 @@ class CentreonUtils
         } else {
             $http .= 'http://';
         }
-        
+
         $newUrl = $http . $_SERVER['HTTP_HOST'] . $centreon->optGen["oreon_web_path"] . 'main.php?p=' . $idPage;
-        
-        if(!filter_var($newUrl, FILTER_VALIDATE_URL)) {
-        	return null;
+
+        if (!filter_var($newUrl, FILTER_VALIDATE_URL)) {
+            return null;
         }
         if ($redirect) {
             header("Location: " . $newUrl);

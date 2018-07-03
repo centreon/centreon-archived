@@ -1,7 +1,7 @@
 <?php
-/**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+/*
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,6 +30,7 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
+ *
  *
  */
 
@@ -923,7 +924,7 @@ class CentreonWidget
      */
     public function install($widgetPath, $directory)
     {
-        $config = $this->readConfigFile($widgetPath . "/".Esc::forUrlValue($directory)."/configs.xml");
+        $config = $this->readConfigFile($widgetPath . "/" . Esc::forUrlValue($directory) . "/configs.xml");
         if (!$config['autoRefresh']) {
             $config['autoRefresh'] = 0;
         }
