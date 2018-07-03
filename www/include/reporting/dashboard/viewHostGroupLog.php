@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -52,8 +50,10 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ? $id = trim($_GET["item"]) : $id = "NULL";
-isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ? $id = trim($_POST["item"]) : $id;
+isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ?
+    $id = trim($_GET["item"]) : $id = "NULL";
+isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ?
+    $id = trim($_POST["item"]) : $id;
 isset($_POST["search"]) ? $search = $_POST["search"] : "";
 /*
  * Formulary

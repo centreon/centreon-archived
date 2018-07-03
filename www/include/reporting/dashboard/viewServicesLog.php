@@ -45,10 +45,14 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-isset($_GET["host_id"]) && (ctype_digit(trim($_GET["host_id"])) || strtoupper(trim($_GET["host_id"])) == "NULL") ? $host_id = trim($_GET["host_id"]) : $host_id = "NULL";
-isset($_POST["host_id"]) && (ctype_digit(trim($_POST["host_id"])) || strtoupper(trim($_POST["host_id"])) == "NULL") ? $host_id = trim($_POST["host_id"]) : $host_id;
-isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ? $service_id = trim($_GET["item"]) : $service_id = "NULL";
-isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ? $service_id = trim($_POST["item"]) : $service_id;
+isset($_GET["host_id"]) && (ctype_digit(trim($_GET["host_id"])) || strtoupper(trim($_GET["host_id"])) == "NULL") ?
+    $host_id = trim($_GET["host_id"]) : $host_id = "NULL";
+isset($_POST["host_id"]) && (ctype_digit(trim($_POST["host_id"])) || strtoupper(trim($_POST["host_id"])) == "NULL") ?
+    $host_id = trim($_POST["host_id"]) : $host_id;
+isset($_GET["item"]) && (ctype_digit(trim($_GET["item"])) || strtoupper(trim($_GET["item"])) == "NULL") ?
+    $service_id = trim($_GET["item"]) : $service_id = "NULL";
+isset($_POST["item"]) && (ctype_digit(trim($_POST["item"])) || strtoupper(trim($_POST["item"])) == "NULL") ?
+    $service_id = trim($_POST["item"]) : $service_id;
 
 /*
  * FORMS
