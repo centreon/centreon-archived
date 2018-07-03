@@ -42,6 +42,12 @@ const styles = theme => ({
     color: '#fff',
     backgroundColor: grey[200],
   },
+  indicatorContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    justifyContent: 'flex-end'
+  },
 })
 
 class TopHeader extends Component {
@@ -54,15 +60,9 @@ class TopHeader extends Component {
             <div style={{ gridColumnEnd: 'span 2' }}>
               <Logo />
             </div>
-            <div style={{ gridColumnEnd: 'span 3' }}>
-            </div>
-            <div style={{ gridColumnEnd: 'span 1' }}>
+            <div style={{ gridColumnEnd: 'span 8' }} className={classes.indicatorContainer}>
               <PollerObject />
-            </div>
-            <div style={{ gridColumnEnd: 'span 2' }}>
               <HostObject />
-            </div>
-            <div style={{ gridColumnEnd: 'span 2' }}>
               <ServiceObject />
             </div>
             <div style={{ gridColumnEnd: 'span 2' }}>

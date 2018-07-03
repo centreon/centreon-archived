@@ -12,7 +12,7 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    margin: '16px 6px',
+    margin: '16px 0px',
   },
   'a': {
     color: '#0072CE',
@@ -31,13 +31,6 @@ const styles = theme => ({
     '& span': {
       fontSize: 16
     },
-  },
-  chip: {
-    height: '10px',
-    width: '10px',
-    borderRadius: 20,
-    display: 'inline-table',
-    marginRight: 6,
   },
   errorStatus: {
     margin: '10px 4px',
@@ -84,6 +77,9 @@ const styles = theme => ({
   total: {
     float: 'right',
     marginLeft: 34,
+  },
+  issueMessage: {
+
   },
   errorNotif: {
     backgroundColor: theme.palette.error.lighter,
@@ -159,11 +155,9 @@ const PollerObject = (
             } else if (issue === 'latency') {
               message ='Latency detected'
             }
-
-            console.log(message)
             return (
               <div className={classes.objectDetails} key={index}>
-                <Typography variant='subheading' gutterBottom >
+                <Typography variant='body2' className={classes.issueMessage} gutterBottom >
                   {message}
                   <span className={classes.total}>{issues[issue].total}</span>
                 </Typography>
