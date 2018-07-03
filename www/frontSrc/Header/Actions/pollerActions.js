@@ -2,9 +2,9 @@ export const REQUEST_POLLERS_STATUS = 'REQUEST_POLLERS_STATUS'
 export const REQUEST_POLLERS_STATUS_SUCCESS = 'REQUEST_POLLERS_STATUS_SUCCESS'
 export const REQUEST_POLLERS_STATUS_FAIL = 'REQUEST_POLLERS_STATUS_FAIL'
 
-export const REQUEST_POLLERS_LIST = 'REQUEST_POLLERS_LIST'
-export const REQUEST_POLLERS_LIST_SUCCESS = 'REQUEST_POLLERS_LIST_SUCCESS'
-export const REQUEST_POLLERS_LIST_FAIL = 'REQUEST_POLLERS_LIST_FAIL'
+export const REQUEST_POLLERS_LIST_ISSUES = 'REQUEST_POLLERS_LIST_ISSUES'
+export const REQUEST_POLLERS_LIST_ISSUES_SUCCESS = 'REQUEST_POLLERS_LIST_ISSUES_SUCCESS'
+export const REQUEST_POLLERS_LIST_ISSUES_FAIL = 'REQUEST_POLLERS_LIST_ISSUES_FAIL'
 
 export function requestPollersStatus () {
   return {
@@ -26,22 +26,22 @@ export function requestPollersStatusFail (err) {
   }
 }
 
-export function requestPollersList () {
+export function requestPollersListIssues () {
   return {
-    type: REQUEST_POLLERS_LIST,
+    type: REQUEST_POLLERS_LIST_ISSUES,
   }
 }
 
-export function requestPollersListSuccess (res) {
+export function requestPollersListIssuesSuccess (res) {
   return {
-    type: REQUEST_POLLERS_LIST_SUCCESS,
+    type: REQUEST_POLLERS_LIST_ISSUES_SUCCESS,
     data: res.data,
   }
 }
 
-export function requestPollersListFail (err) {
+export function requestPollersListIssuesFail (err) {
   return {
-    type: REQUEST_POLLERS_LIST_FAIL,
+    type: REQUEST_POLLERS_LIST_ISSUES_FAIL,
     error: err.response,
   }
 }

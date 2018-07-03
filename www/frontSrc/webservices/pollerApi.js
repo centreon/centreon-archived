@@ -3,9 +3,9 @@ import {
   requestPollersStatus,
   requestPollersStatusSuccess,
   requestPollersStatusFail,
-  requestPollersList,
-  requestPollersListSuccess,
-  requestPollersListFail
+  requestPollersListIssues,
+  requestPollersListIssuesSuccess,
+  requestPollersListIssuesFail
 } from '../Header/Actions/pollerActions'
 
 const pollerStatusUrl = './api/internal.php?object=centreon_topcounter&action=pollersStatus'
@@ -29,18 +29,18 @@ export function getPollersStatus() {
     }
 }
 
-export function getPollersList() {
+export function getPollersListIssues() {
   return (dispatch) => {
-    dispatch(requestPollersList())
+    dispatch(requestPollersListIssues())
     return axios.get(pollersListIssuesUrl)
       .then(
         res => {
-          dispatch(requestPollersListSuccess(res))
+          dispatch(requestPollersListIssuesSuccess(res))
         }
       )
       .catch(
         err => {
-          dispatch(requestPollersListFail(err))
+          dispatch(requestPollersListIssuesFail(err))
         }
       )
   }

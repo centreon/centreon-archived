@@ -2,9 +2,9 @@ import {
   REQUEST_POLLERS_STATUS,
   REQUEST_POLLERS_STATUS_SUCCESS,
   REQUEST_POLLERS_STATUS_FAIL,
-  REQUEST_POLLERS_LIST,
-  REQUEST_POLLERS_LIST_SUCCESS,
-  REQUEST_POLLERS_LIST_FAIL,
+  REQUEST_POLLERS_LIST_ISSUES,
+  REQUEST_POLLERS_LIST_ISSUES_SUCCESS,
+  REQUEST_POLLERS_LIST_ISSUES_FAIL,
 } from '../Actions/pollerActions'
 
 export default function pollerReducer (
@@ -16,55 +16,25 @@ export default function pollerReducer (
   },action
 ) {
   switch (action.type) {
-    case REQUEST_POLLERS_STATUS:
+    case REQUEST_POLLERS_LIST_ISSUES:
       return {
         ...state,
         dataFetched: false,
         isFetching: true,
       }
-    case REQUEST_POLLERS_STATUS_SUCCESS:
+    case REQUEST_POLLERS_LIST_ISSUES_SUCCESS:
+
       return {
         ...state,
         ...action.data,
-        database: {
-          ...action.data.database,
-          critical: {
-            total: action.data.database.critical,
-            message: 'All database poller updates are not active'
-          },
-          warning: {
-            total: action.data.database.warning,
-            message: 'Some database poller updates are not active'
-          },
-        },
-        stability: {
-          ...action.data.stability,
-          critical: {
-            total: action.data.stability.critical,
-            message: 'Pollers are not running'
-          },
-          warning: {
-            total: action.data.stability.warning,
-            message: 'Some Pollers are not running'
-          },
-        },
-        latency: {
-          ...action.data.latency,
-          critical: {
-            total: action.data.latency.critical,
-            message: 'Latency is strongly detected'
-          },
-          warning: {
-            total: action.data.latency.warning,
-            message: 'Latency is detected'
-          },
-        },
         dataFetched: true,
         isFetching: false,
         error: false,
         refreshTime: action.data.refreshTime * 1000,
       }
-    case REQUEST_POLLERS_STATUS_FAIL:
+
+    case REQUEST_POLLERS_LIST_ISSUES_FAIL:
+
       return {
         ...state,
         isFetching: false,
