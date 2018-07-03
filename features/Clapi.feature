@@ -6,7 +6,7 @@ Feature: Clapi
   Background:
     Given a freshly installed Centreon server
 
-  @critical
+
   Scenario: import/export
     Given a Clapi configuration file
     And it was imported
