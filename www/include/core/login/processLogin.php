@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,13 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
 require_once $centreon_path . "www/class/centreonEscaping.class.php";
 
 if (isset($_POST["centreon_token"])
-    || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
+    || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"])
+        && $generalOptions["enable_autologin"])
+    || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"])
+        && $generalOptions["enable_autologin"])
     || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
     /*
      * Init log class
@@ -78,12 +81,14 @@ if (isset($_POST["centreon_token"])
         $encryptType = 1;
     }
 
-    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
+    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType,
+        $token, $generalOptions);
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
         $_SESSION["centreon"] = $centreon;
 
-        $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?, ?)");
+        $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`," .
+            " `ip_address`) VALUES (?, ?, ?, ?, ?)");
         $pearDB->execute($DBRESULT, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
         if (!isset($_POST["submit"])) {
             $minimize = '';
@@ -91,7 +96,7 @@ if (isset($_POST["centreon_token"])
                 $minimize = '&min=1';
             }
             if (isset ($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: main.php?p='.Esc::forUrlValue($_GET["p"]).$minimize);
+                header('Location: main.php?p=' . Esc::forUrlValue($_GET["p"]) . $minimize);
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 header('Location: main.php?p=' . $centreon->user->default_page . $minimize);
             } else {

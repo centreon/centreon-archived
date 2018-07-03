@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,6 +30,7 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
+ *
  *
  */
 
@@ -101,11 +102,11 @@ $args .= "'";
 /*
  * Get session and Check if session is not expired
  */
-$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
+$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '" . session_id() . "'");
 
-$newUrl = "index.php?disconnect=2".$args;
+$newUrl = "index.php?disconnect=2" . $args;
 if (!$DBRESULT->numRows() && filter_var($newUrl, FILTER_VALIDATE_URL)) {
-    header("Location: ".$newUrl);
+    header("Location: " . $newUrl);
 }
 
 /*
@@ -123,20 +124,20 @@ if (!isset($_SESSION["centreon"])) {
             $a++;
         }
         $args .= "'";
-        
+
 		$newUrl = "index.php?disconnect=1".$args;
 		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
-			header("Location: ".$newUrl);
+			header("Location: " . $newUrl);
 		}
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {
-            $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            $args ? $args .= "&" . $key . "=" . $value : $args = $key . "=" . $value;
         }
-        
-		$newUrl = "index.php?disconnect=1".$args;
+
+		$newUrl = "index.php?disconnect=1" . $args;
 		if (filter_var($newUrl, FILTER_VALIDATE_URL)) {
-			header("Location: ".$newUrl);
+			header("Location: " . $newUrl);
 		}
     }
 }
@@ -227,20 +228,23 @@ if ($handle  = @opendir("./Themes/Centreon-2/Color")) {
     @closedir($handle);
 }
 
-$colorfile = "Color/". $tab_file_css[0];
+$colorfile = "Color/" . $tab_file_css[0];
 
 /*
  * Get CSS Order and color
  */
-$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
+$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
 if ($DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow())) {
-    $colorfile = "Color/".$elem["css_name"];
+    $colorfile = "Color/" . $elem["css_name"];
 }
 
 /*
  * Update Session Table For last_reload and current_page row
  */
-$DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."'");
+$DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '" . $level1 . $level2 . $level3 . $level4 .
+    "', `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
+    "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() .
+    "' AND `user_id` = '" . $centreon->user->user_id . "'");
 
 /*
  * Init Language
