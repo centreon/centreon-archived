@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PollerObject from './PollerObject'
 import {connect} from "react-redux"
-import {getPollersStatus, getPollersList} from "../../webservices/pollerApi"
+import {getPollersStatus, getPollersListIssues} from "../../webservices/pollerApi"
 
 class PollerObjectContainer extends Component {
 
@@ -14,7 +14,7 @@ class PollerObjectContainer extends Component {
 
   componentDidMount() {
     this.props.getPollersStatus()
-    this.props.getPollersList()
+    this.props.getPollersListIssues()
   }
 
   componentWillUnmount() {
@@ -43,16 +43,20 @@ class PollerObjectContainer extends Component {
     this.setState({ anchorEl: null })
   }
 
-  setPollerState = (database, latency, stability) => {
+  setPollerState = (issues) => {
+
     let pollerState = '#88B917'
+    const issuesLabels = Object.keys(issues)
 
-    if (database.warning.total > 0 || latency.warning.total > 0 || stability.warning.total > 0) {
-      pollerState = '#FF9A13'
-    }
-
-    if (database.critical.total > 0 || latency.critical.total > 0 || stability.critical.total > 0) {
-      pollerState = '#E00B3D'
-    }
+    issuesLabels.map((issue) =>
+    {
+      if (issues[issue].warning) {
+        pollerState = '#FF9A13'
+      }
+      if (issues[issue].critical) {
+        pollerState = '#E00B3D'
+      }
+    })
 
     return pollerState
   }
@@ -60,20 +64,18 @@ class PollerObjectContainer extends Component {
   render () {
     const { anchorEl } = this.state
     const open = !!anchorEl
-    const { database, latency, stability, total, dataFetched, error } = this.props.poller
+    const { dataFetched, total, error, issues } = this.props.poller
 
     if (dataFetched) {
-      const color = this.setPollerState(stability, database, latency)
+      const color = issues.length !== 0 ? this.setPollerState(issues) : '#88B917'
       return (
         <PollerObject
           handleClose={this.handleClose}
           handleOpen={this.handleOpen}
           open={open}
           anchorEl={anchorEl}
-          iconColor={color ? color : '#BCBDC0'}
-          database={database ? database : {critical: '...', warning: '...'}}
-          latency={latency ? latency : {critical: '...', warning: '...'}}
-          stability={stability ? stability : {critical: '...', warning: '...'}}
+          iconColor={color}
+          issues={issues ? issues : null}
           total={total ? total : '...'}
         />
       )
@@ -87,9 +89,6 @@ class PollerObjectContainer extends Component {
             nativeColor='#A7A9AC'
             style={{cursor: 'none'}}
             iconColor='#A7A9AC'
-            database={{critical: '...', warning: '...'}}
-            latency={{critical: '...', warning: '...'}}
-            stability={{critical: '...', warning: '...'}}
             total='...'
           />
         )
@@ -111,8 +110,8 @@ const mapDispatchToProps = (dispatch) => {
     getPollersStatus: () => {
       return dispatch(getPollersStatus())
     },
-    getPollersList: () => {
-      return dispatch(getPollersList())
+    getPollersListIssues: () => {
+      return dispatch(getPollersListIssues())
     },
   }
 }

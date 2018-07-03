@@ -347,38 +347,40 @@ class CentreonTopCounter extends CentreonWebService
 
         $pollers = $this->pollersStatusList();
         $result = array(
-            'latency' => array(
-                'warning' => array(
-                    'poller' => array(),
+            'issues' => array(
+                'latency' => array(
+                    'warning' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
+                    'critical' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
                     'total' => 0
                 ),
-                'critical' => array(
-                    'poller' => array(),
+                'stability' => array(
+                    'warning' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
+                    'critical' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
                     'total' => 0
                 ),
-                'total' => 0
-            ),
-            'stability' => array(
-                'warning' => array(
-                    'poller' => array(),
+                'database' => array(
+                    'warning' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
+                    'critical' => array(
+                        'poller' => array(),
+                        'total' => 0
+                    ),
                     'total' => 0
-                ),
-                'critical' => array(
-                    'poller' => array(),
-                    'total' => 0
-                ),
-                'total' => 0
-            ),
-            'database' => array(
-                'warning' => array(
-                    'poller' => array(),
-                    'total' => 0
-                ),
-                'critical' => array(
-                    'poller' => array(),
-                    'total' => 0
-                ),
-                'total' => 0
+                )
             ),
             'total' => count($pollers),
             'refreshTime' => $this->refreshTime
@@ -389,51 +391,51 @@ class CentreonTopCounter extends CentreonWebService
         foreach ($pollers as $poller) {
             //stability
             if ($poller['stability'] === 1) {
-                $result['stability']['warning']['poller'][] = array(
+                $result['issues']['stability']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => ''
+                    'since' => ''
                 );
                 $staWar++;
             } elseif ($poller['stability'] === 2) {
-                $result['stability']['critical']['poller'][] = array(
+                $result['issues']['stability']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => ''
+                    'since' => ''
                 );
                 $staCri++;
             }
 
             //database
             if ($poller['database']['state'] === 1) {
-                $result['database']['warning']['poller'][] = array(
+                $result['issues']['database']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => $poller['database']['time']
+                    'since' => $poller['database']['time']
                 );
                 $datWar++;
             } elseif ($poller['database']['state'] === 2) {
-                $result['database']['critical']['poller'][] = array(
+                $result['issues']['database']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => $poller['database']['time']
+                    'since' => $poller['database']['time']
                 );
                 $datCri++;
             }
 
             //latency
             if ($poller['latency']['state'] === 1) {
-                $result['latency']['warning']['poller'][] = array(
+                $result['issues']['latency']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => $poller['warning']['time']
+                    'since' => $poller['warning']['time']
                 );
                 $latWar++;
             } elseif ($poller['latency']['state'] === 2) {
-                $result['latency']['critical']['poller'][] = array(
+                $result['issues']['latency']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'freetime' => $poller['warning']['time']
+                    'since' => $poller['warning']['time']
                 );
                 $latCri++;
             }
@@ -442,53 +444,53 @@ class CentreonTopCounter extends CentreonWebService
         //total and unset empty
         $staTotal = $staWar + $staCri;
         if ($staTotal === 0) {
-            unset($result['stability']);
+            unset($result['issues']['stability']);
         } else {
             if ($staWar === 0) {
-                unset($result['stability']['warning']);
-                $result['stability']['critical']['total'] = $staCri;
+                unset($result['issues']['stability']['warning']);
+                $result['issues']['stability']['critical']['total'] = $staCri;
             } elseif ($staCri === 0) {
-                unset($result['stability']['critical']);
-                $result['stability']['warning']['total'] = $staWar;
+                unset($result['issues']['stability']['critical']);
+                $result['issues']['stability']['warning']['total'] = $staWar;
             } else {
-                $result['stability']['warning']['total'] = $staWar;
-                $result['stability']['critical']['total'] = $staCri;
+                $result['issues']['stability']['warning']['total'] = $staWar;
+                $result['issues']['stability']['critical']['total'] = $staCri;
             }
-            $result['stability']['total'] = $staTotal;
+            $result['issues']['stability']['total'] = $staTotal;
         }
 
         $datTotal = $datWar + $datCri;
         if ($datTotal === 0) {
-            unset($result['database']);
+            unset($result['issues']['database']);
         } else {
             if ($datWar === 0) {
-                unset($result['database']['warning']);
-                $result['database']['critical']['total'] = $datCri;
+                unset($result['issues']['database']['warning']);
+                $result['issues']['database']['critical']['total'] = $datCri;
             } elseif ($datCri === 0) {
-                unset($result['database']['critical']);
-                $result['database']['warning']['total'] = $datWar;
+                unset($result['issues']['database']['critical']);
+                $result['issues']['database']['warning']['total'] = $datWar;
             } else {
-                $result['database']['warning']['total'] = $datWar;
-                $result['database']['critical']['total'] = $datCri;
+                $result['issues']['database']['warning']['total'] = $datWar;
+                $result['issues']['database']['critical']['total'] = $datCri;
             }
-            $result['database']['total'] = $datTotal;
+            $result['issues']['database']['total'] = $datTotal;
         }
 
         $latTotal = $latWar + $latCri;
         if ($latTotal === 0) {
-            unset($result['latency']);
+            unset($result['issues']['latency']);
         } else {
             if ($latWar === 0) {
-                unset($result['latency']['warning']);
-                $result['latency']['critical']['total'] = $latCri;
+                unset($result['issues']['latency']['warning']);
+                $result['issues']['latency']['critical']['total'] = $latCri;
             } elseif ($latCri === 0) {
-                unset($result['latency']['critical']);
-                $result['latency']['warning']['total'] = $latWar;
+                unset($result['issues']['latency']['critical']);
+                $result['issues']['latency']['warning']['total'] = $latWar;
             } else {
-                $result['latency']['warning']['total'] = $latWar;
-                $result['latency']['critical']['total'] = $latCri;
+                $result['issues']['latency']['warning']['total'] = $latWar;
+                $result['issues']['latency']['critical']['total'] = $latCri;
             }
-            $result['latency']['total'] = $latTotal;
+            $result['issues']['latency']['total'] = $latTotal;
         }
 
         return $result;
