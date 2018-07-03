@@ -6,15 +6,15 @@ Feature: Set service downtime
   Background:
     Given I am logged in a Centreon server
     And I have a meta service
-  @critical
+
   Scenario: Place a comment
     When I place a comment
     Then this one appears in the interface
-  @critical
+
   Scenario: Set a downtime
     When I place a downtime
     Then this one appears in the interface in downtime
-  @critical
+
   Scenario: Cancel a downtime
     Given I place a downtime
     When I cancel a downtime
