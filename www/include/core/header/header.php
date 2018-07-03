@@ -223,7 +223,7 @@ $colorfile = "Color/" . $tab_file_css[0];
  * Get CSS Order and color
  */
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
-if ($DBRESULT->fetchColumn() && ($elem = $DBRESULT->fetch())) {
+if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
     $colorfile = "Color/" . $elem["css_name"];
 }
 
