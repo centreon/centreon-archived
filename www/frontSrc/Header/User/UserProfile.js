@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Tooltip from '@material-ui/core/Tooltip'
 import TextField from '@material-ui/core/TextField'
+import FilterNone from '@material-ui/icons/FilterNone'
 
 const styles = theme => ({
   profileRoot: {
@@ -47,14 +48,7 @@ const styles = theme => ({
     }
   },
   Clipboard: {
-    padding : '8px 16px'
-  },
-  copyButton: {
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    margin: '-1px',
-    borderBottom: '2px solid',
-    padding: '5px 8px',
+    padding : '8px 12px'
   },
   menuFooter: {
     display: 'flex',
@@ -114,13 +108,13 @@ const UserProfile = ({
           as {user.username} <a href="./main.php?p=50104&o=c" aria-label='Edit profile' className={classes.profileLink}>Edit profile </a>
         </Typography>
       </div>
-      <Tooltip id="tooltip-top-start" title="Copy to add to your bookmark" placement="top">
-      <div className={classes.Clipboard}>
-          <TextField id="bookmarkLink" defaultValue={link} />
-          <Button variant="outlined" size="small" color="secondary" onClick={handleAutologin} className={classes.copyButton}>
-            Copy
-          </Button>
-      </div>
+      <Tooltip id="tooltip-top-start" title="Copy then add to bookmark" placement="top">
+        <div className={classes.Clipboard}>
+            <TextField id="bookmarkLink" defaultValue={link} />
+          <IconButton onClick={handleAutologin} color="primary">
+            <FilterNone />
+          </IconButton>
+        </div>
       </Tooltip>
       <div className={classes.menuFooter}>
         <Button className={classes.logoutButton} size="small" aria-label='Logout' href="index.php?disconnect=1">

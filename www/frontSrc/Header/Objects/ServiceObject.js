@@ -9,16 +9,7 @@ import ServiceIcon from "../Icons/ServiceIcon"
 const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
-    position: 'relative',
-    '&:before': {
-      width: 1,
-      height: 30,
-      backgroundColor: '#d1d2d4',
-      content: '""',
-      position: 'absolute',
-      top: 18,
-      margin: '0px -10px',
-    },
+    marginLeft: 26,
   },
   status: {
     margin: '4px',
@@ -63,7 +54,8 @@ const styles = theme => ({
     width: 40,
     height: 40,
     '& span': {
-      fontSize: 16
+      fontSize: 16,
+      fontWeight: '600'
     },
     backgroundColor: theme.palette.warning.main,
     '&:hover': {
@@ -113,6 +105,18 @@ const styles = theme => ({
       color: '#D1D2D4',
     }
   },
+  link: {
+    color: 'rgba(0, 0, 0, 0.87)',
+    '&:hover': {
+      color: '#09225C'
+    },
+    '&:visited': {
+      color: 'rgba(0, 0, 0, 0.87)'
+    },
+    '&:active': {
+      color: 'rgba(0, 0, 0, 0.87)'
+    }
+  },
   paper: {
     padding: theme.spacing.unit,
   },
@@ -121,9 +125,8 @@ const styles = theme => ({
   },
   objectDetails: {
     padding: '10px 16px',
-    borderBottom: '1px solid #d1d2d4',
-    '&:last-child' : {
-      borderBottom: 'none',
+    '&:first-child' : {
+      borderBottom: '1px solid #d1d2d4',
     }
   },
   total: {
@@ -168,7 +171,6 @@ const ServiceObject = ({
               className={(classes.status, classes.unknownStatus)}>
         {numeral(unknown.unhandled).format('0a')}
       </Button>
-
       <Popover
         id='servicePopover'
         open={open}
@@ -186,53 +188,54 @@ const ServiceObject = ({
         }}
       >
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
-            <a href={url} title="all services list">
+          <Typography variant="body1" gutterBottom>
+            <a href={url} title="all services list" className={classes.link}>
               All services
+              <span className={classes.total}>{total}</span>
             </a>
-            <span className={classes.total}>{total}</span>
           </Typography>
         </div>
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
+          <Typography variant="body1" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#e00b3d'}}></span>
-            <a href={critical.url} title="services critical list">
-              {critical.unhandled} Unhandled problems
+            <a href={critical.url} title="services critical list" className={classes.link}>
+              Critical services
+              <span className={classes.total}>{critical.unhandled}/{critical.total}</span>
             </a>
-            <span className={classes.total}> / {critical.total}</span>
           </Typography>
         </div>
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
+          <Typography variant="body1" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#FF9A13'}}></span>
-            <a href={warning.url} title="services warning list">
-              {warning.unhandled} Warning services
+            <a href={warning.url} title="services warning list" className={classes.link}>
+              Warning services
+              <span className={classes.total}>{warning.unhandled}/{warning.total}</span>
             </a>
-            <span className={classes.total}> / {warning.total}</span>
           </Typography>
         </div>
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
+          <Typography variant="body1" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#bcbdc0'}}></span>
-            <a href={unknown.url} title="services unknown list">
-              {unknown.unhandled} Unknown services
+            <a href={unknown.url} title="services unknown list" className={classes.link}>
+              Unknown services
+              <span className={classes.total}> {unknown.unhandled}/{unknown.total}</span>
             </a>
-            <span className={classes.total}> / {unknown.total}</span>
           </Typography>
         </div>
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
+          <Typography variant="body1" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#88b917'}}></span>
-            <a href={ok.url} title="services ok list">
-              {ok.total} Ok services
+            <a href={ok.url} title="services ok list" className={classes.link}>
+              Ok services
+              <span className={classes.total}>{ok.total}</span>
             </a>
           </Typography>
         </div>
         {pending.total > 0 ?
           <div className={classes.objectDetails}>
-            <Typography variant="caption" gutterBottom>
+            <Typography variant="body1" gutterBottom>
               <span className={classes.chip} style={{backgroundColor: '#2AD1D4'}}></span>
-              <a href={pending.url} title="pending services list">
+              <a href={pending.url} title="pending services list" className={classes.link}>
                 {pending.total} Pending services
               </a>
             </Typography>

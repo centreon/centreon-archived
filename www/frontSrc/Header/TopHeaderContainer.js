@@ -55,6 +55,17 @@ const theme = createMuiTheme({
         fontSize: '11px',
       }
     },
+    MuiTypography: {
+      root: {
+        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+      },
+      body1: {
+        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+      },
+      body2: {
+        fontFamily: "'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif",
+      },
+    },
   }
 });
 

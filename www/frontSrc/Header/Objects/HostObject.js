@@ -9,24 +9,18 @@ import HostIcon from "../Icons/HostIcon"
 const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
-    position: 'relative',
-    '&:before': {
-      width: 1,
-      height: 30,
-      backgroundColor: '#d1d2d4',
-      content: '""',
-      position: 'absolute',
-      top: 18,
-      margin: '0px -10px',
-    },
+    marginLeft: 26,
   },
-  'a': {
-    color: '#0072CE',
+  link: {
+    color: 'rgba(0, 0, 0, 0.87)',
     '&:hover': {
-      backgroundColor: '#064166'
+      color: '#09225C'
     },
     '&:visited': {
-      color: '#10069F'
+      color: 'rgba(0, 0, 0, 0.87)'
+    },
+    '&:active': {
+      color: 'rgba(0, 0, 0, 0.87)'
     }
   },
   status: {
@@ -117,9 +111,8 @@ const styles = theme => ({
   },
   objectDetails: {
     padding: '10px 16px',
-    borderBottom: '1px solid #d1d2d4',
-    '&:last-child' : {
-      borderBottom: 'none',
+    '&:first-child' : {
+      borderBottom: '1px solid #d1d2d4',
     }
   },
   total: {
@@ -140,20 +133,20 @@ const HostObject = (
       aria-label='Hosts status'
       aria-haspopup="true"
       onClick={handleOpen}
+      title="host"
     />
     { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
-    {down.unhandled == 0 && unreachable.unhandled == 0 ?
-      <Button variant="fab" href={ok.url}
-              aria-label='ok hosts'
-              className={(classes.status, classes.okStatus)}>
-        {numeral(ok.total).format('0a')}
-      </Button> :
+    {down.unhandled > 0 || unreachable.unhandled > 0 ?
       <Button variant="fab" href={down.url}
               aria-label='Down hosts'
               className={(classes.status, classes.errorStatus)}>
         {numeral(down.unhandled).format('0a')}
+      </Button> :
+      <Button variant="fab" href={ok.url}
+              aria-label='ok hosts'
+              className={(classes.status, classes.okStatus)}>
+        {numeral(ok.total).format('0a')}
       </Button>
-
     }
     <Button variant="fab" mini href={unreachable.url}
             aria-label='Unreachable hosts'
@@ -177,42 +170,43 @@ const HostObject = (
       }}
     >
       <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
-          <a href={url} title="all hosts list">
+        <Typography variant="body1" gutterBottom>
+          <a href={url} title="all hosts list" className={classes.link}>
             All hosts
+            <span className={classes.total}>{total}</span>
           </a>
-          <span className={classes.total}>{total}</span>
+
         </Typography>
       </div>
       <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
+        <Typography variant="body1" gutterBottom>
           <span className={classes.chip} style={{backgroundColor: '#e00b3d'}}></span>
-          <a href={down.url} title="hosts down list">
-            {down.unhandled} Unhandled problems
+          <a href={down.url} title="hosts down" className={classes.link}>
+            Down hosts
+            <span className={classes.total}>{down.unhandled}/{down.total}</span>
           </a>
-          <span className={classes.total}> / {down.total}</span>
         </Typography>
       </div>
       <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
+        <Typography variant="body1" gutterBottom>
           <span className={classes.chip} style={{backgroundColor: '#818285'}}></span>
-          <a href={unreachable.url} title="hosts unreachable list">
-            {unreachable.unhandled} Unreachable hosts
+          <a href={unreachable.url} title="hosts unreachable" className={classes.link}>
+            Unreachable hosts
+            <span className={classes.total}>{unreachable.unhandled}/{unreachable.total}</span>
           </a>
-          <span className={classes.total}> / {unreachable.total}</span>
         </Typography>
       </div>
       <div className={classes.objectDetails}>
-        <Typography variant="caption" gutterBottom>
+        <Typography variant="body1" gutterBottom>
           <span className={classes.chip} style={{backgroundColor: '#88b917'}}></span>
-          <a href={ok.url} title="hosts ok list">
-            {ok.total} Ok hosts
+          <a href={ok.url} title="hosts ok" className={classes.link}>Ok hosts
+            <span className={classes.total}>{ok.total}</span>
           </a>
         </Typography>
       </div>
       {pending.total > 0 ?
         <div className={classes.objectDetails}>
-          <Typography variant="caption" gutterBottom>
+          <Typography variant="body1" gutterBottom>
             <span className={classes.chip} style={{backgroundColor: '#2AD1D4'}}></span>
             <a href={pending.url} title="pending hosts list">
             {pending.total} Pending hosts
