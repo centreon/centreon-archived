@@ -1,7 +1,7 @@
 <?php
-/**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+/*
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,6 +31,7 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
 if (!isset($centreon)) {
@@ -54,7 +55,8 @@ $viewObj = new CentreonCustomView($centreon, $db);
 $widgetObj = new CentreonWidget($centreon, $db);
 $title = "";
 $defaultTab = array();
-if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && ctype_digit($_REQUEST['view_id']) && isset($_REQUEST['widget_id']) && $_REQUEST['widget_id'] && ctype_digit($_REQUEST['widget_id'])) {
+if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && ctype_digit($_REQUEST['view_id'])
+    && isset($_REQUEST['widget_id']) && $_REQUEST['widget_id'] && ctype_digit($_REQUEST['widget_id'])) {
     $viewId = $_REQUEST['view_id'];
     $widgetId = $_REQUEST['widget_id'];
     $action = "setPreferences";
@@ -67,7 +69,7 @@ if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && ctype_digit($_REQUEST
     }
 
     $info = $widgetObj->getWidgetDirectory($widgetObj->getWidgetType($widgetId));
-    $title .= " [".$info."]";
+    $title .= " [" . $info . "]";
     
 
     $defaultTab['custom_view_id'] = $viewId;
@@ -115,7 +117,7 @@ try {
         if ($param['is_connector']) {
             $paramClassFound = false;
             foreach ($loadConnectorPaths as $path) {
-                $filename = $path . '/' . ucfirst($param['ft_typename'].".class.php");
+                $filename = $path . '/' . ucfirst($param['ft_typename'] . ".class.php");
                 if (is_file($filename)) {
                     require_once $filename;
                     $paramClassFound = true;
@@ -125,9 +127,9 @@ try {
             if (false === $paramClassFound) {
                 throw new Exception('No connector found for ' . $param['ft_typename']);
             }
-            $className = "CentreonWidgetParamsConnector".ucfirst($param['ft_typename']);
+            $className = "CentreonWidgetParamsConnector" . ucfirst($param['ft_typename']);
         } else {
-            $className = "CentreonWidgetParams".ucfirst($param['ft_typename']);
+            $className = "CentreonWidgetParams" . ucfirst($param['ft_typename']);
         }
         if (class_exists($className)) {
             $currentParam = call_user_func(array($className, 'factory'), $db, $form, $className, $centreon->user->user_id);
