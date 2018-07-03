@@ -38,8 +38,6 @@
  */
 define('LDAP_UPDATE_PERIOD', 3600);
 
-include_once "DB.php";
-
 require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
