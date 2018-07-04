@@ -35,6 +35,7 @@
 
 define("PROCEDURE_SIMPLE_MODE", 0);
 define("PROCEDURE_INHERITANCE_MODE", 1);
+require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wikiApi.class.php";
 
 class procedures
 {
@@ -48,6 +49,7 @@ class procedures
     public $serviceTplList;
     public $hostIconeList;
     public $diff;
+    public $api;
 
     /**
      * Constructor
@@ -62,7 +64,7 @@ class procedures
      */
     public function __construct($retry, $db_name, $db_user, $db_host, $db_password, $pearDB, $db_prefix)
     {
-        $this->DB = new procedures_DB_Connector($retry, $db_name, $db_user, $db_host, $db_password);
+        $this->api = new WikiApi();
         $this->centreon_DB = $pearDB;
         $this->hostList = array();
         $this->hosttplList = array();
@@ -79,11 +81,15 @@ class procedures
      */
     private function setProcedures()
     {
-        $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM " . $this->db_prefix . "page");
+
+        $this->procList = $this->api->getAllPages();
+
+       /* $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM " . $this->db_prefix . "page");
         while ($page = $DBRESULT->fetch()) {
             $this->procList[$page["page_title"]] = $page["page_id"];
         }
         $DBRESULT->closeCursor();
+       */
     }
 
     /**

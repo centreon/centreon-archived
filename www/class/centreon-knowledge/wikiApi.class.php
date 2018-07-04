@@ -36,7 +36,7 @@
 require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wiki.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/procedures.class.php";
+//require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/procedures.class.php";
 
 class WikiApi
 {
