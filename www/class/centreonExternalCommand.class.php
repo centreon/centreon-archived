@@ -404,13 +404,15 @@ class CentreonExternalCommand
 
     private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
     {
+        $inputDate = new \DateTime($date.' GMT');
         $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
 
         // Winter to summer dst
         $dateTime2 = clone $dateTime;
         $dateTime2->setTimestamp($dateTime2->getTimestamp());
-        if ($dateTime2->format("H") != $dateTime->format("H")) {
-            $hour = $dateTime->format('H');
+
+        if ($dateTime2->format("H") != $inputDate->format("H")) {
+            $hour = $inputDate->format('H');
             $dateTime->setTime($hour, '00');
             return $dateTime->getTimestamp();
         }
