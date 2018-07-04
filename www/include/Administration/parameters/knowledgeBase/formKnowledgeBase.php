@@ -53,19 +53,6 @@ $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 /*
  * Knowledge base form
  */
-$form->addElement('text', 'kb_db_name', _("Knowledge base database name"));
-$form->addRule('kb_db_name', _("Mandatory field"), 'required');
-$form->addElement('text', 'kb_db_user', _("Knowledge base database user"));
-$form->addElement('password', 'kb_db_password', _("Knowledge base Database password"));
-$form->addElement('text', 'kb_db_host', _("Knowledge base Database host"));
-$form->addRule('kb_db_host', _("Mandatory field"), 'required');
-$form->addElement(
-    'button',
-    'test_connection',
-    _("Test DB connection"),
-    array("class" => "btc bt_success", "onClick"=>"javascript:checkWikiConnection()")
-);
-$form->addElement('text', 'kb_db_prefix', _("Knowledge base Database prefix"));
 $form->addElement('text', 'kb_wiki_url', _("Knowledge base url"));
 $form->addRule('kb_wiki_url', _("Mandatory field"), 'required');
 $form->addElement('text', 'kb_wiki_account', _("Knowledge wiki account (with delete right)"));

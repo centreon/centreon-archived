@@ -97,7 +97,6 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
         $result = json_decode($result, true);
-
         $version = $result['query']['general']['generator'];
         $version = explode(' ', $version);
         if (isset($version[1])) {
@@ -324,9 +323,6 @@ class WikiApi
     public function getChangedPages($count = 50)
     {
         // Connecting to Mediawiki API
-        $apiUrl = $this->url . '/api.php?format=json&action=query&list=recentchanges' .
-            '&rclimit=' . $count . '&rcprop=title&rctype=new|edit';
-
         $postfields = array(
             'format' => 'json',
             'action' => 'query',

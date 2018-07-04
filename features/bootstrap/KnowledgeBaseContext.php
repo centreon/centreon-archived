@@ -35,7 +35,6 @@ class KnowledgeBaseContext extends CentreonContext
         $page = new KBParametersPage($this);
         $page->setProperties(
             array(
-                'kb_db_host' => $containerId,
                 'kb_wiki_url' => 'http://' . $containerId
             )
         );

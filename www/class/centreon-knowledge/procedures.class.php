@@ -62,7 +62,7 @@ class procedures
      * @param CentreonDB $pearDB
      * @param string $db_prefix
      */
-    public function __construct($retry, $db_name, $db_user, $db_host, $db_password, $pearDB, $db_prefix)
+    public function __construct($pearDB)
     {
         $this->api = new WikiApi();
         $this->centreon_DB = $pearDB;
@@ -70,7 +70,6 @@ class procedures
         $this->hosttplList = array();
         $this->serviceList = array();
         $this->serviceTplList = array();
-        $this->db_prefix = $db_prefix;
         $this->setProcedures();
     }
 
@@ -81,15 +80,12 @@ class procedures
      */
     private function setProcedures()
     {
-
-        $this->procList = $this->api->getAllPages();
-
-       /* $DBRESULT = $this->DB->query("SELECT page_title, page_id FROM " . $this->db_prefix . "page");
-        while ($page = $DBRESULT->fetch()) {
-            $this->procList[$page["page_title"]] = $page["page_id"];
+         $pages = $this->api->getAllPages();
+        //replace space
+        foreach ($pages as $page){
+            $page = str_replace(' ', '_', $page);
+            $this->procList[$page] = '';
         }
-        $DBRESULT->closeCursor();
-       */
     }
 
     /**
@@ -430,9 +426,11 @@ class procedures
      */
     public function hostHasProcedure($key, $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
+        $key = str_replace(' ', '_', $key);
         if (isset($this->procList["Host_:_" . $key])) {
             return true;
         }
+
         if ($mode == PROCEDURE_SIMPLE_MODE) {
             return false;
         } elseif ($mode == PROCEDURE_INHERITANCE_MODE) {

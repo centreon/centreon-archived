@@ -33,24 +33,24 @@ function getWikiConfig($pearDB)
         '<a href="https://documentation-fr.centreon.com/docs/centreon-knowledge-base/en/latest/" target="_blank" >' .
         'documentation.</a>';
 
-    $mandatoryConfigKey = array('kb_db_name', 'kb_db_host', 'kb_wiki_url');
     if (is_null($pearDB)) {
         throw new \Exception($errorMsg);
     }
 
-    $res = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
+    $res = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_wiki_url'");
 
     if ($res->rowCount() == 0) {
         throw new \Exception($errorMsg);
     }
 
     $gopt = array();
-    while ($opt = $res->fetchRow()) {
-        if (empty($opt["value"]) && in_array($opt["key"], $mandatoryConfigKey)) {
-            throw new \Exception($errorMsg);
-        } else {
-            $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
-        }
+    $opt = $res->fetchRow();
+
+
+    if (empty($opt["value"])) {
+        throw new \Exception($errorMsg);
+    } else {
+        $gopt[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
     }
 
     $pattern = '#^http://|https://#';

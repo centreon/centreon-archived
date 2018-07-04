@@ -52,7 +52,6 @@ set_include_path(
     $centreon_path . "www/class/"
 );
 
-require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
 require_once "centreonDB.class.php";
@@ -70,13 +69,7 @@ $conf = getWikiConfig($pearDB);
 $WikiURL = $conf['kb_wiki_url'];
 
 $proc = new procedures(
-    3,
-    $conf['kb_db_name'],
-    $conf['kb_db_user'],
-    $conf['kb_db_host'],
-    $conf['kb_db_password'],
-    $pearDB,
-    $conf['kb_db_prefix']
+    $pearDB
 );
 
 if (isset($_GET["template"]) && $_GET["template"] != "") {

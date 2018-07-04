@@ -59,19 +59,13 @@
     if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
         $path = "core/display/";
 
-        require_once "centreon-knowledge/procedures_DB_Connector.class.php";
         require_once "centreon-knowledge/procedures.class.php";
 
         /*
              * Init procedures Object
          */
         $proc = new procedures(
-            3,
-            $conf['kb_db_user'],
-            $conf['kb_db_host'],
-            $conf['kb_db_password'],
-            $pearDB,
-            $conf['kb_db_prefix']
+            $pearDB
         );
         $proc->setHostInformations();
         $proc->setServiceInformations();
