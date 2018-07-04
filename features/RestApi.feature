@@ -11,5 +11,8 @@ Feature: REST API
 
     Examples:
       | api                                           |
-      | add-command                                   |
-      | add-host                                      |
+      | config.command.add                            |
+      | config.poller.add                             |
+      | config.poller.gethosts                        |
+      | config.poller.list                            |
+      | config.poller.setparam                        |

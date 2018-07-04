@@ -1,7 +1,7 @@
 [
   {
-    "name": "Add command",
-    "description": "Add command",
+    "name": "config.command.add",
+    "description": "Add a command",
     "actions": [
       {
         "from": "centreon.api.auth",

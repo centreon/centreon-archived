@@ -1,0 +1,28 @@
+[
+    {
+	"name": "config.poller.gethosts",
+	"description": "Get the hosts of a poller",
+	"actions": [
+	    {
+		"from": "centreon.api.auth",
+		"name": "Authenticate"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Create host 2"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Create instance 2"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setinstance host 2"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Gethosts"
+	    }
+	]
+    }
+]

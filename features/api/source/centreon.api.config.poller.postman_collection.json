@@ -6,7 +6,7 @@
     "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
   },
   "item": [{
-    "name": "Add Instance",
+    "name": "Add instance",
     "event": [{
       "listen": "test",
       "script": {
@@ -608,7 +608,7 @@
     },
     "response": []
   }, {
-    "name": "Create host2",
+    "name": "Create host 2",
     "event": [{
       "listen": "test",
       "script": {
@@ -653,7 +653,7 @@
     },
     "response": []
   }, {
-    "name": "Create Instance-2",
+    "name": "Create instance 2",
     "event": [{
       "listen": "test",
       "script": {
@@ -698,7 +698,7 @@
     },
     "response": []
   }, {
-    "name": "Setinstance host",
+    "name": "Setinstance host 2",
     "event": [{
       "listen": "test",
       "script": {

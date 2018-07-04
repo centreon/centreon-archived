@@ -1,0 +1,60 @@
+[
+    {
+	"name": "config.poller.setparam",
+	"description": "Set parameters of a poller",
+	"actions": [
+	    {
+		"from": "centreon.api.auth",
+		"name": "Authenticate"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam name"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam localhost"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam ns_ip_address"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam ns_activate"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam init_script"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam monitoring_engine"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam nagios_bin"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam nagiostats_bin"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam nagios_perfdata"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam ssh_port"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam centreonbroker_cfg_path"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Setparam centreonbroker_module_path"
+	    }
+	]
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+	"name": "config.poller.add",
+	"description": "Add a poller",
+	"actions": [
+	    {
+		"from": "centreon.api.auth",
+		"name": "Authenticate"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Add instance"
+	    }
+	]
+    }
+]
