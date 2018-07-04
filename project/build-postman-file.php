@@ -50,7 +50,6 @@ try {
   exit(1);
 }
 
-
 $jsonContents = array();
 foreach ($listScenario as $scenario) {
   $jsonOutput = array(
@@ -66,7 +65,7 @@ foreach ($listScenario as $scenario) {
     if (!isset($jsonContents[$action['from']])) {
       $filename = $options['s'] . '/' . $action['from'] . '.postman_collection.json';
       if (!file_exists($filename)) {
-        echo "The source postman file doesn't exists.\n";
+        echo "Source file '" . $filename . "' does not exist (" . $options['f'] . ").\n";
         exit(1);
       }
       $fileContent = file_get_contents($filename);
@@ -81,7 +80,7 @@ foreach ($listScenario as $scenario) {
       }
     }
     if (!$find) {
-      echo "The request doesn't exists.\n";
+      echo "Request '" . $action['name'] . "' does not exist (" . $options['f'] . ").\n";
       exit(1);
     }
   }
