@@ -35,7 +35,9 @@ class KnowledgeBaseContext extends CentreonContext
         $page = new KBParametersPage($this);
         $page->setProperties(
             array(
-                'kb_wiki_url' => 'http://' . $containerId
+                'kb_wiki_url' => 'http://' . $containerId,
+                'kb_wiki_account' => 'WikiSysop',
+                'kb_wiki_password' => 'centreon'
             )
         );
         $page->save();
