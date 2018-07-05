@@ -301,96 +301,6 @@ class procedures
     }
 
     /**
-     * Duplicate
-     *
-     * @param string $template
-     * @param string $object
-     * @param int $type
-     * @return void
-     */
-    public function duplicate($template, $object, $type)
-    {
-        $debug = 0;
-
-        if (isset($template)) {
-            /*
-             * Get Template
-             */
-            if ($type == 2) {
-                $template = "H-TPL-" . $template;
-            }
-            if ($type == 3) {
-                $template = "S-TPL-" . $template;
-            }
-            $DBRESULT = $this->DB->query(
-                "SELECT * FROM " . $this->db_prefix . "page WHERE page_title LIKE '$template'"
-            );
-            $data = $DBRESULT->fetchRow();
-            $DBRESULT->closeCursor();
-
-            if ($debug) {
-                print "SELECT * FROM " . $this->db_prefix . "revision WHERE rev_page LIKE '" .
-                    $data['page_id'] . "' ORDER BY rev_text_id DESC LIMIT 1";
-            }
-            $DBRESULT = $this->DB->query(
-                "SELECT * FROM " . $this->db_prefix . "revision WHERE " . $this->db_prefix .
-                "rev_page LIKE '" . $data['page_id'] . "' ORDER BY rev_text_id DESC LIMIT 1"
-            );
-            $revision = $DBRESULT->fetchRow();
-            $DBRESULT->closeCursor();
-
-            if ($debug) {
-                print "SELECT * FROM " . $this->db_prefix . "text WHERE old_id = '" .
-                    $data['page_id'] . "' ORDER BY old_id DESC LIMIT 1";
-            }
-            $DBRESULT = $this->DB->query(
-                "SELECT * FROM " . $this->db_prefix . "text WHERE old_id = '" .
-                $data['page_id'] . "' ORDER BY old_id DESC LIMIT 1"
-            );
-            $text = $DBRESULT->fetchRow();
-            $DBRESULT->closeCursor();
-
-            switch ($type) {
-                case 0:
-                    $object = "Host_:_" . $object;
-                    break;
-                case 1:
-                    $object = "Service_:_" . $object;
-                    break;
-                case 2:
-                    $object = "Host-Template_:_" . $object;
-                    break;
-                case 3:
-                    $object = "Service-Template_:_" . $object;
-                    break;
-            }
-
-            $dateTouch = date("YmdHis");
-            $this->DB->query(
-                "INSERT INTO " . $this->db_prefix . "page (`page_namespace` ,`page_title`,`page_counter`, " .
-                "  `page_is_redirect`,`page_is_new`,`page_random` ,`page_touched`,`page_latest`,`page_len`) " .
-                " VALUES ('0', '" . $object . "', '0', '0', '1', '" . $data["page_random"] . "', '" .
-                $dateTouch . "', '" . $data["page_latest"] . "', '" . $data["page_len"] . "')"
-            );
-            $DBRESULT = $this->DB->query("SELECT MAX(page_id) FROM " . $this->db_prefix . "page");
-            $id = $DBRESULT->fetchRow();
-
-            $this->DB->query(
-                "INSERT INTO `text` (old_id, old_text, old_flags) VALUE (NULL, '" .
-                $text["old_text"] . "', '" . $text["old_flags"] . "')"
-            );
-            $this->DB->query(
-                "INSERT INTO `revision` (rev_page, rev_text_id, rev_comment, rev_user_text, rev_timestamp, " .
-                "  rev_len) VALUE ('" . $id["MAX(page_id)"] . "', (SELECT MAX(old_id) FROM text), '" .
-                $revision["rev_comment"] . "', '" . $revision["rev_user_text"] . "','" . $dateTouch .
-                "','" . $revision["rev_len"] . "')"
-            );
-        } else {
-            ;
-        }
-    }
-
-    /**
      * Check if Service has procedure
      *
      * @param string $key
@@ -426,7 +336,6 @@ class procedures
      */
     public function hostHasProcedure($key, $templates = array(), $mode = PROCEDURE_SIMPLE_MODE)
     {
-        $key = str_replace(' ', '_', $key);
         if (isset($this->procList["Host_:_" . $key])) {
             return true;
         }

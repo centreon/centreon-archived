@@ -42,7 +42,8 @@ if (!isset($oreon)) {
 
 $modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
-
+require_once $centreon_path . '/bootstrap.php';
+$pearDB = $dependencyInjector['configuration_db'];
 
 if (!isset($limit) || !$limit) {
     $limit = $oreon->optGen["maxViewConfiguration"];

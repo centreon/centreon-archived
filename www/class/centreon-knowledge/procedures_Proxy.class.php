@@ -26,7 +26,13 @@ class procedures_Proxy
     private $hostObj;
     private $serviceObj;
 
-    public function __construct($pearDB, $db_prefix, $host_name, $service_description = null)
+    /**
+     * procedures_Proxy constructor.
+     * @param $pearDB
+     * @param $host_name
+     * @param null $service_description
+     */
+    public function __construct($pearDB, $host_name, $service_description = null)
     {
         $this->DB = $pearDB;
         $this->hflag = 0;
@@ -37,13 +43,7 @@ class procedures_Proxy
         $conf = getWikiConfig($this->DB);
         $this->wikiUrl = $conf['kb_wiki_url'];
         $this->proc = new procedures(
-            3,
-            $conf['kb_db_name'],
-            $conf['kb_db_user'],
-            $conf['kb_db_host'],
-            $conf['kb_db_password'],
-            $this->DB,
-            $conf['kb_db_prefix']
+            $this->DB
         );
 
         if (isset($host_name)) {
@@ -55,6 +55,10 @@ class procedures_Proxy
         }
     }
 
+    /**
+     * @param $hostName
+     * @return int
+     */
     private function getHostId($hostName)
     {
         $result = $this->DB->query("SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "' ");
@@ -66,6 +70,11 @@ class procedures_Proxy
         return $hostId;
     }
 
+    /**
+     * @param $hostName
+     * @param $serviceDescription
+     * @return mixed
+     */
     private function getServiceId($hostName, $serviceDescription)
     {
         /*
@@ -100,6 +109,9 @@ class procedures_Proxy
 
     }
 
+    /**
+     * @param $host_name
+     */
     private function returnHostWikiUrl($host_name)
     {
         $this->proc->setHostInformations();
@@ -128,6 +140,10 @@ class procedures_Proxy
         }
     }
 
+    /**
+     * @param $host_name
+     * @param $service_description
+     */
     private function returnServiceWikiUrl($host_name, $service_description)
     {
         if ($this->hflag != 0) {
