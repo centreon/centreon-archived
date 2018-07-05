@@ -41,7 +41,7 @@ if ($type == "Service") {
     $arg = "id=".$id;
 }
 
-$arg .= "&color[UP]=".$oreon->optGen["color_up"]."&color[UNDETERMINED]=".$oreon->optGen["color_undetermined"].
+$arg .= "&color[UP]=".$oreon->optGen["color_up"]."&color[UNDETERMINED]=".$colors["undetermined"].
         "&color[DOWN]=".$oreon->optGen["color_down"]."&color[UNREACHABLE]=".$oreon->optGen["color_unreachable"].
         "&color[OK]=".$oreon->optGen["color_ok"]."&color[WARNING]=".$oreon->optGen["color_warning"].
         "&color[CRITICAL]=".$oreon->optGen["color_critical"]."&color[UNKNOWN]=".$oreon->optGen["color_unknown"];
