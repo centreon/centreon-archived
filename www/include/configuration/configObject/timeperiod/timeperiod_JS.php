@@ -34,6 +34,9 @@
  */
 
 ?>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript">
 
     /*
@@ -66,11 +69,15 @@
         keyElem.id = 'exceptionInput_' + globalj;
         keyElem.name = 'exceptionInput_' + globalj;
         keyElem.value = '';
+        keyElem.className = 'v_required v_regex';
+        keyElem.setAttribute('data-validator', '^((([0-9]{4}-[0-9]{2}-[0-9]{2})|(day ([0-9]{1,2}|-[0-9]{1,2})( - ([0-9]{1,2}|-[0-9]{1,2}))?)|((sunday|monday|tuesday|wednesday|thursday|friday|saturday) ([0-9]{1,2}|-[0-9]{1,2})( (january|february|march|april|may|june|july|august|september|october|november|december))?)|((january|february|march|april|may|june|july|august|september|october|november|december) ([0-9]{1,2}|-[0-9]{1,2})( - ([0-9]{1,2}|-[0-9]{1,2}))?))( - )?( \/ [0-9]{1,2})?)+$');
         tdElem1.appendChild(keyElem);
 
         valueElem.id = 'exceptionTimerange_' + globalj;
         valueElem.name = 'exceptionTimerange_' + globalj;
         valueElem.value = "";
+        valueElem.className = 'v_required v_regex';
+        valueElem.setAttribute('data-validator', '^([0-9]{2}:[0-9]{2}-[0-9]{2}:[0-9]{2}(,)?)+$');
         tdElem2.appendChild(valueElem);
 
         imgElem.src = "./img/icons/circle-cross.png";
@@ -166,6 +173,33 @@
             tabElem.appendChild(tbodyElem);
         }
         document.getElementById('hiddenExInput').value = globalj;
+    }
+    
+    /*
+     * Dynamic validation of Time range exceptions fileds
+     */
+    function purgeHideInput(tab) {
+        jQuery('.tab').each(function(idx, el){
+            if (el.id != tab) {
+                jQuery(el).find(':input').each(function(idx, input){
+                    jQuery(input).qtip('destroy');
+                });
+            }
+        });
+    }
+
+    function formValidate() {
+        jQuery('#Form').centreonValidate();
+        jQuery('#Form').centreonValidate('validate');
+
+        if (jQuery('#Form').centreonValidate('hasError')) {
+            var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
+            purgeHideInput(activeTab.id);
+
+            return false;
+        }
+
+        return true;
     }
 
     /*
