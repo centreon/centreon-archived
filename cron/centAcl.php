@@ -439,7 +439,7 @@ try {
             /** ***********************************************
              * Select
              */
-            $DBRESULT2 = $pearDB->query("SELECT `acl_resources`.`acl_res_id` FROM `acl_res_group_relations`, `acl_resources` " .
+            $DBRESULT2 = $pearDB->query("SELECT DISTINCT(`acl_resources`.`acl_res_id`) FROM `acl_res_group_relations`, `acl_resources` " .
                                         "WHERE `acl_res_group_relations`.`acl_group_id` = '" . $acl_group_id . "' " .
                                         "AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id " .
                                         "AND `acl_resources`.acl_res_activate = '1'");
