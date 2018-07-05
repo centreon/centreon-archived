@@ -532,9 +532,14 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         if (count($macroList)) {
+            if (isset($params[3])) {
+                $desc = $params[3];
+            } else {
+                $desc = null;
+            }
             $macroObj->update(
                 $macroList[0][$macroObj->getPrimaryKey()],
-                array('svc_macro_value' => $params[2], 'description' => $params[3])
+                array('svc_macro_value' => $params[2], 'description' => $desc)
             );
         } else {
             $macroObj->insert(
