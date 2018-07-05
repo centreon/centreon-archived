@@ -122,7 +122,7 @@ $form->addElement('header', 'ldapserver', _('LDAP Servers'));
 
 $form->addElement('text', 'bind_dn', _("Bind user"), array("size" => "40", "autocomplete" => "off"));
 $form->addElement('password', 'bind_pass', _("Bind password"), array("size" => "40", "autocomplete" => "off"));
-$form->addElement('select', 'protocol_version', _("Protocol version"), array('2' => 2, '3' => 3));
+$form->addElement('select', 'protocol_version', _("Protocol version"), array('3' => 3, '2' => 2));
 $form->addElement(
     'select',
     'ldap_template',
