@@ -69,10 +69,12 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
     }
 
     if ($accessHost) {
-        $query = 'SELECT  * FROM `log_archive_host` WHERE host_id = ? ORDER BY date_start DESC';
+        $query = 'SELECT  * FROM `log_archive_host` WHERE host_id = :id ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
-        $DBRESULT = $pearDBO->execute($stmt, array($_GET['id']));
-        while ($row = $DBRESULT->fetchRow()) {
+        $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
             fillBuffer($statesTab, $row, $color);
         }
     } else {
