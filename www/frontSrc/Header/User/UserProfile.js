@@ -111,7 +111,7 @@ const UserProfile = ({
       <Tooltip id="tooltip-top-start" title="Copy then add to bookmark" placement="top">
         <div className={classes.Clipboard}>
             <TextField id="bookmarkLink" defaultValue={link} />
-          <IconButton onClick={handleAutologin} color="primary">
+          <IconButton onClick={handleAutologin} color="primary" id="autologinAction">
             <FilterNone />
           </IconButton>
         </div>
