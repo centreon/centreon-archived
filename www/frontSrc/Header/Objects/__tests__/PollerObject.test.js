@@ -32,33 +32,30 @@ describe('PollerObject', () => {
 
   const store = mockStore({
     poller: {
-      database: {
-        warning: {
-          total: 0,
-          message: 'warning database',
+      issues: {
+        database: {
+          critical: {
+            poller: [
+              {
+                id: 1,
+                name: 'central',
+                since: 12345
+              }
+            ],
+            total: 1
+          },
+          warning: {
+            total: 0,
+            poller: [
+              {
+                id: 1,
+                name: 'central',
+                since: 12345
+              }
+            ],
+          },
         },
-        critical: {
-          total: 1,
-          message: 'critical database',
-        }},
-      latency: {
-        critical: {
-          total: 5,
-          message: 'critical latency',
-        },
-        warning: {
-          total: 0,
-          message: 'warning latency',
-        }},
-      stability: {
-        critical: {
-          total: 0,
-          message: 'critical stability',
-        },
-        warning: {
-          total: 25,
-          message: 'warning stability',
-        }
+        total: 12
       },
       refreshTime: 90,
       total: 150,

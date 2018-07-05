@@ -4,8 +4,6 @@ exports[`UserProfile User Component renders correctly 1`] = `
 <UserProfileContainer
   autoLogin={[Function]}
   getUser={[Function]}
-  startSonoreNotification={[Function]}
-  stopSonoreNotification={[Function]}
   store={
     Object {
       "clearActions": [Function],
