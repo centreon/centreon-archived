@@ -155,8 +155,8 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     /*
      * status colors
      */
-    $color = substr($centreon->optGen["color_up"], 1).':'.substr($centreon->optGen["color_down"], 1)
-        . ':'.substr($centreon->optGen["color_unreachable"], 1).':'.substr($colors["undetermined"], 1)
+    $color = substr($colors["up"], 1).':'.substr($colors["down"], 1)
+        . ':'.substr($colors["unreachable"], 1).':'.substr($colors["undetermined"], 1)
         . ':'.substr($colors["maintenance"], 1);
 
     /*
