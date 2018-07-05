@@ -14,7 +14,7 @@ Le module dispose donc des même pré-requis.
 Mediawiki
 *********
 
-**Centreon Knowledge Base** requiert que **MediaWiki** (version = 1.21) soit installé sur un serveur.
+**Centreon Knowledge Base** requiert que **MediaWiki** (version = 1.31) soit installé sur un serveur.
 Un paquet RPM de Mediawiki est disponible sur les dépôts Centreon.
 
 Alternativement vous pouvez `télécharger MediaWiki ici <http://www.mediawiki.org/wiki/MediaWiki>`_
