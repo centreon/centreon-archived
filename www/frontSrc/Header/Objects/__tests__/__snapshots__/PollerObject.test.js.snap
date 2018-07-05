@@ -2,41 +2,37 @@
 
 exports[`PollerObject Poller icon renders correctly 1`] = `
 <PollerObjectContainer
-  getPollers={[Function]}
+  getPollersListIssues={[Function]}
+  getPollersStatus={[Function]}
   poller={
     Object {
       "dataFetched": true,
-      "database": Object {
-        "critical": Object {
-          "message": "critical database",
-          "total": 1,
+      "issues": Object {
+        "database": Object {
+          "critical": Object {
+            "poller": Array [
+              Object {
+                "id": 1,
+                "name": "central",
+                "since": 12345,
+              },
+            ],
+            "total": 1,
+          },
+          "warning": Object {
+            "poller": Array [
+              Object {
+                "id": 1,
+                "name": "central",
+                "since": 12345,
+              },
+            ],
+            "total": 0,
+          },
         },
-        "warning": Object {
-          "message": "warning database",
-          "total": 0,
-        },
-      },
-      "latency": Object {
-        "critical": Object {
-          "message": "critical latency",
-          "total": 5,
-        },
-        "warning": Object {
-          "message": "warning latency",
-          "total": 0,
-        },
+        "total": 12,
       },
       "refreshTime": 90,
-      "stability": Object {
-        "critical": Object {
-          "message": "critical stability",
-          "total": 0,
-        },
-        "warning": Object {
-          "message": "warning stability",
-          "total": 25,
-        },
-      },
       "total": 150,
     }
   }
