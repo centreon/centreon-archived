@@ -17,13 +17,13 @@ class LdapManualImportContext extends CentreonContext
     public function aLdapConfigurationWithUsersAutoImportDisabledHasBeenCreated()
     {
         $this->page = new LdapConfigurationListingPage($this);
-        $this->page = $this->page->inspect('openldap');
+        $this->page = $this->page->inspect('OpenLDAP');
         $this->page->setProperties(array(
             'enable_authentication' => 1,
             'auto_import' => 0,
         ));
         $this->page = $this->page->save();
-        $this->page = $this->page->inspect('openldap');
+        $this->page = $this->page->inspect('OpenLDAP');
         if ($this->page->getProperty('auto_import') != 0) {
             throw new Exception('Users auto import enabled');
         }
@@ -38,7 +38,7 @@ class LdapManualImportContext extends CentreonContext
         $this->page->setProperties(
             array(
                 'servers' => array(
-                    'openldap' => array(
+                    'OpenLDAP' => array(
                         'checked' => true
                     )
                 )
