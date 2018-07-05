@@ -39,6 +39,7 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
+$queryValues = $queryValues ?? [];
 $SearchTool = null;
 $search = '';
 if (isset($_POST['searchVM']) && $_POST['searchVM']) {
