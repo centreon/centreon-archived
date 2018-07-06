@@ -502,7 +502,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         /* send remote commands */
         $remoteCommands = implode(PHP_EOL, $this->remoteCommands);
         if ($remoteCommands) {
-            file_put_contents($this->remoteCmdFile, $remoteCommands, FILE_APPEND);
+            file_put_contents($this->remoteCmdDir . "/" . time() . "-downtimes", $remoteCommands, FILE_APPEND);
         }
     }
 }
