@@ -68,13 +68,19 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
     }
 
     if ($accessService) {
-        $query = 'SELECT * FROM `log_archive_service` WHERE host_id = ? AND service_id = ? ORDER BY date_start DESC';
+        /* Use "like" instead of "=" to avoid mysql bug on partitioned tables */
+        $query = 'SELECT * ' .
+            'FROM `log_archive_service` ' .
+            'WHERE host_id LIKE :host_id ' .
+            'AND service_id LIKE :service_id ' .
+            'ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
-        $DBRESULT = $pearDBO->execute($stmt, array($_GET['host_id'], $_GET['id']));
-        while ($row = $DBRESULT->fetchRow()) {
+        $stmt->bindValue(':host_id', $_GET['host_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':service_id', $_GET['id'], PDO::PARAM_INT);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
             fillBuffer($statesTab, $row, $color);
         }
-        $DBRESULT->closeCursor();
     } else {
         $buffer->writeElement("error", "Cannot access to host information");
     }

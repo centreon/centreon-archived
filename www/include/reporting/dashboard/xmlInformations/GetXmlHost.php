@@ -69,7 +69,8 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
     }
 
     if ($accessHost) {
-        $query = 'SELECT  * FROM `log_archive_host` WHERE host_id = :id ORDER BY date_start DESC';
+        /* Use "like" instead of "=" to avoid mysql bug on partitioned tables */
+        $query = 'SELECT  * FROM `log_archive_host` WHERE host_id LIKE :id ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
         $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
         $stmt->execute();
