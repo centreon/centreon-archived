@@ -51,6 +51,7 @@ first.
 ### Dev team
 * Lionel Assepo
 * Maximilien Bersoult
+* Stéphane Chapron
 * Kevin Duret
 * Loic Laurent
 * Rabaa Ridene
