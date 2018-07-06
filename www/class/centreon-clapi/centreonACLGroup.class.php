@@ -328,7 +328,7 @@ class CentreonACLGroup extends CentreonObject
             array(
                 'object' => 'CONTACT',
                 'relClass' => 'Centreon_Object_Relation_Acl_Group_Contact',
-                'objectFieldName' => 'contact_name'
+                'objectFieldName' => 'contact_alias'
             ),
             array(
                 'object' => 'CONTACTGROUP',
