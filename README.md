@@ -49,6 +49,7 @@ first.
 * Romain Le Merlus
 
 ### Dev team
+* Guillaume Baldo
 * Lionel Assepo
 * Maximilien Bersoult
 * Stéphane Chapron
