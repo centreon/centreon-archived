@@ -182,22 +182,23 @@ class Service extends AbstractService {
             $this->service_cache[$service_id]['contact_from_host'] = 1;
         }
     }
-    
+
     private function getSeverityInServiceChain($service_id_arg) {
         if (isset($this->service_cache[$service_id_arg]['severity_id'])) {
             return 0;
         }
-        
+
         $this->service_cache[$service_id_arg]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id_arg);
         $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id_arg]['severity_id']);
         if (!is_null($severity)) {
-            $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
+            $this->service_cache[$service_id_arg]['criticality_id'] = $severity['sc_id'];
+            $this->service_cache[$service_id_arg]['criticality_level'] = $severity['level'];
+            $this->service_cache[$service_id_arg]['criticality_name'] = $severity['sc_name'];
             return 0;
-        }        
-        
+        }
+
         # Check from service templates
-        $loop = array();        
+        $loop = array();
         $services_tpl = &ServiceTemplate::getInstance()->service_cache;
         $services_top_tpl = isset($this->service_cache[$service_id_arg]['service_template_model_stm_id']) ? $this->service_cache[$service_id_arg]['service_template_model_stm_id'] : null;
         $service_id = $services_top_tpl;
@@ -232,35 +233,37 @@ class Service extends AbstractService {
             if (!is_null($severity)) {
                 $service_severity = Severity::getInstance()->getServiceSeverityMappingHostSeverityByName($severity['hc_name']);
                 if (!is_null($service_severity)) {
-                    $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $service_severity['level'];
-                    $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $service_severity['sc_id'];
+                    $this->service_cache[$service_id]['criticality_id'] = $service_severity['sc_id'];
+                    $this->service_cache[$service_id]['criticality_level'] = $service_severity['level'];
+                    $this->service_cache[$service_id]['criticality_name'] = $service_severity['sc_name'];
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     private function clean(&$service) {
         #if ($service['contact_from_host'] == 1) {
         #    $service['contacts'] = null;
         #    $service['contact_groups'] = null;
         #    $service['contact_from_host'] = 0;
         #}
-        
+
         if ($service['severity_from_host'] == 1) {
-            unset($service['macros']['_CRITICALITY_LEVEL']);
-            unset($service['macros']['_CRITICALITY_ID']);
+            unset($service['criticality_id']);
+            unset($service['criticality_level']);
+            unset($service['criticality_name']);
         }
     }
-    
+
     public function addGeneratedServices($host_id, $service_id) {
         if (!isset($this->generated_services[$host_id])) {
             $this->generated_services[$host_id] = array();
         }
         $this->generated_services[$host_id][] = $service_id;
     }
-    
+
     public function getGeneratedServices() {
         return $this->generated_services;
     }

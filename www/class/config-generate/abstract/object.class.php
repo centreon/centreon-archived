@@ -117,19 +117,19 @@ abstract class AbstractObject {
     protected function writeObject($object) {
         $object_file = "\n";
         $object_file .= 'define ' . $this->object_name . " {\n";
-                
+
         foreach ($this->attributes_write as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != '') {
                 $object_file .= sprintf("    %-30s %s \n", $attr, $object[$attr]);
             }
         }
-        
+
         foreach ($this->attributes_default as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && $object[$attr] != 2) {
                 $object_file .= sprintf("    %-30s %s \n", $attr, $object[$attr]);
             }
         }
-        
+
         foreach ($this->attributes_array as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr])) {
                 $str = '';
@@ -140,13 +140,13 @@ abstract class AbstractObject {
                         $str_append = ',';
                     }
                 }
-                
+
                 if ($str != '') {
                     $object_file .= sprintf("    %-30s %s \n", $attr, $str);
                 }
             }
         }
-        
+
         foreach ($this->attributes_hash as &$attr) {
             if (!isset($object[$attr])) {
                 continue;
@@ -155,11 +155,11 @@ abstract class AbstractObject {
                  $object_file .= sprintf("    %-30s %s \n", $key, $value);
             }
         }
-        
+
         $object_file .= "}\n";
         fwrite($this->fp, $this->toUTF8($object_file));
     }
-    
+
     protected function generateObjectInFile($object, $id) {
         if (is_null($this->fp)) {
             $this->createFile($this->backend_instance->getPath());

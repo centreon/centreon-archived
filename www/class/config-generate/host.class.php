@@ -153,8 +153,9 @@ class Host extends AbstractHost {
         $severity_id = $severity_instance->getHostSeverityByHostId($host_id_arg);
         $this->hosts[$host_id_arg]['severity'] = $severity_instance->getHostSeverityById($severity_id);
         if (!is_null($this->hosts[$host_id_arg]['severity']) ) {
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_LEVEL'] = $this->hosts[$host_id_arg]['severity']['level'];
-            $this->hosts[$host_id_arg]['macros']['_CRITICALITY_ID'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
+            $this->hosts[$host_id_arg]['criticality_id'] = $this->hosts[$host_id_arg]['severity']['hc_id'];
+            $this->hosts[$host_id_arg]['criticality_level'] = $this->hosts[$host_id_arg]['severity']['level'];
+            $this->hosts[$host_id_arg]['criticality_name'] = $this->hosts[$host_id_arg]['severity']['hc_name'];
         }
 
         $hosts_tpl = &HostTemplate::getInstance()->hosts;

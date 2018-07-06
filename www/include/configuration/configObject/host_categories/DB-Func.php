@@ -210,7 +210,7 @@ function insertHostCategories($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-            
+
     $rq = "INSERT INTO hostcategories ";
     $rq .= "(hc_name, hc_alias, level, icon_id, hc_comment, hc_activate) ";
     $rq .= "VALUES (";
@@ -228,7 +228,7 @@ function insertHostCategories($ret = array())
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    
+
     $centreon->CentreonLogAction->insertLog("hostcategories", $hc_id["MAX(hc_id)"], CentreonDB::escape($ret["hc_name"]), "a", $fields);
     return ($hc_id["MAX(hc_id)"]);
 }
@@ -259,7 +259,7 @@ function updateHostCategories($hc_id)
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    
+
     $centreon->CentreonLogAction->insertLog("hostcategories", $hc_id, CentreonDB::escape($ret["hc_name"]), "c", $fields);
 }
 
@@ -272,26 +272,11 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     }
 
     /*
-	 * Special Case, delete relation between host/service, when service
-	 * is linked to hostcategories in escalation, dependencies, osl
-	 *
-	 * Get initial Host list to make a diff after deletion
-	 */
-    $hostsOLD = array();
-    $DBRESULT = $pearDB->query("SELECT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
-    while ($host = $DBRESULT->fetchRow()) {
-        $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
-    }
-    $DBRESULT->free();
-
-    /*
-	 * Update Host HG relations
+	 * Update Host HC relations
 	 */
     $pearDB->query("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
 
-    
     $ret = isset($ret["hc_hosts"]) ? $ret["hc_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
-    $hgNEW = array();
 
     $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
     for ($i = 0; $i < count($ret); $i++) {
@@ -299,8 +284,6 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
             $rq .= ", ";
         }
         $rq .= " ('".$hc_id."', '".$ret[$i]."')";
-
-        $hostsNEW[$ret[$i]] = $ret[$i];
     }
     if ($i != 0) {
         $DBRESULT = $pearDB->query($rq);
@@ -312,8 +295,6 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
             $rq .= ", ";
         }
         $rq .= " ('".$hc_id."', '".$ret[$i]."')";
-
-        $hostsNEW[$ret[$i]] = $ret[$i];
     }
     if ($i != 0) {
         $DBRESULT = $pearDB->query($rq);

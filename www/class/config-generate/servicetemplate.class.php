@@ -149,29 +149,30 @@ class ServiceTemplate extends AbstractService {
         $results = $this->stmt_service->fetchAll(PDO::FETCH_ASSOC);
         $this->service_cache[$service_id] = array_pop($results);
     }
-    
+
     private function getSeverity($service_id) {
         if (isset($this->service_cache[$service_id]['severity_id'])) {
             return 0;
         }
-        
+
         $this->service_cache[$service_id]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id);
         $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id]['severity_id']);
         if (!is_null($severity)) {
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
+            $this->service_cache[$service_id]['criticality_id'] = $severity['sc_id'];
+            $this->service_cache[$service_id]['criticality_level'] = $severity['level'];
+            $this->service_cache[$service_id]['criticality_name'] = $severity['sc_name'];
         }
     }
-    
+
     public function generateFromServiceId($service_id) {
         if (is_null($service_id)) {
             return null;
         }
-        
+
         if (!isset($this->service_cache[$service_id])) {
             $this->getServiceFromId($service_id);
         }
-        
+
         if (is_null($this->service_cache[$service_id])) {
             return null;
         }
@@ -184,7 +185,7 @@ class ServiceTemplate extends AbstractService {
             }
             return $this->service_cache[$service_id]['name'];
         }
-        
+
         # avoid loop. we return nothing
         if (isset($this->loop_tpl[$service_id])) {
             return null;

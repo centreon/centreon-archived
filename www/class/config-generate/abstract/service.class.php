@@ -112,7 +112,10 @@ abstract class AbstractService extends AbstractObject {
         'action_url',
         'icon_image',
         'icon_image_alt',
-        'acknowledgement_timeout'
+        'acknowledgement_timeout',
+        'criticality_id',
+        'criticality_name',
+        'criticality_level',
     );
     protected $attributes_default = array(
         'is_volatile',

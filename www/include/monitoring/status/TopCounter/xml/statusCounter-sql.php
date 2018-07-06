@@ -46,9 +46,6 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 session_start();
 session_write_close();
 
-/*
- * Get session
- */
 if (!isset($_SESSION['centreon'])) {
     exit();
 }
@@ -65,16 +62,9 @@ $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, $debug, 1, 0);
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     $obj->reloadSession();
 } else {
-    print 'Bad Session ID';
+    print "Bad Session ID";
     exit();
 }
-
-/*
- * Connection to Redis
- */
-$redis = new Redis();
-$redis->connect($conf_centreon['redisServer'], $conf_centreon['redisPort']);
-$redis->auth($conf_centreon['redisPassword']);
 
 /* *********************************************
 * Get active poller only
@@ -86,141 +76,73 @@ while ($d = $DBRESULT->fetchRow()) {
     if ($pollerList != "") {
         $pollerList .= ", ";
     }
-    $pollerList .= "'" . $d['name'] . "'";
+    $pollerList .= "'".$d["name"]."'";
 }
 
 $DBRESULT->free();
 
-if (!$obj->is_admin) {
-    error_log("NOT ADMIN: $acl");
-    $args = array_keys($obj->grouplist);
-    sort($args);
-    $acl = implode(':', $args);
-    $svc_source = 'services:acl:' . $acl;
-    if (!$redis->exists($svc_source)) {
-        $args = array_map(function ($a) {
-                    return 'services:acl:' . $a;
-                }, $args);
-        array_unshift($args, $svc_source);
-        call_user_func_array(array($redis, 'sUnionStore'), $args);
-    }
-    $hst_source = 'hosts:acl:' . $acl;
-    if (!$redis->exists($hst_source)) {
-        $args = array_map($obj->grouplist, function ($a) {
-                    return 'hosts:acl:' . $a;
-                });
-        array_unshift($args, $hst_source);
-        call_user_func_array(array($redis, 'sUnionStore'), $args);
-    }
-}
-else {
-    error_log("ADMIN");
-    $svc_source = 'services';
-    $hst_source = 'hosts';
-}
-
 /* *********************************************
  * Get Host stats
  */
-
-error_log("TABULAR.COUNT $hst_source FILTER 1 current_state MATCH [0-4]");
-$tmp = $redis->rawCommand('TABULAR.COUNT', $hst_source,
-        'FILTER', 1, 'current_state', 'MATCH', '[0-4]');
-
-for ($i = 0; $i < count($tmp); $i += 6) {
-    if ($tmp[$i + 1] == 0) {
-        $hst_up = $tmp[$i + 3];
-    }
-    elseif ($tmp[$i + 1] == 2) {
-        $hst_down = $tmp[$i + 3];
-    }
-    elseif ($tmp[$i + 1] == 3) {
-        $hst_unreachable = $tmp[$i + 3];
-    }
-    elseif ($tmp[$i + 1] == 4) {
-        $hst_pending = $tmp[$i + 3];
-    }
+$rq1 =  " SELECT count(DISTINCT name), state " .
+        " FROM hosts ";
+if (!$obj->is_admin) {
+    $rq1 .= " , centreon_acl ";
 }
-
-if (!isset($hst_up)) {
-    $hst_up = 0;
+$rq1 .= " WHERE name NOT LIKE '_Module_%' ";
+if (!$obj->is_admin) {
+    $rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
 }
+$rq1 .= " AND hosts.enabled = 1 ";
+$rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
+$rq1 .= " GROUP BY state";
 
-if (!isset($hst_down)) {
-    $hst_down = 0;
+$hostCounter = 0;
+$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
+$DBRESULT = $obj->DBC->query($rq1);
+while ($data = $DBRESULT->fetchRow()) {
+    $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
+    $hostCounter += $host_stat[$data["state"]];
 }
-
-if (!isset($hst_unreachable)) {
-    $hst_unreachable = 0;
-}
-
-if (!isset($hst_pending)) {
-    $hst_pending = 0;
-}
-
-$hostCounter = $hst_up + $hst_down + $hst_unreachable + $hst_pending;
-$host_stat = array(0 => $hst_up, 1 => $hst_down, 2 => $hst_unreachable, 3 => $hst_pending, 4=> 0);
+$DBRESULT->free();
 
 /* *********************************************
  * Get Service stats
  */
-
-error_log("TABULAR.COUNT $svc_source FILTER 3 current_state MATCH [0-4] acknowledged EQUAL 0 scheduled_downtime_depth EQUAL 0");
-$tmp = $redis->rawCommand('TABULAR.COUNT', $svc_source,
-        'FILTER', 3, 'current_state', 'MATCH', '[0-4]',
-        'acknowledged', 'EQUAL', '0',
-        'scheduled_downtime_depth', 'EQUAL', '0');
-
-for ($i = 0; $i < count($tmp); $i += 6) {
-    if ($tmp[$i + 1] == 0) {
-        $svc_ok = $tmp[$i + 3];
-    }
-    elseif ($tmp[$i + 1] == 1) {
-        $svc_warning = $tmp[$i + 3];
-        $svc_warn_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
-    }
-    elseif ($tmp[$i + 1] == 2) {
-        $svc_critical = $tmp[$i + 3];
-        if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
-            $svc_crit_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
-        }
-        else {
-            $svc_crit_ack_dt = 0;
-        }
-    }
-    elseif ($tmp[$i + 1] == 3) {
-        $svc_unknown = $tmp[$i + 3];
-        if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
-            $svc_unkn_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
-        }
-        else {
-            $svc_unkn_ack_dt = 0;
-        }
-    }
-    elseif ($tmp[$i + 1] == 4) {
-        $svc_pending = $tmp[$i + 3];
-        if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
-            $svc_pend_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
-        }
-        else {
-            $svc_pend_ack_dt = 0;
-        }
-    }
+$query_svc_status = "SELECT " .
+    "SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END) AS OK_TOTAL, " .
+    "SUM(CASE WHEN s.state = 1 THEN 1 ELSE 0 END) AS WARNING_TOTAL, " .
+    "SUM(CASE WHEN s.state = 1 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
+    "    THEN 1 ELSE 0 END) AS WARNING_ACK_DT, " .
+    "SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END) AS CRITICAL_TOTAL, " .
+    "SUM(CASE WHEN s.state = 2 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
+    "    THEN 1 ELSE 0 END) AS CRITICAL_ACK_DT, " .
+    "SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END) AS UNKNOWN_TOTAL, " .
+    "SUM(CASE WHEN s.state = 3 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
+    "    THEN 1 ELSE 0 END) AS UNKNOWN_ACK_DT, " .
+    "SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END) AS PENDING_TOTAL " .
+    "FROM hosts h, services s, instances i " .
+    "WHERE i.deleted = 0 " .
+    "AND h.enabled = 1 " .
+    "AND s.enabled = 1 " .
+    "AND i.instance_id = h.instance_id " .
+    "AND h.host_id = s.host_id " .
+    "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
+if (!$obj->is_admin) {
+    $query_svc_status .=  "AND EXISTS (" .
+        "SELECT service_id " .
+        "FROM centreon_acl " .
+        "WHERE centreon_acl.host_id = h.host_id " .
+        "AND centreon_acl.service_id = s.service_id " .
+        "AND centreon_acl.group_id IN (" . $obj->grouplistStr . ")" .
+        ") ";
 }
+$DBRESULT = $obj->DBC->query($query_svc_status);
+$svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
+$DBRESULT->free();
 
-$svc_stat = array(
-        'OK_TOTAL' => isset($svc_ok) ? $svc_ok : 0,
-        'WARNING_TOTAL' => isset($svc_warning) ? $svc_warning : 0,
-        'WARNING_ACK_DT' => isset($svc_warn_ack_dt) ? $svc_warn_ack_dt : 0,
-        'CRITICAL_TOTAL' => isset($svc_critical) ? $svc_critical : 0,
-        'CRITICAL_ACK_DT' => $svc_crit_ack_dt,
-        'UNKNOWN_TOTAL' => isset($svc_unknown) ? $svc_unknown : 0,
-        'UNKNOWN_ACK_DT' => isset($svc_unkn_ack_dt) ? $svc_unkn_ack_dt : 0,
-        'PENDING_TOTAL' => isset($svc_pending) ? $svc_pending : 0,
-        'PENDING_ACK_DT' => isset($svc_pend_ack_dt) ? $svc_pend_ack_dt : 0);
-
-$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"]
-    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"]
+$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"] 
+    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"] 
     + $svc_stat["PENDING_TOTAL"];
 
 /* ********************************************

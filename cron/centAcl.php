@@ -548,7 +548,7 @@ try {
                 unset($sgElem);
 
                 // Filter
-                $Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
+                $Host = getFilteredHostCategories($Host, $acl_group_id, $res2['acl_res_id']);
                 $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
 
                 /*

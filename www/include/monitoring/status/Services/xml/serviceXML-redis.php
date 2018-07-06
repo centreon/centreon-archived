@@ -243,7 +243,6 @@ function build_search_rows(&$result, $block) {
 }
 
 $filter = array();
-$src_array = array();
 
 if ($statusService == 'svcpb' || $statusService == 'svc_unhandled') {
     if ($statusService == 'svcpb') {
@@ -311,51 +310,59 @@ if (isset($instance) && $instance > 0) {
     $filter[] = $instance;
 }
 
-if (isset($hostgroups) && $hostgroups > 0) {
-    $src_array[] = 'hgs:' . $hostgroups;
-}
-
-if (isset($servicegroups) && $servicegroups > 0) {
-    $src_array[] = 'sg:' . $servicegroups;
-}
-
 if (!empty($search)) {
     $filter[] = 'display_name';
     $filter[] = 'MATCH';
-    $filter[] = '*' . $search . '*';
+    $filter[] = $search;
 }
 
 if (!empty($search_host)) {
     $filter[] = 'host_name';
     $filter[] = 'MATCH';
-    $filter[] = '*' . $search_host . '*';
+    $filter[] = $search_host;
 }
 
 if (!empty($search_output)) {
     $filter[] = 'plugin_output';
     $filter[] = 'MATCH';
-    $filter[] = '*' . $search_output . '*';
+    $filter[] = $search_output;
 }
 
-//if (!$obj->is_admin) {
-//    $filter .= ' @acl_groups:{' . implode('|', array_keys($obj->grouplist)) . '}';
-//}
+if (!empty($hostgroups) && $hostgroups > 0) {
+    $filter[] = 'host_key';
+    $filter[] = 'IN';
+    $filter[] = 'hg:' . $hostgroups;
+}
 
-if (empty($src_array)) {
-    $src = 'services';
+if (!empty($servicegroups) && $servicegroups > 0) {
+    $filter[] = 'key';
+    $filter[] = 'IN';
+    $filter[] = 'sg:' . $servicegroups;
+}
+
+if (!$obj->is_admin) {
+    $args = array_keys($obj->grouplist);
+    sort($args);
+    $source = 'services:acl:' . implode(':', $args);
+    if (count($args) >= 2 && !$redis->exists($source)) {
+        $args = array_map(
+                function ($a) {
+                    return 'services:acl:' . $a;
+                },
+                $args);
+        array_unshift($args, $source);
+        call_user_func_array(array($redis, 'sUnionStore'), $args);
+    }
 }
 else {
-    $src = uniqid('services_src_');
-    array_unshift($src_array, $src);
-    call_user_func_array(array($redis, 'sUnionStore'), $src_array);
-    $redis->setTimeout($src, 60);
+    $source = 'services';
 }
 
 $store = uniqid('services_');
 
 $get_params = array(
         'TABULAR.GET',
-        $src,
+        $source,
         $num * $limit,
         $num * $limit + $limit - 1,
         'STORE', $store,
@@ -399,17 +406,11 @@ else {
         array('SORT', 3, $ty[$sort_type][0], $t, 'host_name', 'ALPHA', 'service_description', 'ALPHA'));
 }
 if (!empty($filter)) {
-    error_log('FILTER1: ' . print_r($filter, true));
     array_unshift($filter, 'FILTER', count($filter) / 3);
-    error_log('FILTER2: ' . print_r($filter, true));
     $get_params = array_merge($get_params, $filter);
 }
-error_log('###########################################');
-error_log(print_r($get_params, true));
 
 $RESULT = call_user_func_array(array($redis, 'rawCommand'), $get_params);
-
-error_log(implode(' ', $get_params));
 
 $field = array(
         'acknowledged',
@@ -420,7 +421,7 @@ $field = array(
         'event_handler_enabled',
         'flap_detection',
         'flapping',
-        'host_id',
+        'host_key',
         'host_name',
         'icon_image',
         'last_check',
@@ -444,18 +445,13 @@ foreach ($field as $f) {
     $field1[] = '*->' . $f;
 }
 $RESULT = call_user_func_array(array($redis, 'rawCommand'), $field1);
-error_log(implode(' ', $field1));
 
 $redis->unlink($store);
 
 $numRows = $redis->get($store . ':size');
-error_log("NUM ROWS: " . $numRows);
 $redis->unlink($store . ':size');
 
 $rows = build_search_rows($RESULT, $field);
-
-error_log('######################################################');
-error_log(print_r($rows, true));
 
 //$critRes = $obj->DBC->query(
 //        "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
@@ -609,17 +605,17 @@ foreach ($rows as $row) {
     }
 
     /* Let's get the associated host: in cache or from Redis */
-    $hid = $row['host_id'];
-    $host_key = 'h:' . $hid;
+    $host_key = $row['host_key'];
+    $tmp = explode(':', $host_key);
+    $hid = $tmp[1];
     if (!isset($hosts[$hid])) {
       $hosts[$hid] = $redis->hMGet(
-          'h:' . $hid,
+          $host_key,
           array('current_state', 'notes', 'notes_url', 'action_url', 'scheduled_downtime_depth', 'icon_image', 'address')
       );
       setSearchDefaultHostFields($hosts[$hid]);
     }
     $hst = &$hosts[$hid];
-    error_log('SET ROW '.$row['service_id'] . ': HOST PASSIVE CHECKS ' . $hst['passive_checks']);
     /* Let's get the instance name: in cache or from Redis */
     if (!isset($instances[$row['poller_id']])) {
       $instances[$row['poller_id']] = $redis->get('i:' . $row['poller_id']);
@@ -850,11 +846,9 @@ foreach ($rows as $row) {
         $obj->XML->writeElement('sn', 'none');
     }
 
-    error_log('ROW '.$row['service_id'] . ': FLAP DETECTION ' . $row['flap_detection']);
     $obj->XML->writeElement('fd', $row['flap_detection']);
     $obj->XML->writeElement('ha', $hst['acknowledged']);
     $obj->XML->writeElement('hae', $hst['active_checks']);
-    error_log('ROW '.$row['service_id'] . ': HOST PASSIVE CHECKS ' . $hst['passive_checks']);
     $obj->XML->writeElement('hpe', $hst['passive_checks']);
     $obj->XML->writeElement('nc', $obj->GMT->getDate($dateFormat, $row['next_check']));
     if ($row['last_check'] != 0) {
@@ -878,7 +872,6 @@ foreach ($rows as $row) {
                 . 'AND service_id = ' . $row['service_id'] . ' '
                 . 'AND index_data.hidden = \'0\' ';
             $DBRESULT2 = $obj->DBC->query($request2);
-            error_log($request2);
             while ($dataG = $DBRESULT2->fetchRow()) {
                 if (!isset($graphs[$hid])) {
                     $graphs[$hid] = array();

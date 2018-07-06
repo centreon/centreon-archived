@@ -69,7 +69,7 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
 {
     global $pearDB, $hostCache;
 
-    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '".$res_id."'";
+    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '" . $res_id . "'";
     $DBRESULT = $pearDB->query($request);
     $row = $DBRESULT->fetchRow();
     $isPollerFilter = $row['count'];
@@ -155,7 +155,7 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
 /*
  * Return enable categories for this resource access
  */
-function getAuthorizedCategories($groupstr, $res_id)
+function getAuthorizedSvcCategories($groupstr, $res_id)
 {
     global $pearDB;
 
@@ -173,7 +173,7 @@ function getAuthorizedCategories($groupstr, $res_id)
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
     while ($res = $DBRESULT->fetchRow()) {
-        $tab_categories[$res["sc_id"]] = $res["sc_id"];
+        $tab_categories[$res['sc_id']] = $res['sc_id'];
     }
     $DBRESULT->free();
     unset($res);
@@ -328,6 +328,9 @@ function hasServiceCategoryFilter($res_id)
 function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories)
 {
     $tab_svc = getMyHostServicesByName($host_id);
+    foreach ($tab_svc as $k=>$v) {
+        info(3, "get authorized Services host : $k => $v");
+    }
 
     /*
      * Get Service Groups

@@ -119,7 +119,10 @@ abstract class AbstractHost extends AbstractObject {
         'vrml_image',
         'statusmap_image',
         'timezone',
-        'acknowledgement_timeout'
+        'acknowledgement_timeout',
+        'criticality_id',
+        'criticality_name',
+        'criticality_level',
     );
     protected $attributes_default = array(
         'active_checks_enabled',
@@ -145,7 +148,7 @@ abstract class AbstractHost extends AbstractObject {
     protected $stmt_htpl = null;
     protected $stmt_contact = null;
     protected $stmt_cg = null;
-    
+
     protected function getImages(&$host) {
         $media = Media::getInstance();
         if (!isset($host['icon_image'])) {
@@ -188,7 +191,7 @@ abstract class AbstractHost extends AbstractObject {
         
         return 0;
     }
-    
+
     protected function getHostTemplates(&$host) {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {

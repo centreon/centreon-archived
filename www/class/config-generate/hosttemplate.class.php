@@ -145,20 +145,21 @@ class HostTemplate extends AbstractHost {
         if (isset($this->hosts[$host_id]['severity_id'])) {
             return 0;
         }
-        
+
         $this->hosts[$host_id]['severity_id'] = Severity::getInstance()->getHostSeverityByHostId($host_id);
         $severity = Severity::getInstance()->getHostSeverityById($this->hosts[$host_id]['severity_id']);
         if (!is_null($severity)) {
-            $this->hosts[$host_id]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
-            $this->hosts[$host_id]['macros']['_CRITICALITY_ID'] = $severity['hc_id'];
+            $this->hosts[$host_id]['criticality_id'] = $severity['hc_id'];
+            $this->hosts[$host_id]['criticality_level'] = $severity['level'];
+            $this->hosts[$host_id]['criticality_name'] = $severity['hc_name'];
         }
     }
-    
+
     public function generateFromHostId($host_id) {
         if (is_null($this->hosts)) {
             $this->getHosts();
         }
-        
+
         if (!isset($this->hosts[$host_id])) {
             return null;
         }
@@ -171,7 +172,7 @@ class HostTemplate extends AbstractHost {
             return $this->hosts[$host_id]['name'];
         }
         $this->loop_htpl[$host_id] = 1;
-        
+
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);

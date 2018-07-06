@@ -522,9 +522,9 @@ try {
                 }
 
                 /*
-                 * Give Authorized Categories
+                 * Give Authorized Service Categories
                  */
-                $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
+                $authorizedCategories = getAuthorizedSvcCategories($acl_group_id, $res2["acl_res_id"]);
 
                 /*
                  * get all Service groups
@@ -557,7 +557,7 @@ try {
                         $sgResCache[$acl_group_id] = array();
                     }
                     $svcgroup = 'sg:' . $row['sg_id'];
-                    info(3, "  Completing sgs:acl:$acl_group_id with service group " . $svcgroup);
+                    info(3, "  Completing service groups acl cache for acl:$acl_group_id with service group " . $svcgroup);
                     $sgResCache[$acl_group_id][] = $svcgroup;
                 }
                 $DBRESULT3->free();
@@ -573,12 +573,11 @@ try {
                     info(1, "Completing hosts:acl:$acl_group_id with host " . $key);
                     $redis->sAdd('hosts:acl:' . $acl_group_id, 'h:' . $key);
                     $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2['acl_res_id'], $authorizedCategories);
-//                    if (!isset($tabElem[$key])) {
-//                        $tabElem[$key] = array();
-//                    }
-//                    foreach ($tab as $desc => $id) {
-//                        $tabElem[$key][$desc] = $key . ',' . $id;
-//                    }
+                    info(3, "Authorized services added for acl $acl_group_id...");
+                    foreach ($tab as $desc => $id) {
+                        info(3, "  service s:$key:$id added");
+                        $redis->sAdd('services:acl:' . $acl_group_id, "s:$key:$id");
+                    }
                     unset($tab);
                 }
                 unset($Host);
