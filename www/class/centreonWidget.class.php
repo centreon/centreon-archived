@@ -712,8 +712,6 @@ class CentreonWidget
                 if (count($tmp) != 3) {
                     throw new CentreonWidgetException('incorrect position data');
                 }
-                $column = $tmp[0];
-                $row = $tmp[1];
                 $widgetOrder = "{$tmp[0]}_{$tmp[1]}";
                 $widgetId = $tmp[2];
 
