@@ -152,7 +152,7 @@ for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_name" => $vmetric["vmetric_name"],
         "RowMenu_link" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetric['vmetric_id'],
         "RowMenu_unit" => $vmetric["unit_name"],
-        "RowMenu_rpnfunc" => $vmetric["rpn_function"],
+        "RowMenu_rpnfunc" => htmlentities($vmetric["rpn_function"]),
         "RowMenu_count" => "-",
         "RowMenu_dtype" => $deftype[$vmetric["def_type"]],
         "RowMenu_hidden" => $yesOrNo[$vmetric["hidden"]],
