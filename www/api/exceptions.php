@@ -143,3 +143,13 @@ class RestGatewayTimeOutException extends RestException
         parent::__construct($message, $this->code, $previous);
     }
 }
+
+class RestPartialContent extends RestException
+{
+    protected $code = 206;
+
+    public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
+}

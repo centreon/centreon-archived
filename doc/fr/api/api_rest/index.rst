@@ -331,6 +331,104 @@ Using GET method and the URL below:  ::
 
   api.domain.tld/centreon/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
 
+Submit results
+--------------
+
+You can use the centreon API to submit information to the monitoring engine. All information that you submit will be forwarded to the centreon engine poller that host the configuration.
+
+To provide information, Centreon need to have specific and mandatory information.
+
+The user must be admin or have access to "Reach API Configuration".
+
+For the service submission please provide the following information :
+
++------------------+------------------------------------------+
+| Fields           | Description                              |
++==================+==========================================+
+| host             | host name                                |
++------------------+------------------------------------------+
+| service          | service description                      |
++------------------+------------------------------------------+
+| status           | status id (0, 1, 2, 3)                   |
+|                  | or ok, warning, critical, unknown        |
++------------------+------------------------------------------+
+| output           | a specific message                       |
++------------------+------------------------------------------+
+| perfdata         | all performance metric following the     |
+| (optional)       | nagios plugin API                        |
++------------------+------------------------------------------+
+| updatetime       | the check time (timestamp)               |
++------------------+------------------------------------------+
+
+For the host submission please provide the following information :
+
++------------------+------------------------------------------+
+| Fields           | Description                              |
++==================+==========================================+
+| host             | host name                                |
++------------------+------------------------------------------+
+| status           | status id (0, 1, 2, 3)                   |
++------------------+------------------------------------------+
+| output           | a specific message                       |
++------------------+------------------------------------------+
+| updatetime       | the check time (timestamp)               |
++------------------+------------------------------------------+
+
+To send status, please use the following URL using POST method:  ::
+
+ api.domain.tld/centreon/api/index.php?action=submit&object=centreon_submit_results
+
+**Header**
+
++---------------------+---------------------------------+
+|  key                |   value                         |
+|                     |                                 |
++---------------------+---------------------------------+
+| Content-Type        | application/json                |
++---------------------+---------------------------------+
+| centreon-auth-token | the value of authToken you got  |
+|                     | on the authentication response  |
++---------------------+---------------------------------+
+
+**Example of service body submit:**
+The body is a json with the parameters provided above formated as below: ::
+
+ {
+   "results": [
+     {
+       "updatetime": "1528884076",
+       "host": "Centreon-Central"
+       "service": "Memory",
+       "status": "2"
+       "output": "The service is in CRITICAL state"
+       "perfdata": "perf=20"
+     },
+     {
+       "updatetime": "1528884076",
+       "host": "Centreon-Central"
+       "service": "fake-service",
+       "status": "1"
+       "output": "The service is in WARNING state"
+       "perfdata": "perf=10"
+     }
+   ]
+ }
+
+**Example of body response:** ::
+The response body is a json with the HTTP return code and a message for each submit: ::
+
+ {
+   "results": [
+     {
+       "code": 202,
+       "message": "The status send to the engine"
+     },
+     {
+       "code": 404,
+       "message": "The service is not present."
+     }
+   ]
+ }
 
 Configuration
 -------------
@@ -2422,7 +2520,7 @@ Instances ( Pollers)
  * del
  * setparam
  * gethosts
- 
+
 
 Service templates
 ~~~~~~~~~~~~~~~~~
