@@ -132,6 +132,31 @@ class CentreonService extends CentreonObject
     }
 
     /**
+     * Get Object Id
+     *
+     * @param string $name
+     * @return int
+     */
+    public function getObjectId($name)
+    {
+        if (isset($this->objectIds[$name])) {
+            return $this->objectIds[$name];
+        }
+
+        if (preg_match('/^(.+);(.+)$/', $name, $matches)) {
+            $ids = $this->getHostAndServiceId($matches[1], $matches[2]);
+            if (isset($ids[1])) {
+                $this->objectIds[$name] = $ids[1];
+                return $this->objectIds[$name];
+            }
+        } else {
+            return parent::getObjectId($name);
+        }
+
+        return 0;
+    }
+
+    /**
      * Return the host id and service id if the combination does exist
      *
      * @param string $host
@@ -692,7 +717,7 @@ class CentreonService extends CentreonObject
                 array(
                     'svc_macro_value' => $params[3],
                     'is_password' => $params[4],
-                    'description' => $params[5]
+                    'description' => isset($params[5]) ? $params[5] : ''
                 )
             );
         } else {
@@ -702,7 +727,7 @@ class CentreonService extends CentreonObject
                     'svc_macro_name' => $this->wrapMacro($params[2]),
                     'svc_macro_value' => $params[3],
                     'is_password' => $params[4],
-                    'description' => $params[5],
+                    'description' => isset($params[5]) ? $params[5] : '',
                     'macro_order' => $macroOrder
                 )
             );
@@ -1042,9 +1067,19 @@ class CentreonService extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $filters["service_register"] = $this->register;
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array("service_register" => $this->register);
+        $filterId = null;
+        if (!is_null($filterName)) {
+            $filterId = $this->getObjectId($filterName);
+            $filters['service_id'] = $filterId;
+        }
 
         $hostRel = new \Centreon_Object_Relation_Host_Service();
         $elements = $hostRel->getMergedParameters(
@@ -1070,7 +1105,7 @@ class CentreonService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        CentreonServiceTemplate::getInstance()->export($tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -1078,9 +1113,6 @@ class CentreonService extends CentreonObject
                 }
                 $addStr .= $element[$param];
             }
-
-            # Host Filter
-            $this->api->export_filter('HOST', $element['host_id'], $element['host_name']);
 
             $addStr .= "\n";
             echo $addStr;
@@ -1090,17 +1122,17 @@ class CentreonService extends CentreonObject
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
                         $action_tmp = 'TP';
-                        $tmpObj = $tpObj;
+                        $tmpObj = CentreonTimePeriod::getInstance();
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
                         $action_tmp = 'CMD';
-                        $tmpObj = $commandObj;
+                        $tmpObj = CentreonCommand::getInstance();
                     }
                     if (isset($tmpObj)) {
-                        $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
-                        if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpObj->getObject()->getUniqueLabelField());
+                        if (isset($tmp) && isset($tmp[$tmpObj->getObject()->getUniqueLabelField()])) {
                             $tmp_id = $value;
-                            $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $value = $tmp[$tmpObj->getObject()->getUniqueLabelField()];
+                            $tmpObj->export($value);
                         }
                         unset($tmpObj);
                     }
@@ -1169,7 +1201,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                CentreonContactGroup::getInstance()->export($element['cg_name']);
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $cgelement['service_description'] . $this->delim
@@ -1190,7 +1222,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_name']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $celement['service_description'] . $this->delim
@@ -1211,7 +1243,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($telements as $telement) {
-                $this->api->export_filter('TRAP', $element['traps_id'], $element['traps_name']);
+                CentreonTrap::getInstance()->export($element['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $telement['service_description'] . $this->delim
@@ -1353,6 +1385,7 @@ class CentreonService extends CentreonObject
                     $arr[$i]['svc_macro_name'] = $matches[1];
                     $arr[$i]['svc_macro_value'] = $row['svc_macro_value'];
                     $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : null;
+                    $arr[$i]['is_password'] = $row['is_password'] ? 1 : null;
                     $arr[$i]['description'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     if (!is_null($template)) {

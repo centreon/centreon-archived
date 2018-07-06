@@ -320,11 +320,20 @@ class CentreonServiceGroup extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
+        if (!parent::export($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
 
         $sgs = $this->object->getList(
-            array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()),
+            array($this->object->getPrimaryKey(), $labelField),
             -1,
             0,
             null,

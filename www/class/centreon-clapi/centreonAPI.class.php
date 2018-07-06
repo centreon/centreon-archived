@@ -410,8 +410,7 @@ class CentreonAPI
         $action = null,
         $centreon_path = null,
         $options = null
-    )
-    {
+    ) {
         if (is_null(self::$_instance)) {
             self::$_instance = new CentreonAPI($user, $password, $action, $centreon_path, $options);
         }
@@ -830,43 +829,6 @@ class CentreonAPI
     }
 
     /**
-     * Export from a specific object
-     */
-    public function export_filter($action, $filter_id, $filter_name)
-    {
-        $exported = CentreonExported::getInstance();
-
-        if (is_null($action)) {
-            return 0;
-        }
-
-        if (!isset($this->objectTable[$action])) {
-            print "Unknown object : $action\n";
-            $this->setReturnCode(1);
-            $this->close();
-        }
-
-        $exported->ariane_push($action, $filter_id, $filter_name);
-        if ($exported->is_exported($action, $filter_id, $filter_name)) {
-            $exported->ariane_pop();
-            return 0;
-        }
-
-        $filters = array();
-        if (!is_null($filter_id) && $filter_id !== 0) {
-            $primaryKey = $this->objectTable[$action]->getObject()->getPrimaryKey();
-            $filters[$primaryKey] = $filter_id;
-        }
-        if (!is_null($filter_name)) {
-            $labelField = $this->objectTable[$action]->getObject()->getUniqueLabelField();
-            $filters[$labelField] = $filter_name;
-        }
-
-        $this->objectTable[$action]->export($filters);
-        $exported->ariane_pop();
-    }
-
-    /**
      * @param $newOption
      */
     public function setOption($newOption)
@@ -894,22 +856,25 @@ class CentreonAPI
             }
             foreach ($selected as $select) {
                 $splits = explode(';', $select);
+
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
                     $this->close();
-                }
-
-                if (!is_null($splits[1]) && $this->objectTable[$splits[0]]->getObjectId($splits[1]) == 0) {
-                    echo "Unknown object : $splits[0];$splits[1]\n";
-                    $this->setReturnCode(1);
-                    return $this->return_code;
+                } elseif (isset($splits[1])) {
+                    $name = $splits[1];
+                    if (isset($splits[2])) {
+                        $name .= ';' . $splits[2];
+                    }
+                    if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
+                        echo "Unknown object : $splits[0];$splits[1]\n";
+                        $this->setReturnCode(1);
+                        $this->close();
+                    } else {
+                        $this->objectTable[$splits[0]]->export($name);
+                    }
                 } else {
-                    $this->export_filter(
-                        $splits[0],
-                        $this->objectTable[$splits[0]]->getObjectId($splits[1]),
-                        $splits[1]
-                    );
+                    $this->objectTable[$splits[0]]->export();
                 }
             }
             return $this->return_code;

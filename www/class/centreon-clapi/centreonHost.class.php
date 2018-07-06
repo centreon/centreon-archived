@@ -41,6 +41,7 @@ require_once "centreonTimePeriod.class.php";
 require_once "centreonACL.class.php";
 require_once "centreonCommand.class.php";
 require_once "centreonExported.class.php";
+require_once "centreonTimezone.class.php";
 require_once "Centreon/Object/Instance/Instance.php";
 require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timeperiod/Timeperiod.php";
@@ -1117,13 +1118,21 @@ class CentreonHost extends CentreonObject
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        $filters["host_register"] = $this->register;
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array("host_register" => $this->register);
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $extendedObj = new \Centreon_Object_Host_Extended();
         $commandObj = new \Centreon_Object_Command();
-        $tpObj = new \Centreon_Object_Timeperiod();
         $macroObj = new \Centreon_Object_Host_Macro_Custom();
         $instanceRel = new \Centreon_Object_Relation_Instance_Host();
 
@@ -1135,7 +1144,7 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("host_register" => $this->register),
+                $filters,
                 "AND"
             );
         }
@@ -1170,21 +1179,22 @@ class CentreonHost extends CentreonObject
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
                         $action_tmp = 'TP';
-                        $tmpObj = $tpObj;
+                        $tmpObj = CentreonTimePeriod::getInstance();
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
                         $action_tmp = 'CMD';
-                        $tmpObj = $commandObj;
+                        $tmpObj = CentreonCommand::getInstance();
                     } elseif ($parameter == 'host_location') {
-                        $tmpObj = $this->timezoneObject;
+                        $tmpObj = CentreonTimezone::getInstance();
                     }
 
                     if (isset($tmpObj)) {
-                        $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
-                        if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
+                        $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
+                        if (isset($tmp) && isset($tmp[$tmpLabelField])) {
                             $tmp_id = $value;
-                            $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            if (!is_null($filters['host_id']) && !is_null($action_tmp)) {
-                                $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $value = $tmp[$tmpLabelField];
+                            if (!is_null($action_tmp)) {
+                                $tmpObj::getInstance()->export($value);
                             }
                         }
                         unset($tmpObj);
@@ -1256,8 +1266,8 @@ class CentreonHost extends CentreonObject
 
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host();
         $filters_cgRel = array("host_register" => $this->register);
-        if (!is_null($filters['host_id'])) {
-            $filters_cgRel['host_id'] = $filters['host_id'];
+        if (!is_null($filterName)) {
+            $filters_cgRel['host_name'] = $filterName;
         }
         $elements = $cgRel->getMergedParameters(
             array("cg_name", "cg_id"),
@@ -1270,7 +1280,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+            CentreonContactGroup::getInstance()->export($element['cg_name']);
             echo $this->action . $this->delim
                 . "addcontactgroup" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
@@ -1278,8 +1288,8 @@ class CentreonHost extends CentreonObject
         }
         $contactRel = new \Centreon_Object_Relation_Contact_Host();
         $filters_contactRel = array("host_register" => $this->register);
-        if (!is_null($filters['host_id'])) {
-            $filters_contactRel['host_id'] = $filters['host_id'];
+        if (!is_null($filterName)) {
+            $filters_contactRel['host_name'] = $filterName;
         }
         $elements = $contactRel->getMergedParameters(
             array("contact_alias", "contact_id"),
@@ -1292,7 +1302,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+            CentreonContact::getInstance()->export($element['contact_name']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim
@@ -1300,8 +1310,8 @@ class CentreonHost extends CentreonObject
         }
         $htplRel = new \Centreon_Object_Relation_Host_Template_Host();
         $filters_htplRel = array("h.host_register" => $this->register);
-        if (!is_null($filters['host_id'])) {
-            $filters_htplRel['h.host_id'] = $filters['host_id'];
+        if (!is_null($filterName)) {
+            $filters_htplRel['h.host_name'] = $filterName;
         }
         $elements = $htplRel->getMergedParameters(
             array("host_name as host"),
@@ -1314,7 +1324,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $this->api->export_filter('HTPL', $element['tpl_id'], $element['template']);
+            CentreonHostTemplate::getInstance()->export($element['template']);
             echo $this->action . $this->delim
                 . "addtemplate" . $this->delim
                 . $element['host'] . $this->delim
@@ -1322,7 +1332,7 @@ class CentreonHost extends CentreonObject
         }
 
         // Filter only
-        if (!is_null($filters['host_id'])) {
+        if (!is_null($filterName)) {
             # service templates linked
             $hostRel = new \Centreon_Object_Relation_Host_Service();
             $helements = $hostRel->getMergedParameters(
@@ -1332,11 +1342,11 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 0, "host_id" => $filters['host_id']),
+                array("service_register" => 0, "host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('STPL', $helement['service_id'], $helement['service_description']);
+                CentreonServiceTemplate::getInstance()->export($helement['service_description']);
             }
 
             # service linked
@@ -1348,11 +1358,11 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("service_register" => 1, "host_id" => $filters['host_id']),
+                array("service_register" => 1, "host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('SERVICE', $helement['service_id'], $helement['service_description']);
+                CentreonService::getInstance()->export($filterName . ';' . $helement['service_description']);
             }
 
             # service hg linked and hostgroups
@@ -1364,12 +1374,12 @@ class CentreonHost extends CentreonObject
                 0,
                 null,
                 null,
-                array("host_id" => $filters['host_id']),
+                array("host_name" => $filterName),
                 "AND"
             );
             foreach ($helements as $helement) {
-                $this->api->export_filter('HG', $helement['hg_id'], $helement['hg_name']);
-                $this->api->export_filter('HGSERVICE', $helement['hg_id'], $helement['hg_name']);
+                CentreonHostGroup::getInstance()->export($helement['hg_name']);
+                CentreonHostGroupService::getInstance()->export($helement['hg_name']);
             }
         }
     }

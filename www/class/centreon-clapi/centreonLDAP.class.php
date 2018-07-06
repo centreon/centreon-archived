@@ -348,7 +348,7 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
-                $contactObj = new CentreonContact($this->db);
+                $contactObj = new CentreonContact();
                 $params[2] = $contactObj->getContactID($params[2]);
             }
             $this->db->query(
@@ -395,11 +395,20 @@ class CentreonLDAP extends CentreonObject
     /**
      * Export data
      *
-     * @param null $filter_id
-     * @param null $filter_name
+     * @param null $filterName
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
         $configurationLdapObj = new \Centreon_Object_Configuration_Ldap();
         $serverLdapObj = new \Centreon_Object_Server_Ldap();
         $ldapList = $this->object->getList('*', -1, 0, null, null, $filters);

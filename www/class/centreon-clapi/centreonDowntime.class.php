@@ -123,6 +123,7 @@ class CentreonDowntime extends CentreonObject
     public function show($parameters = null)
     {
         $filters = array();
+        $filter = array();
         if (isset($parameters) && $parameters !== '') {
             $filter = explode(';', $parameters);
             $filters = array($this->object->getUniqueLabelField() => "%" . $filter[0] . "%");
@@ -826,10 +827,12 @@ class CentreonDowntime extends CentreonObject
     /**
      * Export
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
         // generic add & setparam
-        parent::export($filters);
+        if (!parent::export($filterName)) {
+            return false;
+        }
 
         // handle host relationships
         $this->exportHostRel();

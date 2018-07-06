@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2018 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,25 +35,17 @@
 
 namespace CentreonClapi;
 
-require_once "centreonContact.class.php";
+require_once "centreonObject.class.php";
+require_once "Centreon/Object/Timezone/Timezone.php";
 
-class CentreonContactTemplate extends CentreonContact
+class CentreonTimezone extends CentreonObject
 {
-    public static $aDepends = array(
-        'CMD',
-        'TP'
-    );
-
     /**
-     * Constructor
-     *
-     * @return void
+     * CentreonTimezone constructor.
      */
     public function __construct()
     {
         parent::__construct();
-        $this->params['contact_register'] = 0;
-        $this->register = 0;
-        $this->action = "CONTACTTPL";
+        $this->object = new \Centreon_Object_Timezone();
     }
 }

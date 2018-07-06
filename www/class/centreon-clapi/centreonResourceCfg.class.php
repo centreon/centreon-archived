@@ -332,14 +332,19 @@ class CentreonResourceCfg extends CentreonObject
      *
      * @return void
      */
-    public function export($arg = array())
+    public function export($filterName = null)
     {
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
         $elements = $this->object->getList();
 
-        if (!empty($arg)) {
+        if (!is_null($filterName) && !empty($filterName)) {
             $nbElements = count($elements);
             for ($i = 0; $i < $nbElements; $i++) {
-                if ($elements[$i]["resource_id"] != $arg["resource_id"]) {
+                if ($elements[$i][$labelField] != $filterName) {
                     unset($elements[$i]);
                 }
             }

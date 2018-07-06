@@ -238,13 +238,27 @@ class CentreonHostCategory extends CentreonSeverityAbstract
      *
      * @return void
      */
-    public function export($filters = null)
+    public function export($filterName = null)
     {
-        parent::export($filters);
+        if (!parent::export($filterName)) {
+            return false;
+        }
+
         $relobj = new \Centreon_Object_Relation_Host_Category_Host();
+        $hcFieldName = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$hcFieldName] = $filterName;
+        }
         $elements = $relobj->getMergedParameters(
-            array($this->object->getUniqueLabelField()),
-            array("host_name")
+            array($hcFieldName),
+            array("host_name"),
+            -1,
+            0,
+            $hcFieldName,
+            'ASC',
+            $filters,
+            'AND'
         );
         foreach ($elements as $element) {
             echo $this->action . $this->delim
