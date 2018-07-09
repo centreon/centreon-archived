@@ -340,6 +340,12 @@ if (!empty($servicegroups) && $servicegroups > 0) {
     $filter[] = 'sg:' . $servicegroups;
 }
 
+if ($criticality_id) {
+    $filter[] = 'criticality_id';
+    $filter[] = 'EQUAL';
+    $filter[] = $criticality_id;
+}
+
 if (!$obj->is_admin) {
     $args = array_keys($obj->grouplist);
     sort($args);
@@ -456,13 +462,7 @@ $rows = build_search_rows($RESULT, $field);
 //$critRes = $obj->DBC->query(
 //        "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
 //        );
-$criticalityUsed = 0;
-foreach ($rows as $row) {
-  if (isset($row['criticality_id'])) {
-    $criticalityUsed = 1;
-    break;
-  }
-}
+$criticalityUsed = $redis->scard('service_criticalities') ? 1 : 0;
 
 //$critCache = array();
 //if ($critRes->numRows()) {

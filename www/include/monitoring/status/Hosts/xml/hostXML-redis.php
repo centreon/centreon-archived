@@ -251,15 +251,6 @@ $flag = 0;
 //                                     FROM customvariables
 //                                     WHERE name = 'CRITICALITY_ID'
 //                                     AND service_id IS NULL");
-$criticalityUsed = 0;
-//$critCache = array();
-//if ($critRes->numRows()) {
-//    $criticalityUsed = 1;
-//    break;
-//    while ($critRow = $critRes->fetchRow()) {
-//        $critCache[$critRow['host_id']] = $critRow['value'];
-//    }
-//}
 
 function build_search_rows(&$result, $block) {
     $retval = array();
@@ -362,7 +353,6 @@ if ($instance != -1 && !empty($instance)) {
     $filter[] = $instance;
 }
 
-error_log("HOSTGROUPS !!!!!!!!!!!!!!!!!!!!!!!!" . $hostgroups);
 if ($hostgroups) {
     $filter[] = 'key';
     $filter[] = 'IN';
@@ -430,17 +420,21 @@ $field = array(
         'action_url',
         'active_checks',
         'address',
+        'alias',
         'check_attempt',
+        'criticality_id',
+        'criticality_level',
         'current_state',
         'flapping',
         'host_id',
+        'key',
         'icon_image',
-        'is_parent',
         'last_check',
         'last_hard_state_change',
         'last_state_change',
         'max_check_attempts',
         'name',
+        'notes',
         'notes_url',
         'notify',
         'plugin_output',
@@ -461,26 +455,34 @@ $redis->unlink($store);
 $numRows = $redis->get($store . ':size');
 $redis->unlink($store . ':size');
 
-$obj->XML->startElement("reponse");
-$obj->XML->startElement("i");
-$obj->XML->writeElement("numrows", $numRows);
-$obj->XML->writeElement("num", $num);
-$obj->XML->writeElement("limit", $limit);
-$obj->XML->writeElement("p", $p);
-$obj->XML->writeElement("o", $o);
-$obj->XML->writeElement("sort_type", $sort_type);
-$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
-$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
-$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
-$obj->XML->writeElement("http_action_link", _("HTTP Action Link"));
-$obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
-$obj->XML->writeElement("use_criticality", $criticalityUsed);
+$criticalityUsed = $redis->scard("host_criticalities") > 0 ? 1 : 0;
+
+$obj->XML->startElement('reponse');
+$obj->XML->startElement('i');
+$obj->XML->writeElement('numrows', $numRows);
+$obj->XML->writeElement('num', $num);
+$obj->XML->writeElement('limit', $limit);
+$obj->XML->writeElement('p', $p);
+$obj->XML->writeElement('o', $o);
+$obj->XML->writeElement('sort_type', $sort_type);
+$obj->XML->writeElement('hard_state_label', _('Hard State Duration'));
+$obj->XML->writeElement('parent_host_label', _('Top Priority Hosts'));
+$obj->XML->writeElement('regular_host_label', _('Secondary Priority Hosts'));
+$obj->XML->writeElement('http_action_link', _('HTTP Action Link'));
+$obj->XML->writeElement('notif_disabled', _('Notification is disabled'));
+$obj->XML->writeElement('use_criticality', $criticalityUsed);
 $obj->XML->endElement();
 
 $rows = build_search_rows($RESULT, $field);
 
 $delimInit = 0;
+$instance = array();
 foreach ($rows as $row) {
+    if (!isset($instance[$row['poller_id']])) {
+        $instance[$row['poller_id']] = $redis->get('i:' . $row['poller_id']);
+    }
+    $chn = $row['key'] . ':children';
+    $row['is_parent'] = ($redis->scard($chn) > 0 ? 1 : 0);
     if ($row['last_state_change'] > 0 && time() > $row['last_state_change']) {
         $duration = CentreonDuration::toString(time() - $row['last_state_change']);
     } else {
@@ -490,9 +492,9 @@ foreach ($rows as $row) {
     if (($row['last_hard_state_change'] > 0) && ($row['last_hard_state_change'] >= $row['last_state_change'])) {
         $hard_duration = CentreonDuration::toString(time() - $row['last_hard_state_change']);
     } elseif ($row['last_hard_state_change'] > 0) {
-        $hard_duration = " N/A ";
+        $hard_duration = ' N/A ';
     } else {
-        $hard_duration = "N/A";
+        $hard_duration = 'N/A';
     }
 
     if ($row['is_parent']) {
@@ -542,22 +544,22 @@ foreach ($rows as $row) {
     $obj->XML->writeElement('ne', $row['notify']);
     $obj->XML->writeElement('tr', $row['check_attempt'].'/' . $row['max_check_attempts'] . ' (' . $obj->stateType[$row['state_type']] . ')');
 
-    if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$row['host_id']])) {
-        $obj->XML->writeElement("hci", 1); // has criticality
-        $critData = $criticality->getData($critCache[$row['host_id']]);
-        $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-        $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
+    if (isset($row['criticality_id']) && $row['criticality_id'] > 0) {
+        $obj->XML->writeElement('hci', 1); // has criticality
+        $critData = $criticality->getData($row['criticality_id']);
+        $obj->XML->writeElement('ci', $media->getFilename($critData['icon_id']));
+        $obj->XML->writeElement('cih', CentreonUtils::escapeSecure($critData['name']));
     } else {
-        $obj->XML->writeElement("hci", 0); // has no criticality
+        $obj->XML->writeElement('hci', 0); // has no criticality
     }
     $obj->XML->writeElement('ico', $row['icon_image']);
-    $obj->XML->writeElement('isp', $row['is_parent'] ? 1 : 0);
+    $obj->XML->writeElement('isp', $row['is_parent']);
     $obj->XML->writeElement('isf', $row['flapping']);
     $parenth = 0;
     if ($ct === 1 && $row['is_parent']) {
         $parenth = 1;
     }
-    if (!$sort_type && $delimInit && !$data['is_parent']) {
+    if (!$sort_type && $delimInit && !$row['is_parent']) {
         $delim = 1;
         $delimInit = 0;
     } else {
@@ -568,23 +570,23 @@ foreach ($rows as $row) {
 
     $hostObj = new CentreonHost($obj->DB);
     if (!empty($row['notes'])) {
-        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['name'], str_replace("\$HOSTNAME\$", $row['name'], str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"])))));
+        $obj->XML->writeElement("hnn", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['name'], str_replace("\$HOSTNAME\$", $row['name'], str_replace("\$HOSTADDRESS\$", $row['address'], $row['notes'])))));
     } else {
         $obj->XML->writeElement("hnn", "none");
     }
 
     if ($row["notes_url"] != "") {
-        $str = $data['notes_url'];
+        $str = $row['notes_url'];
         $str = str_replace("\$HOSTNAME\$", $row['name'], $str);
-        $str = str_replace("\$HOSTALIAS\$", $data['alias'], $str);
-        $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
-        $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
-        $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
+        $str = str_replace("\$HOSTALIAS\$", $row['alias'], $str);
+        $str = str_replace("\$HOSTADDRESS\$", $row['address'], $str);
+        $str = str_replace("\$HOSTNOTES\$", $row['notes'], $str);
+        $str = str_replace("\$INSTANCENAME\$", $instance[$row['poller_id']], $str);
 
-        $str = str_replace("\$HOSTSTATEID\$", $data['state'], $str);
-        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
+        $str = str_replace("\$HOSTSTATEID\$", $row['current_state'], $str);
+        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$row['current_state']], $str);
 
-        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
+        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($instance[$row['poller_id']], 'ns_ip_address'), $str);
         $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['name'], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
@@ -593,15 +595,14 @@ foreach ($rows as $row) {
     if (!empty($row['action_url'])) {
         $str = $row['action_url'];
         $str = str_replace("\$HOSTNAME\$", $row['name'], $str);
-        $str = str_replace("\$HOSTALIAS\$", $data['alias'], $str);
-        $str = str_replace("\$HOSTADDRESS\$", $data['address'], $str);
-        $str = str_replace("\$HOSTNOTES\$", $data['notes'], $str);
-        $str = str_replace("\$INSTANCENAME\$", $data['instance_name'], $str);
+        $str = str_replace("\$HOSTALIAS\$", $row['alias'], $str);
+        $str = str_replace("\$HOSTADDRESS\$", $row['address'], $str);
+        $str = str_replace("\$HOSTNOTES\$", $row['notes'], $str);
+        $str = str_replace("\$INSTANCENAME\$", $instance[$row['poller_id']], $str);
+        $str = str_replace("\$HOSTSTATEID\$", $row['current_state'], $str);
+        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$row['current_state']], $str);
 
-        $str = str_replace("\$HOSTSTATEID\$", $data['state'], $str);
-        $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
-
-        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
+        $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($instance[$row['poller_id']], 'ns_ip_address'), $str);
         $obj->XML->writeElement("hau", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['name'], $str)));
     } else {
         $obj->XML->writeElement("hau", "none");
