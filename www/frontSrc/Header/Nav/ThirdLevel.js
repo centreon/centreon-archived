@@ -1,6 +1,9 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 
 const styles = theme => ({
   wrapper: {
@@ -12,7 +15,6 @@ const styles = theme => ({
     justifyContent: 'flex-start',
   },
   thirdLevelContent: {
-    padding: 14,
   },
   paper: {
     padding: theme.spacing.unit,
@@ -29,39 +31,38 @@ const styles = theme => ({
   typoItem: {
     cursor: 'pointer',
     color: '#231F20',
-    paddingLeft: 6,
-    fontSize: 13
+    padding: '6px 12px'
+  },
+  thirdLevelItemText: {
+    '& span': {
+      fontSize: '13px'
+    }
   },
 })
 
 const ThirdLevel = ({classes, key, thirdLevelArray})  => (
-  <div className={classes.thirdLevel} key={key} >
+  <div className={classes.thirdLevel}  key={key} >
   {
-    Object.keys(thirdLevelArray).map((item, i) => {
+    Object.keys(thirdLevelArray).map((item) => {
       return (
-        <div  className={classes.thirdLevelContent}>
-        { item != 'orphans' &&
-          <Typography
-            variant="subheading"
-            className={classes.typoGroup}
-            gutterBottom
-          >
-            {item}
-          </Typography>
-        }
+        <List component="nav"  key={item}>
+        <div className={classes.thirdLevelContent}>
         {
           Object.keys(thirdLevelArray[item]).map((item2, i2) => (
-            <Typography
-              key={i2}
-              className={classes.typoItem}
-              gutterBottom
-              onClick={() => {window.location.href = "main.php?p=" + item2}}
-            >
-              {thirdLevelArray[item][item2].label}
-            </Typography>
+              <ListItem
+                button
+                key={i2}
+                component="a"
+                href={"main.php?p=" + item2}
+                className={classes.typoItem}>
+                <Typography variant='body1' className={classes.thirdLevelItemText}>
+                  {thirdLevelArray[item][item2].label}
+                </Typography>
+              </ListItem>
           ))
         }
         </div>
+        </List>
       )
     })
   }

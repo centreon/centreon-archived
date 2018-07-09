@@ -62,7 +62,10 @@ class TopHeader extends Component {
             <div style={{ gridColumnEnd: 'span 2' }}>
               <Logo />
             </div>
-            <div style={{ gridColumnEnd: 'span 8' }} className={classes.indicatorContainer}>
+            <div style={{ gridColumnEnd: 'span 3' }}>
+              <Nav />
+            </div>
+            <div style={{ gridColumnEnd: 'span 5' }} className={classes.indicatorContainer}>
               <PollerObject />
               <HostObject />
               <ServiceObject />

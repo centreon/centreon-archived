@@ -26,11 +26,9 @@ const styles = theme => ({
   tooltip: {
     zIndex: 10,
     backgroundColor: '#FFF',
+    border: '1px solid #e7e7e8',
     padding: 10,
     borderRadius: 2,
-    boxShadow: `0px 3px 5px -1px rgba(0, 0, 0, 0.2),
-                0px 6px 10px 0px rgba(0, 0, 0, 0.14),
-                0px 1px 18px 0px rgba(0, 0, 0, 0.12)`,
   }
 })
 
@@ -55,14 +53,15 @@ class SecondLevel extends Component {
 
   render = () => {
     const { tooltipOpen } = this.state
-    const { classes, id, item, key } = this.props
+    const { classes, id, item } = this.props
     const aria = `tooltip-${id}`
 
     return (
-      <div className={classes.wrapper} id={key}>
+      <div className={classes.wrapper} >
         <Typography
           id={aria}
           variant="body2"
+          key={aria}
           className={classes.navTypo}
           gutterBottom
           onClick={() => this.handleClick(id)}
@@ -81,6 +80,7 @@ class SecondLevel extends Component {
               className={classes.tooltip}
             >
               <ThirdLevel
+                key={id}
                 thirdLevelArray={item.children}
               />
             </Tooltip>

@@ -11,23 +11,26 @@ import SecondLevel from "./SecondLevel"
 
 const styles = theme => ({
   root: {
-   /* display: 'flex',
+   display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',*/
+    justifyContent: 'flex-start',
+    height: '100%',
   },
   tabsRoot: {
     borderBottom: '1px solid #e8e8e8',
+    minHeight: 'auto',
   },
   tabsIndicator: {
-    backgroundColor: '#1890ff',
+    display: 'none',
   },
   tabRoot: {
     textTransform: 'initial',
-    minWidth: 48,
+    minWidth: 42,
+    minHeight: 42,
     borderRadius: 48,
+    margin: '0 2px',
     '&:hover': {
-      color: '#40a9ff',
-      opacity: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.5)'
     },
     '&$tabSelected': {
       color: '#1890ff',
@@ -37,7 +40,9 @@ const styles = theme => ({
       color: '#40a9ff',
     },
   },
-  tabSelected: {},
+  tabSelected: {
+    backgroundColor: '#FFFFFF'
+  },
   wrapper: {
     display: 'inline-flex'
   },
@@ -90,17 +95,20 @@ const Nav = ({classes, items, value, handleChange, open}) => (
   <div className={classes.root}>
     <Tabs
       value={value}
+      key={value}
       onChange={handleChange}
       classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
     >
       {
-        Object.keys(items).map((item) => {
+        Object.keys(items).map((item, key) => {
           const i = items[item]
           const Icon = Components[i.label].component || HomeIcon
 
           return (
             <Tab
-              disableRipple key={item} value={item}
+              disableRipple
+              key={key}
+              value={item}
               icon={<Icon viewBox={Components[i.label].viewBox}/>}
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             />
@@ -113,7 +121,7 @@ const Nav = ({classes, items, value, handleChange, open}) => (
       Object.keys(items).map((item, index) => {
         if (item == value) {
           return (
-            <div className={classes.wrapper}>
+            <div className={classes.wrapper} key={item}>
               <div className={classes.secondLevel} key={index} style={{ backgroundColor: items[item].color }}>
               {
                 Object.keys(items[item].children).map((secondItem) => {
