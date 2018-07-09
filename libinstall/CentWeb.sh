@@ -653,9 +653,6 @@ check_result $? "$(gettext "Install clapi binary")"
 
 # Install libraries for Centreon CLAPI
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-    $TMP_DIR/src/lib/Zend/ \
-    $INSTALL_DIR_CENTREON/lib/Zend/ >> $LOG_FILE 2>&1
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
     $TMP_DIR/src/lib/Centreon/ \
     $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
 
