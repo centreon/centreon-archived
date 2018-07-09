@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -90,13 +90,13 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
     global $pearDB, $hostTemplateCache;
 
     $request = "SELECT host_host_id " .
-            "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
-            "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-            "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
-            "AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
-            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-            "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
-            "AND acl_res_activate = '1'";
+        "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
+        "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+        "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
+        "AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
+        "AND acl_resources.acl_res_id = '" . $res_id . "' " .
+        "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
+        "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
 
     if (!$DBRESULT->numRows()) {
@@ -129,7 +129,6 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
             }
         }
     }
-
     return $filteredHosts;
 }
 
@@ -349,14 +348,15 @@ function hostIsAuthorized($host_id, $group_id)
     }
 
     $query2 = "SELECT hgr.host_host_id FROM " .
-            "hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
-            "WHERE rhgr.acl_res_id = res.acl_res_id " .
-            "AND res.acl_res_id = rgr.acl_res_id " .
-            "AND rgr.acl_group_id = '" . $group_id . "' " .
-            "AND hgr.hostgroup_hg_id = rhgr.hg_hg_id " .
-            "AND hgr.host_host_id = '" . $host_id . "' " .
-            "AND res.acl_res_activate = '1' " .
-            "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = rhgr.acl_res_id)";
+        "hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
+        "WHERE rhgr.acl_res_id = res.acl_res_id " .
+        "AND res.acl_res_id = rgr.acl_res_id " .
+        "AND rgr.acl_group_id = '" . $group_id . "' " .
+        "AND hgr.hostgroup_hg_id = rhgr.hg_hg_id " .
+        "AND hgr.host_host_id = '" . $host_id . "' " .
+        "AND res.acl_res_activate = '1' " .
+        "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations " .
+        "WHERE acl_res_id = rhgr.acl_res_id)";
 
     $DBRES2 = $pearDB->query($query2);
     if (PEAR::isError($DBRES2)) {
@@ -386,7 +386,7 @@ function getMyHostServicesByName($host_id = null)
             if (isset($svcCache[$service_id])) {
                 $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
                 $service_description = str_replace('#BS#', '\\', $service_description);
-                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
+                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
             }
         }
     }
@@ -403,9 +403,7 @@ function getMyHostServicesByName($host_id = null)
  */
 function getMetaServices($resId, $db, $metaObj)
 {
-    $sql = "SELECT meta_id 
-                FROM acl_resources_meta_relations
-                WHERE acl_res_id = {$db->escape($resId)}";
+    $sql = "SELECT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = {$db->escape($resId)}";
     $res = $db->query($sql);
     $arr = array();
     if ($res->numRows()) {
@@ -423,7 +421,8 @@ function getModulesExtensionsPaths($db)
     $extensionsPaths = array();
     $res = $db->query("SELECT name FROM modules_informations");
     while ($row = $res->fetchRow()) {
-        $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/extensions/acl/'));
+        $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name']
+            . '/extensions/acl/'));
     }
     
     return $extensionsPaths;
