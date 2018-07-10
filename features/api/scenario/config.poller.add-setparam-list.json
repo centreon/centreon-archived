@@ -1,11 +1,15 @@
 [
     {
-	"name": "config.poller.setparam",
-	"description": "Set parameters of a poller",
+	"name": "config.poller.add-setparam-list",
+	"description": "Add a poller",
 	"actions": [
 	    {
 		"from": "centreon.api.auth",
 		"name": "Authenticate"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "Add instance"
 	    },
 	    {
 		"from": "centreon.api.config.poller",
@@ -54,6 +58,10 @@
 	    {
 		"from": "centreon.api.config.poller",
 		"name": "Setparam centreonbroker_module_path"
+	    },
+	    {
+		"from": "centreon.api.config.poller",
+		"name": "List instances"
 	    }
 	]
     }
