@@ -105,7 +105,7 @@ class CentreonTopCounter extends CentreonWebService
             $this->hasAccessToPollers = true;
         }
 
-        if ($this->centreonUser->topology['50104'] == '1') {
+        if ($this->centreonUser->access->topology['50104'] == '1') {
             $this->hasAccessToProfile = true;
         }
     }
