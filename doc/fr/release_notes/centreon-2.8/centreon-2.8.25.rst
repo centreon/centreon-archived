@@ -2,9 +2,15 @@
 Centreon Web 2.8.25
 ###################
 
+Introduction of a new banner in preparation for the next release. This feature
+must be enabled for each user. When they next connect to the web interface, they
+will be able to choose whether to activate this feature. The latter can be
+deactivated in the "my account" menu.
+
 Enhancements
 ============
 
+* [UX] New banner in feature flipping mode - PR #6294
 * [API] Submit result for passif resources - PR #6209
 * [API] Export is too long when lot of parentship - PR #6372
 
