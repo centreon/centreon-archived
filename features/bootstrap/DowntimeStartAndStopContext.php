@@ -22,6 +22,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('Europe/Paris');
         $this->downtimeStartTime = date("H:i");
         $this->page = '';
         $this->dateStartTimestamp = '';
@@ -64,7 +65,6 @@ class DowntimeStartAndStopContext extends CentreonContext
      */
     public function aFixedDowntimeOnAMonitoredElement()
     {
-
         $page = new DowntimeConfigurationPage($this);
         $downtimeEndTime = '+2 minutes';
         $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
@@ -75,6 +75,8 @@ class DowntimeStartAndStopContext extends CentreonContext
             'start_time' => $this->downtimeStartTime,
             'end_time' => $this->downtimeEndTime
         ));
+        var_dump($this->downtimeStartTime);
+        var_dump($this->downtimeEndTime);
         $page->save();
     }
 
