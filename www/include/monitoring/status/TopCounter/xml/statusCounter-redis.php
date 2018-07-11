@@ -171,6 +171,16 @@ $tmp = $redis->rawCommand('TABULAR.COUNT', $svc_source,
         'acknowledged', 'EQUAL', '0',
         'scheduled_downtime_depth', 'EQUAL', '0');
 
+$svc_ok = 0;
+$svc_warning = 0;
+$svc_warn_ack_dt = 0;
+$svc_critical = 0;
+$svc_crit_ack_dt = 0;
+$svc_unknown = 0;
+$svc_unkn_ack_dt = 0;
+$svc_pending = 0;
+$svc_pend_ack_dt = 0;
+
 for ($i = 0; $i < count($tmp); $i += 6) {
     if ($tmp[$i + 1] == 0) {
         $svc_ok = $tmp[$i + 3];
@@ -184,26 +194,17 @@ for ($i = 0; $i < count($tmp); $i += 6) {
         if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
             $svc_crit_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
         }
-        else {
-            $svc_crit_ack_dt = 0;
-        }
     }
     elseif ($tmp[$i + 1] == 3) {
         $svc_unknown = $tmp[$i + 3];
         if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
             $svc_unkn_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
         }
-        else {
-            $svc_unkn_ack_dt = 0;
-        }
     }
     elseif ($tmp[$i + 1] == 4) {
         $svc_pending = $tmp[$i + 3];
         if (isset($tmp[$i + 5]) && isset($tmp[$i + 5]->$tmp[5])) {
             $svc_pend_ack_dt = $tmp[$i + 5]->$tmp[5]->$tmp[1];
-        }
-        else {
-            $svc_pend_ack_dt = 0;
         }
     }
 }

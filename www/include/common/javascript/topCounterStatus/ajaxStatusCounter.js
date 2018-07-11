@@ -34,8 +34,7 @@
 
  // JavaScript Document
 
-//var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter.php";
-var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter-redis.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/statusCounter.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {

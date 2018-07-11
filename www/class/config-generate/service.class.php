@@ -302,7 +302,7 @@ class Service extends AbstractService {
 
         $this->getImages($this->service_cache[$service_id]);
         $this->getMacros($this->service_cache[$service_id]);
-        $this->service_cache[$service_id]['macros']['_SERVICE_ID'] = $service_id;        
+        $this->service_cache[$service_id]['macros']['_SERVICE_ID'] = $service_id;
         # useful for servicegroup on servicetemplate
         $service_template = ServiceTemplate::getInstance();
         $service_template->resetLoop();
@@ -320,7 +320,7 @@ class Service extends AbstractService {
         # By default in centengine 1.4.15
         $this->getContactsFromHost($host_id, $service_id, $this->service_cache[$service_id]['service_use_only_contacts_from_host']);
         $this->getSeverity($host_id, $service_id);
-        $this->getServiceGroups($service_id, $host_id, $host_name);        
+        $this->getServiceGroups($service_id, $host_id, $host_name);
         $this->generateObjectInFile($this->service_cache[$service_id] + array('host_name' => $host_name), $host_id . '.' . $service_id);
         $this->addGeneratedServices($host_id, $service_id);
         $this->clean($this->service_cache[$service_id]);

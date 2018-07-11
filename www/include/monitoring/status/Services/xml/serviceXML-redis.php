@@ -443,6 +443,8 @@ $field = array(
         'service_description',
         'service_id',
         'state_type',
+        'criticality_id',
+        'criticality_level',
         );
 
 $field1 = array('SORT', $store, 'BY', 'NOSORT');
@@ -462,7 +464,7 @@ $rows = build_search_rows($RESULT, $field);
 //$critRes = $obj->DBC->query(
 //        "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
 //        );
-$criticalityUsed = $redis->scard('service_criticalities') ? 1 : 0;
+$criticalityUsed = $redis->scard('service_criticalities') > 0 ? 1 : 0;
 
 //$critCache = array();
 //if ($critRes->numRows()) {
@@ -725,7 +727,7 @@ foreach ($rows as $row) {
         $row['current_check_attempt'] . '/' . $row['max_check_attempts']
             . ' (' . $obj->stateType[$row['state_type']] . ')'
     );
-    if (isset($row['criticality_id'])) {
+    if (isset($row['criticality_id']) && $row['criticality_id'] != 0) {
         $obj->XML->writeElement('hci', 1); // has criticality
         $critData = $criticality->getData($row['criticality_id'], true);
         $obj->XML->writeElement('ci', $media->getFilename($critData['icon_id']));

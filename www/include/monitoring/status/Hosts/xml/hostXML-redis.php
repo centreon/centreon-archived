@@ -455,7 +455,7 @@ $redis->unlink($store);
 $numRows = $redis->get($store . ':size');
 $redis->unlink($store . ':size');
 
-$criticalityUsed = $redis->scard("host_criticalities") > 0 ? 1 : 0;
+$criticalityUsed = $redis->scard('host_criticalities') > 0 ? 1 : 0;
 
 $obj->XML->startElement('reponse');
 $obj->XML->startElement('i');
