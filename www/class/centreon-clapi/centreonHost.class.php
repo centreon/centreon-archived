@@ -1158,7 +1158,15 @@ class CentreonHost extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            $labelField,
+            'ASC',
+            $filters,
+            "AND"
+        );
         $extendedObj = new \Centreon_Object_Host_Extended($this->dependencyInjector);
         $macroObj = new \Centreon_Object_Host_Macro_Custom($this->dependencyInjector);
         $instanceRel = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
