@@ -75,8 +75,6 @@ class DowntimeStartAndStopContext extends CentreonContext
             'start_time' => $this->downtimeStartTime,
             'end_time' => $this->downtimeEndTime
         ));
-        var_dump($this->downtimeStartTime);
-        var_dump($this->downtimeEndTime);
         $page->save();
     }
 
