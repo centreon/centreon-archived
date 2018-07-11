@@ -222,7 +222,7 @@ class Service extends AbstractService {
         
         return 0;
     }
-    
+
     protected function getSeverity($host_id, $service_id) {
         $this->service_cache[$service_id]['severity_from_host'] = 0;
         $this->getSeverityInServiceChain($service_id);
@@ -282,24 +282,24 @@ class Service extends AbstractService {
 
         $this->done_cache = 1;
     }
-    
+
     public function generateFromServiceId($host_id, $host_name, $service_id, $by_hg=0) {
         if (is_null($service_id)) {
             return null;
         }
-               
+
         $this->buildCache();
-               
+
         if (($this->use_cache == 0 || $by_hg == 1) && !isset($this->service_cache[$service_id])) {
             $this->getServiceFromId($service_id);
-        }        
+        }
         if (!isset($this->service_cache[$service_id]) || is_null($this->service_cache[$service_id])) {
             return null;
         }
         if ($this->checkGenerate($host_id . '.' . $service_id)) {
             return $this->service_cache[$service_id]['service_description'];
         }
-                
+
         $this->getImages($this->service_cache[$service_id]);
         $this->getMacros($this->service_cache[$service_id]);
         $this->service_cache[$service_id]['macros']['_SERVICE_ID'] = $service_id;        
@@ -315,8 +315,8 @@ class Service extends AbstractService {
         $this->getServicePeriods($this->service_cache[$service_id]);
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
-        
-        
+
+
         # By default in centengine 1.4.15
         $this->getContactsFromHost($host_id, $service_id, $this->service_cache[$service_id]['service_use_only_contacts_from_host']);
         $this->getSeverity($host_id, $service_id);
@@ -326,11 +326,11 @@ class Service extends AbstractService {
         $this->clean($this->service_cache[$service_id]);
         return $this->service_cache[$service_id]['service_description'];
     }
-    
+
     public function set_poller($poller_id) {
         $this->poller_id = $poller_id;
     }
-    
+
     public function reset() {
         # We reset it by poller (dont need all. We save memory)
         if ($this->use_cache_poller == 1) {

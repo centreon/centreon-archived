@@ -93,7 +93,7 @@ class CentreonCriticality
         }
         return null;
     }
-    
+
     /**
      * Get data of a criticality object for services
      *

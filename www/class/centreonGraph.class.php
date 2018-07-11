@@ -893,7 +893,6 @@ class CentreonGraph
                     }
                 }
 
-
                 if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
                     $arg = "LINE" . $tm["ds_tickness"] . ":" . $this->vname[$tm["metric"]];
                 } else {
@@ -915,7 +914,6 @@ class CentreonGraph
 
                 $vdefs = array();
                 $prints = array();
-
 
                 foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
                                "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
