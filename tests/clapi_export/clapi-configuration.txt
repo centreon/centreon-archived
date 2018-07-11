@@ -423,9 +423,9 @@ CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
 RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins;Central;Centreon Plugins Path
-RESOURCECFG;setparam;$CENTREONPLUGINS$;activate;1
+RESOURCECFG;setparam;2;activate;1
 RESOURCECFG;ADD;$USER1$;/usr/lib/nagios/plugins;Central;Nagios Plugins Path
-RESOURCECFG;setparam;$USER1$;activate;1
+RESOURCECFG;setparam;1;activate;1
 CENTBROKERCFG;ADD;central-broker-master;Central
 CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.xml
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
@@ -5448,4 +5448,3 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
-
