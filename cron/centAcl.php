@@ -93,7 +93,7 @@ try {
      */
     $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
     if (PEAR::isError($DBRESULT)) {
-        print "Error to check is process running.";
+        print "Error to check if process is running.";
         exit(1);
     }
     $data = $DBRESULT->fetchRow();
@@ -107,7 +107,7 @@ try {
             "VALUES ('centAcl.php', '1', '1')");
         $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
         if (PEAR::isError($DBRESULT)) {
-            print "Error to check is process running.";
+            print "Error to check if process is running.";
             exit(1);
         }
         $data = $DBRESULT->fetchRow();
@@ -130,6 +130,9 @@ try {
         programExit($errorMessage);
     }
 
+    global $resourceCache;
+    $resourceCache = array();
+
     /** **********************************************
      * Sync ACL with ldap
      */
@@ -148,7 +151,7 @@ try {
 
     /** ********************************************
      * If the ldap is enable and the last check
-     * is more than update period
+     * is greater than the update period
      */
     if ($ldap_enable == 1 && $ldap_last_update < (time() - LDAP_UPDATE_PERIOD)) {
         $cgObj->syncWithLdap();
@@ -163,8 +166,8 @@ try {
     $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
 
     /** ***********************************************
-     * Check if some ACL have global options for
-     * all resources are selected
+     * Check if some ACL have global options selected for
+     * all the resources
      */
     $query = "SELECT acl_res_id, all_hosts, all_hostgroups, all_servicegroups " .
             "FROM acl_resources WHERE acl_res_activate = '1' " .
@@ -228,8 +231,8 @@ try {
     }
     $res->free();
 
-    /*
-     * Check that resources ACL have been changed
+    /**
+     * Check that the ACL resources have changed
      *  if no : go away.
      *  if yes : let's go to build cache and update database
      */
@@ -253,7 +256,7 @@ try {
     if (count($tabGroups)) {
         
         /** ***********************************************
-         *  Caching of all Data
+         *  Cache for hosts and host Templates
          *
          */
         $hostTemplateCache = array();
@@ -347,7 +350,6 @@ try {
          * Host Service relation
          */
         $hsRelation = array();
-        $hgsRelation = array();
         $DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, host_host_id, service_service_id " .
             "FROM host_service_relation");
         while ($sr = $DBRESULT->fetchRow()) {
@@ -370,7 +372,7 @@ try {
         $DBRESULT->free();
         
         /** ***********************************************
-         * Create Servive template modele Cache
+         * Create Service template model Cache
          */
         $svcTplCache = array();
         $DBRESULT = $pearDB->query("SELECT service_template_model_stm_id, service_id FROM service");
@@ -436,8 +438,7 @@ try {
             }
             $hgResCache[$row['acl_res_id']][] = $row['hg_id'];
         }
-        
-        
+
         /** ***********************************************
          * Begin to build ACL
          */
@@ -465,8 +466,6 @@ try {
             }
             while ($res2 = $DBRESULT2->fetchRow()) {
                 $Host = array();
-                /* ------------------------------------------------------------------ */
-
                 /*
                  * Get all Hosts
                  */
@@ -538,6 +537,10 @@ try {
 
                 $tmpH = getFilteredHostCategories($tmpH, $acl_group_id, $res2["acl_res_id"]);
                 $tmpH = getFilteredPollers($tmpH, $acl_group_id, $res2["acl_res_id"]);
+
+                //reinitializing cache
+                $resourceCache = array();
+
                 foreach ($sgElem as $key => $value) {
                     if (in_array($key, $tmpH)) {
                         if (count($authorizedCategories) == 0) { // no category filter
@@ -640,12 +643,12 @@ try {
                 $now = $time_end - $time_start;
                 print round($now, 3) . " " . _("seconds") . "\n";
             }
-            
+
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " .
                 $pearDB->escape($acl_group_id));
         }
-        
+
         /**
          * Include module specific ACL evaluation
          */
