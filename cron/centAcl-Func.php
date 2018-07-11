@@ -33,7 +33,7 @@
  *
  */
 
-/*
+/**
  * Init functions
  */
 
@@ -83,53 +83,64 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
 }
 
 /**
- * Return host tab after host categories filter
+ * Return host tab after host categories filter.
+ * Add a cache for filtered ACL rights
+ * avoiding to recalculate it at each occurrence.
+ * $host        array
+ * $res_id      int
+ * $acl_group_id int
+ *
  */
 function getFilteredHostCategories($host, $acl_group_id, $res_id)
 {
-    global $pearDB, $hostTemplateCache;
+    global $pearDB, $hostTemplateCache, $resourceCache;
 
-    $request = "SELECT host_host_id " .
-        "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
-        "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-        "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
-        "AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
-        "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-        "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
-        "AND acl_res_activate = '1'";
-    $DBRESULT = $pearDB->query($request);
+    //skipping if this $res_id was already calculated
+    if (!isset($resourceCache[$res_id])) {
+        $query = "SELECT host_host_id " .
+            "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
+            "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+            "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
+            "AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
+            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
+            "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
+            "AND acl_res_activate = '1'";
+        $DBRESULT = $pearDB->query($query);
 
-    if (!$DBRESULT->numRows()) {
-        return $host;
-    }
+        if (!$DBRESULT->numRows()) {
+            return $host;
+        }
 
-    $treatedHosts = array();
-    $linkedHosts = array();
-    while ($row = $DBRESULT->fetchRow()) {
-        $linkedHosts[] = $row['host_host_id'];
-    }
+        $treatedHosts = array();
+        $linkedHosts = array();
+        while ($row = $DBRESULT->fetchRow()) {
+            $linkedHosts[] = $row['host_host_id'];
+        }
 
-    $filteredHosts = array();
-    while ($linkedHostId = array_pop($linkedHosts)) {
-        $treatedHosts[] = $linkedHostId;
-        if (isset($host[$linkedHostId])) { // host
-            $filteredHosts[$linkedHostId] = $host[$linkedHostId];
-        } elseif (isset($hostTemplateCache[$linkedHostId])) { // host template
-            foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
-                if (isset($host[$hostId])) {
-                    $filteredHosts[$hostId] = $host[$hostId];
-                }
-                if (isset($hostTemplateCache[$hostId])) {
-                    foreach ($hostTemplateCache[$hostId] as $hostId2) {
-                        if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
-                            $linkedHosts[] = $hostId2;
+        while ($linkedHostId = array_pop($linkedHosts)) {
+            $treatedHosts[] = $linkedHostId;
+            if (isset($host[$linkedHostId])) {
+                $resourceCache[$res_id][$linkedHostId] = $host[$linkedHostId];
+            } elseif (isset($hostTemplateCache[$linkedHostId])) {
+                foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
+                    if (isset($host[$hostId])) {
+                        if (!isset($resourceCache[$res_id][$hostId])) {
+                            $resourceCache[$res_id][$hostId] = array();
+                        }
+                        $resourceCache[$res_id][$hostId] = $host[$hostId];
+                    }
+                    if (isset($hostTemplateCache[$hostId])) {
+                        foreach ($hostTemplateCache[$hostId] as $hostId2) {
+                            if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
+                                $linkedHosts[] = $hostId2;
+                            }
                         }
                     }
                 }
             }
         }
     }
-    return $filteredHosts;
+    return $resourceCache[$res_id];
 }
 
 /*
@@ -220,9 +231,9 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
 }
 
 /**
- * If the ressource ACL has poller filter
+ * If the resource ACL has poller filter
  *
- * @param int $res_id The ACL ressource id
+ * @param int $res_id The ACL resource id
  * @return bool
  */
 function hasPollerFilter($res_id)
@@ -246,9 +257,9 @@ function hasPollerFilter($res_id)
 }
 
 /**
- * If the ressource ACL has host category filter
+ * If the resource ACL has host category filter
  *
- * @param int $res_id The ACL ressource id
+ * @param int $res_id The ACL resource id
  * @return bool
  */
 function hasHostCategoryFilter($res_id)
@@ -272,9 +283,9 @@ function hasHostCategoryFilter($res_id)
 }
 
 /**
- * If the ressource ACL has service category filter
+ * If the resource ACL has service category filter
  *
- * @param int $res_id The ACL ressource id
+ * @param int $res_id The ACL resource id
  * @return bool
  */
 function hasServiceCategoryFilter($res_id)
@@ -370,7 +381,7 @@ function hostIsAuthorized($host_id, $group_id)
 }
 
 /*
- * Retreive service description
+ * Retrieve service description
  */
 function getMyHostServicesByName($host_id = null)
 {
