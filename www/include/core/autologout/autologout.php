@@ -5,6 +5,8 @@ function check_session() {
     if (check_session_interval_id) {
         clearInterval(check_session_interval_id);
     }
+    
+    check_session_callback();
 
     check_session_interval_id = setInterval(check_session_callback, <?php echo $tM; ?>);
 }
