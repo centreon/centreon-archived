@@ -169,7 +169,7 @@ class Menu
     {
         $groups = $this->getGroups();
 
-        $query = 'SELECT topology_name, topology_page, topology_url, topology_group, topology_order topology_parent '
+        $query = 'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent '
             . 'FROM topology '
             . 'WHERE topology_show = "1" '
             . 'AND topology_page IS NOT NULL';
@@ -178,7 +178,7 @@ class Menu
             $query .= $this->acl;
         }
 
-        $query .= ' ORDER BY topology_page';
+        $query .= ' ORDER BY LENGTH(topology_page), topology_order';
         $stmt = $this->db->prepare($query);
 
         $stmt->execute();
@@ -199,7 +199,7 @@ class Menu
                 if (!is_null($currentLevelOne) && $currentLevelOne == $row['topology_page']) {
                     $active = true;
                 }
-                $menu[$row['topology_page']] = array(
+                $menu['p' . $row['topology_page']] = array(
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
                     'active' => $active,
@@ -210,7 +210,7 @@ class Menu
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
                     $active = true;
                 }
-                $menu[$matches[1]]['children'][$row['topology_page']] = array(
+                $menu['p' . $matches[1]]['children'][$row['topology_page']] = array(
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
                     'active' => $active,
@@ -228,12 +228,12 @@ class Menu
                 );
                 if (!is_null($row['topology_group']) && isset($groups[$levelTwo][$row['topology_group']])) {
                     $menu
-                        [$matches[1]]['children']
+                        ['p' . $matches[1]]['children']
                         [$levelTwo]['children']
                         [$groups[$levelTwo][$row['topology_group']]][$row['topology_page']] = $levelThree;
                 } else {
                     $menu
-                        [$matches[1]]['children']
+                        ['p' . $matches[1]]['children']
                         [$levelTwo]['children']
                         ['orphans'][$row['topology_page']] = $levelThree;
                 }
