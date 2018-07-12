@@ -8,12 +8,12 @@ const MinifyPlugin = require("babel-minify-webpack-plugin")
 module.exports = {
   entry: './www/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].[chunkhash].js',
     publicPath: './include/core/menu/templates/',
     path: path.resolve(__dirname, './www/include/core/menu/templates')
   },
   plugins: [
-    // new CleanWebpackPlugin(['dist']),
+    //new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       filename: 'react-header.tpl',
       template: path.resolve(__dirname, './www/header.html')
