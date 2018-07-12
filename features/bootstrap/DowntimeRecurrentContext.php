@@ -71,6 +71,7 @@ class DowntimeRecurrentContext extends CentreonContext
      */
     public function aRecurrentDowntime()
     {
+        date_default_timezone_set('Europe/Paris');
         $this->startDate = new DateTime('now');
 
         $this->endDate = new DateTime('now');
