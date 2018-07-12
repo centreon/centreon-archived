@@ -10,6 +10,7 @@ const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
     marginLeft: 26,
+    position: 'relative'
   },
   link: {
     color: 'rgba(0, 0, 0, 0.87)',
