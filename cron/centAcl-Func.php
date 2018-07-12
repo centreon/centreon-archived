@@ -46,21 +46,19 @@ function microtime_float2()
 /**
  * Return host tab after poller filter
  */
-function getFilteredPollers($host, $acl_group_id, $res_id)
+function getFilteredPollers($host, $res_id)
 {
     global $pearDB, $hostCache;
 
-    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '".$res_id."'";
+    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '" . $res_id . "'";
     $DBRESULT = $pearDB->query($request);
     $row = $DBRESULT->fetchRow();
     $isPollerFilter = $row['count'];
 
     $hostTmp = $host;
     $request = "SELECT host_host_id " .
-            "FROM acl_resources_poller_relations, acl_res_group_relations, acl_resources, ns_host_relation " .
-            "WHERE acl_resources_poller_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-            "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
-            "AND acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
+            "FROM acl_resources_poller_relations, acl_resources, ns_host_relation " .
+            "WHERE acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
             "AND acl_resources.acl_res_id = '" . $res_id . "' " .
             "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
             "AND acl_res_activate = '1'";
@@ -88,78 +86,65 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
  * avoiding to recalculate it at each occurrence.
  * $host        array
  * $res_id      int
- * $acl_group_id int
  *
  */
-function getFilteredHostCategories($host, $acl_group_id, $res_id)
+function getFilteredHostCategories($host, $res_id)
 {
-    global $pearDB, $hostTemplateCache, $resourceCache;
+    global $pearDB, $hostTemplateCache;
 
-    //skipping if this $res_id was already calculated
-    if (!isset($resourceCache[$res_id])) {
-        $query = "SELECT host_host_id " .
+    $request = "SELECT DISTINCT host_host_id " .
             "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
-            "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-            "AND acl_res_group_relations.acl_group_id = '" . $acl_group_id . "' " .
-            "AND acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
+            "WHERE acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
             "AND acl_resources.acl_res_id = '" . $res_id . "' " .
             "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
             "AND acl_res_activate = '1'";
-        $DBRESULT = $pearDB->query($query);
+    $DBRESULT = $pearDB->query($request);
 
-        if (!$DBRESULT->numRows()) {
-            return $host;
-        }
+    if (!$DBRESULT->numRows()) {
+        return $host;
+    }
 
-        $treatedHosts = array();
-        $linkedHosts = array();
-        while ($row = $DBRESULT->fetchRow()) {
-            $linkedHosts[] = $row['host_host_id'];
-        }
+    $treatedHosts = array();
+    $linkedHosts = array();
+    while ($row = $DBRESULT->fetchRow()) {
+        $linkedHosts[] = $row['host_host_id'];
+    }
 
-        while ($linkedHostId = array_pop($linkedHosts)) {
-            $treatedHosts[] = $linkedHostId;
-            if (isset($host[$linkedHostId])) {
-                $resourceCache[$res_id][$linkedHostId] = $host[$linkedHostId];
-            } elseif (isset($hostTemplateCache[$linkedHostId])) {
-                foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
-                    if (isset($host[$hostId])) {
-                        if (!isset($resourceCache[$res_id][$hostId])) {
-                            $resourceCache[$res_id][$hostId] = array();
-                        }
-                        $resourceCache[$res_id][$hostId] = $host[$hostId];
-                    }
-                    if (isset($hostTemplateCache[$hostId])) {
-                        foreach ($hostTemplateCache[$hostId] as $hostId2) {
-                            if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
-                                $linkedHosts[] = $hostId2;
-                            }
+    $filteredHosts = array();
+    while ($linkedHostId = array_pop($linkedHosts)) {
+        $treatedHosts[] = $linkedHostId;
+        if (isset($host[$linkedHostId])) { // host
+            $filteredHosts[$linkedHostId] = $host[$linkedHostId];
+        } elseif (isset($hostTemplateCache[$linkedHostId])) { // host template
+            foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
+                if (isset($host[$hostId])) {
+                    $filteredHosts[$hostId] = $host[$hostId];
+                }
+                if (isset($hostTemplateCache[$hostId])) {
+                    foreach ($hostTemplateCache[$hostId] as $hostId2) {
+                        if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
+                            $linkedHosts[] = $hostId2;
                         }
                     }
                 }
             }
         }
     }
-    return $resourceCache[$res_id];
+
+    return $filteredHosts;
 }
 
 /*
  * Return enable categories for this resource access
  */
-function getAuthorizedCategories($groupstr, $res_id)
+function getAuthorizedCategories($res_id)
 {
     global $pearDB;
 
-    if (strlen($groupstr) == 0) {
-        return array();
-    }
-
     $tab_categories = array();
     $request = "SELECT sc_id " .
-            "FROM acl_resources_sc_relations, acl_res_group_relations, acl_resources " .
-            "WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-            "AND acl_res_group_relations.acl_group_id IN (" . $groupstr . ") " .
-            "AND acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
+            "FROM acl_resources_sc_relations, acl_resources " .
+            "WHERE acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
             "AND acl_resources.acl_res_id = '" . $res_id . "' " .
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
@@ -207,7 +192,7 @@ function getServiceTemplateCategoryList($service_id = null)
     }
 }
 
-function getACLSGForHost($pearDB, $host_id, $groupstr)
+function getACLSGForHost($pearDB, $host_id, $resId)
 {
     global $svcCache, $sgCache;
 
@@ -216,17 +201,16 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
     }
 
     $svc = array();
-    if (isset($sgCache[$groupstr])) {
-        foreach ($sgCache[$groupstr] as $key => $tab) {
-            foreach ($tab as $hostId => $tab2) {
-                if ($host_id == $hostId) {
-                    foreach ($tab2 as $svcDesc => $svcId) {
-                        $svc[$svcDesc] = $svcId;
-                    }
+    if (isset($sgCache[$resId])) {
+        foreach ($sgCache[$resId] as $hostId => $tab) {
+            if ($host_id == $hostId) {
+                foreach ($tab as $svcDesc => $svcId) {
+                    $svc[$svcDesc] = $svcId;
                 }
             }
         }
     }
+
     return $svc;
 }
 
@@ -308,7 +292,7 @@ function hasServiceCategoryFilter($res_id)
     return false;
 }
 
-function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories)
+function getAuthorizedServicesHost($host_id, $res_id, $authorizedCategories)
 {
     global $pearDB, $svcCache, $hostCache;
 
@@ -317,7 +301,7 @@ function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCate
     /*
      * Get Service Groups
      */
-    $svc_SG = getACLSGForHost($pearDB, $host_id, $groupstr);
+    $svc_SG = getACLSGForHost($pearDB, $host_id, $res_id);
 
     $tab_services = array();
     if (count($authorizedCategories)) {
