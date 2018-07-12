@@ -73,12 +73,7 @@ class UserProfileContainer extends Component {
   */
 
   handleAutologin = () => {
-    const { autologinkey, userId } = this.props.user
     const input = document.getElementById("bookmarkLink")
-
-    if (!autologinkey && autologinkey !== this.state.token) {
-      this.props.autoLogin(userId, this.state.token)
-    }
 
     input.select();
     document.execCommand("copy")
@@ -97,6 +92,12 @@ class UserProfileContainer extends Component {
       })
     }
     */
+
+    const { autologinkey, userId } = this.props.user
+
+    if (!autologinkey && autologinkey !== token) {
+      this.props.autoLogin(userId, this.state.token)
+    }
 
     return (
       <UserProfile

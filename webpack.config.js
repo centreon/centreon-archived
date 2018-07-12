@@ -5,18 +5,23 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const MinifyPlugin = require("babel-minify-webpack-plugin")
 
+let pathsToClean = [
+  './www/include/core/menu/templates/*.(js|tpl)$/',
+]
+
 module.exports = {
   entry: './www/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].[chunkhash].js',
     publicPath: './include/core/menu/templates/',
     path: path.resolve(__dirname, './www/include/core/menu/templates')
   },
   plugins: [
-    // new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
       filename: 'react-header.tpl',
-      template: path.resolve(__dirname, './www/header.html')
+      template: path.resolve(__dirname, './www/header.html'),
+      title: 'Caching'
     }),
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',

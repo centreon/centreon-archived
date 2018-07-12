@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PollerObject from './PollerObject'
 import {connect} from "react-redux"
-import {getPollersStatus, getPollersListIssues} from "../../webservices/pollerApi"
+import {getPollersListIssues} from "../../webservices/pollerApi"
 
 class PollerObjectContainer extends Component {
 
@@ -13,7 +13,6 @@ class PollerObjectContainer extends Component {
   }
 
   componentDidMount() {
-    this.props.getPollersStatus()
     this.props.getPollersListIssues()
   }
 
@@ -32,7 +31,7 @@ class PollerObjectContainer extends Component {
   }
 
   refresh = () => {
-    this.timeout = setTimeout(() => this.props.getPollers(), this.props.poller.refreshTime)
+    this.timeout = setTimeout(() => this.props.getPollersListIssues(), this.props.poller.refreshTime)
   }
 
   handleOpen = event => {
@@ -107,9 +106,6 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getPollersStatus: () => {
-      return dispatch(getPollersStatus())
-    },
     getPollersListIssues: () => {
       return dispatch(getPollersListIssues())
     },

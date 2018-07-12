@@ -10,6 +10,7 @@ const styles = theme => ({
   root: {
     fontFamily: theme.font.openSans,
     marginLeft: 26,
+    position: 'relative'
   },
   status: {
     margin: '4px',
