@@ -112,7 +112,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
      */
     public function getBooleanKPIStatus()
     {
-        $output = ['result'=>false];
+        $output = ['result' => false];
         $id = $this->arguments['id'];
         $query = "SELECT expression FROM mod_bam_boolean WHERE boolean_id = $id";
         $stmt = $this->pearDB->prepare($query);
@@ -123,17 +123,17 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
             preg_match_all($pattern, trim(preg_replace('/\s+/', ' ', $expr)), $regArray);
             $finalCompiledData = [];
             if (!empty($regArray)) {
-               for ($i = 0; $i<count($regArray[0]); $i++){
+                for ($i = 0; $i < count($regArray[0]); $i++) {
 
-                    $host = explode(' ',$regArray[1][$i], 2)[0];
-                    $service = explode(' ',$regArray[1][$i], 2)[1];
+                    $host = explode(' ', $regArray[1][$i], 2)[0];
+                    $service = explode(' ', $regArray[1][$i], 2)[1];
                     $status = $this->getServiceStatusByName($service);
                     $condition = $regArray[2][$i];
                     $checkAgainstStatus = ucfirst($regArray[3][$i]);
-                    if ($condition === "IS"){
-                       $statusMatches = ($status === ucfirst(strtolower($checkAgainstStatus)));
+                    if ($condition === "IS") {
+                        $statusMatches = ($status === ucfirst(strtolower($checkAgainstStatus)));
                     } else {
-                       $statusMatches = ($status !== ucfirst(strtolower($checkAgainstStatus)));
+                        $statusMatches = ($status !== ucfirst(strtolower($checkAgainstStatus)));
                     }
 
                     $finalCompiledData[] = [
@@ -674,7 +674,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
          * statuses:
          * 0 = OK, 1 = Warning, 2 = Critical, 3 = Unknown
          */
-        switch($intState){
+        switch ($intState) {
             case 0:
                 $status = 'OK';
                 break;
