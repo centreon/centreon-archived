@@ -5,6 +5,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const MinifyPlugin = require("babel-minify-webpack-plugin")
 
+let pathsToClean = [
+  './www/include/core/menu/templates/*.(js|tpl)$/',
+]
+
 module.exports = {
   entry: './www/index.js',
   output: {
@@ -13,10 +17,11 @@ module.exports = {
     path: path.resolve(__dirname, './www/include/core/menu/templates')
   },
   plugins: [
-    //new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
       filename: 'react-header.tpl',
-      template: path.resolve(__dirname, './www/header.html')
+      template: path.resolve(__dirname, './www/header.html'),
+      title: 'Caching'
     }),
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',
