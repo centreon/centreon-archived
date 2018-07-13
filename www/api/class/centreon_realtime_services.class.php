@@ -104,6 +104,79 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         return ($fieldList);
     }
 
+    /**
+     * Returns status of boolean rule
+     * @method GET
+     * @param int kpi_boolean_id
+     * @return string
+     */
+    public function getBooleanKPIStatus()
+    {
+        $output = ['result' => false];
+        $id = $this->arguments['id'];
+        $query = "SELECT expression FROM mod_bam_boolean WHERE boolean_id = $id";
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->execute();
+        if ($data = $stmt->fetch()) {
+            $expr = $data['expression'];
+            $pattern = '/\{((?:(?!OR|XOR|AND).)*?)} {(.*?)\} {(.*?)\}/';
+            preg_match_all($pattern, trim(preg_replace('/\s+/', ' ', $expr)), $regArray);
+            $finalCompiledData = [];
+            if (!empty($regArray)) {
+                for ($i = 0; $i < count($regArray[0]); $i++) {
+
+                    $host = explode(' ', $regArray[1][$i], 2)[0];
+                    $service = explode(' ', $regArray[1][$i], 2)[1];
+                    $status = $this->getServiceStatusByName($service);
+                    $condition = $regArray[2][$i];
+                    $checkAgainstStatus = ucfirst($regArray[3][$i]);
+                    if ($condition === "IS") {
+                        $statusMatches = ($status === ucfirst(strtolower($checkAgainstStatus)));
+                    } else {
+                        $statusMatches = ($status !== ucfirst(strtolower($checkAgainstStatus)));
+                    }
+
+                    $finalCompiledData[] = [
+                        'host' => $host,
+                        'service' => $service,
+                        'condition' => $condition,
+                        'status' => $status,
+                        'checkAgainst' => $checkAgainstStatus,
+                        'statusMatches' => $statusMatches
+                    ];
+
+                }
+
+                return json_encode([
+                    'result' => true,
+                    'data' => $finalCompiledData,
+                    'boolean_rule' => $expr
+                ]);
+            }
+        }
+
+        return json_encode($output);
+    }
+
+    /**
+     * Gets service status by service display name
+     * @param string $serviceID
+     * @return string
+     */
+    public function getServiceStatusByName(string $serviceName): string
+    {
+        $query = "SELECT state FROM services WHERE display_name = '$serviceName' ORDER BY last_check DESC LIMIT 0,1";
+
+        $stmt = $this->realTimeDb->prepare($query);
+        $stmt->execute();
+        $status = 'Unknown';
+        if ($data = $stmt->fetch()) {
+            $status = $this->mapIntegerToStatus($data['state']);
+        }
+
+        return $status;
+    }
+
     protected function setServiceFilters()
     {
         /* Pagination Elements */
@@ -588,5 +661,33 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         while ($row = $res->fetch()) {
             $this->criticalityList[$row['sc_name']] = $row;
         }
+    }
+
+    /**
+     * Convert integer status to string value status
+     * @param int $intState
+     * @return string
+     */
+    private function mapIntegerToStatus(int $intState): string
+    {
+        /**
+         * statuses:
+         * 0 = OK, 1 = Warning, 2 = Critical, 3 = Unknown
+         */
+        switch ($intState) {
+            case 0:
+                $status = 'OK';
+                break;
+            case 1:
+                $status = 'Warning';
+                break;
+            case 2:
+                $status = 'Critical';
+                break;
+            default:
+                $status = 'Unknown';
+                break;
+        }
+        return $status;
     }
 }
