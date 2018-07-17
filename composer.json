@@ -38,7 +38,8 @@
     },
     "autoload": {
         "psr-4": {
-            "CentreonLegacy\\": "src/CentreonLegacy/"
+            "CentreonLegacy\\": "src/CentreonLegacy/",
+            "CentreonRemote\\": "src/CentreonRemote/"
         },
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
