@@ -44,7 +44,7 @@ $title = _('Installation finished');
 
 $contents = '<div>'._('Congratulations, you have successfully installed Centreon!').'</div>';
 
-$centreon_install_dir = realpath(dirname(__FILE__) . '../../');
+$centreon_install_dir = realpath(dirname(__FILE__) . '../../install');
 
 if (rrmdir($centreon_install_dir)) {
     return;
