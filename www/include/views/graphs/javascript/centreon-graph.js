@@ -185,7 +185,7 @@
             colors: {},
             regions: {},
             order: null,
-            empty: { label: { text: "Too much metrics, the chart can't be displayed" } }
+            empty: { label: { text: "Too many metrics, the chart can't be displayed" } }
           }
       } else {
           datasToAppend = parsedData.data;
