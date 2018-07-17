@@ -56,11 +56,11 @@ if (rrmdir($centreon_install_dir)) {
 $contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
                 . $centreon_install_dir . '.';
 
-session_destroy();
-
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
+
+session_destroy();
