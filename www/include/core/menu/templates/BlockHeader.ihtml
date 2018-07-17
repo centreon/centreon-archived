@@ -1,9 +1,4 @@
 <div id="header">
-	{if $displayWarning == 1}
-	<div id="centreon-warning">
-		{$WarningMessage}
-	</div>
-	{/if}
 	<div id="centreon_logo">
 		<img src='{$urlLogo}' title='Centreon Logo' id="logo" />
 	</div>
@@ -104,6 +99,11 @@
 	</div>
 	<div id="centreonMsg"></div>
 </div>
+{if $displayWarning == 1}
+<div id="centreon-warning">
+	{$WarningMessage}
+</div>
+{/if}
 {literal}
 <script type='text/javascript'>
 /*
