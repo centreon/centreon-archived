@@ -47,6 +47,15 @@ $contents = sprintf(
     $_SESSION['CURRENT_VERSION']
 );
 
+$centreon_install_dir = realpath(dirname(__FILE__) . '../../install');
+
+if (rrmdir($centreon_install_dir)) {
+    return;
+}
+
+$contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
+                . $centreon_install_dir . '.';
+
 session_destroy();
 
 $template->assign('step', STEP_NUMBER);
@@ -55,12 +64,3 @@ $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
-
-$centreon_install_dir = realpath(dirname(__FILE__) . '../../');
-
-if (rrmdir($centreon_install_dir)) {
-    return;
-}
-
-$contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
-                . $centreon_install_dir . '.';
