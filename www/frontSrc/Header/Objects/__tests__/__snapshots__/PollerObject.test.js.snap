@@ -3,7 +3,6 @@
 exports[`PollerObject Poller icon renders correctly 1`] = `
 <PollerObjectContainer
   getPollersListIssues={[Function]}
-  getPollersStatus={[Function]}
   poller={
     Object {
       "dataFetched": true,
