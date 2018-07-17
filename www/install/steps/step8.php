@@ -46,14 +46,13 @@ $title = _('Installation finished');
 
 $contents = '<div>'._('Congratulations, you have successfully installed Centreon!').'</div>';
 
-$centreon_install_dir = realpath(dirname(__FILE__) . '../../install');
+$centreon_install_dir = dirname(__FILE__) . '../../install';
 
-if (rrmdir($centreon_install_dir)) {
-    return;
+if (!is_dir($centreon_install_dir) || rrmdir($centreon_install_dir)) {
+    $contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
+        . $centreon_install_dir . '.';
 }
 
-$contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
-                . $centreon_install_dir . '.';
                
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
