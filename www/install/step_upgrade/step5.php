@@ -47,7 +47,7 @@ $contents = sprintf(
     $_SESSION['CURRENT_VERSION']
 );
 
-$centreon_install_dir = realpath(dirname(__FILE__) . '../../');
+$centreon_install_dir = realpath(dirname(__FILE__) . '../../install');
 
 if (rrmdir($centreon_install_dir)) {
     return;
