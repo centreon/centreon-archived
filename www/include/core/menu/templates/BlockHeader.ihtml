@@ -1,4 +1,9 @@
 <div id="header">
+	{if $displayWarning == 1}
+	<div id="centreon-warning">
+		{$WarningMessage}
+	</div>
+	{/if}
 	<div id="centreon_logo">
 		<img src='{$urlLogo}' title='Centreon Logo' id="logo" />
 	</div>
