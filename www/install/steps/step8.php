@@ -53,11 +53,11 @@ $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
+$centreon_install_dir = realpath(dirname(__FILE__) . '../../');
 
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory ' . $centreon_path . '/installDir and give it the rigths to apache user to write.';
-} else {
-    $name = 'install-' . $_SESSION['version'] . '-' . date('Ymd_His');
-    system('mv '. realpath(str_replace('steps', '', getcwd())) . ' ' .  $centreon_path . '/installDir/' . $name);
+if (rrmdir($centreon_install_dir)) {
+    return;
 }
+
+$contents .= '<br>Warning : The installation directory cannot be delete. Please give it the rigths to apache user to write'
+                . $centreon_install_dir . '.';
