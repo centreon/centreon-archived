@@ -49,316 +49,203 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         $this->db = new CentreonDB();
     }
 
-    public function testGetParentIdHasParent()
-    {
-        /* Test has a parent id */
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => 2
-                )
-            ),
-            array(
-                ':page' => 201
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertEquals($menu->getParentId(201), 2);
-    }
-
-    public function testGetParentIdHasNotParent()
-    {
-        /* Test has a parent id */
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => null
-                )
-            ),
-            array(
-                ':page' => 201
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertNull($menu->getParentId(201));
-    }
-
-    public function testGetParentsIdLevelThree()
+    /**
+     *
+     */
+    public function testGetGroups()
     {
         $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => 201
-                )
-            ),
-            array(
-                ':page' => 20101
-            )
-        );
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => 2
-                )
-            ),
-            array(
-                ':page' => 201
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertEquals(
-            $menu->getParentsId(20101),
-            array(
-                'levelOne' => 2,
-                'levelTwo' => 201
-            )
-        );
-    }
-
-    public function testGetParentsIdLevelTwo()
-    {
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => 2
-                )
-            ),
-            array(
-                ':page' => 201
-            )
-        );
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => null
-                )
-            ),
-            array(
-                ':page' => 2
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertEquals(
-            $menu->getParentsId(201),
-            array(
-                'levelOne' => 2,
-                'levelTwo' => 201
-            )
-        );
-    }
-
-    public function testGetParentsIdLevelOne()
-    {
-        $this->db->addResultSet(
-            'SELECT topology_parent FROM topology WHERE topology_page = :page',
-            array(
-                array(
-                    'topology_parent' => null
-                )
-            ),
-            array(
-                ':page' => 2
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertEquals(
-            $menu->getParentsId(2),
-            array(
-                'levelOne' => 2,
-                'levelTwo' => null
-            )
-        );
-    }
-
-    public function testGetGroupsWithParentNull()
-    {
-        $this->db->addResultSet(
-            'SELECT topology_name, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NULL AND topology_parent = :parent
-            ORDER BY topology_group, topology_order',
+            'SELECT topology_name, topology_parent, topology_group FROM topology WHERE topology_show = "1" AND topology_page IS NULL ORDER BY topology_group, topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
+                    'topology_parent' => 2,
                     'topology_group' => 201
                 ),
                 array(
                     'topology_name' => 'By services',
+                    'topology_parent' => 2,
                     'topology_group' => 202
                 )
-            ),
-            array(
-                ':parent' => null
-            )
-        );
-        $menu = new Menu($this->db);
-        $this->assertEquals(
-            $menu->getGroups(),
-            array(
-                201 => 'By host',
-                202 => 'By services'
-            )
-        );
-    }
-
-    public function testGetGroupsWithParentNotNull()
-    {
-        $this->db->addResultSet(
-            'SELECT topology_name, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NULL AND topology_parent = :parent
-            ORDER BY topology_group, topology_order',
-            array(
-                array(
-                    'topology_name' => 'By host',
-                    'topology_group' => 201
-                ),
-                array(
-                    'topology_name' => 'By services',
-                    'topology_group' => 202
-                )
-            ),
-            array(
-                ':parent' => 2
             )
         );
         $menu = new Menu($this->db);
         $this->assertEquals(
             $menu->getGroups(2),
             array(
-                201 => 'By host',
-                202 => 'By services'
+                2 =>
+                    array(
+                        201 => 'By host',
+                        202 => 'By services'
+                    )
             )
         );
     }
 
-    public function testGetMenuChildrenLevelOne()
+    /**
+     *
+     */
+    public function testGetColor()
     {
-        $this->db->addResultSet(
-            'SELECT topology_name, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NULL AND topology_parent = :parent
-            ORDER BY topology_group, topology_order',
-            array(),
-            array(
-                ':parent' => null
-            )
-        );
-        $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NOT NULL AND topology_parent IS NULL ORDER BY topology_group, topology_order',
-            array(
-                array(
-                    'topology_name' => 'Home',
-                    'topology_page' => 1,
-                    'topology_url' => 'main.php?p=1',
-                    'topology_group' => null
-                ),
-                array(
-                    'topology_name' => 'Monitoring',
-                    'topology_page' => 2,
-                    'topology_url' => 'main.php?p=2',
-                    'topology_group' => null
-                )
-            )
-        );
+        $colorPageId3 = '#E4932C';
         $menu = new Menu($this->db);
+
         $this->assertEquals(
-            $menu->getMenuChildren(),
-            array(
-                array(
-                    'id' => 1,
-                    'label' => 'Home',
-                    'url' => 'main.php?p=1'
-                ),
-                array(
-                    'id' => 2,
-                    'label' => 'Monitoring',
-                    'url' => 'main.php?p=2'
-                )
-            )
+            $menu->getColor(3),
+            $colorPageId3
         );
     }
 
-    public function testGetMenuChildrenLevelThreeWithGroups()
+    /**
+     *
+     */
+    public function testGetMenuLevelOne()
     {
+        $result = array(
+            "p2" => array(
+                "label" => "By host",
+                "url" => "centreon/20101",
+                "active" => false,
+                "color" => "#85B446",
+                "children" => array()
+            )
+        );
+
         $this->db->addResultSet(
-            'SELECT topology_name, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NULL AND topology_parent = :parent
-            ORDER BY topology_group, topology_order',
+            'SELECT topology_name, topology_parent, topology_group FROM topology WHERE topology_show = "1" AND topology_page IS NULL ORDER BY topology_group, topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
+                    'topology_parent' => '',
                     'topology_group' => 201
-                ),
-                array(
-                    'topology_name' => 'By services',
-                    'topology_group' => 202
                 )
-            ),
-            array(
-                ':parent' => 2
             )
         );
+
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_group FROM topology
-            WHERE topology_show = "1" AND topology_page IS NOT NULL AND topology_parent = :parent ORDER BY topology_group, topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
-                    'topology_name' => 'Status',
-                    'topology_page' => 20101,
-                    'topology_url' => 'main.php?p=20101',
+                    'topology_name' => 'By host',
+                    'topology_page' => 2,
+                    'topology_url' => 'centreon/20101',
+                    'topology_parent' => '',
+                    'topology_order' => 1,
                     'topology_group' => 201
-                ),
-                array(
-                    'topology_name' => 'Status by group',
-                    'topology_page' => 20102,
-                    'topology_url' => 'main.php?p=20102',
-                    'topology_group' => 201
-                ),
-                array(
-                    'topology_name' => 'Status',
-                    'topology_page' => 20201,
-                    'topology_url' => 'main.php?p=20201',
-                    'topology_group' => 202
                 )
             )
         );
+
         $menu = new Menu($this->db);
         $this->assertEquals(
-            $menu->getMenuChildren(2),
+            $menu->getMenu(),
+            $result
+        );
+    }
+
+
+    /**
+     *
+     */
+    public function testGetMenuLevelTwo()
+    {
+        $result = array(
+            "p2" => array(
+                "children" => array(
+                    201 => array(
+                        "label" => 'By host',
+                        "url" => 'centreon/20101',
+                        "active" => false,
+                        "children" => array()
+                    )
+                )
+            )
+        );
+
+        $this->db->addResultSet(
+            'SELECT topology_name, topology_parent, topology_group FROM topology WHERE topology_show = "1" AND topology_page IS NULL ORDER BY topology_group, topology_order',
             array(
                 array(
-                    'id' => 201,
-                    'label' => 'By host',
-                    'children' => array(
-                        array(
-                            'id' => 20101,
-                            'label' => 'Status',
-                            'url' => 'main.php?p=20101'
-                        ),
-                        array(
-                            'id' => 20102,
-                            'label' => 'Status by group',
-                            'url' => 'main.php?p=20102'
-                        )
-                    )
-                ),
+                    'topology_name' => 'By host',
+                    'topology_parent' => 2,
+                    'topology_group' => 201
+                )
+            )
+        );
+
+        $this->db->addResultSet(
+            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            array(
                 array(
-                    'id' => 202,
-                    'label' => 'By services',
-                    'children' => array(
-                        array(
-                            'id' => 20201,
-                            'label' => 'Status',
-                            'url' => 'main.php?p=20201'
+                    'topology_name' => 'By host',
+                    'topology_page' => 201,
+                    'topology_url' => 'centreon/20101',
+                    'topology_parent' => 2,
+                    'topology_order' => 1,
+                    'topology_group' => 201
+                )
+            )
+        );
+
+        $menu = new Menu($this->db);
+        $this->assertEquals(
+            $menu->getMenu(),
+            $result
+        );
+    }
+
+    /**
+     *
+     */
+    public function testGetMenuLevelThree()
+    {
+        $result = array(
+            "p2" => array(
+                "children" => array(
+                    201 => array(
+                        "children" => array(
+                            "orphans" => array(
+                                20101 => array(
+                                    "label" => "By host",
+                                    "url" => "centreon/20101",
+                                    "active" => false
+                                )
+                            )
                         )
                     )
                 )
             )
+        );
+
+        $this->db->addResultSet(
+            'SELECT topology_name, topology_parent, topology_group FROM topology WHERE topology_show = "1" AND topology_page IS NULL ORDER BY topology_group, topology_order',
+            array(
+                array(
+                    'topology_name' => 'By host',
+                    'topology_parent' => 2,
+                    'topology_group' => 201
+                )
+            )
+        );
+
+        $this->db->addResultSet(
+            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            array(
+                array(
+                    'topology_name' => 'By host',
+                    'topology_page' => 20101,
+                    'topology_url' => 'centreon/20101',
+                    'topology_parent' => 201,
+                    'topology_order' => 1,
+                    'topology_group' => 201
+                )
+            )
+        );
+
+        $menu = new Menu($this->db);
+        $this->assertEquals(
+            $menu->getMenu(),
+            $result
         );
     }
 }
