@@ -65,6 +65,11 @@ require_once("./include/core/menu/menuJS.php");
 require_once _CENTREON_PATH_ . 'www/class/centreonMenu.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 
+/**
+ * Add new header feature testing variable
+ */
+$newHeader = $centreonFeature->featureActive('Header', 2, $centreon->user->user_id);
+
 $centreonMenu = new CentreonMenu(new CentreonLang(_CENTREON_PATH_, $centreon));
 
 /*
@@ -350,10 +355,14 @@ if ($is_admin) {
     $tpl->assign("tab_user", $tab_user);
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
+$tpl->assign('newHeader', $newHeader);
 
 /*
  * Display
  */
 $tpl->display("BlockHeader.ihtml");
-$tpl->display("menu.ihtml");
-count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : $tpl->display("noLeftMenu.ihtml");
+
+if (!$newHeader) {
+    $tpl->display("menu.ihtml");
+    count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : $tpl->display("noLeftMenu.ihtml");
+}

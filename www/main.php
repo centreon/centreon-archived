@@ -94,6 +94,8 @@ include_once("./include/core/header/header.php");
 
 require_once _CENTREON_PATH_ . "/bootstrap.php";
 
+$centreon->user->setCurrentPage($p);
+
 /*
  * LCA Init Common Var
  */

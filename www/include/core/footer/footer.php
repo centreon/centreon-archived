@@ -224,12 +224,68 @@ foreach ($jsdata as $k => $val) {
             jQuery(".timepicker").timepicker();
             jQuery(".datepicker").datepicker();
         }
+        <?php
+        $featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
+        if (count($featureToAsk) === 1) {
+        ?>
+            var testingFeature = jQuery('<div/>')
+              .html(
+                '<h3>Feature testing</h3>' +
+                '<div style="margin: 2px;">Would you activate the feature testing: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+                '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
+                '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
+                '<div style="margin: 2px;">You can give use your feedback on <a href="https://centreon.github.io">Slack</a> ' +
+                'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
+                '<div style="margin-top: 8px; text-align: center;">' +
+                '<button class="btc bt_success" onclick="featureEnable()"  id="btcActivateFf">Activate</button>' +
+                '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
+                '</div>'
+              )
+              .css('position', 'relative');
+
+            function validateFeature(name, version, enabled) {
+              jQuery.ajax({
+                url: './api/internal.php?object=centreon_featuretesting&action=enabled',
+                data: JSON.stringify({
+                  name: name,
+                  version: version,
+                  enabled: enabled
+                }),
+                dataType: 'json',
+                type: 'POST'
+              })
+            }
+
+            function featureEnable() {
+              validateFeature(
+                "<?php echo $featureToAsk[0]['name']; ?>",
+                "<?php echo $featureToAsk[0]['version']; ?>",
+                true
+              );
+              testingFeature.centreonPopin("close");
+            }
+
+            function featureDisable() {
+              validateFeature(
+                "<?php echo $featureToAsk[0]['name']; ?>",
+                "<?php echo $featureToAsk[0]['version']; ?>",
+                true
+              );
+              testingFeature.centreonPopin("close");
+            }
+
+            testingFeature.centreonPopin({
+              open: true
+            })
+        <?php
+        }
+        ?>
     </script>
     </body>
     </html>
 <?php
 
-/* 
+/*
  * Close all DB handler
  */
 if (isset($pearDB) && is_object($pearDB)) {
