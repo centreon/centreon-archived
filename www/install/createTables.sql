@@ -2360,7 +2360,9 @@ CREATE TABLE IF NOT EXISTS `downtime_cache` (
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `ip` VARCHAR(16) NOT NULL,
-  `is_connected` TINYINT(1) NOT NULL DEFAULT 0
+  `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL,
+  `connected_at` TIMESTAMP NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Manage new feature proposal
