@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2017 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,20 +31,45 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-/*
- * Create remote servers table for keeping track of remote instances
+require_once dirname(__FILE__) . "/webService.class.php";
+
+/**
+ * Class CentreonRemoteServer
  */
-$query = 'CREATE TABLE IF NOT EXISTS `remote_servers` (' .
-    '`id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,' .
-    '`ip` VARCHAR(16) NOT NULL,' .
-    '`is_connected` TINYINT(1) NOT NULL DEFAULT 0' .
-    ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+class CentreonRemoteServer extends CentreonWebService
+{
 
-$pearDBO->query($query);
+    public function postAddToWaitList()
+    {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
-// Add column to topology table to mark which pages are with React
-$query = "ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`";
-$pearDBO->query($query);
+        if (!$ip) {
+            throw new \RestBadRequestException('Can not access your IP address.');
+        }
+
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            throw new \RestBadRequestException('IP is not valid.');
+        }
+
+        $query = $this->pearDB->query("SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = '{$ip}'");
+        $result = $query->fetch();
+
+        if ((bool) $result['count']) {
+            throw new \RestConflictException('IP already in wait list.');
+        }
+
+        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `is_connected`) ';
+        $insertQuery .= "VALUES ('{$ip}', 0)";
+
+        $this->pearDB->query($insertQuery);
+
+        return '';
+    }
+
+    public function authorize($action, $user, $isInternal = false)
+    {
+        return true;
+    }
+}

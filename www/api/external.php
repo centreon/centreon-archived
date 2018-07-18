@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2015 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,20 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-/*
- * Create remote servers table for keeping track of remote instances
- */
-$query = 'CREATE TABLE IF NOT EXISTS `remote_servers` (' .
-    '`id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,' .
-    '`ip` VARCHAR(16) NOT NULL,' .
-    '`is_connected` TINYINT(1) NOT NULL DEFAULT 0' .
-    ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT);
+ini_set('display_errors', 'Off');
 
-$pearDBO->query($query);
+require_once dirname(__FILE__) . '/../../bootstrap.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once dirname(__FILE__) . '/class/webService.class.php';
+require_once dirname(__FILE__) . '/exceptions.php';
 
-// Add column to topology table to mark which pages are with React
-$query = "ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`";
-$pearDBO->query($query);
+$pearDB = new CentreonDB;
+
+CentreonWebService::router($dependencyInjector, null, false);
