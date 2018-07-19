@@ -34,12 +34,14 @@
         "symfony/filesystem": "~2.6",
         "symfony/finder": "~2.6",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6"
+        "smarty/smarty": "~2.6",
+        "curl/curl" : "^1.5"
     },
     "autoload": {
         "psr-4": {
             "CentreonLegacy\\": "src/CentreonLegacy/",
-            "CentreonRemote\\": "src/CentreonRemote/"
+            "CentreonRemote\\": "src/CentreonRemote/",
+            "Centreon\\": "src/Centreon/"
         },
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
