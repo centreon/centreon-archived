@@ -1,0 +1,64 @@
+[
+  {
+    "name": "config.timeperiod.add-setparam-show",
+    "description": "Check timeperiod API",
+    "actions": [
+      {
+        "from": "centreon.api.auth",
+        "name": "Authenticate"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Add test timeperiod"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam name"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam alias"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam sunday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam monday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam tuesday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam wednesday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam thursday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam friday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam saturday"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam include"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Setparam exclude"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Show timeperiods"
+      }
+    ]
+  }
+]

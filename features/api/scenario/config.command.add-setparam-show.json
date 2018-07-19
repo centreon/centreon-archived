@@ -1,0 +1,44 @@
+[
+  {
+    "name": "config.command.add-setparam-show",
+    "description": "Check command REST API",
+    "actions": [
+      {
+        "from": "centreon.api.auth",
+        "name": "Authenticate"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Add test command"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam name"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam line"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam type"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam graph"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam example"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Setparam comment"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Show commands"
+      }
+    ]
+  }
+]

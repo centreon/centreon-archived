@@ -1,0 +1,28 @@
+[
+  {
+    "name": "config.timeperiod.exclusion",
+    "description": "Check timeperiod exclusions",
+    "actions": [
+      {
+        "from": "centreon.api.auth",
+        "name": "Authenticate"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Add timeperiod"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Set exception"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Get exceptions"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Del exception"
+      }
+    ]
+  }
+]

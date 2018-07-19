@@ -1,7 +1,7 @@
 [
     {
-	"name": "config.poller.add-setparam-list",
-	"description": "Add a poller",
+	"name": "config.poller.add-setparam-show",
+	"description": "Add a poller, set its parameters and get it",
 	"actions": [
 	    {
 		"from": "centreon.api.auth",
@@ -9,7 +9,7 @@
 	    },
 	    {
 		"from": "centreon.api.config.poller",
-		"name": "Add instance"
+		"name": "Add test instance"
 	    },
 	    {
 		"from": "centreon.api.config.poller",
@@ -61,7 +61,7 @@
 	    },
 	    {
 		"from": "centreon.api.config.poller",
-		"name": "List instances"
+		"name": "Show instances"
 	    }
 	]
     }

@@ -8,16 +8,16 @@
 		"name": "Authenticate"
 	    },
 	    {
-		"from": "centreon.api.config.poller",
-		"name": "Create host 2"
+		"from": "centreon.api.config.host",
+		"name": "Add host"
 	    },
 	    {
 		"from": "centreon.api.config.poller",
-		"name": "Create instance 2"
+		"name": "Add instance"
 	    },
 	    {
-		"from": "centreon.api.config.poller",
-		"name": "Setinstance host 2"
+		"from": "centreon.api.config.host",
+		"name": "Setinstance"
 	    },
 	    {
 		"from": "centreon.api.config.poller",

@@ -1,0 +1,212 @@
+[
+  {
+    "name": "config.host.add-setparam-show",
+    "description": "Check host API",
+    "actions": [
+      {
+        "from": "centreon.api.auth",
+        "name": "Authenticate"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Add test host"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam name"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam 2d_coords"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam 3d_coords"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam action_url"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam activate"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam active_checks_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam address"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam alias"
+      },
+      {
+        "from": "centreon.api.config.command",
+        "name": "Add command"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_command"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_command_arguments"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_interval"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_freshness"
+      },
+      {
+        "from": "centreon.api.config.timeperiod",
+        "name": "Add timeperiod"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_period"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam check_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam contact_additive_inheritance"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam cg_additive_inheritance"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam event_handler"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam event_handler_arg"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam event_handler_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam first_notification_delay"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam flap_detection_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam host_low_flap_threshold"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam host_high_flap_threshold"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam flap_detection_options"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam icon_image"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam icon_image_alt"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam max_check_attempts"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notes"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notes_url"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notifications_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notification_interval"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notification_options"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam notification_period"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam recovery_notif_delay"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam obsess_over_host"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam passive_checks_enabled"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam process_perf_data"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam retain_status_info"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam retain_nonstatus_info"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam retry_check_interval"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam snmp_community"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam snmp_version"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam stalking_options"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam statusmap_image"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam host_notification_options"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Setparam timezone"
+      },
+      {
+        "from": "centreon.api.config.host",
+        "name": "Show hosts"
+      }
+    ]
+  }
+]
