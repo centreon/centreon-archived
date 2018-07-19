@@ -53,17 +53,20 @@ class CentreonRemoteServer extends CentreonWebService
             throw new \RestBadRequestException('IP is not valid.');
         }
 
-        $query = $this->pearDB->query("SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = '{$ip}'");
-        $result = $query->fetch();
+        $statement = $this->pearDB->prepare('SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = :ip');
+        $statement->execute([':ip' => $ip]);
+        $result = $statement->fetch();
 
         if ((bool) $result['count']) {
             throw new \RestConflictException('IP already in wait list.');
         }
 
-        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `is_connected`) ';
-        $insertQuery .= "VALUES ('{$ip}', 0)";
+        $createdAt = date('Y-m-d H:i:s');
+        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `is_connected`, `created_at`) ';
+        $insertQuery .= "VALUES (:ip, 0, '{$createdAt}')";
 
-        $this->pearDB->query($insertQuery);
+        $insert = $this->pearDB->prepare($insertQuery);
+        $insert->execute([':ip' => $ip]);
 
         return '';
     }
