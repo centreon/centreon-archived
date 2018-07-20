@@ -13,12 +13,13 @@ class CentreonClapiService implements ContainerInterface
 
     public function add(string $object): void
     {
+        $interface = CentreonClapiServiceInterface::class;
         $hasInterface = (new ReflectionClass($object))
-            ->implementsInterface(CentreonClapiServiceInterface::class)
+            ->implementsInterface($interface)
         ;
 
         if ($hasInterface === false) {
-            throw new NotFoundException;
+            throw new NotFoundException(sprintf('Object %s must implement %s', $object, $interface));
         }
 
         $name = strtolower($object::getName());
