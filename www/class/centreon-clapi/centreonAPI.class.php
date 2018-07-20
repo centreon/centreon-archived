@@ -656,7 +656,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-
+        
         $action = strtoupper($this->action);
 
         /**
@@ -670,28 +670,34 @@ class CentreonAPI
          * Check method availability before using it.
          */
         if ($this->object) {
-            /**
-             * Require needed class
-             */
-            $this->requireLibs($this->object);
+            $isService = $this->dependencyInjector['centreon.clapi']->has($this->object);
 
-            /**
-             * Check class declaration
-             */
-            if (isset($this->relationObject[$this->object]['class'])) {
-                if ($this->relationObject[$this->object]['module'] === 'core') {
-                    $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
-                } else {
-                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" .
-                        $this->relationObject[$this->object]['class'];
-                }
+            if ($isService === true) {
+                $objName = $this->dependencyInjector['centreon.clapi']->get($this->object);
             } else {
-                $objName = "";
-            }
+                /**
+                 * Require needed class
+                 */
+                $this->requireLibs($this->object);
 
-            if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
-                print "Object $this->object not found in Centreon API.\n";
-                return 1;
+                /**
+                 * Check class declaration
+                 */
+                if (isset($this->relationObject[$this->object]['class'])) {
+                    if ($this->relationObject[$this->object]['module'] === 'core') {
+                        $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                    } else {
+                        $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" .
+                            $this->relationObject[$this->object]['class'];
+                    }
+                } else {
+                    $objName = "";
+                }
+
+                if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
+                    print "Object $this->object not found in Centreon API.\n";
+                    return 1;
+                }
             }
 
             $obj = new $objName($this->dependencyInjector);
