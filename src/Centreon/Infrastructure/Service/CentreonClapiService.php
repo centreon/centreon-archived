@@ -4,6 +4,7 @@ namespace Centreon\Infrastructure\Service;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use ReflectionClass;
 use Psr\Container\ContainerInterface;
+use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Centreon\Infrastructure\Service\Traits\ServiceContainerTrait;
 
 class CentreonClapiService implements ContainerInterface
