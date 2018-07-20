@@ -13,14 +13,16 @@ class CentreonWebserviceService implements ContainerInterface
 
     public function add(string $object): void
     {
+        $class = CentreonWebService::class;
+        $interface = CentreonWebserviceServiceInterface::class;
         $ref = new ReflectionClass($object);
         $hasInterfaces = (
-            $ref->isSubclassOf(CentreonWebService::class) ||
-            $ref->implementsInterface(CentreonWebserviceServiceInterface::class)
+            $ref->isSubclassOf($class) ||
+            $ref->implementsInterface($interface)
             );
 
         if ($hasInterfaces === false) {
-            throw new NotFoundException;
+            throw new NotFoundException(sprintf('Object %s must implement %s and extend %s class', $object, $interface, $class));
         }
 
         $name = strtolower($object::getName());
