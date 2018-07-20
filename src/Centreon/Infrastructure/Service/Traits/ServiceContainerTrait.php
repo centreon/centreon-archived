@@ -26,4 +26,9 @@ trait ServiceContainerTrait
 
         return $result;
     }
+
+    public function all(): array
+    {
+        return $this->objects;
+    }
 }
