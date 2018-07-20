@@ -292,11 +292,19 @@ class CentreonWebService
             self::$webServicePaths,
             glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
         );
+        
+        $isService = $dependencyInjector['centreon.webservice']->has($object);
+        
+        if ($isService === true) {
+            $webService = [
+                'class' => $dependencyInjector['centreon.webservice']->get($object)
+            ];
+        } else {
+            $webService = self::webservicePath($object);
 
-        $webService = self::webservicePath($object);
-
-        /* Initialize the webservice */
-        require_once($webService['path']);
+            /* Initialize the webservice */
+            require_once($webService['path']);
+        }
         
         $wsObj = new $webService['class']();
 
