@@ -45,6 +45,7 @@
         },
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
+            "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
