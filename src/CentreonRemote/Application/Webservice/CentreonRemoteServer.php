@@ -24,7 +24,7 @@ class CentreonRemoteServer extends \CentreonWebService implements CentreonWebser
      * @throws \RestBadRequestException
      * @throws \RestConflictException
      */
-    public function getAddToWaitList(): string
+    public function postAddToWaitList(): string
     {
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
