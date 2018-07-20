@@ -244,8 +244,8 @@ function get_notified_infos_for_service($serviceId, $hostId)
     }
 
     if ($useOnlyContactsFromHost ||
-        (count($results['contacts']) == 0 && $contactAdd['contact_additive_inheritance']) &&
-        (count($results['contactGroups']) == 0 && $contactAdd['cg_additive_inheritance'])) {
+        (count($results['contacts']) == 0 && $contactAdd['contact_additive_inheritance'] == 0) &&
+        (count($results['contactGroups']) == 0 && $contactAdd['cg_additive_inheritance'] == 0)) {
         return get_notified_infos_for_host($hostId);
     }
 
