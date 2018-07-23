@@ -3,7 +3,7 @@
 namespace CentreonRemote\Infrastructure\Service;
 
 
-class CentreonLiveDBService
+class CentreonDBService
 {
 
 }
