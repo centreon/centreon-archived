@@ -196,12 +196,6 @@ class CentreonUtils
             case "notlike":
                 $result = "NOT LIKE";
                 break;
-            case "in":
-                $result = "IN";
-                break;
-            case "notin":
-                $result = "NOT IN";
-                break;
             case "regex":
                 $result = "REGEXP";
                 break;

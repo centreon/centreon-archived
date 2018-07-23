@@ -57,8 +57,6 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
                 "ne" => "!=",
                 "like" => "LIKE",
                 "notlike" => "NOT LIKE",
-                "in"      => "IN",
-                "notin"   => "NOT IN",
                 "regex"   => "REGEXP",
                 "notregex"=> "NOT REGEXP"
             );
@@ -87,7 +85,7 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
             $target = $params['default_value'];
         }
         if (isset($target)) {
-            if (preg_match("/(gt |lt |gte |lte |eq |ne |like |notlike |in |notin |regex |notregex )(.+)/", $target, $matches)) {
+            if (preg_match("/(gt |lt |gte |lte |eq |ne |like |notlike |regex |notregex )(.+)/", $target, $matches)) {
                 $op = trim($matches[1]);
                 $val = trim($matches[2]);
             }
