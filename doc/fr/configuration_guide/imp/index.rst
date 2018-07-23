@@ -21,10 +21,11 @@ l'installation du système Centreon 3.4. Tous les Plugin Packs sont maintenus pa
 nos équipes et font l'objet de mises à jour ou ajouts réguliers, vous permettant
 d'améliorer de façon continue vos contrôles.
 
-Les Plugin Packs, développés par Centreon, sont issus de Centreon Plugins dont
-l'éventail fonctionnel est un des plus riches du marché : plus de 170 domaines IT
-sont déjà couverts en 2017, représentant plus de 2000 indicateurs de supervision.
-Ils vous permettent de déployer votre supervision rapidement et simplement. 
+Les Plugin Packs (pack de configuration), développés par Centreon, reposent sur
+les Centreon Plugins (sondes de supervision) dont l'éventail fonctionnel est un 
+des plus riches du marché : plus de 170 domaines IT sont déjà couverts en 2017, 
+représentant plus de 2000 indicateurs de supervision. Ils vous permettent de 
+déployer votre supervision rapidement et simplement. 
 
 Vous souhaitez utiliser Centreon IMP ? Rien de plus simple. Suivez les instructions
 ci-dessous.
@@ -228,8 +229,11 @@ avez la liste des dépendances sous forme de rpm à installer pour que votre
 supervision puisse démarrer.
 
 .. note::
-    Pensez à déployer tous les rpms sur chaque poller qui le nécessitent. Sinon votre supervision ne
-    pourra pas fonctionner.
+    Pensez à déployer tous les rpms sur chaque poller qui le nécessitent.
+    Sinon votre supervision ne pourra pas fonctionner. En effet, seuls les
+    Centreon Plugins des 11 premiers Plugin Packs ont été installés par défaut
+    sur vos serveurs Centreon. Il est indispensable de suivre la procédure de
+    déploiement de chaque Plugin Pack en cliquant sur l'icône "?".
 
 Le Plugin Pack Manager dispose de filtres pour faciliter votre recherche d’un
 Plugin Pack. Vous pouvez effectuer des recherches en fonction de :
