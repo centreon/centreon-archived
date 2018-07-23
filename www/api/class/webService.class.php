@@ -33,7 +33,9 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+if (!(class_exists('centreonDB') || class_exists('\\centreonDB')) && defined('_CENTREON_PATH_')) {
+    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+}
 
 class CentreonWebService
 {
