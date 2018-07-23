@@ -3,14 +3,16 @@ namespace Centreon;
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 
 class CentreonProvider implements ServiceProviderInterface
 {
 
     /**
-     * Register Centron services
+     * Register Centreon services
      * 
      * @param \Pimple\Container $pimple
      */
@@ -24,6 +26,18 @@ class CentreonProvider implements ServiceProviderInterface
 
         $pimple['centreon.clapi'] = function(Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
+
+            return $service;
+        };
+
+        $pimple['centreon.db-manager'] = function(Container $container): CentreonDBManagerService {
+            $services = [
+                'realtime_db',
+                'configuration_db',
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new CentreonDBManagerService($locator);
 
             return $service;
         };
