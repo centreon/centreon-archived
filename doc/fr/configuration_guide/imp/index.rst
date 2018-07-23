@@ -9,17 +9,17 @@ Qu'est-ce que IMP ?
 
 Centreon IMP pour Instant Monitoring Platform, est une solution basée sur 
 l'association de Centreon 3.4 et de la nouvelle génération de Plugin Packs
-accessible en ligne (acquisition et installatioin).
+accessible en ligne (acquisition et installation).
 
 L'objectif de Centreon IMP est de vous faire gagner beaucoup de temps lors de
 la mise en place de votre supervision, de simplifier la mise en place de vos
 points de contrôle et de réduire le temps de maintenance de votre plate-forme.
-Grâce à ses Plugin PAcks, plugins packagés avec des modèles prêts à l'emploi
+Grâce à ses Plugin Packs, plugins packagés avec des modèles prêts à l'emploi
 couplés à une documentation de déploiement (monitoring procedure), Centreon IMP
 doit vous permettre de démarrer votre supervision au maximum 30 minutes après
 l'installation du système Centreon 3.4. Tous les Plugin Packs sont maintenus par
-nos équipes et font l'objet de mises à jour ou ajouts régulièrs.
-vous permettent d'améliorer de façon continue vos contrôles.
+nos équipes et font l'objet de mises à jour ou ajouts réguliers, vous permettant
+d'améliorer de façon continue vos contrôles.
 
 Les Plugin Packs, développés par Centreon, sont issus de Centreon Plugins dont
 l'éventail fonctionnel est un des plus riches du marché : plus de 170 domaines IT
@@ -29,13 +29,13 @@ Ils vous permettent de déployer votre supervision rapidement et simplement.
 Vous souhaitez utiliser Centreon IMP ? Rien de plus simple. Suivez les instructions
 ci-dessous.
 
-Pré-requis
-----------
+Prérequis
+---------
 
 **1. Avoir installé Centreon 3.4**
 
-Pour pouvoir utiliser Centreon IMP, vous devez absoluement installer la dernière
-version de Centreon open source, la verison 3.4. Cette version intègre la dernière
+Pour pouvoir utiliser Centreon IMP, vous devez absolument installer la dernière
+version de Centreon open source, la version 3.4. Cette version intègre la dernière
 version de Centreon Web c'est à dire la version 2.8.x. 
 
 Centreon 3.4 est installable soit en "fresh install" avec `l'ISO d'installation de Centreon <https://download.centreon.com/>`_
@@ -45,7 +45,7 @@ rendez-vous dans les rubriques appropriées de la `documentation <install_from_p
 **2. Avoir une connexion internet**
 
 Pour accéder à Centreon IMP, votre serveur de supervision Centreon central,
-doit absoluement avoir une connexion à internet. Cette dernière permettra de
+doit absolument avoir une connexion à internet. Cette dernière permettra de
 procéder à la récupération des Plugin Packs de Centreon IMP via internet puis
 leur installation.
 
@@ -73,7 +73,7 @@ En créant votre compte Centreon IMP sur le site web de Centreon, vous pouvez :
 
 +--------------------------------+-----------------------+---------------------+---------------------+
 |                                | Centreon open source  | Centreon IMP Free   | Centreon IMP 1/6/12 |
-|                                | (verison 3.4)         | Trial with online   | month online        |
+|                                | (version 3.4)         | Trial with online   | month online        |
 |                                |                       | account             | subscription        |
 +================================+=======================+=====================+=====================+
 | 6 Free Plugin Pack(*)          |           x           |          x          |          x          |
@@ -105,7 +105,7 @@ Quels Plugin Packs sont disponibles à chaque niveau ?
     - FTP
     - HTTP
     - LDAP
-- Centreon IMP avec une souscription de 1, 6, 12 mois : `Accès au ctalogue de Plugin Packs <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
+- Centreon IMP avec une souscription de 1, 6, 12 mois : `Accès au catalogue de Plugin Packs <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
     (*) Nous savons tous que 6 = 11!
@@ -113,7 +113,7 @@ Quels Plugin Packs sont disponibles à chaque niveau ?
     5 Plugin Packs Centreon (Central, DB, Poller, MAP et MBI). Comme ils
     servent à superviser la plateforme de supervision, nous préférons ne pas
     les compter.
-    packs servant à superviser votre plateforme de supervision.
+    Packs servant à superviser votre plateforme de supervision.
 
 =============================================================
 Guide d’accès via l’exemple de l’essai gratuit à Centreon IMP
@@ -124,14 +124,14 @@ l’essai gratuit à Centreon IMP.
 
 Pour cela il vous suffit de créer votre compte Centreon IMP sur le site web de Centreon.
 
-Suivez les étapes décrites ci dessous :
+Suivez les étapes décrites ci-dessous :
 
 1. Créez votre compte Centreon IMP sur le site web de Centreon
 --------------------------------------------------------------
 
 La création de ce compte est gratuite et ne prend que quelques minutes.
 
-Allez sur le site web de Centreon et rendez vous sur la page de souscription à
+Allez sur le site web de Centreon et rendez-vous sur la page de souscription à
 `Centreon IMP <https://www.centreon.com/imp-subscribe/>`_. Cliquez
 sur "Try it" dans la première colonne du tableau comparatif des offres.
 
@@ -140,7 +140,7 @@ sur "Try it" dans la première colonne du tableau comparatif des offres.
     :align: center
 
 Créez maintenant votre compte Centreon IMP (rubrique New customer) et conservez
-précieusement vos login et password. Cela vous est nécessaire pour activer votre
+précieusement votre login et password. Cela vous est nécessaire pour activer votre
 compte Centreon IMP dans Centreon et ainsi avoir accès aux 5 Plugin Packs
 additionnels gratuits.
 
@@ -165,7 +165,7 @@ compte Centreon IMP dans Centreon.
 ------------------------------------------------
 
 Sur votre plate-forme Centreon, allez dans le menu **Administration ->
-Extensions -> Subscription** et connectez-vous avec les login et password de
+Extensions -> Subscription** et connectez-vous avec votre login et password de
 votre compte Centreon IMP.
 
 .. note::
@@ -286,7 +286,7 @@ déployés grâce aux Plugin Packs resteront inchangés.
 
 En revanche, vous perdrez l’accès aux mises à jour des Plugin Packs installés,
 l’accès aux nouveaux Plugin Packs ainsi que l’accès à tous les Plugin Packs non
-installés et vous n’aurez plus aucune assitance en ligne. 
+installés et vous n’aurez plus aucune assistance en ligne. 
 
 .. note::
     Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
