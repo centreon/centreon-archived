@@ -37,6 +37,10 @@ if (!isset($oreon)) {
     exit;
 }
 
+
+require_once $centreon_path . '/bootstrap.php';
+$pearDB = $dependencyInjector['configuration_db'];
+
 $searchOptions = array(
     'host' => 0,
     'service' => 0,

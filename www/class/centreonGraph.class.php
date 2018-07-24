@@ -759,10 +759,8 @@ class CentreonGraph
                                 $this->RRDoptions["upper-limit"]
                             );
                         }
-                        $this->addArgument(
-                            "DEF:vi" . $cpt . "=" . $this->dbPath . $key . ".rrd:value:AVERAGE CDEF:v" . $cpt .
-                            "=vi" . $cpt . ",-1,*"
-                        );
+                        $this->addArgument('DEF:vi' . $cpt . '=' . $this->dbPath . $key . '.rrd:value:AVERAGE');
+                        $this->addArgument('CDEF:v' . $cpt . '=vi' . $cpt . ',-1,*');
                         if (isset($tm["warn"]) && $tm["warn"] != 0) {
                             $tm["warn"] *= -1;
                         }
@@ -904,7 +902,14 @@ class CentreonGraph
                     }
                     $rpn_values .= $this->vname[$tm["metric"]] . ",UN,0," . $this->vname[$tm["metric"]] . ",IF,";
                     $rpn_expr .= ",+";
-                    $this->addArgument($arg);
+                    if (strpos($arg, ' ') === false) {
+                        $this->addArgument($arg);
+                    } else {
+                        $args = explode(' ', $arg);
+                        foreach ($args as $arg2) {
+                            $this->addArgument($arg2);
+                        }
+                    }
                     if ($this->onecurve && isset($tm["warn"]) &&
                         $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0
                     ) {
@@ -919,7 +924,7 @@ class CentreonGraph
                 } else {
                     $arg = "LINE" . $tm["ds_tickness"] . ":vc" . $cpt;
                 }
-                $arg .= $tm["ds_color_line"] . ":'";
+                $arg .= $tm["ds_color_line"] . ":";
             }
 
             if (!$this->checkcurve) {
@@ -931,26 +936,20 @@ class CentreonGraph
                 if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
                     $arg .= "  ";
                 }
-                $arg .= "'";
                 $this->addArgument($arg);
 
-                $vdefs = "";
-                $prints = "";
+                $vdefs = array();
+                $prints = array();
 
 
-                foreach (array(
-                             "last" => "LAST",
-                             "min" => "MINIMUM",
-                             "max" => "MAXIMUM",
-                             "average" => "AVERAGE",
-                             "total" => "TOTAL"
-                         ) as $name => $cf) {
+                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
+                               "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
                     if (!$tm["ds_" . $name]) {
                         continue;
                     }
                     $dispname = ucfirst($name);
-                    $vdefs .= "VDEF:" . $this->vname[$tm["metric"]] . $dispname . "=" .
-                        $this->vname[$tm["metric"]] . "," . $cf . " ";
+                    $vdefs[] = "VDEF:" . $this->vname[$tm["metric"]] . $dispname . "=" .
+                        $this->vname[$tm["metric"]] . "," . $cf;
                     if (($name == "min" || $name == "max") &&
                         (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])
                     ) {
@@ -958,23 +957,28 @@ class CentreonGraph
                     } else {
                         $displayformat = "%7.2lf";
                     }
-                    $prints .= "GPRINT:" . $this->vname[$tm["metric"]] . $dispname . ":\"" .
-                        $dispname . "\:" . $displayformat . ($this->gprintScaleOption) . "\" ";
+                    $prints[] = "GPRINT:" . $this->vname[$tm["metric"]] . $dispname.":" .
+                        $dispname . "\:" . $displayformat . ($this->gprintScaleOption);
                 }
-                $this->addArgument($vdefs);
-                $this->addArgument($prints . "COMMENT:\"\\l\"");
+                foreach ($vdefs as $vdef) {
+                    $this->addArgument($vdef);
+                }
+                foreach ($prints as $print) {
+                    $this->addArgument($print);
+                }
+                $this->addArgument("COMMENT:\\l");
 
                 if ($this->onecurve) {
                     if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
                         $this->addArgument(
-                            "HRULE:" . $tm["warn"] . $tm["ds_color_area_warn"] . ":\"Warning  \: " .
-                            $this->humanReadable($tm["warn"], $tm["unit"]) . "\\l\" "
+                            "HRULE:" . $tm["warn"] . $tm["ds_color_area_warn"] . ":Warning  \: " .
+                            $this->humanReadable($tm["warn"], $tm["unit"]) . "\\l "
                         );
                     }
                     if (isset($tm["crit"]) && !empty($tm["crit"]) && $tm["crit"] != 0) {
                         $this->addArgument(
-                            "HRULE:" . $tm["crit"] . $tm["ds_color_area_crit"] . ":\"Critical \: " .
-                            $this->humanReadable($tm["crit"], $tm["unit"]) . "\""
+                            "HRULE:" . $tm["crit"] . $tm["ds_color_area_crit"] . ":Critical \: " .
+                            $this->humanReadable($tm["crit"], $tm["unit"])
                         );
                     }
                 }
@@ -984,7 +988,7 @@ class CentreonGraph
                         $tm["ds_jumpline"] = 0;
                     }
                     while ($cline < $tm["ds_jumpline"]) {
-                        $this->addArgument("COMMENT:\"\\c\"");
+                        $this->addArgument("COMMENT:\\c");
                         $cline++;
                     }
                 }
@@ -1288,9 +1292,6 @@ class CentreonGraph
      */
     public function setRRDOption($name, $value = null)
     {
-        if (strpos($value, " ") !== false) {
-            $value = "'" . $value . "'";
-        }
         $this->RRDoptions[$name] = $value;
     }
 
@@ -1398,17 +1399,17 @@ class CentreonGraph
         }
 
         foreach ($this->RRDoptions as $key => $value) {
-            $commandLine .= "--" . $key;
+            $commandLine .= '--' . $key;
             if (isset($value)) {
-                $commandLine .= "=" . $value;
+                $commandLine .= '=' . escapeshellarg($value);
             }
-            $commandLine .= " ";
+            $commandLine .= ' ';
         }
         foreach ($this->colors as $key => $value) {
-            $commandLine .= "--color " . $key . $value . " ";
+            $commandLine .= '--color ' . escapeshellarg($key . $value) . ' ';
         }
         foreach ($this->fonts as $key => $value) {
-            $commandLine .= "--font " . $key . $value . " ";
+            $commandLine .= '--font ' . escapeshellarg($key . $value) . ' ';
         }
 
         /*
@@ -1419,10 +1420,10 @@ class CentreonGraph
             $rrd_time = str_replace(":", "\:", $rrd_time);
             $rrd_time2 = addslashes($this->GMT->getDate("Y\/m\/d G:i", $this->RRDoptions["end"]));
             $rrd_time2 = str_replace(":", "\:", $rrd_time2);
-            $commandLine .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
+            $commandLine .= escapeshellarg('COMMENT: From ' . $rrd_time . ' to ' . $rrd_time2 . ' \\c');
         }
         foreach ($this->arguments as $arg) {
-            $commandLine .= " " . $arg . " ";
+            $commandLine .= ' ' . escapeshellarg($arg) . ' ';
         }
         $gmt_export = "";
         $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
@@ -1860,7 +1861,7 @@ class CentreonGraph
                 $l_mlist = preg_split("/\,/", $lVmetric["rpn_function"]);
                 foreach ($l_mlist as $l_mnane) {
                     /*
-                     * Check for a real metric 
+                     * Check for a real metric
                      */
                     $l_poqy = $this->DBC->query(
                         "SELECT host_id, service_id, metric_id, metric_name, unit_name,
@@ -2035,7 +2036,7 @@ class CentreonGraph
      */
     public function getIndexDataId($hostId, $serviceId)
     {
-        $sql = "SELECT id FROM index_data 
+        $sql = "SELECT id FROM index_data
             WHERE host_id = " . $this->DBC->escape($hostId) . "
                 AND service_id = " . $this->DBC->escape($serviceId);
         $res = $this->DBC->query($sql);

@@ -665,7 +665,7 @@ function goM(_time_reload,_sid,_o){
 			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}
 
-	_timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+	_timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
 }

@@ -60,6 +60,7 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
+require_once $classdir . '/centreonFeature.class.php';
 require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
@@ -223,7 +224,7 @@ $colorfile = "Color/" . $tab_file_css[0];
  * Get CSS Order and color
  */
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
-if ($DBRESULT->fetchColumn() && ($elem = $DBRESULT->fetch())) {
+if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
     $colorfile = "Color/" . $elem["css_name"];
 }
 
@@ -242,3 +243,8 @@ $DBRESULT = $pearDB->query($query);
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
+
+/**
+ * Initialize features flipping
+ */
+$centreonFeature = new CentreonFeature($pearDB);

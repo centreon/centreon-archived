@@ -43,11 +43,17 @@ $SearchTool = null;
 $search = '';
 if (isset($_POST['searchGT']) && $_POST['searchGT']) {
     $search = $_POST['searchGT'];
-    $SearchTool = " WHERE name LIKE '%" . $search . "%'";
+    $SearchTool = " WHERE name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
 }
 
-$res = $pearDB->query("SELECT COUNT(*) FROM giv_graphs_template" . $SearchTool);
-$tmp = $res->fetchRow();
+$stmt = $pearDB->prepare("SELECT COUNT(*) FROM giv_graphs_template" . $SearchTool);
+foreach ($queryValues as $key => $value) {
+    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+}
+$stmt->execute();
+
+$tmp = $stmt->fetch();
 $rows = $tmp["COUNT(*)"];
 
 include("./include/common/checkPagination.php");
@@ -167,7 +173,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchGT', $search);
+$tpl->assign('searchGT', htmlentities($search));
 
 /*
  * Apply a template definition

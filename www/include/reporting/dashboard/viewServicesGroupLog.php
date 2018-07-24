@@ -158,11 +158,11 @@ if (isset($id) && $id != "NULL") {
     /*
      * Status colors
      */
-    $color = substr($oreon->optGen["color_up"], 1)
-        . ':'.substr($oreon->optGen["color_down"], 1)
-        . ':'.substr($oreon->optGen["color_unreachable"], 1)
-        . ':'.substr($oreon->optGen["color_maintenance"], 1)
-        . ':'.substr($oreon->optGen["color_undetermined"], 1);
+    $color = substr($colors["up"], 1)
+        . ':'.substr($colors["down"], 1)
+        . ':'.substr($colors["unreachable"], 1)
+        . ':'.substr($colors["maintenance"], 1)
+        . ':'.substr($colors["undetermined"], 1);
 
     /*
      * Ajax timeline

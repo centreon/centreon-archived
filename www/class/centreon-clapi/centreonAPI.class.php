@@ -810,8 +810,10 @@ class CentreonAPI
 
     /**
      * Export All configuration
+     * 
+     * @param $withoutClose disable using of PHP exit function (default: false)
      */
-    public function export()
+    public function export($withoutClose = false)
     {
         $this->requireLibs("");
 
@@ -838,7 +840,12 @@ class CentreonAPI
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
-                    $this->close();
+
+                    if ($withoutClose === false) {
+                        $this->close();
+                    } else {
+                        return;
+                    }
                 } elseif (!is_null($splits[1])) {
                     $name = $splits[1];
                     if (isset($splits[2])) {
@@ -847,7 +854,12 @@ class CentreonAPI
                     if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
                         echo "Unknown object : $splits[0];$splits[1]\n";
                         $this->setReturnCode(1);
-                        $this->close();
+                        
+                        if ($withoutClose === false) {
+                            $this->close();
+                        } else {
+                            return;
+                        }
                     } else {
                         $this->objectTable[$splits[0]]->export($name);
                     }

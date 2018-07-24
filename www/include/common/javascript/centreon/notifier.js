@@ -32,72 +32,78 @@
  *
  */
 
- (function($) {
-    var timeout = 0;
+(function ($) {
+    "use strict"; // enable strict mode within this function
 
-    function get_new_messages(element, settings) {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        jQuery.ajax({
-            url: "./include/monitoring/status/Notifications/notifications.php",
-            data: {
-                refresh_rate: settings.refresh_rate
-            }
-        }).done(function(xml_content) {
-            $(xml_content).find('message').each(function() {
-                if ($(this).attr('output') && handleVisibilityChange()) {
-                    var output = $(this).attr('output');
-                    var css_class = $(this).attr('class');
-                    noty({
-                        layout: 'bottomRight',
-                        text: output,
-                        type: css_class,
-                        timeout: 10000
-                    });
-                }
-                if ($(this).attr('sound')) {
-                    var snd = new buzz.sound("sounds/"+$(this).attr('sound'), {
-                        formats: [ "ogg", "mp3" ]
-                    });
-                    snd.play();
-                }
-            });
-        });
-        timeout = setTimeout(function() { get_new_messages(element, settings); }, settings.refresh_rate);
-    }
-
-    $.fn.centreon_notify_stop = function() {
+    $.fn.centreon_notify_stop = function () {
         jQuery.ajax({
             url: "./include/monitoring/status/Notifications/notifications_action.php",
             data: {
                 action: "stop"
             }
-        }).done(function() {
+        }).done(function () {
             jQuery("#sound_status").attr("src", "./img/icons/speaker_off.png");
             jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_start();");
         });
     }
 
-    $.fn.centreon_notify_start = function() {
+    $.fn.centreon_notify_start = function () {
         jQuery.ajax({
             url: "./include/monitoring/status/Notifications/notifications_action.php",
             data: {
                 action: "start"
             }
-        }).done(function() {
+        }).done(function () {
             jQuery("#sound_status").attr("src", "./img/icons/speaker_on.png");
             jQuery("#sound_status").attr("onClick", "jQuery().centreon_notify_stop();");
         });
     }
 
-    $.fn.centreon_notify = function(options) {
+    $.fn.centreon_notify = function (options) {
         var $this = $(this);
 
         var settings = $.extend({
             sid: "",
             refresh_rate: 15000
         }, options);
-        get_new_messages(this, settings);
+
+        var interval_id;
+        var get_new_messages = function (refresh_rate) {
+            if (interval_id) {
+                clearInterval(interval_id);
+            }
+
+            interval_id = setInterval(get_new_messages_callback, refresh_rate);
+        };
+        var get_new_messages_callback = function () {
+            var refresh_rate = settings.refresh_rate;
+            jQuery.ajax({
+                url: "./include/monitoring/status/Notifications/notifications.php",
+                data: {
+                    refresh_rate: refresh_rate
+                }
+            }).done(function (xml_content) {
+                $(xml_content).find('message').each(function () {
+                    if ($(this).attr('output') && handleVisibilityChange()) {
+                        var output = $(this).attr('output');
+                        var css_class = $(this).attr('class');
+                        noty({
+                            layout: 'bottomRight',
+                            text: output,
+                            type: css_class,
+                            timeout: 10000
+                        });
+                    }
+                    if ($(this).attr('sound')) {
+                        var snd = new buzz.sound("sounds/" + $(this).attr('sound'), {
+                            formats: ["ogg", "mp3"]
+                        });
+                        snd.play();
+                    }
+                });
+            });
+        };
+
+        get_new_messages(settings.refresh_rate);
     };
 }(jQuery));

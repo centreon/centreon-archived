@@ -41,10 +41,10 @@ if ($type == "Service") {
     $arg = "id=".$id;
 }
 
-$arg .= "&color[UP]=".$oreon->optGen["color_up"]."&color[UNDETERMINED]=".$oreon->optGen["color_undetermined"].
-        "&color[DOWN]=".$oreon->optGen["color_down"]."&color[UNREACHABLE]=".$oreon->optGen["color_unreachable"].
-        "&color[OK]=".$oreon->optGen["color_ok"]."&color[WARNING]=".$oreon->optGen["color_warning"].
-        "&color[CRITICAL]=".$oreon->optGen["color_critical"]."&color[UNKNOWN]=".$oreon->optGen["color_unknown"];
+$arg .= "&color[UP]=".$colors["up"]."&color[UNDETERMINED]=".$colors["undetermined"].
+        "&color[DOWN]=".$colors["down"]."&color[UNREACHABLE]=".$colors["unreachable"].
+        "&color[OK]=".$colors["ok"]."&color[WARNING]=".$colors["warning"].
+        "&color[CRITICAL]=".$colors["critical"]."&color[UNKNOWN]=".$colors["unknown"];
 $arg = str_replace("#", "%23", $arg);
 $url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
 

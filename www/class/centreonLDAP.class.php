@@ -975,6 +975,10 @@ class CentreonLdapAdmin
             $this->db->query($query);
         }
         $this->updateLdapServers($arId);
+
+        /* Remove contact passwords if store password option is disabled */
+        $this->manageContactPasswords($arId);
+
         return $arId;
     }
 
@@ -1286,5 +1290,30 @@ class CentreonLdapAdmin
             $i++;
         }
         return $arr;
+    }
+
+    /**
+     * Remove contact passwords if password storage is disabled
+     *
+     * @param  int $arId | Auth resource id
+     * @return void
+     */
+    private function manageContactPasswords($arId)
+    {
+        $result = $this->db->query(
+            'SELECT ari_value ' .
+            'FROM auth_ressource_info ' .
+            'WHERE ar_id = ' . $this->db->escape($arId) . ' ' .
+            'AND ari_name = "ldap_store_password" '
+        );
+        if ($row = $result->fetchRow()) {
+            if ($row['ari_value'] == '0') {
+                $this->db->query(
+                    "UPDATE contact " .
+                    "SET contact_passwd = NULL " .
+                    "WHERE ar_id = " . $this->db->escape($arId)
+                );
+            }
+        }
     }
 }

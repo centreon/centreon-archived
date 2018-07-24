@@ -182,7 +182,7 @@ class CentreonImageManager extends centreonFileManager
     protected function insertDirectory()
     {
         touch($this->destinationPath . "/index.html");
-        $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES (:dirName, dirAlias)";
+        $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES (:dirName, :dirAlias)";
         $stmt = $this->dbConfig->prepare($query);
         $stmt->bindParam(':dirName', $this->destinationDir);
         $stmt->bindParam(':dirAlias', $this->destinationDir);

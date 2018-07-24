@@ -36,7 +36,8 @@
 require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wiki.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/procedures.class.php";
+
+//require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/procedures.class.php";
 
 class WikiApi
 {
@@ -78,7 +79,7 @@ class WikiApi
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiefile);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiefile);
-        if($this->noSslCertificate == 1){
+        if ($this->noSslCertificate == 1) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
@@ -97,7 +98,6 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
         $result = json_decode($result, true);
-
         $version = $result['query']['general']['generator'];
         $version = explode(' ', $version);
         if (isset($version[1])) {
@@ -116,20 +116,12 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_HEADER, true);
 
         // Get Connection Cookie/Token
-        if ($this->version >= 1.27) {
-            $postfields = array(
-                'action' => 'query',
-                'meta' => 'tokens',
-                'format' => 'json',
-                'type' => 'login'
-            );
-        } else {
-            $postfields = array(
-                'action' => 'login',
-                'format' => 'json',
-                'lgname' => $this->username
-            );
-        }
+        $postfields = array(
+            'action' => 'query',
+            'meta' => 'tokens',
+            'format' => 'json',
+            'type' => 'login'
+        );
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
@@ -146,15 +138,9 @@ class WikiApi
 
         $result = json_decode($body, true);
 
-        $token = '';
-        if (isset($result['query']['tokens']['logintoken'])) {
-            $token = $result['query']['tokens']['logintoken'];
-        } elseif (isset($result['login']['token'])) {
-            $token = $result['login']['token'];
-        }
+        $token = $result['query']['tokens']['logintoken'];
 
         // Launch Connection
-
         $postfields = [
             'action' => 'login',
             'lgname' => $this->username,
@@ -231,8 +217,8 @@ class WikiApi
 
         if ($this->version >= 1.24) {
             $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
-            if ($this->tokens[$method] == '+/'){
-                $this->tokens[$method] = $this->getMethodToken('delete',$title);
+            if ($this->tokens[$method] == '+/') {
+                $this->tokens[$method] = $this->getMethodToken('delete', $title);
             }
         } elseif ($this->version >= 1.20) {
             $this->tokens[$method] = $result['tokens'][$method . 'token'];
@@ -246,8 +232,7 @@ class WikiApi
 
     public function movePage($oldTitle = '', $newTitle = '')
     {
-        $login = $this->login();
-
+        $this->login();
         $token = $this->getMethodToken('move', $oldTitle);
 
         $postfields = array(
@@ -272,7 +257,7 @@ class WikiApi
     {
         $tries = 0;
         $deleteResult = $this->deleteMWPage($title);
-        while ($tries < 5 && isset($deleteResult->error)){
+        while ($tries < 5 && isset($deleteResult->error)) {
             $deleteResult = $this->deleteMWPage($title);
             $tries++;
         }
@@ -280,7 +265,7 @@ class WikiApi
         //remove cookies related to this action
         unlink('/tmp/CURLCOOKIE*');
 
-        if (isset($deleteResult->error)){
+        if (isset($deleteResult->error)) {
             return false;
         } elseif (isset($deleteResult->delete)) {
             return true;
@@ -324,9 +309,6 @@ class WikiApi
     public function getChangedPages($count = 50)
     {
         // Connecting to Mediawiki API
-        $apiUrl = $this->url . '/api.php?format=json&action=query&list=recentchanges' .
-            '&rclimit=' . $count . '&rcprop=title&rctype=new|edit';
-
         $postfields = array(
             'format' => 'json',
             'action' => 'query',
@@ -502,7 +484,7 @@ class WikiApi
      * @param string $title
      * @return array
      */
-    private function deleteMWPage($title='')
+    private function deleteMWPage($title = '')
     {
         $this->login();
 

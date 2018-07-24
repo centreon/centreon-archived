@@ -712,21 +712,18 @@ class CentreonWidget
                 if (count($tmp) != 3) {
                     throw new CentreonWidgetException('incorrect position data');
                 }
-                $column = $tmp[0];
-                $row = $tmp[1];
+                $widgetOrder = "{$tmp[0]}_{$tmp[1]}";
                 $widgetId = $tmp[2];
-                $queryValues = array();
+
                 $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
                     'WHERE custom_view_id = :viewId ' .
                     'AND widget_id = :widgetId';
-                $queryValues[] = (string)$column . "_" . $row;
-                $queryValues[] = (int)$viewId;
-                $queryValues[] = (int)$widgetId;
                 $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':widgetOrder', $column . "_" . $row, PDO::PARAM_STR);
+                $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
                 $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
                 $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
+
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
                 }

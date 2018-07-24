@@ -333,15 +333,18 @@ class DowntimeDSTContext extends CentreonContext
                     $output,
                     $matches
                 )) {
-                    $startTimestamp = $matches[1];
-                    $endTimestamp = $matches[2];
+
+                    $startTimestamp = (int)end($matches[1]);
+                    $endTimestamp = (int)end($matches[2]);
+
                     $dateStart = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateStart->setTimestamp($startTimestamp);
                     $dateEnd = new DateTime('now', new \DateTimeZone('Europe/Paris'));
                     $dateEnd->setTimestamp($endTimestamp);
+
                     if ($dateStart->format('Y-m-d H:i') != $context->downtimeProperties['expected_start'] ||
                         $dateEnd->format('Y-m-d H:i') != $context->downtimeProperties['expected_end'] ||
-                        ($endTimestamp - $startTimestamp) != $context->downtimeProperties['expected_duration']) {
+                        ($endTimestamp - $startTimestamp) != (int)$context->downtimeProperties['expected_duration']) {
                         throw new \Exception('Downtime external command parameters are wrong (start, end or duration)');
                     }
                     $storageDb = $context->getStorageDatabase();

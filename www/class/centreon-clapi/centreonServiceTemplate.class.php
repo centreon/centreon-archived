@@ -1057,8 +1057,8 @@ class CentreonServiceTemplate extends CentreonObject
         // hosts
         $hostRel = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $filters_hostRel = array("service_register" => $this->register);
-        if (isset($filters['service_id']) && !is_null($filters['service_id'])) {
-            $filters_hostRel['service_id'] = $filters['service_id'];
+        if (!is_null($filterId)) {
+            $filters_hostRel['service_id'] = $filterId;
         }
         $helements = $hostRel->getMergedParameters(
             array("host_name", "host_id"),

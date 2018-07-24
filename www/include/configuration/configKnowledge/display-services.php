@@ -42,7 +42,8 @@ if (!isset($oreon)) {
 
 $modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
-
+require_once $centreon_path . '/bootstrap.php';
+$pearDB = $dependencyInjector['configuration_db'];
 
 if (!isset($limit) || !$limit) {
     $limit = $oreon->optGen["maxViewConfiguration"];
@@ -79,7 +80,6 @@ require_once "./include/common/autoNumLimit.php";
  */
 set_include_path(get_include_path() . PATH_SEPARATOR . $modules_path);
 
-require_once $centreon_path . "/www/class/centreon-knowledge/procedures_DB_Connector.class.php";
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.php";
 
 /*
@@ -105,13 +105,7 @@ try {
     $line = array(0 => "list_one", 1 => "list_two");
 
     $proc = new procedures(
-        3,
-        $conf['kb_db_name'],
-        $conf['kb_db_user'],
-        $conf['kb_db_host'],
-        $conf['kb_db_password'],
-        $pearDB,
-        $conf['kb_db_prefix']
+        $pearDB
     );
     $proc->setHostInformations();
     $proc->setServiceInformations();

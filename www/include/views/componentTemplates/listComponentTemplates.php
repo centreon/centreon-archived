@@ -41,14 +41,20 @@ include("./include/common/autoNumLimit.php");
 
 $SearchTool = null;
 $search = '';
+$queryValues = array();
 if (isset($_POST['searchCurve']) && $_POST['searchCurve']) {
     $search = $_POST['searchCurve'];
-    $SearchTool = " WHERE name LIKE '%" . $search . "%'";
+    $SearchTool = " WHERE name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM giv_components_template" . $SearchTool);
+$stmt = $pearDB->prepare("SELECT COUNT(*) FROM giv_components_template" . $SearchTool);
+foreach ($queryValues as $key => $value) {
+    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+}
+$stmt->execute();
 
-$tmp = $DBRESULT->fetchRow();
+$tmp = $stmt->fetch();
 $rows = $tmp["COUNT(*)"];
 
 include("./include/common/checkPagination.php");
@@ -197,7 +203,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchCurve', $search);
+$tpl->assign('searchCurve', htmlentities($search));
 
 /*
  * Apply a template definition

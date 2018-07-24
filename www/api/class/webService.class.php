@@ -213,6 +213,10 @@ class CentreonWebService
             case 409:
                 header("HTTP/1.1 409 Conflict");
                 break;
+            case 206:
+                header("HTTP/1.1 206 Partial content");
+                $data = json_decode($data, true);
+                break;
         }
 
         switch ($format) {

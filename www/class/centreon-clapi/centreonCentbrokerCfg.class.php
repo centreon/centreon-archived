@@ -419,7 +419,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             . "AND config_group = ? ";
         $res = $this->db->query($sql, array($configId, $tagName));
         $row = $res->fetch();
-        $i = isset($row['max_id']) ? $row['max_id'] + 1 : 1;
+        $i = isset($row['max_id']) ? $row['max_id'] + 1 : 0;
         unset($res);
 
         $sql = "INSERT INTO cfg_centreonbroker_info "

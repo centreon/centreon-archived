@@ -1158,9 +1158,8 @@ class CentreonHost extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-
         $elements = $this->object->getList(
-            '*',
+            "*",
             -1,
             0,
             $labelField,

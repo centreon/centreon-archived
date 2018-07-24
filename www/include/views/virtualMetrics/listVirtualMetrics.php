@@ -39,20 +39,26 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
+$queryValues = $queryValues ?? [];
 $SearchTool = null;
 $search = '';
 if (isset($_POST['searchVM']) && $_POST['searchVM']) {
     $search = $_POST['searchVM'];
-    $SearchTool = " WHERE vmetric_name LIKE '%" . $search . "%'";
+    $SearchTool = " WHERE vmetric_name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
 }
 
+$stmt = $pearDB->prepare("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+foreach ($queryValues as $key => $value) {
+    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+}
 try {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+    $stmt->execute();
 } catch (\PDOException $e) {
     print "DB Error : " . $e->getMessage();
 }
 
-$tmp = $DBRESULT->fetchRow();
+$tmp = $stmt->fetch();
 $rows = $tmp["COUNT(*)"];
 
 include("./include/common/checkPagination.php");
@@ -146,7 +152,7 @@ for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_name" => $vmetric["vmetric_name"],
         "RowMenu_link" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetric['vmetric_id'],
         "RowMenu_unit" => $vmetric["unit_name"],
-        "RowMenu_rpnfunc" => $vmetric["rpn_function"],
+        "RowMenu_rpnfunc" => htmlentities($vmetric["rpn_function"]),
         "RowMenu_count" => "-",
         "RowMenu_dtype" => $deftype[$vmetric["def_type"]],
         "RowMenu_hidden" => $yesOrNo[$vmetric["hidden"]],
@@ -226,7 +232,7 @@ $form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
 $o2->setValue(null);
 $tpl->assign('limit', $limit);
-$tpl->assign('searchVM', $search);
+$tpl->assign('searchVM', htmlentities($search));
 
 /*
  * Apply a template definition

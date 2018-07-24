@@ -192,6 +192,13 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
                 $tmpLine = explode(';', $lines[$i]);
+                
+                if (count($tmpLine) > count($headers)) {
+                    /* Handle ; in variable (more values than headers) */
+                    $tmpLine[count($headers) - 1] = implode(';', array_slice($tmpLine, count($headers) - 1));
+                    $tmpLine = array_slice($tmpLine, 0, count($headers));
+                }
+                
                 foreach ($tmpLine as &$line) {
                     if (strpos($line, "|") !== false) {
                         $line = explode("|", $line);

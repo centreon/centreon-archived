@@ -82,7 +82,7 @@ $attrTimeperiods = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p, '', ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Time Period"));
 } elseif ($o == "c") {

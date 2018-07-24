@@ -206,7 +206,7 @@ if (isset($_GET["acknowledge"])) {
         }
         _oldInputFieldValue = _currentInputFieldValue;
 
-        setTimeout("mainLoopHost()", 250);
+        setTimeout(mainLoopHost, 250);
     }
 
     function initM(_time_reload, _sid, _o) {
@@ -252,7 +252,7 @@ if (isset($_GET["acknowledge"])) {
         var statusHost = jQuery.trim(jQuery('#statusHost').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
 
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(_addrXML + "?" + 'search=' + _host_search + '&num=' + _num + '&limit=' + _limit +
             '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' + _date_time_format_status +
             '&o=' + _o + '&p=' + _p + '&time=<?php print time(); ?>&criticality=' + _criticality_id +
@@ -264,7 +264,7 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 

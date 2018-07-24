@@ -68,9 +68,9 @@ if (isset($_SESSION['centreon'])) {
 } else {
     exit;
 }
-        
+
     /*
-	 * Get language 
+	 * Get language
 	 */
     $locale = $oreon->user->get_lang();
     putenv("LANG=$locale");
@@ -79,7 +79,7 @@ if (isset($_SESSION['centreon'])) {
 ;
     bind_textdomain_codeset("messages", "UTF-8");
     textdomain("messages");
-        
+
     #
     # Existing Real Metric List comes from DBO -> Store in $rmetrics Array
     #
@@ -89,11 +89,17 @@ if (isset($_SESSION['centreon'])) {
     $where = "";
     $def_type = array(0=>"CDEF",1=>"VDEF");
 
-if (isset($_GET["vdef"]) && $_GET["vdef"] == 0) {
+if (isset($_GET['vdef']) && is_numeric($_GET['vdef']) && $_GET['vdef'] == 0) {
     $where = " AND def_type='".$_GET["vdef"]."'";
 }
 
 if (isset($_GET["host_id"]) && $_GET["service_id"]) {
+    if (!is_numeric($_GET['host_id']) || !is_numeric($_GET['service_id'])) {
+        $buffer = new CentreonXML();
+        $buffer->writeElement('error', 'Bad id format');
+        $buffer->output();
+        exit;
+    }
     $host_id = $_GET["host_id"];
     $service_id = $_GET["service_id"];
 

@@ -38,22 +38,34 @@ namespace CentreonLegacy\Core\Module;
 class Information
 {
     /**
-     *
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
     
     /**
-     *
      * @var \Pimple\Container
      */
     protected $dependencyInjector;
     
     /**
-     *
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
+
+    /**
+     * @var array
+     */
+    protected $cachedModulesList = [];
+
+    /**
+     * @var bool
+     */
+    protected $hasModulesForUpgrade = false;
+
+    /**
+     * @var bool
+     */
+    protected $hasModulesForInstallation = false;
 
     /**
      *
@@ -199,15 +211,19 @@ class Information
             $modules[$name]['upgradeable'] = false;
             $modules[$name]['installed_version'] = _('N/A');
             $modules[$name]['available_version'] = $modules[$name]['mod_release'];
+
             unset($modules[$name]['release']);
+
             if (isset($installedModules[$name]['mod_release'])) {
                 $modules[$name]['id'] = $installedModules[$name]['id'];
                 $modules[$name]['is_installed'] = true;
                 $modules[$name]['installed_version'] = $installedModules[$name]['mod_release'];
-                $modules[$name]['upgradeable'] = $this->isUpgradeable(
+                $moduleIsUpgradeable = $this->isUpgradeable(
                     $modules[$name]['available_version'],
                     $modules[$name]['installed_version']
                 );
+                $modules[$name]['upgradeable'] = $moduleIsUpgradeable;
+                $this->hasModulesForUpgrade = $moduleIsUpgradeable ?: $this->hasModulesForUpgrade;
             }
         }
 
@@ -218,6 +234,9 @@ class Information
                 $modules[$name]['source_available'] = false;
             }
         }
+
+        $this->hasModulesForInstallation = count($availableModules) > count($installedModules);
+        $this->cachedModulesList = $modules;
 
         return $modules;
     }
@@ -249,5 +268,33 @@ class Information
     public function getModulePath($moduleName = '')
     {
         return $this->utils->buildPath('/modules/' . $moduleName) . '/';
+    }
+
+    public function hasModulesForUpgrade()
+    {
+        return $this->hasModulesForUpgrade;
+    }
+
+    public function getUpgradeableList()
+    {
+        $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
+
+        return array_filter($list, function ($widget) {
+            return $widget['upgradeable'];
+        });
+    }
+
+    public function hasModulesForInstallation()
+    {
+        return $this->hasModulesForInstallation;
+    }
+
+    public function getInstallableList()
+    {
+        $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
+
+        return array_filter($list, function ($widget) {
+            return !$widget['is_installed'];
+        });
     }
 }

@@ -49,6 +49,10 @@ $path = "./include/Administration/myAccount/";
 // PHP Functions
 require_once $path . "DB-Func.php";
 
+if (!isset($centreonFeature)) {
+    $centreonFeature = new CentreonFeature($pearDB);
+}
+
 /*
  * Database retrieve information for the User
  */
@@ -169,6 +173,17 @@ $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning s
 $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
 $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
 
+/* Add feature information */
+$features = $centreonFeature->getFeatures();
+$defaultFeatures = array();
+foreach ($features as $feature) {
+    $featRadio = array();
+    $featRadio[] = $form->createElement('radio', $feature['version'], null, _('New version'), '1');
+    $featRadio[] = $form->createElement('radio', $feature['version'], null, _('Legacy version'), '0');
+    $feat = $form->addGroup($featRadio, 'features[' . $feature['name'] . ']', $feature['name'], '&nbsp;');
+    $defaultFeatures['features'][$feature['name']][$feature['version']] = '0';
+}
+
 $sound_files = scandir(_CENTREON_PATH_ . "www/sounds/");
 $sounds = array(null => null);
 foreach ($sound_files as $f) {
@@ -226,11 +241,20 @@ $form->setRequiredNote("<font style='color: red;'>*</font>" . _("Required fields
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$form->setDefaults($defaultFeatures);
+
 // Modify a contact information
 if ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
+    /* Add saved value for feature testing */
+    $userFeatures = $centreonFeature->userFeaturesValue($centreon->user->get_id());
+    $defaultUserFeatures = array();
+    foreach ($userFeatures as $feature) {
+        $defaultUserFeatures['features'][$feature['name']][$feature['version']] = $feature['enabled'];
+    }
+    $form->setDefaults($defaultUserFeatures);
 }
 
 if ($form->validate()) {
@@ -239,6 +263,8 @@ if ($form->validate()) {
         $centreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
     }
     $o = null;
+    $features = $form->getSubmitValue('features');
+    $centreonFeature->saveUserFeaturesValue($centreon->user->get_id(), $features);
     $form->addElement(
         "button",
         "change",
@@ -248,7 +274,7 @@ if ($form->validate()) {
     $form->freeze();
 }
 
-//Apply a template definition	
+//Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -256,6 +282,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
+$tpl->assign('featuresFlipping', (count($features) > 0));
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

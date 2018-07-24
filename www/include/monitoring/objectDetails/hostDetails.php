@@ -481,8 +481,6 @@ if (!$is_admin && !$haveAccess) {
         $tpl->assign("cmt_persistent", _("Persistent"));
         $tpl->assign("cmt_actions", _("Actions"));
         $tpl->assign("options", _("Options"));
-        $tpl->assign("m_mon_tools_ping", _("Ping"));
-        $tpl->assign("m_mon_tools_tracert", _("Tracert"));
         $tpl->assign("hosts_command", _("Host Commands"));
         $tpl->assign("m_mon_SCH_downtime", _("Schedule downtime for this host"));
         $tpl->assign("m_mon_add_comment", _("Add Comment for this host"));
