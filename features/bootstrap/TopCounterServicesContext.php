@@ -1,9 +1,72 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
 
 class TopCounterServicesContext extends CentreonContext
 {
+
+    /**
+     * @Given I have a passive service
+     */
+    public function iHaveAPassiveService()
+    {
+        $page = new ServiceConfigurationPage($this);
+        $page->setProperties(array(
+            'hosts' => 'Centreon-Server',
+            'description' => 'AcceptanceTestService',
+            'templates' => 'generic-service',
+            'check_command' => 'check_centreon_dummy',
+            'check_period' => '24x7',
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $page->save();
+        $this->restartAllPollers();
+    }
+
+    /**
+     * @Given a Critical service
+     */
+    public function aCriticalService()
+    {
+        $this->submitServiceResult(
+            'Centreon-Server',
+            'AcceptanceTestService',
+            2,
+            'Acceptance test output.'
+        );
+    }
+
+    /**
+     * @Given a warning service
+     */
+    public function aWarningService()
+    {
+        $this->submitServiceResult(
+            'Centreon-Server',
+            'AcceptanceTestService',
+            1,
+            'Acceptance test output.'
+        );
+    }
+
+    /**
+     * @Given a unknown service
+     */
+    public function aUnknownService()
+    {
+        $this->submitServiceResult(
+            'Centreon-Server',
+            'AcceptanceTestService',
+            3,
+            'Acceptance test output.'
+        );
+    }
+
     /**
      * @When /^I click on the chip "([^"]+)"$/
      */

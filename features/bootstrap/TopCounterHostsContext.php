@@ -1,9 +1,45 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
 
 class TopCounterHostsContext extends CentreonContext
 {
+
+    /**
+     * @Given a non-OK host
+     */
+    public function aNokHost()
+    {
+
+        $listPage = new HostConfigurationListingPage($this);
+        $page = $listPage->inspect('Centreon-Server');
+        $page->setProperties(array(
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $page->save();
+        $this->restartAllPollers();
+        $this->submitHostResult('Centreon-Server', 1, 'acceptance');
+    }
+
+    /**
+     * @Given an unreachable host
+     */
+    public function anUnreachableHost()
+    {
+        $listPage = new HostConfigurationListingPage($this);
+        $page = $listPage->inspect('Centreon-Server');
+        $page->setProperties(array(
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $page->save();
+        $this->restartAllPollers();
+        $this->submitHostResult('Centreon-Server', 2, 'acceptance');
+    }
+
+
     /**
      * @When /^I click on the chip "([^"]+)"$/
      */
