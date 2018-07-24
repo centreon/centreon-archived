@@ -8,7 +8,7 @@ Feature: Top Counter Host
     And I am logged in with new feature
 
   Scenario: Link to ok hosts
-    When I click on the chip "ok hosts"
+    When I click on the chip "Ok hosts"
     Then I see the list of hosts filtered by status up
 
   Scenario: Link to critical hosts
