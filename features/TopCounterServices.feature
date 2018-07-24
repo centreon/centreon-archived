@@ -9,7 +9,7 @@ Feature: Top Counter Service
     And I have a passive service
 
   Scenario: Link to ok services
-    When I click on the chip "ok services"
+    When I click on the chip "Ok services"
     Then I see the list of services filtered by status ok
 
   Scenario: Link to critical services

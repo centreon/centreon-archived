@@ -152,7 +152,7 @@ const ServiceObject = ({
     { pending.total > 0 ? <span className={classes.pendingStatus} ></span> : '' }
     { critical.unhandled == 0 && warning.unhandled == 0 && unknown.unhandled == 0 ?
       <Button variant="fab" href={ok.url}
-              aria-label='ok services'
+              aria-label='Ok services'
               className={(classes.status, classes.okStatus)}>
         {numeral(ok.total).format('0a')}
       </Button> :

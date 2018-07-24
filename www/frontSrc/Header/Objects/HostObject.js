@@ -144,7 +144,7 @@ const HostObject = (
         {numeral(down.unhandled).format('0a')}
       </Button> :
       <Button variant="fab" href={ok.url}
-              aria-label='ok hosts'
+              aria-label='Ok hosts'
               className={(classes.status, classes.okStatus)}>
         {numeral(ok.total).format('0a')}
       </Button>
