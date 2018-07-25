@@ -7,6 +7,7 @@ use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Centreon\Domain\Service\AppKeyGeneratorService;
 
 class CentreonProvider implements ServiceProviderInterface
 {
@@ -48,6 +49,12 @@ class CentreonProvider implements ServiceProviderInterface
             }
 
             return $_SESSION['centreon']->user;
+        };
+
+        $pimple['centreon.keygen'] = function(Container $container) : AppKeyGeneratorService {
+            $service = new AppKeyGeneratorService();
+
+            return $service;
         };
 
         $pimple->register(new \CentreonRemote\CentreonRemoteProvider);
