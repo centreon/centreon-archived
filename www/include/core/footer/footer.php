@@ -59,7 +59,8 @@ if (!$min) {
                 <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
                 <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> |
                 <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> |
-                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a>
+                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a> |
+                <a href="https://centreon.github.io" title='Give us your feedback' target='_blank'>Slack</a>
                     <?php if (isset($centreon->optGen["centreon_support_email"]) && $centreon->optGen["centreon_support_email"] != "") { ?>
                 | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                     <?php } ?>
@@ -216,6 +217,8 @@ var testingFeature = jQuery('<div/>')
         '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
         '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
         'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
+        '<div style="margin: 2px; font-weight: bold;">Legacy version: </div>' +
+        '<div style="margin: 2px;">You can back to the legacy version in my account page. ' +
         '<div style="margin-top: 8px; text-align: center;">' +
             '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
             '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
@@ -226,13 +229,16 @@ var testingFeature = jQuery('<div/>')
 function validateFeature(name, version, enabled) {
     jQuery.ajax({
         url: './api/internal.php?object=centreon_featuretesting&action=enabled',
+        type: 'POST',
         data: JSON.stringify({
             name: name,
             version: version,
             enabled: enabled
         }),
         dataType: 'json',
-        type: 'POST'
+        success: function () {
+            location.reload()
+        }
     })
 }
 
