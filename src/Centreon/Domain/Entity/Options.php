@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Domain\Entity;
 
 class Options

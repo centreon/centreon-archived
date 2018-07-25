@@ -2,7 +2,9 @@
 
 namespace CentreonRemote\Domain\Service;
 
+use Centreon\Domain\Repository\InformationsRepository;
 use Curl\Curl;
+use Pimple\Container;
 
 class NotifyMasterService
 {
@@ -23,13 +25,16 @@ class NotifyMasterService
     const FAIL = 'fail';
 
     /**
+     * @var Container
+     */
+    private $di;
+
+    /**
      * NotifyMasterService constructor.
      */
-    public function __construct()
+    public function __construct(Container $di)
     {
-        /**
-         * nothing to do here yet
-         */
+        $this->di = $di;
     }
 
     /**
@@ -47,13 +52,12 @@ class NotifyMasterService
             ];
         }
 
-        /*
-         * todo: fix this to use proper instance token
-         */
+        $applicationKey = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->getOneByKey('appKey');
+
         try {
             $curl = new Curl();
             $curl->post($ip, array(
-                'uniqued' => uniqid(),
+                'uniqued' => $applicationKey,
             ));
             if ($curl->error)
             {
@@ -85,5 +89,10 @@ class NotifyMasterService
         }
 
         return ['status'=>self::SUCCESS];
+    }
+
+    private function getDi(): Container
+    {
+        return $this->di;
     }
 }
