@@ -255,6 +255,7 @@ function featureDisable() {
 }
 
 testingFeature.centreonPopin({
+    isModal: true,
     open: true
 })
 <?php
