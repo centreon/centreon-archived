@@ -20,14 +20,8 @@ class NavContainer extends Component {
     this.setState({ value })
   }
 
-  toggle = () => {
-    this.setState({
-      tooltipOpen: !this.state.tooltipOpen
-    })
-  }
-
   render = () => {
-    const { value, tooltipOpen } = this.state
+    const { value } = this.state
     const { data, dataFetched } = this.props.nav
 
     if (dataFetched) {
@@ -46,7 +40,6 @@ class NavContainer extends Component {
         key={activeItemKey}
         handleChange={this.handleChange}
         toggle={this.toggle}
-        tooltipOpen={tooltipOpen}
         open={open}
       />
     } else {

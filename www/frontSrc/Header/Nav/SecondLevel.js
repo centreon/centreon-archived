@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import ThirdLevel from './ThirdLevel'
 import { Tooltip } from 'reactstrap'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
   wrapper: {
@@ -19,8 +20,10 @@ const styles = theme => ({
   },
   navTypo: {
     color: '#FFF',
-    padding: '0 14px',
-    cursor: 'pointer',
+    padding: '0 10px',
+    textTransform: 'lowercase',
+    minWidth: '40px',
+    minHeight: '34px',
     margin: 0
   },
   tooltip: {
@@ -42,6 +45,7 @@ class SecondLevel extends Component {
   }
 
   toggle = () => {
+
     this.setState({
       tooltipOpen: !this.state.tooltipOpen
     })
@@ -54,25 +58,25 @@ class SecondLevel extends Component {
   render = () => {
     const { tooltipOpen } = this.state
     const { classes, id, item } = this.props
-    const aria = `tooltip-${id}`
+    const aria = `button-${id}`
+    const tooltipId = `tooltip-${id}`
 
     return (
       <div className={classes.wrapper} >
-        <Typography
+        <Button
           id={aria}
-          variant="body2"
           key={aria}
           className={classes.navTypo}
-          gutterBottom
           onClick={() => this.handleClick(id)}
         >
           {item.label}
-        </Typography>
+        </Button>
         {
           Object.keys(item.children).length > 0 &&
             <Tooltip
               placement="bottom"
               isOpen={tooltipOpen}
+              id={tooltipId}
               target={aria}
               autohide={false}
               delay={{show: 0, hide: 50}}
