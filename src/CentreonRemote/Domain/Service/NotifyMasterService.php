@@ -17,6 +17,7 @@ class NotifyMasterService
     const TIMEOUT = 'Timeout';
     const UNKNOWN_ERROR = 'Unknown Error';
     const WRONG_IP = 'Wrong IP';
+    const NO_APP_KEY = 'No Application Key found';
 
     /**
      * statuses
@@ -54,10 +55,17 @@ class NotifyMasterService
 
         $applicationKey = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->getOneByKey('appKey');
 
+        if (empty($applicationKey)){
+            return [
+                'status' => self::FAIL,
+                'details' => self::NO_APP_KEY
+            ];
+        }
+
         try {
             $curl = new Curl();
             $curl->post($ip, array(
-                'uniqued' => $applicationKey,
+                'uniqued' =>  $applicationKey,
             ));
             if ($curl->error)
             {
