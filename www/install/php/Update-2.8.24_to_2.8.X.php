@@ -46,3 +46,12 @@ $query = 'CREATE TABLE IF NOT EXISTS `remote_servers` (' .
     ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
 
 $pearDBO->query($query);
+
+/*
+ * Generate random key for application key
+ */
+
+$uniqueKey = md5(uniqid(rand(), TRUE));
+
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
+$pearDBO->query($query);
