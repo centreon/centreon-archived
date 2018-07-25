@@ -275,7 +275,8 @@ foreach ($jsdata as $k => $val) {
             }
 
             testingFeature.centreonPopin({
-              open: true
+                isModal: true,
+                open: true
             })
         <?php
         }
