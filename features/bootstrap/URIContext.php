@@ -13,7 +13,7 @@ class URIContext extends CentreonContext
     protected $page;
     protected $hostname = 'passiveHost';
     protected $serviceDescription = 'PassiveService';
-    protected $checkOutput = 'https://www.centreon.com/';
+    protected $checkOutput = 'https://www.centreon.com/en/';
 
     /**
      * @Given a monitored passive service
