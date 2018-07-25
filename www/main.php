@@ -231,7 +231,9 @@ if (!$centreon->user->showDiv("menu_2")) {
         new Effect.toggle('menu_2', 'appear', {duration: 0});
     </script> <?php
 }
-
+?>
+    <section class="main">
+<?php
 /*
  * Display PathWay
  */
@@ -332,7 +334,9 @@ if (isset($url) && $url) {
 if (!$min) {
     print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 }
-
+?>
+    </section>
+<?php
 /*
  * Include Footer 
  */

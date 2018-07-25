@@ -126,7 +126,9 @@ foreach ($tabPath as $pageNumber => $tabInPath) {
     }
     $tmpLastTabKeyAndName = array('key' => $pageNumber, 'name' => $tabInPath['name']);
 }
-
+?>
+<div class="pathway">
+<?php
 if ($centreon->user->access->page($p)) {
     $flag = '';
     foreach ($tabPath as $cle => $valeur) {
@@ -143,4 +145,4 @@ if ($centreon->user->access->page($p)) {
     }
 }
 ?>
-<hr>
+</div>

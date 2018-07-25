@@ -47,6 +47,15 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
       return (
         <List component="nav"  key={item}>
         <div className={classes.thirdLevelContent}>
+          { item != 'orphans' &&
+          <Typography
+            variant="subheading"
+            className={classes.typoGroup}
+            gutterBottom
+          >
+            {item}
+          </Typography>
+          }
         {
           Object.keys(thirdLevelArray[item]).map((item2, i2) => (
               <ListItem

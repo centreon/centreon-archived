@@ -58,9 +58,6 @@ const styles = theme => ({
     height: 34,
     borderTop: '1px solid #fff',
     top: 65,
-    boxShadow: `0px 3px 5px -1px rgba(0, 0, 0, 0.2), 
-                0px 6px 10px 0px rgba(0, 0, 0, 0.14), 
-                0px 1px 18px 0px rgba(0, 0, 0, 0.12)`,
     zIndex: 1,
   },
   typography: {
@@ -105,13 +102,15 @@ const Nav = ({classes, items, value, handleChange, open}) => (
           const Icon = Components[i.label].component || HomeIcon
 
           return (
-            <Tab
-              disableRipple
-              key={key}
-              value={item}
-              icon={<Icon viewBox={Components[i.label].viewBox}/>}
-              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            />
+              <Tab
+                disableRipple
+                key={key}
+                id={key}
+                title={i.label}
+                value={item}
+                icon={<Icon viewBox={Components[i.label].viewBox}/>}
+                classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+              />
           )
         }
         )
