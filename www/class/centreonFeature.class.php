@@ -39,8 +39,7 @@
 class CentreonFeature
 {
     protected $db;
-    protected static $availableFeatures = array(
-       /* array(
+    protected static $availableFeatures = array(/* array(
             'name' => 'Header',
             'version' => 2,
             'description' => 'New header design user experience',
@@ -69,22 +68,24 @@ class CentreonFeature
         if (!is_numeric($userId)) {
             throw new Exception('The user id is not numeric.');
         }
-        $query = 'SELECT feature, feature_version FROM contact_feature WHERE contact_id = ' . $userId;
-        $res = $this->db->query($query);
-        $toAsk = array();
-        foreach (self::$availableFeatures as $feature) {
-            if ($feature['visible']) {
-                $version = $feature['name'] . '__' . $feature['version'];
-                $toAsk[$version] = $feature;
-            }
-        }
-        while ($row = $res->fetchRow()) {
-            $version = $row['feature'] . '__' . $row['feature_version'];
-            unset($toAsk[$version]);
-        }
         $result = array();
-        foreach ($toAsk as $feature) {
-            $result[] = $feature;
+        if (count(self::$availableFeatures) != 0) {
+            $query = 'SELECT feature, feature_version FROM contact_feature WHERE contact_id = ' . $userId;
+            $res = $this->db->query($query);
+            $toAsk = array();
+            foreach (self::$availableFeatures as $feature) {
+                if ($feature['visible']) {
+                    $version = $feature['name'] . '__' . $feature['version'];
+                    $toAsk[$version] = $feature;
+                }
+            }
+            while ($row = $res->fetchRow()) {
+                $version = $row['feature'] . '__' . $row['feature_version'];
+                unset($toAsk[$version]);
+            }
+            foreach ($toAsk as $feature) {
+                $result[] = $feature;
+            }
         }
         return $result;
     }
