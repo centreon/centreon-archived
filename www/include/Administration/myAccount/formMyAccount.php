@@ -55,10 +55,6 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
-if (!isset($centreonFeature)) {
-    $centreonFeature = new CentreonFeature($pearDB);
-}
-
 /*
  * Database retrieve information for the User
  */
