@@ -163,6 +163,7 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function putAutoLoginToken()
     {
+
         $userId = $this->arguments['userId'];
         $autoLoginKey = $this->arguments['token'];
 

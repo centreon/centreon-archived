@@ -40,12 +40,12 @@ class CentreonFeature
 {
     protected $db;
     protected static $availableFeatures = array(
-        array(
+       /* array(
             'name' => 'Header',
             'version' => 2,
             'description' => 'New header design user experience',
             'visible' => true
-        )
+        )*/
     );
 
     /**
