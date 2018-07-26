@@ -180,7 +180,7 @@ class CentreonFeature
         try {
             $res = $this->db->query($query);
         } catch (\Exception $e) {
-            return true;
+            return false;
         }
         if ($res->rowCount() === 0) {
             return false;
