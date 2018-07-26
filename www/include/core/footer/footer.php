@@ -231,7 +231,7 @@ var testingFeature = jQuery('<div/>')
         '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
         'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
         '<div style="margin: 2px; font-weight: bold;">Legacy version: </div>' +
-        '<div style="margin: 2px;">You can back to the legacy version in my account page. ' +
+        '<div style="margin: 2px;">You can switch back to the legacy version in my account page. ' +
         '<div style="margin-top: 8px; text-align: center;">' +
             '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
             '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
