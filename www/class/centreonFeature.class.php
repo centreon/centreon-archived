@@ -179,7 +179,7 @@ class CentreonFeature
                 AND feature_version = "' . $this->db->escape($version) . '"';
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
-            return true;
+            return false;
         }
         if ($res->numRows() === 0) {
             return false;
