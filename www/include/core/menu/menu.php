@@ -68,8 +68,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 /**
  * Add new header feature testing variable
  */
-$header = true;
-
 $centreonMenu = new CentreonMenu(new CentreonLang(_CENTREON_PATH_, $centreon));
 
 /*
@@ -355,7 +353,7 @@ if ($is_admin) {
     $tpl->assign("tab_user", $tab_user);
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
-$tpl->assign('header', true);
+$tpl->assign('header');
 
 /*
  * Display
