@@ -35,17 +35,19 @@
 
 /**
  * Manage new feature
+ *
+ * Format:
+ * $availableFeatures = array( array(
+ * 'name' => 'Header',
+ * 'version' => 2,
+ * 'description' => 'New header design user experience',
+ * 'visible' => true))
+ *
  */
 class CentreonFeature
 {
     protected $db;
-    protected static $availableFeatures = array(/* array(
-            'name' => 'Header',
-            'version' => 2,
-            'description' => 'New header design user experience',
-            'visible' => true
-        )*/
-    );
+    protected static $availableFeatures = array();
 
     /**
      * Constructor
