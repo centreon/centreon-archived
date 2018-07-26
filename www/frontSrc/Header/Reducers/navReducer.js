@@ -20,23 +20,10 @@ export default function navReducer (
         isFetching: true,
       }
     case REQUEST_NAV_ITEMS_SUCCESS:
-      const color = ['#00A499', '#84BD00', '#E98F2C', '#009FDF', '#10069F']
-      const data = action.data
-      const result = data.reduce((acc, item, i) => {
-        acc = [
-          ...acc,
-          {
-            ...item,
-            key: i,
-            color: color[i]
-          }
-        ]
-        return acc
-      }, [])
 
       return {
         ...state,
-        data: result,
+        data: action.data,
         dataFetched: true,
         isFetching: false,
         error: false,

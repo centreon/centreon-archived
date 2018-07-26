@@ -1,14 +1,14 @@
 import axios from "axios"
 import { requestNavItems, requestNavItemsSuccess, requestNavItemsFail } from '../Header/Actions/navActions'
 
-const hostUrl = './api/internal.php?object=centreon_menu&action=menu'
+const navUrl = './api/internal.php?object=centreon_menu&action=menu'
 
 export function getNavItems() {
   return (dispatch) => {
     dispatch(requestNavItems())
 
     return axios.get(
-      hostUrl
+      navUrl
     )
       .then(
         res => {
