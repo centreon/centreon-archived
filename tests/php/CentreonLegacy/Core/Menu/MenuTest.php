@@ -107,7 +107,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                 "url" => "centreon/20101",
                 "active" => false,
                 "color" => "#85B446",
-                "children" => array()
+                "children" => array(),
+                'options' => '&o=c'
             )
         );
 
@@ -123,12 +124,13 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
                     'topology_page' => 2,
                     'topology_url' => 'centreon/20101',
+                    'topology_url_opt' => '&o=c',
                     'topology_parent' => '',
                     'topology_order' => 1,
                     'topology_group' => 201
@@ -156,7 +158,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                         "label" => 'By host',
                         "url" => 'centreon/20101',
                         "active" => false,
-                        "children" => array()
+                        "children" => array(),
+                        'options' => '&o=c'
                     )
                 )
             )
@@ -174,12 +177,13 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
                     'topology_page' => 201,
                     'topology_url' => 'centreon/20101',
+                    'topology_url_opt' => '&o=c',
                     'topology_parent' => 2,
                     'topology_order' => 1,
                     'topology_group' => 201
@@ -204,11 +208,12 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                 "children" => array(
                     201 => array(
                         "children" => array(
-                            "orphans" => array(
+                            "main" => array(
                                 20101 => array(
                                     "label" => "By host",
                                     "url" => "centreon/20101",
-                                    "active" => false
+                                    "active" => false,
+                                    'options' => '&o=c'
                                 )
                             )
                         )
@@ -229,12 +234,13 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
                     'topology_page' => 20101,
                     'topology_url' => 'centreon/20101',
+                    'topology_url_opt' => '&o=c',
                     'topology_parent' => 201,
                     'topology_order' => 1,
                     'topology_group' => 201
