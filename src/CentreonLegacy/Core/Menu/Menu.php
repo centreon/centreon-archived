@@ -102,7 +102,7 @@ class Menu
     {
         $groups = $this->getGroups();
 
-        $query = 'SELECT topology_name, topology_page, topology_url, topology_group, topology_order, topology_parent '
+        $query = 'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent '
             . 'FROM topology '
             . 'WHERE topology_show = "1" '
             . 'AND topology_page IS NOT NULL';
@@ -137,7 +137,8 @@ class Menu
                     'url' => $row['topology_url'],
                     'active' => $active,
                     'color' => $this->getColor($row['topology_page']),
-                    'children' => array()
+                    'children' => array(),
+                    'options' => $row['topology_url_opt']
                 );
             } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
@@ -147,7 +148,8 @@ class Menu
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
                     'active' => $active,
-                    'children' => array()
+                    'children' => array(),
+                    'options' => $row['topology_url_opt']
                 );
             } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 3
                 if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
@@ -157,7 +159,8 @@ class Menu
                 $levelThree = array(
                     'label' => $row['topology_name'],
                     'url' => $row['topology_url'],
-                    'active' => $active
+                    'active' => $active,
+                    'options' => $row['topology_url_opt'],
                 );
                 if (!is_null($row['topology_group']) && isset($groups[$levelTwo][$row['topology_group']])) {
                     $menu
@@ -168,7 +171,7 @@ class Menu
                     $menu
                         ['p' . $matches[1]]['children']
                         [$levelTwo]['children']
-                        ['orphans'][$row['topology_page']] = $levelThree;
+                        ['main'][$row['topology_page']] = $levelThree;
                 }
             }
         }

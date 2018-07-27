@@ -51,13 +51,13 @@ class SecondLevel extends Component {
     })
   }
 
-  handleClick = (page) => {
-    window.location.href = "main.php?p=" + page;
+  handleClick = (page, opt) => {
+    window.location.href = opt ? "main.php?p=" + page + opt : "main.php?p=" + page
   }
 
   render = () => {
     const { tooltipOpen } = this.state
-    const { classes, id, item } = this.props
+    const { classes, id, item, opt } = this.props
     const aria = `button-${id}`
     const tooltipId = `tooltip-${id}`
 
@@ -67,7 +67,7 @@ class SecondLevel extends Component {
           id={aria}
           key={aria}
           className={classes.navTypo}
-          onClick={() => this.handleClick(id)}
+          onClick={() => this.handleClick(id, opt)}
         >
           {item.label}
         </Button>
