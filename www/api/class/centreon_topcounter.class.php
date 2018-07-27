@@ -163,18 +163,18 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function putAutoLoginToken()
     {
+        global $centreon;
+
         $userId = $this->arguments['userId'];
         $autoLoginKey = $this->arguments['token'];
 
-        global $centreon;
-
-        $query = "UPDATE contact SET contact_autologin_key = ? " .
-            "WHERE contact_id = ?";
-
+        $query = "UPDATE contact SET contact_autologin_key = :autoKey WHERE contact_id = :userId";
         $stmt = $this->pearDB->prepare($query);
-        $res = $this->pearDB->execute($stmt, array($autoLoginKey, $userId));
+        $stmt->bindParam(':autoKey', $autoLoginKey, PDO::PARAM_STR);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $res = $stmt->execute();
 
-        if (PEAR::isError($res)) {
+        if (!$res) {
             throw new \Exception('Error while update autologinKey ' . $autoLoginKey);
         }
 

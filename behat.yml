@@ -327,10 +327,6 @@ default:
       paths: [ %paths.base%/features/URI.feature ]
       contexts: [ URIContext ]
 
-    newheaderfeatureflipping:
-      paths: [ %paths.base%/features/NewHeaderFeatureFlipping.feature ]
-      contexts: [ NewHeaderFeatureFlippingContext ]
-
     topcounterprofilemenu:
       paths: [ %paths.base%/features/TopCounterProfileMenu.feature ]
       contexts: [ TopCounterProfileMenuContext ]
