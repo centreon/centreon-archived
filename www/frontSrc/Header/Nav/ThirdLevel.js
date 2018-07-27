@@ -47,7 +47,6 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
       return (
         <List component="nav"  key={item}>
         <div className={classes.thirdLevelContent}>
-          { item != 'orphans' &&
           <Typography
             variant="subheading"
             className={classes.typoGroup}
@@ -55,20 +54,22 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
           >
             {item}
           </Typography>
-          }
         {
-          Object.keys(thirdLevelArray[item]).map((item2, i2) => (
+          Object.keys(thirdLevelArray[item]).map((item2, i2) => {
+            const opt = thirdLevelArray[item][item2].options ? thirdLevelArray[item][item2].options : ''
+            return (
               <ListItem
                 button
                 key={i2}
                 component="a"
-                href={"main.php?p=" + item2}
+                href={ "main.php?p=" + item2 + opt }
                 className={classes.typoItem}>
                 <Typography variant='body1' className={classes.thirdLevelItemText}>
                   {thirdLevelArray[item][item2].label}
                 </Typography>
               </ListItem>
-          ))
+            )
+          })
         }
         </div>
         </List>

@@ -51,8 +51,8 @@ class SecondLevel extends Component {
     })
   }
 
-  handleClick = (page) => {
-    window.location.href = "main.php?p=" + page;
+  handleClick = (page, opt) => {
+    window.location.href = opt ? "main.php?p=" + page + opt : "main.php?p=" + page
   }
 
   render = () => {
@@ -67,7 +67,7 @@ class SecondLevel extends Component {
           id={aria}
           key={aria}
           className={classes.navTypo}
-          onClick={() => this.handleClick(id)}
+          onClick={() => this.handleClick(id, item.options)}
         >
           {item.label}
         </Button>
