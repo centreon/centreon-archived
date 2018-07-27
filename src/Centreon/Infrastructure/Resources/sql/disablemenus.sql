@@ -29,6 +29,8 @@ UPDATE topology SET topology_show = '0' WHERE topology_parent = '609';
 -- Configuration > Knownledge Base
 UPDATE topology SET topology_show = '0' WHERE topology_page = '610';
 UPDATE topology SET topology_show = '0' WHERE topology_parent = '610';
+-- Configuration > Business Activity
+UPDATE topology SET topology_show = '0' WHERE topology_page = '626';
 
 -- Administration menus
 -- Administration > Parameters > Main Menu > Monitoring
