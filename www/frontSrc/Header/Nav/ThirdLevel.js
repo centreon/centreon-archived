@@ -55,18 +55,21 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
             {item}
           </Typography>
         {
-          Object.keys(thirdLevelArray[item]).map((item2, i2) => (
+          Object.keys(thirdLevelArray[item]).map((item2, i2) => {
+            const opt = item2.options ? item2.options : ''
+            return (
               <ListItem
                 button
                 key={i2}
                 component="a"
-                href={ item2.options ? "main.php?p=" + item2 + item2.options : "main.php?p=" + item2 }
+                href={ "main.php?p=" + item2 + opt }
                 className={classes.typoItem}>
                 <Typography variant='body1' className={classes.thirdLevelItemText}>
                   {thirdLevelArray[item][item2].label}
                 </Typography>
               </ListItem>
-          ))
+            )
+          })
         }
         </div>
         </List>
