@@ -253,6 +253,9 @@ $tpl->assign("tab_order", $tab_order);
 $action_list = array();
 $action_list[] = _("More actions...");
 
+//TODO
+$serverIsMaster = false;
+
 /*
  * Showing actions allowed for current user
  */
@@ -269,16 +272,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["service_disacknowledgement"])) {
         $action_list[71] = _("Services : Disacknowledge");
     }
-    if (isset($authorized_actions["service_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_notifications"])) {
         $action_list[80] = _("Services : Enable Notification");
     }
-    if (isset($authorized_actions["service_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_notifications"])) {
         $action_list[81] = _("Services : Disable Notification");
     }
-    if (isset($authorized_actions["service_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_checks"])) {
         $action_list[90] = _("Services : Enable Check");
     }
-    if (isset($authorized_actions["service_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_checks"])) {
         $action_list[91] = _("Services : Disable Check");
     }
     if (isset($authorized_actions["service_schedule_downtime"])) {
@@ -296,16 +299,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
     }
     if (isset($authorized_actions["host_schedule_downtime"])) {
@@ -316,19 +319,28 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[4] = _("Services : Schedule immediate check (Forced)");
     $action_list[70] = _("Services : Acknowledge");
     $action_list[71] = _("Services : Disacknowledge");
-    $action_list[80] = _("Services : Enable Notification");
-    $action_list[81] = _("Services : Disable Notification");
-    $action_list[90] = _("Services : Enable Check");
-    $action_list[91] = _("Services : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[80] = _("Services : Enable Notification");
+        $action_list[81] = _("Services : Disable Notification");
+        $action_list[90] = _("Services : Enable Check");
+        $action_list[91] = _("Services : Disable Check");
+    }
+
     $action_list[74] = _("Services : Set Downtime");
+
     $action_list[94] = _("Hosts : Schedule immediate check");
     $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
-    $action_list[82] = _("Hosts : Enable Notification");
-    $action_list[83] = _("Hosts : Disable Notification");
-    $action_list[92] = _("Hosts : Enable Check");
-    $action_list[93] = _("Hosts : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[82] = _("Hosts : Enable Notification");
+        $action_list[83] = _("Hosts : Disable Notification");
+        $action_list[92] = _("Hosts : Enable Check");
+        $action_list[93] = _("Hosts : Disable Check");
+    }
+
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
