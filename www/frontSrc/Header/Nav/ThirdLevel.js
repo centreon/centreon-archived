@@ -56,7 +56,7 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
           </Typography>
         {
           Object.keys(thirdLevelArray[item]).map((item2, i2) => {
-            const opt = item2.options ? item2.options : ''
+            const opt = thirdLevelArray[item2].options ? thirdLevelArray[item2].options : ''
             return (
               <ListItem
                 button
