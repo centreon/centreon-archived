@@ -62,7 +62,7 @@ const ThirdLevel = ({classes, key, thirdLevelArray})  => (
                 button
                 key={i2}
                 component="a"
-                href={ "main.php?p=" + item2 +opt }
+                href={ "main.php?p=" + item2 + opt }
                 className={classes.typoItem}>
                 <Typography variant='body1' className={classes.thirdLevelItemText}>
                   {thirdLevelArray[item][item2].label}
