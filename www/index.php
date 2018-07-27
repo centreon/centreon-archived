@@ -34,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
+require_once realpath(dirname(__FILE__) . '/../config/centreon.config.php');
 
 $etc = _CENTREON_ETC_;
 
@@ -47,7 +47,8 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
     header("Location: ./install/install.php");
     return;
 } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
-    require_once("$etc/centreon.conf.php");    header("Location: ./install/upgrade.php");
+    require_once("$etc/centreon.conf.php");
+    header("Location: ./install/upgrade.php");
 } else {
     if (file_exists("$etc/centreon.conf.php")) {
         require_once("$etc/centreon.conf.php");
@@ -62,7 +63,7 @@ require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreonAuth.SSO.class.php";
 require_once "$classdir/centreonLog.class.php";
 require_once "$classdir/centreonDB.class.php";
-require_once SMARTY_DIR."Smarty.class.php";
+require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Get auth type
@@ -81,7 +82,7 @@ $DBRESULT->closeCursor();
  */
 $file_install_acces = 0;
 if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '". getcwd() .
+    $error_msg = "Installation Directory '" . getcwd() .
         "/install/' is accessible. Delete this directory to prevent security problem.";
     $file_install_acces = 1;
 }
@@ -94,16 +95,16 @@ ini_set("session.gc_maxlifetime", "31536000");
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
-    $centreon = & $_SESSION["centreon"];
-    
+    $centreon = &$_SESSION["centreon"];
+
     /*
      * Init log class
      */
     if (is_object($centreon)) {
         $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
+        $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
-        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
 
         CentreonSession::restart();
     }
@@ -113,7 +114,7 @@ if (isset($_GET["disconnect"])) {
  * Already connected
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = & $_SESSION["centreon"];
+    $centreon = &$_SESSION["centreon"];
     header('Location: main.php');
 }
 
