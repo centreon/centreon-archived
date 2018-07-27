@@ -105,6 +105,10 @@ if ($row = $resTimezone->fetch()) {
 }
 $link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')");
 
+# Generate random key for application key
+$uniqueKey = md5(uniqid(rand(), true));
+$link->exec("INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '{$uniqueKey}')");
+
 splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');
 
 /* Get Centreon version */
