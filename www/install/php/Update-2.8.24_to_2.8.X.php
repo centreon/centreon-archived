@@ -57,3 +57,6 @@ $uniqueKey = md5(uniqid(rand(), TRUE));
 
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
 $pearDBO->query($query);
+
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
+$pearDBO->query($query);
