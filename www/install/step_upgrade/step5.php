@@ -47,21 +47,14 @@ $contents = sprintf(
     $_SESSION['CURRENT_VERSION']
 );
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
-
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory '
-        . $centreon_path . '/installDir and give it the rigths to apache user to write.';
-} else {
-    $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
-    @rename(str_replace('step_upgrade', '', getcwd()), $centreon_path . '/installDir/' . $name);
-}
-
-session_destroy();
-
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
+
+session_destroy();
+
+# Removing installation directory
+rrmdir(realpath(dirname(__FILE__) . '/../../install')); 
