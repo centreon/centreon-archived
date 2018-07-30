@@ -239,6 +239,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         });
     </script>
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
+    <script src="./include/common/javascript/centreon/dateMoment.js" type="text/javascript"></script>
 </head>
 <body>
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
