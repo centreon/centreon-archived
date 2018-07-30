@@ -304,6 +304,14 @@ if ($is_admin) {
 }
 $tpl->assign('amIadmin', $centreon->user->admin);
 
+/*
+ * Install directory present
+ */
+if (is_dir(realpath(dirname(__FILE__) . '/../../../install'))) {
+    $tpl->assign('displayWarning', 1);
+    $tpl->assign('WarningMessage', '<b>Warning</b> : The installation directory has not been deleted! For security reasons, administrator would have to remove it manually.');
+}
+
 /**
  * Add new header featire testing variable
  */

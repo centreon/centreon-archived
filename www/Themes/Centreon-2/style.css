@@ -610,6 +610,12 @@ input[type="submit"] {
     right: 10px;
 }
 
+#centreon-warning{
+    background: orange;
+    line-height: 30px;
+    padding-left: 30px;
+}
+
 form#AjaxBankBasic {
     padding-bottom: 0px;
 }
