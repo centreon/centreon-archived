@@ -2385,6 +2385,8 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `ip` VARCHAR(16) NOT NULL,
+  `app_key` VARCHAR(40) NOT NULL,
+  `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,
   `connected_at` TIMESTAMP NULL
