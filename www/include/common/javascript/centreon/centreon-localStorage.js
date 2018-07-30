@@ -26,7 +26,7 @@ function check_session_callback() {
   xhr2.onreadystatechange = function() { change_status(xhr2); };
 
   //on appelle le fichier XMLresponse.php
-  xhr2.open("GET", "./include/core/autologout/autologoutXMLresponse.php", true);
+  xhr2.open("GET", "./include/common/userTimezone.php", true);
   xhr2.send(null);
 }
 
