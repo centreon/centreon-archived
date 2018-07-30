@@ -42,25 +42,36 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             echo "Incorrect IP parameter, please pass `-v IP` of the master server\n"; return 200;
         }
 
-        echo "Starting Centreon Remote enable: \n";
+        echo "Starting Centreon Remote enable process: \n";
 
         echo "\n Limiting Menu Access...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->disableMenus();
         echo ($result) ? 'Success' : 'Fail' . "\n";
+
         echo "\n Limiting Actions...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
-        echo ($result) ? 'Success' : 'Fail' . "\n";
+        echo 'Done'. "\n";
 
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";
 
-        echo "Centreon Remote enabling finished.";
+        echo "\n Centreon Remote enabling finished.\n";
     }
 
     public function disableRemote()
     {
-        $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->enableMenus();
+        echo "Starting Centreon Remote disable process: \n";
+
+        echo "\n Restoring Menu Access...";
+        $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->enableMenus();
+        echo ($result) ? 'Success' : 'Fail' . "\n";
+
+        echo "\n Restoring Actions...";
+        $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('no');
+        echo 'Done'. "\n";
+
+        echo "\n Centreon Remote disabling finished.\n";
     }
 
     public function getDi(): Container
