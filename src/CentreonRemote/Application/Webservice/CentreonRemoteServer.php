@@ -36,6 +36,14 @@ class CentreonRemoteServer extends \CentreonWebService implements CentreonWebser
             throw new \RestBadRequestException('IP is not valid.');
         }
 
+        if (!isset($_POST['app_key']) || !$_POST['app_key']) {
+            throw new \RestBadRequestException('Please send \'app_key\' in the request.');
+        }
+
+        if (!isset($_POST['version']) || !$_POST['version']) {
+            throw new \RestBadRequestException('Please send \'version\' in the request.');
+        }
+
         $statement = $this->pearDB->prepare('SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = :ip');
         $statement->execute([':ip' => $ip]);
         $result = $statement->fetch();
@@ -45,11 +53,21 @@ class CentreonRemoteServer extends \CentreonWebService implements CentreonWebser
         }
 
         $createdAt = date('Y-m-d H:i:s');
-        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `is_connected`, `created_at`) ';
-        $insertQuery .= "VALUES (:ip, 0, '{$createdAt}')";
+        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`, `created_at`) ';
+        $insertQuery .= "VALUES (:ip, :app_key, :version, 0, '{$createdAt}')";
 
         $insert = $this->pearDB->prepare($insertQuery);
-        $insert->execute([':ip' => $ip]);
+        $bindings = [
+            ':ip'      => $ip,
+            ':app_key' => $_POST['app_key'],
+            ':version' => $_POST['version'],
+        ];
+
+        try {
+            $insert->execute($bindings);
+        } catch(\Exception $e) {
+            throw new \RestBadRequestException('There was an error saving the data.');
+        }
 
         return '';
     }
