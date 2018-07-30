@@ -45,4 +45,20 @@ class InformationsRepository extends ServiceEntityRepository
 
         return $result ?: null;
     }
+
+    /**
+     * Turn on or off remote flag in database
+     * @param string $flag ('yes' or 'no')
+     * @return void
+     */
+    public function toggleRemote(string $flag): void
+    {
+        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = :isRemote";
+        $stmt = $this->db->prepare($sql);
+        $key = 'isRemote';
+        $stmt->bindParam(':isRemote', $key, PDO::PARAM_STR);
+        $stmt->bindParam(':state', $flag, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
 }
