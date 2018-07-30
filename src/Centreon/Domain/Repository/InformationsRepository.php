@@ -34,16 +34,15 @@ class InformationsRepository extends ServiceEntityRepository
      * @param string $key
      * @return Informations
      */
-    public function getOneByKey($key): Informations
+    public function getOneByKey($key): ?Informations
     {
-        $sql = 'SELECT * FROM informations WHERE key = :key LIMIT 0,1';
+        $sql = 'SELECT * FROM informations WHERE `key` = :key LIMIT 1';
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':key', $key, PDO::PARAM_STR);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_CLASS, Informations::class);
         $result = $stmt->fetch();
 
-        return $result;
+        return $result ?: null;
     }
-
 }
