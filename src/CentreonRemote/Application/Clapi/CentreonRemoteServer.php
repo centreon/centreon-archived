@@ -2,6 +2,7 @@
 
 namespace CentreonRemote\Application\Clapi;
 
+use Centreon\Domain\Repository\InformationsRepository;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Domain\Repository\OptionsRepository;
 use Pimple\Container;
@@ -48,10 +49,8 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo ($result) ? 'Success' : 'Fail' . "\n";
 
         echo "\n Limiting Actions...";
-        /**
-         * todo: add limiting actions
-         */
-        echo (false) ? 'Success' : 'Fail' . "\n";
+        $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
+        echo ($result) ? 'Success' : 'Fail' . "\n";
 
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
