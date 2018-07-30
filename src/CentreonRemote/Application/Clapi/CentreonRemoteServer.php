@@ -47,7 +47,6 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "\n Limiting Menu Access...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->disableMenus();
         echo ($result) ? 'Success' : 'Fail' . "\n";
-
         echo "\n Limiting Actions...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
         echo 'Done'. "\n";
