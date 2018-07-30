@@ -53,7 +53,9 @@ class NotifyMasterService
             ];
         }
 
-        $applicationKey = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->getOneByKey('appKey');
+        $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
+        $applicationKey = $repository->getOneByKey('appKey');
+        $version = $repository->getOneByKey('version');
 
         if (empty($applicationKey)){
             return [
@@ -63,12 +65,14 @@ class NotifyMasterService
         }
 
         try {
+            $curlData = [
+                'app_key' => $applicationKey->getValue(),
+                'version' => $version->getValue(),
+            ];
             $curl = new Curl();
-            $curl->post($ip, array(
-                'uniqued' =>  $applicationKey,
-            ));
-            if ($curl->error)
-            {
+            $curl->post($ip, $curlData);
+
+            if ($curl->error) {
                 switch ($curl->error_code) {
                     case 6:
                         $details = self::CANT_RESOLVE_HOST;
