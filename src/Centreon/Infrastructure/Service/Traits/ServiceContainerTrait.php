@@ -1,5 +1,8 @@
 <?php
+
 namespace Centreon\Infrastructure\Service\Traits;
+
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 trait ServiceContainerTrait
 {

@@ -1,10 +1,9 @@
 <?php
 namespace Centreon\Infrastructure\CentreonLegacyDB;
 
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use ReflectionClass;
 use CentreonDB;
-use Centreon\Infrastructure\Service\Expetion\NotFoundException;
-use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class CentreonDBAdapter
 {
