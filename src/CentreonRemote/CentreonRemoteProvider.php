@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote;
 
 use CentreonRemote\Domain\Service\InformationsService;
@@ -18,6 +19,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
     public function register(Container $pimple): void
     {
         $pimple['centreon.webservice']->add(Webservice\CentreonRemoteServer::class);
+        $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationRemote::class);
         $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
 
         $pimple['centreon.notifymaster'] = function(Container $pimple): NotifyMasterService {
