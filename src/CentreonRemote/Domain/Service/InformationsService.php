@@ -3,7 +3,6 @@
 namespace CentreonRemote\Domain\Service;
 
 use Centreon\Domain\Repository\InformationsRepository;
-use Curl\Curl;
 use Pimple\Container;
 
 class InformationsService
@@ -26,11 +25,25 @@ class InformationsService
      * Get status for centreon instance (is remote or is not remote)
      * @return bool
      */
-    public function getRemoteStatus(): bool
+    public function serverIsRemote(): bool
     {
         $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
         $isRemote = $repository->getOneByKey('isRemote');
-        return ($isRemote->getValue() == 'yes') ? true : false;
+
+        if (!$isRemote) {
+            return false;
+        }
+
+        return $isRemote->getValue() == 'yes';
+    }
+
+    /**
+     * Get status for centreon instance (is master or is not master)
+     * @return bool
+     */
+    public function serverIsMaster(): bool
+    {
+        return !$this->serverIsRemote();
     }
 
     private function getDi(): Container
