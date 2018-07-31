@@ -37,8 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-//TODO
-$serverIsMaster = false;
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
 
 /*
  * Database retrieve information for Modify a present "Action Access"
