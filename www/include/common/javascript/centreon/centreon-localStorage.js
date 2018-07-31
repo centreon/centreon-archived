@@ -1,4 +1,3 @@
-
 var check_session_interval_id;
 
 function check_session(tM) {
@@ -7,7 +6,6 @@ function check_session(tM) {
   }
 
   check_session_callback();
-
   check_session_interval_id = setInterval(check_session_callback, tM);
 }
 
@@ -15,14 +13,14 @@ function check_session_callback() {
   var xhr2 = null;
 
   if (window.XMLHttpRequest) {
-  xhr2 = new XMLHttpRequest();
-} else if (window.ActiveXObject) {
-  xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
-}
+    xhr2 = new XMLHttpRequest();
+  } else if (window.ActiveXObject) {
+    xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
+  }
 
   if (xhr2 == null) {
-  alert("Le web browser ne supporte pas l'AJAX.");
-}
+    alert("Le web browser ne supporte pas l'AJAX.");
+  }
   xhr2.onreadystatechange = function() { change_status(xhr2); };
 
   //on appelle le fichier XMLresponse.php
@@ -32,9 +30,9 @@ function check_session_callback() {
 
 function change_status(xhr2) {
   if (xhr2.readyState != 4 && xhr2.readyState != "complete") {
-  clearInterval(check_session_interval_id);
-  return(0);
-}
+    clearInterval(check_session_interval_id);
+    return(0);
+  }
   var docXML= xhr2.responseXML;
 
   xhr2.onreadystatechange = null;
