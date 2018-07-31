@@ -44,10 +44,11 @@ require_once _CENTREON_PATH_ . '/www/class/centreon-partition/options.class.php'
 echo "[" . date(DATE_RFC822) . "] PARTITIONING STARTED\n";
 
 /* Create partitioned tables */
-$database = new CentreonDB('centstorage', 3, false);
+$centreonDb = new CentreonDB('centreon');
+$centstorageDb = new CentreonDB('centstorage', 3, false);
 $partEngine = new PartEngine();
 
-if (!$partEngine->isCompatible($database)) {
+if (!$partEngine->isCompatible($centstorageDb)) {
     exitProcess(PROCESS_ID, 1, "[".date(DATE_RFC822)."] CRITICAL: MySQL server is not compatible with partitionning. MySQL version must be greater or equal to 5.1\n");
 }
 
@@ -60,10 +61,10 @@ $tables = array(
 
 try {
     foreach ($tables as $table) {
-        $config = new Config($database, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml');
+        $config = new Config($centstorageDb, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml', $centreonDb);
         $mysqlTable = $config->getTable($table);
-        if ($partEngine->isPartitioned($mysqlTable, $database)) {
-            $partEngine->updateParts($mysqlTable, $database);
+        if ($partEngine->isPartitioned($mysqlTable, $centstorageDb)) {
+            $partEngine->updateParts($mysqlTable, $centstorageDb);
         }
     }
 } catch (\Exception $e) {

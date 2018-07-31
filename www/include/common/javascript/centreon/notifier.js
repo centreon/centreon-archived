@@ -42,12 +42,11 @@
         jQuery.ajax({
             url: "./include/monitoring/status/Notifications/notifications.php",
             data: {
-                sid: settings.sid,
                 refresh_rate: settings.refresh_rate
             }
         }).done(function(xml_content) {
             $(xml_content).find('message').each(function() {
-                if ($(this).attr('output')) {
+                if ($(this).attr('output') && handleVisibilityChange()) {
                     var output = $(this).attr('output');
                     var css_class = $(this).attr('class');
                     noty({

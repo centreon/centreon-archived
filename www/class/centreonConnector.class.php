@@ -165,7 +165,8 @@ class CentreonConnector
                 if (isset($connector["command_id"])) {
                     foreach ($connector["command_id"] as $key => $value) {
                         $updateResult = $this->dbConnection->query(
-                            "UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'"
+                            "UPDATE `command` SET connector_id = '" . $lastId['id'] . "' " .
+                            "WHERE `command_id` = '" . $value . "'"
                         );
                         if (PEAR::isError($updateResult)) {
                             throw new RuntimeException('Cannot update connector');
@@ -540,10 +541,16 @@ class CentreonConnector
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected connectors
@@ -551,8 +558,13 @@ class CentreonConnector
             . "FROM connector "
             . "WHERE id IN (" . $explodedValues . ") "
             . "ORDER BY name ";
-        
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad connector query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['id'],

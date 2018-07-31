@@ -1021,6 +1021,7 @@ class CentreonService
                 $parameters['externalObject']['id'] = 'sc_id';
                 $parameters['externalObject']['name'] = 'sc_name';
                 $parameters['externalObject']['comparator'] = 'sc_id';
+                $parameters['externalObject']['additionalComparator'] = array('level' => null);
                 $parameters['relationObject']['table'] = 'service_categories_relation';
                 $parameters['relationObject']['field'] = 'sc_id';
                 $parameters['relationObject']['comparator'] = 'service_service_id';
@@ -1044,42 +1045,50 @@ class CentreonService
 
         $hostIdList = array();
         $serviceIdList = array();
-        foreach ($values as $value) {
-            if (strpos($value, '-')) {
-                $tmpValue = explode('-', $value);
-                $hostIdList[] = $tmpValue[0];
-                $serviceIdList[] = $tmpValue[1];
-            } else {
-                $serviceIdList[] = $value;
+
+        if(!empty($values)){
+            foreach ($values as $value) {
+                if (strpos($value, '-')) {
+                    $tmpValue = explode('-', $value);
+                    $hostIdList[] = $tmpValue[0];
+                    $serviceIdList[] = $tmpValue[1];
+                } else {
+                    $serviceIdList[] = $value;
+                }
             }
         }
 
         # Construct host filter for query
         $selectedHosts = '';
-        if (count($hostIdList) > 0) {
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($hostIdList)) {
             if ($hostgroup) {
                 $selectedHosts .= "AND hsr.hostgroup_hg_id IN (";
             } else {
                 $selectedHosts .= "AND hsr.host_host_id IN (";
             }
-            $implodedValues = implode(',', $hostIdList);
-            if (trim($implodedValues) != "") {
-                $selectedHosts .= $implodedValues;
-            } else {
-                $selectedHosts .= "''";
+            foreach ($hostIdList as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
             }
-            $selectedHosts .= ") ";
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedHosts .= $explodedValues . ") ";
         }
 
         # Construct service filter for query
         $selectedServices = '';
-        $implodedValues = implode(',', $serviceIdList);
-        if ((trim($implodedValues)) != "" && (trim($implodedValues) != "-")) {
+        $explodedValues = '';
+        if (!empty($serviceIdList)) {
             $selectedServices .= "AND hsr.service_service_id IN (";
-            $selectedServices .= $implodedValues;
-            $selectedServices .= ") ";
+            foreach ($serviceIdList as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedServices .= $explodedValues . ") ";
         }
-        
+
         $serviceList = array();
         if (!empty($selectedServices)) {
             if ($hostgroup) {
@@ -1091,12 +1100,16 @@ class CentreonService
                     . $selectedHosts
                     . $selectedServices
                     . "ORDER BY hg.hg_name ";
+                $stmt = $this->db->prepare($queryService);
+                $dbResult = $this->db->execute($stmt, $queryValues);
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                if (PEAR::isError($dbResult)) {
+                    throw new Exception('Bad service query params');
+                }
+
+                while ($data = $dbResult->fetchRow()) {
                     $serviceCompleteName = $data['hg_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['hg_id'] . '-' . $data['service_id'];
-
                     $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
                 }
             } else {
@@ -1108,9 +1121,14 @@ class CentreonService
                     . $selectedHosts
                     . $selectedServices
                     . "ORDER BY h.host_name ";
+                $stmt = $this->db->prepare($queryService);
+                $dbResult = $this->db->execute($stmt, $queryValues);
 
-                $DBRESULT = $this->db->query($queryService);
-                while ($data = $DBRESULT->fetchRow()) {
+                if (PEAR::isError($dbResult)) {
+                    throw new Exception('Bad service query params');
+                }
+
+                while ($data = $dbResult->fetchRow()) {
                     $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
 
@@ -1118,7 +1136,6 @@ class CentreonService
                 }
             }
         }
-
         return $serviceList;
     }
     
@@ -1277,7 +1294,7 @@ class CentreonService
             "service_high_flap_threshold, service_flap_detection_enabled, service_process_perf_data, " .
             " service_retain_status_information, service_retain_nonstatus_information, " .
             "service_notification_interval, service_notification_options, service_notifications_enabled, " .
-            "contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host, " .
+            "contact_additive_inheritance, cg_additive_inheritance, " .
             "service_use_only_contacts_from_host, service_stalking_options, service_first_notification_delay, " .
             "service_comment, command_command_id_arg, command_command_id_arg2, service_register, service_locked, " .
             "service_activate) " .
@@ -1353,14 +1370,10 @@ class CentreonService
             $rq .= "'2', ";
         $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
         $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
-            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
-            $rq .= "'" . $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] . "', " :
-            $rq .= "'NULL', ";
         isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
             $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ?
             $rq .= "'" . $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] . "', " :
-            $rq .= "'NULL', ";
+            $rq .= "NULL, ";
         isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ?
             $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
         isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != null ?
@@ -1380,9 +1393,9 @@ class CentreonService
         isset($ret["service_locked"]) && $ret["service_locked"] != null ?
             $rq .= "'".$ret["service_locked"]."', " : $rq .= "0, ";
         isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != null ?
-            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "NULL";
+            $rq .= "'".$ret["service_activate"]["service_activate"]."'" : $rq .= "'1'";
         $rq .= ")";
-        
+
         $DBRESULT = $this->db->query($rq);
         if (\PEAR::isError($DBRESULT)) {
             throw new \Exception('Error while insert service '.$ret['service_description']);
@@ -1523,12 +1536,6 @@ class CentreonService
         isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) &&
             $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ?
             $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
-
-        $rq .= "service_inherit_contacts_from_host = ";
-        isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) &&
-            $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != null ?
-            $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " :
-            $rq .= "NULL, ";
 
         $rq .= "service_use_only_contacts_from_host = ";
         isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) &&
@@ -1802,7 +1809,7 @@ class CentreonService
         return $hosts;
     }
 
-    public function getMonitoringFullName($serviceId)
+    public function getMonitoringFullName($serviceId, $hostId = null)
     {
         $name = null;
 
@@ -1818,6 +1825,9 @@ class CentreonService
             . 'WHERE h.host_id = s.host_id '
             . 'AND s.enabled = "1" '
             . 'AND s.service_id = ' . $serviceId;
+        if (isset($hostId)) {
+            $query .= ' AND s.host_id = ' . $hostId;
+        }
         $result = $this->dbMon->query($query);
         while ($row = $result->fetchRow()) {
             $name = $row['fullname'];

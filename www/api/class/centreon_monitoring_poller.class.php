@@ -39,54 +39,60 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringPoller extends CentreonConfigurationObjects
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
+
     /**
-     * Constructor
+     * CentreonMonitoringPoller constructor.
      */
     public function __construct()
     {
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
+        $queryValues = array();
+
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryPoller = "SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name "
-            . "FROM instances "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-        
-        $DBRESULT = $this->pearDBMonitoring->query($queryPoller);
 
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
+            'FROM instances ' .
+            'WHERE name LIKE ? AND deleted=0 ' .
+            'ORDER BY name ' . $range;
+
+        $stmt = $this->pearDBMonitoring->prepare($queryPoller);
+        $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);
         $total = $this->pearDBMonitoring->numberRows();
-        
         $pollerList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $pollerList[] = array('id' => $data['instance_id'], 'text' => $data['name']);
         }
-        
+
         return array(
             'items' => $pollerList,
             'total' => $total

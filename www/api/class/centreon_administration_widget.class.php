@@ -48,7 +48,7 @@ class CentreonAdministrationWidget extends CentreonWebService
     {
         parent::__construct();
     }
-    
+
     /**
      * Get the list of views
      */
@@ -62,21 +62,33 @@ class CentreonAdministrationWidget extends CentreonWebService
         } else {
             $q = $this->arguments['q'];
         }
-
-        $iitems = array();
-
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = array($limit,$this->arguments['page_limit']);
+        } else {
+            $range = array();
+        }
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
-        $widgets = $widgetObj->getWidgetModels($q);
-        foreach ($widgets as $widgetId => $widgetTitle) {
-            $items[] = array(
-                'id' => $widgetId,
-                'text' => $widgetTitle
-            );
+        return $widgetObj->getWidgetModels($q, $range);
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
         }
 
-        return array(
-            'items' => $items,
-            'total' => count($items)
-        );
+        return $user->hasAccessRestApiConfiguration();
     }
 }

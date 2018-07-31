@@ -58,9 +58,7 @@ $tables = array(
     'data_bin',
     'logs',
     'log_archive_host',
-    'log_archive_service',
-    'comments',
-    'downtimes'
+    'log_archive_service'
 );
 
 $partitioningInfos = array();

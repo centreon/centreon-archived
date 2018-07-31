@@ -7,4 +7,5 @@ Developer
 
    writemodule
    writewidget
-   develop-a-plugin.rst
+   writestreamconnector
+   translatecentreon

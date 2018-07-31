@@ -1,4 +1,3 @@
-<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <table class="table">
     <tr>
@@ -70,7 +69,7 @@
                                         </td>
                                         <td class="ListColCenter ListColNoWrap"><span class="badge {$hs.status_class}">{$hs.current_state}</span></td>
                                         <td class="ListColCenter ListColNoWrap">{$hs.duration}</td>
-                                        <td class="ListColLeft">{$hs.short_output}</td>
+                                        <td class="ListColLeft containsURI">{$hs.short_output}</td>
                                     </tr>
                                     {/foreach}
                                 </table>
@@ -107,7 +106,7 @@
                                 </tr>
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.plugin_output}</td>
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{$m_mon_performance_data}</td>
@@ -161,12 +160,12 @@
                                 </tr>
                                 <tr class='list_one'>
                                     <td class="ListColLeft ColPopup">{t}Timezone{/t}</td>
-                                    <td class="ListColLeft ColPopup"><span>{$host_data.timezone}</span></td>
+                                    <td class="ListColLeft ListColNoWrap"><span>{$host_data.timezone}</span></td>
                                 </tr>
                                 {if $host_data.comments}
                                 <tr class='list_two'>
                                     <td class="ListColLeft ColPopup">{$m_mon_host_comment}</td>
-                                    <td class="ListColLeft ListColNoWrap">{$host_data.comments}</td>
+                                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.comments}</td>
                                 </tr>
                                 {/if}
                             </table>
@@ -299,16 +298,16 @@
                                             <tr class='list_one' >
                                                 <td class="ListColLeft ColPopup">{$contactgroups_label}:</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach item=cg from=$contactgroups}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+                                                    {foreach from=$contactgroups item=cg key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
                                             <tr class='list_two'>
                                                 <td class="ListColLeft ColPopup">{$contacts_label}:</td>
                                                 <td class="ListColLeft ColPopup">
-                                                    {foreach item=c from=$contacts}
-                                                    &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+                                                    {foreach from=$contacts item=c key=k}
+                                                    &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
                                                     {/foreach}
                                                 </td>
                                             </tr>
@@ -331,7 +330,7 @@
                                     <td class="ListColLeft">{$tch.host_name}</td>
                                     <td class="ListColRight">{$tch.comment_time}</td>
                                     <td class="ListColCenter">{$tch.author_name}</td>
-                                    <td class="ListColLeft">{$tch.comment_data}</td>
+                                    <td class="ListColLeft containsURI">{$tch.comment_data}</td>
                                     <td class="ListColCenter">{$tch.is_persistent}</td>
                                 </tr>
                                 {/foreach}
@@ -352,7 +351,7 @@
                 </tr>
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup ">{$m_mon_host_status_info}</td>
-                    <td class="ListColLeft ListColNoWrap">{$host_data.plugin_output}</td>
+                    <td class="ListColLeft ListColNoWrap containsURI">{$host_data.plugin_output}</td>
                 </tr>
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup">{t}Poller Name{/t}</td>
@@ -377,7 +376,7 @@
                 {if $lcaTopo.60101 || $admin == 1}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
+                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$host_data.host_name}</a>
                     </td>
                 </tr>
                 {/if}
@@ -490,11 +489,6 @@
 <div id="div_img" class="img_volante"></div>
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-<script src="./include/common/javascript/charts/d3.min.js"></script>
-<script src="./include/common/javascript/charts/c3.min.js"></script>
-<script src="./include/common/javascript/charts/d3-timeline.js"></script>
-<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
-<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
 {literal}
 <script>
     jQuery(function () {

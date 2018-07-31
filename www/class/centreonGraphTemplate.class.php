@@ -78,15 +78,29 @@ class CentreonGraphTemplate
     public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
         
         $query = "SELECT graph_id, name FROM giv_graphs_template
             WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
-        $resRetrieval = $this->db->query($query);
+
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad graph template query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['graph_id'],

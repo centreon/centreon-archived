@@ -58,8 +58,6 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /* Path to the configuration dir */
 $path = "./include/configuration/configNagios/";
-
-require_once $path."/../common-Func.php";
     
 /* PHP functions */
 require_once $path."DB-Func.php";

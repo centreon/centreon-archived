@@ -278,6 +278,9 @@ class CentreonTrap extends CentreonObject
         if (is_null($parameters)) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        if (!is_numeric($parameters)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $matchObj = new \Centreon_Object_Trap_Matching();
         $matchObj->delete($parameters);
     }
@@ -298,6 +301,9 @@ class CentreonTrap extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $matchingId = $params[0];
+        if (!is_numeric($matchingId)) {
+            throw new CentreonClapiException('Incorrect id parameters');
+        }
         $key = $params[1];
         $value = $params[2];
         if ($key == 'trap_id') {
@@ -318,12 +324,18 @@ class CentreonTrap extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filterName = null)
     {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters['traps_id'] = $filter_id;
+        if (!$this->canBeExported($filterName)) {
+            return false;
         }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";

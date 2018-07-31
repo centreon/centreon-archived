@@ -6,15 +6,6 @@ A partir des sources
 
 Pour mettre à jour Centreon depuis les sources, :ref:`télécharger <downloads>` la dernière version de Centreon.
 
-.. warning::
-   Cette release n'est pas encore intégralement compatible avec la
-   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
-   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
-   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
-   Web tant que de nouvelles versions des produits précédents, indiquant
-   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
-   disponibles.
-
 ******************
 Installation shell
 ******************

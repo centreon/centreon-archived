@@ -47,42 +47,6 @@ if (!$centreon->user->admin) {
     }
 }
 
-/*
- * Database retrieve information for differents elements list we need on the page
- *
- * Services comes from DB -> Store in $hServices Array and $hgServices
- */
-$hgServices = array();
-
-$aclFrom = "";
-$aclCond = "";
-if (!$centreon->user->admin) {
-    $aclFrom = ", hostgroup_relation hgr, $aclDbName.centreon_acl acl ";
-    $aclCond = " AND hg.hg_id = hgr.hostgroup_hg_id
-        AND hgr.host_host_id = acl.host_id
-        AND acl.service_id = sv.service_id
-        AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
-}
-
-$DBRESULT = $pearDB->query("SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
-        "FROM host_service_relation hsr, service sv, hostgroup hg $aclFrom" .
-        "WHERE sv.service_register = '1' " .
-        "AND hsr.service_service_id = sv.service_id " .
-        "AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
-        "ORDER BY hg.hg_name, sv.service_description");
-while ($elem = $DBRESULT->fetchRow()) {
-    // If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
-    if (!$elem["service_description"]) {
-        $elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-    }
-    
-    $elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
-    $elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
-
-    $hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
-}
-$DBRESULT->free();
-
 $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 
 /*
@@ -97,23 +61,6 @@ if (($o == "c" || $o == "w") && $sg_id) {
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
 }
 
-$query = "SELECT host_id, host_name, service_id, service_description
-             FROM host, service, host_service_relation
-             WHERE host_id = host_host_id
-             AND service_id = service_service_id
-             AND host_register = '0' ORDER BY host_name";
-$res = $pearDB->query($query);
-while ($row = $res->fetchRow()) {
-    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-    $tServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-}
-
-#
-# End of "database-retrieved" information
-##########################################################
-##########################################################
-# Var information to format the element
-#
 $attrsText      = array("size"=>"30");
 $attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
 $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
@@ -159,33 +106,8 @@ $form->addElement('text', 'sg_name', _("Name"), $attrsText);
 $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
-##
-## Services Selection
-##
-$hostFilter = array(null => null,
-        0    => sprintf('__%s__', _('ALL')));
-$hostFilter = ($hostFilter + $acl->getHostAclConf(
-    null,
-    'broker',
-    array('fields'  => array('host.host_id', 'host.host_name'),
-                                                       'keys'    => array('host_id'),
-                                                       'get_row' => 'host_name',
-                                                       'order'   => array('host.host_name')),
-    false
-));
-
 $form->addElement('header', 'relation', _("Relations"));
-if (isset($_REQUEST['sg_hServices']) && count($_REQUEST['sg_hServices'])) {
-    $sql = "SELECT host_id, service_id, host_name, service_description FROM host h, service s, host_service_relation hsr
-           WHERE h.host_id = hsr.host_host_id
-           AND hsr.service_service_id = s.service_id
-           AND CONCAT_WS('-', h.host_id, s.service_id) IN ('".implode("','", $_REQUEST['sg_hServices'])."')";
-    $res = $pearDB->query($sql);
-    while ($row = $res->fetchRow()) {
-        $k = $row['host_id'] . '-' . $row['service_id'];
-        $hServices[$k] = $row['host_name'] . ' - ' . $row['service_description'];
-    }
-}
+
 $attrService1 = array_merge(
     $attrServices,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=defaultValues&target=servicegroups&field=sg_hServices&id=' . $sg_id)
@@ -199,7 +121,6 @@ $attrHostgroup1 = array_merge(
     )
 );
 $form->addElement('select2', 'sg_hgServices', _("Linked Host Group Services"), array(), $attrHostgroup1);
-
 
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
@@ -215,6 +136,7 @@ $sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _(
 $sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
 $form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('sg_activate' => '1'));
+
 $form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
 
 $form->addElement('hidden', 'sg_id');

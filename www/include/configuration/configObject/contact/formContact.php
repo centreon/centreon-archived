@@ -187,10 +187,6 @@ $DBRESULT->free();
  * Contact Groups comes from DB -> Store in $notifCcts Array
  */
 $notifCgs = array();
-/* $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-  while ($notifCg = $DBRESULT->fetchRow())
-  $notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-  $DBRESULT->free(); */
 $cg = new CentreonContactgroup($pearDB);
 $notifCgs = $cg->getListContactgroup(false);
 
@@ -209,8 +205,8 @@ $aclCond = "";
 if (!$centreon->user->admin) {
     $aclCond = " WHERE acl_group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
-$sql = "SELECT acl_group_id, acl_group_name 
-    FROM acl_groups 
+$sql = "SELECT acl_group_id, acl_group_name
+    FROM acl_groups
     {$aclCond}
     ORDER BY acl_group_name";
 $DBRESULT = $pearDB->query($sql);
@@ -348,6 +344,7 @@ $form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
 $form->addElement('password', 'contact_passwd', _("Password"), array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onkeypress" => "resetPwdType(this);"));
 $form->addElement('password', 'contact_passwd2', _("Confirm Password"), array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onkeypress" => "resetPwdType(this);"));
 $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
+
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
 $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(null => null, "txt" => "txt", "html" => "html", "pdf" => "pdf"));
 
@@ -360,7 +357,12 @@ if ($centreon->user->admin) {
     $tab = array();
     $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("Yes"), '1');
     $tab[] = HTML_QuickForm::createElement('radio', 'reach_api', null, _("No"), '0');
-    $form->addGroup($tab, 'reach_api', _("Reach API"), '&nbsp;');
+    $form->addGroup($tab, 'reach_api', _("Reach API Configuration"), '&nbsp;');
+
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api_rt', null, _("Yes"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'reach_api_rt', null, _("No"), '0');
+    $form->addGroup($tab, 'reach_api_rt', _("Reach API Realtime"), '&nbsp;');
 }
 
 /**
@@ -405,10 +407,18 @@ if ($o != "mc") {
 $auth_type["local"] = "Centreon";
 if ($centreon->optGen['ldap_auth_enable'] == 1) {
     $auth_type["ldap"] = "LDAP";
-    $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
+    $dnElement = $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
+    if (!$centreon->user->admin) {
+        $dnElement->freeze();
+    }
 }
 if ($o != "mc") {
-    $form->setDefaults(array('contact_oreon' => '1', "contact_admin" => '0'));
+    $form->setDefaults(array(
+        'contact_oreon' => '1',
+        'contact_admin' => '0',
+        'reach_api' => '0',
+        'reach_api_rt' => '0'
+    ));
 }
 $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 
@@ -665,6 +675,7 @@ if ($valid) {
     if ($centreon->optGen['ldap_auth_enable']) {
         $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
+    $tpl->assign('auth_type', $cct['contact_auth_type']);
     $tpl->display("formContact.ihtml");
 }
 ?>

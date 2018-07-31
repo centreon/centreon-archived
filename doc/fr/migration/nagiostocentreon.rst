@@ -10,8 +10,8 @@ importer les objets dans l'interface Centreon web.
 Prérequis
 =========
 
-Avant toute chose vous devez avoir une plate-forme CES installée et prête à 
-l'emploi. Se référer à la documentation :ref:`d'installation de CES<firststepsces3>`.
+Avant toute chose vous devez avoir une plate-forme Centreon installée et prête à 
+l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<firststepsces3>`.
 
 Installation
 ============
@@ -42,7 +42,7 @@ Puis télécharger le script depuis github sur votre serveur Nagios(R) :
 Utilisation
 ===========
 
-Sur une nouvelle installation de CES, le collecteur par défaut est appelé 
+Sur une nouvelle installation de Centreon, le collecteur par défaut est appelé 
 "Central". Si le nom de ce dernier est différent, vous devez modifier le script
 pour modifier le nom par défaut à la ligne 65 :
 
@@ -71,7 +71,7 @@ Pour exécuter le script lancer la commande :
 
   $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/nagios.cfg > /tmp/centreon_clapi_import_commands.txt
 
-Exportez le fichier **/tmp/centreon_clapi_import_commands.txt** sur votre serveur CES.
+Exportez le fichier **/tmp/centreon_clapi_import_commands.txt** sur votre serveur Centreon.
 
 Enfin exécutez la commande suivante pour importer les objets dans Centreon web :
 

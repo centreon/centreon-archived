@@ -57,7 +57,10 @@ if (!isset($oreon)) {
 if (isset($_GET["host_search"])) {
     $centreon->historySearch[$url] = $_GET["host_search"];
 }
-        
+if (isset($_SESSION['monitoring_service_groups'])) {
+    $sg_search = $_SESSION['monitoring_service_groups'];
+}
+
         $aTypeAffichageLevel1 = array(
             "svcOVSG" => _("Details"),
             "svcSumSG" => _("Summary")
@@ -69,7 +72,6 @@ if (isset($_GET["host_search"])) {
             "ack_1" => _("Acknowledge"),
             "ack_0" => _("Not Acknowledged"),
         );
-        
 
         $tab_class = array("0" => "list_one", "1" => "list_two");
         $rows = 10;
@@ -145,10 +147,10 @@ if (isset($_GET["host_search"])) {
                 _o = _o + "_" + sel2;
             }
             if (val == 'svcOVSG') {
-                _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceGridBySGXML.php";
+                _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceGridBySGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceGridBySG.xsl";
             } else {
-               _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/broker/serviceSummaryBySGXML.php";
+               _addrXML = "./include/monitoring/status/ServicesServiceGroups/xml/serviceSummaryBySGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSummaryBySG.xsl";
             }
             monitoring_refresh();

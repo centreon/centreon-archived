@@ -113,16 +113,22 @@ class CentreonContact extends CentreonObject
     protected $timezoneObject;
 
     /**
+     * @var CentreonUtils
+     */
+    protected $utilsObject;
+
+    /**
      * Constructor
      *
      * @return void
      */
-    public function __construct($db)
+    public function __construct()
     {
         parent::__construct();
         $this->tpObject = new CentreonTimePeriod();
         $this->object = new \Centreon_Object_Contact();
         $this->timezoneObject = new \Centreon_Object_Timezone();
+        $this->utilsObject = new CentreonUtils();
         $this->params = array('contact_host_notification_options' => 'n',
             'contact_service_notification_options' => 'n',
             'contact_location' => '0',
@@ -141,8 +147,8 @@ class CentreonContact extends CentreonObject
             'contact_auth_type'
         );
         $this->exportExcludedParams = array_merge(
-                $this->insertParams,
-                array(
+            $this->insertParams,
+            array(
                     $this->object->getPrimaryKey(),
                     "contact_register"
                 )
@@ -195,7 +201,7 @@ class CentreonContact extends CentreonObject
         if (!$locale || $locale == "") {
             return true;
         }
-        if (strtolower($locale) == "en_us") {
+        if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
         $dir = CentreonUtils::getCentreonPath() . "/www/locale/$locale";
@@ -257,6 +263,7 @@ class CentreonContact extends CentreonObject
      */
     public function add($parameters)
     {
+
         $params = explode($this->delim, $parameters);
         if (count($params) < $this->nbOfCompulsoryParams) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -264,9 +271,16 @@ class CentreonContact extends CentreonObject
         $addParams = array();
         $params[self::ORDER_UNIQUENAME] = str_replace(" ", "_", $params[self::ORDER_UNIQUENAME]);
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
-        $addParams['contact_name'] = $params[self::ORDER_NAME];
+        $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
+
+        $algo = $this->utilsObject->detectPassPattern($params[self::ORDER_PASS]);
+        if(!$algo){
+            $addParams['contact_passwd'] = $this->utilsObject->encodePass($params[self::ORDER_PASS]);
+        } else {
+            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
+        }
+
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
         if ($this->checkLang($params[self::ORDER_LANG]) == false) {
@@ -353,7 +367,9 @@ class CentreonContact extends CentreonObject
                         }
                     }
                 }
-                $params[1] = "contact_" . $params[1];
+                if ($params[1] != 'reach_api' && $params[1] != 'reach_api_rt' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
+                    $params[1] = "contact_" . $params[1];
+                }
             }
 
             if ($regularParam == true) {
@@ -446,11 +462,16 @@ class CentreonContact extends CentreonObject
      * @param string $parameters
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filterName = null)
     {
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
         $filters = array("contact_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters['contact_id'] = $filter_id;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
         $elements = $this->object->getList(
             "*",
@@ -458,10 +479,18 @@ class CentreonContact extends CentreonObject
             0,
             null,
             null,
-            array("contact_register" => $this->register),
+            $filters,
             "AND"
         );
+
+
         foreach ($elements as $element) {
+
+            $algo = $this->utilsObject->detectPassPattern($element['contact_passwd']);
+            if(!$algo){
+                $element['contact_passwd'] = $this->utilsObject->encodePass($element['contact_passwd']);
+            }
+
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];
@@ -475,12 +504,12 @@ class CentreonContact extends CentreonObject
                         $parameter = self::HOST_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->api->export_filter('TP', $tmp_id, $value);
+                        CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "timeperiod_tp_id2") {
                         $parameter = self::SVC_NOTIF_TP;
                         $tmp_id = $value;
                         $value = $this->tpObject->getObjectName($value);
-                        $this->api->export_filter('TP', $tmp_id, $value);
+                        CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
@@ -492,7 +521,7 @@ class CentreonContact extends CentreonObject
                         $tmp_id = $value;
                         $result = $this->object->getParameters($value, $this->object->getUniqueLabelField());
                         $value  = $result[$this->object->getUniqueLabelField()];
-                        $this->api->export_filter('CONTACTTPL', $tmp_id, $value);
+                        CentreonContactTemplate::getInstance()->export($value);
                     } elseif ($parameter == "contact_location") {
                         $parameter = self::CONTACT_LOCATION;
                         $result = $this->timezoneObject->getParameters(

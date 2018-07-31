@@ -248,11 +248,12 @@ $tpl->assign('poller_name', $pollerName);
 /*
  * Get the stats file name
  */
-$queryStatName = "SELECT config_name,retention_path "
+$queryStatName = "SELECT config_name, cache_directory "
     . "FROM cfg_centreonbroker "
     . "WHERE stats_activate='1' "
-    . "AND ns_nagios_server = " . CentreonDB::escape($selectedPoller) . " ";
-$res = $pearDB->query($queryStatName);
+    . "AND ns_nagios_server = ?";
+$stmt = $pearDB->prepare($queryStatName);
+$res = $pearDB->execute($stmt, array($selectedPoller));
 if (PEAR::isError($res)) {
     $tpl->assign('msg_err', _('Error in getting stats filename'));
 } else {
@@ -262,7 +263,7 @@ if (PEAR::isError($res)) {
     $perf_info = array();
     $perf_err = array();
     while ($row = $res->fetchRow()) {
-        $statsfile = $row['retention_path'] . '/' . $row['config_name'] . '-stats.json';
+        $statsfile = $row['cache_directory'] . '/' . $row['config_name'] . '-stats.json';
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
         }

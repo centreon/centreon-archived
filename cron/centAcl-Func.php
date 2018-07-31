@@ -87,9 +87,8 @@ function getFilteredPollers($host, $acl_group_id, $res_id)
  */
 function getFilteredHostCategories($host, $acl_group_id, $res_id)
 {
-    global $pearDB, $hostCache, $hostTemplateCache;
+    global $pearDB, $hostTemplateCache;
 
-    $hostTmp = $host;
     $request = "SELECT host_host_id " .
             "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
             "WHERE acl_resources_hc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
@@ -99,29 +98,44 @@ function getFilteredHostCategories($host, $acl_group_id, $res_id)
             "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
             "AND acl_res_activate = '1'";
     $DBRESULT = $pearDB->query($request);
-    if ($DBRESULT->numRows()) {
-        $host = array();
+
+    if (!$DBRESULT->numRows()) {
+        return $host;
     }
+
+    $treatedHosts = array();
+    $linkedHosts = array();
     while ($row = $DBRESULT->fetchRow()) {
-        if (isset($hostTemplateCache[$row['host_host_id']])) {
-            // is a template
-            foreach ($hostTemplateCache[$row['host_host_id']] as $hId) {
-                if (isset($hostTmp[$hId])) {
-                    $host[$hId] = $hostCache[$hId];
+        $linkedHosts[] = $row['host_host_id'];
+    }
+
+    $filteredHosts = array();
+    while ($linkedHostId = array_pop($linkedHosts)) {
+        $treatedHosts[] = $linkedHostId;
+        if (isset($host[$linkedHostId])) { // host
+            $filteredHosts[$linkedHostId] = $host[$linkedHostId];
+        } elseif (isset($hostTemplateCache[$linkedHostId])) { // host template
+            foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
+                if (isset($host[$hostId])) {
+                    $filteredHosts[$hostId] = $host[$hostId];
+                }
+                if (isset($hostTemplateCache[$hostId])) {
+                    foreach ($hostTemplateCache[$hostId] as $hostId2) {
+                        if (!in_array($hostId2, $linkedHosts) && !in_array($hostId2, $treatedHosts)) {
+                            $linkedHosts[] = $hostId2;
+                        }
+                    }
                 }
             }
-        } elseif (isset($hostTmp[$row['host_host_id']])) {
-            // is not a template
-            $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
         }
     }
-    return $host;
+
+    return $filteredHosts;
 }
 
 /*
  * Return enable categories for this resource access
  */
-
 function getAuthorizedCategories($groupstr, $res_id)
 {
     global $pearDB;
@@ -203,37 +217,6 @@ function getACLSGForHost($pearDB, $host_id, $groupstr)
             }
         }
     }
-    return $svc;
-
-    /*
-     * Init Acl Table
-     */
-    $svc = array();
-    $condition = "";
-    if ($groupstr != "") {
-        $condition = " WHERE `acl_group_id` IN (" . $groupstr . ") AND ";
-    } else {
-        $condition = " WHERE ";
-    }
-
-    $DBRESULT = $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar " . $condition . " " .
-            "argr.acl_res_id = ar.acl_res_id " .
-            "AND ar.acl_res_activate = '1'");
-    while ($res = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT `service_service_id` " .
-                "FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
-                "WHERE `acl_res_id` = '" . $res["acl_res_id"] . "' " .
-                "AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
-                "AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
-                "AND `servicegroup_relation`.`host_host_id` = '" . $host_id . "'");
-        while ($service = $DBRESULT2->fetchRow()) {
-            if (isset($svcCache[$service["service_service_id"]])) {
-                $svc[$svcCache[$service["service_service_id"]]] = $service["service_service_id"];
-            }
-        }
-        $DBRESULT2->free();
-    }
-    $DBRESULT->free();
     return $svc;
 }
 
@@ -433,4 +416,15 @@ function getMetaServices($resId, $db, $metaObj)
         }
     }
     return $arr;
+}
+
+function getModulesExtensionsPaths($db)
+{
+    $extensionsPaths = array();
+    $res = $db->query("SELECT name FROM modules_informations");
+    while ($row = $res->fetchRow()) {
+        $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/extensions/acl/'));
+    }
+    
+    return $extensionsPaths;
 }

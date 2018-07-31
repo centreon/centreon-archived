@@ -1,17 +1,13 @@
 <?php
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
+
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
 
 /**
  * Defines application features from the specific context.
  */
 class MetaServicesApiContext extends CentreonContext
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -43,8 +39,7 @@ class MetaServicesApiContext extends CentreonContext
     public function aCallToApiConfigurationServicesWithParameterAll()
     {
         $param = 'all';
-        $this -> jsonreturn = $this->callToApiConfigurationServices($param);
-
+        $this->jsonreturn = $this->callToApiConfigurationServices($param);
     }
 
 
@@ -54,8 +49,7 @@ class MetaServicesApiContext extends CentreonContext
     public function aCallToApiConfigurationServicesWithParameterS()
     {
         $param = 's';
-        $this -> jsonreturn = $this->callToApiConfigurationServices($param);
-
+        $this->jsonreturn = $this->callToApiConfigurationServices($param);
     }
 
 
@@ -65,29 +59,28 @@ class MetaServicesApiContext extends CentreonContext
     public function aCallToApiConfigurationServicesWithParameterM()
     {
         $param = 'm';
-        $this -> jsonreturn = $this->callToApiConfigurationServices($param);
-
+        $this->jsonreturn = $this->callToApiConfigurationServices($param);
     }
 
 
     /**
      * @Then the table understands the services and the meta services
      */
-    public function theTableUnderstandsTheServicesAndTheMetaServices ()
+    public function theTableUnderstandsTheServicesAndTheMetaServices()
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode( $this -> jsonreturn );
+        $json = json_decode($this->jsonreturn);
 
-        $i = count($json->items)-1;
-        while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
+        $i = count($json->items) - 1;
+        while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
+            if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;
-        endwhile;
+        }
 
         if (($service == 0) || ($meta == 0)) {
             throw new Exception('Bad service');
@@ -98,21 +91,21 @@ class MetaServicesApiContext extends CentreonContext
     /**
      * @Then the table understands only the services
      */
-    public function theTableUnderstandsOnlyTheServices ()
+    public function theTableUnderstandsOnlyTheServices()
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode( $this -> jsonreturn );
+        $json = json_decode($this->jsonreturn);
 
-        $i = count($json->items)-1;
-        while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
+        $i = count($json->items) - 1;
+        while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
+            if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;
-        endwhile;
+        }
 
         if (($service == 0) || ($meta == 1)) {
             throw new Exception('Bad service');
@@ -123,21 +116,22 @@ class MetaServicesApiContext extends CentreonContext
     /**
      * @Then the table understands only the meta services
      */
-    public function theTableUnderstandsOnlyTheMeta ()
+    public function theTableUnderstandsOnlyTheMeta()
     {
         $service = 0;
         $meta = 0;
-        $json = json_decode( $this -> jsonreturn );
+        $json = json_decode($this->jsonreturn);
 
-        $i = count($json->items)-1;
-        while ((($service ==0 ) && ($meta ==0 )) || (0 <= $i)):
-            if ($json->items[$i]->text == 'Meta - '.$this->metaName){
+        $i = count($json->items) - 1;
+        while ((($service == 0) && ($meta == 0)) || (0 <= $i)) {
+            if ($json->items[$i]->text == 'Meta - ' . $this->metaName) {
                 $meta = 1;
-            }elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
+            } elseif (strstr($json->items[$i]->text, 'Centreon-Server -')) {
                 $service = 1;
             }
             $i--;
-        endwhile;
+        }
+
 
         if (($service == 1) || ($meta == 0)) {
             throw new Exception('Bad service');
@@ -147,13 +141,12 @@ class MetaServicesApiContext extends CentreonContext
 
     public function callToApiConfigurationServices($param)
     {
-        $this->visit('/include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list&page_limit=60&page=1&s='.$param);
+        $apiPage = '/include/common/webServices/rest/internal.php?' .
+            'object=centreon_configuration_service&action=list&page_limit=60&page=1&s=' . $param;
+        $this->visit($apiPage);
         $this->getSession()->wait(1000);
-        $json = strip_tags ( $this->getSession()->getPage()->getHtml() );
+        $json = strip_tags($this->getSession()->getPage()->getHtml());
 
         return $json;
     }
-
-
-
 }

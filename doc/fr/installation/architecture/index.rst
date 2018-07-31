@@ -17,5 +17,6 @@ Vous trouverez ici toutes les architectures supportées par cette version 2.8 de
    03c
    03d
    03e
+   network
 
 Si vous avez des feedbacks relatifs à vos besoins en terme d'architecture, n'hésitez pas nous en faire part sur `github <https://github.com/centreon/centreon>`_.

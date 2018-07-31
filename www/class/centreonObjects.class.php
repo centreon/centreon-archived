@@ -54,7 +54,7 @@ class CentreonObjects
     {
         $this->DB = $pearDB;
 
-        $this->hostgroups = new CentreonHostGroups($pearDB);
+        //$this->hostgroups = new CentreonHostGroups($pearDB);
 
     }
 }

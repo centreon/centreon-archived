@@ -74,6 +74,7 @@ class HostTemplate extends AbstractHost {
         contact_additive_inheritance,
         cg_additive_inheritance,
         host_first_notification_delay as first_notification_delay,
+        host_recovery_notification_delay as recovery_notification_delay,
         host_stalking_options as stalking_options,
         host_snmp_community,
         host_snmp_version,
@@ -111,6 +112,7 @@ class HostTemplate extends AbstractHost {
         'notification_interval',
         'notification_options',
         'first_notification_delay',
+        'recovery_notification_delay',
         'stalking_options',
         'register',
         'notes',
@@ -163,12 +165,6 @@ class HostTemplate extends AbstractHost {
         if ($this->checkGenerate($host_id)) {
             return $this->hosts[$host_id]['name'];
         }
-        
-        $oTimezone = Timezone::getInstance();
-        $sTimezone = $oTimezone->getTimezoneFromId($this->hosts[$host_id]['host_location']);
-        if (!is_null($sTimezone)) {
-            $this->hosts[$host_id]['timezone'] = ":". $sTimezone;
-        }
 
         # Avoid infinite loop!
         if (isset($this->loop_htpl[$host_id])) {
@@ -179,6 +175,7 @@ class HostTemplate extends AbstractHost {
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);
+        $this->getHostTimezone($this->hosts[$host_id]);
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);

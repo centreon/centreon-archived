@@ -16,9 +16,8 @@ uses two or three databases depending on your monitoring broker:
 
  * ``centreon`` -- Storing metadata
  * ``centreon_storage`` -- Real-time monitoring and history
- * ``centreon_status`` -- Real-time monitoring for ``ndo2db``
 
-The database ``centreon_status`` is installed even if you don't use ``ndo2db``.
+
 
 Indexes
 =======

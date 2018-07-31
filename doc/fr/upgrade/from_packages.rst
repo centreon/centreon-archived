@@ -4,22 +4,13 @@
 Mise à jour RPM
 ===============
 
-La version 3.4 de Centreon Entreprise Server (CES) est l'ensemble Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
-Deux versions de CES 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
+La version 3.4 de Centreon ISO est l'ensemble Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
+Deux versions de Centreon 3.4 sont disponibles, en fonction du système d'exploitation d'origine : CentOS 6 ou CentOS 7.
 
 .. warning::
-   Cette release n'est pas encore intégralement compatible avec la
-   totalité des logiciels commerciaux de Centreon tels que Centreon MBI,
-   Centreon BAM ou Centreon Map. Si vous utilisez l'un de ces produits
-   nous vous recommandons fortement de **NE PAS** mettre à jour Centreon
-   Web tant que de nouvelles versions des produits précédents, indiquant
-   clairement leur compatibilité avec Centreon Web 2.8, ne sont pas
-   disponibles. La seule exception à cette exclusion concerne EMS/EPP.
-
-.. warning::
-   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise 
-   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le 
-   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré 
+   Avant d'installer la mise à jour, vérifiez que votre plateforme n'utilise
+   pas le module centreon knowledgebase (aussi appelé Centreon KB). Si c'est le
+   cas, veuillez le désinstaller. Le module Centreon KB est maintenant intégré
    à la version 2.8.
 
 *********
@@ -66,12 +57,23 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-*********
-Dépôt CES
-*********
+**********
+Sauvegarde
+**********
 
-Si vous êtes déjà un utilisateur de CES, vous devez mettre à jour votre
-fichier .repo pour utiliser les logiciels faisant partie de CES 3.4
+Avant toute chose, il est préfèrable de s'assurer de l'état et de la consistance des sauvegarde de l'ensemble des serveurs centraux de votre plate-forme :
+
+ * Serveur(s) Centreon central(aux) ;
+ * Serveur(s) de gestion de base de données ;
+ * Serveur déporté de reporting Centreon MBI ;
+ 
+
+**************
+Dépôt Centreon
+**************
+
+Si vous êtes déjà un utilisateur de Centreon ISO, vous devez mettre à jour votre
+fichier .repo pour utiliser les logiciels faisant partie de Centreon 3.4
 (essentiellement Centreon Web 2.8 et les composants associés). Entrez
 les commandes suivantes en fonction de votre système d'exploitation.
 
@@ -80,8 +82,9 @@ CentOS 6
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 CentOS 7
@@ -89,9 +92,12 @@ CentOS 7
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
 
+.. warning::
+   Dans le cas où vous disposez des modules Centreon BAM, Centreon MAP4, Centreon MBI ou Centreon EPP merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
 
 ***********
 Mise à jour
@@ -114,7 +120,7 @@ Stoppez Centreon Broker et Centreon Engine sur l’ensemble des pollers
 2. Mise à jour l’ensemble des paquets
 =====================================
 
-Pour installer la nouvelle version de Centreon depuis une CES 3.4, lancez la commande suivante :
+Pour installer la nouvelle version de Centreon depuis une Centreon 3.4, lancez la commande suivante :
 
    ::
 
@@ -139,8 +145,19 @@ Suite à l’installation de PHP-intl, il est nécessaire de redémarrer le serv
    ::
 
    # service httpd restart
+   
+4. Mise à jour des poller
+=========================
 
-4. Réalisez la mise à jour Web de Centreon 2.8
+Executer la même procedure sur vos différent poller :
+
+ * Changement des repo
+ * Mise à jour des paquets
+ 
+.. warning::
+   Il est impératif que tout vos serveurs (Central et Poller) soient dans les mêmes versions Centreon Engine 1.7, Centreon Broker 3.0
+
+5. Réalisez la mise à jour Web de Centreon 2.8
 ==============================================
 
 Suivez le wizard de mise à jour Web afin de terminer les mises à jours pour les modifications au niveau de la base SQL soient appliquées. Durant cette phase, un nouveau fichier de configuration va être également créé.
@@ -179,12 +196,12 @@ Finalisation
 .. image:: /_static/images/upgrade/step05.png
    :align: center
 
-5. Exportez la configuration vers l’ensemble des pollers
+6. Exportez la configuration vers l’ensemble des pollers
 ========================================================
 
 Pour terminer l’installation, il est nécessaire de générer une première fois les configurations de Centreon Engine et Centreon Broker. Pour cela, allez dans Configuration > Poller et cliquer sur l’icone de génération.
 
-6. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
+7. Redémarrez les moteurs Centreon Engine et Centreon Broker sur l’ensemble des pollers
 =======================================================================================
 
 Vous pouvez maintenant redémarrer les instances de collecte afin de remettre le service en place. Pour ceci, lancez les commandes suivantes :
@@ -211,10 +228,15 @@ Si vous utilisez des modules Centreon, vous devrez les mettre à jour
 satisfaisante. Cela est particulièrement vrai pour les utilisateurs
 de EMS/EPP.
 
+.. warning::
+   Dans ce cas merci de vous rapprocher de votre support afin qu'ils vous fournissent les liens nécessaires à l'installation des nouveaux repo.
+   Il est impératif d'avoir la dernière version de Centreon BAM pour que la mise à jour fonctionne correctement. L'utilisation de l'option suivante est à proscrire :
+   # --skip-broken
+   
 Mise à jour du dépôt
 ====================
 
-Comme pour CES, le fichier .repo doit être mis à jour pour utiliser la
+Comme pour Centreon ISO, le fichier .repo doit être mis à jour pour utiliser la
 version 3.4. N'hésitez pas à contacter le support Centreon si vous ne
 savez pas comment réaliser cette opération.
 
@@ -259,13 +281,12 @@ Bien, votre module fonctionne de nouveau.
 Les risques identifiés lors de la mise à jour
 *********************************************
 
-Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.6 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
+Afin de vous aider à éviter le plus possible des problèmes éventuels liés à la mise à jour de votre plate-forme en version 2.8 de Centreon couplée à la version 1.7 de Engine et 3.0 de Broker, nous souhaitons vous partager la liste des risques potentiels suite à cette action. Cela ne veut pas dire que vous rencontrerez ces problèmes lors de la mise à jour. Cependant, ce sont des points que nous vous incitons à surveiller après la mise à jour. Cette liste de risque nous aidera je l’espère valider que tout se passe bien de votre côté.
 
 Les risques sont les suivants :
 ===============================
 
-* Incompatibilité avec la plupart des produits commerciaux : Centreon MBI, Centreon BAM et Centreon Map ne sont pas encore compatible avec Centreon Web 2.8.
-* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.6) sont des prérequis au fonctionnement de Centreon Web 2.8
+* Problèmes de dépendances avec Centreon Engine et Centreon Broker : les deux dernières versions (Centreon Broker 3.0 et Centreon Engine 1.8) sont des prérequis au fonctionnement de Centreon Web 2.8
 * Problèmes de mise à jour des schémas de base de données
 * Les nouveau graphiques de performances ont des échelles affichant trop de détails
 * Des erreurs PHP de type warning apparaissent dans le journal d'évènement d'Apache

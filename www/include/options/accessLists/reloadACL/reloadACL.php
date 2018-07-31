@@ -39,12 +39,14 @@ if (!isset($centreon)) {
 
 $path = "./include/options/accessLists/reloadACL/";
 
-
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
 session_start();
+session_write_close();
+
 $sid = session_id();
 if (isset($_GET["o"]) && $_GET["o"] == "r") {
     $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");

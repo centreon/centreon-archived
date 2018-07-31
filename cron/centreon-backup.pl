@@ -50,13 +50,13 @@ use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF $ZEND_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
 use vars qw($BIN_GZIP $BIN_TAR);
 use vars qw($scp_enabled $scp_user $scp_host $scp_directory);
+use vars qw($centreon_config);
 
 sub print_help();
 sub print_usage();
 sub trim($);
 
-#my $CENTREON_ETC = '/etc/centreon';
-my $CENTREON_ETC = '/etc/centreon';
+my $CENTREON_ETC = '@CENTREON_ETC@';
 my @licfiles;
 
 # Require DB configuration files
@@ -64,6 +64,23 @@ if (-e $CENTREON_ETC.'/conf.pm'){
 	require $CENTREON_ETC.'/conf.pm';
 }elsif (-e $CENTREON_ETC.'/centreon-config.pm'){
 	require $CENTREON_ETC.'/centreon-config.pm';
+}
+
+## Convert new configuration to old
+if (!defined($mysql_host)) {
+	$mysql_host = $centreon_config->{db_host};
+}
+if (!defined($mysql_user)) {
+	$mysql_user = $centreon_config->{db_user};
+}
+if (!defined($mysql_passwd)) {
+	$mysql_passwd = $centreon_config->{db_passwd};
+}
+if (!defined($mysql_database_oreon)) {
+	$mysql_database_oreon = $centreon_config->{centreon_db};
+}
+if (!defined($mysql_database_ods)) {
+	$mysql_database_ods = $centreon_config->{centstorage_db};
 }
 
 if (defined($mysql_host)) {
@@ -213,10 +230,13 @@ sub getbinaries() {
 }
 
 sub exportBackup() {
-    if ($scp_enabled == '1' && $scp_host ne '' && $scp_directory ne '' && $scp_user ne '') {
-	if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
-	    chdir($TEMP_DB_DIR);
-	    `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+    if ($scp_enabled == '1' &&
+		(!defined($scp_host) || $scp_host ne '') &&
+		(!defined($scp_directory) || $scp_directory ne '') &&
+		(!defined($scp_user) || $scp_user ne '')) {
+		if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
+	    	chdir($TEMP_DB_DIR);
+	    	`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
@@ -231,7 +251,9 @@ sub exportBackup() {
                 print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
             }
         }
-    }
+    } elsif ($scp_enabled == '1') {
+		print STDERR "The export by SCP is enabled but a configuration is missing\n";
+	}
 }
 
 sub cleanOldBackup() {
@@ -369,7 +391,7 @@ sub databasesBackup() {
     	# Make archives from databases dump
     	if ($BACKUP_DATABASE_CENTREON == '1') {
     	    $file = $TEMP_DB_DIR."/".$today."-centreon.sql.gz";
-    	    `mysqldump -u $mysql_user -h $mysql_host -p$mysql_passwd $mysql_database_oreon | $BIN_GZIP  > $file`;
+    	    `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_GZIP  > $file`;
     	    if ($? ne 0) {
     	        print STDERR "Unable to dump database: " . $mysql_database_oreon . "\n";
     	    } else {
@@ -386,7 +408,7 @@ sub databasesBackup() {
 
             if ($process_number == 0) {
                 $file = $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz";
-                `mysqldump -u $mysql_user -h $mysql_host -p$mysql_passwd $mysql_database_ods | $BIN_GZIP  > $file`;
+                `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_ods | $BIN_GZIP  > $file`;
                 if ($? ne 0) {
                     print STDERR "Unable to dump database: " . $mysql_database_ods . "\n";
                 } else {
@@ -706,7 +728,8 @@ sub centralBackup() {
 	################
 	# Make archive #
 	################
-    `cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-central.tar.gz backup`;
+        my $dir = basename($TEMP_DIR);
+        `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-central.tar.gz $dir`;
 	if ($? ne 0) {
 		print STDERR "Unable to make tar of backup\n";
 	}
@@ -879,10 +902,11 @@ sub monitoringengineBackup() {
         print STDERR "No ssh keys for Centreon Engine\n";
     }
 
-	##################
-	# Make archives #
-	#################
-	`cd $TEMP_DIR && cd .. && tar -czf $BACKUP_DIR/$today-centreon-engine.tar.gz backup`;
+    ##################
+    # Make archives #
+    #################
+    my $dir = basename($TEMP_DIR);
+    `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-centreon-engine.tar.gz $dir`;
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }

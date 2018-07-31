@@ -41,6 +41,7 @@ include_once("./class/centreonUtils.class.php");
 
 include_once "./class/centreonDB.class.php";
 include_once "./class/centreonHost.class.php";
+include_once "./class/centreonConfigEngine.php";
 
 
 /*
@@ -147,11 +148,17 @@ if (!$is_admin && !$haveAccess) {
         $DBRESULT->free();
 
         /* Get service categories */
+        $hostIds = array($host_id);
+        $hostTemplates = $hostObj->getTemplateChain($host_id);
+        foreach ($hostTemplates as $hostTemplate) {
+            $hostIds[] = $hostTemplate['host_id'];
+        }
+
         $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* 
                                     FROM hostcategories hc 
                                     INNER JOIN hostcategories_relation hcr 
                                     ON hc.hc_id = hcr.hostcategories_hc_id 
-                                    AND hcr.host_host_id = '" . $host_id . "' ");
+                                    AND hcr.host_host_id IN ('" . implode("','", $hostIds) . "') ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
         }
@@ -287,6 +294,7 @@ if (!$is_admin && !$haveAccess) {
             " alias, " .
             " action_url, " .
             " h.timezone, " .
+            " h.instance_id, " .
             " i.name as instance_name " .
             " FROM hosts h, instances i " .
             " WHERE h.host_id = $host_id AND h.instance_id = i.instance_id " .
@@ -295,7 +303,15 @@ if (!$is_admin && !$haveAccess) {
         $data = $DBRESULT->fetchRow();
 
         $host_status[$host_name] = $data;
-        $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+
+        // Get host timezone
+        if (empty($host_status[$host_name]["timezone"])) {
+            $instanceObj = new CentreonConfigEngine($pearDB);
+            $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
+        } else {
+            $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+        }
+
         $host_status[$host_name]["plugin_output"] = htmlentities(
             $host_status[$host_name]["plugin_output"],
             ENT_QUOTES,
@@ -476,8 +492,6 @@ if (!$is_admin && !$haveAccess) {
         $tpl->assign("cmt_persistent", _("Persistent"));
         $tpl->assign("cmt_actions", _("Actions"));
         $tpl->assign("options", _("Options"));
-        $tpl->assign("m_mon_tools_ping", _("Ping"));
-        $tpl->assign("m_mon_tools_tracert", _("Tracert"));
         $tpl->assign("hosts_command", _("Host Commands"));
         $tpl->assign("m_mon_SCH_downtime", _("Schedule downtime for this host"));
         $tpl->assign("m_mon_add_comment", _("Add Comment for this host"));

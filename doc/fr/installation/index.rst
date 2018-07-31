@@ -17,9 +17,8 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
 
    prerequisites
    architecture/index
-   installation/index
    downloads
-   from_centreon
+   from_iso
    from_packages
    from_VM
    from_sources

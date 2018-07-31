@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
@@ -50,7 +47,10 @@ $pearDB = new CentreonDB();
  * Counters
  */
 global $regCounter, $gdCounter, $fileRemoved, $dirCreated;
+
 session_start();
+session_write_close();
+
 $sid = session_id();
 if (!isset($sid)) {
     exit ;

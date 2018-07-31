@@ -53,6 +53,7 @@ class CentreonConfigurationGraphcurve extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
@@ -60,31 +61,34 @@ class CentreonConfigurationGraphcurve extends CentreonConfigurationObjects
             $q = $this->arguments['q'];
         }
 
+        $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT compo_id, name ' .
+            'FROM giv_components_template ' .
+            'WHERE name LIKE ? ';
+        $queryValues[] = (string)'%' . $q . '%';
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
+        $query .='ORDER BY name ' . $range;
 
-        $queryGraphCurve = "SELECT SQL_CALC_FOUND_ROWS DISTINCT compo_id, name "
-            . "FROM giv_components_template "
-            . "WHERE name LIKE '%$q%' "
-            . "ORDER BY name "
-            . $range;
-
-        $DBRESULT = $this->pearDB->query($queryGraphCurve);
-
+        $stmt = $this->pearDB->prepare($query);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-
         $graphCurveList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $graphCurveList[] = array(
                 'id' => $data['compo_id'],
                 'text' => $data['name']
             );
         }
-
         return array(
             'items' => $graphCurveList,
             'total' => $total

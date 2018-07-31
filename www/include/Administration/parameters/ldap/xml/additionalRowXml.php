@@ -58,6 +58,8 @@ require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
  * Validate the session
  */
 session_start();
+session_write_close();
+
 $centreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();

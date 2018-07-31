@@ -40,14 +40,12 @@ package centreon::reporting::CentreonDownTime;
 # parameters:
 # $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
-# $dbLayer : Database Layer : ndo | broker
 # $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
 sub new {
     my $class = shift;
     my $self  = {};
     $self->{"logger"}    = shift;
     $self->{"centstatus"} = shift;
-    $self->{'dbLayer'} = shift;
     if (@_) {
         $self->{"centstorage"}  = shift;
     }    
@@ -63,7 +61,6 @@ sub getDownTime {
     my $start = shift;
     my $end = shift;
     my $type = shift; # if 1 => host, if 2 => service
-    my $dbLayer = $self->{'dbLayer'};
     my $query;
     
     $query = "SELECT DISTINCT h.name as name1, s.description as name2, " .

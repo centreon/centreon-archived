@@ -16,7 +16,9 @@
       number: parseInterval[1],
       unit: parseInterval[2]
     };
-    
+    this.ids = {};
+    this.toggleAction = 'hide';
+
     if ($elem.attr('id') === undefined) {
       $elem.attr('id', function () {
         function s4() {
@@ -27,7 +29,7 @@
         return 'c' + s4() + s4() + s4() + s4();
       });
     }
-    
+
     this.timeFormat = this.getTimeFormat();
 
     /* Color for status graph */
@@ -42,16 +44,20 @@
       'critical',
       'unknown'
     ]);
-    
+
     this.loadGraphId();
-    
+
+    /* Prepare extra legends */
+    this.legendDiv = jQuery('<div>').addClass('chart-legends').attr('id', 'chart-legends-' + this.id);
+    this.$elem.after(this.legendDiv);
+
     /* Get start time and end time */
     times = this.getTimes();
-    
+
     this.loadData(times.start, times.end, function (data) {
       self.initGraph(data);
     });
-    
+
     this.setRefresh(this.settings.refresh);
 
   }
@@ -70,6 +76,7 @@
     loadGraphId: function () {
       var start = this.$elem.data('graphPeriodStart');
       var end = this.$elem.data('graphPeriodEnd');
+      var interval = this.$elem.data('graphInterval');
       this.type = this.$elem.data('graphType');
       this.id = this.$elem.data('graphId');
       if (this.type === null || this.type === undefined) {
@@ -84,7 +91,10 @@
       if (end !== null && end !== undefined ) {
         this.settings.period.startTime = end;
       }
-      
+      if (interval !== null && interval !== undefined) {
+        this.setInterval(interval, false);
+      }
+
       if (this.type === null || this.id === null) {
         throw new Error('The graph configuration is missing.');
       }
@@ -111,7 +121,7 @@
      */
     initGraphStatus: function (data) {
       var self = this;
-      
+
       this.chart = centreonStatusChart.generate({
         tickFormat: {
           format: this.timeFormat
@@ -135,6 +145,7 @@
       var self = this;
       var axis = {
         x: {
+          padding: {left: 0, right: 0},
           type: 'timeseries',
           tick: {
             fit: false,
@@ -142,20 +153,29 @@
           }
         },
         y: {
+          padding: {bottom: 0, top: 0},
           tick: {
-            format: this.roundTick
+            format: this.getAxisTickFormat(this.getBase())
           }
         }
       };
+      /* Add Y axis range */
+      if (data.limits.min) {
+        axis.y.min = numeral(data.limits.min).value();
+      }
+      if (data.limits.max) {
+        axis.y.max = numeral(data.limits.max).value();
+      }
+
       var parsedData = this.buildMetricData(data);
-      
-      axis = jQuery.extend({}, axis, parsedData.axis);
+
+      axis = jQuery.extend(true, {}, axis, parsedData.axis);
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
-          format: this.roundTick
+          format: this.getAxisTickFormat(this.getBase())
         };
       }
-      
+
       if (data.data.length > 15) {
           datasToAppend = {
             x: parsedData.data.x,
@@ -164,17 +184,19 @@
             types: {},
             colors: {},
             regions: {},
+            order: null,
             empty: { label: { text: "Too much metrics, the chart can't be displayed" } }
           }
       } else {
           datasToAppend = parsedData.data;
       }
-      
+
       this.chart = c3.generate({
         bindto: '#' + this.$elem.attr('id'),
         size: {
           height: this.settings.height
         },
+        //padding: this.settings.padding,
         data: datasToAppend,
         axis: axis,
         tooltip: {
@@ -184,20 +206,30 @@
             },
             value: function (value, ratio, id) {
               /* Test if the curve is inversed */
-              if (self.isInversed(id)) {
-                return self.inverseRoundTick(value);
-              }
-              return self.roundTick(value);
+              var fct = self.getAxisTickFormat(
+                self.getBase(),
+                self.isInversed(id)
+              );
+              return fct(value);
             }
           }
         },
         zoom_select: self.settings.zoom,
         point: {
-          show: false
+          show: true,
+          r: 0,
+          focus: {
+            expand: {
+              r: 4
+            }
+          }
         },
-        regions: self.buildRegions(data)
+        regions: self.buildRegions(data),
+        legend: {
+          show: false
+        }
       });
-      
+
       if (data.data.length > 15) {
           jQuery("#display-graph-" + self.id).css('display', 'block');
           jQuery("#display-graph-" + self.id).on('click', function (e){
@@ -206,6 +238,8 @@
               jQuery(this).css('display', 'none');
           });
       }
+
+      this.buildLegend(data.legends);
     },
     /**
      * Load data from rest api in ajax
@@ -219,6 +253,7 @@
       var action = {
         status: 'statusByService',
         service: 'metricsDataByService',
+        metric: 'metricsDataByMetric',
         poller : 'metricsDataByPoller'
       };
       var url = self.settings.url;
@@ -240,6 +275,7 @@
           } else {
               self.chart.load(self.buildMetricData(data[0]).data);
               self.chart.regions(self.buildRegions(data[0]));
+              self.buildExtraLegend(data[0].legends, data[0].service_id);
           }
         }
       });
@@ -248,12 +284,19 @@
      * Build data for metrics graph
      *
      * @param {Object} dataRaw - The raw data
-     * @return {Object} - The converted data 
+     * @return {Object} - The converted data
      */
     buildMetricData: function (dataRaw) {
       var convertType = {
-        line: 'spline',
-        area: 'area-spline'
+        /* 
+         * line: 'spline',
+         * area: 'area-spline'
+         */
+        /*
+         * No more artifacts on curves
+         */
+        line: 'line',
+        area: 'area'
       };
       var i = 0;
       var data = {
@@ -262,15 +305,16 @@
         types: {},
         colors: {},
         regions: {},
+        order: null,
         empty: { label: { text: "There's no data" } }
       };
-      
+
       var units = {};
       var axis = {};
       var column;
       var name;
       var legend;
-      var axesName;
+      var axesName = 'y';
       var unit;
       var times = dataRaw.times;
       var thresholdData;
@@ -279,31 +323,36 @@
         return time * 1000;
       });
       times.unshift('times');
-      
-        data.columns.push(times);
-        for (i = 0; i < dataRaw.data.length; i++) {
-          name = 'data' + (i + 1);
-          column = dataRaw.data[i].data;
-          column.unshift(name); 
-          data.columns.push(column);
-          legend = dataRaw.data[i].label;
-          if (dataRaw.data[i].unit) {
-            legend += '(' + dataRaw.data[i].unit + ')';
-            if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-              units[dataRaw.data[i].unit] = name;
-            }
+
+      data.columns.push(times);
+      for (i = 0; i < dataRaw.data.length; i++) {
+        name = 'data' + (i + 1);
+        this.ids[dataRaw.data[i].label] = name;
+        column = dataRaw.data[i].data;
+        column.unshift(name);
+        data.columns.push(column);
+        legend = dataRaw.data[i].label;
+        if (dataRaw.data[i].unit) {
+          legend += '(' + dataRaw.data[i].unit + ')';
+          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+            units[dataRaw.data[i].unit] = [];
           }
-          data.names[name] = legend;
-          data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
-            convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
-          data.colors[name] = dataRaw.data[i].color;
+          units[dataRaw.data[i].unit].push(name);
+          axis[axesName] = {
+            label: dataRaw.data[i].unit
+          };
         }
+        data.names[name] = legend;
+        data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
+          convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
+        data.colors[name] = dataRaw.data[i].color;
+      }
 
       if (Object.keys(units).length === 2) {
-        axesName = 'y';
+        data.axes = {};
         for (unit in units) {
           if (units.hasOwnProperty(unit)) {
-            for (i = 0; i < units[unit][i]; i++) {
+            for (i = 0; i < units[unit].length; i++) {
               data.axes[units[unit][i]] = axesName;
             }
           }
@@ -348,7 +397,7 @@
 
       /* Add group */
       data.groups = this.buildGroups(dataRaw);
-      
+
       return {
         data: data,
         axis: axis
@@ -358,7 +407,7 @@
      * Build data for status graph
      *
      * @param {Object} dataRaw - The raw data
-     * @return {Object} - The converted data 
+     * @return {Object} - The converted data
      */
     buildStatusData: function (dataRaw) {
       var status;
@@ -370,7 +419,7 @@
         critical: '#e00b3d',
         unknown: '#bcbdc0'
       };
-      
+
       for (status in dataRaw.data.status) {
         if (dataRaw.data.status.hasOwnProperty(status)) {
           if (dataRaw.data.status[status].length > 0) {
@@ -387,7 +436,7 @@
           }
         }
       }
-      
+
       data = {
         status: dataStatus,
         comments: dataRaw.data.comments.map(function (values) {
@@ -395,7 +444,7 @@
           return values;
         })
       };
-      
+
       return data;
     },
     /**
@@ -434,14 +483,14 @@
       var group = [];
       var i;
       var name;
-      
+
       for (i = 0; i < data.data.length; i++) {
         name = 'data' + (i + 1);
         if (data.data[i].stack) {
           group.push(name);
         }
       }
-      
+
       return [group];
     },
     /**
@@ -475,7 +524,7 @@
         if (typeof(this.settings.period.startTime) === "number") {
           myStart = this.settings.period.startTime * 1000;
         }
-        
+
         if (typeof(this.settings.period.endTime) === "number") {
           myEnd = this.settings.period.endTime * 1000;
         }
@@ -483,7 +532,7 @@
         start = moment(myStart);
         end = moment(myEnd);
       }
-        
+
       return {
         start: start.unix(),
         end: end.unix()
@@ -524,10 +573,11 @@
      * Set an interval string for graph
      *
      * Format : see momentjs
-     * 
+     *
      * @param {String} interval - A interval string
      */
-    setInterval: function (interval) {
+    setInterval: function (interval, refresh) {
+      refresh = (refresh !== undefined) ? refresh : true
       var parseInterval = interval.match(/(\d+)([a-z]+)/i);
       this.settings.period = {
         startTime: null,
@@ -537,7 +587,9 @@
         number: parseInterval[1],
         unit: parseInterval[2]
       };
-      this.refreshData();
+      if (refresh) {
+        this.refreshData();
+      }
     },
     /**
      * Set a period with start and end time
@@ -561,12 +613,12 @@
     setRefresh: function (interval) {
       var self = this;
       this.refresh = interval;
-      
+
       if (this.refreshEvent !== null) {
         clearInterval(this.refreshEvent);
         this.refreshEvent = null;
       }
-      
+
       if (this.refresh > 0) {
         this.refreshEvent = setInterval(function () {
           self.refreshData();
@@ -574,23 +626,66 @@
       }
     },
     /**
+     * Get function for humanreadable tick
+     *
+     * @param {Integer} base - The value to transform
+     * @return {Function} - The function for round the axes tick
+     */
+    getAxisTickFormat: function (base, inversed) {
+      if (base === 1024 || base === '1024') {
+        if (inversed) {
+          return this.inverseRoundTickByte;
+        }
+        return this.roundTickByte;
+      }
+      if (inversed) {
+        return this.inverseRoundTick;
+      }
+      return this.roundTick;
+    },
+    /**
      * Round the value of a point and transform to humanreadable
      *
      * @param {Float} value - The value to transform
-     * @return {Float} - The value transformed
+     * @return {String} - The value transformed
      */
     roundTick: function (value) {
-      return d3.format('.3s')(value);
+      if (value < 0) {
+        return '-' + numeral(Math.abs(value)).format('0.0[0]0b').replace(/B/, '');
+      }
+      return numeral(value).format('0.0[0]0b').replace(/B/, '');
+    },
+    /**
+     * Round the value of a point and transform to humanreadable for bytes
+     *
+     * @param {Float} value - The value to transform
+     * @return {String} - The value transformed
+     */
+    roundTickByte: function (value) {
+      if (value < 0) {
+          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
+      }
+      return numeral(value).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
      * Round the value of a point and transform to humanreadable
      * and inverse the value if the curve is inversed
      *
      * @param {Float} value - The value to transform
-     * @return {Float} - The value transformed
+     * @return {String} - The value transformed
      */
     inverseRoundTick: function (value) {
-      return this.roundTick(value * -1);
+      return '-' + numeral(Math.abs(value)).format('0.0[0]0b').replace(/B/, '');
+    },
+    /**
+     * Round the value of a point and transform to humanreadable for bytes
+     * and inverse the value if the curve is inversed
+     *
+     * @param {Float} value - The value to transform
+     * @return {String} - The value transformed
+     */
+    inverseRoundTickByte: function (value) {
+      return '-' +  numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
     },
     /**
      * Return is the curve is inversed / negative
@@ -604,9 +699,150 @@
         return false;
       }
       return this.chartData.data[pos].negative;
+    },
+    /**
+     * Get base for 1000 or 1024 for a curve
+     *
+     * @param {String} id - The curve id
+     * @return {Integer} - 1000 or 1024
+     */
+    getBase: function () {
+      if (this.chartData.base) {
+        return this.chartData.base;
+      }
+      return 1000;
+    },
+    /**
+     * Build for display the legends
+     *
+     * @param {String[]} legends - The list of legends to display
+     */
+    buildLegend: function (legends) {
+      var self = this;
+      var legendDiv;
+      var legendInfo;
+      var legendLabel;
+      var legendExtra;
+      var curveId;
+      var i;
+      for (legend in legends) {
+        if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
+          curveId = self.ids[legend];
+          var fct = self.getAxisTickFormat(
+              self.getBase(),
+              self.isInversed(curveId)
+          );
+          legendDiv = jQuery('<div>').addClass('chart-legend')
+            .data('curveid', curveId)
+            .data('legend', legend);
+
+          /* Build legend for a curve */
+          legendLabel = jQuery('<div>')
+            .append(
+              /* Color */
+              jQuery('<div>')
+                .addClass('chart-legend-color')
+                .css({
+                  'background-color': self.chart.color(curveId)
+                })
+            )
+            .append(
+              jQuery('<span>').text(legend)
+            );
+          legendLabel.appendTo(legendDiv);
+
+          /* Build legend extra */
+          for (i = 0; i < legends[legend].extras.length; i++) {
+            legendExtra = jQuery('<div>').addClass('extra')
+              .append(
+                jQuery('<span>')
+                  .text(legends[legend].extras[i].name + ' :')
+              )
+              .append(
+                jQuery('<span>')
+                  .text(fct(legends[legend].extras[i].value))
+              )
+            legendExtra.appendTo(legendDiv);
+          }
+
+          legendDiv
+            .on('mouseover', 'div', function (e) {
+              var curveId = jQuery(e.currentTarget).parent().data('curveid');
+              self.chart.focus(curveId);
+            })
+            .on('mouseout', 'div', function () { self.chart.revert(); })
+            .on('click', function (e) {
+              var curveId = jQuery(e.currentTarget).data('curveid');
+              jQuery(e.currentTarget).toggleClass('hidden');
+              self.chart.toggle(curveId);
+            });
+
+          legendDiv.appendTo(this.legendDiv);
+        }
+      }
+      /* Append actions button */
+      actionDiv = jQuery('<div>').addClass('chart-legend-action');
+      if (this.settings.buttonToggleCurves) {
+        toggleCurves = jQuery('<img>').attr('src', './img/icons/rub.png')
+          .on('click', function () {
+            if (self.toggleAction === 'hide') {
+              self.toggleAction = 'show';
+              self.legendDiv.find('.chart-legend').addClass('hidden');
+              self.chart.hide();
+            } else {
+              self.toggleAction = 'hide';
+              self.legendDiv.find('.chart-legend').removeClass('hidden');
+              self.chart.show();
+            }
+          }).appendTo(actionDiv);
+      }
+        if (self.settings.extraLegend) {
+            expandLegend = jQuery('<img>').attr('src', './img/icons/info2.png')
+                .on('click', function () {
+                    self.legendDiv.toggleClass('extend');
+                }).appendTo(actionDiv);
+        }
+      actionDiv.appendTo(self.legendDiv);
+    },
+    /**
+     * Build for display the extra legends
+     *
+     * @param {String[]} legends - The list of legends to display
+     * @param {String} service_id - The host id and service id
+     */
+    buildExtraLegend: function (legends, service_id) {
+      var self = this;
+      var i;
+
+      jQuery('#chart-legends-' + service_id + ' .chart-legend').each(function (idx, el) {
+        var legendName = jQuery(el).data('legend');
+        if (!self.ids.hasOwnProperty(legendName)) {
+          return true;
+        }
+        var curveId = self.ids[legendName];
+        var fct = self.getAxisTickFormat(
+          self.getBase(),
+          self.isInversed(curveId)
+        );
+        jQuery(el).find('.extra').remove();
+        if (legends.hasOwnProperty(legendName)) {
+          for (i = 0; i < legends[legendName].extras.length; i++) {
+            legendExtra = jQuery('<div>').addClass('extra')
+              .append(
+                jQuery('<span>')
+                  .text(legends[legendName].extras[i].name + ' :')
+              )
+              .append(
+                jQuery('<span>')
+                  .text(fct(legends[legendName].extras[i].value))
+              )
+            legendExtra.appendTo(el);
+          }
+        }
+      });
     }
   };
-  
+
   $.fn.centreonGraph = function (options) {
     var args = Array.prototype.slice.call(arguments, 1);
     var settings = jQuery.extend({}, $.fn.centreonGraph.defaults, options);
@@ -628,13 +864,13 @@
     });
     return (methodReturn === undefined) ? $set : methodReturn;
   };
-  
+
   $.fn.centreonGraph.defaults = {
     refresh: 0,
     height: 230,
     zoom: {
       enabled: false,
-      onzoom: null 
+      onzoom: null
     },
     graph: {
       id: null,
@@ -647,6 +883,8 @@
     },
     timeFormat: null,
     threshold: true,
+    extraLegend: true,
+    buttonToggleCurves: true,
     url: './api/internal.php?object=centreon_metric'
   };
 })(jQuery);

@@ -162,6 +162,7 @@ class CentreonTraps
             $res = $this->db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
             $row = $res->fetchRow();
             $row["traps_id"] = '';
+            
             for ($i = 1; $i <= $nbrDup[$key]; $i++) {
                 $val = null;
                 foreach ($row as $key2 => $value2) {
@@ -177,6 +178,7 @@ class CentreonTraps
                     }
                 }
                 $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
+
                 $res = $this->db->query($rq);
                 $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                 $maxId = $res2->fetchRow();
@@ -188,6 +190,18 @@ class CentreonTraps
                                 (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
                                     FROM traps_preexec 
                                     WHERE trap_id = ".$this->db->escape($key).")");
+
+                $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$key;
+                $dbResult = $this->db->query($query);
+                while ($row = $dbResult->fetchRow()) {
+                    $query = "INSERT INTO traps_matching_properties " .
+                        "(`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`) " .
+                        "VALUES (" . $maxId['MAX(traps_id)'] . "," . $row['tmo_order'] .
+                        ",'" . $row['tmo_regexp'] . "','" . $row['tmo_string'] . "'," . $row['tmo_status'] . "," .
+                        $row['severity_id'] . ")";
+                    $this->db->query($query);
+                }
+
                 $this->centreon->CentreonLogAction->insertLog(
                     "traps",
                     $maxId["MAX(traps_id)"],
@@ -459,17 +473,14 @@ class CentreonTraps
         $rq .= "'".$this->db->escape($ret["traps_timeout"])."', ";
         $rq .= "'".$this->db->escape($ret["traps_customcode"])."') ";
         $this->db->query($rq);
-        
+
+        $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
+        $traps_id = $res->fetchRow();
+
         $this->setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
         $this->setServiceRelations($traps_id['MAX(traps_id)']);
         $this->setServiceTemplateRelations($traps_id['MAX(traps_id)']);
         $this->setPreexec($traps_id['MAX(traps_id)']);
-        if ($this->centreon->user->admin) {
-            $this->setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
-        }
-
-        $res = $this->db->query("SELECT MAX(traps_id) FROM traps");
-        $traps_id = $res->fetchRow();
 
         /* Prepare value for changelog */
         $fields = CentreonLogAction::prepareChanges($ret);
@@ -589,10 +600,17 @@ class CentreonTraps
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected traps
@@ -600,8 +618,14 @@ class CentreonTraps
             . "FROM traps "
             . "WHERE traps_id IN (" . $explodedValues . ") "
             . "ORDER BY traps_name ";
-        
-        $resRetrieval = $this->db->query($query);
+
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad traps query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['traps_id'],

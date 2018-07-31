@@ -95,7 +95,7 @@ function getGetPostValue($str)
     if (isset($_POST[$str]) && $_POST[$str]) {
         $value = $_POST[$str];
     }
-    return urldecode($value);
+    return rawurldecode($value);
 }
 
 // Init
@@ -130,13 +130,13 @@ if (isset($svc_id) && $svc_id) {
             $hostId = $matches[1];
             $serviceId = $matches[2];
             $graphId = $hostId . '-' . $serviceId;
-            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId, $hostId);
         } else if (preg_match('/^(.+);(.+)/', $svc, $matches)) {
             list($hostname, $serviceDescription) = explode(";", $svc);
             $hostId = getMyHostID($hostname);
             $serviceId = getMyServiceID($serviceDescription, $hostId);
             $graphId = $hostId . '-' . $serviceId;
-            $graphTitle = $serviceObj->getMonitoringFullName($serviceId);
+            $graphTitle = $serviceObj->getMonitoringFullName($serviceId, $hostId);
         } else {
             $hostId = getMyHostID($svc);
             $serviceList = $centreonPerformanceServiceGraphObj->getList(array('host' => array($hostId)));
@@ -263,6 +263,8 @@ $tpl->assign('to', _("to"));
 $tpl->assign('displayStatus', _("Display Status"));
 $tpl->assign('Apply', _("Apply"));
 $tpl->assign('defaultCharts', json_encode($defaultGraphs));
+$tpl->assign("admin", $centreon->user->admin);
+$tpl->assign("topologyAccess", $centreon->user->access->topology);
 $tpl->display("graphs.html");
 
 $multi = 1;

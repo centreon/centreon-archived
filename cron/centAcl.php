@@ -225,8 +225,7 @@ try {
      */
 
     $tabGroups = array();
-    $groupStr = "";
-    $query = "SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
+    $query = "SELECT DISTINCT acl_groups.acl_group_id " .
         "FROM acl_res_group_relations, `acl_groups`, `acl_resources` " .
         "WHERE acl_groups.acl_group_id = acl_res_group_relations.acl_group_id " .
         "AND acl_res_group_relations.acl_res_id = acl_resources.acl_res_id " .
@@ -236,11 +235,7 @@ try {
 
     $DBRESULT1 = $pearDB->query($query);
     while ($result = $DBRESULT1->fetchRow()) {
-        $tabGroups[$result["acl_group_id"]] = 1;
-        if ($groupStr != '') {
-            $groupStr .= ",";
-        }
-        $groupStr = $result["acl_group_id"];
+        $tabGroups[$result['acl_group_id']] = 1;
     }
     $DBRESULT1->free();
     unset($result);
@@ -263,11 +258,9 @@ try {
         $res->free();
         
         $hostCache = array();
-        $hostNameCache = array();
         $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
             $hostCache[$h["host_id"]] = $h["host_name"];
-            $hostNameCache[$h["host_name"]] = $h["host_id"];
         }
         $DBRESULT->free();
         unset($h);
@@ -479,18 +472,18 @@ try {
                         }
                     }
                 }
-                
+
                 if (isset($hostExclCache[$res2["acl_res_id"]])) {
                     foreach ($hostExclCache[$res2["acl_res_id"]] as $host_id => $host_name) {
                         unset($Host[$host_id]);
                     }
                 }
-                
+
                 /*
                  * Give Authorized Categories
                  */
                 $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
-                
+
                 /*
                  * get all Service groups
                  */
@@ -511,10 +504,12 @@ try {
                 		        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
                 		        AND service_activate = '1'";
                 $DBRESULT3 = $pearDB->query($sgReq);
+
                 $sgElem = array();
                 $tmpH = array();
                 if ($DBRESULT3->numRows()) {
                     while ($h = $DBRESULT3->fetchRow()) {
+
                         if (!isset($sgElem[$h["host_name"]])) {
                             $sgElem[$h["host_name"]] = array();
                             $tmpH[$h['host_id']] = $h['host_name'];
@@ -523,19 +518,32 @@ try {
                     }
                 }
                 $DBRESULT3->free();
-                
-                foreach ($tmpH as $key => $value) {
-                    $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
-                    foreach ($tab as $desc => $id) {
-                        if (isset($sgElem[$value]) && isset($sgElem[$value][$desc])) {
-                            if (!isset($tabElem[$value])) {
-                                $tabElem[$value] = array();
+
+                $tmpH = getFilteredHostCategories($tmpH, $acl_group_id, $res2["acl_res_id"]);
+                $tmpH = getFilteredPollers($tmpH, $acl_group_id, $res2["acl_res_id"]);
+
+                foreach ($sgElem as $key => $value) {
+                    if (in_array($key, $tmpH)) {
+                        if (count($authorizedCategories) == 0) { // no category filter
+                            $tabElem[$key] = $value;
+                        } else {
+                            // subkey = <service_description>, subvalue = <host_id>,<service_id>
+                            foreach ($value as $subkey => $subvalue) {
+                                if (preg_match('/\d+,(\d+)/', $subvalue, $matches)) { // get service id
+                                    $linkedServiceCategories = getServiceTemplateCategoryList($matches[1]);
+                                    foreach ($linkedServiceCategories as $linkedServiceCategory) {
+                                        // Check if category linked to service is allowed
+                                        if (in_array($linkedServiceCategory, $authorizedCategories)) {
+                                            $tabElem[$key][$subkey] = $subvalue;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
-                            $tabElem[$value][$desc] = $key . "," . $id;
                         }
                     }
-                    unset($tab);
                 }
+
                 unset($tmpH);
                 unset($sgElem);
 
@@ -557,7 +565,7 @@ try {
                     unset($tab);
                 }
                 unset($Host);
-                    
+
                 /*
                  * Set meta services
                  */
@@ -585,7 +593,8 @@ try {
                             $str .= "('" . $id_tmp[0] . "' , '" . $id_tmp[1] . "' , " . $acl_group_id . ") ";
                             $i++;
                             if ($i >= 1000) {
-                                $pearDBO->query($strBegin . $str);
+                                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $acl_group_id";
+                                $pearDBO->query($strBegin . $str . $strEnd);
                                 $str = "";
                                 $i = 0;
                             }
@@ -596,7 +605,8 @@ try {
                      * Insert datas
                      */
                     if ($str != "") {
-                        $pearDBO->query($strBegin . $str);
+                        $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $acl_group_id";
+                        $pearDBO->query($strBegin . $str . $strEnd);
                         $str = "";
                     }
                 }
@@ -617,6 +627,14 @@ try {
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
         }
+        
+        /**
+         * Include module specific ACL evaluation
+         */
+        $extensionsPaths = getModulesExtensionsPaths($pearDB);
+        foreach ($extensionsPaths as $extensionPath) {
+            require_once $extensionPath . 'centAcl.php';
+        }
     }
     
     /*
@@ -629,6 +647,7 @@ try {
      */
     $pearDB->disconnect();
     $pearDBO->disconnect();
+
 } catch (Exception $e) {
     programExit($e->getMessage());
 }

@@ -627,7 +627,7 @@ class CentreonDependency extends CentreonObject
         }
 
         $strParents = implode('|', $parents) . $this->delim;
-        $strChildren .= implode('|', $hostChildren) . "|";
+        $strChildren = implode('|', $hostChildren) . "|";
         $strChildren .= implode('|', $serviceChildren);
         echo str_replace("||", "|", $strParents . trim($strChildren, "|")) . "\n";
     }
@@ -1049,7 +1049,7 @@ class CentreonDependency extends CentreonObject
      * Export
      *
      */
-    public function export()
+    public function export($filterName = null)
     {
         $this->exportHostDep();
         $this->exportServiceDep();

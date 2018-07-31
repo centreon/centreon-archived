@@ -36,124 +36,141 @@
  *
  */
 
-	$centreon_path = realpath(dirname(__FILE__) . '/../../../../');
-	require_once $centreon_path."/config/centreon.config.php";
+    $centreon_path = realpath(dirname(__FILE__) . '/../../../../');
+    require_once $centreon_path."/config/centreon.config.php";
 
-	set_include_path(get_include_path() . PATH_SEPARATOR . $centreon_path . "www/include/configuration/configKnowledge/".PATH_SEPARATOR . $centreon_path."www/class/".PATH_SEPARATOR . $centreon_path."www/");
+    set_include_path(
+        get_include_path() .
+        PATH_SEPARATOR . $centreon_path . "www/include/configuration/configKnowledge/" .
+        PATH_SEPARATOR . $centreon_path."www/class/" .
+        PATH_SEPARATOR . $centreon_path."www/"
+    );
 
-	require_once "DB.php";
-	require_once "include/common/common-Func.php";
+    require_once "DB.php";
+    require_once "include/common/common-Func.php";
 
-	require_once "class/centreonLog.class.php";
-	require_once "class/centreonDB.class.php";
+    require_once "class/centreonLog.class.php";
+    require_once "class/centreonDB.class.php";
 
-	$pearDB = new CentreonDB();
+    $pearDB = new CentreonDB();
 
-	$conf = getWikiConfig($pearDB);
+    $conf = getWikiConfig($pearDB);
 
-	if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
-		$path = "core/display/";
-		
-		require_once "centreon-knowledge/procedures_DB_Connector.class.php";
-		require_once "centreon-knowledge/procedures.class.php";
+    if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
+        $path = "core/display/";
 
-		/*
-		 * Init procedures Object
-		 */
-		$proc = new procedures(3, $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $pearDB, $conf['kb_db_prefix']);
-		$proc->setHostInformations();
-		$proc->setServiceInformations();
-		$wikiContent = $proc->getProcedures();
+        require_once "centreon-knowledge/procedures_DB_Connector.class.php";
+        require_once "centreon-knowledge/procedures.class.php";
 
-		if ($_GET["type"] == 0) {
-			$diff = $proc->getDiff($proc->hostTplList, 2);
-			$hostTplListForAdd = array(NULL => NULL);
-			foreach ($diff as $key => $value)
-				if ($value)
-					$hostTplListForAdd[trim($key)] = $value;
+        /*
+             * Init procedures Object
+         */
+        $proc = new procedures(
+            3,
+            $conf['kb_db_user'],
+            $conf['kb_db_host'],
+            $conf['kb_db_password'],
+            $pearDB,
+            $conf['kb_db_prefix']
+        );
+        $proc->setHostInformations();
+        $proc->setServiceInformations();
+        $wikiContent = $proc->getProcedures();
 
-			/*
-			 * HTML
-			 */
-			print "<form method='GET' action='./popup.php'>";
-			print "Based Template : ";
-			print "<select name='template'>";
-			foreach ($hostTplListForAdd as $key => $value) {
-				print "<option value='$key'>$key</option>";
-			}
-			print "</select>";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
-			print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
-			print "</form>";
-		} else if ($_GET["type"] == 2) {
-			$diff = $proc->getDiff($proc->hostTplList, 2);
-			$hostTplListForAdd = array(NULL => NULL);
-			foreach ($diff as $key => $value) {
-				if ($value)
-					$hostTplListForAdd["H-TPL-".trim($key)] = $value;
-			}
-			/*
-			 * HTML
-			 */
-			print "<form method='GET' action='./popup.php'>";
-			print "Based Template : ";
-			print "<select name='template'>";
-			foreach ($hostTplListForAdd as $key => $value) {
-				print "<option value='$key'>$key</option>";
-			}
-			print "</select>";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
-			print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
-			print "</form>";
-		} else if ($_GET["type"] == 1) {
-			$diff = $proc->getDiff($proc->serviceTplList, 3);
-			$svcListForAdd = array(NULL => NULL);
-			foreach ($diff as $key => $value)
-				if ($value)
-					$svcListForAdd[$key] = $value;
+        if ($_GET["type"] == 0) {
+            $diff = $proc->getDiff($proc->hostTplList, 2);
+            $hostTplListForAdd = array(null => null);
+            foreach ($diff as $key => $value) {
+                if ($value) {
+                    $hostTplListForAdd[trim($key)] = $value;
+                }
+            }
 
-			/*
-			 * HTML
-			 */
-			print "<form method='GET' action='./popup.php'>";
-			print "Based Template : ";
-			print "<select name='template'>";
-			foreach ($svcListForAdd as $key => $value) {
-				print "<option value='$key'>$key</option>";
-			}
-			print "</select>";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
-			print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
-			print "</form>";
+            /*
+                 * HTML
+             */
+            print "<form method='GET' action='./popup.php'>";
+            print "Based Template : ";
+            print "<select name='template'>";
+            foreach ($hostTplListForAdd as $key => $value) {
+                print "<option value='$key'>$key</option>";
+            }
+            print "</select>";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
+            print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
+            print "</form>";
+        } elseif ($_GET["type"] == 2) {
+            $diff = $proc->getDiff($proc->hostTplList, 2);
+            $hostTplListForAdd = array(null => null);
+            foreach ($diff as $key => $value) {
+                if ($value) {
+                    $hostTplListForAdd["H-TPL-".trim($key)] = $value;
+                }
+            }
+            /*
+                 * HTML
+             */
+            print "<form method='GET' action='./popup.php'>";
+            print "Based Template : ";
+            print "<select name='template'>";
+            foreach ($hostTplListForAdd as $key => $value) {
+                print "<option value='$key'>$key</option>";
+            }
+            print "</select>";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
+            print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
+            print "</form>";
+        } elseif ($_GET["type"] == 1) {
+            $diff = $proc->getDiff($proc->serviceTplList, 3);
+            $svcListForAdd = array(null => null);
+            foreach ($diff as $key => $value) {
+                if ($value) {
+                    $svcListForAdd[$key] = $value;
+                }
+            }
 
-		} else if ($_GET["type"] == 3) {
-			$diff = $proc->getDiff($proc->serviceTplList, 3);
-			$svcTplListForAdd = array(NULL => NULL);
-			foreach ($diff as $key => $value)
-				if ($value)
-					$svcTplListForAdd[$key] = $value;
+            /*
+                 * HTML
+             */
+            print "<form method='GET' action='./popup.php'>";
+            print "Based Template : ";
+            print "<select name='template'>";
+            foreach ($svcListForAdd as $key => $value) {
+                print "<option value='$key'>$key</option>";
+            }
+            print "</select>";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
+            print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
+            print "</form>";
 
-			/*
-			 * HTML
-			 */
-			print "<form method='GET' action='./popup.php'>";
-			print "Based Template : ";
-			print "<select name='template'>";
-			foreach ($svcTplListForAdd as $key => $value) {
-				print "<option value='$key'>$key</option>";
-			}
-			print "</select>";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
-			print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
-			print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
-			print "</form>";
-		}
-	} else {
-		print "No session open or session id not known";
-		exit();
-	}
+        } elseif ($_GET["type"] == 3) {
+            $diff = $proc->getDiff($proc->serviceTplList, 3);
+            $svcTplListForAdd = array(null => null);
+            foreach ($diff as $key => $value) {
+                if ($value) {
+                    $svcTplListForAdd[$key] = $value;
+                }
+            }
 
-?>
+            /*
+                 * HTML
+             */
+            print "<form method='GET' action='./popup.php'>";
+            print "Based Template : ";
+            print "<select name='template'>";
+            foreach ($svcTplListForAdd as $key => $value) {
+                print "<option value='$key'>$key</option>";
+            }
+            print "</select>";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["type"], ENT_QUOTES)."' />";
+            print "<input type='hidden' name='object' value='".htmlentities($_GET["object"], ENT_QUOTES)."' />";
+            print "<input type='submit' name='create' value='"._("Create wiki page")."' />";
+            print "</form>";
+        }
+    } else {
+        print "No session open or session id not known";
+        exit();
+    }

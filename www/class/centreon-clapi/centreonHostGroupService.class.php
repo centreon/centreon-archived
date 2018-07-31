@@ -59,6 +59,7 @@ require_once "Centreon/Object/Relation/Contact/Service.php";
 require_once "Centreon/Object/Relation/Contact/Group/Service.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
+require_once "Centreon/Object/Relation/Service/Category/Service.php";
 
 /**
  * Centreon Service objects
@@ -362,6 +363,10 @@ class CentreonHostGroupService extends CentreonObject
         $extended = false;
         $commandObject = new CentreonCommand();
         switch ($params[2]) {
+            case "contact_additive_inheritance":
+                break;
+            case "cg_additive_inheritance":
+                break;
             case "check_command":
                 $params[2] = "command_command_id";
                 $params[3] = $commandObject->getId($params[3]);
@@ -599,7 +604,7 @@ class CentreonHostGroupService extends CentreonObject
         }
         $hgName = $params[0];
         $serviceDescription = $params[1];
-        $relObject = new \Centreon_Object_Relation_Host_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $relObject->getMergedParameters(
             array('hg_id'),
             array('service_id'),
@@ -632,6 +637,104 @@ class CentreonHostGroupService extends CentreonObject
         if (count($macroList)) {
             $macroObj->delete($macroList[0][$macroObj->getPrimaryKey()]);
         }
+    }
+
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
+    public function setseverity($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 3) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $hgName = $params[0];
+        $serviceDescription = $params[1];
+        $rel = new \Centreon_Object_Relation_Service_Category_Service();
+        $relObject = new \Centreon_Object_Relation_Host_Group_Service();
+        $elements = $relObject->getMergedParameters(
+            array('hg_id'),
+            array('service_id'),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "hg_name" => $hgName,
+                "service_description" => $serviceDescription
+            ),
+            "AND"
+        );
+        if (!count($elements)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0] . "/" . $params[1]);
+        }
+        $serviceId = $elements[0]['service_id'];
+        $severityObj = new \Centreon_Object_Service_Category();
+        $severity = $severityObj->getIdByParameter(
+            $severityObj->getUniqueLabelField(),
+            $params[2]
+        );
+        if (!isset($severity[0])) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
+        }
+        $severityId = $severity[0];
+        $severity = $severityObj->getParameters(
+            $severityId,
+            array('level')
+        );
+        if ($severity['level']) {
+            // can't delete with generic method
+            $this->db->query(
+                "DELETE FROM service_categories_relation
+                WHERE service_service_id = ?
+                AND sc_id IN (SELECT sc_id FROM service_categories WHERE level > 0)",
+                $serviceId
+            );
+            $rel->insert($severityId, $serviceId);
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
+        }
+    }
+
+    /**
+     * @param $parameters
+     * @throws CentreonClapiException
+     */
+    public function unsetseverity($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $hgName = $params[0];
+        $serviceDescription = $params[1];
+        $hostServiceRel = new \Centreon_Object_Relation_Host_Group_Service();
+        $elements = $hostServiceRel->getMergedParameters(
+            array('hg_id'),
+            array('service_id'),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "hg_name" => $hgName,
+                "service_description" => $serviceDescription
+            ),
+            "AND"
+        );
+        if (!count($elements)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0] . "/" . $params[1]);
+        }
+        $serviceId = $elements[0]['service_id'];
+
+        // can't delete with generic method
+        $this->db->query(
+            "DELETE FROM service_categories_relation
+             WHERE service_service_id = ?
+             AND sc_id IN (SELECT sc_id FROM service_categories WHERE level > 0)",
+            $serviceId
+        );
     }
 
     /**
@@ -811,11 +914,16 @@ class CentreonHostGroupService extends CentreonObject
      *
      * @return void
      */
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filterName = null)
     {
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
         $filters = array("service_register" => $this->register);
-        if (!is_null($filter_id)) {
-            $filters['hg_id'] = $filter_id;
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
         }
         $hostRel = new \Centreon_Object_Relation_Host_Group_Service();
         $elements = $hostRel->getMergedParameters(
@@ -841,7 +949,7 @@ class CentreonHostGroupService extends CentreonObject
                     $tmp = $this->object->getParameters($element[$param], 'service_description');
                     if (isset($tmp) && isset($tmp['service_description']) && $tmp['service_description']) {
                         $element[$param] = $tmp['service_description'];
-                        $this->api->export_filter('STPL', $tmp_id, $tmp['service_description']);
+                        CentreonServiceTemplate::getInstance()->export($tmp['service_description']);
                     }
                     if (!$element[$param]) {
                         $element[$param] = "";
@@ -866,7 +974,7 @@ class CentreonHostGroupService extends CentreonObject
                         if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
                             $tmp_id = $value;
                             $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $this->api->export_filter($action_tmp, $tmp_id, $value);
+                            $tmpObj::getInstance()->export($value);
                         }
                         unset($tmpObj);
                     }
@@ -932,7 +1040,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                $this->api->export_filter('CG', $element['cg_id'], $element['cg_name']);
+                CentreonContactGroup::getInstance()->export($element['cg_name']);
                 echo $this->action . $this->delim
                     . "addcontactgroup" . $this->delim
                     . $element['hg_name'] . $this->delim
@@ -954,7 +1062,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                $this->api->export_filter('CONTACT', $element['contact_id'], $element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_name']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim

@@ -1,15 +1,15 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\MetaServiceConfigurationPage;
-use Centreon\Test\Behat\MonitoringServicesPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 
 class AcknowledgementContext extends CentreonContext
 {
     /**
-     *  @Given a non-OK service
+     * @Given a non-OK service
      */
     public function aNonOKService()
     {
@@ -37,7 +37,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @Given a non-OK meta-service
+     * @Given a non-OK meta-service
      */
     public function aNonOKMetaService()
     {
@@ -53,20 +53,23 @@ class AcknowledgementContext extends CentreonContext
         ));
         $page->save();
         $this->restartAllPollers();
-        $this->spin(function ($context) {
-            $page = new ServiceMonitoringDetailsPage(
-                $context,
-                '_Module_Meta',
-                'meta_1'
-            );
-            $props = $page->getProperties();
-            return $props['last_check'];
-        },
-        120);
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    '_Module_Meta',
+                    'meta_1'
+                );
+                $props = $page->getProperties();
+                return $props['last_check'];
+            },
+            'Could not open meta-service monitoring details page.',
+            120
+        );
     }
 
     /**
-     *  @When I acknowledge the service
+     * @When I acknowledge the service
      */
     public function iAcknowledgeTheService()
     {
@@ -83,7 +86,7 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @When I acknowledge the meta-service
+     * @When I acknowledge the meta-service
      */
     public function iAcknowledgeTheMetaService()
     {
@@ -100,30 +103,34 @@ class AcknowledgementContext extends CentreonContext
     }
 
     /**
-     *  @Then the service is marked as acknowledged
+     * @Then the service is marked as acknowledged
      */
     public function theServiceIsMarkedAsAcknowledged()
     {
-        $this->spin(function ($context) {
-            $page = new MonitoringServicesPage($context);
-            return $page->isServiceAcknowledged(
-                'Centreon-Server',
-                'AcceptanceTestService'
-            );
-        });
+        $this->spin(
+            function ($context) {
+                $page = new MonitoringServicesPage($context);
+                return $page->isServiceAcknowledged(
+                    'Centreon-Server',
+                    'AcceptanceTestService'
+                );
+            }
+        );
     }
 
     /**
-     *  @Then the meta-service is marked as acknowledged
+     * @Then the meta-service is marked as acknowledged
      */
     public function theMetaServiceIsMarkedAsAcknowledged()
     {
-        $this->spin(function ($context) {
-            $page = new MonitoringServicesPage($context);
-            return $page->isServiceAcknowledged(
-                '_Module_Meta',
-                'meta_1'
-            );
-        });
+        $this->spin(
+            function ($context) {
+                $page = new MonitoringServicesPage($context);
+                return $page->isServiceAcknowledged(
+                    '_Module_Meta',
+                    'meta_1'
+                );
+            }
+        );
     }
 }

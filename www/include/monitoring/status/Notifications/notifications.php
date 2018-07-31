@@ -47,7 +47,6 @@ $refresh_rate += ($refresh_rate / 2);
 
 $obj = new CentreonXMLBGRequest($sid, 1, 1, 0, 1);
 
-
 if (!isset($_SESSION['centreon'])) {
     exit;
 }
@@ -165,5 +164,6 @@ while ($row = $res->fetchRow()) {
     $obj->XML->endElement();
 }
 $obj->XML->endElement();
+
 $obj->header();
 $obj->XML->output();

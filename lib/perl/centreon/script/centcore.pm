@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2015 Centreon
+# Copyright 2005-2017 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
@@ -60,6 +60,7 @@ sub new {
     $self->{rsync} = "rsync";
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
+    $self->{service} = "service";
     $self->{timeout} = 5;
     $self->{cmd_timeout} = 5; 
     
@@ -234,7 +235,7 @@ sub getBrokerStats($) {
         mkpath($destFile);
     }
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, retention_path "
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT config_name, cache_directory "
         . "FROM cfg_centreonbroker "
         . "WHERE stats_activate='1' "
         . "AND ns_nagios_server = '" . $poller_id . "'");
@@ -249,7 +250,7 @@ sub getBrokerStats($) {
         $port = checkSSHPort($server_info->{ssh_port});
 
         # Copy the stat file into a buffer
-        my $statistics_file = $data->{retention_path} . "/" . $data->{config_name} . "-stats.json";
+        my $statistics_file = $data->{cache_directory} . "/" . $data->{config_name} . "-stats.json";
         $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
@@ -518,7 +519,7 @@ sub sendConfigFile($){
 
             if ($server_info->{localhost} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.xml";
+                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.*";
                 $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                 $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
@@ -564,21 +565,14 @@ sub initEngine($$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        if ($conf->{init_system} eq 'systemd') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} systemctl $options ".$conf->{init_script};
-        } elsif ($conf->{init_system} eq 'systemv') {
-            $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} ".$conf->{init_script}." ".$options;
-        } else {
-           $self->{logger}->writeLogError("Unknown init system for poller $id");
-           return;
-        }
+        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} $self->{service} ".$conf->{init_script}." ".$options;
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }
 
     # Logs Actions
-    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
+    $self->{logger}->writeLogInfo("Init Script : '$self->{sudo} $self->{service} ".$conf->{init_script}." ".$options."' On poller ".$conf->{ns_ip_address}." ($id)");
     my $line;
     if (defined($stdout)) {
         foreach $line (split(/\n/, $stdout)){
@@ -732,14 +726,14 @@ sub initCentreonTrapd {
         && defined($ns_server->{init_script_centreontrapd}) && $ns_server->{init_script_centreontrapd} ne "") {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
+            $cmd = "$self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 120
                                                                   );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},

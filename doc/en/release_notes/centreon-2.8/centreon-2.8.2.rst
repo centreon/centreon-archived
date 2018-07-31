@@ -1,6 +1,6 @@
-##############
-Centreon 2.8.2
-##############
+##################
+Centreon Web 2.8.2
+##################
 
 Released December 8th, 2016.
 
@@ -19,6 +19,7 @@ Bug Fixes
 * #4791: Can't delete host command on host/host template form ;
 * #4773: Centreon Clapi call and empty line at beginning ;
 * #4752: Options missing in notification tab ;
+* #4728: Avoid http warnings on first connection with ldap auto import ;
 
 Known bugs or issues
 --------------------

@@ -70,7 +70,8 @@ class CentreonResourceCfg extends CentreonObject
         $this->instanceObj = new CentreonInstance();
         $this->relObj = new \Centreon_Object_Relation_Instance_Resource();
         $this->object = new \Centreon_Object_Resource();
-        $this->params = array('resource_line' => '',
+        $this->params = array(
+            'resource_line' => '',
             'resource_comment' => '',
             'resource_activate' => '1'
         );
@@ -331,9 +332,24 @@ class CentreonResourceCfg extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filterName = null)
     {
+        if (!$this->canBeExported($filterName)) {
+            return 0;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
         $elements = $this->object->getList();
+
+        if (!is_null($filterName) && !empty($filterName)) {
+            $nbElements = count($elements);
+            for ($i = 0; $i < $nbElements; $i++) {
+                if ($elements[$i][$labelField] != $filterName) {
+                    unset($elements[$i]);
+                }
+            }
+        }
+
         foreach ($elements as $element) {
             $instanceIds = $this->relObj->getinstance_idFromresource_id(
                 trim($element[$this->object->getPrimaryKey()])
@@ -362,7 +378,7 @@ class CentreonResourceCfg extends CentreonObject
                     $value = CentreonUtils::convertLineBreak($value);
                     echo $this->action . $this->delim
                         . "setparam" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
+                        . $element[$this->object->getPrimaryKey()] . $this->delim
                         . $parameter . $this->delim
                         . $value . "\n";
                 }

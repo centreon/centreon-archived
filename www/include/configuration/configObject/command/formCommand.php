@@ -157,7 +157,7 @@ $attrsTextarea4 = array("rows"=>"$nbRowMacro", "cols"=>"100", "id"=>"listOfMacro
 /*
  * Form begin
  */
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p.'&type='.$type);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Command"));
 } elseif ($o == "c") {
@@ -177,15 +177,10 @@ if (isset($tabCommandType[$type])) {
 
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 
-if (isset($tabCommandType)) {
-    foreach ($tabCommandType as $id => $name) {
-        $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
-    }
-} else {
-    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
-    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+foreach ($tabCommandType as $id => $name) {
+    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id, 'onChange=checkType(this.value);');
 }
+
 $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 
 if (isset($type) && $type != "") {

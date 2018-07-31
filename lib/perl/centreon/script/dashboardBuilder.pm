@@ -70,7 +70,6 @@ sub new {
     $self->{liveService} = undef;
     $self->{service} = undef;
     $self->{host} = undef;
-    $self->{dbLayer} = undef;
     return $self;
 }
 
@@ -157,7 +156,7 @@ sub getDaysFromPeriod {
         }
         my $currentDayOfWeek = (localtime($start))[6];
         
-	# If in the configuration, this day of week is not selected, the reporting is not calculated
+        # If in the configuration, this day of week is not selected, the reporting is not calculated
         if (defined($self->{liveService}->{"report_".$weekDays[$currentDayOfWeek]}) && $self->{liveService}->{"report_".$weekDays[$currentDayOfWeek]} == 1) {
             # setting reporting date and time ranges
             my $dayStart = mktime(0,$self->{liveService}->{"report_minute_start"},$self->{liveService}->{"report_hour_start"},$day,$month,$year,0,0,-1);
@@ -183,7 +182,7 @@ sub rebuildIncidents {
         $self->{logger}->writeLogError("Cannot determine reporting rebuild period");
         $self->{logger}->writeLogError("Please use -s and -e option to defined the rebuild period.");
     } else {
-	
+    
         # Purge tables in order to rebuild statistics
         my $periods = $self->getDaysFromPeriod($start, $end);
         if (!scalar(@$periods)) {
@@ -196,10 +195,10 @@ sub rebuildIncidents {
             $self->{dashboard}->deleteServiceStats($start, $end);
             $self->{dashboard}->deleteHostStats($start, $end);
         }
-	
+    
         if (defined($start) && defined($end) && !$serviceOnly) {
             my ($allIds, $allNames) = $self->{host}->getAllHosts(0);
-	    
+        
             # archiving logs for each days
             foreach(@$periods) {
                 $self->{logger}->writeLogInfo("[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
@@ -209,7 +208,7 @@ sub rebuildIncidents {
         }
         if (defined($start) && defined($end) && !$hostOnly) {
             my ($allIds, $allNames) = $self->{service}->getAllServices(0);
-	    
+        
             # archiving logs for each days
             foreach(@$periods) {
                 $self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
@@ -283,13 +282,13 @@ sub run {
         my $currentTime = time;
         my ($day,$month,$year, $dayOfWeek) = (localtime($currentTime))[3,4,5,6];
       
-	# getting day of week of date to process 
+        # getting day of week of date to process 
         if ($dayOfWeek == 0) {
             $dayOfWeek = 6;
         } else {
             $dayOfWeek--;
         }
-	
+    
         # If in the configuration, this day of week is not selected, the reporting is not calculated
         if (defined($self->{liveService}->{"report_".$weekDays[$dayOfWeek]}) && $self->{liveService}->{"report_".$weekDays[$dayOfWeek]} != 1) {
             $self->{logger}->writeLogInfo("Reporting must not be calculated for this day, check your configuration");

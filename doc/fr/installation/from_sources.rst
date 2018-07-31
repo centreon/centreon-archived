@@ -342,7 +342,7 @@ Utilisateur de la supervision
 -----------------------------
 
 Cet utilisateur exécute le moteur de supervision Centreon Engine. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Engine <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-engine*.
 
 ::
@@ -352,7 +352,7 @@ l'utilisateur sera vraisemblablement *centreon-engine*.
   >
 
 Cet utilisateur exécute le multiplexeur de flux Centreon Broker. Si vous avez suivi
-`la procédure d'installation officielle <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
+`la procédure d'installation officielle de Centreon Broker <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 l'utilisateur sera vraisemblablement *centreon-broker*.
 
 ::
@@ -691,21 +691,50 @@ Fin de l'installation
   #                                                                             #
   ###############################################################################
 
+Installation des dépendances PHP
+--------------------------------
+
+Tout d'abord, vous devez installer l'installeur de dépendance PHP **composer**.
+Composer peut être téléchargé `ici <https://getcomposer.org/download/>` (celui-ci est également disponible dans les dépôts EPEL).
+
+Une fois que composer est installé, rendez-vous dans les répertoires Centreon (habituellement /usr/share/centreon/) et exécutez la commande suivante :
+
+ ::
+
+    composer install --no-dev --optimize-autoloader
+
+
+Installation des dépendances Javascript
+---------------------------------------
+
+Tout d'abord, vous devez installer l'environnement d'exécution javscript **nodejs**.
+Les instructions d'installation sont disponibles `ici <https://nodejs.org/en/download/package-manager/>`.
+
+Une fois que nodejs est installé, rendez vous dans les répertoire centreon (habituellement /usr/share/centreon/) et exécutez les commandes suivantes :
+
+ ::
+
+    npm install
+    npm run build
+    npm prune --production
+
 
 Pour tous les OS
 ----------------
 
 SELinux doit être désactivé. Pour cela, vous devez modifier le fichier "/etc/sysconfig/selinux" et remplacer "enforcing" par "disabled" comme dans l'exemple suivant :
 
- ::
+  ::
 
- SELINUX=disabled
+    SELINUX=disabled
+
+Après avoir sauvegardé le fichier, veuillez redémarrer votre système d'exploitation pour prendre en compte les changements.
 
 La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant la ligne suivante :
 
- ::
+  ::
 
- date.timezone = Europe/Paris
+    date.timezone = Europe/Paris
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apache de votre serveur.
 

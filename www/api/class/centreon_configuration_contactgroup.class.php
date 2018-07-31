@@ -57,6 +57,9 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         global $centreon;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $offset = $this->arguments['page_limit'];
             $range = $limit . ',' . $offset;
@@ -94,10 +97,8 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             $sText = $contactgroup['cg_name'];
             if ($contactgroup['cg_type'] == 'ldap') {
                 $sText .= " (LDAP : ".$contactgroup['ar_name'].")";
-                $id = "[1]".$contactgroup['cg_name'];
-            } else {
-                $id = $contactgroup['cg_id'];
             }
+            $id = $contactgroup['cg_id'];
             $contactgroupList[] = array(
                 'id' => $id,
                 'text' => $sText
@@ -124,7 +125,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
                 );
             }
         }
-        
+
         return array(
             'items' => $contactgroupList,
             'total' => $aclCgs['total']
@@ -133,6 +134,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
     
     protected function unique_key($val, &$array)
     {
+
         if (!empty($val) && count($array) > 0) {
             foreach ($array as $key => $value) {
                 if ($value['text'] == $val) {

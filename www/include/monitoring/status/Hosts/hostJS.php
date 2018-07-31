@@ -225,14 +225,16 @@ function goM(_time_reload, _sid, _o) {
 
     var statusHost = jQuery.trim(jQuery('#statusHost').val());
     var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
-        
+
     proc.setCallback(monitoringCallBack);
     proc.setXml(_addrXML+"?"+'search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id+'&statusHost='+statusHost+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
     proc.setXslt(_addrXSL);
-    proc.transform("forAjax");
+    if (handleVisibilityChange()) {
+        proc.transform("forAjax");
+    }
 
     _lock = 0;
-    _timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
     _time_live = _time_reload;
     _on = 1;
 
@@ -251,6 +253,7 @@ function unsetCheckboxes() {
 }
 
 function cmdCallback(cmd) {
+    jQuery('.centreon-popin').remove();
     var keyz;
 
     _cmd = cmd;
@@ -266,9 +269,9 @@ function cmdCallback(cmd) {
                 }
             }
         }
-        
+
         var url = './include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
-        
+
         var popin = jQuery('<div>');
         popin.centreonPopin({open:true,url:url});
         window.currentPopin = popin;

@@ -16,4 +16,4 @@
 		    <h4><img src='./img/icones/16x16/help_button.png'> {$error_msg}</h4>
 		</div>
 	{/if}
-<div class='viewBody'>
+</div>

@@ -5,7 +5,6 @@
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 1, '$HOSTNAME$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 2, '$_HOSTSNMPCOMMUNITY$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 3, '$_HOSTSNMPVERSION$');
-INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 4, '$_HOSTLOCATION$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 5, '$ARGn$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 6, '$HOSTALIAS$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 7, '$HOSTADDRESS$');
@@ -106,9 +105,10 @@ INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 101, '$PROCESSSTA
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 102, '$ADMINEMAIL$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 103, '$ADMINPAGER$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 104, '$USERn$');
-INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTHOST_ID$');
-INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICESERVICE_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$SERVICEID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_LEVEL$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_ID$');
 INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$HOSTTIMEZONE$');

@@ -24,8 +24,8 @@ $help["tip_invert"] = dgettext("help", "Inverted curve (with negative values).")
 
 $help["tip_thickness"] = dgettext("help", "Curve thickness.");
 $help["tip_line_color"] = dgettext("help", "Curve line color.");
-$help["tip_area_color"] = dgettext("help", "Curve area color.");
-$help["tip_transparency"] = dgettext("help", "Curve transparency.");
+$help["tip_area_color"] = dgettext("help", "When filling property is enable, the area color displayed in Centreon is the curve line color with transparency. For exported graphs, the area color is defined with those fields.");
+$help["tip_transparency"] = dgettext("help", "Curve transparency. Used to export the chart.");
 $help["tip_filling"] = dgettext("help", "Enables area filling.");
 
 /**

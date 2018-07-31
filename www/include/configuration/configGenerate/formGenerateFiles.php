@@ -60,20 +60,15 @@ foreach ($tab_nagios_server as $key => $name) {
 /*
  * Form begin
  */
-$attrSelect = array("style" => "width: 220px;");
-
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
-$form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 $form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
-$form->setDefaults(array('debug' => '1'));
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
-$form->setDefaults(array('gen' => '1'));
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
 $form->addElement('select', 'restart_mode', _("Method"), array(2 => _("Restart"), 1 => _("Reload")), array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
-$form->setDefaults(array('restart_mode' => '1'));
+$form->setDefaults(array('debug' => '1', 'gen' => '1', 'restart_mode' => '1'));
 
 /* Add multiselect for pollers */
 $attrPoller = array(
@@ -114,20 +109,19 @@ $tpl->assign("helptext", $helptext);
 /*
  * Apply a template definition
  */
-
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
+
 $tpl->display("formGenerateFiles.ihtml");
-?>
-<script type='text/javascript'>
+
+?><script type='text/javascript'>
     var initPollers = '<?php echo json_encode($selectedPollers); ?>';
     var selectedPoller;
     var debugOption;
-    var commentOption;
     var generateOption;
     var moveOption;
     var restartOption;
@@ -143,6 +137,7 @@ $tpl->display("formGenerateFiles.ihtml");
     tooltip.render();
     var progressBar;
     var msgTab = new Array();
+    
     msgTab['start'] = "<?php echo addslashes(_("Preparing environment")); ?>";
     msgTab['gen'] = "<?php echo addslashes(_("Generating files")); ?>";
     msgTab['debug'] = "<?php echo addslashes(_("Running debug mode")); ?>";
@@ -232,7 +227,7 @@ $tpl->display("formGenerateFiles.ihtml");
         if (!checkSelectedPoller()) {
             return null;
         }
-    curProgress = 0;
+        curProgress = 0;
         stepProgress = 0;
         updateProgress();
         cleanErrorPhp();
@@ -251,7 +246,6 @@ $tpl->display("formGenerateFiles.ihtml");
     function initEnvironment()
     {
         selectedPoller = jQuery('#nhost').val().join(',');
-        commentOption  = document.getElementById('ncomment').checked;
         debugOption = document.getElementById('ndebug').checked;
         generateOption = document.getElementById('ngen').checked;
         if (generateOption) {
@@ -298,9 +292,7 @@ $tpl->display("formGenerateFiles.ihtml");
         new Ajax.Request('./include/configuration/configGenerate/xml/generateFiles.php', {
             method: 'post',
             parameters: {
-                sid: session_id,
                 poller: selectedPoller,
-                comment: commentOption,
                 debug: debugOption,
                 generate: generateOption
             },
@@ -327,7 +319,6 @@ $tpl->display("formGenerateFiles.ihtml");
         new Ajax.Request('./include/configuration/configGenerate/xml/moveFiles.php', {
             method: 'post',
             parameters: {
-                sid: session_id,
                 poller: selectedPoller
             },
             onSuccess: function (response) {
@@ -353,7 +344,6 @@ $tpl->display("formGenerateFiles.ihtml");
         new Ajax.Request('./include/configuration/configGenerate/xml/restartPollers.php', {
             method: 'post',
             parameters: {
-                sid: session_id,
                 poller: selectedPoller,
                 mode: restartMode
             },
@@ -379,7 +369,6 @@ $tpl->display("formGenerateFiles.ihtml");
         new Ajax.Request('./include/configuration/configGenerate/xml/postcommand.php', {
             method: 'post',
             parameters: {
-                sid: session_id,
                 poller: selectedPoller
             },
             onSuccess: function (response) {
@@ -505,7 +494,8 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function toggleErrorPhp(action) {
+    function toggleErrorPhp(action) 
+    {
         var linkEl = document.getElementById('expend_' + action);
         var divErrors = document.getElementById('errors_' + action);
         if (linkEl.innerHTML == '[ + ]') {
@@ -517,7 +507,8 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function cleanErrorPhp() {
+    function cleanErrorPhp() 
+    {
         var bodyErrors = document.getElementById('error_log');
         while (bodyErrors.hasChildNodes()) {
             bodyErrors.removeChild(bodyErrors.firstChild);
@@ -533,10 +524,10 @@ $tpl->display("formGenerateFiles.ihtml");
         if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
             pct = curProgress + stepProgress;
             curProgress += stepProgress;
-    }
-    if (pct > 100) {
-        pct = 100;
-    }
+        }
+        if (pct > 100) {
+            pct = 100;
+        }
         progressBar.setPercentage(pct);
         $('progressPct').update(Math.round(pct) + "%");
     }

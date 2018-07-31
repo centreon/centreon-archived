@@ -40,65 +40,79 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationServicecategory constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
+        $queryValues[] = (string)'%' . $q . '%';
+
         /*
 		 * Check for select2 't' argument
 		 * 'a' or empty = category and severitiy
-		 * 'c' = catagory only
+		 * 'c' = category only
 		 * 's' = severity only
 		 */
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
+        if (isset($this->arguments['t'])) {
+            $selectList = array('a', 'c', 's');
+            if (in_array(strtolower($this->arguments['t']), $selectList)) {
+                $t = $this->arguments['t'];
+            } else {
+                throw new \RestBadRequestException('Error, bad type parameter');
+            }
         } else {
-            $t = $this->arguments['t'];
+            $t = '';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name "
-            . "FROM service_categories "
-            . "WHERE sc_name LIKE '%$q%' ";
+
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name ' .
+            'FROM service_categories ' .
+            'WHERE sc_name LIKE ? ';
+
         if (!empty($t) && $t == 'c') {
             $queryContact .= "AND level IS NULL ";
         }
         if (!empty($t) && $t == 's') {
             $queryContact .= "AND level IS NOT NULL ";
         }
-        $queryContact .= "ORDER BY sc_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $queryContact .= 'ORDER BY sc_name ' . $range;
+
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
 
         $total = $this->pearDB->numberRows();
-        
+
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
         }
-        
+
         return array(
             'items' => $serviceList,
             'total' => $total

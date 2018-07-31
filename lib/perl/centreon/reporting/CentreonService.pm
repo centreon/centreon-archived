@@ -65,9 +65,9 @@ sub getAllServices {
     my (%service_ids, %service_names);
     # getting services linked to hosts
     my $query = "SELECT service_description, service_id, host_id, host_name".
-        " FROM host, service, host_service_relation".
-        " WHERE host_id = host_host_id and service_service_id = service_id".
-        " AND service_register = '1'";
+                " FROM host, service, host_service_relation".
+                " WHERE host_id = host_host_id and service_service_id = service_id".
+                " AND service_register = '1'";
     if ($activated == 1) {
         $query .= " AND `service_activate`='1'";
     }
@@ -88,8 +88,8 @@ sub getAllServices {
         " AND service_register = '1'";
     if ($activated == 1) {
         $query .= " AND service_activate='1'".
-            " AND host_activate = '1'".
-            " AND hg.hg_activate = '1'";
+                  " AND host_activate = '1'".
+                  " AND hg.hg_activate = '1'";
     }
     $query .= " AND hg.hg_id = hgr.hostgroup_hg_id";
 

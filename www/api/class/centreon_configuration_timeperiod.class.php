@@ -40,45 +40,51 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
+     * CentreonConfigurationTimeperiod constructor.
      */
     public function __construct()
     {
         parent::__construct();
     }
-    
+
     /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
+        $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryTimeperiod = "SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name "
-            . "FROM timeperiod "
-            . "WHERE tp_name LIKE '%$q%' "
-            . "ORDER BY tp_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryTimeperiod);
 
+        $queryTimeperiod = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name ' .
+            'FROM timeperiod ' .
+            'WHERE tp_name LIKE ? ' .
+            'ORDER BY tp_name ' . $range;
+
+        $stmt = $this->pearDB->prepare($queryTimeperiod);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
+
         $timeperiodList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $timeperiodList[] = array(
                 'id' => $data['tp_id'],
                 'text' => $data['tp_name']

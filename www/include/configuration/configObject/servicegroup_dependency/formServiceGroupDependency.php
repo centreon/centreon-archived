@@ -127,13 +127,13 @@ $attrServicegroup1 = array_merge(
     $attrServicegroups,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=dependency&field=dep_sgParents&id=' . $dep_id)
 );
-$form->addElement('select2', 'dep_sgParents', _("Linked with Servicegroups"), array(), $attrServicegroup1);
+$form->addElement('select2', 'dep_sgParents', _("Servicegroups"), array(), $attrServicegroup1);
 
 $attrServicegroup2= array_merge(
     $attrServicegroups,
     array('defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup&action=defaultValues&target=dependency&field=dep_sgChilds&id=' . $dep_id)
 );
-$form->addElement('select2', 'dep_sgChilds', _("Linked with Servicegroups"), array(), $attrServicegroup2);
+$form->addElement('select2', 'dep_sgChilds', _("Dependent Servicegroups"), array(), $attrServicegroup2);
 
 $form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 

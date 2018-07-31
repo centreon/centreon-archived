@@ -46,10 +46,10 @@ class centreonGraphPoller
      * @var array Array of rrdtool options
      */
     private $rrdtoolOptions;
-    
+
     /**
      *
-     * @var string Rrdtool command line  
+     * @var string Rrdtool command line
      */
     private $commandLine;
 
@@ -58,69 +58,69 @@ class centreonGraphPoller
      * @var int Poller id
      */
     private $pollerId;
-    
+
     /**
      *
      * @var int User id
      */
     private $userId;
-    
+
     /**
      *
-     * @var array Graph titles 
+     * @var array Graph titles
      */
     private $title;
-    
+
     /**
      *
-     * @var array 
+     * @var array
      */
     private $options;
-    
+
     /**
      *
-     * @var array 
+     * @var array
      */
     private $differentStats;
-    
+
     /**
      *
      * @var array
      */
     private $colors;
-   
+
     /**
-     * 
+     *
      * @var type
      */
     private $db;
-    
+
     /**
      *
      * @var type
      */
     private $dbMonitoring;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     private $graphName;
-    
+
     /**
      *
-     * @var string 
+     * @var string
      */
     private $nagiosStatsPath;
-    
+
     /**
      *
-     * @var array 
+     * @var array
      */
     private $metricsInfos = array();
-    
+
     /**
-     * 
+     *
      * @param type $db
      * @param type $dbMonitoring
      * @param type $pollerId
@@ -136,13 +136,13 @@ class centreonGraphPoller
         $this->userId = $userId;
         $this->start = $start;
         $this->end = $end;
-        
+
         $this->initGraphOptions();
         $this->initRrd();
     }
-    
+
     /**
-     * 
+     *
      */
     private function initGraphOptions()
     {
@@ -157,7 +157,7 @@ class centreonGraphPoller
             "host_states" => _("Host status"),
             "service_states" => _("Service status")
         );
-        
+
         $this->colors = array(
             "Min" => "#88b917",
             "Max" => "#e00b3d",
@@ -202,47 +202,47 @@ class centreonGraphPoller
             "nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk")
         );
     }
-    
+
     /**
-     * Set rrdtool options 
+     * Set rrdtool options
      */
     private function initRrd()
     {
         $DBRESULT = $this->db->query("SELECT * FROM `options`");
-        
+
         while ($option = $DBRESULT->fetchRow()) {
             if (strpos($option["key"], 'rrdtool', 0) !== false) {
                 $this->rrdtoolOptions[$option["key"]] = $option["value"];
             }
         }
         $DBRESULT->free();
-        
+
         $DBRESULT2 = $this->dbMonitoring->query("SELECT RRDdatabase_nagios_stats_path FROM config");
         $nagiosStats = $DBRESULT2->fetchRow();
         $this->nagiosStatsPath = $nagiosStats['RRDdatabase_nagios_stats_path'];
         $DBRESULT2->free();
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getGraphName()
     {
         return $this->graphName;
     }
-    
+
     /**
-     * 
+     *
      * @param string $graphName
      */
     public function setGraphName($graphName = '')
     {
         $this->graphName = $graphName;
     }
-    
+
     /**
-     * 
+     *
      * @param int $rows
      * @throws RuntimeException
      */
@@ -255,9 +255,9 @@ class centreonGraphPoller
         $this->commandLine .= " --start " . $this->start;
         $this->commandLine .= " --end " . $this->end;
         $this->commandLine .= " --maxrows " . $rows;
-        
+
         $metrics = $this->differentStats[$this->options[$this->graphName]];
-        
+
         $i = 0;
         foreach ($metrics as $metric) {
             $path = $this->nagiosStatsPath . '/perfmon-' . $this->pollerId . '/' . $this->options[$this->graphName];
@@ -267,7 +267,7 @@ class centreonGraphPoller
             $this->commandLine .= " DEF:v" . $i . "=" . $path . ":$metric:AVERAGE";
             $this->commandLine .= " GPRINT:v". ($i) .":LAST:\"\:%7.2lf%s\l\"";
             $this->commandLine .= " XPORT:v" . $i . ":v" . $i;
-            
+
             $info = array(
                 "data" => array(),
                 "legend" => $metric,
@@ -279,7 +279,7 @@ class centreonGraphPoller
                 "crit" => null,
                 "warn" => null
             );
-                
+
             if (isset($metric['ds_color_area']) &&
               isset($metric['ds_filled']) &&
               $metric['ds_filled'] === '1') {
@@ -298,13 +298,13 @@ class centreonGraphPoller
                 $info['warn'] = $metric['warn'];
             }
             $this->metricsInfos[] = $info;
-            
+
             $i++;
         }
     }
 
     /**
-     * 
+     *
      * @param int $rows
      * @return array
      * @throws RuntimeException
@@ -312,15 +312,15 @@ class centreonGraphPoller
     public function getData($rows = 200)
     {
         //$this->initRrdtoolCommandLine();
-        
+
         $this->buildCommandLine($rows);
-        
+
         $descriptorspec = array(
             0 => array('pipe', 'r'),
             1 => array('pipe', 'w'),
             2 => array('pipe', 'a'),
         );
-        
+
         $process = proc_open($this->rrdtoolOptions['rrdtool_path_bin'] . " - ", $descriptorspec, $pipes, null, null);
         if (false === is_resource($process)) {
             throw new RuntimeException();
@@ -334,7 +334,7 @@ class centreonGraphPoller
             $status = proc_get_status($process);
             $str .= stream_get_contents($pipes[1]);
         } while ($status['running']);
-        
+
         $str .= stream_get_contents($pipes[1]);
 
         /* Remove text of the end of the stream */
@@ -373,5 +373,16 @@ class centreonGraphPoller
         }
         return $this->metricsInfos;
     }
-        
+
+    public function getLegends()
+    {
+        $legends = array();
+        $metrics = $this->differentStats[$this->options[$this->graphName]];
+        foreach ($metrics as $metric) {
+            $legends[$metric] = array(
+                'extras' => array()
+            );
+        }
+        return $legends;
+    }
 }

@@ -132,7 +132,7 @@ class CentreonCommand extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         if (!isset($this->typeConversion[$params[self::ORDER_TYPE]])) {
             throw new CentreonClapiException(self::UNKNOWN_CMD_TYPE . ":" . $params[self::ORDER_TYPE]);
         }
@@ -214,15 +214,25 @@ class CentreonCommand extends CentreonObject
      * @return void
      */
 
-    public function export($filter_id=null, $filter_name=null)
+    public function export($filterName = null)
     {
-        $filters = null;
-        if (!is_null($filter_id)) {
-            $filters = array('command_id' => $filter_id);
-        } 
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
 
-        parent::export($filters);
-        $elements = $this->object->getList("*", -1, 0);
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+        $elements = $this->object->getList(
+            "*",
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         foreach ($elements as $element) {
             $addStr = $this->action.$this->delim."ADD";
             foreach ($this->insertParams as $param) {

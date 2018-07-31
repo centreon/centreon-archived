@@ -4,13 +4,6 @@
         <activate>1</activate>
         <column>ctime</column>
         <type>date</type>
-        <duration>daily</duration>
-        <retention>365</retention>
-        <retentionforward>10</retentionforward>
-        <backup>
-            <folder>/var/backups/</folder>
-            <format>%Y-%m-%d</format>
-        </backup>
         <createstmt>
 CREATE TABLE IF NOT EXISTS `data_bin` (
   `id_metric` int(11) DEFAULT NULL,
@@ -18,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `data_bin` (
   `value` float DEFAULT NULL,
   `status` enum('0','1','2','3','4') DEFAULT NULL,
   KEY `index_metric` (`id_metric`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </createstmt>
     </table>
 </centreon-partitioning>

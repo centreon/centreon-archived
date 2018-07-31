@@ -41,6 +41,7 @@ require_once _CENTREON_PATH_ . '/www/class/centreonUser.class.php';
 require_once _CENTREON_PATH_ . '/www/include/common/common-Func.php';
 
 session_start();
+session_write_close();
 
 /* Initialize database connection */
 $pearDB = new CentreonDB();

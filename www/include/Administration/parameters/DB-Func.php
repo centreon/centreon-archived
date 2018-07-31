@@ -164,7 +164,12 @@ function updateNagiosConfigData($gopt_id = null)
         isset($ret["interval_length"]) && $ret["interval_length"] != null
             ? $pearDB->escape($ret["interval_length"]) : "NULL"
     );
-    updateOption($pearDB, "broker", $pearDB->escape($ret['broker']));
+    updateOption(
+        $pearDB,
+        "broker",
+        isset($ret["broker"]) && $ret["broker"] != null
+            ? $pearDB->escape($ret['broker']) : "broker"
+    );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
     
     /*
@@ -567,12 +572,6 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        'proxy_protocol',
-        isset($ret["proxy_protocol"]) && $ret["proxy_protocol"] != null
-            ? htmlentities($ret["proxy_protocol"], ENT_QUOTES, "UTF-8"): "NULL"
-    );
-    updateOption(
-        $pearDB,
         'proxy_url',
         isset($ret["proxy_url"]) && $ret["proxy_url"] != null
             ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
@@ -582,6 +581,18 @@ function updateGeneralConfigData($gopt_id = null)
         'proxy_port',
         isset($ret["proxy_port"]) && $ret["proxy_port"] != null
             ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_user',
+        isset($ret["proxy_user"]) && $ret["proxy_user"] != null
+            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
+        'proxy_password',
+        isset($ret["proxy_password"]) && $ret["proxy_password"] != null
+            ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
     );
     updateOption(
         $pearDB,
@@ -626,9 +637,27 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "sso_blacklist_clients",
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+            ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "sso_header_username",
         isset($ret["sso_header_username"]) && $ret["sso_header_username"] != null
             ? $pearDB->escape($ret["sso_header_username"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_pattern",
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+            ? $pearDB->escape($ret["sso_username_pattern"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "sso_username_replace",
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+            ? $pearDB->escape($ret["sso_username_replace"]) : ""
     );
     updateOption(
         $pearDB,
@@ -736,6 +765,19 @@ function updateRRDToolConfigData($gopt_id = null)
     );
 
     $centreon->initOptGen($pearDB);
+}
+
+function updatePartitioningConfigData($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+    
+    foreach ($ret as $key => $value) {
+        if (preg_match('/^partitioning_/', $key)) {
+            updateOption($db, $key, $value);
+        }
+    }
+    
+    $centreon->initOptGen($db);
 }
 
 function updateODSConfigData()
@@ -883,7 +925,9 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-
+    if (!isset($ret['kb_wiki_certificate'])){
+        $ret['kb_wiki_certificate'] = 0;
+    }
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
                 updateOption($db, $key, $value);

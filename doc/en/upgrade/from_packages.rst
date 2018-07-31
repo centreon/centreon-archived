@@ -4,21 +4,13 @@
 From Packages
 =============
 
-Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.6, Centreon Broker 3.0.
+Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
 It comes in two operating system flavors, either CentOS 6 or CentOS 7.
 
 .. warning::
-   This release is not yet compatible with other commercial products
-   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
-   If your are using any of these products, you are strongly advised
-   **NOT** to update Centreon Web until new releases of the forementioned
-   products are available and specifically mention Centreon Web 2.8
-   compatibility. A notable exception to this notice is EMS/EPP.
-
-.. warning:: 
-   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB), 
+   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB),
    please first uninstall the module (from the web) in order to avoid upgrade problem.
-   Centreon KB is now embedded into Centreon since the version 2.8.0. 
+   Centreon KB is now embedded into Centreon since the version 2.8.0.
 
 
 Prerequisites
@@ -62,11 +54,20 @@ The following table describes the dependent software:
 | zlib     | 1.2.3     |
 +----------+-----------+
 
-CES repository upgrade
-======================
+Backup
+======
 
-If you are already a CES user, you need to update your CES .repo file to
-get software that is part of CES 3.4 (namely Centreon Web 2.8 and
+Be sure that you have fully backup of your environment for all the following server :
+
+ * Central server
+ * Database server
+ * Reporting Centreon MBI server
+
+Centreon repository upgrade
+===========================
+
+If you are already a Centreon ISO user, you need to update your Centreon .repo file to
+get software that is part of Centreon 3.4 (namely Centreon Web 2.8 and
 associated components). Run the commands for your operating system.
 
 CentOS 6
@@ -74,8 +75,9 @@ CentOS 6
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el6/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el6/stable/noarch/RPMS/centreon-release-3.4-4.el6.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el6.noarch.rpm
 
 
 CentOS 7
@@ -83,10 +85,13 @@ CentOS 7
 
 ::
 
-   $ rm -f /etc/yum.repos.d/ces-standard.repo
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/centreon-stable.repo -O /etc/yum.repos.d/centreon-stable.repo
-
-
+   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
+   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
+   
+.. warning::
+   If you're using Centreon modules Centreon BAM, Centreon MAP4, CentreonMBI or Centreon EPP please contact our Support to have the new repo of each module.
+   
 Core components upgrade
 =======================
 
@@ -130,6 +135,17 @@ to load new extension.
  ::
 
    # service httpd restart
+   
+Update poller
+*************
+
+Repeat this procedure on all your poller :
+
+ * Update repo
+ * Update packets
+ 
+.. warning::
+   You must have on all your environment (Central and Poller) the same version of Centreon Engine 1.7 and Centreon Broker 3.0.
 
 Conclude update via Centreon web interface
 ******************************************
@@ -201,10 +217,16 @@ If you use additional Centreon modules you might need to update them too,
 for them to work properly with your new Centreon version. This is
 particularly true for EMS/EPP users.
 
+.. warning::
+   In this case you need to contact our Support that will give you the link to set up the new repo for each module.
+   If you're using Centreon BAM, you must have the great repo to upgrade your Centreon.
+   The following option should not be used :
+   # --skip-broken
+
 Repository update
 *****************
 
-Just like for CES, the .repo file needs to be updated to use the 3.4
+Just like for Centreon ISO, the .repo file needs to be updated to use the 3.4
 release. Please ask Centreon support team if you do not know how to
 perform this operation.
 
@@ -254,8 +276,7 @@ Please check this points during and after your upgrade.
 Known issues
 ************
 
-* Not compatible with most commercial products : Centreon MBI, Centreon BAM and Centreon Map are not yet compatible with Centreon Web 2.8.
-* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.6) are prerequisites for Centreon Web 2.8
+* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.8) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
 * Scales in peformance graphs display too many steps
 * PHP Warning issues when user access to performance graphs menu in Centreon Web

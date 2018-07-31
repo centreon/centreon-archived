@@ -1,13 +1,12 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\DowntimeConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
-use Centreon\Test\Behat\CurrentUserConfigurationPage;
-use Centreon\Test\Behat\DowntimeConfigurationListingPage;
-use Centreon\Test\Behat\HostConfigurationListingPage;
-use Centreon\Test\Behat\ServiceDowntimeConfigurationPage;
-
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
+use Centreon\Test\Behat\Configuration\RecurrentDowntimeConfigurationPage;
 
 /**
  * Defines application features from the specific context.
@@ -67,12 +66,7 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
 
         $page = new DowntimeConfigurationPage($this);
-
-        $downtimeEndTime = '+1 minutes';
-        $currentSeconds = date("s");
-        if ($currentSeconds >= 45) {
-            $downtimeEndTime = '+2 minutes';
-        }
+        $downtimeEndTime = '+2 minutes';
         $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
@@ -92,12 +86,7 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->submitServiceResult($this->host, $this->service, 0, __FUNCTION__);
 
         $page = new DowntimeConfigurationPage($this);
-
-        $downtimeEndTime = '+1 minutes';
-        $currentSeconds = date("s");
-        if ($currentSeconds >= 45) {
-            $downtimeEndTime = '+2 minutes';
-        }
+        $downtimeEndTime = '+2 minutes';
         $this->downtimeEndTime = date("H:i", strtotime($downtimeEndTime));
         $page->setProperties(array(
             'type' => DowntimeConfigurationPage::TYPE_SERVICE,
@@ -121,7 +110,10 @@ class DowntimeStartAndStopContext extends CentreonContext
                 $found = false;
                 $page = new DowntimeConfigurationListingPage($context);
                 foreach ($page->getEntries() as $entry) {
-                    if ($entry['host'] == $context->host && $entry['service'] == $context->service && $entry['started'] == true) {
+                    if ($entry['host'] == $context->host &&
+                        $entry['service'] == $context->service &&
+                        $entry['started'] == true
+                    ) {
                         $found = true;
                     }
                 }
@@ -151,8 +143,8 @@ class DowntimeStartAndStopContext extends CentreonContext
                     return true;
                 }
             },
-            80,
-            'The downtime period did not start (' . $this->downtimeStartTime . ').'
+            'The downtime period did not start (' . $this->downtimeStartTime . ').',
+            80
         );
     }
 
@@ -179,12 +171,10 @@ class DowntimeStartAndStopContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                if (date("H:i") >= $context->downtimeEndTime) {
-                    return true;
-                }
+                return date("H:i") >= $context->downtimeEndTime;
             },
-            80,
-            'The end of the downtime is too late (' . $this->downtimeEndTime . ').'
+            'The end of the downtime is too late (' . $this->downtimeEndTime . ').',
+            180 // 3 minutes for 2 minutes-long downtimes
         );
     }
 
@@ -204,8 +194,37 @@ class DowntimeStartAndStopContext extends CentreonContext
                 }
                 return !$found;
             },
-            40,
             'Downtime is still running.'
+        );
+    }
+
+    /**
+     * @Then the flexible downtime is stopped
+     */
+    public function theFlexibleDowntimeIsStopped()
+    {
+        $this->spin(
+            function ($context) {
+                $finished = false;
+
+                $storageDb = $context->getStorageDatabase();
+                $res = $storageDb->query(
+                    'SELECT d.downtime_id, d.actual_end_time ' .
+                    'FROM downtimes d, hosts h, services s ' .
+                    'WHERE h.host_id = d.host_id ' .
+                    'AND s.service_id = d.service_id ' .
+                    'AND h.name = "' . $context->host . '" ' .
+                    'AND s.description = "' . $context->service . '" ' .
+                    'AND d.actual_end_time IS NOT NULL ' .
+                    'AND d.actual_end_time < ' . time()
+                );
+                if ($row = $res->fetch()) {
+                    $finished = true;
+                }
+                return $finished;
+            },
+            'FLexible downtime is still running.',
+            30
         );
     }
 
@@ -222,7 +241,7 @@ class DowntimeStartAndStopContext extends CentreonContext
             'location' => $this->timezone
         ));
         $user->save();
-        $this->restartAllPollers();
+        $this->reloadAllPollers();
 
         //downtime
         $this->page = new DowntimeConfigurationPage($this);
@@ -232,9 +251,6 @@ class DowntimeStartAndStopContext extends CentreonContext
             'comment' => 'service comment'
         ));
         $props = $this->page->getProperties();
-
-
-
 
         //convert local start hour in timestamp utc
         $dataTimeStart = new DateTime(
@@ -268,13 +284,16 @@ class DowntimeStartAndStopContext extends CentreonContext
             'location' => $this->timezone
         ));
         $hostPage->save();
-        $this->restartAllPollers();
+        $this->reloadAllPollers();
 
 
         //get the time of the timezone + x seconds for the start
         $datetimeStartLocal = new DateTime('now +120seconds', new DateTimeZone($this->timezone));
         $datetimeStartLocal->setTime($datetimeStartLocal->format('H'), $datetimeStartLocal->format('i'), '00');
-        $datetimeEndLocal = new DateTime('now +' . ($this->downtimeDuration + 120) . 'seconds', new DateTimeZone($this->timezone));
+        $datetimeEndLocal = new DateTime(
+            'now +' . ($this->downtimeDuration + 120) . 'seconds',
+            new DateTimeZone($this->timezone)
+        );
         $datetimeEndLocal->setTime($datetimeEndLocal->format('H'), $datetimeEndLocal->format('i'), '00');
 
 
@@ -292,13 +311,13 @@ class DowntimeStartAndStopContext extends CentreonContext
         $this->dateEndTimestamp = $datetimeEndLocal->getTimestamp();
 
         //add recurent downtime
-        $this->page = new ServiceDowntimeConfigurationPage($this);
+        $this->page = new RecurrentDowntimeConfigurationPage($this);
 
         //set downtime properties
         $this->page->setProperties(array(
             'name' => 'test',
             'alias' => $this->service,
-            'periods' => array(7, 1, 2, 3, 4, 5, 6),
+            'days' => array(7, 1, 2, 3, 4, 5, 6),
             'start' => $startHour,
             'end' => $endHour,
             'svc_relation' => $this->host . ' - ' . $this->service
@@ -353,15 +372,13 @@ class DowntimeStartAndStopContext extends CentreonContext
         $dateEndTimestamp = $dataTimeEnd->getTimestamp();
 
         if ($this->dateStartTimestamp != $dateStartTimestamp) {
-            throw new \Exception(
-                'Error bad timezone in start downtime configuration: ' . $this->dateStartTimestamp . ' != ' . $dateStartTimestamp
-            );
+            throw new \Exception('Error bad timezone in start downtime configuration: ' .
+                $this->dateStartTimestamp . ' != ' . $dateStartTimestamp);
         }
 
         if ($this->dateEndTimestamp != $dateEndTimestamp) {
-            throw new \Exception(
-                'Error bad timezone in end downtime configuration: ' . $this->dateEndTimestamp . ' != ' . $dateEndTimestamp
-            );
+            throw new \Exception('Error bad timezone in end downtime configuration: ' .
+                $this->dateEndTimestamp . ' != ' . $dateEndTimestamp);
         }
     }
 }

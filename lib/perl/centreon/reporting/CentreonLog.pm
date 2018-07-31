@@ -46,7 +46,6 @@ sub new {
     my $self  = {};
     $self->{"logger"} = shift;
     $self->{"centstorage"} = shift;
-    $self->{"dbLayer"} = shift;
     if (@_) {
         $self->{"centreon"} = shift;
     }

@@ -147,8 +147,8 @@ if (!$centreon->user->access->checkAction("service_comment")) {
     }
 
     $form->setDefaults($data);
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
     /* Push the comment */
     if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate()) {

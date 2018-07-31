@@ -1,20 +1,17 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\ServiceConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\ServiceConfigurationPage;
+use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
 
 /**
  * Defines application features from the specific context.
  */
 class InfluxdbContext extends CentreonContext
 {
-  private $hostName = 'InfluxdbTestHost';
-  private $serviceName = 'InlufxdbTestService';
+    private $hostName = 'InfluxdbTestHost';
+    private $serviceName = 'InfluxdbTestService';
 
     /**
      *  @Given I am logged in a Centreon server with Influxdb
@@ -33,7 +30,6 @@ class InfluxdbContext extends CentreonContext
     {
       $this->visit('main.php?p=60909&o=c&id=1');
       $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
-      file_put_contents('/tmp/test.png', $this->getSession()->getDriver()->getScreenshot());
       $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
       $this->assertFind('css', 'a#add_output')->click();
       sleep(5);
@@ -58,7 +54,7 @@ class InfluxdbContext extends CentreonContext
       sleep(1);
       $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$VALUE$');
       $this->assertFind('css', '#metrics_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
-      
+
       // Status columns
       $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)')->setValue('true');
       $this->assertFind('css', '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > input:nth-child(1)')->setValue('$INDEXID$');
@@ -73,6 +69,26 @@ class InfluxdbContext extends CentreonContext
       $this->assertFind('css', '#status_column___4_template2 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)')->setValue('value');
 
       $this->assertFind('css', '#validForm > p:nth-child(1) > input:nth-child(1)')->click();
+
+      // Restart all pollers.
+      $this->restartAllPollers();
+
+      // Wait for the InfluxDB connection.
+      $this->spin(
+          function ($context) {
+              $retval = $context->container->execute(
+                  'cat /var/lib/centreon-broker/central-broker-master-stats.json',
+                  'web',
+                  false
+              );
+              if ($retval['exit_code'] === 0) {
+                  $stats = json_decode($retval['output'], true);
+                  return $stats['endpoint TestInfluxdb']['state'] == 'connected';
+              }
+              return false;
+          },
+          'Centreon Broker did not connect to InfluxDB.'
+      );
     }
 
     /**
@@ -108,9 +124,9 @@ class InfluxdbContext extends CentreonContext
     }
 
     /**
-     * @Given Broker and Engine are restarted
+     * @Given I restart all pollers
      */
-    public function andBrokerAndEngineAreRestarted()
+    public function iRestartAllPollers()
     {
         $this->restartAllPollers();
     }
@@ -118,11 +134,23 @@ class InfluxdbContext extends CentreonContext
     /**
      * @When new metric data is discovered by the engine for the service
      */
-    public function whenNewMetricDataIsDiscoveredByTheEngine()
+    public function newMetricDataIsDiscoveredByTheEngine()
     {
-      sleep(5);
-      $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', '', 'test=1s;5;10;0;10');
-      sleep(5);
+        sleep(5);
+        $this->submitServiceResult($this->hostName, $this->serviceName, 'OK', 'OK', 'test=1s;5;10;0;10');
+
+        $self = $this;
+        $this->spin(
+            function($context) use ($self) {
+                $page = new ServiceMonitoringDetailsPage($self, $self->hostName, $self->serviceName);
+                $properties = $page->getProperties();
+                if (!count($properties['perfdata'])) {
+                    return false;
+                }
+                return true;
+            },
+            'Cannot get performance data of ' . $self->hostName . ' / ' . $self->serviceName . '.'
+        );
     }
 
 
@@ -131,10 +159,13 @@ class InfluxdbContext extends CentreonContext
      */
     public function thenItIsSavedInInfluxdb()
     {
-      $this->spin(function($context) {
-        $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
-        return preg_match('/status\.InfluxdbTestHost\.InlufxdbTestService/m', $return['output']);
-      });
-
+        $self = $this;
+        $this->spin(
+            function($context) use ($self) {
+                $return = $context->container->execute('influx -database "metrics" -execute "SHOW SERIES"', 'influxdb');
+                return preg_match('/status\.' . $self->hostName . '\.' . $self->serviceName . '/m', $return['output']);
+            },
+            "Cannot get metrics from influxdb."
+        );
     }
 }

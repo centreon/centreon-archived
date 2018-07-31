@@ -4,20 +4,20 @@
 Partitionnement des bases de données
 ####################################
 
-===========
-Présentaion
-===========
+============
+Présentation
+============
 
-Le module Centreon Partioning est maintenant intégré de base avec Centreon Web, il offre différentes fonctionnalités et avantages.
+Le module Centreon Partitioning est maintenant intégré de base avec Centreon Web, il offre différentes fonctionnalités et avantages.
 
-- Il permet de partitionner les tables MySQL en fontion de la date des lignes. Ce qui offre une optimisation du temps d'execution de nombreuses requêtes.
-- La purge des données est améliorée, il est maintenant justé nécessaire de supprimer les partitions trop anciennes.
-- L'étendue d'un crash MySQL est limité par la reconstruction des partitions en erreur.
+- Il permet de partitionner les tables MySQL en fonction de la date des lignes. Ce qui offre une optimisation du temps d'exécution de nombreuses requêtes.
+- La purge des données est améliorée, il est maintenant juste nécessaire de supprimer les partitions trop anciennes.
+- L'étendue d'un crash MySQL est limitée par la reconstruction des partitions en erreur.
 - Les tables existantes peuvent être partitionnées
 
 .. note::
 
-  Ce partionement comporte des limitations :
+  Ce partionnement comporte des limitations :
   - Le nombre maximal de partitions (pour une table) est 1024
   - Les clés étrangères ne sont pas supportées
 
@@ -44,6 +44,23 @@ Le paramètre MySQL **open_files_limit** doit être fixé à 32000 dans la secti
   [server]
   open_files_limit = 32000
 
+.. note::
+    En installant via l'ISO de Centreon, ce paramètre est déjà convenablement configuré. Si vous installez les rpm sur votre propre install RedHat ou CentOS, vous serez obligé de le faire vous même. 
+    N'oubliez pas de redémarrer le service mysql / mariadb si vous avez besoin de configurer ce paramètre dans le fichier my.cnf. 
+
+Si vous utilisez systemd, il est nécessaire de créer le fichier "/etc/systemd/system/mariadb.service.d/mariadb.conf" :
+
+::
+
+  [Service]
+  LimitNOFILE=32000
+
+Puis recharger systemd et MySQL :
+
+::
+
+  $ systemctl daemon-reload
+  $ systemctl restart mysql
 
 Afin d'exploiter le module, vous pouvez suivre la documentation suivante :
 

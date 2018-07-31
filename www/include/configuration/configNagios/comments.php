@@ -142,13 +142,6 @@ $nagios_comment["log_event_handlers"]="If you don\'t want host and service event
   . "this value to 0.  If event handlers should be logged, set the value "
   . "to 1.";
 
-$nagios_comment["log_initial_states"]="If you want Nagios to log all initial host and service states to "
-  . "the main log file (the first time the service or host is checked) "
-  . "you can enable this option by setting this value to 1.  If you "
-  . "are not using an external application that does long term state "
-  . "statistics reporting, you do not need to enable this option.  In "
-  . "this case, set the value to 0. ";
-
 $nagios_comment["log_external_commands"]="If you don\'t want Nagios to log external commands, set this value "
   . "to 0.  If external commands should be logged, set this value to 1. "
   . "Note: This option does not include logging of passive service "

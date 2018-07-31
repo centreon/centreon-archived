@@ -38,32 +38,27 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class CentreonWebService
 {
     /**
-     *
-     * @var type
+     * @var CentreonDB|null
      */
     protected $pearDB = null;
-    
+
     /**
-     *
      * @var array
      */
-    protected $arguments= array();
-    
+    protected $arguments = array();
+
     /**
-     *
-     * @var string
+     * @var null
      */
     protected $token = null;
-    
+
     /**
-     *
-     * @var type
+     * @var
      */
     protected static $webServicePaths;
 
     /**
-     * Constructor
-     * @global type $pearDB
+     * CentreonWebService constructor.
      */
     public function __construct()
     {
@@ -75,7 +70,7 @@ class CentreonWebService
         $this->loadArguments();
         $this->loadToken();
     }
-    
+
     /**
      * Load arguments compared http method
      */
@@ -100,7 +95,7 @@ class CentreonWebService
                 break;
         }
     }
-    
+
     /**
      * Parse the body for get arguments
      * The body must be JSON format
@@ -115,7 +110,7 @@ class CentreonWebService
         }
         return $httpParams;
     }
-    
+
     /**
      * Load the token for class if exists
      */
@@ -124,6 +119,23 @@ class CentreonWebService
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
             $this->token = $_SERVER['HTTP_CENTREON_AUTH_TOKEN'];
         }
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the user has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if ($isInternal || $user->admin) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -151,14 +163,14 @@ class CentreonWebService
                 }
             }
         }
-        
+
         if (count($webServiceClass) === 0) {
             static::sendJson("Method not found", 404);
         }
 
         return $webServiceClass;
     }
-    
+
     /**
      * Send json return
      *
@@ -198,12 +210,16 @@ class CentreonWebService
             case 409:
                 header("HTTP/1.1 409 Conflict");
                 break;
+            case 206:
+                header("HTTP/1.1 206 Partial content");
+                $data = json_decode($data, true);
+                break;
         }
         header('Content-type: application/json');
         print json_encode($data);
         exit();
     }
-    
+
     /**
      * Update the ttl for a token if the authentication is by token
      */
@@ -211,10 +227,10 @@ class CentreonWebService
     {
         global $pearDB;
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = "UPDATE ws_token SET generate_date = NOW() WHERE token = '" .
-                $pearDB->escape($_SERVER['HTTP_CENTREON_AUTH_TOKEN']) ."'";
+            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = ?';
             try {
-                $pearDB->query($query);
+                $stmt = $pearDB->prepare($query);
+                $pearDB->execute($stmt, array((string)$_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
             } catch (Exception $e) {
                 static::sendJson("Internal error", 500);
             }
@@ -225,39 +241,53 @@ class CentreonWebService
      * Route the webservice to the good method
      * @global string _CENTREON_PATH_
      * @global type $pearDB3
+     *
+     * @param CentreonUser $user The current user
+     * @param boolean $isInternal If the Rest API call is internal
      */
-    public static function router()
+    public static function router($user, $isInternal = false)
     {
         global $pearDB;
-        
+
         /* Test if route is defined */
         if (false === isset($_GET['object']) || false === isset($_GET['action'])) {
             static::sendJson("Bad parameters", 400);
         }
-        
+
         $methodPrefix = strtolower($_SERVER['REQUEST_METHOD']);
         $object = $_GET['object'];
         $action = $methodPrefix . ucfirst($_GET['action']);
-        
+
         /* Generate path for WebService */
         self::$webServicePaths = glob(_CENTREON_PATH_ . '/www/api/class/*.class.php');
+
         $res = $pearDB->query("SELECT name FROM modules_informations");
         while ($row = $res->fetchRow()) {
-            self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php'));
+            self::$webServicePaths = array_merge(
+                self::$webServicePaths,
+                glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/webServices/rest/*.class.php')
+            );
         }
-        self::$webServicePaths = array_merge(self::$webServicePaths, glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php'));
-        
+        self::$webServicePaths = array_merge(
+            self::$webServicePaths,
+            glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
+        );
+
         $webService = self::webservicePath($object);
-        
+
         /* Initialize the webservice */
         require_once($webService['path']);
 
         $wsObj = new $webService['class']();
-        
+
         if (false === method_exists($wsObj, $action)) {
             static::sendJson("Method not found", 404);
         }
-        
+
+        if (false === $wsObj->authorize($action, $user, $isInternal)) {
+            static::sendJson('Forbidden', 403);
+        }
+
         /* Execute the action */
         try {
             static::updateTokenTtl();

@@ -150,8 +150,8 @@ $template->assign('params', $params);
 /**
  * Submit button
  */
-$form->addElement('button', 'submit', _("Apply"), array("onClick" => "submitData();"));
-$form->addElement('reset', 'reset', _("Reset"));
+$form->addElement('button', 'submit', _("Apply"), array("class" => "btc bt_success", "onClick" => "submitData();"));
+$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 $form->addElement('hidden', 'custom_view_id');
 $form->addElement('hidden', 'widget_id');
 $form->addElement('hidden', 'action');
@@ -194,7 +194,7 @@ function submitData()
                             var error = response.getElementsByTagName('error');
                             if (typeof(view) != 'undefined') {
                                 var viewId = view.item(0).firstChild.data;
-                                parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId);
+                                parent.jQuery("[name=widget_" + viewId +  "_" + widgetId + "]").attr('src', widgetUrl + '?widgetId='+ widgetId + '&customViewId=' + viewId);
                                 parent.jQuery.colorbox.close();
                             } else if (typeof(error) != 'undefined') {
                                 var errorMsg = error.item(0).firstChild.data;

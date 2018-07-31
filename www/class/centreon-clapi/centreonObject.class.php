@@ -39,6 +39,7 @@ require_once "centreonAPI.class.php";
 require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_."/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
+require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 
 abstract class CentreonObject
 {
@@ -54,6 +55,7 @@ abstract class CentreonObject
     const OBJECTNOTLINKED = "Objects are not linked";
 
     private $centreon_api = null;
+    protected static $instances;
 
     /**
      * Db adapter
@@ -109,6 +111,12 @@ abstract class CentreonObject
      * @var array
      */
     protected $exportExcludedParams;
+    /**
+     * cache to store object ids by object names
+     *
+     * @var array
+     */
+    protected $objectIds = array();
 
     /**
      * Constructor
@@ -127,6 +135,11 @@ abstract class CentreonObject
         $this->action = "";
         $this->delim = ";";
         $this->api = CentreonAPI::getInstance();
+    }
+
+    public function getObject()
+    {
+        return $this->object;
     }
 
     /**
@@ -178,9 +191,13 @@ abstract class CentreonObject
      */
     public function getObjectId($name)
     {
+        if (isset($this->objectIds[$name])) {
+            return $this->objectIds[$name];
+        }
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
         if (count($ids)) {
-            return $ids[0];
+            $this->objectIds[$name] = $ids[0];
+            return $this->objectIds[$name];
         }
         return 0;
     }
@@ -198,6 +215,29 @@ abstract class CentreonObject
             return $tmp[$this->object->getUniqueLabelField()];
         }
         return "";
+    }
+
+    /**
+     * Catch the beginning of the URL
+     *
+     * @return string
+     *
+     */
+    public function getBaseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https" : "http";
+        $port = '';
+        if (($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80) ||
+            ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
+        ) {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        }
+        $uri = 'centreon';
+        if (preg_match('/^(.+)\/api/', $_SERVER['REQUEST_URI'], $matches)) {
+            $uri = $matches[1];
+        }
+
+        return $protocol . '://' . $_SERVER['HTTP_HOST'] . $port . $uri;
     }
 
 
@@ -252,6 +292,23 @@ abstract class CentreonObject
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND.":".$objectName);
         }
+    }
+
+    /**
+     * Get a parameter
+     *
+     * @param string $parameters
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $p = $this->object->getParameters($params[0], $params[1]);
+        print $p[$params[1]] . "\n";
     }
 
     /**
@@ -340,17 +397,55 @@ abstract class CentreonObject
         $this->activate($objectName, '0');
     }
 
-    /**
-     * Export data
-     *
-     * @param string $parameters
-     * @return void
-     */
-    public function export($filters=null)
+    protected function canBeExported($filterName = null)
     {
+        $exported = CentreonExported::getInstance();
+
+        if (is_null($this->action)) {
+            return false;
+        }
+
+        if (is_null($filterName)) {
+            return true;
+        }
+
+        $filterId = $this->getObjectId($filterName);
+        $exported->ariane_push($this->action, $filterId, $filterName);
+        if ($exported->is_exported($this->action, $filterId, $filterName)) {
+            $exported->ariane_pop();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Export from a specific object
+     *
+     * @param $filterName
+     * @return bool
+     */
+    public function export($filterName = null)
+    {
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $filterId= $this->getObjectId($filterName);
+
+        $filters = array();
+        if (!is_null($filterId) && $filterId !== 0) {
+            $primaryKey = $this->getObject()->getPrimaryKey();
+            $filters[$primaryKey] = $filterId;
+        }
+        if (!is_null($filterName)) {
+            $labelField = $this->getObject()->getUniqueLabelField();
+            $filters[$labelField] = $filterName;
+        }
+
         $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $element[$param] = CentreonUtils::convertLineBreak($element[$param]);
                 $addStr .= $this->delim.$element[$param];
@@ -370,6 +465,10 @@ abstract class CentreonObject
                 }
             }
         }
+
+        CentreonExported::getInstance()->ariane_pop();
+
+        return true;
     }
 
     /**
@@ -379,10 +478,11 @@ abstract class CentreonObject
      * @param int $objId
      * @param string $objName
      * @param array $objValues
+     * @param string|null $objectType - The object type to log if is null use the object type of the class
      */
-    public function addAuditLog($actionType, $objId, $objName, $objValues = array())
+    public function addAuditLog($actionType, $objId, $objName, $objValues = array(), $objectType = null)
     {
-        $objType = strtoupper($this->action);
+        $objType = is_null($objectType) ? strtoupper($this->action) : $objectType;
         $objectTypes = array(
             'HTPL' => 'host',
             'STPL' => 'service',
@@ -421,10 +521,8 @@ abstract class CentreonObject
             $userId
         ));
 
-        $query = 'SELECT MAX(action_log_id) as action_log_id
-            FROM log_action
-            WHERE action_log_date = ?';
-        $stmt = $dbstorage->query($query, array($time));
+        $query = 'SELECT LAST_INSERT_ID() as action_log_id';
+        $stmt = $dbstorage->query($query);
         $row = $stmt->fetch();
         if (false === $row) {
             throw new CentreonClapiException("Error while inserting log action");
@@ -455,5 +553,41 @@ abstract class CentreonObject
                 throw $e;
             }
         }
+    }
+
+
+    /**
+     * Check illegal char defined into nagios.cfg file
+     *
+     * @param string $name The string to sanitize
+     * @return string The string sanitized
+     */
+    public function checkIllegalChar($name)
+    {
+        $dbResult = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+        while ($data = $dbResult->fetch()) {
+            $tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+            foreach ($tab as $char) {
+                $name = str_replace($char, "", $name);
+            }
+        }
+        $dbResult->closeCursor();
+        return $name;
+    }
+
+    /**
+    *
+    * @param void
+    * @return CentreonObject
+    */
+    public static function getInstance()
+    {
+        $class = get_called_class();
+
+        if (!isset(self::$instances[$class])) {
+            self::$instances[$class] = new $class;
+        }
+
+        return self::$instances[$class];
     }
 }

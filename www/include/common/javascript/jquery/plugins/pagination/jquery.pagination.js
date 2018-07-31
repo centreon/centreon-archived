@@ -242,6 +242,8 @@
         if (opts.load_first_page) {
             opts.callback(current_page, containers);
         }
+
+        return this;
     }; // End of jQuery.fn.pagination block
 
 })(jQuery);

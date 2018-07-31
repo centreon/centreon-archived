@@ -84,6 +84,10 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 
+/* Store in session the last type of call */
+$_SESSION['monitoring_host_status'] = $statusHost;
+$_SESSION['monitoring_host_status_filter'] = $statusFilter;
+
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
@@ -95,12 +99,6 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 }
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-/* Store in session the last type of call */
-if (isset($_GET['sSetOrderInMemory']) && $_GET['sSetOrderInMemory'] == "1") {
-    $_SESSION['monitoring_host_status'] = $statusHost;
-    $_SESSION['monitoring_host_status_filter'] = $statusFilter;
-}
-  
 /*
  * Backup poller selection
  */
@@ -195,7 +193,7 @@ if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
-if ($instance != -1) {
+if ($instance != -1 && !empty($instance)) {
     $rq1 .= " AND h.instance_id = ".$instance;
 }
 $rq1 .= " AND h.enabled = 1 ";
@@ -377,7 +375,7 @@ while ($data = $DBRESULT->fetchRow()) {
         $str = str_replace("\$HOSTSTATE\$", $obj->statusHost[$data['state']], $str);
 
         $str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str);
-        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["notes_url"], $str)));
+        $obj->XML->writeElement("hnu", CentreonUtils::escapeSecure($hostObj->replaceMacroInString($data["name"], $str)));
     } else {
         $obj->XML->writeElement("hnu", "none");
     }

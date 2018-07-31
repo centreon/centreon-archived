@@ -40,6 +40,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
 
 session_start();
+session_write_close();
 
 $centreon = $_SESSION['centreon'];
 if (!isset($centreon)) {
@@ -61,12 +62,13 @@ if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
 }
 
 if (isset($_GET['textArea']) && $_GET['textArea']) {
-    $tab = preg_split("/\;\;\;/", $_GET['textArea']);
+    $textArea = urldecode($_GET['textArea']);
+    $tab = preg_split("/\;\;\;/", $textArea);
     foreach ($tab as $key => $value) {
         $tab2 = preg_split("/\ \:\ /", $value, 2);
         $index = str_replace("ARG", "", $tab2[0]);
         if (isset($tab2[0]) && $tab2[0]) {
-            $args[$index] = $tab2[1];
+            $args[$index] = htmlentities($tab2[1]);
         }
     }
 }
@@ -85,8 +87,12 @@ $form = new HTML_QuickForm('Form', 'post');
 $form->addElement('header', 'title', _("Argument Descriptions"));
 $form->addElement('header', 'information', _("Arguments"));
 
-$subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();"));
-$subS = $form->addElement('button', 'close', _("Close"), array("onClick"=>"closeBox();"));
+$subS = $form->addElement(
+    'button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();", "class" => "btc bt_success")
+);
+$subS = $form->addElement(
+    'button', 'close', _("Close"), array("onClick"=>"closeBox();", "class" => "btc bt_default")
+);
 
 /*
  *  Smarty template

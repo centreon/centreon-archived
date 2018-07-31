@@ -121,7 +121,7 @@ function getCentreonBrokerInformation($id)
 
     $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
                     config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
-                    retention_path, command_file
+                    cache_directory, command_file, daemon
                   FROM cfg_centreonbroker 
                   WHERE config_id = " . $id;
     $res = $pearDB->query($query);
@@ -131,7 +131,8 @@ function getCentreonBrokerInformation($id)
             "name" => '',
             "filename" => '',
             "write_timestamp" => '1',
-            "write_thread_id" => "1",
+            "write_thread_id" => '1',
+            "activate_watchdog" => '1',
             "activate" => '1',
             "event_queue_max_size" => ''
         );
@@ -143,12 +144,14 @@ function getCentreonBrokerInformation($id)
         "filename" => $row['config_filename'],
         "ns_nagios_server" => $row['ns_nagios_server'],
         "activate" => $row['config_activate'],
+        "activate_watchdog" => $row['daemon'],
         "stats_activate" => $row['stats_activate'],
         "write_timestamp" => $row['config_write_timestamp'],
         "write_thread_id" => $row['config_write_thread_id'],
         "event_queue_max_size" => $row['event_queue_max_size'],
-        "retention_path" => $row['retention_path'],
-        "command_file" => $row['command_file']
+        "cache_directory" => $row['cache_directory'],
+        "command_file" => $row['command_file'],
+        "daemon" => $row['daemon']
     );
 
     return $brokerConf;
@@ -167,7 +170,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
         $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
         $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server,
-            event_queue_max_size, retention_path "
+            event_queue_max_size, cache_directory, daemon "
             . "FROM cfg_centreonbroker "
             . "WHERE config_id = " . $id . " ";
         $DBRESULT = $pearDB->query($query);
@@ -176,10 +179,12 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
 
         # Prepare values
         $values = array();
+        $values['activate_watchdog']['activate_watchdog'] = '0';
         $values['activate']['activate'] = '0';
         $values['ns_nagios_server'] = $row['ns_nagios_server'];
         $values['event_queue_max_size'] = $row['event_queue_max_size'];
-        $values['retention_path'] = $row['retention_path'];
+        $values['cache_directory'] = $row['cache_directory'];
+        $values['activate_watchdog']['activate_watchdog'] = $row['daemon'];
         $query = "SELECT config_key, config_value, config_group, config_group_id "
             . "FROM cfg_centreonbroker_info "
             . "WHERE config_id = " . $id . " ";

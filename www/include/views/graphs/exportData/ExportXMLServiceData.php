@@ -45,7 +45,10 @@ include_once(_CENTREON_PATH_."www/class/centreonXML.class.php");
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
+
 session_start();
+session_write_close();
+
 $sid = session_id();
 if (isset($sid)) {
     //$sid = CentreonDB::escape($_GET["sid"]);

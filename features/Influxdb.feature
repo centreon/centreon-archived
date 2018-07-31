@@ -9,6 +9,6 @@ Feature: Influxdb
     Scenario: Influxdb data save
         Given an Influxdb output is properly configured
         And a passive service is configured
-        And Broker and Engine are restarted
+        And I restart all pollers
         When new metric data is discovered by the engine for the service
         Then it is saved in Influxdb

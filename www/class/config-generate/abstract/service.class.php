@@ -76,7 +76,6 @@ abstract class AbstractService extends AbstractObject {
         service_recovery_notification_delay as recovery_notification_delay,
         service_stalking_options as stalking_options,
         service_register as register,
-        service_inherit_contacts_from_host,
         esi_notes as notes,
         esi_notes_url as notes_url,
         esi_action_url as action_url,
@@ -182,13 +181,13 @@ abstract class AbstractService extends AbstractObject {
                 if (!is_null($service['contact_additive_inheritance']) && $service['contact_additive_inheritance'] == 1) {
                     $service['contacts'] = '+' . $service['contacts'];
                 }
-        }
+            }
         }
     }
     
     protected function getContactGroups(&$service)
-    {        
-         if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
+    {
+        if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
             $service['contact_groups_cache'] = array();
             $service['contact_groups'] = "";
         } else {
@@ -209,7 +208,7 @@ abstract class AbstractService extends AbstractObject {
                 if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
                     $service['contact_groups'] = '+' . $service['contact_groups'];
                 }
-        }
+            }
         }
     }
     

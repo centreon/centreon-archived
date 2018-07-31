@@ -39,17 +39,21 @@ if (!isset($centreon)) {
 
 print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $centreon->user->lang; ?>">
+?>
+
+<!DOCTYPE html>
+<html lang="<?php echo $centreon->user->lang; ?>">
 <head>
     <title>Centreon - IT & Network Monitoring</title>
     <link rel="shortcut icon" href="./img/favicon.ico"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2016 Open Source Matters. All rights reserved."/>
+    <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" />
     <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
     <link href="./Themes/Centreon-2/Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>
@@ -60,6 +64,10 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
     <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+    <!-- graph css -->
+    <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
+    <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
+
     <?php
 
     // == Declare CSS for modules
@@ -75,9 +83,11 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
         <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui-tabs-rotate.js"></script>
         <script type="text/javascript">jQuery.noConflict();</script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
@@ -86,16 +96,29 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/themes/default.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/buzz/buzz.min.js"></script>
+        <script type='text/javascript' src='./include/common/javascript/visibility.min.js'></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/multiselectResizer.js"></script>
         <script type="text/javascript" src="./include/common/javascript/centreon/popin.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jquery.nicescroll.min.js"></script>
         <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.js"></script>
+        <script type="text/javascript" src="./include/common/javascript/clipboard.min.js"></script>
         <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
+        <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
-    <?php
+    <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
+    <!-- graph js -->
+    <script src="./include/common/javascript/charts/d3.min.js"></script>
+    <script src="./include/common/javascript/charts/c3.min.js"></script>
+    <script src="./include/common/javascript/charts/d3-timeline.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-graph.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-c3.js"></script>
+    <script src="./include/common/javascript/numeral.min.js"></script>
+    <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 
+    <?php
     /*
      * Add Javascript for NDO status Counter
      */
@@ -160,20 +183,26 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     ?>
     <script type='text/javascript'>
         <?php
-        require_once("./include/core/autologout/autologout.php");
+        /* Deactive refresh/autologout if new header feature is activated */
+        if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+            require_once("./include/core/autologout/autologout.php");
+        }
         ?>
         jQuery(function () {
             <?php
 
-            if ($centreon->user->access->admin == 0) {
-                $tabActionACL = $centreon->user->access->getActions();
-                if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
-                }
-                unset($tabActionACL);
-            } else {
-                if ($min != 1) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+            /* Deactive refresh if new header feature is activated */
+            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+                if ($centreon->user->access->admin == 0) {
+                    $tabActionACL = $centreon->user->access->getActions();
+                    if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
+                    unset($tabActionACL);
+                } else {
+                    if ($min != 1) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
                 }
             }
 
@@ -197,8 +226,10 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                     echo "}";
                 }
             }
+            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
             ?>
             check_session();
+            <?php } ?>
         });
     </script>
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>

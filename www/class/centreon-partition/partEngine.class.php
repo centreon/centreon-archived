@@ -86,7 +86,10 @@ class PartEngine
         $ltime = localtime();
         $current_time = mktime(0, 0, 0, $ltime[4]+1, $ltime[3]-$table->getRetention(), $ltime[5]+1900);
 
-        return "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $current_time;
+        $condition =  "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $current_time . " "
+            . "AND PARTITION_DESCRIPTION != 'MAXVALUE' ";
+
+        return $condition;
     }
     
     private function updateAddDailyPartitions($db, $tableName, $month, $day, $year, $hasMaxValuePartition = false)
@@ -102,8 +105,8 @@ class PartEngine
             $day = "0" . $day;
         }
             
-        print "[".date(DATE_RFC822)."][updateParts] Create new part : " . ($ntime[5] + 1900) . $month . $day
-            . " - Range: $current_time\n";
+        print "[".date(DATE_RFC822)."][updateParts] Create new part for table " . $tableName . " : "
+            . ($ntime[5] + 1900) . $month . $day . " - Range: $current_time\n";
 
         $partitionQuery = "PARTITION `p" . ($ntime[5] + 1900) . $month . $day
             . "` VALUES LESS THAN(" . $current_time . ")";
@@ -142,7 +145,14 @@ class PartEngine
         # Gap when you have a cron not updated
         while ($lastTime < $current_time) {
             $ntime = localtime($lastTime);
-            $lastTime = $this->updateAddDailyPartitions($db, $tableName, $ntime[4]+1, $ntime[3]+1, $ntime[5]+1900);
+            $lastTime = $this->updateAddDailyPartitions(
+                $db,
+                $tableName,
+                $ntime[4]+1,
+                $ntime[3]+1,
+                $ntime[5]+1900,
+                $hasMaxValuePartition
+            );
         }
         while ($current_time < $lastTime) {
             $how_much_forward++;
@@ -233,8 +243,7 @@ class PartEngine
         
         if (is_null($partition_part)) {
             throw new Exception(
-                "SQL Error: Cannot build partition part "
-                . $table->getSchema() . "," . $DBRESULT->getDebugInfo() . "\n"
+                "SQL Error: Cannot build partition part \n"
             );
         }
         
@@ -402,7 +411,7 @@ class PartEngine
         if (!isset($row["Create_options"])) {
             throw new Exception("Cannot find Create_options for table ".$tableName."\n");
         }
-        if ($row["Create_options"] != "partitioned") {
+        if (!preg_match("/partitioned/", $row["Create_options"])) {
             throw new Exception("Error: cannot update non partitioned table ".$tableName."\n");
         }
 
@@ -610,15 +619,15 @@ class PartEngine
     {
         # Check if pmax partition exists 
         $request = "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS ";
-        $request .= "WHERE TABLE_NAME='".$table->getName()."' ";
-        $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
+        $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
+        $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
         $request .= "AND PARTITION_NAME = 'pmax' ";
 
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
-                . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
+                . $table->getName() . ", " . $DBRESULT->getDebugInfo() . "\n"
             );
         }
 

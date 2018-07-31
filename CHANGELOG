@@ -1,3 +1,10 @@
+## Centreon Web 2.8.2
+
+* Enh: Centreon Web supports proxy configuration for use with its modules requiring external web access. This notably concerns Centreon Plugin Pack Manager (component of the Centreon IMP offer).
+* Fix: Can't delete host command on host/host template form
+* Fix: Centreon Clapi call and empty line at beginning
+* Fix: Options missing in notification tab
+
 ## Centreon Web 2.8.0
 * Re-organization of sources
 * Move API from /include/webServices/rest to /api/

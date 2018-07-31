@@ -42,6 +42,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
+session_write_close();
 
 if (!isset($_POST['data']) || !isset($_SESSION['centreon'])) {
     exit;

@@ -35,196 +35,231 @@
  * SVN : $Id: pagination.php 10473 2010-05-19 21:25:56Z jmathis $
  *
  */
-	global $oreon;
+global $oreon;
 
-	if (!isset($oreon)) {
-		exit();
-    }
+if (!isset($oreon)) {
+    exit();
+}
 
-	global $bNewChart, $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $rows, $p, $gopt, $pagination, $poller, $order, $orderby;
+global $bNewChart, $num, $limit, $search, $url, $pearDB, $search_type_service,
+       $search_type_host, $host_name, $rows, $p, $gopt, $pagination, $poller, $order, $orderby;
 
-	isset($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
-	isset($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
+isset($_GET["type"]) ? $type = $_GET["type"] : $stype = null;
+isset($_GET["o"]) ? $o = $_GET["o"] : $o = null;
 
-	$searchString = "";
-    if (isset($_REQUEST)) {
-        foreach ($_REQUEST as $key => $value) {
-            if (preg_match("/^search/", $key)) {
-                $searchString .= "&$key=$value";
-            }
+$searchString = "";
+if (isset($_REQUEST)) {
+    foreach ($_REQUEST as $key => $value) {
+        if (preg_match("/^search/", $key)) {
+            $searchString .= "&$key=$value";
         }
     }
+}
 
 
-	if (isset($_GET["num"])) {
-		$num = $_GET["num"];
-    } else if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
-		$num = $oreon->historyPage[$url];
+if (isset($_GET["num"])) {
+    $num = $_GET["num"];
+} else {
+    if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
+        $num = $oreon->historyPage[$url];
     } else {
-		$num = 0;
+        $num = 0;
     }
+}
 
-	$num = mysql_real_escape_string($num);
+$num = mysql_real_escape_string($num);
 
-	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
+$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
-	if (isset($_GET["search_type_service"])){
-		$search_type_service = $_GET["search_type_service"];
-		$oreon->search_type_service = $_GET["search_type_service"];
-	} else if (isset($oreon->search_type_service)) {
-		 $search_type_service = $oreon->search_type_service;
+if (isset($_GET["search_type_service"])) {
+    $search_type_service = $_GET["search_type_service"];
+    $oreon->search_type_service = $_GET["search_type_service"];
+} else {
+    if (isset($oreon->search_type_service)) {
+        $search_type_service = $oreon->search_type_service;
     } else {
-		$search_type_service = NULL;
+        $search_type_service = null;
     }
-    
-	if (isset($_GET["search_type_host"])){
-		$search_type_host = $_GET["search_type_host"];
-		$oreon->search_type_host = $_GET["search_type_host"];
-	} else if (isset($oreon->search_type_host)) {
-		 $search_type_host = $oreon->search_type_host;
+}
+
+if (isset($_GET["search_type_host"])) {
+    $search_type_host = $_GET["search_type_host"];
+    $oreon->search_type_host = $_GET["search_type_host"];
+} else {
+    if (isset($oreon->search_type_host)) {
+        $search_type_host = $oreon->search_type_host;
     } else {
-		$search_type_host = NULL;
+        $search_type_host = null;
     }
-    
-	if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) && !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)){
-		$search_type_host = 1;
-		$oreon->search_type_host = 1;
-		$search_type_service = 1;
-		$oreon->search_type_service = 1;
-	}
+}
 
-	$url_var = "";
-	$url_var .= "&search_type_service=" . $search_type_service;
-	$url_var .= "&search_type_host=" . $search_type_host;
+if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) &&
+    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)) {
+    $search_type_host = 1;
+    $oreon->search_type_host = 1;
+    $search_type_service = 1;
+    $oreon->search_type_service = 1;
+}
 
-	if (isset($_GET["sort_types"])){
-		$url_var .= "&sort_types=".$_GET["sort_types"];
-		$sort_type = $_GET["sort_types"];
-	}
+$url_var = "";
+$url_var .= "&search_type_service=" . $search_type_service;
+$url_var .= "&search_type_host=" . $search_type_host;
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = initSmartyTpl($path, new Smarty(), "./include/configuration/configKnowledge/");
+if (isset($_GET["sort_types"])) {
+    $url_var .= "&sort_types=" . $_GET["sort_types"];
+    $sort_type = $_GET["sort_types"];
+}
 
-	$page_max = ceil($rows / $limit);
-	if ($num >= $page_max && $rows) {
-		$num = $page_max - 1;
-	}
+/*
+ * Smarty template Init
+ */
+$tpl = initSmartyTpl($path, new Smarty(), "./include/configuration/configKnowledge/");
 
-	$pageArr = array();
-	$istart = 0;
-	for ($i = 5, $istart = $num; $istart && $i > 0; $i--) {
-		$istart--;
+$page_max = ceil($rows / $limit);
+if ($num >= $page_max && $rows) {
+    $num = $page_max - 1;
+}
+
+$pageArr = array();
+$istart = 0;
+for ($i = 5, $istart = $num; $istart && $i > 0; $i--) {
+    $istart--;
+}
+
+for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
+    $iend++;
+}
+
+
+if ($rows != 0) {
+    for ($i = $istart; $i <= $iend; $i++) {
+        $pageArr[$i] = array(
+            "url_page" => "./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$i&limit=" .
+                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var,
+            "label_page" => "<b>" . ($i + 1) . "</b>",
+            "num" => $i
+        );
     }
-    
-	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit - 1)) && ( $i2 < (5 + $i)); $i2++) {
-		$iend++;
+
+    if ($i > 1) {
+        $tpl->assign("pageArr", $pageArr);
     }
-    
-    
-	if ($rows != 0) {
 
-		for ($i = $istart; $i <= $iend; $i++){
-			$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&order=".$order."&orderby=".$orderby."&num=$i&limit=".$limit.$searchString."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
-        }
-        
-        
-		if ($i > 1) {
-			$tpl->assign("pageArr", $pageArr);
-        }
+    $tpl->assign("num", $num);
+    $tpl->assign("first", _("First page"));
+    $tpl->assign("previous", _("Previous page"));
+    $tpl->assign("next", _("Next page"));
+    $tpl->assign("last", _("Last page"));
 
-		$tpl->assign("num", $num);
-		$tpl->assign("first", _("First page"));
-		$tpl->assign("previous", _("Previous page"));
-		$tpl->assign("next", _("Next page"));
-		$tpl->assign("last", _("Last page"));
+    if (($prev = $num - 1) >= 0) {
+        $tpl->assign(
+            'pagePrev',
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$prev&limit=" .
+                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+        );
+    }
 
-		if (($prev = $num - 1) >= 0) {
-			$tpl->assign('pagePrev', ("./main.php?p=".$p."&order=".$order."&orderby=".$orderby."&num=$prev&limit=".$limit.$searchString."&type=".$type."&o=" . $o .$url_var));
-        }
-        
-		if (($next = $num + 1) < ($rows/$limit)) {
-			$tpl->assign('pageNext', ("./main.php?p=".$p."&order=".$order."&orderby=".$orderby."&num=$next&limit=".$limit.$searchString."&type=".$type."&o=" . $o .$url_var));
-        }
-        
-		$pageNumber = ceil($rows / $limit);
-		if (($rows / $limit) > 0) {
-			$tpl->assign('pageNumber', ($num +1)."/".$pageNumber);
-        } else {
-			$tpl->assign('pageNumber', ($num)."/".$pageNumber);
-        }
-        
-		if ($page_max > 5 && $num != 0) {
-			$tpl->assign('firstPage', ("./main.php?p=".$p."&order=".$order."&orderby=".$orderby."&num=0&limit=".$limit.$searchString."&type=".$type."&o=" . $o .$url_var));
-        }
-        
-		if ($page_max > 5 && $num != ($pageNumber-1)) {
-			$tpl->assign('lastPage', ("./main.php?p=".$p."&order=".$order."&orderby=".$orderby."&num=".($pageNumber-1)."&limit=".$limit.$searchString."&type=".$type."&o=" . $o .$url_var));
-        }
-        
-		/*
-		 * Select field to change the number of row on the page
-		 */
-		for ($i = 10; $i <= 100; $i = $i +10) {
-			$select[$i]=$i;
-        }
-        
-		if (isset($gopt[$pagination]) && $gopt[$pagination]) {
-			$select[$gopt[$pagination]] = $gopt[$pagination];
-        }
-        
-		if (isset($rows) && $rows) {
-			$select[$rows] = $rows;
-        }
-        
-		ksort($select);
-	}
+    if (($next = $num + 1) < ($rows / $limit)) {
+        $tpl->assign(
+            'pageNext',
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$next&limit=" .
+                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+        );
+    }
 
-	?><script type="text/javascript">
-	function setL(_this){
-		var _l = document.getElementsByName('l');
-		document.forms['form'].elements['limit'].value = _this;
-		_l[0].value = _this;
-		_l[1].value = _this;
-	}
-	</SCRIPT>
-	<?php
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
-	$selLim->setSelected($limit);
+    $pageNumber = ceil($rows / $limit);
+    if (($rows / $limit) > 0) {
+        $tpl->assign('pageNumber', ($num + 1) . "/" . $pageNumber);
+    } else {
+        $tpl->assign('pageNumber', ($num) . "/" . $pageNumber);
+    }
 
-	/*
-	 * Element we need when we reload the page
-	 */
-	$form->addElement('hidden', 'p');
-	$form->addElement('hidden', 'search');
-	$form->addElement('hidden', 'num');
-	$form->addElement('hidden', 'order');
-	$form->addElement('hidden', 'type');
-	$form->addElement('hidden', 'sort_types');
-	$form->setDefaults(array("p" => $p, "search" => $search, "num"=>$num));
+    if ($page_max > 5 && $num != 0) {
+        $tpl->assign(
+            'firstPage',
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=0&limit=" .
+                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+        );
+    }
 
-	/*
-	 * Init QuickForm
-	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
+    if ($page_max > 5 && $num != ($pageNumber - 1)) {
+        $tpl->assign(
+            'lastPage',
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=" . ($pageNumber - 1) .
+                "&limit=" . $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+        );
+    }
 
-	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
-	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
+    /*
+     * Select field to change the number of row on the page
+     */
+    for ($i = 10; $i <= 100; $i = $i + 10) {
+        $select[$i] = $i;
+    }
 
-	$tpl->assign("host_name", $host_name);
-	$tpl->assign("status", $status);
-	$tpl->assign("limite", $limite);
-	$tpl->assign("begin", $num);
-	$tpl->assign("end", $limit);
-	$tpl->assign("pagin_page", _("Page"));
-	$tpl->assign("order", $_GET["order"]);
-	$tpl->assign("tab_order", $tab_order);
-	$tpl->assign('form', $renderer->toArray());
+    if (isset($gopt[$pagination]) && $gopt[$pagination]) {
+        $select[$gopt[$pagination]] = $gopt[$pagination];
+    }
 
+    if (isset($rows) && $rows) {
+        $select[$rows] = $rows;
+    }
 
-	$tpl->display("templates/pagination.ihtml");
+    ksort($select);
+}
 
 ?>
+    <script type="text/javascript">
+        function setL(_this) {
+            var _l = document.getElementsByName('l');
+            document.forms['form'].elements['limit'].value = _this;
+            _l[0].value = _this;
+            _l[1].value = _this;
+        }
+    </SCRIPT>
+<?php
+$form = new HTML_QuickForm(
+    'select_form',
+    'GET',
+    "?p=" . $p . "&search_type_service=" . $search_type_service . "&search_type_host=" . $search_type_host
+);
+$selLim =& $form->addElement(
+    'select',
+    'l',
+    _("Rows"),
+    $select,
+    array("onChange" => "setL(this.value);  this.form.submit()")
+);
+$selLim->setSelected($limit);
+
+/*
+ * Element we need when we reload the page
+ */
+$form->addElement('hidden', 'p');
+$form->addElement('hidden', 'search');
+$form->addElement('hidden', 'num');
+$form->addElement('hidden', 'order');
+$form->addElement('hidden', 'type');
+$form->addElement('hidden', 'sort_types');
+$form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
+
+/*
+ * Init QuickForm
+ */
+$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+
+isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = null;
+isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
+
+$tpl->assign("host_name", $host_name);
+$tpl->assign("status", $status);
+$tpl->assign("limite", $limite);
+$tpl->assign("begin", $num);
+$tpl->assign("end", $limit);
+$tpl->assign("pagin_page", _("Page"));
+$tpl->assign("order", $_GET["order"]);
+$tpl->assign("tab_order", $tab_order);
+$tpl->assign('form', $renderer->toArray());
+
+$tpl->display("templates/pagination.ihtml");

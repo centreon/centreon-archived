@@ -33,65 +33,67 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 {
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    /**
-     *
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
+        $queryValues = array();
+
         global $centreon;
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $filterAclgroup = array();
+
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $filterAclgroup[] = ' acl_group_id IN (' . $acl->getAccessGroupsString() . ') ';
+        }
+
+        if (isset($this->arguments['q'])) {
+            $filterAclgroup[] = " (acl_group_name LIKE ? OR acl_group_alias LIKE ?) ";
+            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
+            $queryValues[] = '%' . (string)$this->arguments['q'] . '%';
+        }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $offset = $this->arguments['page_limit'];
-            $range = $limit . ',' . $offset;
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $limit = $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$limit;
         } else {
             $range = '';
         }
 
-        $filterAclgroup = array();
-        if (isset($this->arguments['q'])) {
-            $filterAclgroup['acl_group_name'] = array('LIKE', '%' . $this->arguments['q'] . '%');
-            $filterAclgroup['acl_group_alias'] = array('LIKE', '%' . $this->arguments['q'] . '%');
+        $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT acl_group_id, acl_group_name FROM acl_groups ";
+        if (count($filterAclgroup)) {
+            $query .= ' WHERE ' . implode(' AND ', $filterAclgroup);
         }
-        
-        $acl = new CentreonACL($centreon->user->user_id);
-        $aclgs = $acl->getAclGroupAclConf(
-            array(
-                'fields'  => array('acl_group_id', 'acl_group_name'),
-                'get_row' => 'acl_group_name',
-                'keys' => array('acl_group_id'),
-                'conditions' => $filterAclgroup,
-                'order' => array('acl_group_name'),
-                'pages' => $range,
-                'total' => true
-            )
-        );
-        
+        $query .= " ORDER BY acl_group_name " . $range;
+
+        $stmt = $this->pearDB->prepare($query);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
+
         $aclgroupList = array();
-        foreach ($aclgs['items'] as $id => $aclgroup) {
-            $aclgroupList['items'][] = array(
-                'id' => $id,
-                'text' => $aclgroup
+        while ($data = $dbResult->fetchRow()) {
+            $aclgroupList[] = array(
+                'id' => $data['acl_group_id'],
+                'text' => $data['acl_group_name']
             );
         }
-        $aclgroupList['total'] = $aclgs['total'];
-        
-        return $aclgroupList;
+
+        return array(
+            'items' => $aclgroupList,
+            'total' => $this->pearDB->numberRows()
+        );
     }
 }

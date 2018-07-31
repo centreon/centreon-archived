@@ -1,9 +1,5 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -26,8 +22,7 @@ class SaveSearchSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
 
         /* Add search to select2 */
@@ -41,9 +36,9 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            },
-            30
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+            }
         );
 
         $this->getSession()->executeScript(
@@ -88,9 +83,9 @@ class SaveSearchSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
-            },
-            30
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) == 4;
+            }
         );
     }
 

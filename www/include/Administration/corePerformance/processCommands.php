@@ -31,19 +31,16 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-    require_once _CENTREON_PATH_ . "/www/class/centreonExternalCommand.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonExternalCommand.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
-    CentreonSession::start();
+CentreonSession::start(1);
 
 if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["type"])) {
     exit();
@@ -78,26 +75,27 @@ if (!$oreon->user->access->checkAction($cmd)) {
     exit();
 }
 
-    /*
-     * Get Init Script
-     */
-    $DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
-    $serveurs = $DBRESULT->fetchrow();
-    unset($DBRESULT);
-    (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
-    unset($serveurs);
+/*
+ * Get Init Script
+ */
+$DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+$serveurs = $DBRESULT->fetchrow();
+unset($DBRESULT);
+(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "centengine";
+unset($serveurs);
 
-    /*
-	 * Init Command Object
-	 */
-    $command = new CentreonExternalCommand($oreon);
+/*
+ * Init Command Object
+ */
+$command = new CentreonExternalCommand($oreon);
 
-    /*
-	 * Check if command is start or not
-	 */
+/*
+ * Check if command is start or not
+ */
+
 if ($cmd == "global_start") {
     if (isset($command->localhostTab[$poller])) {
-        shell_exec("sudo " . $nagios_init_script . " start");
+        shell_exec("sudo service" . $nagios_init_script . " start");
     } else {
         shell_exec("echo 'START:".$poller."' >> $centcore_pipe");
     }
@@ -107,23 +105,23 @@ if ($cmd == "global_start") {
     $result = $command->write();
 }
 
-    /*
-	 * Start XML
-	 */
-    $buffer = new CentreonXML();
-    $buffer->startElement("root");
-    $buffer->writeElement("result", $result);
-    $buffer->writeElement("cmd", $cmd);
+/*
+ * Start XML
+ */
+$buffer = new CentreonXML();
+$buffer->startElement("root");
+$buffer->writeElement("result", $result);
+$buffer->writeElement("cmd", $cmd);
 
-    $type ? $type = 0 : $type = 1;
-    $buffer->writeElement("actiontype", $type);
+$type ? $type = 0 : $type = 1;
+$buffer->writeElement("actiontype", $type);
 
-    $buffer->endElement();
+$buffer->endElement();
 
-    /*
-	 * Send headers
-	 */
-    header('Content-type: text/xml; charset=utf-8');
-    header('Cache-Control: no-cache, must-revalidate');
+/*
+ * Send headers
+ */
+header('Content-type: text/xml; charset=utf-8');
+header('Cache-Control: no-cache, must-revalidate');
 
-    $buffer->output();
+$buffer->output();

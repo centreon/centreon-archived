@@ -1,0 +1,15 @@
+@media screen and (max-width: 1440px) {
+    pre#command_line {
+        max-width: 600px;
+    }
+}
+@media screen and (min-width: 1441px) and (max-width: 1600px) {
+    pre#command_line {
+        max-width: 800px;
+    }
+}
+@media screen and (min-width: 1601px) {
+    pre#command_line {
+        max-width: 900px;
+    }
+}

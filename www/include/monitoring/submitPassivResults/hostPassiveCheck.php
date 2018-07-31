@@ -87,8 +87,8 @@ if ($is_admin || ($flag_acl && !$is_admin)) {
     $form->addElement('hidden', 'cmd', $cmd);
     $form->addElement('hidden', 'p', $p);
 
-    $form->addElement('submit', 'submit', _("Save"));
-    $form->addElement('reset', 'reset', _("Reset"));
+    $form->addElement('submit', 'submit', _("Save"), array("class" => "btc bt_success"));
+    $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
     # Smarty template Init
     $tpl = new Smarty();

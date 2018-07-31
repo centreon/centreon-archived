@@ -99,9 +99,10 @@
                             {$form.services.html}
                         </td>
                     </tr>
-                    {if $admin}
-                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$serviceTemplateTxt}</td><td class="FormRowValue">{$form.service_templates.html}</td></tr>
-                    {/if}
+                    <tr class="list_two">
+		        <td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$serviceTemplateTxt}</td>
+			<td class="FormRowValue">{$form.service_templates.html}</td>
+		    </tr>
                 </tbody>
             </table>
         </div>

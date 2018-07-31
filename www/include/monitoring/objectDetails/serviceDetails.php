@@ -154,7 +154,7 @@ if (!is_null($host_id)) {
         $tab_status = array();
 
         /*
-         * start ndo service info
+         * Get all service information 
          */
         $rq = "SELECT s.service_id, " .
             " s.state AS current_state," .
@@ -195,7 +195,10 @@ if (!is_null($host_id)) {
             " s.action_url, " .
             " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
-            " WHERE h.host_id = s.host_id AND h.name LIKE '" . $pearDB->escape($host_name) . "' AND s.description LIKE '" . $pearDB->escape($svc_description) . "' AND h.instance_id = i.instance_id " .
+            " WHERE h.host_id = s.host_id " . 
+            " AND h.host_id LIKE '" . $pearDB->escape($host_id) . "'" .
+            " AND s.service_id LIKE '" . $pearDB->escape($service_id) . "'".
+            " AND h.instance_id = i.instance_id " .
             " AND h.enabled = 1 " .
             " AND s.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq);
@@ -217,7 +220,7 @@ if (!is_null($host_id)) {
         $DBRESULT->free();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $service_status["service_id"]);
+            $service_status["command_line"] = hidePasswordInCommand($service_status["check_command"], $host_id, $service_status["service_id"]);
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
@@ -237,7 +240,7 @@ if (!is_null($host_id)) {
         $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
         // Get Host informations
-        $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = " . $pearDB->escape($host_id) . "");
+        $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = " . $pearDB->escape($host_id));
         $host = $DBRESULT->fetchrow();
         $DBRESULT->free();
 
@@ -298,7 +301,7 @@ if (!is_null($host_id)) {
          * Ajust data for beeing displayed in template
          */
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-        $service_status['command_line'] = str_replace(' --', "\n\t--", $service_status['command_line']);
+        $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
         $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
 
@@ -430,7 +433,7 @@ if (!is_null($host_id)) {
 
         $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
 
-        $DBRES = $pearDBO->query("SELECT id FROM `index_data`, metrics WHERE metrics.index_id = index_data.id AND host_name LIKE '" . $pearDBO->escape($host_name) . "' AND service_description LIKE '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
+        $DBRES = $pearDBO->query("SELECT id FROM `index_data` WHERE host_name = '" . $pearDBO->escape($host_name) . "' AND service_description = '" . $pearDBO->escape($svc_description) . "' LIMIT 1");
         $index_data = 0;
         if ($DBRES->numRows()) {
             $row = $DBRES->fetchRow();
@@ -562,6 +565,7 @@ if (!is_null($host_id)) {
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
         $tpl->assign("svc_display_name", CentreonUtils::escapeSecure($serviceDescriptionDisplay));
         $tpl->assign("svc_description", CentreonUtils::escapeSecure($svc_description));
+        $tpl->assign("url_svc_id", urlencode(CentreonUtils::escapeSecure($host_name)).';'.urlencode(CentreonUtils::escapeSecure($svc_description)));
         $tpl->assign("status_str", _("Status Graph"));
         $tpl->assign("detailed_graph", _("Detailed Graph"));
 
@@ -688,9 +692,9 @@ if (!is_null($host_id)) {
 ?>
 <?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
-    var glb_confirm = '<?php  echo _("Submit command?"); ?>';
-    var command_sent = '<?php echo _("Command sent"); ?>';
-    var command_failure = '<?php echo _("Failed to execute command");?>';
+    var glb_confirm = "<?php  echo _("Submit command?"); ?>";
+    var command_sent = "<?php echo _("Command sent"); ?>";
+    var command_failure = "<?php echo _("Failed to execute command");?>";
     var host_id = '<?php echo $host_id;?>';
     var svc_id = '<?php echo $service_id;?>';
     var labels = new Array();

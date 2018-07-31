@@ -1,3 +1,5 @@
+.. _pollers_basic_conf:
+
 ======
 Poller
 ======

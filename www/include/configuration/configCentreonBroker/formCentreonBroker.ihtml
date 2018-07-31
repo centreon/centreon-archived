@@ -27,8 +27,14 @@
             <tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.retention_path.label}</td><td class="FormRowValue">{$form.retention_path.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField">{$form.cache_directory.label}</td><td class="FormRowValue">{$form.cache_directory.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.activate_watchdog.label}</td><td class="FormRowValue">{$form.activate_watchdog.html}</td></tr>
+			<tr class="list_lvl_2">
+				<td class="ListColLvl1_name" colspan="2">
+					<h4>{$centreonbroker_watchdog_log}</h4>
+				</td>
+			</tr>
+            <tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{$centreonbroker_log_options}</h4>
@@ -156,7 +162,7 @@ function addInfo(type) {
                     checkTypeValidity('block_' + type);
                     jQuery("#"+id_name).centreonValidate();
                     clonifyTableFields('parentGroup','displaynamegroup');
-                    addCollapse();
+                    addCollapse(id_name);
                     openNewElem(id_name);
                 }
             }
@@ -201,10 +207,15 @@ function loadedConfiguration() {
 function changeTab(tab) {
     jQuery('#Form').centreonValidate('validate');
     purgeHideInput(tab);
-    initCollapsebyTab(tab);
     if(tab == "tab4"){
         clonifyTableFields('parentGroup','displaynamegroup');
     }
+    jQuery(function() {
+        jQuery.each(jQuery('[data-ontab-fn]'), function () {
+            window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+        });
+    });
+    initCollapsebyTab(tab);
 }
 
 function purgeHideInput(tab) {

@@ -39,115 +39,134 @@ if (!isset($centreon)) {
     
 include("./include/common/autoNumLimit.php");
 
-# QuickSearch
-$SearchStr = "";
+$searchStr = "";
 $search = '';
 if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
     $search = $_POST['searchACLA'];
-    $SearchStr = " WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+    $searchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 }
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
-    
+$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_actions ".$searchStr);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
+$DBRESULT->free();
 
 include("./include/common/checkPagination.php");
 
-# Smarty template Init
+/*
+ * Smarty template Init
+ */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
-# start header menu
+
+/*
+ * start header menu
+ */
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_alias", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-# end header menu
 
-$SearchStr = "";
-if ($search) {
-    $SearchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_action_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+$searchStr = "";
+if (isset($search) && $search) {
+    $searchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_action_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 }
-$rq = "SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate FROM acl_actions $SearchStr ORDER BY acl_action_name LIMIT ".$num * $limit.", ".$limit;
-$DBRESULT = $pearDB->query($rq);
+$DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate
+    FROM acl_actions $searchStr ORDER BY acl_action_name LIMIT ".$num * $limit.", ".$limit);
 
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-#Different style between each lines
+
+/*
+ * Different style between each lines
+ */
 $style = "one";
 
-#Fill a tab with a mutlidimensionnal Array we put in $tpl
+/*
+ * Fill a tab with a mutlidimensionnal Array we put in $tpl
+ */
 $elemArr = array();
 for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$topo['acl_action_id']."]");
+
     if ($topo["acl_action_activate"]) {
-        $moptions = "<a href='main.php?p=".$p."&acl_action_id=".$topo['acl_action_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_action_id=".$topo['acl_action_id']
+            . "&o=u&limit=".$limit."&num=".$num."&search=".$search
+            . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
+            . _("Disabled")."'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=".$p."&acl_action_id=".$topo['acl_action_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+        $moptions = "<a href='main.php?p=".$p."&acl_action_id=".$topo['acl_action_id']
+            . "&o=s&limit=".$limit."&num=".$num."&search=".$search
+            . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
+            . _("Enabled")."'></a>&nbsp;&nbsp;";
     }
+
     $moptions .= "&nbsp;";
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$topo['acl_action_id']."]'></input>";
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) "
+        . "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) "
+        . "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" "
+        . "name='dupNbr[".$topo['acl_action_id']."]'></input>";
+
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr FROM acl_group_actions_relations WHERE acl_action_id = '".$topo['acl_action_id']."'";
-    $DBRESULT2 = $pearDB->query($rq);
+    $DBRESULT2 = $pearDB->query("SELECT COUNT(*) AS nbr FROM acl_group_actions_relations 
+        WHERE acl_action_id = '".$topo['acl_action_id']."'");
     $ctNbr = $DBRESULT2->fetchRow();
-    $elemArr[$i] = array("MenuClass"=>"list_".$style,
-                    "RowMenu_select"=>$selectedElements->toHtml(),
-                    "RowMenu_name"=>$topo["acl_action_name"],
-                    "RowMenu_link"=>"?p=".$p."&o=c&acl_action_id=".$topo['acl_action_id'],
-                    "RowMenu_alias"=>myDecode($topo["acl_action_description"]),
-                    "RowMenu_status"=>$topo["acl_action_activate"] ? _("Enabled") : _("Disabled"),
-                    "RowMenu_badge" => $topo["acl_action_activate"] ? "service_ok" : "service_critical",
-                    "RowMenu_options"=>$moptions);
+
+    $elemArr[$i] = array("MenuClass" => "list_".$style,
+        "RowMenu_select" => $selectedElements->toHtml(),
+        "RowMenu_name" => $topo["acl_action_name"],
+        "RowMenu_link" => "?p=".$p."&o=c&acl_action_id=".$topo['acl_action_id'],
+        "RowMenu_alias" => myDecode($topo["acl_action_description"]),
+        "RowMenu_status" => $topo["acl_action_activate"] ? _("Enabled") : _("Disabled"),
+        "RowMenu_badge" => $topo["acl_action_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_options" => $moptions);
                     
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
-#Different messages we put in the template
-$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
-#
-##Toolbar select 
-#
+/*
+ * Different messages we put in the template
+ */
+$tpl->assign('msg', array(
+    "addL" => "?p=" . $p . "&o=a",
+    "addT" => _("Add"),
+    "delConfirm" => _("Do you confirm the deletion ?")
+));
+
+/*
+ * Toolbar select lgd_more_actions
+ */
 ?>
 <script type="text/javascript">
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
-</SCRIPT>
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
-$attrs1 = array(
-    'onchange'=>"javascript: " .
-            "if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "else if (this.form.elements['o1'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['o1'].value); submit();} " .
-            "");
-$form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-$form->setDefaults(array('o1' => null));
-    
-$attrs2 = array(
-    'onchange'=>"javascript: " .
-            "if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "else if (this.form.elements['o2'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['o2'].value); submit();} " .
-            "");
-$form->addElement('select', 'o2', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-$form->setDefaults(array('o2' => null));
-
-$o1 = $form->getElement('o1');
-$o1->setValue(null);
-$o1->setSelected(null);
-
-$o2 = $form->getElement('o2');
-$o2->setValue(null);
-$o2->setSelected(null);
+foreach (array('o1', 'o2') as $option) {
+    $attrs1 = array(
+        'onchange' => "javascript: "
+            . "if (this.form.elements['$option'].selectedIndex == 1 && confirm('"
+            . _("Do you confirm the duplication ?")."')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"
+            . _("Do you confirm the deletion ?")."')) {"
+            . "setO(this.form.elements['$option'].value); submit();} "
+            . "else if (this.form.elements['$option'].selectedIndex == 3 || "
+            . "this.form.elements['$option'].selectedIndex == 4) {"
+            . "setO(this.form.elements['$option'].value); submit();}");
+    $form->addElement('select', $option, null, array(null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")), $attrs1);
+    $o1 = $form->getElement($option);
+    $o1->setValue(null);
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchACLA', $search);

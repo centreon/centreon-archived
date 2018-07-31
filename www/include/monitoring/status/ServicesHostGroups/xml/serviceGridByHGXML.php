@@ -46,7 +46,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 /*
  * Create XML Request Objects
  */
-CentreonSession::start();
+CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
@@ -178,7 +178,7 @@ if ($instance != -1) {
     $rq1 .= " AND h.instance_id = ".$instance;
 }
 //$rq1 .= " ORDER BY s.description";
-    $rq1 .= " order by tri asc";
+    $rq1 .= " order by tri asc, s.description asc";
 
 $tabService = array();
 $tabHost = array();

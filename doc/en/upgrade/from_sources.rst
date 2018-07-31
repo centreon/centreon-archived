@@ -7,14 +7,6 @@ From sources
 In order to upgrade Centreon from sources, :ref:`download <downloads>` the
 latest Centreon package.
 
-.. warning::
-   This release is not yet compatible with other commercial products
-   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
-   If your are using any of these products, you are strongly advised
-   **NOT** to update Centreon Web until new releases of the forementioned
-   products are available and specifically mention Centreon Web 2.8
-   compatibility.
-
 ******************
 Shell installation
 ******************
@@ -230,13 +222,12 @@ The path to broker daemon init script.
 
 For example :
 
-* Centreon Broker : */etc/init.d/cbd*
-* ndo2db : */etc/init.d/ndo2db*
+* Centreon Broker : *cbd*
 
 ::
 
   Where is the init script for broker module daemon ?
-  > /etc/init.d/ndo2db
+  > cbd
   Your sudo has been configured previously
 
 Replace or not your sudoers file.

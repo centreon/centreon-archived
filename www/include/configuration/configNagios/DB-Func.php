@@ -162,8 +162,8 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "nagios_name" ? ($nagios_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL")
-                    : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                $val ? $val .= ($value2!=null?(", '". $pearDB->escape($value2) ."'"):", NULL")
+                    : $val .= ($value2!=null?("'". $pearDB->escape($value2) ."'"):"NULL");
             }
             if (testExistence($nagios_name)) {
                 $val ? $rq = "INSERT INTO cfg_nagios VALUES (".$val.")" : $rq = null;
@@ -207,7 +207,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
     
     $rq = "INSERT INTO cfg_nagios ("
-        . "`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , "
+        . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
+        . "`temp_file` , "
         . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
@@ -220,7 +221,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`retained_process_host_attribute_mask`, `retained_process_service_attribute_mask` , "
         . "`retained_host_attribute_mask`, `retained_service_attribute_mask`, "
         . "`use_syslog` , `log_notifications` , "
-        . "`log_service_retries` , `log_host_retries` , `log_event_handlers` , `log_initial_states` , "
+        . "`log_service_retries` , `log_host_retries` , `log_event_handlers` , "
         . "`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , "
         . "`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , "
         . "`host_inter_check_delay_method` , `service_interleave_factor` ,"
@@ -257,6 +258,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     $rq .= "NULL, ";
     isset($ret["nagios_name"]) && $ret["nagios_name"] != null ?
         $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    isset($ret["use_timezone"]) && $ret["use_timezone"] != null ?
+        $rq .= "'".htmlentities($ret["use_timezone"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != null ?
         $rq .= "'".htmlentities($ret["nagios_server_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["log_file"]) && $ret["log_file"] != null ?
@@ -355,9 +358,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["log_event_handlers"]["log_event_handlers"])
         && $ret["log_event_handlers"]["log_event_handlers"] != 2 ?
         $rq .= "'".$ret["log_event_handlers"]["log_event_handlers"]."',  " : $rq .= "'2', ";
-    isset($ret["log_initial_states"]["log_initial_states"])
-        && $ret["log_initial_states"]["log_initial_states"] != 2 ?
-        $rq .= "'".$ret["log_initial_states"]["log_initial_states"]."',  " : $rq .= "'2', ";
     isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2 ?
         $rq .= "'".$ret["log_external_commands"]["log_external_commands"]."',  " : $rq .= "'2', ";
@@ -395,8 +395,8 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != null ?
         $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2 ?
-        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'2', ";
+        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0 ?
+        $rq .= "'".$ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]."',  " : $rq .= "'0', ";
     isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
         && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ?
         $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  "
@@ -503,9 +503,9 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret["date_format"]) && $ret["date_format"] != null ?
         $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        $rq .= "'". $pearDB->escape($ret["illegal_object_name_chars"]) ."',  " : $rq .= "NULL, ";
     isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "'".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        $rq .= "'". $pearDB->escape($ret["illegal_macro_output_chars"])."',  " : $rq .= "NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?
         $rq .= "'".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "'2', ";
@@ -626,6 +626,9 @@ function updateNagios($nagios_id = null)
     isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != null ?
         $rq .= "nagios_server_id = '".htmlentities($ret["nagios_server_id"], ENT_QUOTES, "UTF-8")."', "
         : $rq .= "nagios_server_id = NULL, ";
+    isset($ret["use_timezone"]) && $ret["use_timezone"] != null ?
+        $rq .= "use_timezone = '".htmlentities($ret["use_timezone"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "use_timezone = NULL, ";
     isset($ret["log_file"]) && $ret["log_file"] != null ?
         $rq .= "log_file = '".htmlentities($ret["log_file"], ENT_QUOTES, "UTF-8")."', "
         : $rq .= "log_file = NULL, ";
@@ -785,10 +788,6 @@ function updateNagios($nagios_id = null)
         && $ret["log_event_handlers"]["log_event_handlers"] != 2 ?
         $rq .= "log_event_handlers = '".$ret["log_event_handlers"]["log_event_handlers"]."',  "
         : $rq .= "log_event_handlers = '2', ";
-    isset($ret["log_initial_states"]["log_initial_states"])
-        && $ret["log_initial_states"]["log_initial_states"] != 2 ?
-        $rq .= "log_initial_states = '".$ret["log_initial_states"]["log_initial_states"]."',  "
-        : $rq .= "log_initial_states = '2', ";
     isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2 ?
         $rq .= "log_external_commands = '".$ret["log_external_commands"]["log_external_commands"]."',  "
@@ -1035,12 +1034,10 @@ function updateNagios($nagios_id = null)
         . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "date_format = NULL, ";
     isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null ?
-        $rq .= "illegal_object_name_chars  = '"
-        . htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_object_name_chars  = '" . $pearDB->escape($ret["illegal_object_name_chars"]) . "',  "
         : $rq .= "illegal_object_name_chars  = NULL, ";
     isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null ?
-        $rq .= "illegal_macro_output_chars  = '"
-        . htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES, "UTF-8")."',  "
+        $rq .= "illegal_macro_output_chars  = '" . $pearDB->escape($ret["illegal_macro_output_chars"]) . "',  "
         : $rq .= "illegal_macro_output_chars  = NULL, ";
     isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ?

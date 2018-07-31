@@ -292,6 +292,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $timestamp;
     }
 
+    private function manageSummerToWinterTimestamp($timestamp, $timezone)
+    {
+        $dstDate = new DateTime('now', $timezone);
+        $dstDate->setTimestamp($timestamp);
+        $dateTime2 = clone $dstDate;
+        $dateTime2->setTimestamp($timestamp - 3600);
+
+        if ($dateTime2->getTimestamp() == $dstDate->getTimestamp()) {
+            $timestamp = $timestamp - 3600;
+        }
+
+        return $timestamp;
+    }
+
     public function getApproachingDowntimes($delay)
     {
         $approachingDowntimes = array();
@@ -323,17 +337,20 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
             $endTimestamp = $endTime->getTimestamp();
 
-            # Check if HH:mm time is approaching
-            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
-                continue;
-            }
-
             # Check if we jump an hour
             $startTimestamp = $this->manageWinterToSummerTimestamp($startTime, $startTimestamp, $timezone);
             $endTimestamp = $this->manageWinterToSummerTimestamp($endTime, $endTimestamp, $timezone);
             if ($startTimestamp == $endTimestamp) {
                 continue;
             }
+
+            # Check if HH:mm time is approaching
+            if (!$this->isApproachingTime($startTimestamp, $startDelay->getTimestamp(), $endDelay->getTimestamp())) {
+                continue;
+            }
+
+            # check backward of one hour
+            $startTimestamp = $this->manageSummerToWinterTimestamp($startTimestamp, $timezone);
 
             $approaching = false;
             if (preg_match('/^\d(,\d)*$/', $downtime['dtp_day_of_week']) && preg_match('/^(none)|(all)$/', $downtime['dtp_month_cycle'])) {
@@ -404,16 +421,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         $query = 'DELETE FROM downtime_cache '
             . 'WHERE start_timestamp < ' . time();
-        $this->db->query($query);
-    }
-
-    public function purgeEmptyDowntimes()
-    {
-        $query = 'DELETE FROM `downtime` '
-            . 'WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) '
-            . 'AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation) ';
         $this->db->query($query);
     }
 
@@ -495,7 +502,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         /* send remote commands */
         $remoteCommands = implode(PHP_EOL, $this->remoteCommands);
         if ($remoteCommands) {
-            file_put_contents($this->remoteCmdFile, $remoteCommands, FILE_APPEND);
+            file_put_contents($this->remoteCmdDir . "/" . time() . "-downtimes", $remoteCommands, FILE_APPEND);
         }
     }
 }

@@ -47,6 +47,8 @@ $buffer = new CentreonXML();
 $buffer->startElement("entry");
 
 session_start();
+session_write_close();
+
 $sid = session_id();
 
 if (isset($_SESSION['centreon'])) {

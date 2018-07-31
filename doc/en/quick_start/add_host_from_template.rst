@@ -1,4 +1,5 @@
 .. _add_host_template:
+
 =============================
 Deploy a host from a template
 =============================

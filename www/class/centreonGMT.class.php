@@ -72,6 +72,12 @@ class CentreonGMT
     protected $hostLocations = array();
 
     /**
+     *
+     * @param array $pollerLocations
+     */
+    protected $pollerLocations = array();
+
+    /**
      * Default timezone setted in adminstration/options
      * @var string $sDefaultTimezone
      */
@@ -325,10 +331,11 @@ class CentreonGMT
                 "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1");
         if (PEAR::isError($DBRESULT)) {
             $this->myGMT = 0;
+        } else {
+            $info = $DBRESULT->fetchRow();
+            $DBRESULT->free();
+            $this->myGMT = $info["contact_location"];
         }
-        $info = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        $this->myGMT = $info["contact_location"];
     }
     
     /**
@@ -351,13 +358,16 @@ class CentreonGMT
                     "WHERE `contact`.`contact_id` = " . $userId ." LIMIT 1");
             if (PEAR::isError($DBRESULT)) {
                 $this->myGMT = 0;
+            } else {
+                $info = $DBRESULT->fetchRow();
+                $DBRESULT->free();
+                $this->myGMT = $info["contact_location"];
             }
-            $info = $DBRESULT->fetchRow();
-            $DBRESULT->free();
-            $this->myGMT = $info["contact_location"];
         } else {
             $this->myGMT = 0;
         }
+        
+        return $this->myGMT;
     }
 
     /**
@@ -369,8 +379,9 @@ class CentreonGMT
     public function getHostCurrentDatetime($host_id, $date_format = 'c')
     {
         $locations = $this->getHostLocations();
+        $timezone = isset($locations[$host_id]) ? $locations[$host_id] : '';
         $sDate = new DateTime();
-        $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($locations[$host_id])));
+        $sDate->setTimezone(new DateTimeZone($this->getActiveTimezone($timezone)));
         return $sDate;
     }
     
@@ -460,10 +471,16 @@ class CentreonGMT
     public function getObjectForSelect2($values = array(), $options = array())
     {
         $items = array();
-        
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected timezones
@@ -471,8 +488,13 @@ class CentreonGMT
             . "FROM timezone "
             . "WHERE timezone_id IN (" . $explodedValues . ") "
             . "ORDER BY timezone_name ";
-        
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad timezone query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             $items[] = array(
                 'id' => $row['timezone_id'],
@@ -493,16 +515,45 @@ class CentreonGMT
             return $this->hostLocations;
         }
 
+        $this->getPollerLocations();
+
         $this->hostLocations = array();
 
-        $query = 'SELECT host_id, timezone FROM hosts WHERE enabled = 1 ';
+        $query = 'SELECT host_id, instance_id, timezone FROM hosts WHERE enabled = 1 ';
         $res  = $this->dbc->query($query);
         if (!PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
-                $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                if ($row['timezone'] == "" && isset($this->pollerLocations[$row['instance_id']])) {
+                    $this->hostLocations[$row['host_id']] = $this->pollerLocations[$row['instance_id']];
+                } else {
+                    $this->hostLocations[$row['host_id']] = str_replace(':', '', $row['timezone']);
+                }
             }
         }
         return $this->hostLocations;
+    }
+
+    /**
+     * Get list of timezone of pollers
+     * @return array
+     */
+    public function getPollerLocations()
+    {
+        if (count($this->pollerLocations)) {
+            return $this->pollerLocations;
+        }
+
+        $query = 'SELECT ns.id, t.timezone_name ' .
+            'FROM cfg_nagios cfgn, nagios_server ns, timezone t ' .
+            'WHERE cfgn.nagios_activate = "1" ' .
+            'AND cfgn.nagios_server_id = ns.id ' .
+            'AND cfgn.use_timezone = t.timezone_id ';
+        $res  = $this->db->query($query);
+        while ($row = $res->fetchRow()) {
+            $this->pollerLocations[$row['id']] = $row['timezone_name'];
+        }
+
+        return $this->pollerLocations;
     }
     
     /**
@@ -533,7 +584,7 @@ class CentreonGMT
      * @param string $gmt
      * @return string timezone
      */
-    private function getActiveTimezone($gmt)
+    public function getActiveTimezone($gmt)
     {
         $sTimezone = "";
         if (count($this->timezones) == 0) {

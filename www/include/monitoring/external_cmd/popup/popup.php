@@ -44,6 +44,8 @@ require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $pearDB = new CentreonDB();
 
 session_start();
+session_write_close();
+
 $centreon = $_SESSION['centreon'];
 
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);

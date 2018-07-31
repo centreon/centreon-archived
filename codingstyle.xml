@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="centreonCodingStyle">
+  <description>Centreon coding style.</description>
+  <rule ref="PSR2" />
+  <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+    <severity>0</severity>
+  </rule>
+</ruleset>

@@ -45,7 +45,7 @@ function goPopup() {
 
     listArea = document.getElementById('listOfArg');
     tmpStr = listArea.value;
-    tmpStr = tmpStr.replace(reg, ";;;");
+    tmpStr = encodeURIComponent(tmpStr.replace(reg, ";;;"));
     cmd_line = document.getElementById('command_line').value;
 
     Modalbox.show('./include/configuration/configObject/command/formArguments.php?cmd_line=' + cmd_line + '&textArea=' + tmpStr, {title: 'Argument description', width:800});
@@ -101,13 +101,42 @@ function setMacrosDescriptions() {
             }
             tmpStr2 += "MACRO ("+ type +") "+ document.getElementById('macro_'+i).value + " : " + document.getElementById('desc_'+i).value + "\n";
     }
-        
+
     listArea.cols= 100;
     listArea.rows= i;
-        
+
     listArea.value = tmpStr2;
     listDiv.style.visibility = "visible";
     Modalbox.hide();
+}
+
+function checkType(value) {
+    var action = jQuery('form#Form').attr('action');
+    switch(value) {
+        case '1':
+            action = action.replace(/p=\d+/,'p=60802');
+            break;
+        case '2':
+            action = action.replace(/p=\d+/,'p=60801');
+            break;
+        case '3':
+            action = action.replace(/p=\d+/,'p=60803');
+            break;
+        case '4':
+            action = action.replace(/p=\d+/,'p=60807');
+            break;
+        default:
+            action = action.replace(/p=\d+/,'p=60801');
+            break;
+    }
+
+    if (action.match(/&type=/)) {
+        action = action.replace(/&type=\d+/, '&type=' + value);
+    } else {
+        action += '&type=' + value;
+    }
+
+    jQuery('form#Form').attr('action', action);
 }
 
 </script>

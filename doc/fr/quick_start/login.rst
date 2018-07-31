@@ -1,4 +1,5 @@
 .. _centreon_login:
+
 =======================
 Connexion à l'interface
 =======================

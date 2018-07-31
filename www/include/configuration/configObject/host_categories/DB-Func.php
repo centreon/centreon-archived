@@ -147,11 +147,15 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;
+            $level = false;
             foreach ($row as $key2 => $value2) {
-                (isset($key2) && $key2 == "hc_name") ? ($hc_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                (isset($key2) && $key2 == "hc_name") ? ($hc_name = $value2 = $value2 . "_" . $i) : null;
+                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "hc_id") {
                     $fields[$key2] = $value2;
+                }
+                if ($key2 == "level" && $value2 != "") {
+                    $level = true;
                 }
             }
             $fields["hc_name"] = $hc_name;
@@ -160,7 +164,7 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
                 $maxId = $DBRESULT->fetchRow();
-                if (isset($maxId["MAX(hc_id)"])) {
+                if (isset($maxId["MAX(hc_id)"]) && ! $level) {
                                             $hcAcl[$maxId["MAX(hc_id)"]] = $key;
                     $DBRESULT = $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostcategories_relation hgr WHERE hgr.hostcategories_hc_id = '".$key."'");
                     $fields["hc_hosts"] = "";

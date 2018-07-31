@@ -91,7 +91,6 @@ class CentreonEngineCfg extends CentreonObject
             'log_service_retries'                     => '1',
             'log_host_retries'                        => '1',
             'log_event_handlers'                      => '1',
-            'log_initial_states'                      => '1',
             'log_external_commands'                   => '1',
             'log_passive_checks'                      => '2',
             'sleep_time'                              => '0.2',
@@ -285,9 +284,19 @@ class CentreonEngineCfg extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filterName = null)
     {
-        $elements = $this->object->getList();
+        if (!$this->canBeExported($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
+        $elements = $this->object->getList("*", -1, 0, null, null, $filters, "AND");
         $tpObj = new \Centreon_Object_Timeperiod();
         foreach ($elements as $element) {
             /* ADD action */
@@ -304,13 +313,13 @@ class CentreonEngineCfg extends CentreonObject
             /* SETPARAM action */
             foreach ($element as $parameter => $value) {
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
-                    if ($parameter == 'global_host_event_handler' 
+                    if ($parameter == 'global_host_event_handler'
                         || $parameter == 'global_service_event_handler'
-                        || $parameter == 'host_perfdata_command' 
+                        || $parameter == 'host_perfdata_command'
                         || $parameter == 'service_perfdata_command'
                         || $parameter == 'host_perfdata_file_processing_command'
                         || $parameter == 'service_perfdata_file_processing_command'
-                        || $parameter == 'ochp_command' 
+                        || $parameter == 'ochp_command'
                         || $parameter == 'ocsp_command') {
                         $tmp = $this->commandObj->getParameters($value, $this->commandObj->getUniqueLabelField());
                         $value = $tmp[$this->commandObj->getUniqueLabelField()];
@@ -374,14 +383,14 @@ class CentreonEngineCfg extends CentreonObject
     {
         $brokerModuleArray = explode("|", $brokerModule);
         foreach ($brokerModuleArray as $bkModule) {
-            $$res = $this->db->query(
-                'SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module '
-                . 'WHERE cfg_nagios_id = ? AND broker_module = ?',
+            $res = $this->db->query(
+                'SELECT COUNT(*) as nbBroker FROM cfg_nagios_broker_module ' .
+                'WHERE cfg_nagios_id = ? AND broker_module = ?',
                 array($objectId, $bkModule)
             );
             $row = $res->fetch();
             if ($row['nbBroker'] > 0) {
-                throw new CentreonClapiException(self::OBJECTALREADYEXISTS.":".$bkModule);
+                throw new CentreonClapiException(self::OBJECTALREADYEXISTS . ":" . $bkModule);
             } else {
                 $this->db->query(
                     "INSERT INTO cfg_nagios_broker_module (cfg_nagios_id, broker_module) VALUES (?, ?)",

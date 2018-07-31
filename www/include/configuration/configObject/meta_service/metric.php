@@ -41,18 +41,20 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $metric = array();
-if (($o == "cs" || $o == "ws") && $msr_id) {
+if (($o == 'cs') && $msr_id) {
     # Set base value
     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
 
     # Set base value
     $metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id = index_data.id");
-    $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
-    $metric = array_merge($metric1, $metric2);
-    $host_id = $metric1["host_id"];
-    $metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
-    $metric["metric_sel"][1] = $metric["metric_id"];
+    if (!isset($host_id) || $metric1['host_id'] == $host_id) {
+        $DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '" . $metric1["metric_id"] . "' and metrics.index_id = index_data.id");
+        $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
+        $metric = array_merge($metric1, $metric2);
+        $host_id = $metric1["host_id"];
+        $metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
+        $metric["metric_sel"][1] = $metric["metric_id"];
+    }
 }
 
 #
@@ -65,11 +67,12 @@ if (($o == "cs" || $o == "ws") && $msr_id) {
 $hosts = array(null => null) + $acl->getHostAclConf(
     null,
     'broker',
-    array('fields'  => array('host.host_id', 'host.host_name'),
-                                                          'keys'    => array('host_id'),
-                                                          'get_row' => 'host_name',
-                                                          'order'   => array('host.host_name')),
-    true
+    array(
+        'fields'  => array('host.host_id', 'host.host_name'),
+        'keys'    => array('host_id'),
+        'get_row' => 'host_name',
+        'order'   => array('host.host_name')
+    )
 );
 
 $services1 = array(null => null);
@@ -78,10 +81,11 @@ if ($host_id) {
     $services = array(null => null) + $acl->getHostServiceAclConf(
         $host_id,
         'broker',
-        array('fields'  => array('service_id', 'service_description'),
-                                                                        'keys'    => array('service_id'),
-                                                                        'get_row' => 'service_description',
-        'order'   => array('service_description'))
+        array(
+            'fields'  => array('s.service_id', 's.service_description'),
+            'keys'    => array('service_id'),
+            'get_row' => 'service_description',
+            'order'   => array('service_description'))
     );
     foreach ($services as $key => $value) {
         $DBRESULT = $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name
@@ -90,6 +94,7 @@ if ($host_id) {
 									 AND i.service_description = '".$pearDBO->escape($value)."'
 									 AND i.id = m.index_id
 									 ORDER BY metric_name, unit_name");
+
         while ($metricSV = $DBRESULT->fetchRow()) {
             $services1[$key] = $value;
             $metricSV["metric_name"] = str_replace("#S#", "/", $metricSV["metric_name"]);
@@ -101,9 +106,9 @@ if ($host_id) {
 }
 
 $debug = 0;
-$attrsTextI         = array("size"=>"3");
-$attrsText      = array("size"=>"30");
-$attrsTextarea  = array("rows"=>"5", "cols"=>"40");
+$attrsTextI = array("size"=>"3");
+$attrsText = array("size"=>"30");
+$attrsTextarea = array("rows"=>"5", "cols"=>"40");
 
 /*
  * Form begin
@@ -113,8 +118,6 @@ if ($o == "as") {
     $form->addElement('header', 'title', _("Add a Meta Service indicator"));
 } elseif ($o == "cs") {
     $form->addElement('header', 'title', _("Modify a Meta Service indicator"));
-} elseif ($o == "ws") {
-    $form->addElement('header', 'title', _("View a Meta Service indicator"));
 }
 
 /* 
@@ -165,19 +168,14 @@ $form->addRule('metric_sel', _("Compulsory Field"), 'checkMetric');
 /*
  * Just watch
  */
-if ($o == "ws") {
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));
+
+if ($o == "cs") {
+    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($metric);
-    $form->freeze();
-} elseif ($o == "cs") {
-    $subC = $form->addElement('submit', 'submitC', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
-    $form->setDefaults($metric);
-    $hn->freeze();
-    $sel->freeze();
 } elseif ($o == "as") {
-    $subA = $form->addElement('submit', 'submitA', _("Save"));
-    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
 $valid = false;
@@ -188,9 +186,6 @@ if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]
     } elseif ($form->getSubmitValue("submitC")) {
         updateMetric($msrObj->getValue());
     }
-    $o = "ws";
-    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msrObj->getValue()."'"));
-    $form->freeze();
     $valid = true;
 }
 

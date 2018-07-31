@@ -31,16 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_."www/class/centreon.class.php";
 
-CentreonSession::start();
+CentreonSession::start(1);
 if (!isset($_SESSION['centreon'])) {
     die();
 }

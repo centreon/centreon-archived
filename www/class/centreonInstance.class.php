@@ -207,39 +207,84 @@ class CentreonInstance
             }
         }
     }
-    
+
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
+     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
-     {
-         $selectedInstances = '';
-         $items= array();
+    {
+        $selectedInstances = '';
+        $items = array();
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
+            $queryValues = array_merge($queryValues, $queryValues);
+        } else {
+            $explodedValues .= '""';
+        }
 
-         $explodedValues = implode('', $values);
-         if (empty($explodedValues)) {
-             $explodedValues = "''";
-         }else {
-                 $selectedInstances .= "AND rel.instance_id IN ($explodedValues) ";
-         }
+        $query = "SELECT DISTINCT p.name as name, p.id  as id"
+            . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
+            . " WHERE r.resource_id = rel.resource_id"
+            . " AND p.id = rel.instance_id "
+            . " AND p.id IN (" . $explodedValues . ")"
+            . $selectedInstances
+            . " ORDER BY p.name";
+        $stmt = $this->db->prepare($query);
+        $dbResult = $this->db->execute($stmt, $queryValues);
 
-         $query = "SELECT DISTINCT p.name as name, p.id  as id"
-             . " FROM cfg_resource r, nagios_server p, cfg_resource_instance_relations rel "
-             . " WHERE r.resource_id = rel.resource_id"
-             . " AND p.id = rel.instance_id "
-             . " AND p.id IN (" . $explodedValues . ")"
-             . $selectedInstances
-             . " ORDER BY p.name";
-         $DBRESULT = $this->db->query($query);
-         while ($data = $DBRESULT->fetchRow()) {
-                 $items[] = array(
-                         'id' => $data['id'],
-                 'text' => $data['name']
-             );
-         }
+        if (PEAR::isError($dbResult)) {
+            throw new Exception('Bad instance query params');
+        }
+
+        while ($data = $dbResult->fetchRow()) {
+                $items[] = array(
+                        'id' => $data['id'],
+                'text' => $data['name']
+            );
+        }
 
          return $items;
-     }
+    }
+
+    public function getHostsByInstance($instanceName)
+    {
+        $instanceList = array();
+
+        $query = "SELECT host_name, name " .
+             " FROM host h, nagios_server ns, ns_host_relation nshr " .
+             " WHERE ns.name = '" . $this->db->escape($instanceName) . "'" .
+             " AND nshr.host_host_id = h.host_id " .
+             " AND h.host_activate = '1' " .
+             " ORDER BY h.host_name";
+        $result = $this->db->query($query);
+
+        while ($elem = $result->fetchrow()) {
+            $instanceList[] = array(
+                'host' => $elem['host_name'],
+                'name' => $instanceName
+            );
+        }
+
+        return $instanceList;
+    }
+
+    public function getInstanceId($instanceName)
+    {
+        $query = "SELECT ns.id " .
+            " FROM nagios_server ns " .
+            " WHERE ns.name = '" . $this->db->escape($instanceName) . "'";
+        $result = $this->db->query($query);
+
+        return $result->fetchrow();
+    }
 }

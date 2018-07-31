@@ -39,119 +39,134 @@ require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
 {
-    
+
     /**
-     *
-     * @var type
+     * @var CentreonDB
      */
     protected $pearDBMonitoring;
 
     /**
-     *
+     * CentreonConfigurationHostgroup constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
     }
-    
+
     /**
-     *
-     * @param array $args
      * @return array
+     * @throws RestBadRequestException
      */
     public function getList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
-        
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostgroups .= 'AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
         }
-        
+
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
+        } else {
+            $q = '';
         }
+        $queryValues[] = (string)'%' . $q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
+
         $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id "
             . "FROM hostgroup hg "
-            . "WHERE hg.hg_name LIKE '%$q%' "
+            . "WHERE hg.hg_name LIKE ? "
             . $aclHostgroups
             . "ORDER BY hg.hg_name "
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
-        
+
+        $stmt = $this->pearDB->prepare($queryHostgroup);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
 
         $hostgroupList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $hostgroupList[] = array('id' => htmlentities($data['hg_id']), 'text' => $data['hg_name']);
         }
-        
+
         return array(
             'items' => $hostgroupList,
             'total' => $total
         );
     }
-    
+
     public function getHostList()
     {
         global $centreon;
-        
+
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
         $aclHostgroups = '';
         $aclHosts = '';
-        
+        $queryValues = array();
+
         /* Get ACL if user is not admin */
-        
+
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
             $aclHostgroups .= ' AND hg.hg_id IN (' . $acl->getHostGroupsString('ID') . ') ';
             $aclHosts .= ' AND h.host_id IN (' . $acl->getHostsString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['hgid'])) {
-            $hgid = '';
-        } else {
+        if (isset($this->arguments['hgid'])) {
+            foreach(explode(',', $this->arguments['hgid']) as $k => $v){
+                if(!is_numeric($v)){
+                    throw new \RestBadRequestException('Error, host group id must be numerical');
+                }
+            }
             $hgid = $this->arguments['hgid'];
+        } else {
+            $hgid = '';
         }
+        $queryValues[] = (string)$hgid;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range = 'LIMIT ?,?';
+            $queryValues[] = (int)$offset;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
+
         $queryHostgroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_name , h.host_id "
             . "FROM hostgroup hg "
             . "INNER JOIN hostgroup_relation hgr ON hg.hg_id = hgr.hostgroup_hg_id "
             . "INNER JOIN host h ON  h.host_id = hgr.host_host_id "
-            . "WHERE hg.hg_id IN (".$hgid.") "
+            . "WHERE hg.hg_id IN (?) "
             . $aclHostgroups
             . $aclHosts
             . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryHostgroup);
+
+        $stmt = $this->pearDB->prepare($queryHostgroup);
+        $DBRESULT = $this->pearDB->execute($stmt, $queryValues);
+
 
         $total = $this->pearDB->numberRows();
 
@@ -162,7 +177,7 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
                 'text' => $data['host_name']
             );
         }
- 
+
         return array(
             'items' => $hostList,
             'total' => $total

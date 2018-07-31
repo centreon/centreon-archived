@@ -110,6 +110,7 @@ if (isset($conf_centreon['port'])) {
     }
 }
 $db = Centreon_Db_Manager::factory('centreon', 'pdo_mysql', $dbConfig);
+$db->query('SET NAMES utf8');
 $dbConfig['dbname'] = $conf_centreon['dbcstg'];
 $db_storage = Centreon_Db_Manager::factory('storage', 'pdo_mysql', $dbConfig);
 try {
@@ -187,7 +188,7 @@ if ($api->login == "" || $api->password == "") {
     } else if (isset($api->options["a"])) {
         try {
             $api->launchAction();
-        } catch (CentreonClapiException $e) {
+        } catch (\CentreonClapi\CentreonClapiException $e) {
             print $e->getMessage();
             $api->setReturnCode(1);
         } catch (Exception $e) {

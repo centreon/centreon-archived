@@ -1,9 +1,5 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Tester\Exception\PendingException;
 use Centreon\Test\Behat\CentreonContext;
 
 /**
@@ -28,8 +24,7 @@ class SelectAllSelect2Context extends CentreonContext
                     'css',
                     'input[name="submitC"]'
                 );
-            },
-            30
+            }
         );
 
         /* Add search to select2 */
@@ -43,9 +38,9 @@ class SelectAllSelect2Context extends CentreonContext
         $choice->press();
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
-            },
-            30
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) >= 4;
+            }
         );
     }
 
@@ -68,7 +63,10 @@ class SelectAllSelect2Context extends CentreonContext
     public function iClickOnSelectAllButton()
     {
         /* Get the number of elements */
-        $this->expectedElements = intval($this->assertFind('css', '.select2-results-header__nb-elements-value')->getText());
+        $this->expectedElements = intval($this->assertFind(
+            'css',
+            '.select2-results-header__nb-elements-value'
+        )->getText());
 
         /* Click on Select all button */
         $selectAll = $this->assertFind('css', '.select2-results-header__select-all > button');
@@ -77,10 +75,8 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
-
 
 
     }
@@ -95,9 +91,9 @@ class SelectAllSelect2Context extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return count($context->getSession()->getPage()->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
-            },
-            10
+                return count($context->getSession()->getPage()
+                        ->findAll('css', '.select2-container--open li.select2-results__option')) == 0;
+            }
         );
     }
 
@@ -112,8 +108,7 @@ class SelectAllSelect2Context extends CentreonContext
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 
@@ -122,15 +117,13 @@ class SelectAllSelect2Context extends CentreonContext
      */
     public function iExitSelectAllConfirmBox()
     {
-        $exitButton = $this->assertFind('css', '.centreon-popin a.close img');
+        $exitButton = $this->assertFind('css', '.centreon-popin a.close[href="#"] img');
         $exitButton->click();
-
 
         $this->spin(
             function ($context) {
                 return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
-            },
-            10
+            }
         );
     }
 
@@ -144,7 +137,8 @@ class SelectAllSelect2Context extends CentreonContext
 
         $values = $inputField->getValue();
         if (count($values) != $this->expectedElements) {
-            throw new \Exception('All elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
+            throw new \Exception('All elements are not selected (got ' . count($values) . ', expected ' .
+                $this->expectedElements . ').');
         }
     }
 
@@ -158,7 +152,8 @@ class SelectAllSelect2Context extends CentreonContext
 
         $values = $inputField->getValue();
         if (count($values) != $this->expectedElements) {
-            throw new \Exception('All filtered elements are not selected (got ' . count($values) . ', expected ' . $this->expectedElements . ').');
+            throw new \Exception('All filtered elements are not selected (got ' . count($values) .
+                ', expected ' . $this->expectedElements . ').');
         }
     }
 

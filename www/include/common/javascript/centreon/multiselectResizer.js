@@ -40,7 +40,7 @@
  */
 jQuery(function() {
     // minimum width of the selectbox, change it if you want
-    var minAllowedWidth = 270;
+    var minAllowedWidth = 360;
 
     // maximum width of the selectbox, twice larger than minimum width
     var maxAllowedWidth = (minAllowedWidth * 2);

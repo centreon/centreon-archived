@@ -86,7 +86,13 @@ class CentreonContactgroup
 
         # Get ldap contactgroups
         if ($withLdap && $dbOnly === false) {
-            $contactgroups = $contactgroups + $this->getLdapContactgroups();
+            $ldapContactgroups = $this->getLdapContactgroups();
+            $contactgroupNames = array_values($contactgroups);
+            foreach ($ldapContactgroups as $id => $name) {
+                if (!in_array($name, $contactgroupNames)) {
+                    $contactgroups[$id] = $name;
+                }
+            }
         }
 
         return $contactgroups;
@@ -217,9 +223,10 @@ class CentreonContactgroup
                     /*
                      * Test is the group a not move or delete in ldap
                      */
-                    if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
+                    if ((empty($row['cg_ldap_dn']) || false === $ldapConn->getEntry($row['cg_ldap_dn'])) &&
+                        ldap_errno($ldapConn->getDs()) != 3) {
                         $dn = $ldapConn->findGroupDn($row['cg_name']);
-                        if (false === $dn) {
+                        if (false === $dn  && ldap_errno($ldapConn->getDs()) != 3) {
                             /*
                              * Delete the ldap group in contactgroup
                              */
@@ -232,7 +239,7 @@ class CentreonContactgroup
                             /*
                              * Update the ldap group in contactgroup
                              */
-                            $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "'
+                            $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $dn . "'
                                 WHERE cg_id = " . $row['cg_id'];
                             if (PEAR::isError($this->db->query($queryUpdateDn))) {
                                 $msg[] = "Error in update contactgroup for ldap group : " . $row['cg_name'];
@@ -415,9 +422,16 @@ class CentreonContactgroup
             }
         }
 
-        $explodedValues = implode(',', $aElement);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($aElement)) {
+            foreach ($aElement as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected contactgroups
@@ -426,15 +440,20 @@ class CentreonContactgroup
             . "WHERE cg.cg_id IN (" . $explodedValues . ") "
             . "ORDER BY cg.cg_name ";
 
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad contact group query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             if (isset($row['cg_ldap_dn']) && $row['cg_ldap_dn'] != "") {
-                $cgId = '[' . $row['ar_id'] . ']' . $row['cg_name'];
                 $cgName = $this->formatLdapContactgroupName($row['cg_name'], $row['ar_name']);
             } else {
-                $cgId = $row['cg_id'];
                 $cgName = $row['cg_name'];
             }
+            $cgId = $row['cg_id'];
 
             # hide unauthorized contactgroups
             $hide = false;

@@ -38,21 +38,25 @@ if (!isset($centreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
-    require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-    /**
-     * Set the Acl group changed flag to 1
-     */
+/**
+ * Set the Acl group changed flag to 1
+ *
+ * @param $db
+ * @param $aclGroupId
+ */
 function setAclGroupChanged($db, $aclGroupId)
 {
     $db->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id = " . $db->escape($aclGroupId));
 }
 
-    /**
-     *
-     * Test if group exists
-     * @param $name
-     */
+/**
+ * Test if group exists
+ *
+ * @param null $name
+ * @return bool
+ */
 function testGroupExistence($name = null)
 {
     global $pearDB, $form;
@@ -62,7 +66,10 @@ function testGroupExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('acl_group_id');
     }
-    $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups WHERE acl_group_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+    $query = "SELECT acl_group_id, acl_group_name "
+        . "FROM acl_groups "
+        . "WHERE acl_group_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8")."' ";
+    $DBRESULT = $pearDB->query($query);
     $cg = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $cg["acl_group_id"] == $id) {
         return true;
@@ -78,57 +85,83 @@ function testGroupExistence($name = null)
  *
  * Enable the selected group in DB
  * @param $acl_group_id
+ * @param $groups
  */
-function enableGroupInDB($acl_group_id = null)
+function enableGroupInDB($acl_group_id = null, $groups = array())
 {
-    global $pearDB;
-
-    if (!$acl_group_id) {
+    global $pearDB, $centreon;
+    
+    if (!$acl_group_id && !count($groups)) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$acl_group_id."'");
+
+    if ($acl_group_id) {
+        $groups = array($acl_group_id => "1");
+    }
+
+    foreach ($groups as $key => $value) {
+        $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '".$key."'");
+        $DBRESULT2 = $pearDB->query("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . intval($key) . "' LIMIT 1");
+        $row = $DBRESULT2->fetchRow();
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "enable");
+    }
 }
 
 /**
  *
  * Disable the selected group in DB
  * @param $acl_group_id
+ * @param $groups
  */
-function disableGroupInDB($acl_group_id = null)
+function disableGroupInDB($acl_group_id = null, $groups = array())
 {
-    global $pearDB;
-
-    if (!$acl_group_id) {
+    global $pearDB, $centreon;
+    
+    if (!$acl_group_id && !count($groups)) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$acl_group_id."'");
+
+    if ($acl_group_id) {
+        $groups = array($acl_group_id => "1");
+    }
+
+    foreach ($groups as $key => $value) {
+        $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '".$key."'");
+        $DBRESULT2 = $pearDB->query("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . intval($key) . "' LIMIT 1");
+        $row = $DBRESULT2->fetchRow();
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "disable");
+    }
 }
 
 /**
  *
  * Delete the selected group in DB
- * @param $Groups
+ * @param $groups
  */
-function deleteGroupInDB($Groups = array())
+function deleteGroupInDB($groups = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
-    foreach ($Groups as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
+    foreach ($groups as $key => $value) {
+        $DBRESULT2 = $pearDB->query("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . intval($key) . "' LIMIT 1");
+        $row = $DBRESULT2->fetchRow();
+        $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '".$key."'");
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "d");
     }
 }
+
 
 /**
  *
  * Duplicate the selected group
- * @param $Groups
+ * @param $groups
  * @param $nbrDup
  */
-function multipleGroupInDB($Groups = array(), $nbrDup = array())
+function multipleGroupInDB($groups = array(), $nbrDup = array())
 {
-    global $pearDB;
+    global $pearDB, $centreon;
 
-    foreach ($Groups as $key => $value) {
+    foreach ($groups as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$key."' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["acl_group_id"] = '';
@@ -137,7 +170,13 @@ function multipleGroupInDB($Groups = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "acl_group_name" ? ($acl_group_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ", '".$value2."'" : $val .= "'".$value2."'";
+                $val ? $val .= ($value2 != null ? (", '".$value2."'") : ", NULL") : $val .= ($value2 != null ? ("'".$value2."'") : "NULL");
+                if ($key2 != "acl_group_id") {
+                    $fields[$key2] = $value2;
+                }
+                if (isset($acl_group_name)) {
+                    $fields["acl_group_name"] = $acl_group_name;
+                }
             }
 
             if (testGroupExistence($acl_group_name)) {
@@ -155,6 +194,8 @@ function multipleGroupInDB($Groups = array(), $nbrDup = array())
                 duplicateResources($key, $maxId["MAX(acl_group_id)"], $pearDB);
                 duplicateActions($key, $maxId["MAX(acl_group_id)"], $pearDB);
                 duplicateMenus($key, $maxId["MAX(acl_group_id)"], $pearDB);
+                
+                $centreon->CentreonLogAction->insertLog("access group", $maxId["MAX(acl_group_id)"], $acl_group_name, "a", $fields);
             }
         }
     }
@@ -167,12 +208,19 @@ function multipleGroupInDB($Groups = array(), $nbrDup = array())
  */
 function insertGroupInDB($ret = array())
 {
+    global $form, $centreon;
+    
     $acl_group_id = insertGroup($ret);
     updateGroupContacts($acl_group_id, $ret);
     updateGroupContactGroups($acl_group_id);
     updateGroupActions($acl_group_id);
     updateGroupResources($acl_group_id);
     updateGroupMenus($acl_group_id);
+
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("access group", $acl_group_id, $ret['acl_group_name'], "a", $fields);
+
     return $acl_group_id;
 }
 
@@ -189,11 +237,13 @@ function insertGroup($ret)
         $ret = $form->getSubmitValues();
     }
 
-    $rq = "INSERT INTO acl_groups ";
-    $rq .= "(acl_group_name, acl_group_alias, acl_group_activate) ";
-    $rq .= "VALUES ";
-    $rq .= "('".htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."')";
-    $DBRESULT = $pearDB->query($rq);
+    $rq = "INSERT INTO acl_groups "
+        . "(acl_group_name, acl_group_alias, acl_group_activate) "
+        . "VALUES "
+        .  "('".htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8")."', "
+        . "'" . htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8") . "', "
+        . "'" . htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8") . "') ";
+    $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
     $cg_id = $DBRESULT->fetchRow();
     return ($cg_id["MAX(acl_group_id)"]);
@@ -206,6 +256,8 @@ function insertGroup($ret)
  */
 function updateGroupInDB($acl_group_id = null)
 {
+    global $form, $centreon;
+
     if (!$acl_group_id) {
         return;
     }
@@ -216,6 +268,10 @@ function updateGroupInDB($acl_group_id = null)
     updateGroupActions($acl_group_id);
     updateGroupResources($acl_group_id);
     updateGroupMenus($acl_group_id);
+    
+    $ret = $form->getSubmitValues();
+    $fields = CentreonLogAction::prepareChanges($ret);
+    $centreon->CentreonLogAction->insertLog("access group", $acl_group_id, $ret['acl_group_name'], "c", $fields);
 }
 
 /**
@@ -234,11 +290,12 @@ function updateGroup($acl_group_id = null)
     $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE acl_groups ";
-    $rq .= "SET acl_group_name = '".htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8")."', " .
-            "acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', " .
-            "acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."' " .
-            "WHERE acl_group_id = '".$acl_group_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $rq .= "SET acl_group_name = '" . htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8") . "', "
+        . "acl_group_alias = '".htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8")."', "
+        . "acl_group_activate = '"
+        . htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."' "
+        . "WHERE acl_group_id = '".$acl_group_id."'";
+    $pearDB->query($rq);
     setAclGroupChanged($pearDB, $acl_group_id);
 }
 
@@ -373,14 +430,19 @@ function updateGroupResources($acl_group_id, $ret = array())
         return;
     }
 
-    $DBRESULT = $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
+    $query = 'DELETE argr '
+        . 'FROM acl_res_group_relations argr '
+        . 'JOIN acl_resources ar ON argr.acl_res_id = ar.acl_res_id '
+        . 'WHERE argr.acl_group_id = ' . $acl_group_id . ' '
+        . 'AND ar.locked = 0 ';
+    $pearDB->query($query);
     if (isset($_POST["resourceAccess"])) {
         foreach ($_POST["resourceAccess"] as $id) {
             $rq = "INSERT INTO acl_res_group_relations ";
             $rq .= "(acl_res_id, acl_group_id) ";
             $rq .= "VALUES ";
             $rq .= "('".$id."', '".$acl_group_id."')";
-            $DBRESULT = $pearDB->query($rq);
+            $pearDB->query($rq);
         }
     }
 }
@@ -393,8 +455,11 @@ function updateGroupResources($acl_group_id, $ret = array())
  */
 function duplicateContacts($idTD, $acl_id, $pearDB)
 {
-    $request = "INSERT INTO acl_group_contacts_relations (contact_contact_id, acl_group_id) SELECT contact_contact_id, '$acl_id' AS acl_group_id FROM acl_group_contacts_relations WHERE acl_group_id = '$idTD'";
-    $DBRESULT = $pearDB->query($request);
+    $request = "INSERT INTO acl_group_contacts_relations (contact_contact_id, acl_group_id) "
+        . "SELECT contact_contact_id, '$acl_id' AS acl_group_id "
+        . "FROM acl_group_contacts_relations "
+        . "WHERE acl_group_id = '$idTD'";
+    $pearDB->query($request);
 }
 
 /**
@@ -405,8 +470,11 @@ function duplicateContacts($idTD, $acl_id, $pearDB)
  */
 function duplicateContactGroups($idTD, $acl_id, $pearDB)
 {
-    $request = "INSERT INTO acl_group_contactgroups_relations (cg_cg_id, acl_group_id) SELECT cg_cg_id, '$acl_id' AS acl_group_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '$idTD'";
-    $DBRESULT = $pearDB->query($request);
+    $request = "INSERT INTO acl_group_contactgroups_relations (cg_cg_id, acl_group_id) "
+        . "SELECT cg_cg_id, '$acl_id' AS acl_group_id "
+        . "FROM acl_group_contactgroups_relations "
+        . "WHERE acl_group_id = '$idTD'";
+    $pearDB->query($request);
 }
 
 /**
@@ -417,8 +485,11 @@ function duplicateContactGroups($idTD, $acl_id, $pearDB)
  */
 function duplicateResources($idTD, $acl_id, $pearDB)
 {
-    $request = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT acl_res_id, '$acl_id' AS acl_group_id FROM acl_res_group_relations WHERE acl_group_id = '$idTD'";
-    $DBRESULT = $pearDB->query($request);
+    $request = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) "
+        . "SELECT acl_res_id, '$acl_id' AS acl_group_id "
+        . "FROM acl_res_group_relations "
+        . "WHERE acl_group_id = '$idTD'";
+    $pearDB->query($request);
 }
 
 /**
@@ -429,8 +500,11 @@ function duplicateResources($idTD, $acl_id, $pearDB)
  */
 function duplicateActions($idTD, $acl_id, $pearDB)
 {
-    $request = "INSERT INTO acl_group_actions_relations (acl_action_id, acl_group_id) SELECT acl_action_id, '$acl_id' AS acl_group_id FROM acl_group_actions_relations WHERE acl_group_id = '$idTD'";
-    $DBRESULT = $pearDB->query($request);
+    $request = "INSERT INTO acl_group_actions_relations (acl_action_id, acl_group_id) "
+        . "SELECT acl_action_id, '$acl_id' AS acl_group_id "
+        . "FROM acl_group_actions_relations "
+        . "WHERE acl_group_id = '$idTD'";
+    $pearDB->query($request);
 }
 
 /**
@@ -441,8 +515,11 @@ function duplicateActions($idTD, $acl_id, $pearDB)
  */
 function duplicateMenus($idTD, $acl_id, $pearDB)
 {
-    $request = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) SELECT acl_topology_id, '$acl_id' AS acl_group_id FROM acl_group_topology_relations WHERE acl_group_id = '$idTD'";
-    $DBRESULT = $pearDB->query($request);
+    $request = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) "
+        . "SELECT acl_topology_id, '$acl_id' AS acl_group_id "
+        . "FROM acl_group_topology_relations "
+        . "WHERE acl_group_id = '$idTD'";
+    $pearDB->query($request);
 }
 
 /**

@@ -1,6 +1,3 @@
-<link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet">
-<link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet">
-<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <table class="table"> <!-- Global Table -->
     <tr>
         <td style="width: 70%;vertical-align:top; padding-right:8px;">
@@ -41,16 +38,16 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" style="vertical-align:top;">{$m_mon_host_status_info}</td>
-                                <td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;"><b>{$service_data.plugin_output}<b></div></td>
+                                <td class="ListColNoWrap containsURI"><div style="overflow:auto; width:100%; max-height:500px;"><b>{$service_data.plugin_output}<b></div></td>
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup" style="vertical-align:top;">{$m_mon_host_long_info}</td>
-                                <td class="ListColNoWrap"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
+                                <td class="ListColNoWrap containsURI"><div style="overflow:auto; width:100%; max-height:500px;">{$service_data.long_plugin_output}</div></td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup" valign="top">{$m_mon_performance_data}</td>
                                 <td class="ListColNoWrap">
-                                    <pre>{$service_data.performance_data}</pre>
+                                    <pre class="wrap">{$service_data.performance_data}</pre>
                                 </td>
                             </tr>
                             <tr class='list_two'>
@@ -115,9 +112,14 @@
                             </tr>
                             {if $service_data.command_line}
                             <tr class='list_one'>
-                                <td class="ListColLeft ColPopup" valign="top">{$m_mon_service_command_line}</td>
+                                <td class="ListColLeft ColPopup" valign="top">
+                                    {$m_mon_service_command_line}
+                                    <button class="btn-copy" data-clipboard-target="#command_line">
+                                        <img src="./img/icons/clipboard.png" style="vertical-align: middle;" class="ico-14" alt="Copy to clipboard"/>
+                                    </button>
+                                </td>
                                 <td class="ListColLeft ColPopup">
-                                    <pre>{$service_data.command_line}</pre>
+                                    <pre id='command_line' style="overflow-x: auto">{$service_data.command_line}</pre>
                                 </td>
                             </tr>
                             {/if}
@@ -156,7 +158,7 @@
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
                                 <h4>
-                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$host_name};{$svc_description}">
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
                                     <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
                                   </a>
                                 </h4>
@@ -539,8 +541,8 @@
                                 {$contactgroups_label}
                                 </td>
                                 <td>
-                                {foreach item=cg from=$contactgroups}
-                                        &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+                                {foreach from=$contactgroups item=cg key=k}
+                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                 {/foreach}
                                 </td>
                             </tr>
@@ -549,8 +551,8 @@
                                 {$contacts_label}
                                 </td>
                                 <td>
-                                {foreach item=c from=$contacts}
-                                        &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+                                {foreach from=$contacts item=c key=k}
+                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
                                 {/foreach}
                                 </td>
                             </tr>
@@ -619,7 +621,7 @@
         <td class="ListColLeft ColPopup" width="120">{$tcs.service_description}</td>
         <td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
         <td class="ListColCenter" width="100">{$tcs.author_name}</td>
-        <td class="ListColNoWrap">{$tcs.comment_data}</td>
+        <td class="ListColNoWrap containsURI">{$tcs.comment_data}</td>
         <td class="ListColCenter" width="50">{$tcs.is_persistent}</td>
         </tr>
     {/if}
@@ -628,14 +630,9 @@
 {/if}
 <script src="./include/common/javascript/moment-with-locales.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-<script src="./include/common/javascript/charts/d3.min.js"></script>
-<script src="./include/common/javascript/charts/c3.min.js"></script>
-<script src="./include/common/javascript/charts/d3-timeline.js"></script>
-<script src="./include/views/graphs/javascript/centreon-graph.js"></script>
-<script src="./include/views/graphs/javascript/centreon-c3.js"></script>
-<script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
 {literal}
 <script>
+
 jQuery(function () {
   var times = {
     height: 240,
@@ -643,5 +640,14 @@ jQuery(function () {
   };
   jQuery('.chart').centreonGraph(times);
 });
+
+var clipboard = new Clipboard('.btn-copy', {
+  text: function() {
+    var command = document.querySelector('#command_line').textContent;
+    re = /\n\t/g;
+    return command.replace(re,' ');
+  }
+});
+
 </script>
 {/literal}

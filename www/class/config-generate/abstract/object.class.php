@@ -76,7 +76,7 @@ abstract class AbstractObject {
         $this->exported = array();
         $this->createFile($this->backend_instance->getPath());
     }
-    
+
     private function setHeader() {
         $header = 
 "###################################################################\n" .

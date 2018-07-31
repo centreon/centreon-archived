@@ -46,9 +46,12 @@ class CentreonSession
 
     }
 
-    public function start()
+    public function start($flag = 0)
     {
         session_start();
+        if ($flag) {
+            session_write_close();
+        }
     }
 
     public function stop()
@@ -93,7 +96,24 @@ class CentreonSession
             return 0;
         }
     }
-    
+
+    /**
+     * Update session to keep alive
+     *
+     * @param \CentreonDB $pearDB
+     */
+    public function updateSession($pearDB)
+    {
+        session_start();
+
+        /* Update last_reload parameter */
+        $query = 'UPDATE `session` '
+            . 'SET `last_reload` = "' . time() . '", '
+            . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
+            . 'WHERE `session_id` = "' . session_id() . '" ';
+        $pearDB->query($query);
+    }
+
     public static function getUser($sessionId, $pearDB)
     {
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);

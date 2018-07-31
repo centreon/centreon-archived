@@ -54,7 +54,8 @@ if (!$oreon->user->admin) {
         
 $rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
-    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
+    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
+    . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
 
 $search = '';
 if (isset($_POST['searchSD']) && $_POST['searchSD']) {
@@ -86,7 +87,8 @@ $tpl->assign("headerMenu_options", _("Options"));
 # Dependency list
 $rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
-    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
+    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
+    . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
 
 if ($search) {
     $rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";

@@ -49,6 +49,7 @@ class CentreonDowntime
     protected $localCmdFile = '';
     protected $remoteCommands;
     protected $remoteCmdFile = '';
+    protected $remoteCmdDir = '';
     protected $varlib;
     protected $periods = null;
     protected $downtimes = null;
@@ -65,7 +66,7 @@ class CentreonDowntime
         $this->localCommands = array();
         $this->remoteCommands = array();
         if (!is_null($varlib)) {
-            $this->remoteCmdFile = $varlib . '/centcore.cmd';
+            $this->remoteCmdDir = $varlib . '/centcore';
         }
     }
 
@@ -360,7 +361,7 @@ class CentreonDowntime
             . 'dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, '
             . 'h.host_id, h.host_name, NULL as service_id, NULL as service_description '
             . 'FROM downtime_period dtp, downtime dt, '
-            . 'downtime_hostgroup_relation dhr, servicegroup sg, '
+            . 'downtime_hostgroup_relation dhr, '
             . 'host h, hostgroup_relation hgr '
             . 'WHERE dtp.dt_id = dhr.dt_id '
             . 'AND dtp.dt_id = dt.dt_id '

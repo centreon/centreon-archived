@@ -34,6 +34,8 @@ Informations générales
 *	Le champ **Période de notification d'hôte/de service** permet de choisir la période temporelle pour laquelle il y a envoi de notification.
 *	Le champ **Commande de notification d'hôte/de service** permet de choisir la commande de notification pour un hôte ou pour un service.
 
+.. _autologin:
+
 *************************
 Authentification Centreon
 *************************

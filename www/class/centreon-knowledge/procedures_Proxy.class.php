@@ -11,165 +11,156 @@
  *
  */
 
-class procedures_Proxy  {
-	var $DB;
-	var $hflag;
-	var $sflag;
-	var $proc;
-	var $url;
-	var $wikiUrl;
+require_once _CENTREON_PATH_ . '/www/include/configuration/configKnowledge/functions.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonHost.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonService.class.php';
 
-	public function procedures_Proxy($pearDB, $db_prefix, $host_name, $service_description = NULL) {
-		global $etc_centreon, $db_name, $db_user, $db_host, $db_password, $WikiURL;
+class procedures_Proxy
+{
+    private $DB;
+    private $hflag;
+    private $sflag;
+    private $proc;
+    public $url;
+    private $wikiUrl;
+    private $hostObj;
+    private $serviceObj;
 
-		$this->DB = $pearDB;
-		$this->hflag = 0;
-		$this->sflag = 0;
+    public function __construct($pearDB, $db_prefix, $host_name, $service_description = null)
+    {
+        $this->DB = $pearDB;
+        $this->hflag = 0;
+        $this->sflag = 0;
+        $this->hostObj = new CentreonHost($this->DB);
+        $this->serviceObj = new CentreonService($this->DB);
 
-        $centreon_path = realpath(dirname(__FILE__) . '/../../../');
-		require_once $centreon_path."/config/centreon.config.php";
+        $conf = getWikiConfig($this->DB);
+        $this->wikiUrl = $conf['kb_wiki_url'];
+        $this->proc = new procedures(
+            3,
+            $conf['kb_db_name'],
+            $conf['kb_db_user'],
+            $conf['kb_db_host'],
+            $conf['kb_db_password'],
+            $this->DB,
+            $conf['kb_db_prefix']
+        );
 
-		$modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
-		require_once $modules_path . 'functions.php';
+        if (isset($host_name)) {
+            if (isset($service_description)) {
+                $this->returnServiceWikiUrl($this->DB->escape($host_name), $this->DB->escape($service_description));
+            } else {
+                $this->returnHostWikiUrl($this->DB->escape($host_name));
+            }
+        }
+    }
 
-		$conf = getWikiConfig($this->DB);
-		$WikiURL = $conf['kb_wiki_url'];
+    private function getHostId($hostName)
+    {
+        $result = $this->DB->query("SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "' ");
+        $row = $result->fetchRow();
+        $hostId = 0;
+        if ($row["host_id"]) {
+            $hostId = $row["host_id"];
+        }
+        return $hostId;
+    }
 
-		$this->wikiUrl = $WikiURL;
-		$this->proc = new procedures(3, $conf['kb_db_name'], $conf['kb_db_user'], $conf['kb_db_host'], $conf['kb_db_password'], $this->DB, $conf['kb_db_prefix']);
+    private function getServiceId($hostName, $serviceDescription)
+    {
+        /*
+         * Get Services attached to hosts
+         */
+        $query = "SELECT s.service_id " .
+            "FROM host h, service s, host_service_relation hsr " .
+            "WHERE hsr.host_host_id = h.host_id " .
+            "AND hsr.service_service_id = service_id " .
+            "AND h.host_name LIKE '" . $hostName . "' " .
+            "AND s.service_description LIKE '" . $serviceDescription . "' ";
+        $result = $this->DB->query($query);
+        while ($row = $result->fetchRow()) {
+            return $row["service_id"];
+        }
+        $result->free();
+        /*
+         * Get Services attached to hostgroups
+         */
+        $query = "SELECT s.service_id " .
+            "FROM hostgroup_relation hgr, host h, service s, host_service_relation hsr " .
+            "WHERE hgr.host_host_id = h.host_id " .
+            "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id " .
+            "AND h.host_name LIKE '" . $hostName . "' " .
+            "AND service_id = hsr.service_service_id " .
+            "AND service_description LIKZ '" . $serviceDescription . "' ";
+        $result = $this->DB->query($query);
+        while ($row = $result->fetchRow()) {
+            return $row["service_id"];
+        }
+        $result->free();
 
-		if (isset($host_name)) {
-			if (isset($service_description))
-				$this->returnServiceWikiUrl($this->DB->escape($host_name), $this->DB->escape($service_description));
-			else
-				$this->returnHostWikiUrl($this->DB->escape($host_name));
-		}
-		return;
-	}
+    }
 
-	private function returnHostWikiUrl($host_name) {
-		$this->proc->setHostInformations();
+    private function returnHostWikiUrl($host_name)
+    {
+        $this->proc->setHostInformations();
 
-		$procList = $this->proc->getProcedures();
+        $procList = $this->proc->getProcedures();
 
-		/*
-		 * Check if host has a procedure directly on Host
-		 */
-		if (isset($procList["Host:".$host_name])) {
-			$this->url = $this->wikiUrl."/index.php?title=Host:".$host_name;
-			return ;
-		}
+        /*
+         * Check if host has a procedure directly on Host
+         */
+        if (isset($procList["Host_:_" . $host_name])) {
+            $this->url = $this->wikiUrl . "/index.php?title=Host_:_" . $host_name;
+            return;
+        }
 
-		/*
-		 * Check if host can get a procedure on templates
-		 */
-		$templates = $this->getHostTemplateList($host_name);
-		foreach ($templates as $tpl) {
-			if (isset($procList["Host-Template:".$tpl])) {
-				$this->url = $this->wikiURL."/index.php?title=Host-Template:".$tpl;
-				return ;
-			}
-		}
-	}
+        /*
+         * Check if host can get a procedure on templates
+         */
+        $hostId = $this->getHostId($host_name);
+        $templates = $this->hostObj->getTemplateChain($hostId);
+        foreach ($templates as $template) {
+            $templateName = $template['host_name'];
+            if (isset($procList["Host-Template_:_" . $templateName])) {
+                $this->url = $this->wikiUrl . "/index.php?title=Host-Template_:_" . $templateName;
+                return;
+            }
+        }
+    }
 
-	private function returnServiceWikiUrl($host_name, $service_description) {
-		if ($this->hflag != 0)
-			$this->proc->setHostInformations();
-		$this->proc->setServiceInformations();
-		$this->sflag;
+    private function returnServiceWikiUrl($host_name, $service_description)
+    {
+        if ($this->hflag != 0) {
+            $this->proc->setHostInformations();
+        }
+        $this->proc->setServiceInformations();
+        $this->sflag;
 
-		$procList = $this->proc->getProcedures();
+        $procList = $this->proc->getProcedures();
 
-		/*
-		 * Check Service
-		 */
-		if (isset($procList["Service:".trim($host_name."_".$service_description)])) {
-			$this->url = $this->wikiURL."/index.php?title=Service:".$host_name."_".$service_description;
-			return;
-		}
+        /*
+         * Check Service
+         */
+        $service_description = str_replace(' ', '_', $service_description);
 
-		/*
-		 * Check service Template
-		 */
-		$host_id = $this->getMyHostID($host_name);
-		$templates = $this->getMyServiceTemplateModels($this->getMyServicesID($host_id, $service_description));
-		foreach ($templates as $key => $value) {
-			if (isset($procList["Service-Template:".trim($value)])) {
-				$this->url = $this->wikiURL."/index.php?title=Service-Template:".$value;
-				return ;
-			}
-		}
-		$this->returnHostWikiUrl($host_name);
-	}
+        if (isset($procList["Service_:_" . trim($host_name . "_/_" . $service_description)])) {
+            $this->url = $this->wikiUrl . "/index.php?title=Service_:_" . $host_name . "_/_" . $service_description;
+            return;
+        }
 
-	function getMyHostID($host_name = NULL)	{
-		$DBRESULT =& $this->DB->query("SELECT host_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
-		if ($row["host_id"])
-			return $row["host_id"];
-	}
+        /*
+         * Check service Template
+         */
+        $serviceId = $this->getServiceId($host_name, $service_description);
+        $templates = $this->serviceObj->getTemplatesChain($serviceId);
+        foreach ($templates as $templateId) {
+            $templateDescription = $this->serviceObj->getServiceDesc($templateId);
+            if (isset($procList["Service-Template_:_" . $templateDescription])) {
+                $this->url = $this->wikiUrl . "/index.php?title=Service-Template_:_" . $templateDescription;
+                return;
+            }
+        }
 
-	function getMyServicesID($host_id, $service_description) {
-		/*
-		 * Get Services attached to hosts
-		 */
-		$DBRESULT =& $this->DB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_description = '$service_description'");
-		while ($elem =& $DBRESULT->fetchRow())	{
-			return $elem["service_id"];
-		}
-		$DBRESULT->free();
-
-		/*
-		 * Get Services attached to hostgroups
-		 */
-		$DBRESULT =& $this->DB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-				" AND service_id = hsr.service_service_id " .
-				" AND service_description = '$service_description'");
-		while ($elem =& $DBRESULT->fetchRow()){
-			return $elem["service_id"];
-		}
-		$DBRESULT->free();
-	}
-
-
-	private function getHostTemplateList($host_name) {
-		$templates = array();
-
-		$DBRESULT =& $this->DB->query("SELECT host_tpl_id FROM `host_template_relation`, `host` WHERE host_host_id = host_id AND host_name = '".$host_name."' ORDER BY `order`");
-		while($row =& $DBRESULT->fetchRow())	{
-			$DBRESULT2 =& $this->DB->query("SELECT host_name FROM host WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1");
-			$hTpl =& $DBRESULT2->fetchRow();
-			$templates[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES);
-		}
-		return $templates;
-	}
-
-	private function getMyServiceTemplateModels($service_id)	{
-
-		$tplArr = array();
-
-		$DBRESULT =& $this->DB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		$service_id = $row["service_template_model_stm_id"];
-		if ($row["service_description"])
-			$tplArr[$service_id] = $row["service_description"];
-		while (1) {
-			$DBRESULT =& $this->DB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
-			$DBRESULT->free();
-			if ($row["service_description"])
-				$tplArr[$service_id] = $row["service_description"];
-			else
-				break;
-			if ($row["service_template_model_stm_id"])
-				$service_id = $row["service_template_model_stm_id"];
-			else
-				break;
-		}
-		return ($tplArr);
-	}
+        $this->returnHostWikiUrl($host_name);
+    }
 }
-
-?>

@@ -109,7 +109,7 @@ class CentreonServiceGroup extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $addParams = array();
-        $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
+        $addParams[$this->object->getUniqueLabelField()] = $this->checkIllegalChar($params[self::ORDER_UNIQUENAME]);
         $addParams['sg_alias'] = $params[self::ORDER_ALIAS];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -320,10 +320,26 @@ class CentreonServiceGroup extends CentreonObject
      *
      * @return void
      */
-    public function export()
+    public function export($filterName = null)
     {
-        parent::export();
-        $sgs = $this->object->getList(array($this->object->getPrimaryKey(), $this->object->getUniqueLabelField()));
+        if (!parent::export($filterName)) {
+            return false;
+        }
+
+        $labelField = $this->object->getUniqueLabelField();
+        $filters = array();
+        if (!is_null($filterName)) {
+            $filters[$labelField] = $filterName;
+        }
+
+        $sgs = $this->object->getList(
+            array($this->object->getPrimaryKey(), $labelField),
+            -1,
+            0,
+            null,
+            null,
+            $filters
+        );
         $relobjSvc = new \Centreon_Object_Relation_Service_Group_Service();
         $objSvc = new \Centreon_Object_Relation_Host_Service();
         $relobjHgSvc = new \Centreon_Object_Relation_Service_Group_Host_Group_Service();

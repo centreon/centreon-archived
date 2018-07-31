@@ -28,7 +28,6 @@
 		</td>
 	</tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_base">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_split_components">{$form.split_component.label}</td><td class="FormRowValue">{$form.split_component.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_scale_graph_values">{$form.scaled.label}</td><td class="FormRowValue">{$form.scaled.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_centreon_graph_template">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>

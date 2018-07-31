@@ -1,17 +1,11 @@
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\MinkExtension\Context\MinkContext;
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\HostConfigurationPage;
-use Centreon\Test\Behat\HostTemplateConfigurationPage;
-use Centreon\Test\Behat\HostTemplateConfigurationListingPage;
-
+use Centreon\Test\Behat\Configuration\HostTemplateConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostTemplateConfigurationListingPage;
 
 class DisableFieldsOnBlockedObjectsContext extends CentreonContext
 {
-
     /**
      * @Given a blocked object template
      */
@@ -26,6 +20,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         ));
 
         $newHostTemplate->save();
+        $hostTemplate = new HostTemplateConfigurationListingPage($this, false);
 
         $centreonDb = $this->getCentreonDatabase();
         $centreonDb->query("UPDATE host SET host_locked = 1 WHERE host_name = 'myHostTemplate'");
@@ -35,7 +30,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $hostTemplate = $hostTemplate['myHostTemplate'];
 
         if (!$hostTemplate['locked']) {
-            throw new \Exception('the host template' . $hostTemplate . 'is not locked');
+            throw new \Exception('the host template myHostTemplate is not locked');
         };
     }
 

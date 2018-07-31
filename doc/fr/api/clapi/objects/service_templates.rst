@@ -150,7 +150,7 @@ first_notification_delay           First notification delay in seconds
 
 recovery_notification_delay        Recovery notification delay
 
-parallelize_checks	           1 when parallelize checks are enabled, 0 otherwise
+parallelize_check	           1 when parallelize checks are enabled, 0 otherwise
 
 obsess_over_service	           1 when obsess over service is enabled, 0 otherwise
 
@@ -174,10 +174,6 @@ event_handler	                   Name of the event handler command
 
 event_handler_arguments	           Arguments that go along with the event handler, prepend each argument with the "!" character
 
-first_notification_delay	   First notification delay in seconds
-
-flap_detection_options	           Flap detection options
-
 notes	                           Notes
 
 notes_url	                   Notes URL
@@ -198,7 +194,7 @@ service_notification_options       Notification options (w,u,c,r,f,s)
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
-.. _addhosttemplate-and-sethosttemplate
+.. _addhosttemplate-and-sethosttemplate:
 
 Addhosttemplate and Sethosttemplate
 -----------------------------------
@@ -210,7 +206,6 @@ You may want to tie a service template to an extra host template. In order to do
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
-
 
 Delhosttemplate
 ---------------

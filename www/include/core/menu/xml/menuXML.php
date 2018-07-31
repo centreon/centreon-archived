@@ -45,9 +45,8 @@ require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_."/www/class/centreonLang.class.php";
 require_once _CENTREON_PATH_."/www/class/centreonMenu.class.php";
 
-if (!isset($_SESSION)) {
-    session_start();
-}
+session_start();
+session_write_close();
 
 $sid = session_id();
 

@@ -207,9 +207,16 @@ class CentreonContact
             );
         }
 
-        $explodedValues = implode(',', $values);
-        if (empty($explodedValues)) {
-            $explodedValues = "''";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+        } else {
+            $explodedValues .= '""';
         }
 
         # get list of selected contacts
@@ -218,7 +225,13 @@ class CentreonContact
             . "WHERE contact_id IN (" . $explodedValues. ") "
             . "ORDER BY contact_name ";
 
-        $resRetrieval = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $resRetrieval = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($resRetrieval)) {
+            throw new Exception('Bad contact query params');
+        }
+
         while ($row = $resRetrieval->fetchRow()) {
             # hide unauthorized contacts
             $hide = false;

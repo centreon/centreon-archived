@@ -65,9 +65,9 @@ sub getAllHosts {
     
     my $query = "SELECT `host_id`, `host_name`".
                 " FROM `host`".
-                " WHERE `host_register`='1'";
+                " WHERE `host_register` = '1'";
     if ($activated == 1) {
-        $query .= " AND `host_activate` ='1'";
+        $query .= " AND `host_activate` = '1'";
     }
     my ($status, $sth) = $centreon->query($query);
     while (my $row = $sth->fetchrow_hashref()) {

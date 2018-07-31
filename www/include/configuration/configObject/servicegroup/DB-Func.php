@@ -214,8 +214,8 @@ function updateServiceGroup($sg_id, $ret = array())
     $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
 
     $rq = "UPDATE servicegroup SET ";
-    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_name = NULL,";
-    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq.= "sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_alias = NULL";
+    isset($ret["sg_name"]) && $ret["sg_name"] != null ? $rq .= "sg_name = '" . $ret["sg_name"] . "', " : $rq .= "sg_name = NULL,";
+    isset($ret["sg_alias"]) && $ret["sg_alias"] != null ? $rq.= "sg_alias = '" . $ret["sg_alias"] ."', " : $rq .= "sg_alias = NULL";
     isset($ret["sg_comment"]) && $ret["sg_comment"] != null ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
     isset($ret["geo_coords"]) && $ret["geo_coords"] != null ? $rq .= "geo_coords = '".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "geo_coords = NULL,";
     isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != null ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";

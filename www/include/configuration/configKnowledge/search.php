@@ -37,28 +37,30 @@ if (!isset($oreon)) {
     exit;
 }
 
-$searchOptions = array( 'host'      	           => 0,
-                        'service'                  => 0,
-                        'hostTemplate'             => 0,
-                        'serviceTemplate'          => 0,
-                        'poller'                   => 0,
-                        'hostgroup'                => 0,
-                        'servicegroup'             => 0,
-                        'hasNoProcedure'           => 0,
-                        'templatesWithNoProcedure' => 0
-                      );
+$searchOptions = array(
+    'host' => 0,
+    'service' => 0,
+    'hostTemplate' => 0,
+    'serviceTemplate' => 0,
+    'poller' => 0,
+    'hostgroup' => 0,
+    'servicegroup' => 0,
+    'hasNoProcedure' => 0,
+    'templatesWithNoProcedure' => 0
+);
 
-$labels = array( 'host'      	            => _("Host"),
-                 'service'                  => _("Service"),
-                 'hostTemplate'             => _("Host Template"),
-                 'serviceTemplate'          => _("Service Template"),
-                 'poller'                   => _("Poller"),
-                 'hostgroup'                => _("Hostgroup"),
-                 'servicegroup'             => _("Servicegroup"),
-                 'hasNoProcedure'           => _("Show wiki pageless only"),
-                 'templatesWithNoProcedure' => _("Show wiki pageless only - inherited templates included"),
-                 'search'		            => _("Search")
-                );
+$labels = array(
+    'host' => _("Host"),
+    'service' => _("Service"),
+    'hostTemplate' => _("Host Template"),
+    'serviceTemplate' => _("Service Template"),
+    'poller' => _("Poller"),
+    'hostgroup' => _("Hostgroup"),
+    'servicegroup' => _("Servicegroup"),
+    'hasNoProcedure' => _("Show wiki pageless only"),
+    'templatesWithNoProcedure' => _("Show wiki pageless only - inherited templates included"),
+    'search' => _("Search")
+);
 
 if ($currentPage  == "hosts") {
     $searchOptions['host'] = 1;
@@ -87,7 +89,10 @@ if ($currentPage  == "hosts") {
 $tpl->assign('searchHost', isset($_REQUEST['searchHost']) ? $_REQUEST['searchHost'] : "");
 $tpl->assign('searchService', isset($_REQUEST['searchService']) ? $_REQUEST['searchService'] : "");
 $tpl->assign('searchHostTemplate', isset($_REQUEST['searchHostTemplate']) ? $_REQUEST['searchHostTemplate'] : "");
-$tpl->assign('searchServiceTemplate', isset($_REQUEST['searchServiceTemplate']) ? $_REQUEST['searchServiceTemplate'] : "");
+$tpl->assign(
+    'searchServiceTemplate',
+    isset($_REQUEST['searchServiceTemplate']) ? $_REQUEST['searchServiceTemplate'] : ""
+);
 
 $checked = "";
 if (isset($_REQUEST['searchHasNoProcedure'])) {

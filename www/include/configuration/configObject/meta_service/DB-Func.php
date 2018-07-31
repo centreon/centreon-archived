@@ -139,7 +139,13 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(meta_id)"])) {
                     $metaObj = new CentreonMeta($pearDB);
-                    $metaObj->insertVirtualService($maxIddele["MAX(meta_id)"], $meta_name);
+                    $metaObj->insertVirtualService($maxId["MAX(meta_id)"], $meta_name);
+                    /* Duplicate contacts */
+                    $DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '".$key."'");
+                    while ($Contact = $DBRESULT->fetchRow()) {
+                        $DBRESULT2 = $pearDB->query("INSERT INTO meta_contact VALUES ('".$maxId["MAX(meta_id)"]."', '".$Contact["contact_id"]."')");
+                    }
+                    /* Duplicate contactgroups */
                     $DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
@@ -229,7 +235,7 @@ function insertMetaService($ret = array())
             "graph_id, meta_comment, geo_coords, meta_activate) " .
             "VALUES ( ";
     isset($ret["meta_name"]) && $ret["meta_name"] != null ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($ret["meta_display"]) && $ret["meta_display"] != null ? $rq .= "'".$ret["meta_display"]."', ": $rq .= "NULL, ";
     isset($ret["check_period"]) && $ret["check_period"] != null ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
     isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != null ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
     isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != null ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -315,6 +321,8 @@ function updateMetaService($meta_id = null)
     $ret["graph_id"] != null ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
     $rq .= "meta_comment = ";
     $ret["meta_comment"] != null ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+    $rq .= "geo_coords = ";
+    $ret["geo_coords"] != null ? $rq .= "'".htmlentities($ret["geo_coords"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "meta_activate = ";
     $ret["meta_activate"]["meta_activate"] != null ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
     $rq .= " WHERE meta_id = '".$meta_id."'";
@@ -344,11 +352,16 @@ function updateMetaServiceContact($meta_id)
     /* Add relation between metaservice and contact */
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cs');
-    $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
-    for ($i = 0; $i < count($ret); $i++) {
-        $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
+    if (count($ret)) {
+        $queryAddRelation = "INSERT INTO meta_contact (meta_id, contact_id) VALUES ";
+        for ($i = 0; $i < count($ret); $i++) {
+            if ($i > 0) {
+                $queryAddRelation .= ', ';
+            }
+            $queryAddRelation .= "(" . $meta_id . ", " . $ret[$i] . ")";
+        }
+        $pearDB->query($queryAddRelation);
     }
-    $pearDB->query($queryAddRelation);
 }
 
 function updateMetaServiceContactGroup($meta_id = null)
@@ -417,7 +430,6 @@ function insertMetric($ret = array())
     $msr_id = $DBRESULT->fetchRow();
     return ($msr_id["MAX(msr_id)"]);
 }
-
 function updateMetric($msr_id = null)
 {
     if (!$msr_id) {
@@ -425,8 +437,6 @@ function updateMetric($msr_id = null)
     }
     global $form;
     global $pearDB;
-    global $centreon;
-    $ret = array();
     $ret = $form->getSubmitValues();
     $rq = "UPDATE meta_service_relation SET " ;
     $rq .= "meta_id = ";
@@ -434,7 +444,7 @@ function updateMetric($msr_id = null)
     $rq .= "host_id = ";
     $ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
     $rq .= "metric_id = ";
-    $ret["metric_id"] != null ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
+    $ret["metric_sel"][1] != null ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
     $rq .= "msr_comment = ";
     $ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
     $rq .= "activate = ";

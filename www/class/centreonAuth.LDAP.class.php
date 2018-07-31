@@ -94,7 +94,7 @@ class CentreonAuthLDAP
     {
         global $pearDB;
 
-        $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
+        $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
         $data = $res->fetchRow();
         if (isset($data["value"])) {
             return $data["value"];
@@ -108,7 +108,6 @@ class CentreonAuthLDAP
      */
     public function checkPassword()
     {
-
         /*
          * Check if it's a new user
          */
@@ -273,8 +272,8 @@ class CentreonAuthLDAP
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " .
                     html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
-					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
-					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
+					contact_ldap_dn = '" . $this->pearDB->escape($userDn) . "',
+					contact_name = '" . $this->pearDB->escape($userDisplay) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
                     ar_id = ".$this->arId."
@@ -312,15 +311,15 @@ class CentreonAuthLDAP
                     contact_email, contact_pager, contact_oreon, contact_activate, contact_register,
                     contact_enable_notifications)
 		        	VALUES (" . $tmplId . ", '" .
-                    htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" .
-                    htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', " . $this->arId .
+                    $this->contactInfos['contact_alias'] . "', '" .
+                    $userDisplay . "', 'ldap', '" . $this->pearDB->escape($userDn) . "', " . $this->arId .
                     ", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
                 if (false === PEAR::isError($this->pearDB->query($query))) {
                     /*
                      * Get the contact_id
                      */
                     $query = "SELECT contact_id FROM contact
-                        WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "'";
+                        WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn) . "'";
                     $res = $this->pearDB->query($query);
                     $row = $res->fetchRow();
                     $contact_id = $row['contact_id'];

@@ -37,9 +37,18 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["gopt_id"]) ? $cG = $_GET["gopt_id"] : $cG = null;
-isset($_POST["lca_id"]) ? $cP = $_POST["gopt_id"] : $cP = null;
-$cG ? $gopt_id = $cG : $gopt_id = $cP;
+$gopt_id = filter_input(
+    INPUT_GET,
+    'gopt_id',
+    FILTER_SANITIZE_STRING
+);
+if (is_null($cg)) {
+    $gopt_id = filter_input(
+        INPUT_POST,
+        'gopt_id',
+        FILTER_SANITIZE_STRING
+    );
+}
     
 /*
  * Pear library

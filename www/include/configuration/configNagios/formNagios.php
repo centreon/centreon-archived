@@ -42,6 +42,8 @@ if (!$centreon->user->admin && isset($nagios_id)
     return null;
 }
 
+require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+$objMain = new CentreonMainCfg();
 
 /*
  * Database retrieve information for Nagios
@@ -65,11 +67,12 @@ if (($o == "c" || $o == "w") && $nagios_id) {
  */
 $mainCfg = new CentreonConfigEngine($pearDB);
 $cdata = CentreonData::getInstance();
-$dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
-if (is_null($nagios_id)) {
+if ($o != "a") {
+    $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+} else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
 }
-
 $cdata->addJsData(
     'clone-values-broker',
     htmlspecialchars(
@@ -152,6 +155,15 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("D
 $form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 
 $form->addElement('select', 'nagios_server_id', _("Linked poller"), $nagios_server);
+
+$attrTimezones = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?' .
+        'object=centreon_configuration_timezone&action=list',
+    'multiple' => false,
+    'linkedObject' => 'centreonGMT'
+);
+$form->addElement('select2', 'use_timezone', _("Timezone / Location"), array(), $attrTimezones);
 
 /* *************
  * Part 1
@@ -347,8 +359,6 @@ $nagTab[] = HTML_QuickForm::createElement('radio', 'log_event_handlers', null, _
 $form->addGroup($nagTab, 'log_event_handlers', _("Event Handler Logging Option"), '&nbsp;');
 
 $nagTab = array();
-$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("Yes"), '1');
-$form->addGroup($nagTab, 'log_initial_states', _("Initial State Logging Option"), '&nbsp;');
 
 $nagTab = array();
 $nagTab[] = HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Yes"), '1');
@@ -726,7 +736,7 @@ foreach ($debugLevel as $key => $val) {
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 $form->setDefaults($nagios_d);
 
-$form->setDefaults($aInstanceDefaultValues);
+$form->setDefaults($objMain->getDefaultMainCfg());
 
 $form->setDefaults(array('action' => '1'));
 
@@ -891,6 +901,8 @@ if ($valid) {
     $tpl->assign('ServiceCheckSchedulingOptions', _("Service Check Scheduling Options"));
     $tpl->assign('AutoRescheduling', _("Auto Rescheduling"));
     $tpl->assign('Optimization', _("Optimization"));
+    $tpl->assign('Advanced', _("Advanced"));
+    $tpl->assign('AdminInfo', _("Admin information"));
     $tpl->assign('DebugConfiguration', _("Debug Configuration"));
     $tpl->assign('Debug', _("Debug"));
     $tpl->assign("Seconds", _("seconds"));
@@ -901,7 +913,7 @@ if ($valid) {
         _("Warning: this value can be dangerous, use -1 if you have any doubt.")
     );
     $tpl->assign('cloneSet', $cloneSet);
-    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('centreon_path', _CENTREON_PATH_);
     $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
     $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
     $tpl->display("formNagios.ihtml");

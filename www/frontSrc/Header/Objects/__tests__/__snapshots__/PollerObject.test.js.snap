@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PollerObject Poller icon renders correctly 1`] = `
+<PollerObjectContainer
+  getPollersListIssues={[Function]}
+  poller={
+    Object {
+      "dataFetched": true,
+      "issues": Object {
+        "database": Object {
+          "critical": Object {
+            "poller": Array [
+              Object {
+                "id": 1,
+                "name": "central",
+                "since": 12345,
+              },
+            ],
+            "total": 1,
+          },
+          "warning": Object {
+            "poller": Array [
+              Object {
+                "id": 1,
+                "name": "central",
+                "since": 12345,
+              },
+            ],
+            "total": 0,
+          },
+        },
+        "total": 12,
+      },
+      "refreshTime": 90,
+      "total": 150,
+    }
+  }
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+  storeSubscription={
+    Subscription {
+      "listeners": Object {
+        "clear": [Function],
+        "get": [Function],
+        "notify": [Function],
+        "subscribe": [Function],
+      },
+      "onStateChange": [Function],
+      "parentSub": undefined,
+      "store": Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      },
+      "unsubscribe": [Function],
+    }
+  }
+/>
+`;

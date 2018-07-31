@@ -49,7 +49,8 @@ Si des différences sont détectées, vous pouvez synchroniser votre base de don
 Le processus prend quelques minutes mais **si votre base de données contient un fort
 volume de données sans index, cela peut prendre plus de 2 heures**. Soyez sûre d'avoir
 assez de place disponible sur la partition pour reconstruire les index :
- ::
+
+  ::
 
     $./import-mysql-indexes -d centreon -i ../data/centreonIndexes.json -s
 

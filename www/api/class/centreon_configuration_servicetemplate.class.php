@@ -46,33 +46,41 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @return array
      */
     public function getList()
     {
+        $range = array();
         // Check for select2 'q' argument
-        if (false === isset($this->arguments['q'])) {
-            $q = '';
-        } else {
+        if (isset($this->arguments['q'])) {
             $q = $this->arguments['q'];
-        }
-        
-        if (false === isset($this->arguments['l'])) {
-            $l = '0';
         } else {
-            $l = $this->arguments['l'];
+            $q = '';
+        }
+
+        if (isset($this->arguments['l'])) {
+            $templateType = array('0','1');
+            if (in_array($this->arguments['l'], $templateType)) {
+                $l = $this->arguments['l'];
+            } else {
+                throw new \RestBadRequestException('Error, list parameter');
+            }
+        } else {
+            $l = '0';
         }
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
-        } else {
-            $range = '';
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $range[] = (int)$offset;
+            $range[] = (int)$this->arguments['page_limit'];
         }
-        
+
         if ($l == '1') {
             $serviceTemplateList = $this->listWithHostTemplate($q, $range);
         } else {
@@ -80,62 +88,74 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
         return $serviceTemplateList;
     }
-    
+
     /**
      *
      * @param string $q
      * @return array
      */
-    private function listClassic($q, $range = '')
+    private function listClassic($q, $range = array())
     {
         $serviceList = array();
-        
-        $queryContact = "SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description "
-            . "FROM service "
-            . "WHERE service_description LIKE '%$q%' "
-            . "AND service_register = '0' "
-            . "ORDER BY service_description "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryContact);
+        $queryValues = array();
+        $queryRange = '';
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT service_id, service_description ' .
+            'FROM service ' .
+            'WHERE service_description LIKE ? ' .
+            'AND service_register = "0" ' .
+            'ORDER BY service_description ';
+        $queryValues[] = (string)'%' . $q . '%';
 
+        if (isset($range) && !empty($range)) {
+            $queryRange = 'LIMIT ?, ?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        }
+        $queryContact .= $queryRange;
+        $stmt = $this->pearDB->prepare($queryContact);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
 
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceList[] = array('id' => $data['service_id'], 'text' => $data['service_description']);
         }
-
         return array(
             'items' => $serviceList,
             'total' => $total
         );
     }
-    
+
     /**
      *
      * @param string $q
      * @return array
      */
-    private function listWithHostTemplate($q = '', $range = '')
+    private function listWithHostTemplate($q = '', $range = array())
     {
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-            . "FROM host h, service s, host_service_relation hsr "
-            . 'WHERE hsr.host_host_id = h.host_id '
-            . "AND hsr.service_service_id = s.service_id "
-            . "AND h.host_register = '0' AND s.service_register = '0' "
-            . "AND s.service_description LIKE '%$q%' "
-            . "ORDER BY h.host_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryService);
-
+        $queryValues = array();
+        $queryValues[] = (string)'%' . $q . '%';
+        $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT s.service_description, s.service_id, ' .
+            'h.host_name, h.host_id ' .
+            'FROM host h, service s, host_service_relation hsr ' .
+            'WHERE hsr.host_host_id = h.host_id ' .
+            'AND hsr.service_service_id = s.service_id ' .
+            'AND h.host_register = "0" ' .
+            'AND s.service_register = "0" ' .
+            'AND CONCAT(h.host_name, " - ", s.service_description) LIKE ? ' .
+            'ORDER BY h.host_name ';
+        if (isset($range) && !empty($range)) {
+            $queryService .= 'LIMIT ?, ?';
+            $queryValues[] = (int)$range[0];
+            $queryValues[] = (int)$range[1];
+        }
+        $stmt = $this->pearDB->prepare($queryService);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
         $total = $this->pearDB->numberRows();
-        
         $serviceList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $serviceCompleteName = $data['host_name'] . ' - ' . $data['service_description'];
             $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-            
+
             $serviceList[] = array(
                 'id' => htmlentities($serviceCompleteId),
                 'text' => $serviceCompleteName

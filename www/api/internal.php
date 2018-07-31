@@ -44,7 +44,7 @@ require_once dirname(__FILE__) . '/exceptions.php';
 $pearDB = new CentreonDB();
 ini_set("session.gc_maxlifetime", "31536000");
 
-CentreonSession::start();
+CentreonSession::start(1);
 
 if (false === isset($_SESSION["centreon"])) {
     CentreonWebService::sendJson("Unauthorized", 401);
@@ -64,4 +64,4 @@ if (false === isset($centreon) || false === is_object($centreon)) {
     CentreonWebService::sendJson("Unauthorized", 401);
 }
 
-CentreonWebService::router();
+CentreonWebService::router($centreon->user, true);

@@ -46,53 +46,64 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @return array
      */
     public function getList()
     {
+        $queryValues = array();
         // Check for select2 'q' argument
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
-        
-        if (false === isset($this->arguments['t'])) {
-            $t = '';
-        } else {
+        if (isset($this->arguments['t'])) {
+            if(!is_numeric($this->arguments['t'])){
+                throw new \RestBadRequestException('Error, type must be numerical');
+            }
             $t = $this->arguments['t'];
+        } else {
+            $t = '';
         }
 
+        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name " .
+            "FROM command " .
+            "WHERE command_name LIKE ? AND command_activate = '1' ";
+        $queryValues[] = (string)'%' . $q . '%';
+
+        if (!empty($t)) {
+            $queryCommand .= "AND command_type = ? ";
+            $queryValues[] = (int)$t;
+        }
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
+                throw new \RestBadRequestException('Error, limit must be numerical');
+            }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $range = 'LIMIT ' . $limit . ',' . $this->arguments['page_limit'];
+            $range = 'LIMIT ?, ?';
+            $queryValues[] = (int)$limit;
+            $queryValues[] = (int)$this->arguments['page_limit'];
         } else {
             $range = '';
         }
-        
-        $queryCommand = "SELECT SQL_CALC_FOUND_ROWS command_id, command_name "
-            . "FROM command "
-            . "WHERE command_name LIKE '%$q%' AND command_activate = '1' ";
-        
-        if (!empty($t)) {
-            $queryCommand .= "AND command_type = '$t' ";
+
+        $queryCommand .= "ORDER BY command_name " . $range;
+        $stmt = $this->pearDB->prepare($queryCommand);
+        $dbResult = $this->pearDB->execute($stmt, $queryValues);
+
+        if (PEAR::isError($dbResult)) {
+            throw new \Exception("An error occured");
         }
-            
-        $queryCommand .= "ORDER BY command_name "
-            . $range;
-        
-        $DBRESULT = $this->pearDB->query($queryCommand);
 
         $total = $this->pearDB->numberRows();
-        
         $commandList = array();
-        while ($data = $DBRESULT->fetchRow()) {
+        while ($data = $dbResult->fetchRow()) {
             $commandList[] = array('id' => $data['command_id'], 'text' => $data['command_name']);
         }
-        
+
         return array(
             'items' => $commandList,
             'total' => $total

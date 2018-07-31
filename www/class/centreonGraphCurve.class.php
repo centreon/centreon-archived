@@ -82,17 +82,24 @@ class CentreonGraphCurve
     }
 
     /**
-     *
      * @param array $values
+     * @param array $options
      * @return array
+     * @throws Exception
      */
     public function getObjectForSelect2($values = array(), $options = array())
     {
-        $aInstanceList = array();
-
-        $selectedGraphCurves = "";
-        if (count($values)) {
-            $selectedGraphCurves = "WHERE compo_id IN (" . implode(',', $values) . ") ";
+        $explodedValues = '';
+        $queryValues = array();
+        if (!empty($values)) {
+            foreach ($values as $k => $v) {
+                $explodedValues .= '?,';
+                $queryValues[] = (int)$v;
+            }
+            $explodedValues = rtrim($explodedValues, ',');
+            $selectedGraphCurves = "WHERE compo_id IN (" . $explodedValues . ") ";
+        } else {
+            $selectedGraphCurves = '""';
         }
 
         $queryGraphCurve = "SELECT DISTINCT compo_id as id, name"
@@ -100,8 +107,14 @@ class CentreonGraphCurve
             . $selectedGraphCurves
             . " ORDER BY name";
 
-        $DBRESULT = $this->db->query($queryGraphCurve);
-        while ($data = $DBRESULT->fetchRow()) {
+        $stmt = $this->db->prepare($queryGraphCurve);
+        $dbResult = $this->db->execute($stmt, $queryValues);
+
+        if (PEAR::isError($dbResult)) {
+            throw new Exception('Bad graph curve query params');
+        }
+
+        while ($data = $dbResult->fetchRow()) {
             $graphCurveList[] = array(
                 'id' => $data['id'],
                 'text' => $data['name']

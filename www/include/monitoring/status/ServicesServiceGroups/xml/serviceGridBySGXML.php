@@ -83,6 +83,9 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
  */
 $obj->setInstanceHistory($instance);
 
+
+$_SESSION['monitoring_service_groups'] = $sgSearch;
+
 /** **********************************************
  * Prepare pagination
  */

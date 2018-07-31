@@ -42,6 +42,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 
 session_start();
+session_write_close();
 
 if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
     exit;

@@ -131,7 +131,6 @@ if ($o == "c" || $o == "a") {
 }
 
 $form->addElement('checkbox', 'stacked', _("Stacking"));
-$form->addElement('checkbox', 'split_component', _("Split Components"));
 $form->addElement('checkbox', 'scaled', _("Scale Graph Values"));
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 $form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
@@ -186,7 +185,7 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
-    
+
 
 /*
  * Picker Color JS
