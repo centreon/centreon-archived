@@ -348,9 +348,11 @@ function updateRulesActions($acl_action_id, $ret = array())
  */
 function listActions()
 {
+    global $dependencyInjector;
+
     $actions = array();
-    //TODO
-    $serverIsMaster = false;
+    $informationsService = $dependencyInjector['centreon_remote.informations_service'];
+    $serverIsMaster = $informationsService->serverIsMaster();
 
     # Global Functionnality access
     $actions[] = "poller_listing";
