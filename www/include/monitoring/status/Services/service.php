@@ -253,8 +253,8 @@ $tpl->assign("tab_order", $tab_order);
 $action_list = array();
 $action_list[] = _("More actions...");
 
-//TODO
-$serverIsMaster = false;
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
 
 /*
  * Showing actions allowed for current user

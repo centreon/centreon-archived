@@ -245,6 +245,9 @@ $tpl->assign("tab_order", $tab_order);
 $action_list = array();
 $action_list[] = _("More actions...");
 
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
+
 /*
  * Showing actions allowed for current user
  */
@@ -261,16 +264,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
     }
     if (isset($authorized_actions["host_schedule_downtime"])) {
@@ -281,10 +284,14 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
-    $action_list[82] = _("Hosts : Enable Notification");
-    $action_list[83] = _("Hosts : Disable Notification");
-    $action_list[92] = _("Hosts : Enable Check");
-    $action_list[93] = _("Hosts : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[82] = _("Hosts : Enable Notification");
+        $action_list[83] = _("Hosts : Disable Notification");
+        $action_list[92] = _("Hosts : Enable Check");
+        $action_list[93] = _("Hosts : Disable Check");
+    }
+
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
