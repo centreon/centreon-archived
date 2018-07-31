@@ -1,5 +1,5 @@
 <?php
-namespace Centreon\Infrastructure\Service\Expetion;
+namespace Centreon\Infrastructure\Service\Exception;
 
 use RuntimeException;
 
