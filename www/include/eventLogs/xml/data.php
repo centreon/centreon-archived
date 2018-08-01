@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,15 +41,16 @@ include_once "../../../../config/centreon.config.php";
 /*
  * Require Classes
  */
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
+require_once realpath(__DIR__ . "/../../../../bootstrap.php");
 
 /**
  * Connect to DB
  */
-$pearDB = new CentreonDB();
-$pearDBO = new CentreonDB("centstorage");
+
+$pearDB = $dependencyInjector['configuration_db'];
+$pearDBO = $dependencyInjector['realtime_db'];
 
 /* Check Session */
 CentreonSession::start();
