@@ -18,16 +18,43 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
     }
 
     /**
+     * @OA\Post(
+     *   path="/centreon/api/internal.php",
+     *   @OA\Parameter(
+     *       name="object",
+     *       in="query",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       @OA\Schema(
+     *           type="string",
+     *       ),
+     *       example="centreon_configuration_remote"
+     *   ),
+     *   @OA\Parameter(
+     *       name="action",
+     *       in="query",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       @OA\Schema(
+     *           type="string",
+     *       ),
+     *       example="getWaitList"
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="JSON with the IPs inside the waitlist"
+     *   )
+     * )
+     *
      * Get remotes servers waitlist
      * 
      * @return string
      */
     public function postGetWaitList(): string
     {
-        //TODO
-        throw new \RestConflictException('Try again later.');
+        $statement = $this->pearDB->query('SELECT ip, version FROM `remote_servers` WHERE `is_connected` = 0');
 
-        return json_encode([]);
+        return json_encode($statement->fetchAll());
     }
 
     /**

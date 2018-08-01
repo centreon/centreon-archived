@@ -18,6 +18,33 @@ class CentreonRemoteServer extends \CentreonWebService implements CentreonWebser
     }
 
     /**
+     * @OA\Post(
+     *   path="/centreon/api/external.php",
+     *   @OA\Parameter(
+     *       name="object",
+     *       in="query",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       @OA\Schema(
+     *           type="string",
+     *       ),
+     *       example="centreon_remote_server"
+     *   ),
+     *   @OA\Parameter(
+     *       name="action",
+     *       in="query",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       @OA\Schema(
+     *           type="string",
+     *       ),
+     *       example="addToWaitList"
+     *   ),
+     *   @OA\Response(
+     *     response=200
+     *   )
+     * )
+     *
      * Add remote Centreon instance in waiting list
      * 
      * @return string
