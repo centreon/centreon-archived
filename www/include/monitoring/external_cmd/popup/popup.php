@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,14 +36,13 @@
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 
 require_once _CENTREON_PATH_ . 'vendor/autoload.php';
-
+require_once $centreon_path . 'bootstrap.php';
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector['configuration_db'];
 
 session_start();
 session_write_close();
@@ -58,8 +57,10 @@ if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_
 }
 $sid = session_id();
 if (isset($sid)) {
-    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
-    if (!$session = $res->fetchRow()) {
+    $res = $pearDB->prepare("SELECT * FROM session WHERE session_id = :sid");
+    $res->bindValue(':sid', $sid, PDO::PARAM_STR);
+    $res->execute();
+    if (!$session = $res->fetch()) {
         exit();
     }
 } else {
