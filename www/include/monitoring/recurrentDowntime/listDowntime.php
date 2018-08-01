@@ -46,9 +46,9 @@ $search = '';
 if (isset($_POST['searchDT']) && $_POST['searchDT']) {
     $search = $_POST['searchDT'];
     $downtime->setSearch($search);
-} else if (isset($_GET['search']) && $_GET['search'] && !isset($_POST['searchDT'])) {
+} elseif (isset($_GET['search']) && $_GET['search'] && !isset($_POST['searchDT'])) {
     $search = $_GET['search'];
-    $downtime->setSearch($search);                              
+    $downtime->setSearch($search);
 }
 
 /*

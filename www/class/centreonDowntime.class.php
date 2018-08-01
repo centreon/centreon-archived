@@ -116,7 +116,7 @@ class CentreonDowntime
             return $this->nbRows;
         }
         /* Get the number of rows with a COUNT(*) */
-        $query = "SELECT COUNT(*) FROM downtime" . ($this->search!=''?' WHERE '.$this->search:'');
+        $query = "SELECT COUNT(*) FROM downtime" . ($this->search != '' ? ' WHERE ' . $this->search : '');
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return 0;
@@ -501,28 +501,28 @@ class CentreonDowntime
                             $res = $this->db->query($query);
 
                             /*
-        					 * Duplicate Relations for hosts
-        					 */
+                             * Duplicate Relations for hosts
+                             */
                             $this->db->query("INSERT INTO downtime_host_relation (dt_id, host_host_id)
                                 SELECT $id_new, host_host_id FROM downtime_host_relation WHERE dt_id = '$id'");
 
                             /*
-        					 * Duplicate Relations for hostgroups
-        					 */
+                             * Duplicate Relations for hostgroups
+                             */
                             $this->db->query("INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id)
                                 SELECT $id_new, hg_hg_id FROM downtime_hostgroup_relation WHERE dt_id = '$id'");
 
                             /*
-        					 * Duplicate Relations for services
-        					 */
+                             * Duplicate Relations for services
+                             */
                             $this->db->query("INSERT INTO downtime_service_relation
                                 (dt_id, host_host_id, service_service_id)
                                 SELECT $id_new, host_host_id, service_service_id
                                     FROM downtime_service_relation WHERE dt_id = '$id'");
 
                             /*
-        					 * Duplicate Relations for servicegroups
-        					 */
+                             * Duplicate Relations for servicegroups
+                             */
                             $this->db->query("INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id)
                                 SELECT $id_new, sg_sg_id FROM downtime_servicegroup_relation WHERE dt_id = '$id'");
 
