@@ -70,7 +70,7 @@ Select the hard disk drive and the **I will configure partitioning** option, the
    :align: center
    :scale: 65%
 
-Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**: 
+Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**:
 
 .. image :: /images/user/07_partitioning_filesystem.png
    :align: center
@@ -362,8 +362,8 @@ Then install Centreon Plugin Pack Manager itself.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-You're now ready to go to Administration -> Extensions -> Plugin packs -> Setup.
-You'll find there 6 free Plugin Packs to get you started. 5 more are
+You're now ready to go to Configuration -> Plugin packs -> Manager.
+You'll find there 10 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
 

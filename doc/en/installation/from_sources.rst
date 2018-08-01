@@ -72,8 +72,11 @@ Then execute::
 
   $ pear upgrade-all
 
-Debian / Ubuntu
+Debian jessie / Ubuntu 14.04
 ===============
+
+.. note::
+   Debian and Ubuntu latest version not yet supported.
 
 Install the following prerequisites::
 
@@ -84,7 +87,7 @@ Install the following prerequisites::
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files are not available by default in Debian. To add them, change the /etc/apt/sources.list file and add the *non-free* category.
 
-Then execute the following commands::
+To Debian, then execute the following commands::
 
   $ apt-get update
   $ apt-get install snmp-mibs-downloader
@@ -148,7 +151,7 @@ Install this Stream Multiplexers before continuing with the installation.
 Centreon
 ********
 
-Download the latest version of Centreon `here <https://download.centreon.com>`_.
+Download the latest version of Centreon-web `here <https://download.centreon.com>`_.
 
 
 Shell Installation
@@ -156,11 +159,11 @@ Shell Installation
 
 Extract the Centreon archive::
 
-  tar zxf centreon-2.x.x.tar.gz
+  tar zxf centreon-web-2.8.x.tar.gz
 
 Change directory::
 
-  cd centreon-2.x.x
+  cd centreon-web-2.8.x
 
 Run the installation script::
 
@@ -713,7 +716,7 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
 After saving the file, please reboot your operating system to apply the changes.
 
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini who contain the following line :
+PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini` who contain the following line:
 
  ::
 

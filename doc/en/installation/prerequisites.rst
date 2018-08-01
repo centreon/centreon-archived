@@ -18,7 +18,7 @@ Softwares
 Operating System
 ================
 
-If you **use Centreon ISO v3.x the operating system will be CentOS v6**.
+If you **use Centreon ISO v3.x you can choose between operating system CentOS v6 or CentOS v7**.
 
 If you prefer to use **Red Hat OS** you must install it in **v6 or v7 version**
 and use rpms from repository.
@@ -48,7 +48,7 @@ Dependent software
 The following table describes the dependent software:
 
 +----------+------------------+
-| Logiciel | Version          |
+| Software | Version          |
 +==========+==================+
 | Apache   | 2.2 & 2.4        |
 +----------+------------------+
@@ -158,7 +158,7 @@ MariaDB DBMS
 ============
 
 .. note::
-    Al least 1GB of non allocated free space must be available on the **volum group**
+    Al least 1GB of non allocated free space must be available on the **volume group**
     where **/var/lib/mysql** is located when you want to use **snapshot LVM** as
     backup method.
 

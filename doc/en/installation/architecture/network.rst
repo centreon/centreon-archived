@@ -35,7 +35,7 @@ Tables of network flows to integrate monitoring platform to IT
 +----------------+----------------+------------+--------------------+--------------------------------------------------------------------------------------+
 | Poller         | SMTP server    | SMTP       | TCP 25             | Notification via email                                                               |
 +----------------+----------------+------------+--------------------+--------------------------------------------------------------------------------------+
-| Poller         | Repository     | HTTP (FTP) | TCP 80 (FTP 20)    | Repository for system and application packages                                       |
+| Poller         | Repository     | HTTP (FTP) | TCP 80 (FTP 20,21) | Repository for system and application packages                                       |
 +----------------+----------------+------------+--------------------+--------------------------------------------------------------------------------------+
 
 .. note::
