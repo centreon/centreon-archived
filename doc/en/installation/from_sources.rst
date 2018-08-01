@@ -73,7 +73,7 @@ Then execute::
   $ pear upgrade-all
 
 Debian jessie / Ubuntu 14.04
-===============
+============================
 
 .. note::
    Debian and Ubuntu latest version not yet supported.
