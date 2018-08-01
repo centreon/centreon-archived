@@ -100,12 +100,13 @@ const Nav = ({classes, items, value, handleChange, open}) => (
         Object.keys(items).map((item, key) => {
           const i = items[item]
           const Icon = Components[i.label].component || HomeIcon
+          const id = `item-${key}`
 
           return (
               <Tab
                 disableRipple
                 key={key}
-                id={key}
+                id={id}
                 title={i.label}
                 value={item}
                 icon={<Icon viewBox={Components[i.label].viewBox}/>}
