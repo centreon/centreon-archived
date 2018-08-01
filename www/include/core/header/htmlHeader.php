@@ -185,6 +185,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     $tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 
     ?>
+    <script src="./include/common/javascript/centreon/dateMoment.js" type="text/javascript"></script>
+    <script src="./include/common/javascript/centreon/centreon-localStorage.js" type="text/javascript"></script>
     <script type='text/javascript'>
         <?php
         /* Deactive refresh/autologout if new header feature is activated */
@@ -232,10 +234,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                     echo "}";
                 }
             }
-            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
             ?>
-            check_session();
-            <?php } ?>
+            check_session(<?php $tM ?>);
         });
     </script>
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
