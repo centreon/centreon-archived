@@ -95,7 +95,7 @@ class UserProfileContainer extends Component {
 
     const { autologinkey, userId } = this.props.user
 
-    if (!autologinkey && autologinkey !== token) {
+    if (autologinkey !== undefined && userId !== undefined && autologinkey !== token) {
       this.props.autoLogin(userId, this.state.token)
     }
 
