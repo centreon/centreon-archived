@@ -18,7 +18,14 @@ Installation
 This script uses the Perl-Nagios-Object library to read CFG files. To install
 it please follow this steps on your Nagios(R) server::
 
+CentOS:
+
   $ yum install perl-Module-Build
+
+Debian:
+
+  $ apt-get install libmodule-build-perl
+
   $ cd /tmp
   $ wget http://search.cpan.org/CPAN/authors/id/D/DU/DUNCS/Nagios-Object-0.21.20.tar.gz
   $ tar xzf Nagios-Object-0.21.20.tar.gz
@@ -38,7 +45,7 @@ Usage
 =====
 
 On a fresh Centreon server the default poller is named "Central". If you rename it
-or if you want to link this Nagios configuration to a predifined poller you 
+or if you want to link this Nagios configuration to a predifined poller you
 have to change the poller name on line 65::
 
   my $default_poller = "Central";
@@ -50,7 +57,7 @@ To display help use the command::
   #    Copyright (c) 2005-2015 Centreon                #
   #    Bugs to http://github.com/nagiosToCentreon      #
   ######################################################
-  						    
+
   Usage: nagios_reader_to_centreon_clapi.pl
       -V (--version) Show script version
       -h (--help)    Usage help
@@ -64,7 +71,7 @@ Export the file /tmp/centreon_clapi_import_commands.txt on your Centreon server.
 
 Run the following command to import configuration into Centreon on your Centreon server::
 
-  $ /usr/share/centreon/www/modules/centreon-clapi/core/centreon -u admin -p @PASSWORD -i /tmp/centreon_clapi_import_commands.txt
+  $ /usr/share/centreon/bin/centreon -u admin -p @PASSWORD -i /tmp/centreon_clapi_import_commands.txt
 
 .. note::
     Replace **@PASSWORD** by password of **admin** Centreon web user.
