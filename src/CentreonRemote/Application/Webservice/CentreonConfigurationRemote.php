@@ -18,29 +18,25 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
     }
 
     /**
-     * @OA\Post(
+     * @SWG\Post(
      *   path="/centreon/api/internal.php",
-     *   @OA\Parameter(
-     *       name="object",
+     *   @SWG\Parameter(
      *       in="query",
+     *       name="object",
+     *       type="string",
      *       description="the name of the API object class",
      *       required=true,
-     *       @OA\Schema(
-     *           type="string",
-     *       ),
-     *       example="centreon_configuration_remote"
+     *       enum="centreon_configuration_remote",
      *   ),
-     *   @OA\Parameter(
-     *       name="action",
+     *   @SWG\Parameter(
      *       in="query",
+     *       name="action",
+     *       type="string",
      *       description="the name of the action in the API class",
      *       required=true,
-     *       @OA\Schema(
-     *           type="string",
-     *       ),
-     *       example="getWaitList"
+     *       enum="getWaitList",
      *   ),
-     *   @OA\Response(
+     *   @SWG\Response(
      *     response=200,
      *     description="JSON with the IPs inside the waitlist"
      *   )
