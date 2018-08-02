@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AddWizard from './Components/Wizard';
+import AddWizard from './components/Wizard';
 
 ReactDOM.render(<AddWizard />, document.getElementById('addWizard'));
