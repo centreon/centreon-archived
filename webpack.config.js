@@ -23,6 +23,7 @@ module.exports = {
     new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
       filename: 'webpack.tpl',
+      template: path.resolve(__dirname, './www/webpack.html'),
       title: 'Caching'
     }),
     new ExtractTextPlugin({
