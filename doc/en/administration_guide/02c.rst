@@ -11,9 +11,9 @@ It is possible to install modules using the YUM utility or source files (\*.tar.
 
 There are 3 kinds of modules:
 
-* **Community** modules, under licence GPL v2, developed by the Centreon community
-* **Core** modules, under licence GPL v2, developed by the Centreon team
-* **Proprietary** modules, subject to a licence, developed by `Centreon <http://www.centreon.com>`_
+* **Community** modules, under license GPL v2, developed by the Centreon community
+* **Core** modules, under license GPL v2, developed by the Centreon team
+* **Proprietary** modules, subject to a license, developed by `Centreon <http://www.centreon.com>`_
 
 To install a module:
 
@@ -41,7 +41,7 @@ The table below summarises the columns of the page:
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | Author                  | Indicates the module author                                                                                |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
-| Expiration date         | Indicates licence expiration date                                                                          |
+| Expiration date         | Indicates license expiration date                                                                          |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | Installed               | Indicates if the module is installed or not                                                                |
 +-------------------------+------------------------------------------------------------------------------------------------------------+

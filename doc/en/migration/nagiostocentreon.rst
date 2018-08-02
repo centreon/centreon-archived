@@ -11,7 +11,7 @@ Prerequisites
 =============
 
 First of all you need a Centreon server installed and ready to use. Please see the
-documentation :ref:`to install a Centreon server<firststepsces3>` based on Centreon.
+documentation :ref:`to install a Centreon server<install>` based on Centreon.
 
 Installation
 ============
