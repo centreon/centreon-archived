@@ -6,7 +6,7 @@ Using VM
 
 You can download in Centreon web site, VM already installed.
 
-These VMs are in OVF format and have been tested for VMWare infrastructure. The following procedure have been done for VSphere Client in 5.1 version
+These VMs are in OVF format and have been tested for VMWare infrastructure. The following procedure have been done for VSphere Client in 5.1 version and VirtualBox 5.1
 
 Import
 ------
