@@ -4,6 +4,9 @@ namespace CentreonRemote\Application\Webservice;
 
 use Centreon\Infrastructure\Service\CentreonWebserviceServiceInterface;
 
+/**
+ * @SWG\Info(title="Centreon Remote Server API", version="0.1")
+ */
 class CentreonRemoteServer extends \CentreonWebService implements CentreonWebserviceServiceInterface
 {
 
@@ -18,30 +21,27 @@ class CentreonRemoteServer extends \CentreonWebService implements CentreonWebser
     }
 
     /**
-     * @OA\Post(
+     * @SWG\Post(
      *   path="/centreon/api/external.php",
-     *   @OA\Parameter(
-     *       name="object",
+     *   @SWG\Parameter(
      *       in="query",
+     *       name="object",
      *       description="the name of the API object class",
      *       required=true,
-     *       @OA\Schema(
-     *           type="string",
-     *       ),
-     *       example="centreon_remote_server"
+     *       type="string",
+     *       enum="centreon_remote_server"
      *   ),
-     *   @OA\Parameter(
-     *       name="action",
+     *   @SWG\Parameter(
      *       in="query",
+     *       name="action",
      *       description="the name of the action in the API class",
      *       required=true,
-     *       @OA\Schema(
-     *           type="string",
-     *       ),
-     *       example="addToWaitList"
+     *       type="string",
+     *       enum="addToWaitList"
      *   ),
-     *   @OA\Response(
-     *     response=200
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Empty string"
      *   )
      * )
      *
