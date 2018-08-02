@@ -1,4 +1,4 @@
-{include file='react-header.tpl'}
+<div id="header-react"></div>
 <div id="centreonMsg"></div>
 
 <script type='text/javascript'>
