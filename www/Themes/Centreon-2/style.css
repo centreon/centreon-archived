@@ -106,7 +106,6 @@ select[multiple="multiple"] {
     overflow:auto;
 }
 hr          {background-color:#CCC;height:1px;margin: 3px 0;}
-form        {padding-bottom:10px;}
 
 option      {padding-left:1px;padding-right:1px;}
 
@@ -117,8 +116,12 @@ iframe {
 label {
     vertical-align: middle;
 }
-
-
+.main {
+    padding: 36px 15px;
+}
+.pathway {
+    padding: 10px 0;
+}
 pre.wrap {
   white-space: -moz-pre-wrap;
   white-space: -pre-wrap;

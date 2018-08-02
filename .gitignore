@@ -1,6 +1,7 @@
 .idea/
 /nbproject/private/
 nbproject/
+node_modules/
 /vendor/
 composer.lock
 GPL_LIB/SmartyCache/*
@@ -10,3 +11,4 @@ www/img/media/*
 !www/install/tmp/.gitkeep
 www/install/install.conf.php
 config/centreon.config.php
+*-dev.yml

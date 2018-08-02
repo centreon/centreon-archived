@@ -59,6 +59,7 @@ class CentreonUser
     public $userCrypted;
     protected $token;
     public $default_page;
+    private $currentPage;
 
     protected $restApi;
     protected $restApiRt;
@@ -470,6 +471,27 @@ class CentreonUser
             $sth->bindParam(':cp_contact_id', $this->user_id, PDO::PARAM_INT);
             $sth->execute();
         }
+    }
+
+    /**
+     * Get current Page
+     *
+     * @return int
+     */
+    public function getCurrentPage()
+    {
+        return $this->currentPage;
+    }
+
+    /**
+     * Set current page
+     *
+     * @param int $currentPage
+     * @return void
+     */
+    public function setCurrentPage($currentPage)
+    {
+        $this->currentPage = $currentPage;
     }
 
     /**

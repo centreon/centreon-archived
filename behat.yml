@@ -326,3 +326,19 @@ default:
     uri:
       paths: [ %paths.base%/features/URI.feature ]
       contexts: [ URIContext ]
+
+    topcounterprofilemenu:
+      paths: [ %paths.base%/features/TopCounterProfileMenu.feature ]
+      contexts: [ TopCounterProfileMenuContext ]
+
+    topcounterservice:
+      paths: [ %paths.base%/features/TopCounterServices.feature ]
+      contexts: [ TopCounterServicesContext ]
+
+    topcounterhost:
+      paths: [ %paths.base%/features/TopCounterHosts.feature ]
+      contexts: [ TopCounterHostsContext ]
+
+    topcounterpoller:
+      paths: [ %paths.base%/features/TopCounterPollers.feature ]
+      contexts: [ TopCounterPollersContext ]

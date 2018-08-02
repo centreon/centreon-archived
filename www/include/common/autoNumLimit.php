@@ -63,12 +63,7 @@ if (isset($_POST['limit']) && $_POST['limit']) {
 
 $_SESSION[$sessionLimitKey] = $limit;
 
-if (!empty($centreon->historyLimit) &&
-    !empty($centreon->historyLimit[$url]) &&
-    $limit != $centreon->historyLimit[$url]
-) {
-    $num = 0;
-} elseif (isset($_POST['num']) && $_POST['num']) {
+if (isset($_POST['num']) && $_POST['num']) {
     $num = $_POST['num'];
 } elseif (isset($_GET['num']) && $_GET['num']) {
     $num = $_GET['num'];

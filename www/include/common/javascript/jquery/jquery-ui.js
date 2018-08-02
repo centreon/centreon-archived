@@ -7162,7 +7162,7 @@ var widgetsAccordion = $.widget( "ui.accordion", {
 			eventData = {
 				oldHeader: active,
 				oldPanel: toHide,
-				newHeader: collapsing ? $() : clicked,
+				header: collapsing ? $() : clicked,
 				newPanel: toShow
 			};
 

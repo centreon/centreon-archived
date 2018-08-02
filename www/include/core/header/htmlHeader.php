@@ -185,22 +185,30 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     $tM = $centreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 
     ?>
+    <script src="./include/common/javascript/centreon/dateMoment.js" type="text/javascript"></script>
+    <script src="./include/common/javascript/centreon/centreon-localStorage.js" type="text/javascript"></script>
     <script type='text/javascript'>
         <?php
-        require_once("./include/core/autologout/autologout.php");
+        /* Deactive refresh/autologout if new header feature is activated */
+        if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+            require_once("./include/core/autologout/autologout.php");
+        }
         ?>
         jQuery(function () {
             <?php
 
-            if ($centreon->user->access->admin == 0) {
-                $tabActionACL = $centreon->user->access->getActions();
-                if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
-                }
-                unset($tabActionACL);
-            } else {
-                if ($min != 1) {
-                    print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+            /* Deactive refresh if new header feature is activated */
+            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
+                if ($centreon->user->access->admin == 0) {
+                    $tabActionACL = $centreon->user->access->getActions();
+                    if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
+                    unset($tabActionACL);
+                } else {
+                    if ($min != 1) {
+                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
+                    }
                 }
             }
 
@@ -227,7 +235,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                 }
             }
             ?>
-            check_session();
+            check_session(<?php $tM ?>);
         });
     </script>
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>

@@ -41,7 +41,7 @@ require_once dirname(__FILE__) . '/class/webService.class.php';
 require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/interface/di.interface.php';
 
-error_reporting(0);
+error_reporting(-1);
 ini_set('display_errors', 0);
 
 $pearDB = new CentreonDB();

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,50 +33,45 @@
  *
  */
 
-ini_set("display_errors", "Off");
+require_once dirname(__FILE__) . '/webService.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonFeature.class.php';
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
+class CentreonFeaturetesting extends CentreonWebService
+{
+    protected $obj;
 
-$pearDB = new CentreonDB();
-$buffer = new CentreonXML();
-$buffer->startElement("entry");
-
-session_start();
-session_write_close();
-
-$sid = session_id();
-
-if (isset($_SESSION['centreon'])) {
-    $centreon = $_SESSION['centreon'];
-    $currentTime = $centreon->CentreonGMT->getCurrentTime(time(), $centreon->user->getMyGMT());
-
-
-
-    $stmt = $pearDB->prepare("SELECT user_id FROM session WHERE session_id = ?");
-    $stmt->execute(array($sid));
-
-    if ($stmt->rowCount()) {
-
-        $buffer->writeElement("state", "ok");
-    } else {
-        $buffer->writeElement("state", "nok");
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->obj = new CentreonFeature($this->pearDB);
     }
-} else {
-    $currentTime = date_format('%c',time());
-    $buffer->writeElement("state", "nok");
+
+    /**
+     * Enabled or disabled a feature flipping for an user
+     *
+     * METHOD POST
+     */
+    public function postEnabled()
+    {
+        if (!isset($this->arguments['name']) ||
+            !isset($this->arguments['version']) ||
+            !isset($this->arguments['enabled'])) {
+            throw new \RestBadRequestException('Missing arguments');
+        }
+        if (!isset($_SESSION['centreon'])) {
+            throw new \RestUnauthorizedException('Session does not exists.');
+        }
+        $userId = $_SESSION['centreon']->user->user_id;
+        $features = array();
+        $features[$this->arguments['name']] = array();
+        $features[$this->arguments['name']][$this->arguments['version']] = $this->arguments['enabled'] ? 1 : 0;
+
+        $this->obj->saveUserFeaturesValue(
+            $userId,
+            $features
+        );
+    }
 }
-$buffer->writeElement("time", $currentTime);
-$buffer->writeElement("timezone", $centreon->CentreonGMT->getActiveTimezone($centreon->user->getMyGMT()));
-$buffer->endElement();
-
-header('Content-Type: text/xml');
-header('Pragma: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
-
-$buffer->output();
