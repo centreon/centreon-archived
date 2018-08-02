@@ -188,12 +188,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/common/javascript/centreon/dateMoment.js" type="text/javascript"></script>
     <script src="./include/common/javascript/centreon/centreon-localStorage.js" type="text/javascript"></script>
     <script type='text/javascript'>
-        <?php
-        /* Deactive refresh/autologout if new header feature is activated */
-        if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
-            require_once("./include/core/autologout/autologout.php");
-        }
-        ?>
         jQuery(function () {
             <?php
 
