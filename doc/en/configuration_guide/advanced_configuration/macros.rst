@@ -14,6 +14,7 @@ Standard macros
 Standard macros are macros predefined in the source code of the monitoring engines. These different macros allow us to retrieve the value of various objects from commands.
 
 E.g.:
+
 * The macro called **$HOSTADDRESS$** enables us to retrieve the IP address of a host
 * The macro called **$CONTACTEMAIL$** enables us to retrieve the e-mail address of the contact
 

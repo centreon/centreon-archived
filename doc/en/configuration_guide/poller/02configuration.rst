@@ -22,7 +22,7 @@ Once the installation is completed, it is necessary to integrate this remote pol
 * In the **Files** tab:
 
   * Modify **Configuration Name**
-  * Check that ** Linked poller** is the previously created poller
+  * Check that **Linked poller** is the previously created poller
   * Change if necessary the **Timezone / Location**
 
 .. image:: /images/user/configuration/10advanced_configuration/07addengine.png
@@ -31,11 +31,11 @@ Once the installation is completed, it is necessary to integrate this remote pol
 * In the **Data** tab - **Multiple Broker Module** fields check / add the following entries::
 
    /usr/lib64/centreon-engine/externalcmd.so
-   
+
    /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
 
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller_neb.png
-   :align: center 
+   :align: center
 
 Centreon Broker configuration
 =============================
