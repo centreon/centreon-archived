@@ -53,6 +53,42 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
         return json_encode($statement->fetchAll());
     }
 
+    //TODO doc
+    public function postDoSomethingAboutConnectingRemote()
+    {
+        $openBrokerFlow = isset($_POST['open_broker_flow']);
+
+        // - poller/remote ips can be a multiple select
+        //  -- form can have option to add IP of server without being pinged previously
+        if (!isset($_POST['remote_server_ip']) || !$_POST['remote_server_ip']) {
+            throw new \RestBadRequestException('You need t send \'remote_server_ip\' in the request.');
+        }
+
+        if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
+            throw new \RestBadRequestException('You need t send \'centreon_central_ip\' in the request.');
+        }
+
+        if (!isset($_POST['remote_name']) || !$_POST['remote_name']) {
+            throw new \RestBadRequestException('You need t send \'remote_name\' in the request.');
+        }
+
+        $remoteIps = (array) $_POST['remote_server_ip'];
+        $centreonCentralIp = $_POST['centreon_central_ip'];
+        $remoteName = count($remoteIps) > 1 ? '' : substr($_POST['remote_name'], 0, 40);
+
+        foreach ($remoteIps as $remoteIp) {
+            // - $openBrokerFlow?
+            // - create or update in remote_servers
+            //  -- name = $remoteName
+            //  -- is_connected = 1
+            //  -- connected_at = timestamp
+            // - Centreon Broker config
+            // - Centreon RRD config
+        }
+
+        return json_encode([]);
+    }
+
     /**
      * Authorize to access to the action
      *
