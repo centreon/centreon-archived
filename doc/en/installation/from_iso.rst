@@ -273,25 +273,37 @@ Start monitoring
 
 To start the monitoring engine :
 
- 1. On the web interface, go to **Configuration** ==> **Monitoring engines**
- 2. Leave the default options and click on **Export**
- 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4. Check **Move Export Files** and **Restart Monitoring Engine**
- 5. Click on **Export** again
- 6. Log into the ‘root’ user on your server
- 7. Start Centreon Broker
+ 1. On the web interface, go to **Configuration** ==> **Pollers**
+ 2. Leave the default options and click on **Export configuration**
+ 3. Select **Central** poller from the box input **Pollers**
+ 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 5. Check **Move Export Files** and **Restart Monitoring Engine** with option method **Restart** selected
+ 6. Click on **Export** again
+ 7. Log into the ‘root’ user on your server
+ 8. Verify if services **cbd**, **centengine** and **centcore** is running
+
+  ::
+
+    service cbd status
+    service centengine status
+    service centcore status
+
+ If they are not running, start them
+
+ * Start Centreon Broker
 
   ::
 
     service cbd start
 
- 8. Start Centreon Engine
+
+ * Start Centreon Engine
 
   ::
 
     service centengine start
 
- 9. Start centcore
+ * Start centcore
 
   ::
 
