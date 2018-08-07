@@ -1,0 +1,88 @@
+<?php
+
+return [
+    [
+        'config_key'      => 'name',
+        'config_value'    => 'rrd-output',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'metrics_path',
+        'config_value'    => '/var/lib/centreon/metrics/',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'failover',
+        'config_value'    => '',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'status_path',
+        'config_value'    => '/var/lib/centreon/status/',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'retry_interval',
+        'config_value'    => '60',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'buffering_timeout',
+        'config_value'    => '',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'path',
+        'config_value'    => '',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'port',
+        'config_value'    => '',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'write_metrics',
+        'config_value'    => 'yes',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'write_status',
+        'config_value'    => 'yes',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'type',
+        'config_value'    => 'rrd',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+    [
+        'config_key'      => 'blockId',
+        'config_value'    => '1_13',
+        'config_group'    => 'output',
+        'config_group_id' => '0',
+        'grp_level'       => '0',
+    ],
+];
