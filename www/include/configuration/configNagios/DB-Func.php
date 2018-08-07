@@ -99,7 +99,7 @@ function disableNagiosInDB($nagiosId = null)
     $dbResult = $pearDB->query($query);
     $activate = $dbResult->fetchRow();
 
-    if (is_null($activate["nagios_id"])) {
+    if (!$activate["nagios_id"]) {
         $query = "UPDATE `nagios_server` SET `ns_activate` = '0' WHERE `id` = '" . $data["nagios_server_id"] . "'";
         $pearDB->query($query);
         $centreon->Nagioscfg = array();
