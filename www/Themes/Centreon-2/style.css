@@ -1043,9 +1043,9 @@ div.menuLeft {
 }
 
 .toggleEdit {
-  position: absolute;
-  right: 5px;
-  top: 5px;
+    position: absolute;
+    right: 16px;
+    top: 112px;
 }
 
 
