@@ -2,7 +2,7 @@
 
 // This is a Centreon Engine
 
-$data = [
+return [
     'nagios_name'                                 => '', //TODO input
     'use_timezone'                                => null,
     'log_file'                                    => '/var/log/centreon-engine/centengine.log',

@@ -78,6 +78,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $remoteName = count($remoteIps) > 1 ? '' : substr($_POST['remote_name'], 0, 40);
 
         foreach ($remoteIps as $remoteIp) {
+            // Get data for nagios and broker tables
+            // Replace ip, name and id relations
+            // Give $this->pearDB to a db service or extend the class with insert method
+            // Insert rows with data
+            // Finish remote connection by:
             // - $openBrokerFlow?
             // - create or update in remote_servers
             //  -- name = $remoteName
