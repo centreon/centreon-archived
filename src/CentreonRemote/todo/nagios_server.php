@@ -6,7 +6,7 @@
 // and a Centreon Remote Server is the “Output IPv4” configuration
 // on “Central Broker” to forward all events received on Remote Server to the Centreon Central Server.
 
-$data = [
+return [
     'name'                       => '', //TODO input
     'localhost'                  => '0',
     'is_default'                 => '0',
@@ -28,24 +28,3 @@ $data = [
     'snmp_trapd_path_conf'       => '/etc/snmp/centreon_traps/',
     'centreonbroker_logs_path'   => '/var/log/centreon-broker/watchdog.log',
 ];
-
-// `name`
-// `localhost`
-// `is_default`
-// `ns_ip_address`
-// `ns_activate`
-// `ns_status`
-// `init_script`
-// `init_system`
-// `monitoring_engine`
-// `nagios_bin`
-// `nagiostats_bin`
-// `nagios_perfdata`
-// `centreonbroker_cfg_path`
-// `centreonbroker_module_path`
-// `centreonconnector_path`
-// `ssh_port`
-// `ssh_private_key`
-// `init_script_centreontrapd`
-// `snmp_trapd_path_conf`
-// `centreonbroker_logs_path`

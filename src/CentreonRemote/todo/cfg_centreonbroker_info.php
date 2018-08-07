@@ -2,6 +2,7 @@
 
 // To forward collected data, the Centreon Broker module must have the following configuration:
 
+// How does this data relate to the remote/poller?
 $loggerData = require_once 'broker_info/logger.php';
 $loggerRRDData = require_once 'broker_info/logger_rrd.php';
 $loggerSQLData = require_once 'broker_info/logger_sql.php';
