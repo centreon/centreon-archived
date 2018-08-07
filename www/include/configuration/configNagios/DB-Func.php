@@ -56,59 +56,53 @@ function testExistence($name = null)
     }
 }
 
-function enableNagiosInDB($nagios_id = null)
+function enableNagiosInDB($nagiosId = null)
 {
     global $pearDB, $centreon;
-    if (!$nagios_id) {
+    if (!$nagiosId) {
         return;
     }
 
     $DBRESULT = $pearDB->query(
-        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'"
+        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagiosId."'"
     );
     $data = $DBRESULT->fetchRow();
 
-    $DBRESULT = $pearDB->query(
+    $pearDB->query(
         "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'"
     );
 
-    $DBRESULT = $pearDB->query(
-        "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'"
+    $pearDB->query(
+        "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagiosId."'"
     );
     $centreon->Nagioscfg = array();
 }
 
-function disableNagiosInDB($nagios_id = null)
+function disableNagiosInDB($nagiosId = null)
 {
     global $pearDB, $centreon;
 
-    if (!$nagios_id) {
+    if (!$nagiosId) {
         return;
     }
-
     $DBRESULT = $pearDB->query(
-        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'"
+        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagiosId."'"
     );
     $data = $DBRESULT->fetchRow();
 
-    $DBRESULT = $pearDB->query(
-        "UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'"
+    $pearDB->query(
+        "UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_id` = '".$nagiosId."'"
     );
 
-    $DBRESULT = $pearDB->query(
-        "SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'"
-    );
-    $maxId = $DBRESULT->fetchRow();
-    if (isset($maxId["MAX(nagios_id)"])) {
-        $DBRESULT2 = $pearDB->query(
-            "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'"
-        );
+    $query = "SELECT `nagios_id` FROM cfg_nagios WHERE `nagios_activate` = '1' " .
+        "AND `nagios_server_id` = '" . $data["nagios_server_id"] . "'";
+    $dbResult = $pearDB->query($query);
+    $activate = $dbResult->fetchRow();
+
+    if (is_null($activate["nagios_id"])) {
+        $query = "UPDATE `nagios_server` SET `ns_activate` = '0' WHERE `id` = '" . $data["nagios_server_id"] . "'";
+        $pearDB->query($query);
         $centreon->Nagioscfg = array();
-        $DBRESULT2 = $pearDB->query(
-            "SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1"
-        );
-        $centreon->Nagioscfg = $DBRESULT->fetchRow();
-        $DBRESULT2->free();
     }
 }
 
