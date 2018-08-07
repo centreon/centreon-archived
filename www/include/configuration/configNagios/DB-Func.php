@@ -64,16 +64,16 @@ function enableNagiosInDB($nagiosId = null)
     }
 
     $DBRESULT = $pearDB->query(
-        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagiosId."'"
+        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '" . $nagiosId . "'"
     );
     $data = $DBRESULT->fetchRow();
 
     $pearDB->query(
-        "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'"
+        "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '" . $data["nagios_server_id"] . "'"
     );
 
     $pearDB->query(
-        "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagiosId."'"
+        "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '" . $nagiosId . "'"
     );
     $centreon->Nagioscfg = array();
 }
@@ -86,12 +86,12 @@ function disableNagiosInDB($nagiosId = null)
         return;
     }
     $DBRESULT = $pearDB->query(
-        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagiosId."'"
+        "SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '" . $nagiosId . "'"
     );
     $data = $DBRESULT->fetchRow();
 
     $pearDB->query(
-        "UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_id` = '".$nagiosId."'"
+        "UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_id` = '" . $nagiosId . "'"
     );
 
     $query = "SELECT `nagios_id` FROM cfg_nagios WHERE `nagios_activate` = '1' " .
