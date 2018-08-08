@@ -13,3 +13,7 @@ $outputPerfdataData = require_once 'broker_info/output_perfdata.php';
 $outputStatusData = require_once 'broker_info/output_status.php';
 $outputRRDData = require_once 'broker_info/output_rrd.php';
 $outputRRDMasterData = require_once 'broker_info/output_rrd_master.php';
+
+return function () {
+    return [];
+};
