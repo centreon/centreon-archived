@@ -3,7 +3,7 @@
 return [
     [
         'config_key'      => 'name',
-        'config_value'    => 'central-rrd-master-output',
+        'config_value'    => 'rrd-output',
         'config_group'    => 'output',
         'config_group_id' => '0',
         'grp_level'       => '0',
@@ -38,7 +38,7 @@ return [
     ],
     [
         'config_key'      => 'buffering_timeout',
-        'config_value'    => '0',
+        'config_value'    => '',
         'config_group'    => 'output',
         'config_group_id' => '0',
         'grp_level'       => '0',
@@ -67,20 +67,6 @@ return [
     [
         'config_key'      => 'write_status',
         'config_value'    => 'yes',
-        'config_group'    => 'output',
-        'config_group_id' => '0',
-        'grp_level'       => '0',
-    ],
-    [
-        'config_key'      => 'store_in_data_bin',
-        'config_value'    => 'yes',
-        'config_group'    => 'output',
-        'config_group_id' => '0',
-        'grp_level'       => '0',
-    ],
-    [
-        'config_key'      => 'insert_in_index_data',
-        'config_value'    => '1',
         'config_group'    => 'output',
         'config_group_id' => '0',
         'grp_level'       => '0',

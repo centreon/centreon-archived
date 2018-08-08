@@ -3,7 +3,7 @@
 return [
     [
         'config_key'      => 'name',
-        'config_value'    => '/var/log/centreon-broker/central-rrd-master.log',
+        'config_value'    => '/var/log/centreon-broker/broker-rrd.log',
         'config_group'    => 'logger',
         'config_group_id' => '0',
         'grp_level'       => '0',
@@ -31,7 +31,7 @@ return [
     ],
     [
         'config_key'      => 'info',
-        'config_value'    => 'no',
+        'config_value'    => 'yes',
         'config_group'    => 'logger',
         'config_group_id' => '0',
         'grp_level'       => '0',
@@ -45,7 +45,7 @@ return [
     ],
     [
         'config_key'      => 'max_size',
-        'config_value'    => '',
+        'config_value'    => '100000000',
         'config_group'    => 'logger',
         'config_group_id' => '0',
         'grp_level'       => '0',

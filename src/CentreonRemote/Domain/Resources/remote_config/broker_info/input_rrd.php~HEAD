@@ -3,7 +3,7 @@
 return [
     [
         'config_key'      => 'name',
-        'config_value'    => 'rrd-input',
+        'config_value'    => 'central-rrd-master-input',
         'config_group'    => 'input',
         'config_group_id' => '0',
         'grp_level'       => '0',
@@ -52,7 +52,7 @@ return [
     ],
     [
         'config_key'      => 'tls',
-        'config_value'    => 'no',
+        'config_value'    => 'auto',
         'config_group'    => 'input',
         'config_group_id' => '0',
         'grp_level'       => '0',
