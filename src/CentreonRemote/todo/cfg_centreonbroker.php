@@ -5,7 +5,8 @@
 
 // Notice: $pollerName is the name of poller without space (replaced by underscore character ‘_’).
 $pollerName = '';
-$data = [
+
+return [
     'config_name'            => "{$pollerName} module",
     'config_filename'        => "{$pollerName}-module.xml",
     'config_write_timestamp' => '1',

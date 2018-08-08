@@ -31,31 +31,25 @@ class db
 
         $this->query = $this->pdo->prepare($query);
 
-        if ($this->query){
-            if (is_array($params) && !empty($params)){
-                $x = 1;
+        if (!$this->query){
+            throw new Exception('Error at preparing the query.');
+        }
 
-                foreach ($params as $param) {
-                    if (is_array($param) && !empty($param)){
-                        foreach ($param as $p) {
-                            $this->query->bindValue($x, $p);
-                            $x++;
-                        }
-                    } else {
-                        $this->query->bindValue($x, $param);
-                        $x++;
-                    }
-                }
+        if (is_array($params) && !empty($params)){
+            $x = 1;
+
+            foreach ($params as $param) {
+                $this->query->bindValue($x, $param);
+                $x++;
             }
+        }
 
-            if ($this->query->execute()){
-                $this->result = $this->query->fetchAll(PDO::FETCH_OBJ);
-                $this->count = $this->query->rowCount();
-            } else {
-                $this->error = true;
-                $this->errorInfo = $this->query->errorInfo();
-            }
-
+        if ($this->query->execute()){
+            $this->result = $this->query->fetchAll(PDO::FETCH_OBJ);
+            $this->count = $this->query->rowCount();
+        } else {
+            $this->error = true;
+            $this->errorInfo = $this->query->errorInfo();
         }
 
         return $this;
