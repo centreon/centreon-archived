@@ -54,7 +54,7 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
     }
 
     //TODO doc
-    public function postDoSomethingAboutConnectingRemote()
+    public function postLinkCentreonRemoteServer()
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
 
@@ -74,12 +74,15 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
 
         $remoteIps = (array) $_POST['remote_server_ip'];
         $centreonCentralIp = $_POST['centreon_central_ip'];
-        $remoteName = count($remoteIps) > 1 ? '' : substr($_POST['remote_name'], 0, 40);
+        $remoteName = substr($_POST['remote_name'], 0, 40);
 
-        foreach ($remoteIps as $remoteIp) {
-            // Get data for nagios and broker tables
-            // Replace ip, name and id relations
-            // Give $this->pearDB to a db service or extend the class with insert method
+        // Get service form container
+        //  - use $this->pearDB or db-manager?
+
+        foreach ($remoteIps as $index => $remoteIp) {
+            $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
+            // Set ip in service
+            // Set name in service
             // Insert rows with data
             // Finish remote connection by:
             // - $openBrokerFlow?
