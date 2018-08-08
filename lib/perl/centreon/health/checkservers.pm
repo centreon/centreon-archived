@@ -57,7 +57,7 @@ sub get_servers_informations {
         $self->{output}->{poller}->{$row->{id}}{name} = $row->{name};
         $self->{output}->{poller}->{$row->{id}}{localhost} = ($row->{localhost} == 1) ? "YES" : "NO";
         $self->{output}->{poller}->{$row->{id}}{address} = $row->{ns_ip_address};
-        $self->{output}->{poller}->{$row->{id}}{ssh_port} = $row->{ssh_port};
+        $self->{output}->{poller}->{$row->{id}}{ssh_port} = (defined($row->{ssh_port})) ? $row->{ssh_port} : "-";
         $self->{output}->{poller}->{$row->{id}}{id} = $row->{id};
     }
 
@@ -98,18 +98,17 @@ sub get_servers_informations {
         }
 
         $sth = $options{csdb}->query("SELECT stat_key, stat_value, stat_label 
-					FROM nagios_stats
-                                     	WHERE instance_id = " . $options{cdb}->quote($id) . "");
+                                      FROM nagios_stats
+                                      WHERE instance_id = " . $options{cdb}->quote($id) . "");
 
         while (my $row = $sth->fetchrow_hashref()) {
-	    $self->{output}->{poller}->{$id}->{engine_stats}->{$row->{stat_label}}->{$row->{stat_key}} = $row->{stat_value}; 
+	        $self->{output}->{poller}->{$id}->{engine_stats}->{$row->{stat_label}}->{$row->{stat_key}} = $row->{stat_value}; 
         }
 
-	$self->{output}->{global}->{hosts_by_poller_avg} = $self->{output}->{global}->{count_hosts}/$self->{output}->{global}->{count_poller};
-        $self->{output}->{global}->{services_by_poller_avg} = $self->{output}->{global}->{count_services}/$self->{output}->{global}->{count_poller};
-        $self->{output}->{global}->{services_by_host_avg} = $self->{output}->{global}->{count_services}/$self->{output}->{global}->{count_hosts};
-        $self->{output}->{global}->{metrics_by_service_avg} = $self->{output}->{global}->{count_metrics}/$self->{output}->{global}->{count_services};      
-	
+        $self->{output}->{global}->{hosts_by_poller_avg} = ($self->{output}->{global}->{count_poller} != 0) ? $self->{output}->{global}->{count_hosts} / $self->{output}->{global}->{count_poller} : '0';
+        $self->{output}->{global}->{services_by_poller_avg} = ($self->{output}->{global}->{count_poller} != 0) ? $self->{output}->{global}->{count_services} / $self->{output}->{global}->{count_poller} : '0';
+        $self->{output}->{global}->{services_by_host_avg} = ($self->{output}->{global}->{count_hosts} != 0) ? $self->{output}->{global}->{count_services} / $self->{output}->{global}->{count_hosts} : '0';
+        $self->{output}->{global}->{metrics_by_service_avg} = ($self->{output}->{global}->{count_services} != 0) ? $self->{output}->{global}->{count_metrics} / $self->{output}->{global}->{count_services} : '0';
     }
 }
      
@@ -119,19 +118,19 @@ sub run {
     my ($centreon_db, $centstorage_db, $centreon_version) = @_;
 
     my $query_misc = {   count_pp => [$centreon_db, $centreon_version eq '2.7' ? "SELECT count(*) FROM mod_pluginpack" : "SELECT count(*) FROM mod_ppm_pluginpack"],
-                         count_downtime => [$centreon_db, "SELECT count(*) FROM downtime"],
-                         count_modules => [$centreon_db, "SELECT count(*) FROM modules_informations"],
-                         centreon_version => [$centreon_db, "SELECT value FROM informations LIMIT 1"],
-                         count_metrics => [$centstorage_db, "SELECT count(*) FROM metrics"] };
+                            count_downtime => [$centreon_db, "SELECT count(*) FROM downtime"],
+                            count_modules => [$centreon_db, "SELECT count(*) FROM modules_informations"],
+                            centreon_version => [$centreon_db, "SELECT value FROM informations LIMIT 1"],
+                            count_metrics => [$centstorage_db, "SELECT count(*) FROM metrics"] };
 
     foreach my $info (keys %$query_misc) {
         my $result = $self->query_misc(cdb => $query_misc->{$info}[0],
-                                       query => $query_misc->{$info}[1] );
+                                        query => $query_misc->{$info}[1] );
         $self->{output}->{global}->{$info} = $result;
     }
 
     $self->get_servers_informations(cdb => $centreon_db, csdb => $centstorage_db);
-   
+
     return $self->{output}
 }
 
