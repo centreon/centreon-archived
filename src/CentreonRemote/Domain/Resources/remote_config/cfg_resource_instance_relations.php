@@ -1,16 +1,14 @@
 <?php
 
-// This table is used to link resources to a Centreon Engine.
+return function (array $resources, $serverID) {
+    $data = [];
 
-// TBD by cfg_resource.php
+    foreach ($resources as $resource) {
+        $data[] = [
+            'resource_id' => $resource,
+            'instance_id' => $serverID,
+        ];
+    }
 
-// Each new Centreon Distant Poller must have those entries:
-// *************************** 1. row ***************************
-// resource_id: 1
-// instance_id: $ID (nagios_server.id)
-// *************************** 2. row ***************************
-// resource_id: 2
-// instance_id: $ID (nagios_server.id)
-// *************************** 3. row ***************************
-// resource_id: 3
-// instance_id: $ID (nagios_server.id)
+    return $data;
+};
