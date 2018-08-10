@@ -47,6 +47,8 @@ class CentreonDBAdapter
      * @param string $query
      * @param array $params
      *
+     * @throws \Exception
+     *
      * @return $this
      */
     public function query($query, $params = [])
@@ -69,12 +71,19 @@ class CentreonDBAdapter
             }
         }
 
-        if ($this->query->execute()){
-            $this->result = $this->query->fetchAll(\PDO::FETCH_OBJ);
-            $this->count = $this->query->rowCount();
-        } else {
-            $this->error = true;
-            $this->errorInfo = $this->query->errorInfo();
+        try {
+            $result = $this->query->execute();
+            $isSelect = strpos(strtolower($query), 'select') !== false;
+
+            if ($result && $isSelect) {
+                $this->result = $this->query->fetchAll(\PDO::FETCH_OBJ);
+                $this->count = $this->query->rowCount();
+            } elseif (!$result) {
+                $this->error = true;
+                $this->errorInfo = $this->query->errorInfo();
+            }
+        } catch(\Exception $e) {
+            throw new \Exception('Query failed. ' . $e->getMessage());
         }
 
         return $this;
@@ -83,6 +92,8 @@ class CentreonDBAdapter
     /**
      * @param string $table
      * @param array $fields
+     *
+     * @throws \Exception
      *
      * @return bool|int Last inserted ID
      */
@@ -121,5 +132,20 @@ class CentreonDBAdapter
     public function errorInfo()
     {
         return $this->errorInfo;
+    }
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->db->commit();
+    }
+
+    public function rollBack()
+    {
+        $this->db->rollBack();
     }
 }
