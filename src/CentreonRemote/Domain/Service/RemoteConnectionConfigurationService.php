@@ -8,9 +8,6 @@ use Pimple\Container;
 class RemoteConnectionConfigurationService
 {
 
-    // Next steps:
-    // - continue with notes from this file and CentreonConfigurationRemote
-
     /** @var CentreonDBAdapter */
     private $dbAdapter;
 
@@ -48,49 +45,41 @@ class RemoteConnectionConfigurationService
 
     public function insert()
     {
+        $this->getDbAdapter()->beginTransaction();
+
         $serverID = $this->insertNagiosServer();
 
         if (!$serverID) {
-            die(' ERROR at nagios_server ');//TODO
+            throw new \Exception('Error inserting nagios server.');
         }
 
-        if (!$this->insertConfigNagios($serverID)) {
-            die(' ERROR at cfg_nagios ');//TODO
-        }
+        $this->insertConfigNagios($serverID);
 
-        if ($this->insertConfigNagiosBroker($serverID)) {
-            die(' ERROR at cfg_nagios_broker_module ');//TODO
-        }
+        $this->insertConfigNagiosBroker($serverID);
 
-        if (!$this->insertConfigResource()) {
-            die(' ERROR at cfg_resource ');//TODO
-        }
+        $this->insertConfigResources($serverID);
 
-        if (!$this->insertConfigResoureRelations()) {
-            die(' ERROR at cfg_resource_instance_relations ');//TODO
-        }
+        $this->insertConfigCentreonBroker();
 
-        if (!$this->insertConfigCentreonBroker()) {
-            die(' ERROR at cfg_centreonbroker ');//TODO
-        }
+        $this->insertConfigCentreonBrokerInfo();
 
-        if (!$this->insertConfigCentreonBrokerInfo()) {
-            die(' ERROR at cfg_centreonbroker_info ');//TODO
-        }
+        $this->getDbAdapter()->commit();
+
+        return true;
     }
 
     private function insertNagiosServer()
     {
         $nagiosServerData = $this->getResource('nagios_server.php');
 
-        return $this->getDbAdapter()->insert('nagios_server', $nagiosServerData($this->name, $this->ip));
+        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->ip));
     }
 
     private function insertConfigNagios($serverID)
     {
         $configNagiosData = $this->getResource('cfg_nagios.php');
 
-        return $this->getDbAdapter()->insert('cfg_nagios', $configNagiosData($this->name, $serverID));
+        return $this->insertWithAdapter('cfg_nagios', $configNagiosData($this->name, $serverID));
     }
 
     private function insertConfigNagiosBroker($serverID)
@@ -98,41 +87,67 @@ class RemoteConnectionConfigurationService
         $configNagiosBrokerData = $this->getResource('cfg_nagios_broker_module.php');
         $data = $configNagiosBrokerData($serverID, $this->name);
 
-        $configBrokerFirstID = $this->getDbAdapter()->insert('cfg_nagios_broker_module', $data[0]);
-        $configBrokerSecondID = $this->getDbAdapter()->insert('cfg_nagios_broker_module', $data[1]);
+        $configBrokerFirstID = $this->insertWithAdapter('cfg_nagios_broker_module', $data[0]);
+        $configBrokerSecondID = $this->insertWithAdapter('cfg_nagios_broker_module', $data[1]);
 
         return $configBrokerFirstID && $configBrokerSecondID;
     }
 
-    private function insertConfigResource()
+    private function insertConfigResources($serverID)
     {
-        //TODO add some ids to data?
         $configResourceData = $this->getResource('cfg_resource.php');
-
-        return $this->getDbAdapter()->insert('cfg_resource', $configResourceData);
-    }
-
-    private function insertConfigResoureRelations()
-    {
-        //TODO add some ids to data?
         $configResourceRelationsData = $this->getResource('cfg_resource_instance_relations.php');
+        $configResourceData = $configResourceData();
 
-        return $this->getDbAdapter()->insert('cfg_resource_instance_relations', $configResourceRelationsData);
+        $resourceOneID = $this->insertWithAdapter('cfg_resource', $configResourceData[0]);
+        $resourceTwoID = $this->insertWithAdapter('cfg_resource', $configResourceData[1]);
+        $resourceThreeID = $this->insertWithAdapter('cfg_resource', $configResourceData[2]);
+
+        $relationData = [$resourceOneID, $resourceTwoID, $resourceThreeID];
+        $configResourceRelationsData = $configResourceRelationsData($relationData, $serverID);
+
+        $this->insertWithAdapter('cfg_resource_instance_relations', $configResourceRelationsData[0]);
+        $this->insertWithAdapter('cfg_resource_instance_relations', $configResourceRelationsData[1]);
+        $this->insertWithAdapter('cfg_resource_instance_relations', $configResourceRelationsData[2]);
+
+        return $resourceOneID && $resourceTwoID && $resourceThreeID;
     }
 
     private function insertConfigCentreonBroker()
     {
         $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
 
-        return $this->getDbAdapter()->insert('cfg_centreonbroker', $configCentreonBrokerData($this->name));
+        return $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData($this->name));
     }
 
     private function insertConfigCentreonBrokerInfo()
     {
         //TODO some relation to the centreon broker id?
-        // - needs to be return the data
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
 
-        return $this->getDbAdapter()->insert('cfg_centreonbroker_info', $configCentreonBrokerInfoData);
+        foreach ($configCentreonBrokerInfoData() as $infoGroup) {
+            foreach ($infoGroup as $row) {
+                $this->insertWithAdapter('cfg_centreonbroker_info', $row);
+            }
+        }
+
+        return true;
+    }
+
+    private function insertWithAdapter($table, array $data)
+    {
+        try {
+            $result = $this->getDbAdapter()->insert($table, $data);
+        } catch(\Exception $e) {
+            $this->getDbAdapter()->rollBack();
+            throw new \Exception("Error inserting remote configuration. Rolling back. Table name: {$table}.");
+        }
+
+        if (!$result) {
+            $this->getDbAdapter()->rollBack();
+            throw new \Exception("Error inserting remote configuration. Rolling back. Table name: {$table}.");
+        }
+
+        return $result;
     }
 }
