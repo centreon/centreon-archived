@@ -78,20 +78,43 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         /** @var $remoteConfiguration RemoteConnectionConfigurationService */
         $remoteConfiguration = $this->getDi()['centreon_remote.connection_config_service'];
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $date = date('Y-m-d H:i:s');
 
         foreach ($remoteIps as $index => $remoteIp) {
             $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
 
             $remoteConfiguration->setIp($remoteIp);
             $remoteConfiguration->setName($remoteName);
-            $remoteConfiguration->insert();
+
+            try {
+                $remoteConfiguration->insert();
+            } catch(\Exception $e) {
+                //TODO return json failure
+            }
+
+            $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
+            $dbAdapter->query($sql, [$remoteIp]);
+            $hasIpInTable = (bool) $dbAdapter->count();
+
+            if ($hasIpInTable) {
+                $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
+                $data = ['1', $date, $remoteIp];
+                $dbAdapter->query($sql, $data);
+            } else {
+                $data = [
+                    'ip'           => $remoteIp,
+                    'app_key'      => '',
+                    'version'      => '',
+                    'is_connected' => '1',
+                    'created_at'   => $date,
+                    'connected_at' => $date,
+                ];
+                $dbAdapter->insert('remote_servers', $data);
+            }
 
             // Finish remote connection by:
             // - $openBrokerFlow?
-            // - create or update in remote_servers
-            //  -- name = $remoteName
-            //  -- is_connected = 1
-            //  -- connected_at = timestamp
             // - Centreon Broker config
             // - Centreon RRD config
         }
