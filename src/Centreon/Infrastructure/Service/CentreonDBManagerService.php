@@ -36,12 +36,11 @@ class CentreonDBManagerService
         $this->defaultManager = 'configuration_db';
     }
 
-    public function getManager(string $alias): CentreonDBManagerService
+    public function getAdapter(string $alias): CentreonDBAdapter
     {
         $manager = array_key_exists($alias, $this->manager) ?
             $this->manager[$alias] :
-            null
-        ;
+            null;
 
         return $manager;
     }
@@ -49,8 +48,7 @@ class CentreonDBManagerService
     public function getRepository($repository): ServiceEntityRepository
     {
         $manager = $this->manager[$this->defaultManager]
-            ->getRepository($repository)
-        ;
+            ->getRepository($repository);
 
         return $manager;
     }
