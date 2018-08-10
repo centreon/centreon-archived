@@ -301,14 +301,15 @@ class CentreonWebService
             $webService = [
                 'class' => $dependencyInjector['centreon.webservice']->get($object)
             ];
+            $wsObj = new $webService['class'];
+            $wsObj->setDi($dependencyInjector);
         } else {
             $webService = self::webservicePath($object);
 
             /* Initialize the webservice */
             require_once($webService['path']);
+            $wsObj = new $webService['class'];
         }
-
-        $wsObj = new $webService['class']();
 
         if ($wsObj instanceof CentreonWebServiceDiInterface) {
             $wsObj->finalConstruct($dependencyInjector);

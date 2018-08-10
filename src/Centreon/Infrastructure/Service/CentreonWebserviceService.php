@@ -3,6 +3,7 @@
 namespace Centreon\Infrastructure\Service;
 
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 use ReflectionClass;
 use Psr\Container\ContainerInterface;
 use CentreonWebService;
@@ -14,16 +15,16 @@ class CentreonWebserviceService implements ContainerInterface
 
     public function add(string $object): void
     {
-        $class = CentreonWebService::class;
-        $interface = CentreonWebserviceServiceInterface::class;
+        $centreonClass = CentreonWebService::class;
+        $abstractClass = CentreonWebServiceAbstract::class;
         $ref = new ReflectionClass($object);
         $hasInterfaces = (
-            $ref->isSubclassOf($class) ||
-            $ref->implementsInterface($interface)
+            $ref->isSubclassOf($centreonClass) ||
+            $ref->isSubclassOf($abstractClass)
         );
 
         if ($hasInterfaces === false) {
-            throw new NotFoundException(sprintf('Object %s must implement %s and extend %s class', $object, $interface, $class));
+            throw new NotFoundException(sprintf('Object %s must extend %s class or %s class', $object, $centreonClass, $abstractClass));
         }
 
         $name = strtolower($object::getName());

@@ -2,9 +2,9 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use Centreon\Infrastructure\Service\CentreonWebserviceServiceInterface;
+use CentreonRemote\Domain\Service\RemoteConnectionConfigurationService;
 
-class CentreonConfigurationRemote extends \CentreonWebService implements CentreonWebserviceServiceInterface
+class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
 
     /**
@@ -61,7 +61,7 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
         // - poller/remote ips can be a multiple select
         //  -- form can have option to add IP of server without being pinged previously
         if (!isset($_POST['remote_server_ip']) || !$_POST['remote_server_ip']) {
-            throw new \RestBadRequestException('You need t send \'remote_server_ip\' in the request.');
+            throw new \RestBadRequestException('You need to send \'remote_server_ip\' in the request.');
         }
 
         if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
@@ -76,14 +76,16 @@ class CentreonConfigurationRemote extends \CentreonWebService implements Centreo
         $centreonCentralIp = $_POST['centreon_central_ip'];
         $remoteName = substr($_POST['remote_name'], 0, 40);
 
-        // Get service form container
-        //  - use $this->pearDB or db-manager?
+        /** @var $remoteConfiguration RemoteConnectionConfigurationService */
+        $remoteConfiguration = $this->getDi()['centreon_remote.connection_config_service'];
 
         foreach ($remoteIps as $index => $remoteIp) {
             $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
-            // Set ip in service
-            // Set name in service
-            // Insert rows with data
+
+            $remoteConfiguration->setIp($remoteIp);
+            $remoteConfiguration->setName($remoteName);
+            $remoteConfiguration->insert();
+
             // Finish remote connection by:
             // - $openBrokerFlow?
             // - create or update in remote_servers

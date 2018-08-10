@@ -4,6 +4,7 @@ namespace CentreonRemote;
 
 use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
+use CentreonRemote\Domain\Service\RemoteConnectionConfigurationService;
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use CentreonRemote\Application\Webservice;
@@ -29,6 +30,11 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
         $pimple['centreon_remote.informations_service'] = function(Container $pimple): InformationsService {
             $service = new InformationsService($pimple);
+            return $service;
+        };
+
+        $pimple['centreon_remote.connection_config_service'] = function(Container $pimple): RemoteConnectionConfigurationService {
+            $service = new RemoteConnectionConfigurationService($pimple);
             return $service;
         };
 

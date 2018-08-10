@@ -2,31 +2,28 @@
 
 namespace CentreonRemote\Domain\Service;
 
+use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Pimple\Container;
 
 class RemoteConnectionConfigurationService
 {
 
     // Next steps:
-    // - register this service in container
-    // - use this service in CentreonConfigurationRemote
-    // - setup $this->dbManager
-    // - figure out what to do with src/CentreonRemote/todo/db.php
-    // - figure out how can I use method insert of $this->dbManager
     // - continue with notes from this file and CentreonConfigurationRemote
 
-    private $dbManager;
+    /** @var CentreonDBAdapter */
+    private $dbAdapter;
 
     private $ip;
 
     private $name;
 
-    private $resourcesPath = '/src/CentreonRemote/Domain/Resources/remote_config/';
+    private $resourcesPath = '/Domain/Resources/remote_config/';
 
 
     public function __construct(Container $di)
     {
-        $this->dbManager = null;
+        $this->dbAdapter = $di['centreon.db-manager']->getAdapter('configuration_db');
     }
 
     public function setIp($ip)
@@ -39,14 +36,14 @@ class RemoteConnectionConfigurationService
         $this->name = $name;
     }
 
-    private function getDbManager()
+    private function getDbAdapter(): CentreonDBAdapter
     {
-        return $this->dbManager;
+        return $this->dbAdapter;
     }
 
     private function getResource($resourceName): callable
     {
-        return require_once getcwd() . "{$this->resourcesPath}{$resourceName}";
+        return require_once dirname(dirname(dirname(__FILE__))) . "{$this->resourcesPath}{$resourceName}";
     }
 
     public function insert()
@@ -86,14 +83,14 @@ class RemoteConnectionConfigurationService
     {
         $nagiosServerData = $this->getResource('nagios_server.php');
 
-        return $this->getDbManager()->insert('nagios_server', $nagiosServerData($this->name, $this->ip));
+        return $this->getDbAdapter()->insert('nagios_server', $nagiosServerData($this->name, $this->ip));
     }
 
     private function insertConfigNagios($serverID)
     {
         $configNagiosData = $this->getResource('cfg_nagios.php');
 
-        return $this->getDbManager()->insert('cfg_nagios', $configNagiosData($this->name, $serverID));
+        return $this->getDbAdapter()->insert('cfg_nagios', $configNagiosData($this->name, $serverID));
     }
 
     private function insertConfigNagiosBroker($serverID)
@@ -101,8 +98,8 @@ class RemoteConnectionConfigurationService
         $configNagiosBrokerData = $this->getResource('cfg_nagios_broker_module.php');
         $data = $configNagiosBrokerData($serverID, $this->name);
 
-        $configBrokerFirstID = $this->getDbManager()->insert('cfg_nagios_broker_module', $data[0]);
-        $configBrokerSecondID = $this->getDbManager()->insert('cfg_nagios_broker_module', $data[1]);
+        $configBrokerFirstID = $this->getDbAdapter()->insert('cfg_nagios_broker_module', $data[0]);
+        $configBrokerSecondID = $this->getDbAdapter()->insert('cfg_nagios_broker_module', $data[1]);
 
         return $configBrokerFirstID && $configBrokerSecondID;
     }
@@ -112,7 +109,7 @@ class RemoteConnectionConfigurationService
         //TODO add some ids to data?
         $configResourceData = $this->getResource('cfg_resource.php');
 
-        return $this->getDbManager()->insert('cfg_resource', $configResourceData);
+        return $this->getDbAdapter()->insert('cfg_resource', $configResourceData);
     }
 
     private function insertConfigResoureRelations()
@@ -120,14 +117,14 @@ class RemoteConnectionConfigurationService
         //TODO add some ids to data?
         $configResourceRelationsData = $this->getResource('cfg_resource_instance_relations.php');
 
-        return $this->getDbManager()->insert('cfg_resource_instance_relations', $configResourceRelationsData);
+        return $this->getDbAdapter()->insert('cfg_resource_instance_relations', $configResourceRelationsData);
     }
 
     private function insertConfigCentreonBroker()
     {
         $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
 
-        return $this->getDbManager()->insert('cfg_centreonbroker', $configCentreonBrokerData($this->name));
+        return $this->getDbAdapter()->insert('cfg_centreonbroker', $configCentreonBrokerData($this->name));
     }
 
     private function insertConfigCentreonBrokerInfo()
@@ -136,6 +133,6 @@ class RemoteConnectionConfigurationService
         // - needs to be return the data
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
 
-        return $this->getDbManager()->insert('cfg_centreonbroker_info', $configCentreonBrokerInfoData);
+        return $this->getDbAdapter()->insert('cfg_centreonbroker_info', $configCentreonBrokerInfoData);
     }
 }
