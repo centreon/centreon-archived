@@ -2,12 +2,7 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use Centreon\Infrastructure\Service\CentreonWebserviceServiceInterface;
-
-/**
- * @SWG\Info(title="Centreon Remote Server API", version="0.1")
- */
-class CentreonRemoteServer extends \CentreonWebService implements CentreonWebserviceServiceInterface
+class CentreonRemoteServer extends CentreonWebServiceAbstract
 {
 
     /**
