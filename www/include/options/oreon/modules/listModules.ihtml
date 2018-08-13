@@ -1,6 +1,6 @@
 {if $canUpgradeOrInstallModules}
 	<br>
-	<a href="?p={$p}&o=i&action=install_upgrade_all" class="btc bt_success" onclick="if(!confirm('Are you sire you want to Install/Upgrade all?')) return false;">
+	<a href="?p={$p}&o=i&action=install_upgrade_all" class="btc bt_success" onclick="if(!confirm('Are you sure you want to Install/Upgrade all?')) return false;">
 		Install/Upgrade all
 	</a>
 	<br>
