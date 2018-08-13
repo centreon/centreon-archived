@@ -43,6 +43,11 @@ class RemoteConnectionConfigurationService
         return require_once dirname(dirname(dirname(__FILE__))) . "{$this->resourcesPath}{$resourceName}";
     }
 
+    /**
+     * @return bool
+     *
+     * @throws \Exception
+     */
     public function insert()
     {
         $this->getDbAdapter()->beginTransaction();

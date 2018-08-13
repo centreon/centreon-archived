@@ -34,6 +34,20 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
      *       type="string",
      *       enum="addToWaitList"
      *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="app_key",
+     *       description="the unique app key of the Centreon instance",
+     *       required=true,
+     *       type="string",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="version",
+     *       description="the app version Centreon instance",
+     *       required=true,
+     *       type="string",
+     *   ),
      *   @SWG\Response(
      *     response=200,
      *     description="Empty string"
