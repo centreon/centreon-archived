@@ -20,6 +20,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * @SWG\Post(
      *   path="/centreon/api/internal.php",
+     *   operationId="getWaitList",
      *   @SWG\Parameter(
      *       in="query",
      *       name="object",
@@ -53,7 +54,66 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         return json_encode($statement->fetchAll());
     }
 
-    //TODO doc
+    /**
+     * @SWG\Post(
+     *   path="/centreon/api/internal.php",
+     *   operationId="linkCentreonRemoteServer",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_configuration_remote",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="linkCentreonRemoteServer",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="open_broker_flow",
+     *       type="string",
+     *       description="if the connection should be made with open broker flow",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="remote_server_ip",
+     *       type="string",
+     *       description="the remote server ip address",
+     *       required=true,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="centreon_central_ip",
+     *       type="string",
+     *       description="the centreon central ip address",
+     *       required=true,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="remote_name",
+     *       type="string",
+     *       description="the remote centreon instance name",
+     *       required=true,
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON"
+     *   )
+     * )
+     *
+     * Link centreon remote server
+     *
+     * @return string
+     *
+     * @throws \RestBadRequestException
+     */
     public function postLinkCentreonRemoteServer()
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
