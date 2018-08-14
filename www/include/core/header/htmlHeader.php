@@ -120,23 +120,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
     <?php
 
-    /*
-     * Add Javascript for NDO status Counter
-     */
-    if ($centreon->user->access->admin == 0) {
-        $tabActionACL = $centreon->user->access->getActions();
-        if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-            print "<script type=\"text/javascript\" " .
-                "src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
-        }
-        unset($tabActionACL);
-    } else {
-        if ($min != 1) {
-            print "<script type=\"text/javascript\" " .
-                "src=\"./include/common/javascript/topCounterStatus/ajaxStatusCounter.js\"></script>\n";
-        }
-    }
-
     global $search, $search_service;
 
     $searchStr = "";
@@ -190,22 +173,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script type='text/javascript'>
         jQuery(function () {
             <?php
-
-            /* Deactive refresh if new header feature is activated */
-            if (!$centreonFeature->featureActive('Header', '2', $centreon->user->get_id())) {
-                if ($centreon->user->access->admin == 0) {
-                    $tabActionACL = $centreon->user->access->getActions();
-                    if ($min != 1 && (isset($tabActionACL["top_counter"]) || isset($tabActionACL["poller_stats"]))) {
-                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
-                    }
-                    unset($tabActionACL);
-                } else {
-                    if ($min != 1) {
-                        print "setTimeout('reloadStatusCounter($tS)', 0);\n";
-                    }
-                }
-            }
-
             $res = null;
             $query = "SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '" .
                 $p . "' AND (o = '" . $o . "' OR o IS NULL)";
