@@ -4,8 +4,7 @@ Feature: Top Counter Host
   To see the hosts status informations
 
   Background:
-    Given a Centreon server
-    And I am logged in with new feature
+    Given I am logged in a Centreon server
 
   Scenario: Link to ok hosts
     When I click on the chip "Ok hosts"
@@ -24,4 +23,3 @@ Feature: Top Counter Host
   Scenario: Open the summary of hosts status
     When I click on the hosts icon
     Then I see the summary of hosts status
-

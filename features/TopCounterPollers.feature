@@ -4,8 +4,7 @@ Feature: Top Counter Host
     To see the pollers status informations
 
     Background:
-        Given a Centreon server
-        And I am logged in with new feature
+      Given I am logged in a Centreon server
 
     Scenario: Link to pollers configuration
       When I click on the pollers icon and I click on the configuration button

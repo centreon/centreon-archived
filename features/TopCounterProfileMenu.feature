@@ -4,8 +4,7 @@ Feature: Top Counter Profile Menu
     To manage my profile
 
     Background:
-        Given a Centreon server
-        And I am logged in with new feature
+        Given I am logged in a Centreon server
 
     Scenario: Go to my profile edit form
         When I click to edit profile link
