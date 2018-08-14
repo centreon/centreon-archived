@@ -4,8 +4,7 @@ Feature: Top Counter Service
   To see the services status informations
 
   Background:
-    Given a Centreon server
-    And I am logged in with new feature
+    Given I am logged in a Centreon server
     And I have a passive service
 
   Scenario: Link to ok services
@@ -30,4 +29,3 @@ Feature: Top Counter Service
   Scenario: Open the summary of services status
     When I click on the services icon
     Then I see the summary of services status
-
