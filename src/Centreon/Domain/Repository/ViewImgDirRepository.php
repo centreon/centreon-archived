@@ -11,7 +11,7 @@ class ViewImgDirRepository extends ServiceEntityRepository
     /**
      * Export options
      * 
-     * @return \Centreon\Domain\Entity\ViewImg[]
+     * @return array
      */
     public function export(): array
     {
@@ -24,7 +24,6 @@ FROM view_img_dir as vid
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, ViewImgDir::class);
 
         $result = [];
 
