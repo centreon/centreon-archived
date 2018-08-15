@@ -19,12 +19,17 @@ class ViewImgRepository extends ServiceEntityRepository
 SELECT vi.img_id AS `imgId`,
     vi.img_name AS `imgName`,
     vi.img_path AS `imgPath`,
-    vi.img_comment AS `imgComment`
-FROM view_img as vi
+    vi.img_comment AS `imgComment`,
+    GROUP_CONCAT(vid.dir_alias) AS `imgDirs`
+FROM `view_img` AS `vi`
+LEFT JOIN `view_img_dir_relation` AS `vidr` ON vi.img_id = vidr.img_img_id
+LEFT JOIN `view_img_dir` AS `vid` ON vid.dir_id = vidr.dir_dir_parent_id
+GROUP BY vi.img_id
+ORDER BY vi.img_id ASC
+LIMIT 0, 1500
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, ViewImg::class);
 
         $result = [];
 

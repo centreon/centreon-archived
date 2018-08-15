@@ -30,9 +30,10 @@
         "php": ">=7.0.0",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
-        "pimple/pimple": "~3.0",
-        "symfony/filesystem": "~2.6",
-        "symfony/finder": "~2.6",
+        "pimple/pimple": "^3.2",
+        "symfony/filesystem": "^4.1",
+        "symfony/finder": "^4.1",
+        "symfony/yaml": "~3.0",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
         "curl/curl" : "^1.5"
