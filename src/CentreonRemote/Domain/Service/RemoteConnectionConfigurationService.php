@@ -11,7 +11,9 @@ class RemoteConnectionConfigurationService
     /** @var CentreonDBAdapter */
     private $dbAdapter;
 
-    private $ip;
+    private $remoteIp;
+
+    private $centralIp;
 
     private $name;
 
@@ -23,14 +25,19 @@ class RemoteConnectionConfigurationService
         $this->dbAdapter = $di['centreon.db-manager']->getAdapter('configuration_db');
     }
 
-    public function setIp($ip)
+    public function setRemoteIp($ip)
     {
-        $this->ip = $ip;
+        $this->remoteIp = $ip;
     }
 
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    public function setCentralIp($ip)
+    {
+        $this->centralIp = $ip;
     }
 
     private function getDbAdapter(): CentreonDBAdapter
@@ -64,7 +71,7 @@ class RemoteConnectionConfigurationService
 
         $this->insertConfigResources($serverID);
 
-        $this->insertConfigCentreonBroker();
+        $this->insertConfigCentreonBroker($serverID);
 
         $this->getDbAdapter()->commit();
 
@@ -75,7 +82,7 @@ class RemoteConnectionConfigurationService
     {
         $nagiosServerData = $this->getResource('nagios_server.php');
 
-        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->ip));
+        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->remoteIp));
     }
 
     private function insertConfigNagios($serverID)
@@ -119,25 +126,43 @@ class RemoteConnectionConfigurationService
 
         $this->insertWithAdapter('cfg_resource_instance_relations', $userResourceData);
         $this->insertWithAdapter('cfg_resource_instance_relations', $pluginResourceData);
-
-        return true;
     }
 
-    private function insertConfigCentreonBroker()
+    private function insertConfigCentreonBroker($serverID)
     {
         $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
+        $configCentreonBrokerData = $configCentreonBrokerData($serverID, $this->name);
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
+        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData();
 
-        $configID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData($this->name));
+        $brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[0]);
+        $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[1]);
+        $rrdID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[2]);
 
-        foreach ($configCentreonBrokerInfoData($configID) as $infoGroup) {
-            foreach ($infoGroup as $row) {
-                $row['config_id'] = $configID;
+        foreach ($configCentreonBrokerInfoData['central-broker'] as $brokerConfig => $brokerData) {
+            foreach ($brokerData as $row) {
+                if ($brokerConfig == 'output_forward' && $row['config_key'] == 'host') {
+                    $row['config_value'] = $this->centralIp;
+                }
+
+                $row['config_id'] = $brokerID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }
         }
 
-        return $configID;
+        foreach ($configCentreonBrokerInfoData['central-module'] as $brokerData) {
+            foreach ($brokerData as $row) {
+                $row['config_id'] = $moduleID;
+                $this->insertWithAdapter('cfg_centreonbroker_info', $row);
+            }
+        }
+
+        foreach ($configCentreonBrokerInfoData['central-rrd'] as $brokerData) {
+            foreach ($brokerData as $row) {
+                $row['config_id'] = $rrdID;
+                $this->insertWithAdapter('cfg_centreonbroker_info', $row);
+            }
+        }
     }
 
     private function insertWithAdapter($table, array $data)
