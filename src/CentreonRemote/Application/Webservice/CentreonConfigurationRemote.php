@@ -150,7 +150,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             try {
                 $remoteConfiguration->insert();
             } catch(\Exception $e) {
-                //TODO return json failure
+                return json_encode(['error' => true, 'message' => $e->getMessage()]);
             }
 
             $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
@@ -175,6 +175,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
             // Finish remote connection by:
             // - $openBrokerFlow?
+            // - $centreonCentralIp?
             // - Centreon Broker config
             // - Centreon RRD config
         }
