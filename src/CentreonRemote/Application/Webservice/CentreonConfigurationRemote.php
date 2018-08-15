@@ -138,13 +138,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         /** @var $remoteConfiguration RemoteConnectionConfigurationService */
         $remoteConfiguration = $this->getDi()['centreon_remote.connection_config_service'];
+        $remoteConfiguration->setCentralIp($centreonCentralIp);
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         foreach ($remoteIps as $index => $remoteIp) {
             $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
 
-            $remoteConfiguration->setIp($remoteIp);
+            $remoteConfiguration->setRemoteIp($remoteIp);
             $remoteConfiguration->setName($remoteName);
 
             try {
@@ -175,12 +176,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
             // Finish remote connection by:
             // - $openBrokerFlow?
-            // - $centreonCentralIp?
-            // - Centreon Broker config
-            // - Centreon RRD config
         }
 
-        return json_encode([]);
+        return json_encode(['success' => true]);
     }
 
     /**

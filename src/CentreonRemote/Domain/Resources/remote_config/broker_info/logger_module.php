@@ -3,7 +3,7 @@
 return [
     [
         'config_key'      => 'name',
-        'config_value'    => '/var/log/centreon-broker/broker-module.log',
+        'config_value'    => '/var/log/centreon-broker/central-module-master.log',
         'config_group'    => 'logger',
         'config_group_id' => '0',
         'grp_level'       => '0',
