@@ -109,6 +109,48 @@ class CentreonDBAdapter
         return $this->passes() ? $this->db->lastInsertId() : false;
     }
 
+    /**
+     * @param string $table
+     * @param array $fields
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return bool|int Updated ID
+     */
+    public function update($table, array $fields, int $id)
+    {
+
+        $keys = [];
+        $keyValues = [];
+
+        foreach($fields as $key=>$value)
+        {
+            array_push($keys, $key.'= :'.$key);
+            array_push($keyValues, array($key, $value));
+        }
+
+        $sql = "UPDATE {$table} SET implode(', ',$keys) WHERE id = :id";
+
+        $qq = $this->db->prepare($sql);
+
+        $qq->bindParam(':id',$id);
+
+        foreach ($keyValues as $key => $value)
+        {
+            $qq->bindParam(':'.$key, $value);
+        }
+
+        try {
+            $result = $qq->execute();
+        } catch(\Exception $e) {
+            throw new \Exception('Query failed. ' . $e->getMessage());
+        }
+
+        return $result;
+    }
+
+
     public function results()
     {
         return $this->result;

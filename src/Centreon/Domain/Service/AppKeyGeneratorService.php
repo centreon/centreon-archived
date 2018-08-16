@@ -2,7 +2,7 @@
 
 namespace Centreon\Domain\Service;
 
-class AppKeyGeneratorService
+class AppKeyGeneratorService implements KeyGeneratorInterface
 {
     /**
      * Generate microtime based md5 hash of unique values
