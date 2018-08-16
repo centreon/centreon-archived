@@ -57,7 +57,47 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         };
 
-        // Exporter 
+        //-----------//
+        // Exporters
+        //-----------//
+        
+        // Pollers
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\PollerExporter($locator);
+
+            return $service;
+        });
+        
+        // Hosts
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\HostExporter($locator);
+
+            return $service;
+        });
+        
+//        // Services
+//        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
+//            $services = [
+//                'centreon.db-manager',
+//            ];
+//
+//            $locator = new ServiceLocator($pimple, $services);
+//            $service = new Domain\Exporter\ServiceExporter($locator);
+//
+//            return $service;
+//        });
+
+        // Media
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
             $services = [
                 'centreon.db-manager',
@@ -68,6 +108,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
+
         // @todo register services here
     }
 }
