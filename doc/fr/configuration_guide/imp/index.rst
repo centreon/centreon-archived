@@ -141,7 +141,7 @@ sur "Try it" dans la première colonne du tableau comparatif des offres.
     :align: center
 
 Créez maintenant votre compte Centreon IMP (rubrique New customer) et conservez
-précieusement votre login et password. Cela vous est nécessaire pour activer votre
+précieusement votre login et password. Ils vous seront nécessaire pour activer votre
 compte Centreon IMP dans Centreon et ainsi avoir accès aux 5 Plugin Packs
 additionnels gratuits.
 
@@ -231,7 +231,7 @@ supervision puisse démarrer.
 .. note::
     Pensez à déployer tous les rpms sur chaque poller qui le nécessitent.
     Sinon votre supervision ne pourra pas fonctionner. En effet, seuls les
-    Centreon Plugins des 11 premiers Plugin Packs ont été installés par défaut
+    Plugins Centreon des 11 premiers Plugin Packs ont été installés par défaut
     sur vos serveurs Centreon. Il est indispensable de suivre la procédure de
     déploiement de chaque Plugin Pack en cliquant sur l'icône "?".
 

@@ -14,7 +14,7 @@ Centreon platform.
 
 The Plugin Packs (configuration pack), developed by Centreon, are based on the
 Centreon Plugins (monitoring probes), offer a large range of functionality and
-is one of the richest in the market: +170 environments is around 2000 monitoring
+is one of the richest in the market: +170 environments for almost 2000 monitoring
 indicators which allow to deploy your monitoring easily and quickly.
 
 Want to use IMP? Please follow the instructions below.
@@ -185,7 +185,7 @@ Don't forget that each pack use a plugin to work. Each monitoring procedure will
 install the plugin needed.
 
 .. note::
-    Install plugins on each poller required. Otherwise your supervision will
+    Install plugins on each poller is required. Otherwise your supervision will
     not work. Indeed, only the Centreon Plugins of the first 11 Plugin Packs
     have been installed by default on your Centreon servers. It is essential
     to follow the deployment procedure of each Plugin Pack by clicking on the
