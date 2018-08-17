@@ -47,8 +47,8 @@ class LimitMetricInChartContext extends CentreonContext
             }
         );
         $message = $this->assertFindIn($chart, 'css', '.c3-empty')->getText();
-        if ($message != "Too much metrics, the chart can't be displayed") {
-            throw new \Exception('Message which says "too much metrics" does not exist');
+        if ($message != "Too many metrics, the chart can't be displayed") {
+            throw new \Exception('Message which says "too many metrics" does not exist');
         }
     }
 
