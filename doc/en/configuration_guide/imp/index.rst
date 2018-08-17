@@ -53,17 +53,17 @@ you will have access to 5 more Plugin Packs. By subscribing to Centreon IMP offe
 have access to +170 Plugin Packs is around 2000 monitoring indicators which allow to deploy
 your monitoring easily and quickly.
 
-+---------------+-----------------+----------------+-------------------+
-|               | Without Account | Simple Account | With subscription |
-+===============+=================+================+===================+
-| 6 base Packs  |        x        |        x       |         x         |
-+---------------+-----------------+----------------+-------------------+
-| 5 added Packs |                 |        x       |         x         |
-+---------------+-----------------+----------------+-------------------+
-| +150 Packs    |                 |                |         x         |
-+---------------+-----------------+----------------+-------------------+
-|         total |    6 packs      |      11 packs  |     +170 Packs    |
-+---------------+-----------------+----------------+-------------------+
++---------------+-----------------+-----------------+-------------------+
+|               | Without Account | Simple Account  | With subscription |
++===============+=================+=================+===================+
+| 6 base Packs  |        x        |        x        |         x         |
++---------------+-----------------+-----------------+-------------------+
+| 5 added Packs |                 |        x        |         x         |
++---------------+-----------------+-----------------+-------------------+
+| +150 Packs    |                 |                 |         x         |
++---------------+-----------------+-----------------+-------------------+
+|         total | 6 Plugin Packs  | 11 Plugin Packs | +170 Plugin Packs |
++---------------+-----------------+-----------------+-------------------+
 
 What are Plugin Packs available for each level?
 
@@ -88,8 +88,8 @@ What are Plugin Packs available for each level?
 - With IMP subscription: `All the packs in the catalog <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
-    Yes 11 is different than 6 but we prefer to do not count Centreon Plugin Packs
-    to monitor your Centreon platform.
+    Yes 11 is different from 6 but we prefer not to count the Centreon Plugin
+    Packs that are only useful to monitor your Centreon platform.
 
 To connect your Centreon platform to Centreon user portal, please follow instructions below:
 
