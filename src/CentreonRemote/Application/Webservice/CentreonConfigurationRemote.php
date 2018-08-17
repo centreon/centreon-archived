@@ -2,7 +2,7 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use CentreonRemote\Domain\Service\RemoteConnectionConfigurationService;
+use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
@@ -117,6 +117,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
+        $configurationServiceName = isset($_POST['server_type']) && $_POST['server_type'] = 'remote' ?
+            'centreon_remote.remote_connection_service' :
+            'centreon_remote.poller_connection_service';
 
         // - poller/remote ips can be a multiple select
         //  -- form can have option to add IP of server without being pinged previously
@@ -136,20 +139,20 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $centreonCentralIp = $_POST['centreon_central_ip'];
         $remoteName = substr($_POST['remote_name'], 0, 40);
 
-        /** @var $remoteConfiguration RemoteConnectionConfigurationService */
-        $remoteConfiguration = $this->getDi()['centreon_remote.connection_config_service'];
-        $remoteConfiguration->setCentralIp($centreonCentralIp);
+        /** @var $serverConfigurationService ServerConnectionConfigurationService */
+        $serverConfigurationService = $this->getDi()[$configurationServiceName];
+        $serverConfigurationService->setCentralIp($centreonCentralIp);
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         foreach ($remoteIps as $index => $remoteIp) {
             $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
 
-            $remoteConfiguration->setRemoteIp($remoteIp);
-            $remoteConfiguration->setName($remoteName);
+            $serverConfigurationService->setRemoteIp($remoteIp);
+            $serverConfigurationService->setName($remoteName);
 
             try {
-                $remoteConfiguration->insert();
+                $serverConfigurationService->insert();
             } catch(\Exception $e) {
                 return json_encode(['error' => true, 'message' => $e->getMessage()]);
             }
