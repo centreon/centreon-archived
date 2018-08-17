@@ -2,9 +2,11 @@
 
 namespace CentreonRemote\Domain\Service;
 
+use Centreon\Domain\Entity\Command;
 use Centreon\Domain\Entity\Task;
 use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Domain\Service\KeyGeneratorInterface;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
@@ -19,6 +21,27 @@ class TaskService
      * @var CentreonDBManagerService
      */
     private $dbman;
+
+    /**
+     * @var CentcoreCommandService
+     */
+    private $cmdService;
+
+    /**
+     * @return CentcoreCommandService
+     */
+    public function getCmdService(): CentcoreCommandService
+    {
+        return $this->cmdService;
+    }
+
+    /**
+     * @param CentcoreCommandService $cmdService
+     */
+    public function setCmdService(CentcoreCommandService $cmdService): void
+    {
+        $this->cmdService = $cmdService;
+    }
 
     /**
      * @return KeyGeneratorInterface
@@ -41,10 +64,11 @@ class TaskService
      * @param KeyGeneratorInterface $generator
      * @param CentreonDBManagerService $dbman
      */
-    public function __construct(KeyGeneratorInterface $generator, CentreonDBManagerService $dbman)
+    public function __construct(KeyGeneratorInterface $generator, CentreonDBManagerService $dbman, CentcoreCommandService $cmdService)
     {
         $this->gen = $generator;
         $this->dbman = $dbman;
+        $this->cmdService = $cmdService;
     }
 
     /**
@@ -61,12 +85,24 @@ class TaskService
                 $newTask->setCreatedAt(new \DateTime());
                 $newTask->setStatus(Task::STATE_PENDING);
                 $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
+                $cmd = new Command();
+                $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
+                $cmdWritten = $this->getCmdService()->sendCommand($cmd);
+                break;
+            case Task::TYPE_IMPORT:
+                $newTask->setType(Task::TYPE_IMPORT);
+                $newTask->setCreatedAt(new \DateTime());
+                $newTask->setStatus(Task::STATE_PENDING);
+                $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
+                $cmd = new Command();
+                $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
+                $cmdWritten = $this->getCmdService()->sendCommand($cmd);
                 break;
             default:
                 return false;
         }
 
-        return $result;
+        return ($result && $cmdWritten) ? true : false;
     }
 
     /**
@@ -99,5 +135,6 @@ class TaskService
 
         $result = $this->getDbman()->getAdapter('configuration_db')->update('task', $task->toArray(), $taskId);
 
+        return $result;
     }
 }
