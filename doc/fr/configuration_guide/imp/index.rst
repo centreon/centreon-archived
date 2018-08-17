@@ -72,19 +72,19 @@ En créant votre compte Centreon IMP sur le site web de Centreon, vous pouvez :
 * soit accéder à 5 Plugin Packs additionnels gratuitement (essai gratuit de Centreon IMP)
 * soit souscrire à l’offre Centreon IMP et accéder à son catalogue de Plugin Packs prêts à l’emploi couvrant à ce jour plus de 170 domaines IT.
 
-+--------------------------------+-----------------------+---------------------+---------------------+
-|                                | Centreon open source  | Centreon IMP Free   | Centreon IMP 1/6/12 |
-|                                | (version 3.4)         | Trial with online   | month online        |
-|                                |                       | account             | subscription        |
-+================================+=======================+=====================+=====================+
-| 6 Free Plugin Pack(*)          |           x           |          x          |          x          |
-+--------------------------------+-----------------------+---------------------+---------------------+
-| 5 additional Free Plugin Packs |                       |          x          |          x          |
-+--------------------------------+-----------------------+---------------------+---------------------+
-| +160 Plugin Packs              |                       |                     |          x          |
-+--------------------------------+-----------------------+---------------------+---------------------+
-|                          total | 6 Free Plugin Paks(*) | 11 Free Plugin Paks |  +170 Plugin Packs  |
-+--------------------------------+-----------------------+---------------------+---------------------+
++--------------------------------+------------------------+----------------------+---------------------+
+|                                | Centreon open source   | Centreon IMP Free    | Centreon IMP 1/6/12 |
+|                                | (verison 3.4)          | Trial with online    | month online        |
+|                                |                        | account              | subscription        |
++================================+========================+======================+=====================+
+| 6 Free Plugin Pack(*)          |           x            |          x           |          x          |
++--------------------------------+------------------------+----------------------+---------------------+
+| 5 additional Free Plugin Packs |                        |          x           |          x          |
++--------------------------------+------------------------+----------------------+---------------------+
+| +160 Plugin Packs              |                        |                      |          x          |
++--------------------------------+------------------------+----------------------+---------------------+
+|                          total | 6 Free Plugin Packs(*) | 11 Free Plugin Packs |  +170 Plugin Packs  |
++--------------------------------+------------------------+----------------------+---------------------+
 
 Quels Plugin Packs sont disponibles à chaque niveau ?
 
@@ -109,12 +109,11 @@ Quels Plugin Packs sont disponibles à chaque niveau ?
 - Centreon IMP avec une souscription de 1, 6, 12 mois : `Accès au catalogue de Plugin Packs <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
-    (*) Nous savons tous que 6 = 11!
-    Aux 6 Plugin Packs délivrés gratuitement avec Centreon 3.4, s’ajoutent
+    (*) Nous savons tous que 6 != 11
+    Aux 6 Plugin Packs livrés gratuitement avec Centreon 3.4, s’ajoutent
     5 Plugin Packs Centreon (Central, DB, Poller, MAP et MBI). Comme ils
     servent à superviser la plateforme de supervision, nous préférons ne pas
-    les compter.
-    Packs servant à superviser votre plateforme de supervision.
+    les compter, ces packs servant à superviser votre plateforme de supervision.
 
 =============================================================
 Guide d’accès via l’exemple de l’essai gratuit à Centreon IMP
