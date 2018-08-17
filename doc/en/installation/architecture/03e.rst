@@ -58,7 +58,7 @@ Many components are used to build a master Centreon server:
 * Centreon Broker SQL allows to store information into MariaDB databases and forward them to the two Centreon Broker RRD (master and slave)
 * Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
 
-A bidirectional MySQL replication allows to store in both databases Centreon configuration and collected data.
+A MySQL replication allows to store in both databases Centreon configuration and collected data.
 
 The slave server is used in regular mode to generate and to update RRD files with data in order to display performance graphs.
 
