@@ -35,7 +35,7 @@ class HostExporter implements ExporterServiceInterface
     }
 
     /**
-     * Export media data
+     * Export data
      * 
      * @todo add exceptions
      */
@@ -77,6 +77,17 @@ class HostExporter implements ExporterServiceInterface
         $this->commitment->getParser()::dump($hostInfo, "{$exportPath}/extended_host_information.yaml");
         $this->commitment->getParser()::dump($hostMacros, "{$exportPath}/on_demand_macro_host.yaml");
         $this->commitment->getParser()::dump($hostTemplates, "{$exportPath}/host_template_relation.yaml");
+    }
+    
+    /**
+     * Import data
+     * 
+     * @todo add exceptions
+     */
+    public function import(): void
+    {
+        // @todo in progress
+        // ...
     }
 
     public function setCommitment(ExportCommitment $commitment): void
