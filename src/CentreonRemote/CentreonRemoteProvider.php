@@ -91,17 +91,29 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         });
         
-//        // Services
-//        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
-//            $services = [
-//                'centreon.db-manager',
-//            ];
-//
-//            $locator = new ServiceLocator($pimple, $services);
-//            $service = new Domain\Exporter\ServiceExporter($locator);
-//
-//            return $service;
-//        });
+        // Services
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\ServiceExporter($locator);
+
+            return $service;
+        });
+        
+        // Traps
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\TrapExporter($locator);
+
+            return $service;
+        });
 
         // Media
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
