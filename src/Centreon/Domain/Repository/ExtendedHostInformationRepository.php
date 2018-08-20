@@ -18,7 +18,7 @@ class ExtendedHostInformationRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*
-FROM on_demand_macro_host AS t
+FROM extended_host_information AS t
 INNER JOIN host AS h ON h.host_id = t.host_host_id
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id
 WHERE hr.nagios_server_id = :id
