@@ -156,5 +156,4 @@
                 e_targettxtcolor.value = new_color;
                 e_targetcolor.style.backgroundColor = new_color;
 		e_targetcolor.style.borderColor = new_color;
-		Modalbox.hide();
 	}
