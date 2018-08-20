@@ -3,6 +3,7 @@ namespace Centreon\Domain\Entity;
 
 class ViewImgDir
 {
+    const TABLE = 'view_img_dir';
 
     /**
      * @var int
@@ -54,7 +55,7 @@ class ViewImgDir
         return $this->dirAlias;
     }
 
-    public function setDirComment(string $dirComment): void
+    public function setDirComment(string $dirComment = null): void
     {
         $this->dirComment = $dirComment;
     }

@@ -16,11 +16,24 @@ trait ExportPathTrait
     public function createPath(string $exportPath = null): string
     {
         // Create export path
-        $exportPath = $exportPath ?? $this->commitment->getPath() . '/' . $this->getName();
+        $exportPath = $this->getPath($exportPath);
 
         if (!is_dir($exportPath)) {
             mkdir($exportPath, $this->commitment->getFilePermission(), true);
         }
+
+        return $exportPath;
+    }
+
+    /**
+     * Get path of export
+     * 
+     * @param string $exportPath
+     * @return string
+     */
+    public function getPath(string $exportPath = null): string
+    {
+        $exportPath = $exportPath ?? $this->commitment->getPath() . '/' . $this->getName();
 
         return $exportPath;
     }

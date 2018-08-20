@@ -34,7 +34,7 @@ class PollerExporter implements ExporterServiceInterface
     }
 
     /**
-     * Export media data
+     * Export data
      * 
      * @todo add exceptions
      */
@@ -64,6 +64,17 @@ class PollerExporter implements ExporterServiceInterface
         $this->commitment->getParser()::dump($cfgNagios, "{$exportPath}/cfg_nagios.yaml");
         $this->commitment->getParser()::dump($nagiosServer, "{$exportPath}/nagios_server.yaml");
         $this->commitment->getParser()::dump($cfgCentreonBroker, "{$exportPath}/cfg_centreonbroker.yaml");
+    }
+    
+    /**
+     * Import data
+     * 
+     * @todo add exceptions
+     */
+    public function import(): void
+    {
+        // @todo in progress
+        // ...
     }
 
     public function setCommitment(ExportCommitment $commitment): void
