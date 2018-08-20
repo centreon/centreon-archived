@@ -128,7 +128,7 @@ function get_notified_infos_for_host($hostId)
         $DBRESULT = $pearDB->query("SELECT host_tpl_id
                 FROM host_template_relation
                 WHERE host_host_id = " . $hostId . "
-                ORDER BY `order` ASC");
+                ORDER BY `order` ASC LIMIT 1");
         $hostsTpl = array();
         while (($row = $DBRESULT->fetchRow())) {
             $hostsTpl[] = $row['host_tpl_id'];
@@ -186,21 +186,25 @@ function get_notified_infos_for_service($serviceId, $hostId)
 
     while (1) {
         if (isset($loop[$serviceId])) {
-            continue;
+            break;
         }
         $loop[$serviceId] = 1;
 
-        $DBRESULT = $pearDB->query("SELECT 
-                    contact_additive_inheritance, 
-                    cg_additive_inheritance, service_use_only_contacts_from_host, service_template_model_stm_id
-                FROM service WHERE service_id = " . $serviceId);
-        $service = $DBRESULT->fetchRow();
-        if (!isset($service['service_template_model_stm_id']) || is_null($service['service_template_model_stm_id'])
-            || $service['service_template_model_stm_id'] == '') {
+        $query = "SELECT contact_additive_inheritance, cg_additive_inheritance, service_use_only_contacts_from_host, " .
+            "service_template_model_stm_id FROM service WHERE service_id = " . $serviceId;
+        $DBRESULT = $pearDB->query($query);
+        $contactAdd = $DBRESULT->fetchRow();
+        if (
+            !isset($contactAdd['service_template_model_stm_id']) ||
+            is_null($contactAdd['service_template_model_stm_id'])
+            || $contactAdd['service_template_model_stm_id'] == ''
+        ) {
             break;
         }
-        if (!is_null($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1) {
+        if (
+            !is_null($contactAdd['service_use_only_contacts_from_host']) &&
+            $contactAdd['service_use_only_contacts_from_host'] == 1
+        ) {
             $useOnlyContactsFromHost = 1;
             break;
         }
@@ -229,10 +233,14 @@ function get_notified_infos_for_service($serviceId, $hostId)
             break;
         }
 
-        $serviceId = $service['service_template_model_stm_id'];
+        if ($contactAdd['service_template_model_stm_id'] != '') {
+            $serviceId = $contactAdd['service_template_model_stm_id'];
+        }
     }
     if ($useOnlyContactsFromHost ||
-        (count($results['contacts']) == 0) && (count($results['contactGroups']) == 0)) {
+        (count($results['contacts']) == 0 && $contactAdd['contact_additive_inheritance'] == 0) &&
+        (count($results['contactGroups']) == 0 && $contactAdd['cg_additive_inheritance'] == 0)
+    ) {
         return get_notified_infos_for_host($hostId);
     }
 
