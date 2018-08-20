@@ -42,4 +42,18 @@ class ExportService
             // @todo save info for executed job
         }
     }
+
+    /**
+     * Import
+     * 
+     * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
+     */
+    public function import(ExportCommitment $commitment): void
+    {
+        foreach ($this->exporter->all() as $exporterMeta) {
+            $exporter = $exporterMeta['factory']();
+            $exporter->setCommitment($commitment);
+            $exporter->import();
+        }
+    }
 }

@@ -31,11 +31,22 @@ class TrapExporter implements ExporterServiceInterface
     }
 
     /**
-     * Export media data
+     * Export data
      * 
      * @todo add exceptions
      */
     public function export(): void
+    {
+        // @todo in progress
+        // ...
+    }
+    
+    /**
+     * Import data
+     * 
+     * @todo add exceptions
+     */
+    public function import(): void
     {
         // @todo in progress
         // ...

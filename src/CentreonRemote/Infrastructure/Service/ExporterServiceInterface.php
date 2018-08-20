@@ -13,5 +13,7 @@ interface ExporterServiceInterface
 
     public function export(): void;
 
+    public function import(): void;
+
     public static function getName(): string;
 }

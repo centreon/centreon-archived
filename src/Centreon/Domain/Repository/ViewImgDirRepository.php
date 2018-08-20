@@ -33,4 +33,11 @@ SQL;
 
         return $result;
     }
+
+    public function truncate()
+    {
+        $sql = 'TRUNCATE TABLE `view_img_dir`';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+    }
 }
