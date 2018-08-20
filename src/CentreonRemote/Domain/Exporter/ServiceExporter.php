@@ -34,7 +34,7 @@ class ServiceExporter implements ExporterServiceInterface
     }
 
     /**
-     * Export media data
+     * Export data
      * 
      * @todo add exceptions
      */
@@ -73,6 +73,17 @@ class ServiceExporter implements ExporterServiceInterface
         $this->commitment->getParser()::dump($services, "{$exportPath}/service.yaml");
 //        $this->commitment->getParser()::dump($serviceMacros, "{$exportPath}/on_demand_macro_host.yaml");
 //        $this->commitment->getParser()::dump($hostTemplates, "{$exportPath}/host_template_relation.yaml");
+    }
+    
+    /**
+     * Import data
+     * 
+     * @todo add exceptions
+     */
+    public function import(): void
+    {
+        // @todo in progress
+        // ...
     }
 
     public function setCommitment(ExportCommitment $commitment): void
