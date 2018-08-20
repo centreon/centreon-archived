@@ -4,11 +4,11 @@ namespace Centreon\Domain\Repository;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use PDO;
 
-class ServiceRepository extends ServiceEntityRepository
+class ExtendedServiceInformationRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export servces
+     * Export host's macros
      * 
      * @todo restriction by poller
      * 
@@ -20,7 +20,8 @@ class ServiceRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*
-FROM service AS t
+FROM extended_service_information AS t
+INNER JOIN service AS s ON s.service_id = t.service_service_id
 INNER JOIN servicegroup_relation AS sgr ON sgr.service_service_id = t.service_id
 INNER JOIN host AS h ON h.host_id = sgr.host_host_id
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id

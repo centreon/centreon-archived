@@ -5,12 +5,11 @@ use Psr\Container\ContainerInterface;
 use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
-use Centreon\Domain\Repository\HostRepository;
-use Centreon\Domain\Repository\HostGroupRepository;
-use Centreon\Domain\Repository\HostTemplateRelationRepository;
-use Centreon\Domain\Repository\ExtendedHostInformationRepository;
+use Centreon\Domain\Repository\ServiceRepository;
+use Centreon\Domain\Repository\ServiceGroupRepository;
+use Centreon\Domain\Repository\ExtendedServiceInformationRepository;
 
-class HostExporter implements ExporterServiceInterface
+class ServiceExporter implements ExporterServiceInterface
 {
     use ExportPathTrait;
 
@@ -41,29 +40,27 @@ class HostExporter implements ExporterServiceInterface
      */
     public function export(): void
     {
+        // @todo in progress
+        return;
+
         // create path
         $exportPath = $this->createPath();
 
         $pollerId = $this->commitment->getPoller();
         
         // Extract data
-        $hostGroups = $this->db
-            ->getRepository(HostGroupRepository::class)
+        $serviceGroups = $this->db
+            ->getRepository(ServiceGroupRepository::class)
             ->export($pollerId)
         ;
         
-        $hosts = $this->db
-            ->getRepository(HostRepository::class)
+        $services = $this->db
+            ->getRepository(ServiceRepository::class)
             ->export($pollerId)
         ;
 
-        $hostInfo = $this->db
-            ->getRepository(ExtendedHostInformationRepository::class)
-            ->export($pollerId)
-        ;
-
-        $hostMacros = $this->db
-            ->getRepository(OnDemandMacroHostRepository::class)
+        $serviceMacros = $this->db
+            ->getRepository(ExtendedServiceInformationRepository::class)
             ->export($pollerId)
         ;
 
@@ -72,11 +69,10 @@ class HostExporter implements ExporterServiceInterface
             ->export($pollerId)
         ;
 
-        $this->commitment->getParser()::dump($hostGroups, "{$exportPath}/hostgroup.yaml");
-        $this->commitment->getParser()::dump($hosts, "{$exportPath}/host.yaml");
-        $this->commitment->getParser()::dump($hostInfo, "{$exportPath}/extended_host_information.yaml");
-        $this->commitment->getParser()::dump($hostMacros, "{$exportPath}/on_demand_macro_host.yaml");
-        $this->commitment->getParser()::dump($hostTemplates, "{$exportPath}/host_template_relation.yaml");
+        $this->commitment->getParser()::dump($serviceGroups, "{$exportPath}/servicegroup.yaml");
+        $this->commitment->getParser()::dump($services, "{$exportPath}/service.yaml");
+//        $this->commitment->getParser()::dump($serviceMacros, "{$exportPath}/on_demand_macro_host.yaml");
+//        $this->commitment->getParser()::dump($hostTemplates, "{$exportPath}/host_template_relation.yaml");
     }
 
     public function setCommitment(ExportCommitment $commitment): void
