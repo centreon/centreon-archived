@@ -331,13 +331,14 @@ if ($o == "c" || $o == "a") {
         {
             var width = 400;
             var height = 300;
-            window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name,
+            window.open('./include/common/javascript/color_picker.php?n=' + t + '&name=' + name,
                 'cp',
-                'resizable=no, location=no, width=' +width+', height='+height+
+                'resizable=no, location=no, width=' + width + ', height=' + height +
                 ', menubar=no, status=yes, scrollbars=no, menubar=no'
             );
         }
-    </script><?php
+    </script>
+    <?php
 }
 $tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&compo_id=" . $compo_id, "changeT" => _("Modify")));
 

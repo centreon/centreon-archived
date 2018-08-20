@@ -206,19 +206,23 @@ $tpl->assign("helptext", $helptext);
  * Picker Color JS
  */
 
-$tpl->assign('colorJS', "
-	<script type='text/javascript'>
-		function popup_color_picker(t,name)
-		{
-			var width = 400;
-			var height = 300;
-			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name,
-			 'cp',
-			  'resizable=no, location=no, width=' +width+', height='+height+
-			  ', menubar=no, status=yes, scrollbars=no, menubar=no'
-			  );
-		}
-	</script>");
+$tpl->assign(
+        'colorJS',
+        "
+<script type='text/javascript'>
+    function popup_color_picker(t,name)
+	{
+	    var width = 400;
+	    var height = 300;
+	    window.open(
+	        './include/common/javascript/color_picker.php?n=' + t + '&name=' + name,
+	        'cp',
+			'resizable=no, location=no, width=' + width + ', height=' + height +
+			', menubar=no, status=yes, scrollbars=no, menubar=no'
+	    );
+	}
+</script>"
+);
 
 /*
  * End of Picker Color
