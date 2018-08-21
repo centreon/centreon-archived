@@ -280,6 +280,12 @@ class CentreonAuth
         }
         if ($DBRESULT->numRows()) {
             $this->userInfos = $DBRESULT->fetchRow();
+            $DBRESULT2 = $this->pearDB->query("SELECT topology_url_opt FROM topology WHERE topology_page = "
+                . $this->userInfos["default_page"]);
+            if ($DBRESULT2->numRows()) {
+                $data = $DBRESULT2->fetchRow();
+                $this->userInfos["default_page"] .= $data["topology_url_opt"];
+            }
 
             if ($this->userInfos["contact_oreon"]
                 || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')) {
@@ -325,6 +331,12 @@ class CentreonAuth
             );
             if ($DBRESULT->numRows()) {
                 $this->userInfos = $DBRESULT->fetchRow();
+                $DBRESULT2 = $this->pearDB->query("SELECT topology_url_opt FROM topology WHERE topology_page = "
+                    . $this->userInfos["default_page"]);
+                if ($DBRESULT2->numRows()) {
+                    $data = $DBRESULT2->fetchRow();
+                    $this->userInfos["default_page"] .= $data["topology_url_opt"];
+               }
             }
         } else {
             if ($this->debug) {
