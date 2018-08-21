@@ -104,7 +104,7 @@ With:
 
 Any additional parameters to SNMP trap must contain the following 3 variables. They must be repeated for each additional parameter:
 
-* **PARAMETER-OID**:
+* **PARAMETER-OID**: OID of the SNMP trap
 * **PARAMETER-TYPE**: Type of the parameter, 'i' for " Integer ", 's' for " String ", etc.
 * **PARAMETER-VALUE**: related to the parameter value. Quoting a string containing spaces
 

@@ -2,7 +2,7 @@
 Managing logical dependencies
 =============================
 
-We have seen in the :ref:`dependencies <dependancy>` configuration chapter how to configure dependences between objects (hosts, services, host groups, etc.).
+We have seen in the :ref:`dependencies <dependancy>` configuration chapter how to configure dependencies between objects (hosts, services, host groups, etc.).
 This sub-chapter illustrates the use of these dependences via a few actual cases.
 
 .. note::
