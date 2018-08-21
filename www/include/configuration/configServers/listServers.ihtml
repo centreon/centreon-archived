@@ -52,11 +52,10 @@
             <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
-            <td class="ListColHeaderCenter">{$headerMenu_localisation}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_type}</td>
             <td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
             <td class="ListColHeaderCenter">{$headerMenu_hasChanged}<font color='red' style='padding-left:3px;'>*</font></td>
-            <td class="ListColHeaderCenter">{$headerMenu_pid}</td>
-            <td class="ListColHeaderCenter">{$headerMenu_startTime}</td>
+            <td class="ListColHeaderCenter">{$headerMenu_uptime}</td>
             <td class="ListColHeaderCenter">{$headerMenu_lastUpdateTime}</td>
             <td class="ListColHeaderCenter">{$headerMenu_version}</td>
             <td class="ListColHeaderCenter">{$headerMenu_default}</td>
@@ -69,7 +68,7 @@
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
             <td class="ListColLeft">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == 'w'}</a>{/if}</td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
             <td class="ListColCenter">
               <span class="badge {if $elemArr[elem].RowMenu_is_runningFlag}service_ok{else}service_critical{/if}">
                 {$elemArr[elem].RowMenu_is_running}
@@ -80,9 +79,8 @@
                     {$elemArr[elem].RowMenu_hasChanged}
                 </span>
             </td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
             <!-- using a class to format the timestamp -->
-            <td class="ListColCenter isTimestamp">{$elemArr[elem].RowMenu_startTime}</td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_uptime}</td>
             <td class="ListColCenter isTimestamp"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
