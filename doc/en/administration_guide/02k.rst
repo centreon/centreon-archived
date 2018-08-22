@@ -16,7 +16,7 @@ To import SNMP traps, you must follow the following steps:
 #. Create a Manufacturer linked to the SNMP trap that you created, see this :ref:`section <configuration_advanced_snmptrapds_manufacturer>`
 #. Import MiB in the Centreon web interface, see this :ref:`section <configuration_advanced_snmptrapds_mibimport>`
 
-When import a MiB file, it's possible that dependences are necessary. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
+When import a MiB file, it's possible that dependencies are necessary. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
 
 #. Locate the line that starts with IMPORTS
 #. All dependencies required to import your MIB file are after the keyword **FROM**

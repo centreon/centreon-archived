@@ -7,7 +7,7 @@ Plugins Packs
 
 You can monitor the partitioning using Plugins Packs. You have to install the pack "Centreon DB".
 
-The service "Partitioning" will show you usefull informations.
+The service "Partitioning" will show you useful information's.
 
 On Web UI
 =========

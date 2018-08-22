@@ -26,7 +26,7 @@ To install a module:
 3. Click on the |install| icon to start installation of the module
 4. Click now on Install to install the module
 
-The table below summarises the columns of the page:
+The table below summarizes the columns of the page:
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 |   Column                |  Description                                                                                               |
@@ -62,7 +62,7 @@ The table below summarises the columns of the page:
 Widgets
 *******
 
-Widgets enable us to construct customised views, dealt with in the chapter covering :ref:`widgets <leswidgets>`.
+Widgets enable us to construct customized views, dealt with in the chapter covering :ref:`widgets <leswidgets>`.
 
 To install a widget:
 
