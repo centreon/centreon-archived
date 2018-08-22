@@ -4,11 +4,11 @@ namespace Centreon\Domain\Repository;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use PDO;
 
-class CfgCentreonBorkerRepository extends ServiceEntityRepository
+class CfgCentreonBorkerInfoRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export poller's broker configurations
+     * Export
      * 
      * @param int $pollerId
      * @return array
@@ -16,7 +16,11 @@ class CfgCentreonBorkerRepository extends ServiceEntityRepository
     public function export(int $pollerId): array
     {
         $sql = <<<SQL
-SELECT * FROM cfg_centreonbroker WHERE ns_nagios_server = :id
+SELECT t.*
+FROM cfg_centreonbroker_info AS t
+INNER JOIN cfg_centreonbroker AS cci ON cci.config_id = t.config_id
+WHERE cci.ns_nagios_server = :id
+GROUP BY t.config_id
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
@@ -29,15 +33,5 @@ SQL;
         }
 
         return $result;
-    }
-
-    public function truncate()
-    {
-        $sql = <<<SQL
-TRUNCATE TABLE `cfg_centreonbroker`;
-TRUNCATE TABLE `cfg_centreonbroker_info`
-SQL;
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
     }
 }

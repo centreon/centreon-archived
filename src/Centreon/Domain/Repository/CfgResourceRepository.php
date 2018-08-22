@@ -9,23 +9,25 @@ class CfgResourceRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export options
+     * Export cfg resources
      * 
-     * @return \Centreon\Domain\Entity\CfgResource[]
+     * @param int $pollerId
+     * @return array
      */
-    public function export(): array
+    public function export(int $pollerId): array
     {
         $sql = <<<SQL
-SELECT cr.resource_id AS `resourceId`,
-    cr.resource_name AS `resourceName`,
-    cr.resource_line AS `resourceLine`,
-    cr.resource_comment AS `resourceComment`,
-    cr.resource_activate AS `resourceActivate`
-FROM cfg_resource as cr
+SELECT
+    t.*,
+    crir.instance_id AS `_instance_id`
+FROM cfg_resource AS t
+INNER JOIN cfg_resource_instance_relations AS crir ON crir.resource_id = t.resource_id
+WHERE crir.instance_id = :id
+GROUP BY t.resource_id
 SQL;
         $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, CfgResource::class);
 
         $result = [];
 
@@ -34,5 +36,15 @@ SQL;
         }
 
         return $result;
+    }
+
+    public function truncate()
+    {
+        $sql = <<<SQL
+TRUNCATE TABLE `cfg_resource`;
+TRUNCATE TABLE `cfg_resource_instance_relations`
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
     }
 }

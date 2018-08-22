@@ -37,4 +37,17 @@ trait ExportPathTrait
 
         return $exportPath;
     }
+
+    /**
+     * Get exported file
+     * 
+     * @param string $filename
+     * @return string
+     */
+    public function getFile(string $filename): string
+    {
+        $exportFilepath = $this->getPath() . '/' . $filename;
+
+        return $exportFilepath;
+    }
 }
