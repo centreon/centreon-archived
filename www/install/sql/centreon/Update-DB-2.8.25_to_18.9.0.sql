@@ -17,4 +17,4 @@ UPDATE topology SET topology_name = 'Platform Status' WHERE topology_page = '505
 UPDATE topology SET topology_url = './include/Administration/brokerPerformance/brokerPerformance.php' WHERE topology_page = '505' AND topology_name = 'Platform Status';
 
 -- Delete old entries
-DELETE from topology WHERE topology_page = '102';
+DELETE FROM topology WHERE topology_page = '102';
