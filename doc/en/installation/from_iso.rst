@@ -184,14 +184,14 @@ Configuration
 Via the web interface
 =====================
 
-Log into web interface via : http://[SERVER_IP]/centreon.
-The End of installation wizard of Centreon is displayed, click on **Next**.
+Log into Centreon web interface via the url : http://[SERVER_IP]/centreon.
+The Centreon setup wizard is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
    :scale: 85%
 
-The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
+The Centreon setup wizard checks the availability of the modules, click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
@@ -209,7 +209,7 @@ Click on **Next**.
    :align: center
    :scale: 85%
 
-Define the data concerning the admin user, click on **Next**.
+Provide information related to the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
@@ -221,7 +221,11 @@ By default, the ‘localhost’ server is defined and the root password is empty
    :align: center
    :scale: 85%
 
-If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+If the following error message appears:
+
+**Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
+
+Perform the following operations:
 
 1. Log-on to the ‘root’ user on your server
 
@@ -244,23 +248,33 @@ If the following error message appears: **Add innodb_file_per_table=1 in my.cnf 
 
 ::
 
-  service mysql restart
+  systemctl restart mysql
 
 5. Click on **Refresh**
 
-The End of installation wizard configures the databases, click on **Next**.
+The Centreon setup wizard configures the databases, click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
    :scale: 85%
 
-The installation is finished, click on Finish.
+At this point, you will be able to install the modules provided with Centreon.
 
-At this stage, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
+Click on **Install**
+
+.. image :: /images/user/module_installation.png
+   :align: center
+   :scale: 85%
+
+Once installation is performed, click on **Next**
+
+At this point, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
 
 .. image :: /images/user/aendinstall.png
    :align: center
    :scale: 85%
+
+The installation is finished, click on **Finish**.
 
 You can now log in.
 
