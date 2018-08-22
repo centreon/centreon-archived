@@ -1,0 +1,14 @@
+{
+    "down": {
+        "total": "0",
+        "unhandled": "0"
+    },
+    "unreachable": {
+        "total": "0",
+        "unhandled": "0"
+    },
+    "ok": "3",
+    "pending": "10",
+    "total": 13,
+    "refreshTime": 15
+}

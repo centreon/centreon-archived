@@ -127,5 +127,5 @@ if (isset($_SESSION["centreon"])) {
 if (version_compare(phpversion(), '5.3') < 0) {
     echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
-    include_once("./include/core/login/login.php");
+    include_once("./include/core/loginReact/login.php");
 }
