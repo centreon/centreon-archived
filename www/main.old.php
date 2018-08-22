@@ -233,111 +233,112 @@ if (!$centreon->user->showDiv("menu_2")) {
 }
 ?>
     <section class="main">
-        <?php
-        /*
-         * Display PathWay
-         */
-        if ($min != 1) {
-            include_once "./include/core/pathway/pathway.php";
-        }
+<?php
+/*
+ * Display PathWay
+ */
+if ($min != 1) {
+    include_once "./include/core/pathway/pathway.php";
+}
 
-        /*
-         * Go on our page
-         */
-        if ($min != 1) {
-            require_once("./class/centreonMsg.class.php");
-            $msg = new CentreonMsg();
-            if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
-                $msg->setImage("./img/icons/warning.png");
-                $msg->setTextStyle("bold");
-                $msg->setText(_("You are not in an access group"));
-                $msg->setTimeOut("3");
-            }
-        }
+/*
+ * Go on our page
+ */
+if ($min != 1) {
+    require_once("./class/centreonMsg.class.php");
+    $msg = new CentreonMsg();
+    if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
+        $msg->setImage("./img/icons/warning.png");
+        $msg->setTextStyle("bold");
+        $msg->setText(_("You are not in an access group"));
+        $msg->setTimeOut("3");
+    }
+}
 
-        if (isset($url) && $url) {
-            include_once $url;
-        }
+if (isset($url) && $url) {
+    include_once $url;
+}
 
-        if (!isset($centreon->historyPage)) {
-            $centreon->createHistory();
-        }
+if (!isset($centreon->historyPage)) {
+    $centreon->createHistory();
+}
 
-        /*
-         * Keep in memory all informations about pagination, keyword for search...
-         */
-        $inputArguments = array(
-            'num' => FILTER_SANITIZE_NUMBER_INT,
-            'search' => FILTER_SANITIZE_STRING,
-            'search_service' => FILTER_SANITIZE_STRING,
-            'limit' => FILTER_SANITIZE_NUMBER_INT
-        );
-        $inputGet = filter_input_array(
-            INPUT_GET,
-            $inputArguments
-        );
-        $inputPost = filter_input_array(
-            INPUT_POST,
-            $inputArguments
-        );
+/*
+ * Keep in memory all informations about pagination, keyword for search...
+ */
+$inputArguments = array(
+    'num' => FILTER_SANITIZE_NUMBER_INT,
+    'search' => FILTER_SANITIZE_STRING,
+    'search_service' => FILTER_SANITIZE_STRING,
+    'limit' => FILTER_SANITIZE_NUMBER_INT
+);
+$inputGet = filter_input_array(
+    INPUT_GET,
+    $inputArguments
+);
+$inputPost = filter_input_array(
+    INPUT_POST,
+    $inputArguments
+);
 
-        if (isset($url) && $url) {
-            foreach ($inputArguments as $argumentName => $argumentFlag) {
-                switch ($argumentName) {
-                    case 'limit':
-                        if (!is_null($inputGet[$argumentName])) {
-                            $centreon->historyLimit[$url] = $inputGet[$argumentName];
-                        } elseif (!is_null($inputPost[$argumentName])) {
-                            $centreon->historyLimit[$url] = $inputPost[$argumentName];
-                        } else {
-                            $centreon->historyLimit[$url] = 30;
-                        }
-                        break;
-                    case 'num':
-                        if (!is_null($inputGet[$argumentName])) {
-                            $centreon->historyPage[$url] = $inputGet[$argumentName];
-                        } elseif (!is_null($inputPost[$argumentName])) {
-                            $centreon->historyPage[$url] = $inputPost[$argumentName];
-                        } else {
-                            $centreon->historyPage[$url] = 0;
-                        }
-                        break;
-                    case 'search':
-                        if (!is_null($inputGet[$argumentName])) {
-                            $centreon->historySearch[$url] = $inputGet[$argumentName];
-                        } elseif (!is_null($inputPost[$argumentName])) {
-                            $centreon->historySearch[$url] = $inputPost[$argumentName];
-                        } else {
-                            $centreon->historySearch[$url] = '';
-                        }
-                        break;
-                    case 'search_service':
-                        if (!is_null($inputGet[$argumentName])) {
-                            $centreon->historySearchService[$url] = $inputGet[$argumentName];
-                        } elseif (!is_null($inputPost[$argumentName])) {
-                            $centreon->historySearchService[$url] = $inputPost[$argumentName];
-                        } else {
-                            $centreon->historySearchService[$url] = '';
-                        }
-                        break;
-                    default:
-                        continue;
-                        break;
+if (isset($url) && $url) {
+    foreach ($inputArguments as $argumentName => $argumentFlag) {
+        switch ($argumentName) {
+            case 'limit':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyLimit[$url] = 30;
                 }
-
-            }
+                break;
+            case 'num':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historyPage[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historyPage[$url] = 0;
+                }
+                break;
+            case 'search':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearch[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearch[$url] = '';
+                }
+                break;
+            case 'search_service':
+                if (!is_null($inputGet[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputGet[$argumentName];
+                } elseif (!is_null($inputPost[$argumentName])) {
+                    $centreon->historySearchService[$url] = $inputPost[$argumentName];
+                } else {
+                    $centreon->historySearchService[$url] = '';
+                }
+                break;
+            default:
+                continue;
+                break;
         }
 
-        /*
-         * Display Footer
-         */
-        if (!$min) {
-            print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
-        }
-        ?>
+    }
+}
+
+/*
+ * Display Footer
+ */
+if (!$min) {
+    print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
+}
+?>
     </section>
 <?php
 /*
- * Include Footer
+ * Include Footer 
  */
 include_once "./include/core/footer/footer.php";
+

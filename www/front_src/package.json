@@ -11,11 +11,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "class-name": "^0.1.3",
     "cross-env": "^5.2.0",
     "moment-timezone": "^0.5.21",
     "node-sass": "^4.9.3",
-    "numeral": "^2.0.6",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-helmet": "^5.2.0",
@@ -29,9 +27,9 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "dev": "PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
-    "build": "PUBLIC_URL=\"/centreon/\" webpack --mode production",
-    "start": "PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
+    "dev": "cross-env PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
+    "build": "cross-env PUBLIC_URL=\"/centreon/\" webpack --mode production",
+    "start": "cross-env PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
     "build:sass": "node-sass -r --output-style compressed src/App.scss -o ./src",
     "watch:sass": "npm run build:sass && npm run build:sass -- -w",
     "test": "react-scripts test --env=jsdom",

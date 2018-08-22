@@ -1,4 +1,5 @@
 import React from 'react';
+/* @jsx h */
 import PropTypes from 'prop-types';
 import fieldHoc from './hoc';
 import {prepareInputProps} from './utils';

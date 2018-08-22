@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
+import Button from '../../button/index';
 import SelectField from '../../form-fields/SelectField';
-import CheckboxField from '../../form-fields/CheckboxField';
+import CheckboxField from '../form-fields/CheckboxField';
 
 class PollerFormStepTwo extends Component {
 
   render() {
-    const {error, handleSubmit, onSubmit, submitting} = this.props;
     return (
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
@@ -18,9 +18,11 @@ class PollerFormStepTwo extends Component {
         />
         <br />
         <Field name="checkbox" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
-        <button
+        <Button
           type="submit"
-        >Apply</button>
+          buttonClass={''}
+          buttonTitle={'Apply'}
+        />
         {error ? <div class="error-block">{error.message}</div> : null}
       </form>
     );

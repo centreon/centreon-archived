@@ -1,7 +1,7 @@
 import React from 'react';
 import {Field, reduxForm as connectForm} from 'redux-form';
 
-import RadioGroupFields from '../form-fields/RadioGroupFields';
+import RadioGroupFields from '../../form-fields/RadioGroupFields';
 
 const configurationTypes = [
   {

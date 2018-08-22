@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
+import Button from '../../button/index';
 import InputField from '../../form-fields/InputField';
 
 class PollerFormStepOne extends Component {
 
   render() {
-    const {error, handleSubmit, onSubmit, submitting} = this.props;
     return (
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
@@ -29,9 +29,11 @@ class PollerFormStepOne extends Component {
           placeholder=""
           label="Centreon Central IP Address:"
         />
-       <button
+        <Button
           type="submit"
-        >Apply</button>
+          buttonClass={''}
+          buttonTitle={'Apply'}
+        />
         {error ? <div class="error-block">{error.message}</div> : null}
       </form>
     );
