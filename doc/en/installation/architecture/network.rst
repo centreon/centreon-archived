@@ -67,4 +67,4 @@ Tables of monitoring flows
 
 .. note::
     Other flows can be necessary to monitor databases, access to API, or
-    applicative ports.
+    application ports.

@@ -72,10 +72,10 @@ Centreontrapd Configuration
 
 It is necessary to change the configuration files of Centreontrapd so that the service can question the SQLite database (see the chapter: :ref:`configuration_advanced_snmptrapds`).
 
-Plugins synchronisation
+Plugins synchronization
 =======================
 
-You can synchronise the plugins between your central server and your remote pollers using **rsync** software.
+You can synchronize the plugins between your central server and your remote pollers using **rsync** software.
 
 .. warning::
    Don’t perform this action if your plugins depend on third party libraries that need to have been installed previously.

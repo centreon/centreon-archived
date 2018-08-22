@@ -189,7 +189,7 @@ The preference window would look like this as a result:
 Code
 ****
 
-All langages are separated in differents files, one file for each langage. The file "configs.xml" call the php's file and the php's file call html's file etc...
+All languages are separated in differents files, one file for each language. The file "configs.xml" call the php's file and the php's file call html's file etc...
 
 We use Smarty, it's an engine and template'php compiler (http://smarty.net).
 

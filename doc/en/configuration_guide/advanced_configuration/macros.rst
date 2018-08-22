@@ -30,13 +30,13 @@ Custom macros
 Definition
 ==========
 
-Customised macros are macros defined by the user at the creation of a host or a service. They are used in check commands. Customised macros start with $_HOST for customised macros of hosts and by $_SERVICE for customised macros of services.
+Customized macros are macros defined by the user at the creation of a host or a service. They are used in check commands. Customized macros start with $_HOST for customized macros of hosts and by $_SERVICE for customized macros of services.
 
-There are several advantages to using customised macros instead of arguments:
+There are several advantages to using customized macros instead of arguments:
 
 * The function of the macro is defined in its name. The macro $_HOSTMOTDEPASSEINTRANET$ is easier to read than $ARG1$
 * The macros inherit models of hosts and of services, the hence it is possible to modify a single macro for a host or a service. On the other hand, the arguments all need to be redefined if a single argument is changed
-* The number of arguments is limited to 32, unlike customised macros which are unlimited
+* The number of arguments is limited to 32, unlike customized macros which are unlimited
 
 A macro of a host is used to define a variable that is specific to the host and which will not change regardless of the service questioned: host connection identifiers, a port of connection to a particular service, an SNMP community, etc.
 A macro of a service is used more to define settings specific to a service: a WARNING / CRITICAL threshold, a partition to be questioned, etc.
@@ -61,7 +61,7 @@ To retrieve these macros in a check command, you need to invoke them using the f
 A special case
 ==============
 
-The **Community SNMP & Version** fields in a host form automatically generates the following customised macros: $_HOSTSNMPCOMMUNITY$ and $_HOSTSNMPVERSION$.
+The **Community SNMP & Version** fields in a host form automatically generates the following customized macros: $_HOSTSNMPCOMMUNITY$ and $_HOSTSNMPVERSION$.
 
 ***************
 Resource macros

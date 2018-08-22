@@ -249,7 +249,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 
 |
 
-* The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+* The **Home** menu enables access to the first home screen after logging in. It summarizes the general status of the supervision.
 * The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 * The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 * The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.

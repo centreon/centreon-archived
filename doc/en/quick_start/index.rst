@@ -15,4 +15,4 @@ This chapter describes you how to quickly start to configure your Centreon monit
     add_svc_from_template
     add_user
 
-If you have ideas of "quick start" and want to participate in creating somes of tutorials to help users of the community, please make you "pull-requests" for us to easily integrate them from `github <https://github.com/centreon/centreon>`_.
+If you have ideas of "quick start" and want to participate in creating some of tutorials to help users of the community, please make you "pull-requests" for us to easily integrate them from `GitHub <https://github.com/centreon/centreon>`_.

@@ -27,5 +27,5 @@ Features and Bug Fixes
 - Fix: Number of hosts in Hostgroups was not good for non admin users
 - Fix: Max and Min was not correct for inverted curves
 - Fix: It was impossible to create Virtual metrics with web UI in french language
-- Fix: Exclude Desactivate poller in configuration generation page filter
-- Enh: Add an error message when no pollers are selected in configuration genration page
+- Fix: Exclude Deactivate poller in configuration generation page filter
+- Enh: Add an error message when no pollers are selected in configuration generation page

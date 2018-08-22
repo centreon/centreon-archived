@@ -120,7 +120,7 @@ Modify the output
 Use all the arguments
 =====================
 
-For a SNMP trap, when configuring the output message, the argument $ * will display all the information (the value of arguments) contained within the SNMP trap. However, it is possible to display only certain information contained in the SNMP trap by calling unitarily arguments.
+For a SNMP trap, when configuring the output message, the argument $ * will display all the information (the value of arguments) contained within the SNMP trap. However, it is possible to display only certain information contained in the SNMP trap by calling unitary arguments.
 
 Eg:
 
@@ -160,7 +160,7 @@ The active service linked in the service configuration is executed.
 Execute special command
 =======================
 
-Its possible with Centreontrapd to execute a special command after the reecption of a SNMP trap. Just use the option **Execute special command** followed by the description of this command.
+Its possible with Centreontrapd to execute a special command after the reception of a SNMP trap. Just use the option **Execute special command** followed by the description of this command.
 
 
 Use all the arguments (via OID)
@@ -278,7 +278,7 @@ In the **Route definition** field you can use the following arguments:
 Ignore SNMP Trap when resource is on downtime
 =============================================
 
-**Check Downtime** allow centreontrapd to check if the service is not in Downtime status at trap reception. The submission can be cancelled.
+**Check Downtime** allow centreontrapd to check if the service is not in Downtime status at trap reception. The submission can be canceled.
 
 .. note::
 

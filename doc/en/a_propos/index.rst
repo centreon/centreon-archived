@@ -14,12 +14,12 @@ It integrates since 2012 his own scheduler engine (Centreon Engine) and Event Ma
 
 Beyond configuration concepts that are the most advanced in the Nagios ecosystem
 , Centreon provides many features such as consultation
-of services state of monitored equipment, metrology, reporting,
+of services state of monitored equipment, meteorology, reporting,
 access to monitoring events, users advanced management via
 access control lists (ACLs), etc.
 
 
-Additional extensions from the community and Centreonr
+Additional extensions from the community and Centreon
 also expand the functions. Found for example a BI tool, the
 mapping and many API for interacting with Centreon as
 automated configuration management.

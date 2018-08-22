@@ -37,7 +37,7 @@ From now on, if the service responsible for checking the status of the MySQL ser
 Hosts dependencies
 ******************
 
-Let us take the case of two hosts which operate as a cluster. Three hosts are created to be able to monitor this cluster: a host A, a host B (both members of the cluster) and a host C (which centralises the information from the cluster).
+Let us take the case of two hosts which operate as a cluster. Three hosts are created to be able to monitor this cluster: a host A, a host B (both members of the cluster) and a host C (which centralizes the information from the cluster).
 
 If host A or host B has a Not-OK status the services of host C will automatically be considered to be Not-OK. So it is necessary to add a dependency which prevents the sending of notifications if host A or host B become faulty. However, performance data feed-back must always be operational; this is why it is necessary to continue the monitoring of host C.
 

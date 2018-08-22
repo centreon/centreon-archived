@@ -2,7 +2,7 @@
 Nagios Reader to Centreon CLAPI
 ===============================
 
-**Nagios Reader to Centreon CLAPI** is a free and open source project to analyse
+**Nagios Reader to Centreon CLAPI** is a free and open source project to analyze
 Nagios CFG configuration files and to transform monitoring configuration to
 Centreon CLAPI command in order to import configuration into Centreon web
 interface.
@@ -35,7 +35,7 @@ Debian:
   $ ./Build test
   $ ./Build install
 
-Download script from github on your Nagios(R) server::
+Download script from GitHub on your Nagios(R) server::
 
   $ cd /tmp
   $ git clone https://github.com/centreon/nagiosToCentreon.git
@@ -45,7 +45,7 @@ Usage
 =====
 
 On a fresh Centreon server the default poller is named "Central". If you rename it
-or if you want to link this Nagios configuration to a predifined poller you
+or if you want to link this Nagios configuration to a predefined poller you
 have to change the poller name on line 65::
 
   my $default_poller = "Central";

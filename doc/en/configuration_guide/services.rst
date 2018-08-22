@@ -36,7 +36,7 @@ Service State
 Macros
 ======
 
-The **Macros** part serves to add customised macros. 
+The **Macros** part serves to add customized macros. 
 The **macro name** and **macro value** fields allow us to define the name and value of the macro. The **Password** box can be used to hide the value of the macro.
 
 To reinitialize to the default value (defined in template) click on |undo|.
@@ -110,7 +110,7 @@ Monitoring engine
 * The **Action URL** field defined a URL normally use for giving information on actions on the service (maintenance, etc.).
 * The **Icon** field indicates the icon use for the service.
 * The **Alt icon** field is the text use if the icon cannot be Displays.
-* The **Severity level** field indicates the criticality level of the service.
+* The **Severity level** field indicates the critically level of the service.
 
 Additional information 
 ======================

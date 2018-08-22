@@ -71,7 +71,7 @@ To install a widget:
 #. In the left menu, click on **Setup** under **Widgets**
 #. Click on |install| to start the installation of the widget
 
-The table below summarises the columns of the page:
+The table below summarizes the columns of the page:
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 |   Column                |  Description                                                                                               |

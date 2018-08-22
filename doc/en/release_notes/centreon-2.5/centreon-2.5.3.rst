@@ -26,7 +26,7 @@ CHANGELOG
 - #5888: Differences between update and fresh install for "Insert in index data" field
 - #5829: Add config file in parameters for all crons of Centreon in order to install centreon on different directories
 - #5852: Fix problem with massive change for "Inherit contacts from host" in service form
-- #5841: Empty dependencies are now remove automaticaly
+- #5841: Empty dependencies are now remove automatically
 - #5840: Fix problem with host duplication when this host has a "'" in the alias
 - #5790 & #5813 & #5750: Fix problems on Tactical Overview
 - #5786: Fix problem when generating correlation config file.

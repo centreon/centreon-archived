@@ -2,7 +2,7 @@
 Prerequisites
 =============
 
-The Centreon web interface is compatible with the following list of web broswer:
+The Centreon web interface is compatible with the following list of web browser:
 
 * Chrome (latest version)
 * Firefox (latest version)
@@ -24,7 +24,7 @@ If you prefer to use **Red Hat OS** you must install it in **v6 or v7 version**
 and use rpms from repository.
 
 Else you can use another GNU/Linux operating system but installation will be
-more complex and realised using software sources.
+more complex and realized using software sources.
 
 .. note::
     Only 64-bit operating systems (x86_64) are supported.
@@ -90,7 +90,7 @@ The table below gives the prerequisites for the installation of CES 3.x:
 +----------------------+-----------------------------+--------------------------+----------------+---------------+
 
 .. note::
-    vCPU must have a frequency arround 3 GHz
+    vCPU must have a frequency around 3 GHz
 
 .. _diskspace:
 

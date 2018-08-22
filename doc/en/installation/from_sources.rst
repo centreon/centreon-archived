@@ -726,5 +726,5 @@ After saving the file, please don't forget to restart apache server.
 
 The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
-After this step you should connect to Centreon to finalise the installation process.
+After this step you should connect to Centreon to finalize the installation process.
 This step is described :ref:`here <installation_web_ces>`.

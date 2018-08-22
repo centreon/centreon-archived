@@ -221,11 +221,11 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+
-| search         | search pattern applyed on service          |
+| search         | search pattern applied on service          |
 +----------------+--------------------------------------------+
-| searchHost     | search pattern applyed on host             |
+| searchHost     | search pattern applied on host             |
 +----------------+--------------------------------------------+
-| searchOutput   | search pattern applyed on output           |
+| searchOutput   | search pattern applied on output           |
 +----------------+--------------------------------------------+
 | criticality    | a specific criticity                       |
 +----------------+--------------------------------------------+
@@ -914,7 +914,7 @@ Set macro
     "values": "mail-uranus-frontend;MacroName;NewValue"
   }
 
-To edit an existing custom marco, The MacroName used on the body should be defined on the Custom Marco of the choosen host. If the marco doesn't exist, it will be created.
+To edit an existing custom macro, The MacroName used on the body should be defined on the Custom Marco of the chosen host. If the marco doesn't exist, it will be created.
 
 **Response** ::
 
@@ -952,7 +952,7 @@ Delete macro
     "values": "mail-uranus-frontend;MacroName"
   }
 
-The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host.
+The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the chosen host.
 
 **Response** ::
 

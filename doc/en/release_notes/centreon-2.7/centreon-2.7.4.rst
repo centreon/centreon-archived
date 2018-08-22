@@ -64,7 +64,7 @@ Features and Bug Fixes
 - Fix: Error when saving "Administration > Parameters > Monitoring" page
 - Fix: Zoom in Performance graph
 - Fix: Select contactgroups / contacts in services & hosts configuration was not working
-- Fix: Display only catagories and not severities on form
+- Fix: Display only categories and not severity's on form
 - Fix: Scroll bar in "Configuration - Hosts - Host Groups"
 - Fix: Category Relation on host and host template form
 - Fix: Order in More Actions Menu

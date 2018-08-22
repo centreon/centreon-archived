@@ -12,13 +12,13 @@ The service "Partitioning" will show you useful information's.
 On Web UI
 =========
 
-The menu **Administration => Server Status** shows you all informations needed about partitioning system. This menu lists all partitions on all MySQL tables.
+The menu **Administration => Server Status** shows you all information's needed about partitioning system. This menu lists all partitions on all MySQL tables.
 
 .. image :: /images/guide_exploitation/partitioning-state.png
    :align: center
    :scale: 65%
 
-Global informations about health state of databases are present.
+Global information's about health state of databases are present.
 
 .. image :: /images/guide_exploitation/Global-DB-Information.png
    :align: center

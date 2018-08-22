@@ -54,7 +54,7 @@ In order to remove a servicegroup, use the **DEL** action::
 Setparam
 --------
 
-In order to change parameters for a servciegroup, use the **SETPARAM** action::
+In order to change parameters for a servicegroup, use the **SETPARAM** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o SG -a setparam -v "SG1;name;Web Service"
 

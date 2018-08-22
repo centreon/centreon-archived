@@ -16,7 +16,7 @@ SNMP traps are information sent using the SNMP protocol from monitored equipment
 
 In order to be able interpret the event received the Network supervisor server needs to possess in its configuration the necessary elements to translate the event. For this it must have a database containing the OID and the descriptions, this is what is called MIB files. There are two types of MIB:
 
-* Standard MIBs which use standardised OIDs and which are implemented by numerous manufacturers on their equipment.
+* Standard MIBs which use standardized OIDs and which are implemented by numerous manufacturers on their equipment.
 * MIB manufacturers who are specific to each one and often to each equipment model.
 
 MIB manufacturers can be retrieved from the equipment. Centreon allows us to store the definition of SNMP traps in its MySQL database. The traps can subsequently be linked to passive services via the **Relations** tab of the definition of a service.
@@ -72,7 +72,7 @@ To call the ‘centreontrapdfoward’ script, the file **/etc/snmp/snmptrapd.con
         traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforward"
 
 
-You can optimise the performances of snmptrapd by using the following options:
+You can optimize the performances of snmptrapd by using the following options:
 
 * **-On** don’t try to convert the OIDs
 * **-t** don’t log the traps to the syslog server
@@ -153,7 +153,7 @@ Here is an example of possible configuration of the file **/etc/centreon/centreo
         mode => 0,
         cmd_timeout => 10,
         centreon_user => "centreon",
-        # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
+        # 0 => skip if MySQL error | 1 => don't skip (block) if MySQL error (and keep order)
         policy_trap => 1,
         # Log DB
         log_trap_db => 0,
@@ -369,9 +369,9 @@ When adding a rule of correspondence or executing a special command it is possib
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | @STATUS@                 | Service state                                                                                                                             |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| @SEVERITYNAME@           | Criticality name                                                                                                                          |
+| @SEVERITYNAME@           | Critically name                                                                                                                          |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-| @SEVERITYLEVEL@          | Criticality level                                                                                                                         |
+| @SEVERITYLEVEL@          | Critically level                                                                                                                         |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 | @TIME@                   | Trap reception timestamp                                                                                                                  |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+

@@ -102,7 +102,7 @@ Add firewall rules or disable it. To disable it execute following commands:
     # systemctl disable firewalld
     # systemctl status firewalld
 
-DataBase Management System
+Database Management System
 --------------------------
 
 The MySQL database server should be available to complete installation (locally or not). MariaDB is recommended.
@@ -142,7 +142,7 @@ Execute these commands on central server.
 Conclude installation
 ---------------------
 
-:ref:`click here to finalise the installation process <installation_web_ces>`.
+:ref:`click here to finalize the installation process <installation_web_ces>`.
 
 *******************
 Installing a poller
