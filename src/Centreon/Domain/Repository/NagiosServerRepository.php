@@ -15,9 +15,7 @@ class NagiosServerRepository extends ServiceEntityRepository
      */
     public function export(int $pollerId): array
     {
-        $sql = <<<SQL
-SELECT * FROM nagios_server WHERE id = :id
-SQL;
+        $sql = 'SELECT * FROM nagios_server WHERE id = :id';
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
@@ -29,5 +27,16 @@ SQL;
         }
 
         return $result;
+    }
+
+    public function truncate()
+    {
+        $sql = <<<SQL
+TRUNCATE TABLE `nagios_server`;
+TRUNCATE TABLE `cfg_nagios`;
+TRUNCATE TABLE `cfg_nagios_broker_module`
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
     }
 }
