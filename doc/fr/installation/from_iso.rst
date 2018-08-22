@@ -186,13 +186,13 @@ Via l'interface web
 ===================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
-L'assistant de fin d'installation de Centreon s'affiche, cliquez sur **Next**.
+L'assistant de configuration de Centreon s'affiche, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreonwelcome.png
    :align: center
    :scale: 65%
 
-L'assistant de fin d'installation de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
+L'assistant de configuration de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/acentreoncheckmodules.png
    :align: center
@@ -216,14 +216,19 @@ Définissez les informations concernant l'utilisateur admin, cliquez sur **Next*
    :scale: 65%
 
 Par défaut, le serveur 'localhost' est défini et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
-Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon', cliquez sur **Next**.
+Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon'.
+
+Cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbinfo.png
    :align: center
    :scale: 65%
 
-Si le message d'erreur suivant apparaît : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
-Effectuez l'opération ci-dessous :
+Si le message d'erreur suivant apparaît :
+
+**Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
+
+Effectuez les opérations ci-dessous :
 
 1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
 2. Editez le fichier suivant
@@ -243,17 +248,27 @@ Effectuez l'opération ci-dessous :
 
 ::
 
-   # service mysql restart
+   # systemctl restart mysql
 
 5. Cliquez sur **Refresh**
 
-L'assistant de fin d'installation configure les bases de données, cliquez sur **Next**.
+L'assistant de configuration configure les bases de données.
+
+Cliquez sur **Next**.
 
 .. image :: /images/guide_utilisateur/adbconf.png
    :align: center
    :scale: 65%
 
-L’installation est terminée, cliquez sur **Finish**.
+L'assistant de configuration propose ensuite d'installer les modules présents sur le serveur Centreon.
+
+Cliquez sur **Install**.
+
+.. image :: /images/guide_utilisateur/module_installation.png
+   :align: center
+   :scale: 65%
+
+Une fois les modules installés, cliquez sur **Next**.
 
 À cette étape une publicité permet de connaitre les dernières nouveautés
 de Centreon. Si votre plate-forme est connectée à Internet vous disposez
@@ -263,6 +278,8 @@ sera proposée.
 .. image :: /images/guide_utilisateur/aendinstall.png
    :align: center
    :scale: 65%
+
+L’installation est terminée, cliquez sur **Finish**.
 
 Vous pouvez maintenant vous connecter.
 
