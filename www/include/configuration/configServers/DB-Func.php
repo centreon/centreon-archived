@@ -66,6 +66,10 @@ function testExistence($name = null)
     }
 }
 
+/**
+ * @param null $id
+ * @throws Exception
+ */
 function enableServerInDB($id = null)
 {
     global $pearDB, $centreon;
@@ -73,15 +77,29 @@ function enableServerInDB($id = null)
     if (!$id) {
         return;
     }
+    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
+    $row = $dbResult->fetchRow();
 
-    $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
-
-    $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '" . $id . "'");
-
+    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '" . $id . "'");
     $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "enable");
+
+    $query = "SELECT MIN(`nagios_id`) AS idEngine FROM cfg_nagios WHERE `nagios_server_id` = '" . $id . "'";
+    $dbResult = $pearDB->query($query);
+    $idEngine = $dbResult->fetchRow();
+    if ($idEngine['idEngine']) {
+        $pearDB->query(
+            "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '" . $id . "'"
+        );
+        $pearDB->query(
+            "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '" . $idEngine['idEngine'] . "'"
+        );
+    }
 }
 
+/**
+ * @param null $id
+ * @throws Exception
+ */
 function disableServerInDB($id = null)
 {
     global $pearDB, $centreon;
@@ -90,12 +108,15 @@ function disableServerInDB($id = null)
         return;
     }
 
-    $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
+    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
+    $row = $dbResult->fetchRow();
 
-    $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = '" . $id . "'");
+    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = '" . $id . "'");
 
     $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "disable");
+    $pearDB->query(
+        "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '" . $id . "'"
+    );
 }
 
 function deleteServerInDB($server = array())
