@@ -11,6 +11,8 @@ interface ExporterServiceInterface
 
     public function setCommitment(ExportCommitment $commitment): void;
 
+    public function cleanup() : void;
+
     public function export(): void;
 
     public function import(): void;
