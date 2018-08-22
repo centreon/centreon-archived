@@ -102,7 +102,7 @@ class Command extends AbstractObject {
         $command_line = str_replace("\r", "", $command_line);
 
         if (!is_null($this->commands[$command_id]['enable_shell']) && $this->commands[$command_id]['enable_shell'] == 1) {
-            $command_line = '/bin/sh -c ' . escapeshellarg($command_line);
+            $command_line = '/bin/sh -c ' . "'" . str_replace("'", "'\\''", $command_line) . "'";
         }
 
         $this->generateObjectInFile(array_merge($this->commands[$command_id], array('command_line' => $command_line)), $command_id);
