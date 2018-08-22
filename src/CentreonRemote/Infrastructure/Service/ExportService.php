@@ -32,14 +32,16 @@ class ExportService
      */
     public function export(ExportCommitment $commitment): void
     {
-        // @todo save info for executed job
+        $filterExporters = $commitment->getExporters();
 
         foreach ($this->exporter->all() as $exporterMeta) {
+            if ($filterExporters !== null && !in_array($exporterMeta['classname'], $filterExporters)) {
+                continue;
+            }
+
             $exporter = $exporterMeta['factory']();
             $exporter->setCommitment($commitment);
             $exporter->export();
-
-            // @todo save info for executed job
         }
     }
 
@@ -50,7 +52,13 @@ class ExportService
      */
     public function import(ExportCommitment $commitment): void
     {
+        $filterExporters = $commitment->getExporters();
+
         foreach ($this->exporter->all() as $exporterMeta) {
+            if ($filterExporters !== null && !in_array($exporterMeta['classname'], $filterExporters)) {
+                continue;
+            }
+
             $exporter = $exporterMeta['factory']();
             $exporter->setCommitment($commitment);
             $exporter->import();

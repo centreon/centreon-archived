@@ -22,6 +22,11 @@ class ExportCommitment
     private $parser;
 
     /**
+     * @var array
+     */
+    private $exporters;
+
+    /**
      * @var int
      */
     private $filePermission = 0777;
@@ -31,11 +36,13 @@ class ExportCommitment
      * 
      * @param int $poller
      * @param string $path
+     * @param array $exporters
      */
-    public function __construct(int $poller, string $path = null)
+    public function __construct(int $poller, string $path = null, array $exporters = null)
     {
         $this->poller = $poller;
         $this->path = $path;
+        $this->exporters = $exporters ?? [];
 
         if ($this->path === null) {
             $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $poller;
@@ -52,6 +59,11 @@ class ExportCommitment
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getExporters(): array
+    {
+        return $this->exporters;
     }
 
     public function getFilePermission(): int
