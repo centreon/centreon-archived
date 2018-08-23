@@ -1,0 +1,170 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Centreon Remote Server API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=getWaitList": {
+            "post": {
+                "operationId": "getWaitList",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getWaitList"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs inside the waitlist"
+                    }
+                }
+            }
+        },
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer": {
+            "post": {
+                "operationId": "linkCentreonRemoteServer",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "linkCentreonRemoteServer"
+                    },
+                    {
+                        "name": "open_broker_flow",
+                        "in": "formData",
+                        "description": "if the connection should be made with open broker flow",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "server_ip",
+                        "in": "formData",
+                        "description": "the remote server ip address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "server_name",
+                        "in": "formData",
+                        "description": "the remote server name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "centreon_central_ip",
+                        "in": "formData",
+                        "description": "the centreon central ip address",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs inside the waitlist"
+                    }
+                }
+            }
+        },
+        "/centreon/api/internal.php?object=centreon_configuration_topology&action=getTopologyData": {
+            "post": {
+                "operationId": "getTopologyData",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_topology"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getTopologyData"
+                    },
+                    {
+                        "name": "topology_id",
+                        "in": "formData",
+                        "description": "the ID of the topology page",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with topology data"
+                    }
+                }
+            }
+        },
+        "/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_remote_server"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "addToWaitList"
+                    },
+                    {
+                        "name": "app_key",
+                        "in": "formData",
+                        "description": "the unique app key of the Centreon instance",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "formData",
+                        "description": "the app version Centreon instance",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empty string"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {}
+}
