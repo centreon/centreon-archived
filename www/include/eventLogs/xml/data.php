@@ -613,7 +613,7 @@ if (isset($req) && $req) {
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
     }
     $DBRESULT = $pearDBO->query($req . $limitReq);
-    $rows = $pearDBO->numberRows();
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     if (!($DBRESULT->rowCount()) && ($num != 0)) {
         if ($export !== "1") {
