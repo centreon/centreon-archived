@@ -1,5 +1,4 @@
 import React from 'react';
-/* @jsx h */
 
 import {prepareInputProps} from './utils';
 import fieldHoc from './hoc';

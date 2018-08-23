@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
-/* @jsx h */
 import PropTypes from 'prop-types';
 import className from 'class-name';
-
 import getErrorMsg from './getErrorMsg';
 import FieldMsg from './FieldMsg';
 
