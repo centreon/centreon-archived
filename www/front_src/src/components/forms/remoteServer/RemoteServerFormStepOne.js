@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
-import Button from '../../button/index';
 import InputField from '../../form-fields/InputField';
 
 class RemoteServerFormStepOne extends Component {
 
   render() {
+    const {error, handleSubmit, onSubmit, submitting} = this.props;
     return (
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
@@ -43,11 +43,9 @@ class RemoteServerFormStepOne extends Component {
           placeholder=""
           label="Database password:"
         />
-        <Button
+        <button
           type="submit"
-          buttonClass={''}
-          buttonTitle={'Next'}
-        />
+        >Next</button>
         {error ? <div class="error-block">{error.message}</div> : null}
       </form>
     );
