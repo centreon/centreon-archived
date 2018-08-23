@@ -179,7 +179,7 @@
         maxDate: '-1',
         onSelect : function(data){  
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
-            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
+            jQuery( "input[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
     });
 
@@ -187,12 +187,12 @@
         maxDate: '-1',
         onSelect : function(data){  
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
-            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
+            jQuery( "input[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
     });
 
     jQuery( "select[name='period']" ).click(function() {
-        jQuery( "input:[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
+        jQuery( "input[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
     });
 
     jQuery(function () {
