@@ -44,7 +44,7 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Response(
      *     response=200,
-     *     description="JSON with flag is_react for the topology"
+     *     description="JSON with topology data"
      *   )
      * )
      *
@@ -57,6 +57,7 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
         if (!isset($_POST['topology_id']) || !$_POST['topology_id']) {
             throw new \RestBadRequestException('You need to send \'topology_id\' in the request.');
         }
+
         $topologyID = (int) $_POST['topology_id'];
         $statement = $this->pearDB->prepare('SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id');
         $statement->execute([':id' => $topologyID]);
