@@ -83,7 +83,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
-     *       name="remote_server_ip",
+     *       name="server_ip",
      *       type="string",
      *       description="the remote server ip address",
      *       required=true,
@@ -97,7 +97,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
-     *       name="remote_name",
+     *       name="server_name",
      *       type="string",
      *       description="the remote centreon instance name",
      *       required=true,
@@ -117,39 +117,38 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
-        $configurationServiceName = isset($_POST['server_type']) && $_POST['server_type'] = 'remote' ?
+        $isRemoteConnection = isset($_POST['server_type']) && $_POST['server_type'] = 'remote';
+        $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
 
         // - poller/remote ips can be a multiple select
         //  -- form can have option to add IP of server without being pinged previously
-        if (!isset($_POST['remote_server_ip']) || !$_POST['remote_server_ip']) {
-            throw new \RestBadRequestException('You need to send \'remote_server_ip\' in the request.');
+        if (!isset($_POST['server_ip']) || !$_POST['server_ip']) {
+            throw new \RestBadRequestException('You need to send \'server_ip\' in the request.');
+        }
+
+        if (!isset($_POST['server_name']) || !$_POST['server_name']) {
+            throw new \RestBadRequestException('You need t send \'server_name\' in the request.');
         }
 
         if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
             throw new \RestBadRequestException('You need t send \'centreon_central_ip\' in the request.');
         }
 
-        if (!isset($_POST['remote_name']) || !$_POST['remote_name']) {
-            throw new \RestBadRequestException('You need t send \'remote_name\' in the request.');
-        }
-
-        $remoteIps = (array) $_POST['remote_server_ip'];
+        $serverIps = (array) $_POST['server_ip'];
+        $serverName = substr($_POST['server_name'], 0, 40);
         $centreonCentralIp = $_POST['centreon_central_ip'];
-        $remoteName = substr($_POST['remote_name'], 0, 40);
 
         /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $serverConfigurationService->setCentralIp($centreonCentralIp);
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
-        $date = date('Y-m-d H:i:s');
 
-        foreach ($remoteIps as $index => $remoteIp) {
-            $remoteName = count($remoteIps) > 1 ? "{$remoteName}_1" : $remoteName;
+        foreach ($serverIps as $index => $serverIp) {
+            $serverName = count($serverIps) > 1 ? "{$serverName}_1" : $serverName;
 
-            $serverConfigurationService->setRemoteIp($remoteIp);
-            $serverConfigurationService->setName($remoteName);
+            $serverConfigurationService->setServerIp($serverIp);
+            $serverConfigurationService->setName($serverName);
 
             try {
                 $serverConfigurationService->insert();
@@ -157,28 +156,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 return json_encode(['error' => true, 'message' => $e->getMessage()]);
             }
 
-            $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
-            $dbAdapter->query($sql, [$remoteIp]);
-            $hasIpInTable = (bool) $dbAdapter->count();
-
-            if ($hasIpInTable) {
-                $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
-                $data = ['1', $date, $remoteIp];
-                $dbAdapter->query($sql, $data);
-            } else {
-                $data = [
-                    'ip'           => $remoteIp,
-                    'app_key'      => '',
-                    'version'      => '',
-                    'is_connected' => '1',
-                    'created_at'   => $date,
-                    'connected_at' => $date,
-                ];
-                $dbAdapter->insert('remote_servers', $data);
+            if ($isRemoteConnection) {
+                $this->updateRemoteServerRelatedTables($serverIp);
             }
 
             // Finish remote connection by:
             // - $openBrokerFlow?
+            // - update informations table set isRemote=yes in the slave server
         }
 
         return json_encode(['success' => true]);
@@ -200,5 +184,36 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         }
 
         return $user && $user->hasAccessRestApiConfiguration();
+    }
+
+    /**
+     * When remote server is connected update table information
+     *
+     * @param $serverIp
+     */
+    private function updateRemoteServerRelatedTables($serverIp)
+    {
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $date = date('Y-m-d H:i:s');
+
+        $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
+        $dbAdapter->query($sql, [$serverIp]);
+        $hasIpInTable = (bool) $dbAdapter->count();
+
+        if ($hasIpInTable) {
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
+            $data = ['1', $date, $serverIp];
+            $dbAdapter->query($sql, $data);
+        } else {
+            $data = [
+                'ip'           => $serverIp,
+                'app_key'      => '',
+                'version'      => '',
+                'is_connected' => '1',
+                'created_at'   => $date,
+                'connected_at' => $date,
+            ];
+            $dbAdapter->insert('remote_servers', $data);
+        }
     }
 }
