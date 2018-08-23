@@ -41,7 +41,7 @@ class CentreonConfigurationTopology extends CentreonConfigurationObjects
     /**
      * @SWG\Post(
      *   path="/centreon/api/internal.php",
-     *   operationId="checkTopologyReactFlag",
+     *   operationId="getTopologyData",
      *   @SWG\Parameter(
      *       in="query",
      *       name="object",
@@ -56,7 +56,7 @@ class CentreonConfigurationTopology extends CentreonConfigurationObjects
      *       type="string",
      *       description="the name of the action in the API class",
      *       required=true,
-     *       enum="checkTopologyReactFlag",
+     *       enum="getTopologyData",
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
@@ -71,18 +71,18 @@ class CentreonConfigurationTopology extends CentreonConfigurationObjects
      *   )
      * )
      *
-     * Get if topology_id is using react
+     * Get data for topology_id
      * @return string
-     * @throws RestBadRequestException
+     * @throws \RestBadRequestException
      */
-    public function postCheckTopologyReactFlag()
+    public function postGetTopologyData()
     {
         if (!isset($_POST['topology_id']) || !$_POST['topology_id']) {
             throw new \RestBadRequestException('You need to send \'topology_id\' in the request.');
         }
 
         $topologyID = (int) $_POST['topology_id'];
-        $statement = $this->pearDB->prepare('SELECT `is_react` FROM `topology` WHERE `topology_id` = :id');
+        $statement = $this->pearDB->prepare('SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id');
         $statement->execute([':id' => $topologyID]);
         $result = $statement->fetch();
 
@@ -90,6 +90,9 @@ class CentreonConfigurationTopology extends CentreonConfigurationObjects
             throw new \RestBadRequestException('No topology found.');
         }
 
-        return json_encode(['is_react' => (bool) $result['is_react']]);
+        return json_encode([
+            'url'      => $result['topology_url'],
+            'is_react' => (bool) $result['is_react'],
+        ]);
     }
 }
