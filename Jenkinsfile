@@ -147,7 +147,7 @@ try {
     build job: 'centreon-license-manager/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
     build job: 'centreon-bam/master', wait: false
-    build job: 'des-mbi-bundle-centos7', wait: false
+    build job: 'centreon-bi-server/master', wait: false
   }
 } catch(e) {
   if (env.BRANCH_NAME == 'master') {
