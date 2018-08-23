@@ -159,9 +159,9 @@ try {
     build job: 'centreon-autodiscovery/2.4.x', wait: false
     build job: 'centreon-awie/1.0.x', wait: false
     build job: 'centreon-export/2.3.x', wait: false
-    build job: 'centreon-license-manager/1.1.x', wait: false
+    build job: 'centreon-license-manager/1.2.x', wait: false
     build job: 'centreon-poller-display/1.6.x', wait: false
-    build job: 'centreon-pp-manager/2.3.x', wait: false
+    build job: 'centreon-pp-manager/2.4.x', wait: false
     build job: 'centreon-bam/3.6.x', wait: false
     build job: 'des-mbi-bundle-centos6', wait: false
     build job: 'des-mbi-bundle-centos7', wait: false
