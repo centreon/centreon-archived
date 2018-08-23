@@ -76,10 +76,17 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Centreon Brober config list
  */
 $aclCond = "";
-$search = '';
-if (isset($_POST['searchCB']) && $_POST['searchCB']) {
+$search = null;
+if (isset($_POST['searchCB'])) {
     $search = $_POST['searchCB'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
+
 if (!$centreon->user->admin && count($allowedBrokerConf)) {
     if ($search) {
         $aclCond = " AND ";
@@ -107,7 +114,7 @@ $DBRESULT = $pearDB->query($rq);
 /*
  * Get results numbers
  */
-$rows = $pearDB->numberRows();
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
