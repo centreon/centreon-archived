@@ -163,8 +163,6 @@ try {
     build job: 'centreon-poller-display/1.6.x', wait: false
     build job: 'centreon-pp-manager/2.4.x', wait: false
     build job: 'centreon-bam/3.6.x', wait: false
-    build job: 'des-mbi-bundle-centos6', wait: false
-    build job: 'des-mbi-bundle-centos7', wait: false
   }
 } catch(e) {
   if (env.BRANCH_NAME == '2.8.x') {
