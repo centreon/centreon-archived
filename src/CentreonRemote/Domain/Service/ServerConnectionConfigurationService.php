@@ -11,7 +11,7 @@ abstract class ServerConnectionConfigurationService
     /** @var CentreonDBAdapter */
     protected $dbAdapter;
 
-    protected $remoteIp;
+    protected $serverIp;
 
     protected $centralIp;
 
@@ -27,9 +27,9 @@ abstract class ServerConnectionConfigurationService
 
     abstract protected function insertConfigCentreonBroker($serverID);
 
-    public function setRemoteIp($ip)
+    public function setServerIp($ip)
     {
-        $this->remoteIp = $ip;
+        $this->serverIp = $ip;
     }
 
     public function setName($name)
@@ -84,7 +84,7 @@ abstract class ServerConnectionConfigurationService
     {
         $nagiosServerData = $this->getResource('nagios_server.php');
 
-        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->remoteIp));
+        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->serverIp));
     }
 
     protected function insertConfigNagios($serverID)
