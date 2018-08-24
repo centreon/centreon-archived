@@ -41,16 +41,26 @@ include("./include/common/autoNumLimit.php");
 $mnftr_id = null;
 
 $SearchTool = null;
-$search = '';
-if (isset($_POST['searchTM']) && $_POST['searchTM']) {
+$search = null;
+
+if (isset($_POST['searchTM'])) {
     $search = $_POST['searchTM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchTM'])) {
+    $search = $_GET['searchTM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $SearchTool = " WHERE (traps_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_group $SearchTool");
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$query = "SELECT SQL_CALC_FOUND_ROWS * FROM traps_group $SearchTool ORDER BY traps_group_name LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($query);
 
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -72,8 +82,7 @@ $tpl->assign("headerMenu_name", _("Group Name"));
 /*
  * List of elements - Depends on different criteria
  */
-$query = "SELECT * FROM traps_group $SearchTool ORDER BY traps_group_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
+
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
