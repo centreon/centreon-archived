@@ -44,10 +44,17 @@ $labels = array('name'        => _('Name'),
                 'disabled'    => _('Disabled'));
 
 $ldapConf = new CentreonLdapAdmin($pearDB);
-$searchLdap = "";
-if (isset($_POST['searchLdap']) && $_POST['searchLdap']) {
+$searchLdap = null;
+if (isset($_POST['searchLdap'])) {
     $searchLdap = $_POST['searchLdap'];
+    $centreon->historySearch[$url] = $searchLdap;
+} elseif (isset($_GET['searchLdap'])) {
+    $searchLdap = $_GET['searchLdap'];
+    $centreon->historySearch[$url] = $searchLdap;
+} elseif (isset($centreon->historySearch[$url])) {
+    $searchLdap = $centreon->historySearch[$url];
 }
+
 $list = $ldapConf->getLdapConfigurationList($searchLdap);
 $rows = count($list);
 
