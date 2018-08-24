@@ -72,7 +72,7 @@ class CentreonContact
         if (count($limit) === 2) {
             $limitStr = " LIMIT {$limit[0]},{$limit[1]}";
         }
-        $res = $this->db->query("SELECT {$fieldStr} 
+        $res = $this->db->query("SELECT SQL_CALC_FOUND_ROWS {$fieldStr} 
                                 FROM contact 
                                 {$filterStr}
                                 {$orderStr}
