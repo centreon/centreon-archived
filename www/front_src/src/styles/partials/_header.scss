@@ -125,10 +125,14 @@
         width: 50%;
         display: flex;
         justify-content: flex-end;
+        &-icons {
+          display: inline-block;
+          margin-left: 19px;
+        }
         &-icon {
           display: inline-block;
           vertical-align: middle;
-          margin: 3px 4px;
+          margin: 3px 3.5px;
           font-family: 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
           font-weight: 500;
           position: relative;
@@ -146,7 +150,7 @@
             margin-right: 31px;
           }
           .wrap-middle-icon:first-child {
-            margin-right: 26px;
+            margin-right: 9px;
           }
         }
 
@@ -216,6 +220,7 @@
     border: 1px solid #e7e7e8;
     padding: 10px;
     border-radius: 2px;
+    z-index: 99;
     &-inner {
       display: flex;
     }
@@ -311,6 +316,7 @@
             font-weight: 400;
             font-family: "Roboto", "Helvetica", "Arial", sans-serif;
             line-height: 1.375em;
+            margin-left: 5px;
           }
         }
         .iconmoon {

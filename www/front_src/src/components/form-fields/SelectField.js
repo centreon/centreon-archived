@@ -49,7 +49,7 @@ const SelectField = ({
     .join(' ');
 
   return (
-    <div className="form-group" style={styleOverride}>
+    <div className="form-group select" style={styleOverride}>
       {label ? (
         <label>
           <span> {label} </span>

@@ -6,5 +6,5 @@ import pollerWizardReducer from './pollerWizardReducer';
 
 export default combineReducers({
   form: formReducer,
-  poller: pollerWizardReducer
+  pollerForm: pollerWizardReducer
 });
