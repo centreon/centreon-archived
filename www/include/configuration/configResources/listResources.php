@@ -44,11 +44,20 @@ include("./include/common/autoNumLimit.php");
 /*
  * Search engine
  */
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchR']) && $_POST['searchR']) {
+$SearchTool = '';
+$search = null;
+if (isset($_POST['searchR'])) {
     $search = $_POST['searchR'];
-    $SearchTool = " WHERE resource_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchR'])) {
+    $search = $_GET['searchR'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchTool .= " WHERE resource_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 $aclCond = "";
@@ -61,12 +70,14 @@ if (!$oreon->user->admin && count($allowedResourceConf)) {
     $aclCond .= "resource_id IN (" . implode(',', array_keys($allowedResourceConf)) . ") ";
 }
 
+/*
+ * resources list
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM cfg_resource $SearchTool $aclCond
+       ORDER BY resource_name LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($rq);
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*)
-                            FROM cfg_resource $SearchTool $aclCond");
-
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -89,15 +100,6 @@ $tpl->assign("headerMenu_comment", _("Description"));
 $tpl->assign("headerMenu_associated_poller", _("Associated pollers"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * resources list
- */
-$rq = "SELECT *
-       FROM cfg_resource $SearchTool $aclCond
-       ORDER BY resource_name
-       LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
