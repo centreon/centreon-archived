@@ -48,20 +48,28 @@ function getPeriodToReport()
     $end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
     $end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
     $interval = array(0, 0);
-    if ($period_choice == "custom" && $start_date != "" && $end_date != "") {
+    if ($period_choice == "custom" &&
+        $start_date != "" &&
+        $end_date != ""
+    ) {
         $period = "";
     }
-    if ($period == "" && $start_date == "" && $end_date == "") {
+    if ($period == "" &&
+        $start_date == "" &&
+        $end_date == ""
+    ) {
         $period = "yesterday";
     }
-    if ($period == "" && $start_date != "") {
+    if ($period == "" &&
+        $start_date != ""
+    ) {
         $interval = getDateSelectCustomized($start_date, $end_date);
     } else {
         $interval = getDateSelectPredefined($period);
     }
     $start_date = $interval[0];
     $end_date = $interval[1];
-    return(array($start_date, $end_date));
+    return (array($start_date, $end_date));
 }
 
 /*
@@ -183,7 +191,10 @@ function getDateSelectCustomized($start, $end)
             $end_time = $end;
         }
     }
-    if (!is_numeric($start) && isset($start) && $start != "") {
+    if (!is_numeric($start) &&
+        isset($start) &&
+        $start != ""
+    ) {
         list($m, $d, $y) = preg_split('/\//', $start);
         $start_time = mktime(0, 0, 0, $m, $d, $y);
     } else {
@@ -228,8 +239,9 @@ function getTotalTimeFromInterval($start, $end, $reportTimePeriod)
         if ($day_duration > $end - $start) {
             $day_duration  = $end - $start;
         }
-        if (isset($reportTimePeriod["report_".date("l", $start)])
-            && $reportTimePeriod["report_".date("l", $start)]) {
+        if (isset($reportTimePeriod["report_" . date("l", $start)]) &&
+            $reportTimePeriod["report_" . date("l", $start)]
+        ) {
             $reportTime += $day_duration;
         }# if the day is selected in the timeperiod
         $totalTime += $day_duration;
@@ -277,7 +289,7 @@ function createDateTimelineFormat($time_unix)
     "10"=> "Oct",
     "11"=> "Nov",
     "12"=> "Dec");
-    $date = $tab_month[date('m', $time_unix)].date(" d Y G:i:s", $time_unix);
+    $date = $tab_month[date('m', $time_unix)] . date(" d Y G:i:s", $time_unix);
     return $date;
 }
 
@@ -289,19 +301,19 @@ function getTimeString($time, $reportTimePeriod)
             - mktime($reportTimePeriod["report_hour_start"], $reportTimePeriod["report_minute_start"], 0, 0, 0, 0);
     $str = "";
     if ($day && $time / $day >= 1) {
-        $str .= floor($time / $day)."d ";
+        $str .= floor($time / $day) . "d ";
         $time = $time % $day;
     }
     if ($hour && $time / $hour >= 1) {
-        $str .= floor($time / $hour)."h ";
+        $str .= floor($time / $hour) . "h ";
         $time = $time % $hour;
     }
     if ($min && $time / $min >= 1) {
-        $str .= floor($time / $min)."m ";
+        $str .= floor($time / $min) . "m ";
         $time = $time % $min;
     }
     if ($time) {
-        $str .=  $time."s";
+        $str .=  $time . "s";
     }
     return $str;
 }
@@ -312,9 +324,9 @@ function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color)
     $tab["state"] = _($state);
     $tab["time"] = CentreonDuration::toString($time);
     $tab["timestamp"] = $time;
-    $tab["pourcentTime"] = round($time/($timeTOTAL+1)*100, 2);
+    $tab["pourcentTime"] = round($time / ($timeTOTAL + 1) * 100, 2);
     if ($state != "Undetermined") {
-        $tab["pourcentkTime"] = round($time/($timeTOTAL-$time_none+1)*100, 2). "%";
+        $tab["pourcentkTime"] = round($time / ($timeTOTAL - $time_none + 1) * 100, 2) . "%";
     } else {
         $tab["pourcentkTime"] = null;
     }
