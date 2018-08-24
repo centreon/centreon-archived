@@ -125,7 +125,7 @@ Serialization protocol
   The protocol that was used to serialize the data.
   Can be either 'BBDO' or 'NDO'. NDO is an old textual protocol that suffers
   from very poor performance, poor density of data, and poor security. BBDO
-  is a next-gen binary protocol that is performed and secure. NDO is
+  is a next-gen binary protocol that is effective and secure. NDO is
   deprecated. It should never be used in new installation.
   Best practice is 'BBDO'.
 Compression
@@ -333,7 +333,7 @@ Serialization protocol
   The protocol that will be used to serialize the data.
   Can be either 'BBDO' or 'NDO'. NDO is an old textual protocol that suffers
   from very poor performance, poor density of data, and poor security. BBDO
-  is a next-gen binary protocol that is performed and secure. NDO is
+  is a next-gen binary protocol that is effective and secure. NDO is
   deprecated. It should never be used in new installation.
   Best practice is 'BBDO'.
 Enable negotiation
@@ -390,7 +390,7 @@ Serialization protocol
   The protocol that will be used to serialize the data.
   Can be either 'BBDO' or 'NDO'. NDO is an old textual protocol that suffers
   from very poor performance, poor density of data, and poor security. BBDO
-  is a next-gen binary protocol that is performed and secure. NDO is
+  is a next-gen binary protocol that is effective and secure. NDO is
   deprecated. It should never be used in new installation.
   Best practice is 'BBDO'.
 File path

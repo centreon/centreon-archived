@@ -56,6 +56,6 @@ Consequently, it is necessary to group together contacts in a logical way. Most 
 Categories
 **********
 
-Generally speaking, the categories serve either to define a critically level for a host or a service, or to group together technically a set of objects (services linked to the execution of a request on a MariaDB DBMS, etc.).
+Generally speaking, the categories serve either to define a criticality level for a host or a service, or to group together technically a set of objects (services linked to the execution of a request on a MariaDB DBMS, etc.).
 Good practice requires that we group hosts or services together into categories to facilitate the filtration of these objects in ACL.
 The categories are also used to define types of objects in the Centreon MAP module or to classify the objects within sub-groups in the Centreon BI module.

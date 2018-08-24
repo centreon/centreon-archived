@@ -110,7 +110,7 @@ Monitoring engine
 * The **Action URL** field defined a URL normally use for giving information on actions on the service (maintenance, etc.).
 * The **Icon** field indicates the icon use for the service.
 * The **Alt icon** field is the text use if the icon cannot be Displays.
-* The **Severity level** field indicates the critically level of the service.
+* The **Severity level** field indicates the criticality level of the service.
 
 Additional information 
 ======================

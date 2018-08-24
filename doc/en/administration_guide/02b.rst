@@ -157,7 +157,7 @@ To add an access filter to the menus:
 Actions Access
 **************
 
-Filters on actions enable us to limit access to actions that can be performed on resources (hosts and services) and on monitoring engines (stopping notifications, restarting the scheduler, etc.).
+Filters on actions enable us to limit access to actions that can be effective on resources (hosts and services) and on monitoring engines (stopping notifications, restarting the scheduler, etc.).
 
 To add an access filter to the actions:
 

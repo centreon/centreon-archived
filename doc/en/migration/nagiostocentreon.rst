@@ -16,13 +16,13 @@ documentation :ref:`to install a Centreon server<install>` based on Centreon.
 Installation
 ============
 This script uses the Perl-Nagios-Object library to read CFG files. To install
-it please follow this steps on your Nagios(R) server::
+it please follow this steps on your Nagios(R) server
 
-CentOS:
+CentOS::
 
   $ yum install perl-Module-Build
 
-Debian:
+Debian::
 
   $ apt-get install libmodule-build-perl
 

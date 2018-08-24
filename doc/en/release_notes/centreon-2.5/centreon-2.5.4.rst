@@ -28,4 +28,4 @@ Features
 ========
 
 - #5433: Argument column larger in service configuration
-- #5944: Services inherit critically from hosts
+- #5944: Services inherit criticality from hosts

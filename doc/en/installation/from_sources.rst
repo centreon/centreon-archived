@@ -716,7 +716,7 @@ SELinux should be disabled; for this, you have to modify the file "/etc/sysconfi
 
 After saving the file, please reboot your operating system to apply the changes.
 
-PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini` who contain the following line:
+PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini` which contains the following line:
 
  ::
 

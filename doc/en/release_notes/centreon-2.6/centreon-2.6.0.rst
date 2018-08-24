@@ -49,10 +49,10 @@ It's now possible to partially rebuild events information with eventsRebuild scr
 Before, you had to rebuild from the beginning of the related data. 
 
 
-Critically inheritance
+Criticality inheritance
 =======================
 
-Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured critically.  It’s also possible to define the levels of global critically of a particular host and dependent services cluster thanks to the use of templates.
+Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured criticality.  It’s also possible to define the levels of global critically of a particular host and dependent services cluster thanks to the use of templates.
 
 
 Integration of Centreon new logo
@@ -80,7 +80,7 @@ Features
 ========
 
 - #3239: PHP-5.4 Compatibility
-- #5238: Critically inheritance
+- #5238: Criticality inheritance
 - #5334, #6114, #6120 : Optimization and customization on Centreontrapd
 - #5952: Add possibility to rebuild partially Events information
 - #6160: New Centreon logo

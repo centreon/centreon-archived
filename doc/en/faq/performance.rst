@@ -80,7 +80,7 @@ RRDCacheD
 *********
 
 RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs.
-The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording 
+The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording
 one by one the data from the collect.
 
 Installation
@@ -109,7 +109,7 @@ Options are following one:
 +--------+-----------------------------------------------------------------------------------+
 | Option | Description                                                                       |
 +========+===================================================================================+
-| -w     | Data are written every x seconds on disk (3600s in example represent 1h)         |
+| -w     | Data are written every x seconds on disk (3600s in example represent 1h)          |
 +--------+-----------------------------------------------------------------------------------+
 | -z     | Should be less than **-w** option. RRDCacheD uses a range value from [0:-z] to do |
 |        | not write in RRDs in same time.                                                   |
@@ -134,14 +134,14 @@ Restart Apache process::
 
     # /etc/init.d/httpd restart
 
-Start RRDCacheD processes::
+Start RRDCacheD process::
 
     # /etc/init.d/rrdcached start
 
 Centreon web configuration
 **************************
 
-Go to **Administration -> Options -> RRDTool** menu, enable processes and set unix socket path:
+Go to **Administration -> Options -> RRDTool** menu, enable process and set unix socket path:
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center
@@ -155,7 +155,7 @@ Go to **Administration -> Options -> RRDTool** menu, enable processes and set un
 Centreon web interface
 **********************
 
-RRDCacheD don't update performances graphs in real time. If a blank range appear on right of performances graphs it means that cache are not yet written to disk.
+RRDCacheD don't update performances graphs in real time. If a blank range appears on right of performances graphs it means that cache are not yet written to disk.
 
 .. warning::
     If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centreon web.

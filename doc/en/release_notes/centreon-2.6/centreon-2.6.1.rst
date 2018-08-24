@@ -17,8 +17,8 @@ CHANGELOG
 Bug fixes
 =========
 
-- #5655: Changing Host Templates doesn't delete services 
-- #5925: Popup Dialogues (Acknowledge, Downtimes etc.) not working with Internet Explorer
+- #5655: Changing Host Templates doesn't delete services
+- #5925: Popup Dialogs (Acknowledge, Downtimes etc.) not working with Internet Explorer
 - #6224: Special characters in LDAP are replaced by underscore
 - #6358: It's possible to bypass ACLs on Event Logs page
 - #6375: servicegroups empty into servicegroups.cfg but ok in DB
@@ -36,4 +36,4 @@ Features
 
 - #6035: Removing Centreon Broker local module
 - #6366: New option for Centreon Engine log
-- #6392: Block choice of Nagios and NDO in installation processes
+- #6392: Block choice of Nagios and NDO in installation process

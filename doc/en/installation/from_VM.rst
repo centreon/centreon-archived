@@ -12,7 +12,7 @@ Import
 ------
 
 The first step is to import the OVF File. To do that go in **File > Deploy OVF Template** and choose your file.
-You can then follow differents menus. Choices you made are linked to your VMWare configuration so it's difficult to be more specific.
+You can then follow different menus. Choices you made are linked to your VMWare configuration so it's difficult to be more specific.
 Just be noticed that best practice are to used **Thin Provision** to keep some spaces in disk.
 
 Connection

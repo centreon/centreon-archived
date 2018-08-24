@@ -99,4 +99,4 @@ Known Bugs
 How to Install ?
 ----------------
 
-Now that you are aware about all specifies of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisites and all upgrade steps in order to avoid data loss.
+Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisites and all upgrade steps in order to avoid data loss.

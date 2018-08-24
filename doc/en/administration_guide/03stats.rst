@@ -20,7 +20,7 @@ To view the performance information of your scheduler:
 Multiple tables allows to view the performance of your schedulers:
 
 * The **Actively Checked** table can be used to view the number of hosts and services checked in the last minute, the last five minutes, the last quarter of an hour or the last hour.
-* The **Check Latency** table can be used to view the minimum, maximum and average latency time of the checks performed on the hosts and the services.
+* The **Check Latency** table can be used to view the minimum, maximum and average latency time of the checks effective on the hosts and the services.
 
 .. warning::
     More than the latency is important and more than the execution of checks by the scheduler will be delayed. This implies a potential high server load.
