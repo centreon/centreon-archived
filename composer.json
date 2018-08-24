@@ -27,7 +27,7 @@
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.3",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
