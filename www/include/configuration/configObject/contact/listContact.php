@@ -53,9 +53,18 @@ unset($data);
 $DBRESULT->closeCursor();
 
 $clauses = array();
-$search = '';
-if (isset($_POST['searchC']) && $_POST['searchC']) {
+$search = null;
+if (isset($_POST['searchC'])) {
     $search = $_POST['searchC'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $clauses = array(
         'contact_name' => array('LIKE', '%' . $search . '%'),
         'contact_alias' => array('OR', 'LIKE', '%' . $search . '%')
