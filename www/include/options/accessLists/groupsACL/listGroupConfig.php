@@ -40,17 +40,29 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $searchStr = '';
-$search = '';
-if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
+$search = null;
+
+if (isset($_POST['searchACLG'])) {
     $search = $_POST['searchACLG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchACLG'])) {
+    $search = $_GET['searchACLG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT COUNT(*) FROM acl_groups $searchStr ORDER BY acl_group_name";
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups " .
+    $searchStr ."ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
 $dbResult = $pearDB->query($rq);
-$tmp = $dbResult->fetchRow();
-$rows = $tmp["COUNT(*)"];
-$dbResult->closeCursor();
+
+$search = tidySearchKey($search, $advanced_search);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -70,16 +82,6 @@ $tpl->assign("headerMenu_contactgroups", _("Contact Groups"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$searchStr = "";
-if (isset($search) && $search) {
-    $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $searchStr " .
-    "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
-$dbResult = $pearDB->query($rq);
-
-$search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
