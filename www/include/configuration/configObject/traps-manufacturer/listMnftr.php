@@ -42,19 +42,31 @@ include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 $mnftr_id = null;
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchTM']) && $_POST['searchTM']) {
+$SearchTool = '';
+$search = null;
+
+if (isset($_POST['searchTM'])) {
     $search = $_POST['searchTM'];
-    $SearchTool = " WHERE (alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchTM'])) {
+    $search = $_GET['searchTM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchTool .= " WHERE (alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%') OR (name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+/*
+ * List of elements - Depends on different criteria
+ */
+$query = "SELECT SQL_CALC_FOUND_ROWS * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($query);
 
-
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 /*
@@ -74,11 +86,6 @@ $tpl->assign("headerMenu_name", _("Vendor Name"));
 $tpl->assign("headerMenu_alias", _("Alias"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * List of elements - Depends on different criteria
- */
-$query = "SELECT * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
