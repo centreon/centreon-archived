@@ -39,18 +39,29 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchStr = "";
-$search = '';
-if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
+$SearchStr = '';
+$search = null;
+
+if (isset($_POST['searchACLA'])) {
     $search = $_POST['searchACLA'];
-    $SearchStr = " WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchACLA'])) {
+    $search = $_GET['searchACLA'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchStr .= " WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_action_description LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 }
-$dbResult = $pearDB->query("SELECT COUNT(*) FROM acl_actions" . $SearchStr);
 
-$tmp = $dbResult->fetchRow();
-$rows = $tmp["COUNT(*)"];
-$dbResult->closeCursor();
+$rq = "SELECT SQL_CALC_FOUND_ROWS acl_action_id, acl_action_name, acl_action_description, acl_action_activate " .
+    "FROM acl_actions $SearchStr ORDER BY acl_action_name LIMIT " . $num * $limit . ", " . $limit;
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -67,15 +78,6 @@ $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 /* end header menu */
-
-$SearchStr = "";
-if (isset($search) && $search) {
-    $SearchStr = "WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_action_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq = "SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate " .
-    "FROM acl_actions $SearchStr ORDER BY acl_action_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
