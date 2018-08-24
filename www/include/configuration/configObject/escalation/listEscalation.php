@@ -38,10 +38,20 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
 include("./include/common/autoNumLimit.php");
 
+$search = null;
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
+
+if (isset($_POST['searchE'])) {
+    $search = $_POST['searchE'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchE'])) {
+    $search = $_GET['searchE'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
 
 $aclFrom = "";
 $aclCond = array('h'  => '',
@@ -61,71 +71,15 @@ if (!$centreon->user->admin) {
     $aclCond['ms'] = $acl->queryBuilder('AND', 'meta_service_meta_id', $acl->getMetaServiceString());
 }
 
-$rq = "SELECT COUNT(*) FROM escalation esc";
-if ($list && $list == "h") {
-    $rq .= " WHERE (SELECT COUNT(DISTINCT host_host_id)
-                            FROM escalation_host_relation ehr $aclFrom
-                            WHERE ehr.escalation_esc_id = esc.esc_id ".$aclCond['h'].") > 0 ";
-} elseif ($list && $list == "sv") {
-    $rq .= " WHERE (SELECT DISTINCT COUNT(*)
-                            FROM escalation_service_relation esr $aclFrom
-                            WHERE esr.escalation_esc_id = esc.esc_id ".$aclCond['sv'].") > 0 ";
-} elseif ($list && $list == "hg") {
-    $rq .= " WHERE (SELECT DISTINCT COUNT(*)
-                            FROM escalation_hostgroup_relation ehgr
-                            WHERE ehgr.escalation_esc_id = esc.esc_id ".$aclCond['hg'].") > 0 ";
-} elseif ($list && $list == "sg") {
-    $rq .= " WHERE (SELECT DISTINCT COUNT(*)
-                            FROM escalation_servicegroup_relation esgr
-                            WHERE esgr.escalation_esc_id = esc.esc_id ".$aclCond['sg'].") > 0 ";
-} elseif ($list && $list == "ms") {
-    $rq .= " WHERE (SELECT DISTINCT COUNT(*)
-                            FROM escalation_meta_service_relation emsr
-                            WHERE emsr.escalation_esc_id = esc.esc_id ".$aclCond['ms'].") > 0 ";
-}
 
-$search = '';
-if (isset($_POST['searchE']) && $_POST['searchE'] && $list) {
-    $search = $_POST['searchE'];
-    $rq .= " AND (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
-} elseif (isset($_POST['searchE']) && $_POST['searchE']) {
-    $search = $_POST['searchE'];
-    $rq .= " WHERE (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
-}
-$DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
 
-include("./include/common/checkPagination.php");
-
-/*
- *  Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
-$tpl->assign('mode_access', $lvl_access);
-
-/*
- * start header menu
- */
-
-$tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_alias", _("Alias"));
-$tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Escalation list
- */
-$rq = "SELECT esc_id, esc_name, esc_alias FROM escalation esc";
+$rq = "SELECT SQL_CALC_FOUND_ROWS esc_id, esc_name, esc_alias FROM escalation esc";
 if ($list && $list == "h") {
     $rq .= " WHERE (SELECT DISTINCT COUNT(host_host_id)
                             FROM escalation_host_relation ehr $aclFrom
                             WHERE ehr.escalation_esc_id = esc.esc_id ".$aclCond['h'].") > 0 ";
 } elseif ($list && $list == "sv") {
-        $rq .= " WHERE (SELECT DISTINCT COUNT(*)
+    $rq .= " WHERE (SELECT DISTINCT COUNT(*)
                             FROM escalation_service_relation esr $aclFrom
                             WHERE esr.escalation_esc_id = esc.esc_id ".$aclCond['sv'].") > 0 ";
 } elseif ($list && $list == "hg") {
@@ -157,6 +111,31 @@ if ($search && $list) {
 $rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 
 $DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
+include("./include/common/checkPagination.php");
+
+/*
+ *  Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+/* Access level */
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+$tpl->assign('mode_access', $lvl_access);
+
+/*
+ * start header menu
+ */
+
+$tpl->assign("headerMenu_name", _("Name"));
+$tpl->assign("headerMenu_alias", _("Alias"));
+$tpl->assign("headerMenu_options", _("Options"));
+
+/*
+ * Escalation list
+ */
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
