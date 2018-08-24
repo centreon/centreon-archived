@@ -26,7 +26,7 @@ class HostMenu extends Component {
         const { toggled } = this.state;
 
         return (
-            <span>
+            <span class="wrap-middle-icons">
                 <span class="wrap-middle-icon gray">
                     <span class="iconmoon icon-host" onClick={this.toggle.bind(this)}>
                         <div class={'submenu-top host' + (toggled ? ' submenu-active' : null)}>
