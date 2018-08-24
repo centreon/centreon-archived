@@ -42,6 +42,17 @@ include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
+$search = null;
+
+if (isset($_POST['searchHD'])) {
+    $search = $_POST['searchHD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchHD'])) {
+    $search = $_GET['searchHD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
 
 $aclFrom = "";
 $aclCond = "";
@@ -51,22 +62,20 @@ if (!$centreon->user->admin) {
                      AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
+# Dependency list
+$rq = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
     . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
-$search = '';
-if (isset($_POST['searchHD']) && $_POST['searchHD']) {
-    $search = $_POST['searchHD'];
-    $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) . "%' OR dep_description LIKE '%" .
-        CentreonDB::escape($search) . "%')";
+if ($search) {
+    $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) .
+        "%' OR dep_description LIKE '%" . CentreonDB::escape($search) . "%')";
 }
-
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
 
 # Manage pagination
-$rows = $tmp["count_dep"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 # Smarty template Init
@@ -81,18 +90,6 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-# Dependency list
-$rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
-    . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
-    . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
-
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) .
-        "%' OR dep_description LIKE '%" . CentreonDB::escape($search) . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
