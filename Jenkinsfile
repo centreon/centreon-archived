@@ -40,10 +40,10 @@ try {
         junit 'jest-test-results.xml'
       }
     },
-    'debian9': {
+    'debian10': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh debian9'
+        sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh debian10'
         step([
           $class: 'XUnitBuilder',
           thresholds: [
@@ -66,10 +66,10 @@ try {
         sh './centreon-build/jobs/web/18.9/mon-web-package.sh centos7'
       }
     },
-    'debian9': {
+    'debian10': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-package.sh debian9'
+        sh './centreon-build/jobs/web/18.9/mon-web-package.sh debian10'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
