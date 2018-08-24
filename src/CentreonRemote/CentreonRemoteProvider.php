@@ -69,6 +69,18 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         // Exporters
         //-----------//
         
+        // Commands
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\CommandExporter($locator);
+
+            return $service;
+        });
+        
         // Pollers
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
             $services = [
