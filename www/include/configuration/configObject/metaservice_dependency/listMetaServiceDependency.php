@@ -48,23 +48,32 @@ if (!$centreon->user->admin) {
     $aclCond = " AND meta_service_meta_id IN ($metastr) ";
 }
 
-# HostGroup LCA
-$rq = "SELECT COUNT(*) FROM dependency dep";
+$search = null;
+if (isset($_POST['searchMSD'])) {
+    $search = $_POST['searchMSD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchMSD'])) {
+    $search = $_GET['searchMSD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+//Dependcy list
+$rq = "SELECT SQL_CALC_FOUND_ROWS dep_id, dep_name, dep_description FROM dependency dep";
 $rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
                     FROM dependency_metaserviceParent_relation dmspr 
                     WHERE dmspr.dependency_dep_id = dep.dep_id $aclCond) > 0 
              OR    (SELECT DISTINCT COUNT(*) 
                     FROM dependency_metaserviceChild_relation dmspr 
                     WHERE dmspr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-$search = '';
-if (isset($_POST['searchMSD']) && $_POST['searchMSD']) {
-    $search = $_POST['searchMSD'];
+if ($search) {
     $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -81,20 +90,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
 # end header menu
-#Dependcy list
-$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_metaserviceParent_relation dmspr 
-                    WHERE dmspr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-             OR    (SELECT DISTINCT COUNT(*) 
-                    FROM dependency_metaserviceChild_relation dmspr 
-                    WHERE dmspr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -138,7 +133,7 @@ include("./include/common/checkPagination.php");
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
