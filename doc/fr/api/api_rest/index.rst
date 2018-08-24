@@ -2,8 +2,6 @@
 API Rest
 ========
 
-
-
 Introduction
 ------------
 
@@ -11,7 +9,6 @@ Welcome to the Centreon API rest documentation. This documentation is for develo
 If you are not familiar with the JSON API, we recommend you to use the Centreon command line API documentation.
 
 This documentation is available in english only.
-
 
 Permissions
 -----------
@@ -503,7 +500,7 @@ The response is a json flow listing all hosts and formated as below: ::
 .. Note:: Some actions need the values key ( the option **-v** in Centreon CLAPI ). Depending on the called action, the body can contain **values** key. We will see that in detail later.
 
 API Calls
-----------
+---------
 
 All API calls you can do on objects are described below. Note that you need to be authenticate before each call.
 
@@ -783,7 +780,7 @@ timezone                             Timezone
 
 
 Set instance poller
-####################
+###################
 
 **POST**  ::
 
@@ -821,7 +818,7 @@ Set instance poller
 
 
 Get macro
-##########
+#########
 
 **POST**  ::
 
@@ -920,7 +917,7 @@ To edit an existing custom marco, The MacroName used on the body should be defin
 
 
 Delete macro
-#############
+############
 
 **POST**  ::
 

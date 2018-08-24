@@ -2,8 +2,6 @@
 API Rest
 ========
 
-
-
 Introduction
 ------------
 
@@ -11,7 +9,6 @@ Welcome to the Centreon API rest documentation. This documentation is for develo
 If you are not familiar with the JSON API, we recommend you to use the Centreon command line API documentation.
 
 This documentation is available in english only.
-
 
 Permissions
 -----------
@@ -29,7 +26,6 @@ to edit user settings on the menu **Configuration > Users > Contacts/Users**,
 edit user and on second tab check box **Reach API Realtime**.
 
 If you want both then check **both** checkboxes
-
 
 Authentication
 --------------
@@ -331,7 +327,6 @@ Example:
 Using GET method and the URL below:  ::
 
   api.domain.tld/centreon/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
-
 
 Submit results
 --------------
@@ -687,8 +682,6 @@ Available parameters
 ==================================== =================================================================================
 Parameter                            Description
 ==================================== =================================================================================
-geo_coords                           Geo coordinates
-
 2d_coords                            2D coordinates (used by statusmap)
 
 3d_coords                            3D coordinates (used by statusmap)
@@ -787,7 +780,7 @@ timezone                             Timezone
 
 
 Set instance poller
-####################
+###################
 
 **POST**  ::
 
@@ -825,7 +818,7 @@ Set instance poller
 
 
 Get macro
-##########
+#########
 
 **POST**  ::
 
@@ -924,7 +917,7 @@ To edit an existing custom macro, The MacroName used on the body should be defin
 
 
 Delete macro
-#############
+############
 
 **POST**  ::
 
