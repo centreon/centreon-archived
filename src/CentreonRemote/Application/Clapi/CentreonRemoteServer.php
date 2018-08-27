@@ -28,14 +28,6 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         return (new \ReflectionClass(__CLASS__))->getShortName();
     }
 
-    public function test($args): int
-    {
-        print_r($args);
-        echo "OK\n";
-
-        return 200;
-    }
-
     public function enableRemote($ip)
     {
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {

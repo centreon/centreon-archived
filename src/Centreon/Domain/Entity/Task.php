@@ -2,7 +2,6 @@
 
 namespace Centreon\Domain\Entity;
 
-
 use ReflectionClass;
 
 class Task implements EntityInterface
@@ -48,6 +47,11 @@ class Task implements EntityInterface
      * @var array
      */
     private $params;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     /**
      * @return string
