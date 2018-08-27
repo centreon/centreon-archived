@@ -139,7 +139,7 @@ class Menu
                     'color'    => $this->getColor($row['topology_page']),
                     'children' => [],
                     'options'  => $row['topology_url_opt'],
-                    'is_react' => $row['is_react'],
+                    'is_react' => $row['is_react']
                 ];
             } elseif (preg_match('/^(\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 2
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
@@ -151,7 +151,7 @@ class Menu
                     'active'   => $active,
                     'children' => [],
                     'options'  => $row['topology_url_opt'],
-                    'is_react' => $row['is_react'],
+                    'is_react' => $row['is_react']
                 ];
             } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $row['topology_page'], $matches)) { // level 3
                 if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
@@ -163,7 +163,7 @@ class Menu
                     'url'      => $row['topology_url'],
                     'active'   => $active,
                     'options'  => $row['topology_url_opt'],
-                    'is_react' => $row['is_react'],
+                    'is_react' => $row['is_react']
                 ];
                 if (!is_null($row['topology_group']) && isset($groups[$levelTwo][$row['topology_group']])) {
                     $menu

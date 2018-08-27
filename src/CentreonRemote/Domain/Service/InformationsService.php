@@ -46,6 +46,22 @@ class InformationsService
         return !$this->serverIsRemote();
     }
 
+    /**
+     * Get status for centreon instance if it is a central and has connected remotes to it
+     * @return bool
+     */
+    public function serverIsCentral(): bool
+    {
+        $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
+        $isCentral = $repository->getOneByKey('isCentral');
+
+        if (!$isCentral) {
+            return false;
+        }
+
+        return $isCentral->getValue() == 'yes';
+    }
+
     private function getDi(): Container
     {
         return $this->di;
