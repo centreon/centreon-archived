@@ -41,27 +41,33 @@ include_once("./class/centreonUtils.class.php");
 
 include("./include/common/autoNumLimit.php");
 
-$search = '';
-if ((isset($_POST['searchSG']) && $_POST['searchSG']) || isset($centreon->sg_sg_search)) {
-    if (isset($_POST['searchSG']) && $_POST['searchSG']) {
-        $search = $_POST['searchSG'];
-        $centreon->sg_sg_search = $_POST['searchSG'];
-    } else {
-        $search = $centreon->sg_sg_search;
-    }
+$search = null;
 
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM servicegroup " .
-        "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')" .
-        $acl->queryBuilder('AND', 'sg_id', $sgString));
-} else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*)
-                                FROM servicegroup " .
-        $acl->queryBuilder('WHERE', 'sg_id', $sgString));
+if (isset($_POST['searchSG'])) {
+    $search = $_POST['searchSG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchSG'])) {
+    $search = $_GET['searchSG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+if ($search) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
+        "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+        "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') " .
+        $acl->queryBuilder('AND', 'sg_id', $sgString) .
+        " ORDER BY sg_name
+           LIMIT " . $num * $limit . ", " . $limit;
+} else {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
+        $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
+        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
+}
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -79,21 +85,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-if ($search) {
-    $rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') " .
-        $acl->queryBuilder('AND', 'sg_id', $sgString) .
-        " ORDER BY sg_name
-           LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
-        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
-}
-
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
