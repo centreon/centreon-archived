@@ -56,6 +56,12 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         };
 
+        $pimple['centreon_remote.exporter'] = function (Container $container): Infrastructure\Service\ExporterService {
+            $service = new Infrastructure\Service\ExporterService($container);
+
+            return $service;
+        };
+
         $pimple['centreon.taskservice'] = function(Container $pimple): TaskService {
 
             //todo: register the service
