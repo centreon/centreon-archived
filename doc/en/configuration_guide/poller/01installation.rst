@@ -16,7 +16,7 @@ Installation
 The installation process is identical to a Centreon central server installed from the ISO file of Centreon.
 
 .. note::
-   Refer to the documentation: :ref:`installation<install>`
+   Refer to the documentation: :ref:`installation<installisoel7>`
 
 For the question **Which server type would you like to install?** choose the option **Poller server**.
 
