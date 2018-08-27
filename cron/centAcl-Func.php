@@ -176,6 +176,7 @@ function getServiceTemplateCategoryList($service_id = null)
         foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
             $tabCategory[$ct_id] = $ct_id;
         }
+        return $tabCategory;
     }
 
     /*
