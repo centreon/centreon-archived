@@ -48,27 +48,33 @@ if (!$centreon->user->admin) {
     $aclCond = " AND servicegroup_sg_id IN ($sgstring) ";
 }
 
-$rq = "SELECT COUNT(*) FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-            FROM dependency_servicegroupParent_relation dsgpr 
-            WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-     OR    (SELECT DISTINCT COUNT(*) 
-            FROM dependency_servicegroupChild_relation dsgpr 
-            WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-
-/*
- * Search case
- */
-$search = '';
-if (isset($_POST['searchSGD']) && $_POST['searchSGD']) {
+$search = null;
+if (isset($_POST['searchSGD'])) {
     $search = $_POST['searchSGD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchSGD'])) {
+    $search = $_GET['searchSGD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+//Dependcy list
+$rq = "SELECT SQL_CALC_FOUND_ROWS dep_id, dep_name, dep_description FROM dependency dep";
+$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
+                    FROM dependency_servicegroupParent_relation dsgpr 
+                    WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+             OR    (SELECT DISTINCT COUNT(*) 
+                    FROM dependency_servicegroupChild_relation dsgpr 
+                    WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
+//Search Case
+if ($search) {
     $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
-
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -88,27 +94,6 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Dependcy list
- */
-$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_servicegroupParent_relation dsgpr 
-                    WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-             OR    (SELECT DISTINCT COUNT(*) 
-                    FROM dependency_servicegroupChild_relation dsgpr 
-                    WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-
-/*
- * Search Case
- */
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
