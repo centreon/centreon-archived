@@ -35,37 +35,13 @@
  */
 
 /*
- * Create remote servers table for keeping track of remote instances
- */
-$query = 'CREATE TABLE IF NOT EXISTS `remote_servers` (' .
-    '`id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,' .
-    '`ip` VARCHAR(16) NOT NULL,' .
-    '`app_key` VARCHAR(40) NOT NULL,' .
-    '`version` VARCHAR(16) NOT NULL,' .
-    '`is_connected` TINYINT(1) NOT NULL DEFAULT 0,' .
-    '`created_at` TIMESTAMP NOT NULL,' .
-    '`connected_at` TIMESTAMP NULL' .
-    '`app_key` VARCHAR(40) NOT NULL,' .
-    '`version` VARCHAR(16) NOT NULL,' .
-    '`is_connected` TINYINT(1) NOT NULL DEFAULT 0,' .
-    '`created_at` TIMESTAMP NOT NULL,' .
-    '`connected_at` TIMESTAMP NULL' .
-    ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
-
-$pearDBO->query($query);
-
-/*
  * Generate random key for application key
  */
 
 $uniqueKey = md5(uniqid(rand(), TRUE));
 
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '{$uniqueKey}')";
 $pearDBO->query($query);
 
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
-$pearDBO->query($query);
-
-// Add column to topology table to mark which pages are with React
-$query = "ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`";
 $pearDBO->query($query);
