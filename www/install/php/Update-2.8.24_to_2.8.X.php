@@ -38,10 +38,13 @@
  * Generate random key for application key
  */
 
-$uniqueKey = md5(uniqid(rand(), TRUE));
+$uniqueKey = md5(uniqid(rand(), true));
 
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '{$uniqueKey}')";
-$pearDBO->query($query);
+$pearDB->query($query);
 
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
-$pearDBO->query($query);
+$pearDB->query($query);
+
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isCentral', 'no')";
+$pearDB->query($query);

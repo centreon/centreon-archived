@@ -157,12 +157,16 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             }
 
             if ($isRemoteConnection) {
-                $this->updateRemoteServerRelatedTables($serverIp);
+                $this->addServerToListOfRemotes($serverIp);
             }
 
             // Finish remote connection by:
             // - $openBrokerFlow?
             // - update informations table set isRemote=yes in the slave server
+        }
+
+        if ($isRemoteConnection) {
+            $this->setCentreonInstanceAsCentral();
         }
 
         return json_encode(['success' => true]);
@@ -187,11 +191,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * When remote server is connected update table information
+     * Add server ip in table of remote servers
      *
      * @param $serverIp
      */
-    private function updateRemoteServerRelatedTables($serverIp)
+    private function addServerToListOfRemotes($serverIp)
     {
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -214,6 +218,29 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'connected_at' => $date,
             ];
             $dbAdapter->insert('remote_servers', $data);
+        }
+    }
+
+    /**
+     * Set current centreon instance as central
+     */
+    private function setCentreonInstanceAsCentral()
+    {
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+
+        $sql = "SELECT * FROM `informations` WHERE `key` = 'isCentral'";
+        $dbAdapter->query($sql);
+        $hasInfoRecord = (bool) $dbAdapter->count();
+
+        if ($hasInfoRecord) {
+            $sql = "UPDATE `informations` SET `value` = 'yes' WHERE `key` = 'isCentral'";
+            $dbAdapter->query($sql);
+        } else {
+            $data = [
+                'key'   => 'isCentral',
+                'value' => 'yes',
+            ];
+            $dbAdapter->insert('informations', $data);
         }
     }
 }
