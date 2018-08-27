@@ -2,10 +2,12 @@
 
 namespace CentreonRemote;
 
+use Centreon\Domain\Service\AppKeyGeneratorService;
 use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\PollerConnectionConfigurationService;
 use CentreonRemote\Domain\Service\RemoteConnectionConfigurationService;
+use CentreonRemote\Domain\Service\TaskService;
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
@@ -42,11 +44,6 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon_remote.poller_connection_service'] = function(Container $pimple): PollerConnectionConfigurationService {
-            $service = new PollerConnectionConfigurationService($pimple);
-            return $service;
-        };
-
         $pimple['centreon_remote.export'] = function (Container $container): Infrastructure\Service\ExportService {
             $services = [
                 'centreon_remote.exporter',
@@ -59,10 +56,10 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon_remote.exporter'] = function (Container $container): Infrastructure\Service\ExporterService {
-            $service = new Infrastructure\Service\ExporterService($container);
+        $pimple['centreon.taskservice'] = function(Container $pimple): TaskService {
 
-            return $service;
+            //todo: register the service
+            //return $service;
         };
 
         //-----------//
