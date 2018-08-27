@@ -48,6 +48,9 @@ $searchT = filter_input(
     FILTER_SANITIZE_STRING
 );
 
+$search = null;
+
+/*
 $search = '';
 if (isset($searchT)) {
     $search = $searchT;
@@ -55,19 +58,36 @@ if (isset($searchT)) {
 } elseif (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
     $search = $_SESSION['searchT'];
 }
+*/
 
+if (isset($_POST['searchT'])) {
+    $search = $_POST['searchT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchT'])) {
+    $search = $_GET['searchT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
 
-$query = "SELECT COUNT(*) "
-    . "FROM traps "
-    . "WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR manufacturer_id IN (SELECT id 
-                             FROM traps_vendor 
+/*
+ * List of elements - Depends on different criteria
+ */
+if ($search) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps
+      WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
+      OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
+      OR manufacturer_id IN (SELECT id
+                             FROM traps_vendor
                              WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             ) ";
-$DBRESULT = $pearDB->query($query);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+                             )
+      ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+} else {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+}
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -91,27 +111,7 @@ $tpl->assign("headerMenu_manufacturer", _("Vendor Name"));
 $tpl->assign("headerMenu_args", _("Output Message"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * List of elements - Depends on different criteria
- */
 
-
-if ($search) {
-    $rq = "SELECT *
-      FROM traps
-      WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR manufacturer_id IN (SELECT id
-                             FROM traps_vendor
-                             WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             )
-      ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
-}
-
-
-$DBRESULT = $pearDB->query($rq);
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
@@ -161,7 +161,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
