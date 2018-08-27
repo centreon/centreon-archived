@@ -4,11 +4,11 @@ namespace Centreon\Domain\Repository;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use PDO;
 
-class OnDemandMacroHostRepository extends ServiceEntityRepository
+class HostCategoryRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export host's macros
+     * Export
      * 
      * @param int $pollerId
      * @return array
@@ -18,10 +18,12 @@ class OnDemandMacroHostRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*
-FROM on_demand_macro_host AS t
-INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
+FROM hostcategories AS t
+INNER JOIN hostcategories_relation AS hc ON hc.hostcategories_hc_id = t.hc_id
+INNER JOIN host AS h ON h.host_id = hc.host_host_id
+INNER JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id
 WHERE hr.nagios_server_id = :id
-GROUP BY t.host_macro_id
+GROUP BY t.hc_id
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);

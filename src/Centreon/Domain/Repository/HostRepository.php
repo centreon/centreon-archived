@@ -18,10 +18,9 @@ class HostRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*,
-    GROUP_CONCAT(hgr.hostgroup_hg_id) AS `groups`
+    hr.nagios_server_id AS `_nagios_id`
 FROM host AS t
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_id
-LEFT JOIN hostgroup_relation AS hgr ON hgr.host_host_id = t.host_id
 WHERE hr.nagios_server_id = :id
 GROUP BY t.host_id
 SQL;
@@ -36,5 +35,24 @@ SQL;
         }
 
         return $result;
+    }
+
+    public function truncate()
+    {
+        $sql = <<<SQL
+TRUNCATE TABLE `ns_host_relation`;
+TRUNCATE TABLE `hostgroup_relation`;
+TRUNCATE TABLE `hostgroup`;
+TRUNCATE TABLE `hostcategories_relation`;
+TRUNCATE TABLE `hostcategories`;
+TRUNCATE TABLE `host_hostparent_relation`;
+TRUNCATE TABLE `on_demand_macro_host`;
+TRUNCATE TABLE `hostgroup_hg_relation`;
+TRUNCATE TABLE `extended_host_information`;
+TRUNCATE TABLE `host`;
+TRUNCATE TABLE `host_template_relation`;
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
     }
 }

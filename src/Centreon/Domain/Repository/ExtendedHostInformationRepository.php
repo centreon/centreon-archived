@@ -19,10 +19,9 @@ class ExtendedHostInformationRepository extends ServiceEntityRepository
 SELECT
     t.*
 FROM extended_host_information AS t
-INNER JOIN host AS h ON h.host_id = t.host_host_id
-INNER JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id
+INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
 WHERE hr.nagios_server_id = :id
-GROUP BY t.host_macro_id
+GROUP BY t.ehi_id
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);

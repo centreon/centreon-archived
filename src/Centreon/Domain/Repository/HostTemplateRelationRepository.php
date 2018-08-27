@@ -21,8 +21,7 @@ class HostTemplateRelationRepository extends ServiceEntityRepository
 SELECT
     t.*
 FROM host_template_relation AS t
-INNER JOIN host AS h ON h.host_id = t.host_host_id
-INNER JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id
+INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
 WHERE hr.nagios_server_id = :id
 GROUP BY t.host_host_id, t.host_tpl_id
 SQL;
