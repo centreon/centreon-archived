@@ -108,7 +108,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                 "active" => false,
                 "color" => "#85B446",
                 "children" => array(),
-                'options' => '&o=c'
+                'options' => '&o=c',
+                'is_react' => 0
             )
         );
 
@@ -124,7 +125,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
@@ -133,7 +134,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                     'topology_url_opt' => '&o=c',
                     'topology_parent' => '',
                     'topology_order' => 1,
-                    'topology_group' => 201
+                    'topology_group' => 201,
+                    'is_react' => 0
                 )
             )
         );
@@ -159,7 +161,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                         "url" => 'centreon/20101',
                         "active" => false,
                         "children" => array(),
-                        'options' => '&o=c'
+                        'options' => '&o=c',
+                        'is_react' => 0
                     )
                 )
             )
@@ -177,7 +180,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
@@ -186,7 +189,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                     'topology_url_opt' => '&o=c',
                     'topology_parent' => 2,
                     'topology_order' => 1,
-                    'topology_group' => 201
+                    'topology_group' => 201,
+                    'is_react' => 0
                 )
             )
         );
@@ -213,7 +217,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                                     "label" => "By host",
                                     "url" => "centreon/20101",
                                     "active" => false,
-                                    'options' => '&o=c'
+                                    'options' => '&o=c',
+                                    'is_react' => 0
                                 )
                             )
                         )
@@ -234,7 +239,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->db->addResultSet(
-            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
+            'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY LENGTH(topology_page), topology_order',
             array(
                 array(
                     'topology_name' => 'By host',
@@ -243,7 +248,8 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                     'topology_url_opt' => '&o=c',
                     'topology_parent' => 201,
                     'topology_order' => 1,
-                    'topology_group' => 201
+                    'topology_group' => 201,
+                    'is_react' => 0
                 )
             )
         );
