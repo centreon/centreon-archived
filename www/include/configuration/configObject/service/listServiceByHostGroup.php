@@ -41,51 +41,44 @@ include_once("./class/centreonUtils.class.php");
 
 $mediaObj = new CentreonMedia($pearDB);
 
-if (isset($_POST['hostgroups'])) {
+$searchHG = null;
+$searchS = null;
+$template = null;
+$status = -1;
+
+if (isset($_POST['Search'])) {
+    $centreon->historySearch[$url] = array();
     $searchHG = $_POST['hostgroups'];
-    $centreon->svc_hostgroup_search = $searchHG;
-
-    if (isset($_POST['searchH']) && $_POST['searchH'] != '') {
-        $search_type_host = 1;
-        $centreon->search_type_host = 1;
-    }
-} else {
-    if (isset($centreon->svc_hostgroup_search) && $centreon->svc_hostgroup_search) {
-        $searchHG = $centreon->svc_hostgroup_search;
-    } else {
-        $searchHG = null;
-    }
-}
-
-if (isset($_POST["searchS"])) {
+    $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $searchS = $_POST["searchS"];
-    $centreon->svc_svc_search = $searchS;
-    if ($_POST["searchS"] != "") {
-        $search_type_service = 1;
-        $centreon->search_type_service = 1;
-    }
-} else {
-    if (isset($centreon->svc_svc_search) && $centreon->svc_svc_search) {
-        $searchS = $centreon->svc_svc_search;
-    } else {
-        $searchS = null;
-    }
-}
-
-if (isset($_POST["template"])) {
+    $centreon->historySearch[$url]["searchS"] = $searchS;
     $template = $_POST["template"];
-} elseif (isset($_GET["template"])) {
-    $template = $_GET["template"];
-} else {
-    $template = null;
-}
-
-if (isset($_POST["status"])) {
+    $centreon->historySearch[$url]["template"] = $template;
     $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
+    $centreon->historySearch[$url]["status"] = $status;
+} elseif (isset($_GET['Search'])) {
+    $centreon->historySearch[$url] = array();
+    $searchHG =  $_GET['hostgroups'];
+    $centreon->historySearch[$url]['hostgroups'] = $searchHG;
+    $searchS = $_GET["searchS"];
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $template = $_GET["template"];
+    $centreon->historySearch[$url]["template"] = $template;
     $status = $_GET["status"];
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
-    $status = -1;
+    if (isset($centreon->historySearch[$url]['hostgroups'])) {
+        $searchHG = $centreon->historySearch[$url]['hostgroups'];
+    }
+    if (isset($centreon->historySearch[$url]["searchS"])) {
+        $searchS = $centreon->historySearch[$url]["searchS"];
+    }
+    if (isset($centreon->historySearch[$url]["template"])) {
+        $template = $centreon->historySearch[$url]["template"];
+    }
+    if (isset($centreon->historySearch[$url]["status"])) {
+        $status = $centreon->historySearch[$url]["status"];
+    }
 }
 
 /*
