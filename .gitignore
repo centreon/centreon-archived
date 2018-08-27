@@ -12,5 +12,11 @@ www/img/media/*
 www/install/install.conf.php
 config/centreon.config.php
 *-dev.yml
+
 www/include/core/menu/templates/*.js
 www/include/core/menu/templates/*.tpl
+
+/www/static
+
+/www/install
+/www/_install
