@@ -21,13 +21,12 @@ class PollerFormStepTwo extends Component {
               component={SelectField}
               label="Select linked Remote Server:"
               required
-              options={[]}
+              options={['One', 'Two', 'Three']}
             />
             <br />
             <Field name="checkbox" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
             <div class="form-buttons">
-              <button type="submit">Back</button>
-              <button type="submit">Apply</button>
+              <button className="button" type="submit">Next</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>

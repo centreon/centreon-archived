@@ -5,11 +5,11 @@ import RadioGroupFields from '../form-fields/RadioGroupFields';
 
 const configurationTypes = [
   {
-    label: 'Add a Centreon Remote Server',
+    label: 'Add a Centreon Poller',
     value: 1,
   },
   {
-    label: 'Add a Centreon Poller',
+    label: 'Add a Centreon Remote Server',
     value: 2,
   }
 ];

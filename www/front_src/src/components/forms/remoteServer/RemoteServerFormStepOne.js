@@ -9,7 +9,7 @@ import routeMap from '../../../route-maps';
 import { 
   serverNameValidator, 
   serverIpAddressValidator, 
-  centraIpAddressValidator, 
+  centralIpAddressValidator, 
   selectDistantPollersValidator
 } from '../../../helpers/validators';
 
@@ -39,7 +39,7 @@ class RemoteServerFormStepOne extends Component {
               label="Server IP Address:"
             />
             <Field
-              name="centraIpAddress"
+              name="centralIpAddress`"
               component={InputField}
               type="text"
               placeholder=""
@@ -50,7 +50,7 @@ class RemoteServerFormStepOne extends Component {
               component={SelectField}
               label="Select linked Distant Pollers:"
               required
-              options={[]}
+              options={['One', 'Two', 'Three']}
             />
             <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
             <div class="form-buttons">
@@ -68,7 +68,7 @@ class RemoteServerFormStepOne extends Component {
 const validate = (server) => ({
   serverName: serverNameValidator(server.serverName),
   serverIpAddress: serverIpAddressValidator(server.serverIpAddress),
-  centraIpAddress: centraIpAddressValidator(server.centraIpAddress),
+  centralIpAddress: centralIpAddressValidator(server.centralIpAddress),
   selectDistantPollers: selectDistantPollersValidator(server.selectDistantPollers)
 });
 

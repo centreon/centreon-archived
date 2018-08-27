@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
-import {Link} from 'react-router-dom';
 import InputField from '../../form-fields/InputField';
-import CheckboxField from '../../form-fields/CheckboxField';
-import routeMap from '../../../route-maps';
 
 import { 
   serverNameValidator, 
   serverIpAddressValidator, 
-  centraIpAddressValidator,
-  databaseUserValidator,
-  databasePasswordValidator
+  centralIpAddressValidator,
 } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {
@@ -45,24 +40,8 @@ class PollerFormStepOne extends Component {
               placeholder=""
               label="Centreon Central IP Address:"
             />
-            <Field
-              name="databaseUser"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label="Database user:"
-            />
-            <Field
-              name="databasePassword"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label="Database password:"
-            />
-            <Field name="checkbox" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
             <div class="form-buttons">
-              <Link className="button" to={routeMap.serverConfigurationWizard}>Back</Link>
-              <button className="button" type="submit">Apply</button>
+              <button className="button" type="submit">Next</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>
@@ -75,9 +54,7 @@ class PollerFormStepOne extends Component {
 const validate = (server) => ({
   serverName: serverNameValidator(server.serverName),
   serverIpAddress: serverIpAddressValidator(server.serverIpAddress),
-  centraIpAddress: centraIpAddressValidator(server.centraIpAddress),
-  databaseUser: databaseUserValidator(server.databaseUser),
-  databasePassword: databasePasswordValidator(server.databasePassword)
+  centraIpAddress: centralIpAddressValidator(server.centraIpAddress),
 });
 
 export default connectForm({

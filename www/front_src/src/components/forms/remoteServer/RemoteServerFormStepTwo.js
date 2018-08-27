@@ -21,7 +21,7 @@ class RemoteServerFormStepTwo extends Component {
               component={SelectField}
               label="Select linked Distant Pollers:"
               required
-              options={[]}
+              options={['One', 'Two', 'Three']}
             />
             <br />
             <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
