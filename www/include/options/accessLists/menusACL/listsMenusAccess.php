@@ -40,18 +40,27 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $searchStr = "";
-$search = '';
-if (isset($_POST['searchACLM']) && $_POST['searchACLM']) {
+$search = null;
+
+if (isset($_POST['searchACLM'])) {
     $search = $_POST['searchACLM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchACLM'])) {
+    $search = $_GET['searchACLM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $searchStr .= " WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_topo_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
 }
 
-$dbResult = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $searchStr);
-
-$tmp = $dbResult->fetchRow();
-$rows = $tmp["COUNT(*)"];
-$dbResult->closeCursor();
+$rq = "SELECT SQL_CALC_FOUND_ROWS acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate " .
+    "FROM acl_topology $searchStr ORDER BY acl_topo_name LIMIT " . $num * $limit . ", " . $limit;
+$dbResult = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -71,14 +80,6 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 /* end header menu */
 
-$searchStr = "";
-if (isset($search) && $search) {
-    $searchStr = "WHERE (acl_topo_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_topo_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq = "SELECT acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate " .
-    "FROM acl_topology $searchStr ORDER BY acl_topo_name LIMIT " . $num * $limit . ", " . $limit;
-$dbResult = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
