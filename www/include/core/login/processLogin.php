@@ -36,7 +36,8 @@
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
     || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-    || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
+    || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)
+    || (!isset($generalOptions['keycloak_enable']) || $generalOptions['keycloak_enable'] == 1)) {
     /*
      * Init log class
      */
