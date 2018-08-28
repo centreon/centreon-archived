@@ -171,8 +171,6 @@ if (isset($_SESSION['monitoring_service_groups'])) {
         $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
         $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
         
-        $form->setDefaults(array('typeDisplay2' => 'pb'));
-        
         $attrs = array(     'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
         $form->addElement('select', 'o1', null, array(  null    =>  _("More actions..."),
                                                     "3"     =>  _("Verification Check"),
