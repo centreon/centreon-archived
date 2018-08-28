@@ -8,6 +8,7 @@ Avec Centreon vous avez la possibilité de superviser des environnements relativ
    :maxdepth: 1
    
    sso
-   
+   keycloak
+
 Si vous avez des expériences que vous souhaitez partager avec la communauté Centreon, n'hésitez pas à vous en faire part sur le github de Centreon. Votre guide pourrait faire partie de la documentation officielle de Centreon.
 

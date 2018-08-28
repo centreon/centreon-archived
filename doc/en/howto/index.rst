@@ -10,6 +10,7 @@ In order to help you to implement you monitoring easily, this documentation sect
    :maxdepth: 1
    
    sso
+   keycloak
    
 
 If you have experiences that you want to share to the Centreon community, please don't hesitate to push it on Github.
