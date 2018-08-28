@@ -61,8 +61,11 @@ if ($search) {
 
 $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM virtual_metrics $SearchTool ORDER BY index_id,vmetric_name LIMIT " .
     $num * $limit . ", " . $limit;
-foreach ($queryValues as $key => $value) {
-    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+$stmt = $pearDB->prepare($rq);
+if(!empty($queryValues)){
+    foreach ($queryValues as $key => $value) {
+        $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+    }
 }
 
 try {
