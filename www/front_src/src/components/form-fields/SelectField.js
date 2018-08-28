@@ -57,7 +57,7 @@ const SelectField = ({
         </label>
       ) : null}
 
-      <select className="form-control custom-select" {...prepareInputProps(rest)}>
+      <select multiple className="form-control custom-select" {...prepareInputProps(rest)}>
         {defaultOption !== false ? (
           <option value={defaultKey} disabled={isDefaultDisabled}>
             {defaultVal}
