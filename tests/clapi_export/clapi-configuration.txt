@@ -184,11 +184,11 @@ VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State:   $HOSTSTATE$#BR#Since:   $HOSTDURATION$#BR#Info:    $HOSTOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$ - $HOSTSTATE$ - $DATE$ $TIME$&quot; -r $&quot;Centreon <centreon-engine>$&quot; -S replyto=$&quot;Centreon admin <$ADMINEMAIL$>$&quot; $CONTACTEMAIL$
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State:   $HOSTSTATE$#BR#Since:   $HOSTDURATION$#BR#Info:    $HOSTOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$ - $HOSTSTATE$ - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;host-notify-by-email;enable_shell;1
 CMD;setparam;host-notify-by-email;command_activate;1
 CMD;setparam;host-notify-by-email;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#Service: $SERVICEDESC$#BR#State:   $SERVICESTATE$#BR#Since:   $SERVICEDURATION$#BR#Info:    $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$/$SERVICEDESC$ - $SERVICESTATE$ - $DATE$ $TIME$&quot; -r $&quot;Centreon <centreon-engine>$&quot; -S replyto=$&quot;Centreon admin <$ADMINEMAIL$>$&quot; $CONTACTEMAIL$
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#Service: $SERVICEDESC$#BR#State:   $SERVICESTATE$#BR#Since:   $SERVICEDURATION$#BR#Info:    $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$/$SERVICEDESC$ - $SERVICESTATE$ - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;service-notify-by-email;enable_shell;1
 CMD;setparam;service-notify-by-email;command_activate;1
 CMD;setparam;service-notify-by-email;command_locked;0
