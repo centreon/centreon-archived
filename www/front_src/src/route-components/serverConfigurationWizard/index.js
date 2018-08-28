@@ -1,19 +1,13 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import Form from '../../components/forms/ServerConfigurationWizardForm';
 import routeMap from '../../route-maps';
 import ProgressBar from '../../components/progressBar';
 
 class ServerConfigurationWizardRoute extends Component {
-      
 
     handleSubmit = ({server_type}) => {
       const {history} = this.props;
-      if(server_type == 1) {
-        history.push(routeMap.pollerStep1)
-      } else {
-        history.push(routeMap.remoteServerStep1)
-      }
+      server_type == 1 ? (history.push(routeMap.remoteServerStep1)) : (history.push(routeMap.pollerStep1))
     }
 
     goToPath = path => {
@@ -22,9 +16,8 @@ class ServerConfigurationWizardRoute extends Component {
     };
   
     links = [
-      {active: true, number: 1, path: this.goToPath.bind(this, routeMap.pollerStep1)},
-      {active: false, number: 2},
-      {active: false, number: 3},
+      {active: true, number: 1, path: this.goToPath.bind(this, routeMap.remoteServerStep1)},
+      {active: false, number: 2}
     ];
     
    render(){

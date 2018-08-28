@@ -3,23 +3,30 @@ import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps';
 import axios from "../../axios";
+import {connect} from 'react-redux';
 
 class PollerStepTwoRoute extends Component {
   
   wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
-  wizardFormSelect = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
+  wizardFormWaitListApi = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
+
+    // getWaitList = listData => {
+
+    // }
+
+    // componentWillMount(){
+    //   getWaitList(listData)
+    // }
 
     handleSubmit = data => {
-      const {history} = this.props;
-      console.log(data)
-      return this.wizardFormApi
-        .post(data)
+      const {pollerData} = this.props
+      this.wizardFormApi.post('', {...pollerData, ...data})
         .then(response => {
           console.log(response)
         })
         .catch(err => {
           console.log(err)
-        });
+      });
     };
   
   goToPath = path => {
@@ -44,4 +51,8 @@ class PollerStepTwoRoute extends Component {
   }
 }
 
-export default PollerStepTwoRoute;
+const mapStateToProps = ({pollerForm}) => ({
+  pollerData: pollerForm
+});
+
+export default connect(mapStateToProps, null)(PollerStepTwoRoute);
