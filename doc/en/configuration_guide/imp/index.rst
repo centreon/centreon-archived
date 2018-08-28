@@ -29,7 +29,7 @@ Centreon Web 2.8.
 
 You can install Centreon 3.4 using the `ISO of Centreon <https://download.centreon.com/>`_ 
 or by upgrading your Centreon platform.
-Please read documentation to install or upgrade your platform.
+Please read :ref:`documentation<install_from_packages>` to install or upgrade your platform.
 
 **2. An Internet access**
 

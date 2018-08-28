@@ -132,7 +132,7 @@ if ($hostgroups) {
     $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
 }
 $rq1 .= " AND h.enabled = 1 ";
-$rq1 .= " ORDER BY $sort_type, hg.name $order ";
+$rq1 .= " ORDER BY $sort_type, hg.name $order, host_name ASC ";
 $rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
 
 $tabH = array();
