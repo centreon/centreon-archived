@@ -1,6 +1,6 @@
-==========
+========
 API Rest
-==========
+========
 
 
 
@@ -32,7 +32,7 @@ If you want both then check **both** checkboxes
 
 
 Authentication
-----------------
+--------------
 
 Using POST method and the URL below: ::
 
@@ -505,7 +505,7 @@ The response is a json flow listing all hosts and formated as below: ::
 .. Note:: Some actions need the values key ( the option **-v** in Centreon CLAPI ). Depending on the called action, the body can contain **values** key. We will see that in detail later.
 
 API Calls
-----------
+---------
 
 All API calls you can do on objects are described below. Note that you need to be authenticate before each call.
 
@@ -577,7 +577,7 @@ List hosts
 
 
 Add host
-##########
+########
 
 **POST**  ::
 
