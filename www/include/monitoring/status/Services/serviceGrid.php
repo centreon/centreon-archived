@@ -138,7 +138,6 @@ $tpl->assign("tab_order", $tab_order);
 <?php
 $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
 $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-$form->setDefaults(array('typeDisplay2' => 'pb'));
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array('onchange' => "javascript: setO(this.form.elements['$option'].value); submit();");
