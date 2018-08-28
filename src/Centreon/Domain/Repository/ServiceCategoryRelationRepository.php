@@ -4,7 +4,7 @@ namespace Centreon\Domain\Repository;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use PDO;
 
-class ServiceGroupRepository extends ServiceEntityRepository
+class ServiceCategoryRelationRepository extends ServiceEntityRepository
 {
 
     /**
@@ -20,13 +20,13 @@ class ServiceGroupRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*
-FROM servicegroup AS t
-INNER JOIN servicegroup_relation AS sgr ON sgr.servicegroup_sg_id = t.sg_id
-LEFT JOIN hostgroup AS hg ON hg.hg_id = sgr.hostgroup_hg_id
+FROM service_categories_relation AS t
+INNER JOIN host_service_relation AS hsr ON hsr.service_service_id = t.service_service_id
+LEFT JOIN hostgroup AS hg ON hg.hg_id = hsr.hostgroup_hg_id
 LEFT JOIN hostgroup_relation AS hgr ON hgr.hostgroup_hg_id = hg.hg_id
-INNER JOIN ns_host_relation AS hr ON hr.host_host_id = sgr.host_host_id OR hr.host_host_id = hgr.host_host_id
+INNER JOIN ns_host_relation AS hr ON hr.host_host_id = hsr.host_host_id OR hr.host_host_id = hgr.host_host_id
 WHERE hr.nagios_server_id = :id
-GROUP BY t.sg_id
+GROUP BY t.scr_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
