@@ -6,7 +6,9 @@
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "test": "jest --watch --colors",
-    "test:build": "jest --ci --coverage"
+    "test:build": "jest --ci --coverage",
+    "centreon-new" : "cd ./www/front_src/ && npm install && npm run start",
+    "centreon-start" : "cd ./www/front_src/ && npm run start"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
