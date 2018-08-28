@@ -41,7 +41,7 @@ version de Centreon Web c'est à dire la version 2.8.x.
 
 Centreon 3.4 est installable soit en "fresh install" avec `l'ISO d'installation de Centreon <https://download.centreon.com/>`_
 soit en mettant à jour votre plateforme Centreon déjà installée. Pour ces deux étapes, 
-rendez-vous dans les rubriques appropriées de la `documentation <install_from_packages>`_
+rendez-vous dans les rubriques appropriées de la :ref:`documentation<install_from_packages>`
 
 **2. Avoir une connexion internet**
 
