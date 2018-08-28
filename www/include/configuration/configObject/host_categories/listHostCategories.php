@@ -71,8 +71,8 @@ if (!$centreon->user->admin && $hcString != "''") {
 /*
  * Hostgroup list
  */
-$query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories $SearchTool $hcFilter " .
-    "ORDER BY hc_name LIMIT " . $num * $limit . ", $limit";
+$query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories " .
+    $SearchTool . $hcFilter . "ORDER BY hc_name LIMIT " . $num * $limit . ", $limit";
 $DBRESULT = $pearDB->query($query);
 
 $search = tidySearchKey($search, $advanced_search);

@@ -158,11 +158,11 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign('msg', array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add")));
 
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .

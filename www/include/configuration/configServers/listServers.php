@@ -58,7 +58,7 @@ if (isset($_POST['searchP'])) {
     $search = $centreon->historySearch[$url];
 }
 
-if($search){
+if ($search) {
     $LCASearch .= " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
@@ -195,7 +195,10 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     */
     $confChangedMessage = _("N/A");
     if ($config["ns_activate"]) {
-        $hasChanged = checkChangeState($config['id'], (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null));
+        $hasChanged = checkChangeState(
+            $config['id'],
+            (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null)
+        );
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
@@ -209,10 +212,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $lastUpdateTimeFlag = 1;
     }
 
-    /*
-	 * Get cfg_id
-	 */
-
+    //Get cfg_id
     $query = "SELECT nagios_id FROM cfg_nagios " .
         "WHERE nagios_server_id = " . $config["id"] . " AND nagios_activate = '1'";
     $DBRESULT2 = $pearDB->query($query);
@@ -283,7 +283,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {

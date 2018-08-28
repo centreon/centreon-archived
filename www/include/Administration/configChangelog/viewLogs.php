@@ -78,7 +78,7 @@ $pearDBO = new CentreonDB("centstorage");
 $contactList = array();
 $DBRES = $pearDB->query("SELECT contact_id, contact_name, contact_alias FROM contact");
 while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] = $row["contact_name"] . " (".$row["contact_alias"].")";
+    $contactList[$row["contact_id"]] = $row["contact_name"] . " (" . $row["contact_alias"] . ")";
 }
 
 $searchO = null;
@@ -114,7 +114,7 @@ if (isset($_POST['SearchB'])) {
 }
 
 //Init QuickForm
-$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 //Init Smarty
 $tpl = new Smarty();
@@ -128,7 +128,14 @@ $tabAction["enable"] = _("Enabled");
 $tabAction["disable"] = _("Disabled");
 $tabAction["d"] = _("Deleted");
 
-$badge = array(_("Added") => "ok", _("Changed") => "warning", _("Massive Change") => 'warning', _("Deleted") => 'critical', _("Enabled") => 'ok', _("Disabled") => 'critical');
+$badge = array(
+    _("Added") => "ok",
+    _("Changed") => "warning",
+    _("Massive Change") => 'warning',
+    _("Deleted") => 'critical',
+    _("Enabled") => 'ok',
+    _("Disabled") => 'critical'
+);
 
 $tpl->assign("object_id", _("Object ID"));
 $tpl->assign("action", _("Action"));
@@ -148,7 +155,7 @@ sort($objects_type_tab);
 $options = "";
 foreach ($objects_type_tab as $key => $name) {
     $name = _("$name");
-    $options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>";
+    $options .= "<option value='$key' " . (($otype == $key) ? 'selected' : "") . ">$name</option>";
 }
 
 $tpl->assign("obj_type", $options);
@@ -174,7 +181,7 @@ if ($searchU) {
     } else {
         $query .= " AND ";
     }
-    $query .= " log_contact_id IN (".searchUserName($searchU).") ";
+    $query .= " log_contact_id IN (" . searchUserName($searchU) . ") ";
 }
 
 if (!is_null($otype)) {
@@ -185,10 +192,10 @@ if (!is_null($otype)) {
         } else {
             $query .= " AND ";
         }
-        $query .= " object_type = '".$objects_type_tab[$otype]."' ";
+        $query .= " object_type = '" . $objects_type_tab[$otype] . "' ";
     }
 }
-$query .= " ORDER BY action_log_date DESC LIMIT ".$num * $limit.", ".$limit;
+$query .= " ORDER BY action_log_date DESC LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDBO->query($query);
 
 /* Get rows number */

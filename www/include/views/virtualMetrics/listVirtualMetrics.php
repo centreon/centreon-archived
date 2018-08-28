@@ -62,7 +62,7 @@ if ($search) {
 $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM virtual_metrics $SearchTool ORDER BY index_id,vmetric_name LIMIT " .
     $num * $limit . ", " . $limit;
 $stmt = $pearDB->prepare($rq);
-if(!empty($queryValues)){
+if (!empty($queryValues)) {
     foreach ($queryValues as $key => $value) {
         $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
     }
@@ -94,7 +94,6 @@ $tpl->assign("headerMenu_dtype", _("DEF Type"));
 $tpl->assign("headerMenu_hidden", _("Hidden"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 

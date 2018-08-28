@@ -65,14 +65,14 @@ if (isset($_POST['searchST'])) {
 
 //Service Template Model list
 if ($search) {
-    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
         htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
         htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
-    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $DBRESULT = $pearDB->query($query);
@@ -140,17 +140,13 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             $service['service_id'] . "]' />";
     }
 
-    /*
-	 * If the description of our Service Model is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
+    /*If the description of our Service Model is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
     }
 
-    /*
-	 * TPL List
-	 */
+    //TPL List
     $tplArr = array();
     $tplStr = "";
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);

@@ -55,13 +55,13 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_POST["search_author"];
     $centreon->historySearch[$url]["search_author"] = $search_author;
-    isset($_POST["view_all"]) ?  $view_all = 1 : $view_all = 0;
+    isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
-    isset($_POST["view_downtime_cycle"]) ?  $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    isset($_POST["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service =  $_GET['search_service'];
+    $search_service = $_GET['search_service'];
     $centreon->historySearch[$url]['search_service'] = $search_service;
     $host_name = $_GET["search_host"];
     $centreon->historySearch[$url]["search_host"] = $host_name;
@@ -69,9 +69,9 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_GET["search_author"];
     $centreon->historySearch[$url]["search_author"] = $search_author;
-    isset($_GET["view_all"]) ?  $view_all = 1 : $view_all = 0;
+    isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
-    isset($_GET["view_downtime_cycle"]) ?  $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    isset($_GET["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } else {
     if (isset($centreon->historySearch[$url]['search_service'])) {

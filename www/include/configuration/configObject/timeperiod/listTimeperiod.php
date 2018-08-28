@@ -42,7 +42,6 @@ include("./include/common/autoNumLimit.php");
 $SearchTool = '';
 $search = null;
 
-
 if (isset($_POST['searchTP'])) {
     $search = $_POST['searchTP'];
     $centreon->historySearch[$url] = $search;

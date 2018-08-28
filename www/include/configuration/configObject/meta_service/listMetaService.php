@@ -58,9 +58,9 @@ if (isset($_POST['searchMS'])) {
 $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM meta_service ";
 if ($search) {
     $rq .= "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
-    $acl->queryBuilder("AND", "meta_id", $metaStr);
+        $acl->queryBuilder("AND", "meta_id", $metaStr);
 } else {
-    $rq .=  $acl->queryBuilder("WHERE", "meta_id", $metaStr);
+    $rq .= $acl->queryBuilder("WHERE", "meta_id", $metaStr);
 }
 $rq .= " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
 

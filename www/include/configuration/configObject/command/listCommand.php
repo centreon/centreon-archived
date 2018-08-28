@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -68,20 +68,18 @@ if (isset($_POST['searchC'])) {
 
 $search = tidySearchKey($search, $advanced_search);
 
-
-/*
-* List of elements - Depends on different criteria
-*/
+//List of elements - Depends on different criteria
 if (isset($search) && $search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 } elseif ($type) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "WHERE `command_type` = '" . $type . "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
+        "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 }
 
 $DBRESULT = $pearDB->query($rq);
@@ -89,14 +87,11 @@ $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include_once "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
-
+//Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 

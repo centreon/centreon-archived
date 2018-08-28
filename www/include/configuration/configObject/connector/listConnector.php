@@ -46,12 +46,12 @@ try {
 
     $tpl->assign('mode_access', $lvl_access);
 
-    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
     $tpl->assign('msg', array(
-        "addL"=>"?p=".$p."&o=a",
-        "addT"=>_("Add"),
-        "delConfirm"=>_("Do you confirm the deletion ?")
+        "addL" => "?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
     ));
 
     /*
@@ -59,24 +59,25 @@ try {
      */
     foreach (array('o1', 'o2') as $option) {
         $attrs1 = array(
-            'onchange'=>"javascript: " .
-                    " var bChecked = isChecked(); ".
-                    " if (this.form.elements['".$option."'].selectedIndex != 0 && !bChecked) {".
-                    " alert('"._("Please select one or more items")."'); return false;} " .
-                    "if (this.form.elements['".$option."'].selectedIndex == 1 && confirm('"
-                    ._("Do you confirm the duplication ?")."')) {" .
-                    "   setO(this.form.elements['".$option."'].value); submit();} " .
-                    "else if (this.form.elements['".$option."'].selectedIndex == 2 && confirm('"
-                    ._("Do you confirm the deletion ?")."')) {" .
-                    "   setO(this.form.elements['".$option."'].value); submit();} " .
-                    "else if (this.form.elements['".$option."'].selectedIndex == 3) {" .
-                    "   setO(this.form.elements['".$option."'].value); submit();} " .
-                    "this.form.elements['".$option."'].selectedIndex = 0");
+            'onchange' => "javascript: " .
+                " var bChecked = isChecked(); " .
+                " if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
+                " alert('" . _("Please select one or more items") . "'); return false;} " .
+                "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('"
+                . _("Do you confirm the duplication ?") . "')) {" .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('"
+                . _("Do you confirm the deletion ?") . "')) {" .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "this.form.elements['" . $option . "'].selectedIndex = 0"
+        );
 
         $form->addElement('select', $option, null, array(
-            null=>_("More actions..."),
-            "m"=>_("Duplicate"),
-            "d"=>_("Delete")
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete")
         ), $attrs1);
         $form->setDefaults(array($option => null));
         $o1 = $form->getElement($option);
@@ -86,47 +87,48 @@ try {
 
     $elemArr = array();
     $j = 0;
-    $attrsText = array("size"=>"2");
+    $attrsText = array("size" => "2");
     $nbConnectors = count($connectorsList);
     for ($i = 0; $i < $nbConnectors; $i++) {
         $result = $connectorsList[$i];
         $moptions = "";
-        $MyOption = $form->addElement('text', "options[".$result['id']."]", _("Options"), $attrsText);
-        $form->setDefaults(array("options[".$result['id']."]" => '1'));
-        $selectedElements = $form->addElement('checkbox', "select[".$result['id']."]");
+        $MyOption = $form->addElement('text', "options[" . $result['id'] . "]", _("Options"), $attrsText);
+        $form->setDefaults(array("options[" . $result['id'] . "]" => '1'));
+        $selectedElements = $form->addElement('checkbox', "select[" . $result['id'] . "]");
         if ($result) {
             if ($lvl_access == "w") {
                 if ($result['enabled']) {
                     $moptions = "<a href='main.php?p="
-                        .$p."&id=".$result['id']."&o=u&limit=".$limit."&num="
-                        .$num."'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
-                        ._("Disabled")."'></a>&nbsp;&nbsp;";
+                        . $p . "&id=" . $result['id'] . "&o=u&limit=" . $limit . "&num="
+                        . $num . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
+                        . _("Disabled") . "'></a>&nbsp;&nbsp;";
                 } else {
                     $moptions = "<a href='main.php?p="
-                        .$p."&id=".$result['id']."&o=s&limit=".$limit."&num="
-                        .$num."'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
-                        ._("Enabled")."'></a>&nbsp;&nbsp;";
+                        . $p . "&id=" . $result['id'] . "&o=s&limit=" . $limit . "&num="
+                        . $num . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
+                        . _("Enabled") . "'></a>&nbsp;&nbsp;";
                 }
                 $moptions .= "&nbsp;"
                     . "<input onKeypress=\"if(event.keyCode > 31 "
                     . "&& (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false;"
                     . " if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\""
                     . " maxlength=\"3\" size=\"3\" value='1'"
-                    . " style=\"margin-bottom:0px;\" name='options[".$result['id']."]'></input>";
+                    . " style=\"margin-bottom:0px;\" name='options[" . $result['id'] . "]'></input>";
                 $moptions .= "&nbsp;&nbsp;";
             } else {
                 $moptions = "&nbsp;";
             }
 
-            $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
-                                 "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
-                                 "RowMenu_name"           => CentreonUtils::escapeSecure($result["name"]),
-                                 "RowMenu_description"    => CentreonUtils::escapeSecure($result['description']),
-                                 "RowMenu_command_line"   => CentreonUtils::escapeSecure($result['command_line']),
-                                 "RowMenu_enabled"        => $result['enabled'] ? _("Enabled") : _("Disabled"),
-                                 "RowMenu_badge"          => $result['enabled'] ? "service_ok" : "service_critical",
-                                 "RowMenu_options"        => $moptions
-                                );
+            $elemArr[$j] = array(
+                "RowMenu_select" => $selectedElements->toHtml(),
+                "RowMenu_link" => "?p=" . $p . "&o=c&id=" . $result['id'],
+                "RowMenu_name" => CentreonUtils::escapeSecure($result["name"]),
+                "RowMenu_description" => CentreonUtils::escapeSecure($result['description']),
+                "RowMenu_command_line" => CentreonUtils::escapeSecure($result['command_line']),
+                "RowMenu_enabled" => $result['enabled'] ? _("Enabled") : _("Disabled"),
+                "RowMenu_badge" => $result['enabled'] ? "service_ok" : "service_critical",
+                "RowMenu_options" => $moptions
+            );
         }
         $j++;
     }
@@ -147,5 +149,5 @@ try {
     $tpl->assign('limit', $limit);
     $tpl->display("listConnector.ihtml");
 } catch (Exception $e) {
-    echo "Erreur n°".$e->getCode()." : ".$e->getMessage();
+    echo "Erreur n°" . $e->getCode() . " : " . $e->getMessage();
 }

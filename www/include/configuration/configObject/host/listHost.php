@@ -84,7 +84,7 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["status"] = $status;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search =  $_GET['searchH'];
+    $search = $_GET['searchH'];
     $centreon->historySearch[$url]['searchH'] = $search;
     $poller = $_GET["poller"];
     $centreon->historySearch[$url]["poller"] = $poller;
@@ -122,9 +122,10 @@ $centreon->template = $template;
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter .= "<option value='0'" .
+    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = '';
 if ($status == 1) {

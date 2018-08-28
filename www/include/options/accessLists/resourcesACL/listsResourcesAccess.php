@@ -56,8 +56,8 @@ if ($search) {
     $searchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
         . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = 'SELECT SQL_CALC_FOUND_ROWS acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate '
-    . 'FROM acl_resources '
+$rq = 'SELECT SQL_CALC_FOUND_ROWS acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, ' .
+    'all_servicegroups, acl_res_activate FROM acl_resources '
     . 'WHERE locked = 0 '
     . $searchStr . ' '
     . 'ORDER BY acl_res_name '

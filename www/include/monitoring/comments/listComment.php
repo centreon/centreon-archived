@@ -51,7 +51,7 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["search_output"] = $search_output;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service =  $_GET['search_service'];
+    $search_service = $_GET['search_service'];
     $centreon->historySearch[$url]['search_service'] = $search_service;
     $host_name = $_GET["search_host"];
     $centreon->historySearch[$url]["search_host"] = $host_name;

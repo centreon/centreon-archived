@@ -71,8 +71,8 @@ if (isset($_POST['searchHT'])) {
 /*
  * Host Template list
  */
-$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host " .
-    "WHERE host_register = '0' ";
+$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host" .
+    " WHERE host_register = '0' ";
 if ($search) {
     $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
         CentreonDB::escape($search) . "%')";
@@ -156,9 +156,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
     }
 
-    /*
-	 * Check icon
-	 */
+    //Check icon
     if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
     } elseif ($icone = $host_method->replaceMacroInString(
@@ -171,9 +169,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $host_icone = "./img/icons/host.png";
     }
 
-    /*
-	 * Service List
-	 */
+    //Service List
     $svArr = array();
     $svStr = null;
     $svArr = getMyHostServices($host['host_id']);

@@ -58,7 +58,7 @@ if ($search) {
 }
 
 $rq = "SELECT SQL_CALC_FOUND_ROWS acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups " .
-    $searchStr ."ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
+    $searchStr . "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
 $dbResult = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
@@ -72,9 +72,7 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/*
- * start header menu
- */
+//start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_contacts", _("Contacts"));
@@ -156,11 +154,11 @@ $tpl->assign(
  * Toolbar select lgd_more_actions
  */
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {

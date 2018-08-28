@@ -52,7 +52,7 @@ if (isset($_POST['searchCG'])) {
     $search = $centreon->historySearch[$url];
 }
 
-if($search){
+if ($search) {
     $clauses = array(
         'cg_name' => array('LIKE', '%' . $search . '%'),
         'cg_alias' => array('OR', 'LIKE', '%' . $search . '%')
@@ -121,9 +121,7 @@ foreach ($cgs as $cg) {
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" .
         "\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $cg['cg_id'] . "]' />";
 
-    /*
-	 * Contacts
-	 */
+    //Contacts
     $ctNbr = array();
     $rq = "SELECT COUNT(DISTINCT contact_contact_id) AS `nbr` 
            FROM `contactgroup_contact_relation` `cgr` 
@@ -184,7 +182,6 @@ foreach (array('o1', 'o2') as $option) {
     $o1->setValue(null);
     $o1->setSelected(null);
 }
-
 ?>
     <script type="text/javascript">
         function setO(_i) {

@@ -82,11 +82,11 @@ if (isset($_POST['Search'])) {
     $centreon->historySearch[$url]["searchH"] = $searchH;
     $searchS = $_POST["searchS"];
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ?  $hostStatus = 1 : $hostStatus = 0;
+    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
 } elseif (isset($_GET['Search'])) {
     $centreon->historySearch[$url] = array();
-    $template =  $_GET['template'];
+    $template = $_GET['template'];
     $centreon->historySearch[$url]['template'] = $template;
     $status = $_GET["status"];
     $centreon->historySearch[$url]["status"] = $status;
@@ -94,7 +94,7 @@ if (isset($_POST['Search'])) {
     $centreon->historySearch[$url]["searchH"] = $searchH;
     $searchS = $_GET["searchS"];
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ?  $hostStatus = 1 : $hostStatus = 0;
+    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
 } else {
     if (isset($centreon->historySearch[$url]['template'])) {
@@ -153,9 +153,10 @@ $DBRESULT->closeCursor();
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter .= "<option value='0'" .
+    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
@@ -259,9 +260,7 @@ $fgHost = array("value" => null, "print" => null);
 $interval_length = $centreon->optGen['interval_length'];
 
 for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-    /*
-	 * Get Number of Hosts linked to this one.
-	 */
+    //Get Number of Hosts linked to this one.
     $request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'";
     $BDRESULT2 = $pearDB->query($request);
     $data = $BDRESULT2->fetchRow();
@@ -292,11 +291,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" " .
         "value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $service['service_id'] . "]' />";
 
-    /*
-	 * If the description of our Service is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
-
+    /*If the description of our Service is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
     } else {

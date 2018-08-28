@@ -96,8 +96,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Alias"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
