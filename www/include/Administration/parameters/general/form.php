@@ -42,6 +42,7 @@ $transcoKey = array(
     "enable_autologin" => "yes",
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
+    "keycloak_enable" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
     'display_downtime_chart' => 'yes',
@@ -215,6 +216,26 @@ $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
 /*
+ * Keycloak
+ */
+$keycloak_enable[] = HTML_QuickForm::createElement(
+    'checkbox',
+    'yes',
+    '&nbsp;',
+    '',
+    array("onchange" => "javascript:confirm("
+        ."'Are you sure you want to change this parameter ? Please read the help before.')"
+    )
+);
+$form->addGroup($keycloak_enable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
+
+$form->addElement('text', 'keycloak_url', _('Keycloak Server Url'), array('size' => 50));
+$form->addElement('text', 'keycloak_redirect_url', _('Keycloak Redirect Url'), array('size' => 50));
+$form->addElement('text', 'keycloak_realm', _('Keycloak Client Realm'), array('size' => 50));
+$form->addElement('text', 'keycloak_client_id', _('Keycloak Client ID'), array('size' => 50));
+$form->addElement('text', 'keycloak_client_secret', _('Keycloak Client Secret'), array('size' => 50));
+
+/*
  * Support Email
  */
 $form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
@@ -291,6 +312,7 @@ $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
+$tpl->assign("genOpt_keycloak", _("Authentication by Keycloak"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 

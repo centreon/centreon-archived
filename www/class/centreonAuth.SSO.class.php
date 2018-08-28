@@ -73,6 +73,38 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
+        } elseif (isset($this->options_sso['keycloak_enable']) && $this->options_sso['keycloak_enable'] == 1 &&
+            isset($this->options_sso['keycloak_url']) && $this->options_sso['keycloak_url'] != '' &&
+            isset($this->options_sso['keycloak_redirect_url']) && $this->options_sso['keycloak_redirect_url'] != '' &&
+            isset($this->options_sso['keycloak_realm']) && $this->options_sso['keycloak_realm'] != '' &&
+            isset($this->options_sso['keycloak_client_id']) && $this->options_sso['keycloak_client_id'] != '' &&
+            isset($this->options_sso['keycloak_client_secret']) && $this->options_sso['keycloak_client_secret'] != '') {
+
+            $client_id = $this->options_sso['keycloak_client_id'];
+            $client_secret = $this->options_sso['keycloak_client_secret'];
+            $realm = $this->options_sso['keycloak_realm'];
+            $base = $this->options_sso['keycloak_url'];
+            $redirectNoEncode = $this->options_sso['keycloak_redirect_url'];
+
+            $redirect = urlencode($redirectNoEncode);
+            $authUrl = $base . "/realms/".$realm."/protocol/openid-connect/auth?client_id=".$client_id."&response_type=code&redirect_uri=" . $redirect;
+
+            if (isset($_GET['force'])) {
+                header('Location: ' . $authUrl);
+            }
+
+            if(isset($_GET['code'])) {
+
+                $Ktoken = $this->getToken($base, $realm,$redirectNoEncode, $client_id, $client_secret, $_GET['code']);
+
+                $user = $this->getUserInfo($base, $realm, $client_id, $client_secret, $Ktoken);
+
+                $this->sso_username = $user["preferred_username"];
+                if ($this->checkSsoClient()) {
+                    $this->sso_mandatory = 1;
+                    $username = $this->sso_username;
+                }
+            }
         }
 
         parent::__construct(
@@ -94,7 +126,8 @@ class CentreonAuthSSO extends CentreonAuth
 
     protected function checkSsoClient()
     {
-        if (isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
+        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
+            isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
             # Mixed
 
             $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
@@ -106,6 +139,9 @@ class CentreonAuthSSO extends CentreonAuth
             }
 
             $whitelist = explode(',', $this->options_sso['sso_trusted_clients']);
+            if(empty($whitelist[0])){
+                return 1;
+            }
             foreach ($whitelist as $value) {
                 $value = trim($value);
                 if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
@@ -134,5 +170,46 @@ class CentreonAuthSSO extends CentreonAuth
             # local connect (when sso not enabled and 'sso_mode' == 1
             return parent::checkPassword($password, $token);
         }
+    }
+
+
+    function getKeycloakToken($base, $realm, $redirect_uri, $client_id, $client_secret, $code) {
+
+        $url = $base."/realms/".$realm."/protocol/openid-connect/token";
+        $data = array(
+            "client_id" => $client_id,
+            "client_secret" => $client_secret,
+            "grant_type" => "authorization_code",
+            "code" => $code,
+            "redirect_uri" => $redirect_uri);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $resp = json_decode($result, true);
+
+        return $resp["access_token"];
+    }
+
+    function getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $token){
+
+        $url = $base."/realms/".$realm."/protocol/openid-connect/token/introspect";
+        $data = array("token" => $token, "client_id" => $client_id, "client_secret" => $client_secret);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,array("Authorization" => "Bearer ".$token));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $resp = json_decode($result, true);
+        return $resp;
     }
 }
