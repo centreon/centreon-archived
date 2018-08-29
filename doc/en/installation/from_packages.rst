@@ -77,7 +77,7 @@ Perform the command:
 PHP timezone
 ------------
 
-PHP timezone should be set; go to /etc/php.d directory and create a file named php-timezone.ini which contains the following line :
+PHP timezone should be set, go to `/etc/php.d` directory and create a file named `php-timezone.ini` which contains the following line:
 
 ::
 
@@ -102,7 +102,7 @@ Add firewall rules or disable it. To disable it execute following commands:
     # systemctl disable firewalld
     # systemctl status firewalld
 
-DataBase Management System
+Database Management System
 --------------------------
 
 The MySQL database server should be available to complete installation (locally or not). MariaDB is recommended.
@@ -116,7 +116,7 @@ Setting this option into /etc/my.cnf will NOT work.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysql restart
- 
+
 Launch services during the system startup
 -----------------------------------------
 
@@ -135,14 +135,14 @@ Execute these commands on central server.
     # systemctl enable httpd.service
     # systemctl enable snmpd.service
     # systemctl enable mysql.service
-    
+
 .. note::
     If MySQL database is on a dedicated server, execute the enable command of mysql on DB server.
 
 Conclude installation
 ---------------------
 
-:ref:`click here to finalise the installation process <installation_web_ces>`.
+:ref:`click here to finalize the installation process <installation_web_ces>`.
 
 *******************
 Installing a poller

@@ -125,7 +125,7 @@ The fields presented below are fields that are only use by the CGI of the schedu
 Access groups
 =============
 
-* The **ACL Resource Groups** (only displayed for non administrator) allows to link this host to an hostgroup in order to visualise it (See :ref:`acl` chapter).
+* The **ACL Resource Groups** (only displayed for non administrator) allows to link this host to an hostgroup in order to visualize it (See :ref:`acl` chapter).
 
 Additional Information
 ======================

@@ -22,7 +22,7 @@ The grey search bar can be used to filter the information presented via filters:
 Practice
 ********
 
-E.g.: To see all the actions performed by the user: **admin**, enter “admin” in the **User** field and click on **Search**.
+E.g.: To see all the actions effective by the user: **admin**, enter “admin” in the **User** field and click on **Search**.
 
 The table below defines the columns in the results table:
 
@@ -31,7 +31,7 @@ The table below defines the columns in the results table:
 +======================+============================================================================================================+
 | Time                 | Indicates the date of the event                                                                            |
 +----------------------+------------------------------------------------------------------------------------------------------------+
-| Modification type    | Contains the type of action performed. There are several types of action possible:                         |
+| Modification type    | Contains the type of action effective. There are several types of action possible:                         |
 |                      |                                                                                                            |
 |                      | - Added: Indicates that the object has been added                                                          |
 |                      | - Changed: Indicates that the object has been changed                                                      |
@@ -44,10 +44,10 @@ The table below defines the columns in the results table:
 +----------------------+------------------------------------------------------------------------------------------------------------+
 | Object               | Indicates object name                                                                                      |
 +----------------------+------------------------------------------------------------------------------------------------------------+
-| Author               | Indicates the user having performed this change                                                            |
+| Author               | Indicates the user having effective this change                                                            |
 +----------------------+------------------------------------------------------------------------------------------------------------+
 
-By clicking on the name of an object, you can view the history of the changes performed on it.
+By clicking on the name of an object, you can view the history of the changes effective on it.
 
 .. image:: /images/guide_exploitation/fobjectmodif.png
    :align: center
@@ -59,7 +59,7 @@ The table below defines the columns of the changes table:
 +======================+===========================================================+
 | Date                 | Date of the change                                        |
 +----------------------+-----------------------------------------------------------+
-| Contact Name         | Name of the person having performed the change            |
+| Contact Name         | Name of the person having effective the change            |
 +----------------------+-----------------------------------------------------------+
 | Type                 | Modification type                                         |
 +----------------------+-----------------------------------------------------------+

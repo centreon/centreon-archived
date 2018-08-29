@@ -16,7 +16,7 @@ What's new?
 Compatibility with PHP 5.4.x
 ============================
 
-Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6, Ubuntu 13.04, Redhat 7 and CentOS 7.
+Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6, Ubuntu 13.04, RedHat 7 and CentOS 7.
 
 Centreon proprietary module (Centreon BAM, Centreon BI, Centreon MAP, Centreon KB) is not compatible as yet with this PHP version.
 
@@ -38,7 +38,7 @@ ACL and configuration modification with admin users
 
 ACL management has been improved to allow for a greater number of simultaneous sysadmin users to work on the same monitoring platform.
 
-The synchronisation is more efficient in configuration page between admin and normal users.
+The synchronization is more efficient in configuration page between admin and normal users.
 
 
 Partial rebuild of events information
@@ -52,7 +52,7 @@ Before, you had to rebuild from the beginning of the related data.
 Criticality inheritance
 =======================
 
-Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured criticality.  It’s also possible to define the levels of global criticality of a particular host and dependent services cluster thanks to the use of templates.
+Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured criticality.  It’s also possible to define the levels of global critically of a particular host and dependent services cluster thanks to the use of templates.
 
 
 Integration of Centreon new logo
@@ -81,6 +81,6 @@ Features
 
 - #3239: PHP-5.4 Compatibility
 - #5238: Criticality inheritance
-- #5334, #6114, #6120 : Optimisation and customization on Centreontrapd
+- #5334, #6114, #6120 : Optimization and customization on Centreontrapd
 - #5952: Add possibility to rebuild partially Events information
 - #6160: New Centreon logo

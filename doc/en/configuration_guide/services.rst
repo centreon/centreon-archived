@@ -36,7 +36,7 @@ Service State
 Macros
 ======
 
-The **Macros** part serves to add customised macros. 
+The **Macros** part serves to add customized macros. 
 The **macro name** and **macro value** fields allow us to define the name and value of the macro. The **Password** box can be used to hide the value of the macro.
 
 To reinitialize to the default value (defined in template) click on |undo|.

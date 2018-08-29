@@ -17,7 +17,7 @@ Access groups are groups containing the Centreon users. For each access group, i
 * Access filters on actions serve to limit access to actions that the user can undertake on a monitoring engine or on the resources themselves (program a downtime, stop a monitoring engine, etc.)
 
 .. note::
-   A user can belong to several access groups thus making it possible to add together all the access authorisations.
+   A user can belong to several access groups thus making it possible to add together all the access authorizations.
 
 The ACLs respect very strict rules:
 
@@ -51,8 +51,8 @@ General information
 
 .. note::
     The contact group can be groups coming from the LDAP directory connected to the Centreon interface.
-    
-   Groups created in Centreon interface should not have the same name as LDAP groups to avoid problems. 
+
+   Groups created in Centreon interface should not have the same name as LDAP groups to avoid problems.
 
 Authorizations information
 ==========================
@@ -121,7 +121,7 @@ Filters
 Menus Access
 ************
 
-The access filters to the menu serve to limiter the access to various menus of the Centreon interface. 
+The access filters to the menu serve to limiter the access to various menus of the Centreon interface.
 The menus are ranked as follows:
 
 * Level 1 menus (Home, Monitoring, Views, etc.)
@@ -157,7 +157,7 @@ To add an access filter to the menus:
 Actions Access
 **************
 
-Filters on actions enable us to limit access to actions that can be performed on resources (hosts and services) and on monitoring engines (stopping notifications, restarting the scheduler, etc.).
+Filters on actions enable us to limit access to actions that can be effective on resources (hosts and services) and on monitoring engines (stopping notifications, restarting the scheduler, etc.).
 
 To add an access filter to the actions:
 
@@ -186,7 +186,7 @@ The table below describes the general access functionalities:
 |                                        | in the monitoring consoles                                            |
 +----------------------------------------+-----------------------------------------------------------------------+
 
-The table below describes all the actions that can be authorised on the scheduler:
+The table below describes all the actions that can be authorized on the scheduler:
 
 +----------------------------------------+-----------------------------------------------------------------------+
 |   Field                                |   Associated actions                                                  |
@@ -214,7 +214,7 @@ The table below describes all the actions that can be authorised on the schedule
 | Enable/Disable Performance Data        | Allows users to enable or disable performance data processing         |
 +----------------------------------------+-----------------------------------------------------------------------+
 
-The table below describes all the actions that can be authorised on services:
+The table below describes all the actions that can be authorized on services:
 
 +----------------------------------------+-----------------------------------------------------------------------+
 |   Field                                |   Associated actions                                                  |
@@ -247,11 +247,11 @@ The table below describes all the actions that can be authorised on services:
 +----------------------------------------+-----------------------------------------------------------------------+
 | Submit result for a service            | Allows users to submit result to a service                            |
 +----------------------------------------+-----------------------------------------------------------------------+
-| Display executed command by            | Allow the display of the executed command for a service               | 
+| Display executed command by            | Allow the display of the executed command for a service               |
 |  monitoring engine                     |                                                                       |
 +----------------------------------------+-----------------------------------------------------------------------+
 
-The table below describes the all the actions that can be authorised on hosts:
+The table below describes the all the actions that can be authorized on hosts:
 
 +----------------------------------------+-----------------------------------------------------------------------+
 |   Field                                |   Associated actions                                                  |

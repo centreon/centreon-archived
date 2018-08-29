@@ -16,7 +16,7 @@ To import SNMP traps, you must follow the following steps:
 #. Create a Manufacturer linked to the SNMP trap that you created, see this :ref:`section <configuration_advanced_snmptrapds_manufacturer>`
 #. Import MiB in the Centreon web interface, see this :ref:`section <configuration_advanced_snmptrapds_mibimport>`
 
-When import a MiB file, it's possible that dependences are necessary. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
+When import a MiB file, it's possible that dependencies are necessary. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
 
 #. Locate the line that starts with IMPORTS
 #. All dependencies required to import your MIB file are after the keyword **FROM**
@@ -104,7 +104,7 @@ With:
 
 Any additional parameters to SNMP trap must contain the following 3 variables. They must be repeated for each additional parameter:
 
-* **PARAMETER-OID**: 
+* **PARAMETER-OID**: OID of the SNMP trap
 * **PARAMETER-TYPE**: Type of the parameter, 'i' for " Integer ", 's' for " String ", etc.
 * **PARAMETER-VALUE**: related to the parameter value. Quoting a string containing spaces
 
@@ -120,7 +120,7 @@ Modify the output
 Use all the arguments
 =====================
 
-For a SNMP trap, when configuring the output message, the argument $ * will display all the information (the value of arguments) contained within the SNMP trap. However, it is possible to display only certain information contained in the SNMP trap by calling unitarily arguments.
+For a SNMP trap, when configuring the output message, the argument $ * will display all the information (the value of arguments) contained within the SNMP trap. However, it is possible to display only certain information contained in the SNMP trap by calling unitary arguments.
 
 Eg:
 
@@ -160,7 +160,7 @@ The active service linked in the service configuration is executed.
 Execute special command
 =======================
 
-Its possible with Centreontrapd to execute a special command after the reecption of a SNMP trap. Just use the option **Execute special command** followed by the description of this command.
+Its possible with Centreontrapd to execute a special command after the reception of a SNMP trap. Just use the option **Execute special command** followed by the description of this command.
 
 
 Use all the arguments (via OID)
@@ -204,7 +204,7 @@ For example
 ::
     s/\|/-/g
 
-Will replace **|** in the output to **-**. 
+Will replace **|** in the output to **-**.
 
 
 *************************
@@ -278,17 +278,17 @@ In the **Route definition** field you can use the following arguments:
 Ignore SNMP Trap when resource is on downtime
 =============================================
 
-**Check Downtime** allow centreontrapd to check if the service is not in Downtime status at trap reception. The submission can be cancelled.
+**Check Downtime** allow centreontrapd to check if the service is not in Downtime status at trap reception. The submission can be canceled.
 
 .. note::
 
   It's only possible with Centreon Broker and on central monitoring.
 
 
-There are three ways to configure this :
+There are three ways to configure this:
 
-* None : nothing to do, the trap is sent as normal ;
-* Real-Time : with this option, a trap sent with a current downtime, the service state is not updated ;
+* None : nothing to do, the trap is sent as normal;
+* Real-Time : with this option, a trap sent with a current downtime, the service state is not updated;
 * History : option used to do not acknowledge a trap snmp that concerning a past event during a downtime.
 
 
@@ -324,7 +324,7 @@ Restart the process to take the changes into account. Thus, for any receiving SN
 
 In case you filter by SNMP community, check allowed communities in the configuration file "/etc/snmp/snmptrapd.conf". If after all these checks, SNMP traps are not included in the log, verify that the process is listening on UDP port 162 for remote equipment using the command::
 
-    # netstat -ano | grep 162 
+    # netstat -ano | grep 162
     udp        0      0 0.0.0.0:162             0.0.0.0:*                           off (0.00/0/0)
 
 If not, change the listening port of the process.

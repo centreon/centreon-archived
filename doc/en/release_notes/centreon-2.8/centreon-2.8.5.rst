@@ -78,7 +78,7 @@ Monitoring
 Graphs
 ------
 
-* Curves colour on New graph is not equal to old graph - #5033
+* Curves color on New graph is not equal to old graph - #5033
 * Wrong host title in Graph - #4964 #4984
 
 
@@ -96,9 +96,9 @@ Configuration
 * Add user name in the generated configuration files - #4822
 * Duplicate Poller and illegal characters - #4931, PR #4986, #4987
 * Can view first help icon in Centreon Broker configuration - #4944, PR #5003
-* Describe arguements does not work with % character in command line - #4930
+* Describe arguments does not work with % character in command line - #4930
 * Generate and export SNMP traps - #4972, #4978
-* Host marco did not save on host edit - #4951
+* Host macro did not save on host edit - #4951
 * Do not check modification on disabled pollers - #4945
 
 

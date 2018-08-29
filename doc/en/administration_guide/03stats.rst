@@ -15,12 +15,12 @@ To view the performance information of your scheduler:
 #. Choose your scheduler in the drop-down list **Poller**
 
 .. image:: /images/user/monitoring/03statsordonnanceur.png
-   :align: center 
+   :align: center
 
 Multiple tables allows to view the performance of your schedulers:
 
 * The **Actively Checked** table can be used to view the number of hosts and services checked in the last minute, the last five minutes, the last quarter of an hour or the last hour.
-* The **Check Latency** table can be used to view the minimum, maximum and average latency time of the checks performed on the hosts and the services.
+* The **Check Latency** table can be used to view the minimum, maximum and average latency time of the checks effective on the hosts and the services.
 
 .. warning::
     More than the latency is important and more than the execution of checks by the scheduler will be delayed. This implies a potential high server load.
@@ -28,7 +28,7 @@ Multiple tables allows to view the performance of your schedulers:
 * The **Buffer Usage** table can be used to view the number of external commands awaiting processing by the scheduler.
 
 .. warning::
-    In the case of a passive monitoring injecting many external commands to the scheduler, it is necessary to check this value. If it is too close to the size limit it is possible to lose commands; consequently it is necessary to increase the size of the buffer.
+    In the case of a passive monitoring injecting many external commands to the scheduler, it is necessary to check this value. If it is too close to the size limit it is possible to lose commands, consequently it is necessary to increase the size of the buffer.
 
 * The **Status** table gives a brief view of the statuses of the hosts and services
 * The **Check Execution Time** table can be used to view the execution time of a probe, i.e. the time between when it is started and the moment when it transmits the information to the scheduler.
@@ -47,13 +47,13 @@ To view the statistics of Centreon Broker:
 #. Choose your poller in the list entitled **Poller**
 
 .. image:: /images/user/monitoring/03statsbroker.png
-   :align: center 
+   :align: center
 
 The performance of Centreon Broker is classified by entities of Centreon Broker (module scheduler, Broker-RRD, Broker-Central).
 
 For each entity, the Centreon web interface displays:
 
-* The list of loaded Centreo Broker modules
+* The list of loaded Centreon Broker modules
 * The input/output performance
 
 Input/Output Performance
@@ -62,7 +62,7 @@ Input/Output Performance
 Each performance contains multiple data:
 
 .. image:: /images/user/monitoring/03brokerperf.png
-   :align: center 
+   :align: center
 
 * The **State** field contains the status of the input, of the output and the status of the module itself
 * The **Temporary recovery mode** field indicates if the buffer file of the module is in use
@@ -93,4 +93,4 @@ For this:
 #. Choose the period on which you want to view the performance graphs
 
 .. image:: /images/user/monitoring/03graphperf.png
-   :align: center 
+   :align: center

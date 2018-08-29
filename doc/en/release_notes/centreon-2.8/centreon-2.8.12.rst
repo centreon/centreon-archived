@@ -10,7 +10,7 @@ Enhancements
 * [API] Export/Import ACL Groups
 * [API] Export/Import ACL Menus
 * [API] Export/Import ACL Actions
-* [API] Export/Import ACL Ressources
+* [API] Export/Import ACL Resources
 * [API] Replacing contact_name by contact_alias PR #5546
 * [Configuration] Input text not aligned in Curves page #5534 PR #5553
 * [Monitoring] Monitoring Services by Hostgroup : improvement order suggestion #5402 PR #5552

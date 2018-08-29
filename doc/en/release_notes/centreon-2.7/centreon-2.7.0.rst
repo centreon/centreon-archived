@@ -48,16 +48,16 @@ Features and Bug Fixes
 Changes
 -------
 
-* Important web design changes can make interface not compatible with older modules. A refactoring work will be needed to ensure optimal operation.
+* Important web design changes can make interface not compatible with older modules. A re-factoring work will be needed to ensure optimal operation.
 * Changing the timezone system : DST management (may need to check the timezones of each host and contact after the update)
 * Changing databases schemes for hostgroups and servicegroups in the real state database (centreon_storage) : added id and deletion of alias, url, url note, icon.
 * Changing the path for generating the configuration of Centreon Engine instances : no more specific page to generate the configuration. The action is now available from the pollers list.
 * Switching to InnoDB all Centreon tables (except logs and data_bin too big for an automatic update).
 * PHP 5.1 no longer supported
 * Browser compatibility : IE 11, FF 5 et Chrome 39 at least
-* Shared views in custom views are not automaticaly loaded in views of others users. Now views are able to be public and user can load them during the creation step.
+* Shared views in custom views are not automatically loaded in views of others users. Now views are able to be public and user can load them during the creation step.
 
-Secutiry fixes
+Security fixes
 --------------
 
 * Removing PHP session ID in the URL of the Ajax flow of certain pages.
@@ -99,4 +99,4 @@ Known Bugs
 How to Install ?
 ----------------
 
-Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisits and all upgrade steps in order to avoid data loss.
+Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisites and all upgrade steps in order to avoid data loss.

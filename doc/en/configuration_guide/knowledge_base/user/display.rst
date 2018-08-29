@@ -9,7 +9,7 @@ So a procedure can be specified for a given host/service but can be specified as
 If a procedure is defined at template level, all children of the template will have the procedure attached as well unless overloaded by a specific one. The mechanism is identical to template
 system in Centreon with inheritance.
 
-**Centreon Knowledge Base** function is designed to avoid adding or updating manualy several times the same procedure in knowledge base.
+**Centreon Knowledge Base** function is designed to avoid adding or updating manually several times the same procedure in knowledge base.
 
 When a user clicks on a host procedure:
 
