@@ -7,7 +7,7 @@
     "build": "webpack --mode production",
     "test": "jest --watch --colors",
     "test:build": "jest --ci --coverage",
-    "centreon-build": "cd ./www/front_src/ && npm install && npm run build",
+    "centreon-build": "cd ./www/front_src/ && npm install && npm run build && npm prune --production",
     "centreon-new" : "cd ./www/front_src/ && npm install && npm run start",
     "centreon-start" : "cd ./www/front_src/ && npm run start"
   },
