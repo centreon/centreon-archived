@@ -36,7 +36,6 @@
 namespace CentreonClapi;
 
 require_once "centreonAPI.class.php";
-require_once _CLAPI_LIB_ . "/Centreon/Db/Manager/Manager.php";
 require_once _CLAPI_LIB_ . "/Centreon/Object/Contact/Contact.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
@@ -58,9 +57,9 @@ abstract class CentreonObject
     protected static $instances;
 
     /**
-     * Db adapter
+     * Db object provided by dependency injector
      *
-     * @var Zend_Db_Adapter
+     * @var CentreonDB
      */
     protected $db;
 

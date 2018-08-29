@@ -279,9 +279,7 @@ class CentreonTimePeriod extends CentreonObject
      */
     public function getTimeperiodId($name)
     {
-        $this->object->setCache(true);
         $tpIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
-        $this->object->setCache(false);
         if (!count($tpIds)) {
             throw new CentreonClapiException("Unknown timeperiod: " . $name);
         }
@@ -296,9 +294,7 @@ class CentreonTimePeriod extends CentreonObject
      */
     public function getTimeperiodName($timeperiodId)
     {
-        $this->object->setCache(true);
         $tpName = $this->object->getParameters($timeperiodId, array($this->object->getUniqueLabelField()));
-        $this->object->setCache(false);
         return $tpName[$this->object->getUniqueLabelField()];
     }
 

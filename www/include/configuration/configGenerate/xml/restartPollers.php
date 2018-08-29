@@ -206,24 +206,11 @@ try {
 
     /* Find restart / reload action from modules */
     foreach ($centreon->modules as $key => $value) {
-        $addModule = true;
-        if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-            $module_license_validity = zend_loader_install_license(
-                _CENTREON_PATH_ . "www/modules/" . $key . "license/merethis_lic.zl",
-                true
-            );
-            if ($module_license_validity == false) {
-                $addModule = false;
-            }
-        }
-
-        if ($addModule) {
-            if ($value["restart"]
-                && $files = glob(_CENTREON_PATH_ . "www/modules/" . $key . "/restart_pollers/*.php")
-            ) {
-                foreach ($files as $filename) {
-                    include $filename;
-                }
+        if ($value["restart"]
+            && $files = glob(_CENTREON_PATH_ . "www/modules/" . $key . "/restart_pollers/*.php")
+        ) {
+            foreach ($files as $filename) {
+                include $filename;
             }
         }
     }

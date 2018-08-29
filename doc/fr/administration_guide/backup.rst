@@ -40,7 +40,7 @@ Format de la sauvegarde :
 Sauvegarde des fichiers de configuration
 ----------------------------------------
 
-Tous les fichiers de configuration du serveur central sont sauvegardés : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker
+Tous les fichiers de configuration du serveur central sont sauvegardés : MySQL, Apache, PHP, SNMP, centreon, centreon-broker
 
 Format de la sauvegarde :
 
@@ -72,7 +72,6 @@ La fenêtre suivante est affichée:
 * **Backup retention** Durée de rétention des sauvegardes (en jours)
 * **Backup configuration files** Activer la sauvegarde des fichiers de configuration
 * **MySQL configuration file path** Chemin d'accès au fichier de configuration MySQL
-* **Zend configuration file path** Chemin d'accès au fichier de configuration Zend
 * **SCP export enabled** Activer l'export des sauvegardes par SCP
 * **Remote user** Utilisateur distant pour l'export SCP
 * **Remote host** Hôte distant pour l'export SCP
