@@ -95,7 +95,7 @@ class CentreonAuthSSO extends CentreonAuth
 
             if(isset($_GET['code'])) {
 
-                $Ktoken = $this->getToken($base, $realm,$redirectNoEncode, $client_id, $client_secret, $_GET['code']);
+                $Ktoken = $this->getKeycloakToken($base, $realm,$redirectNoEncode, $client_id, $client_secret, $_GET['code']);
 
                 $user = $this->getUserInfo($base, $realm, $client_id, $client_secret, $Ktoken);
 
