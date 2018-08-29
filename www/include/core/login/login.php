@@ -47,6 +47,12 @@ $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 've
 $release = $DBRESULT->fetch();
 
 /**
+ * Getting Keycloak login state
+ */
+$DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
+$keycloakEnabled = $DBRESULT->fetchRow()["value"];
+
+/**
  * Defining Login Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', './index.php');
@@ -114,6 +120,7 @@ $tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
+$tpl->assign('keycloakEnabled', $keycloakEnabled);
 
 // Redirect User
 $redirect = filter_input(
