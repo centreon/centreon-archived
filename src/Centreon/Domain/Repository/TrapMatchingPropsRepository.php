@@ -4,7 +4,7 @@ namespace Centreon\Domain\Repository;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use PDO;
 
-class TrapServiceRelationRepository extends ServiceEntityRepository
+class TrapMatchingPropsRepository extends ServiceEntityRepository
 {
 
     /**
@@ -17,15 +17,19 @@ class TrapServiceRelationRepository extends ServiceEntityRepository
     public function export(int $pollerId, array $templateChainList = null): array
     {
         $list = join(',', $templateChainList ?? []);
-        $sqlFilterList = $list ? " OR t.service_id IN ({$list})" : '';
+        $sqlFilterList = $list ? " OR tsr.service_id IN ({$list})" : '';
         $sqlFilter = TrapRepository::exportFilterSql();
         $sql = <<<SQL
+SELECT l.* FROM (
 SELECT
     t.*
-FROM traps_service_relation AS t
-WHERE t.service_id IN ({$sqlFilter}){$sqlFilterList}
-GROUP BY t.tsr_id
+FROM traps_matching_properties AS t
+INNER JOIN traps_service_relation AS tsr ON
+    tsr.traps_id = t.trap_id AND
+    (tsr.service_id IN ({$sqlFilter}){$sqlFilterList})
+GROUP BY t.tmo_id
 SQL;
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
