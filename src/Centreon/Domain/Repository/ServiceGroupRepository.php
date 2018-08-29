@@ -13,11 +13,13 @@ class ServiceGroupRepository extends ServiceEntityRepository
      * @todo restriction by poller
      * 
      * @param int $pollerId
+     * @param array $templateChainList
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(int $pollerId, array $templateChainList = null): array
     {
         $sql = <<<SQL
+SELECT l.* FROM(
 SELECT
     t.*
 FROM servicegroup AS t
@@ -27,6 +29,25 @@ LEFT JOIN hostgroup_relation AS hgr ON hgr.hostgroup_hg_id = hg.hg_id
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = sgr.host_host_id OR hr.host_host_id = hgr.host_host_id
 WHERE hr.nagios_server_id = :id
 GROUP BY t.sg_id
+SQL;
+
+        if ($templateChainList) {
+            $list = join(',', $templateChainList);
+            $sql .= <<<SQL
+
+UNION
+
+SELECT
+    tt.*
+FROM servicegroup AS tt
+INNER JOIN servicegroup_relation AS _sgr ON _sgr.servicegroup_sg_id = tt.sg_id AND _sgr.service_service_id IN ({$list})
+GROUP BY tt.sg_id
+SQL;
+        }
+
+        $sql .= <<<SQL
+) AS l
+GROUP BY l.sg_id
 SQL;
 
         $stmt = $this->db->prepare($sql);

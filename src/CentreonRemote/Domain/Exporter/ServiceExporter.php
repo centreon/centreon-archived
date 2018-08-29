@@ -62,6 +62,11 @@ class ServiceExporter implements ExporterServiceInterface
 
         $pollerId = $this->commitment->getPoller();
         
+        $templateChain = $this->db
+            ->getRepository(Repository\ServiceRepository::class)
+            ->getChainByPoller($pollerId)
+        ;
+        
         // Extract data
         $hostRelation = $this->db
             ->getRepository(Repository\HostServiceRelationRepository::class)
@@ -70,37 +75,37 @@ class ServiceExporter implements ExporterServiceInterface
 
         $services = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
 
         $serviceGroups = $this->db
             ->getRepository(Repository\ServiceGroupRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
 
         $serviceGroupRelation = $this->db
             ->getRepository(Repository\ServiceGroupRelationRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
 
         $serviceCategories = $this->db
             ->getRepository(Repository\ServiceCategoryRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
 
         $serviceCategoryRelation = $this->db
             ->getRepository(Repository\ServiceCategoryRelationRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
         
         $serviceMacros = $this->db
             ->getRepository(Repository\OnDemandMacroServiceRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
         
         $serviceInfo = $this->db
             ->getRepository(Repository\ExtendedServiceInformationRepository::class)
-            ->export($pollerId)
+            ->export($pollerId, $templateChain)
         ;
 
         $this->commitment->getParser()::dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));

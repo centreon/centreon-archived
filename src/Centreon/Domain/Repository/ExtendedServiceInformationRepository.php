@@ -13,11 +13,13 @@ class ExtendedServiceInformationRepository extends ServiceEntityRepository
      * @todo restriction by poller
      * 
      * @param int $pollerId
+     * @param array $templateChainList
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(int $pollerId, array $templateChainList = null): array
     {
         $sql = <<<SQL
+SELECT l.* FROM(
 SELECT
     t.*
 FROM extended_service_information AS t
@@ -28,6 +30,26 @@ INNER JOIN ns_host_relation AS hr ON hr.host_host_id = hsr.host_host_id OR hr.ho
 WHERE hr.nagios_server_id = :id
 GROUP BY t.esi_id
 SQL;
+
+        if ($templateChainList) {
+            $list = join(',', $templateChainList);
+            $sql .= <<<SQL
+
+UNION
+
+SELECT
+    tt.*
+FROM extended_service_information AS tt
+WHERE tt.service_service_id IN ({$list})
+GROUP BY tt.esi_id
+SQL;
+        }
+
+        $sql .= <<<SQL
+) AS l
+GROUP BY l.esi_id
+SQL;
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
