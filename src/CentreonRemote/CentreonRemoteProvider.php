@@ -105,6 +105,18 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         });
         
+        // Meta services
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\MetaServiceExporter($locator);
+
+            return $service;
+        });
+        
         // Services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
             $services = [
