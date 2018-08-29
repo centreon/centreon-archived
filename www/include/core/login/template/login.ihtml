@@ -34,6 +34,9 @@
                         <tr>
                             <td colspan="2" align='center'>{$form.submitLogin.html}</td>
                         </tr>
+                        {if $keycloakEnabled == 1}
+                            <td colspan="2" align='center'><a href="?force=1"><input class="btc bt_info" name="submitLogin" value="Connect with Keycloak" type="button"/></a></td>
+                        {/if}
                     </table>
                 </div>
                 <div class="LoginInvitVersion">
