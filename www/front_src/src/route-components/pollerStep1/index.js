@@ -17,7 +17,7 @@ class PollerStepOneRoute extends Component {
 
   handleSubmit = data => {
     const {pollerData} = this.props
-    this.wizardFormApi.post('', {...pollerData, ...data})
+    return this.wizardFormApi.post('', {...pollerData, ...data})
       .then(response => {
         console.log(response)
       })
@@ -47,11 +47,11 @@ class PollerStepOneRoute extends Component {
   }
 }
 
-// const mapStateToProps = ({pollerForm}) => ({
-//   pollerData: pollerForm
-// });
+const mapStateToProps = ({pollerForm}) => ({
+  pollerData: pollerForm
+});
 
 const mapDispatchToProps = {
   setPollerWizard
 }
-export default connect(null, mapDispatchToProps)(PollerStepOneRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepOneRoute);

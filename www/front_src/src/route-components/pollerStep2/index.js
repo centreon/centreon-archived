@@ -10,14 +10,6 @@ class PollerStepTwoRoute extends Component {
   wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
   wizardFormWaitListApi = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
 
-    // getWaitList = listData => {
-
-    // }
-
-    // componentWillMount(){
-    //   getWaitList(listData)
-    // }
-
     handleSubmit = data => {
       const {pollerData} = this.props
       this.wizardFormApi.post('', {...pollerData, ...data})
