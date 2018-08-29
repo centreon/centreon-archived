@@ -61,8 +61,8 @@ if ($search != null) {
     $ClWh1 = "WHERE host_id IS NULL";
     $ClWh2 = "WHERE gct.host_id = h.host_id";
 }
-$query = "( SELECT compo_id, NULL as host_name, host_id, service_id, name, ds_stack, ds_order, ds_name, " .
-    "ds_color_line, ds_color_area, ds_filled, ds_legend, default_tpl1, ds_tickness, ds_transparency " .
+$query = "( SELECT SQL_CALC_FOUND_ROWS compo_id, NULL as host_name, host_id, service_id, name, ds_stack, ds_order, " .
+    "ds_name, ds_color_line, ds_color_area, ds_filled, ds_legend, default_tpl1, ds_tickness, ds_transparency " .
     "FROM giv_components_template $SearchTool $ClWh1 ) UNION ( SELECT compo_id, host_name, gct.host_id, " .
     "gct.service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, ds_legend, " .
     "default_tpl1, ds_tickness, ds_transparency FROM giv_components_template AS gct, host AS h $SearchTool $ClWh2 ) " .
