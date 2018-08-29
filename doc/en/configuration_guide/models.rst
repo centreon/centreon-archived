@@ -24,7 +24,7 @@ The advantages are:
 * Simplified element definition
 * No duplication of data
 * Facility of addition of new resources
-* Predefined configurations assimilated to a “catalogue of indicators”
+* Predefined configurations assimilated to a “catalog of indicators”
 * Templates can inherit from other templates.
 
 **************
@@ -117,8 +117,8 @@ The host srvi-web-01 will automatically possess the following services:
 * Broken-jobs, hit-ratio, tablespaces, listener from services templates linked to the host template “DB-MySQL”
 * Process and connection from services templates linked to the host template “Web-Server-Apache”
 
-When the services of a host are generated from host's templates, it is possible that certain services generated are not checked by the supervision tool. 
-In this case, it is necessary to disable the services that are not used (but not to delete them). 
+When the services of a host are generated from host's templates, it is possible that certain services generated are not checked by the supervision tool.
+In this case, it is necessary to disable the services that are not used (but not to delete them).
 In case of deletion of services, regeneration of services of the host from host's templates will re-create the services deleted.
 
 

@@ -19,9 +19,9 @@ In order to list available host groups, use the **SHOW** action::
   55;Networks;All other equipments
   56;Printers;All printers
   58;Routers;All routers
-  59;Switchs;All switchs
+  59;Switches;All switches
   60;Firewall;All firewalls
-  61;Unix-Servers;All unix servers
+  61;Unix-Servers;All Unix servers
 
 Columns are the following:
 

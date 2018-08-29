@@ -27,4 +27,4 @@ templates configuration.
 For example, if you create a page in the wiki using the usual pattern
 (ex: ``Host:Centreon-Server`` or ``Service:Centreon-Server Disk-/``),
 
-It will add the link to the page in the **URL** field of object's extented information.
+It will add the link to the page in the **URL** field of object's extended information.

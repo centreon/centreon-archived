@@ -16,7 +16,7 @@ SNMP traps are information sent using the SNMP protocol from monitored equipment
 
 In order to be able interpret the event received the Network supervisor server needs to possess in its configuration the necessary elements to translate the event. For this it must have a database containing the OID and the descriptions, this is what is called MIB files. There are two types of MIB:
 
-* Standard MIBs which use standardised OIDs and which are implemented by numerous manufacturers on their equipment.
+* Standard MIBs which use standardized OIDs and which are implemented by numerous manufacturers on their equipment.
 * MIB manufacturers who are specific to each one and often to each equipment model.
 
 MIB manufacturers can be retrieved from the equipment. Centreon allows us to store the definition of SNMP traps in its MySQL database. The traps can subsequently be linked to passive services via the **Relations** tab of the definition of a service.
@@ -43,7 +43,7 @@ Here is the processing of an SNMP trap with centreon 2.5.x:
 
 .. image:: /images/user/configuration/10advanced_configuration/06_trap_centreon.png
       :align: center
- 
+
 Processing of a trap by a satellite server
 ==========================================
 
@@ -53,7 +53,7 @@ To keep a copy of the configuration of the SNMP traps on each satellite server, 
 2. Once the SNMP trap is received, it is sent to the ‘centreontrapdforward’ script which writes the information received in a buffer folder (by default **/var/spool/centreontrapd/**).
 3. The ‘centreontrapd’ service reads the information received in the buffer folder and interprets the various traps received checking in the SQLite database the actions to be taken to process the traps received.
 4. The ‘centreontrapd’ service transmits the information to the scheduler which changes the status and the information associated with the service to which the SNMP trap is linked.
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/06_trap_poller.png
       :align: center
 
@@ -63,7 +63,7 @@ To keep a copy of the configuration of the SNMP traps on each satellite server, 
 Configuration of services
 *************************
 
-Snmptrapd 
+Snmptrapd
 =========
 
 To call the ‘centreontrapdfoward’ script, the file **/etc/snmp/snmptrapd.conf** must contain the following lines::
@@ -72,7 +72,7 @@ To call the ‘centreontrapdfoward’ script, the file **/etc/snmp/snmptrapd.con
         traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforward"
 
 
-You can optimise the performances of snmptrapd by using the following options:
+You can optimize the performances of snmptrapd by using the following options:
 
 * **-On** don’t try to convert the OIDs
 * **-t** don’t log the traps to the syslog server
@@ -88,7 +88,7 @@ It is also possible to place the snmptrapd buffer folder in the RAM. For this, a
 
 .. _configuration_advanced_centreontrapdforward:
 
-centreontrapdforward 
+centreontrapdforward
 ====================
 
 To change the buffer folder towards which the information will be written, change the configuration file **/etc/centreon/centreontrapd.pm**::
@@ -106,7 +106,7 @@ You can also map the folder in the RAM, by adding the following line in the file
 
 .. _configuration_advanced_centreontrapd:
 
-centreontrapd 
+centreontrapd
 =============
 
 Two configuration files existent in centreontrapd:
@@ -153,7 +153,7 @@ Here is an example of possible configuration of the file **/etc/centreon/centreo
         mode => 0,
         cmd_timeout => 10,
         centreon_user => "centreon",
-        # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
+        # 0 => skip if MySQL error | 1 => don't skip (block) if MySQL error (and keep order)
         policy_trap => 1,
         # Log DB
         log_trap_db => 0,
@@ -203,12 +203,12 @@ It is possible of configure the file **/etc/centreon/conf.pm** in two ways:
 
 
 **********************
-Centreon configuration 
+Centreon configuration
 **********************
 
 .. _configuration_advanced_snmptrapds_manufacturer:
 
-Add a manufacturer 
+Add a manufacturer
 ==================
 
 Within centreon, the root OIDs of the SNMP traps is filed by manufacturer. To add a manufacturer:
@@ -216,7 +216,7 @@ Within centreon, the root OIDs of the SNMP traps is filed by manufacturer. To ad
 1. Go into the menu: **Configuration ==> SNMP traps**
 2. In the left menu, click on **Manufacturer**
 3. Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/06constructors.png
       :align: center
 
@@ -235,7 +235,7 @@ It is also possible to import OIDs from MIBs provided by the manufacturers. To d
 
 .. image:: /images/user/configuration/10advanced_configuration/06importmibs.png
       :align: center
- 
+
 * The **Manufacturer** list can be used to choose the manufacturer to which the MIB that you are importing  belongs
 * The **File (.mib)** field can be used to load the MIB
 
@@ -243,16 +243,16 @@ It is also possible to import OIDs from MIBs provided by the manufacturers. To d
 
 .. image:: /images/user/configuration/10advanced_configuration/06importmibssuccess.png
       :align: center
- 
+
 .. note::
-  The dependencies of the MIBS that you import must be present in the folder **/usr/share/snmp/mibs**. Once the import is completed, delete the dependences previously copied.
+  The dependencies of the MIBS that you import must be present in the folder **/usr/share/snmp/mibs**. Once the import is completed, delete the dependencies previously copied.
 .. note::
   Once the SNMP traps are imported, it is necessary to verify the “Monitoring” status associated with the events. By default it will be “OK”.
 
-Manual configuration of traps 
+Manual configuration of traps
 =============================
 
-Basic configuration 
+Basic configuration
 -------------------
 
 It is also possible to create definitions of SNMP traps manually:
@@ -278,7 +278,7 @@ It is also possible to create definitions of SNMP traps manually:
 * If the **Submit result** box is checked the result is submitted to the Network supervisor engine.
 * The **Comments** field (last field) contains by default the comment by the manufacturer of the SNMP trap. Most of the time, this comment indicates the list of variables contained in the SNMP trap (see the next chapter on advanced configuration).
 
-Advanced configuration of the traps 
+Advanced configuration of the traps
 -----------------------------------
 
 It is possible to determine the status of a service from the value of a setting of the SNMP trap rather than from the Root OID. Previously the manufacturer defined an SNMP trap (Root OID) by type of event to be sent (linkUp / linkDown). Today, the tendency is to define a Root OID by category of events and then to define the event via a set of settings.
@@ -304,7 +304,7 @@ The **Advanced** tab serves to configure the behavior of the handling process of
 
 .. image:: /images/user/configuration/10advanced_configuration/06advancedconfiguration.png
       :align: center
- 
+
 * **Enable routing** is used to enable the routing of information.
 * **Route definition** is used to define the command to be used for routing.
 
@@ -314,7 +314,7 @@ Before performing the processing of the event (translation of the **Output messa
 
 Here is an example of use with the linkUP trap:
 
-For a Cisco equipment, $2 == ifDescr contains the port number of the interface (GigabitEthernet0/1 for instance). 
+For a Cisco equipment, $2 == ifDescr contains the port number of the interface (GigabitEthernet0/1 for instance).
 The best description of the interface is in the SNMP if Alias field.
 
 The following command can be used to retrieve this value :
@@ -323,7 +323,7 @@ The following command can be used to retrieve this value :
 
     snmpget -v 2c -Ovq -c <community> <cisco switch> ifAlias.$1
 
-To use the result of the PREEXEC command in the **Output message**, it is necessary to use the variable $p{n} where ‘n’ corresponds to the order of definition of the command. 
+To use the result of the PREEXEC command in the **Output message**, it is necessary to use the variable $p{n} where ‘n’ corresponds to the order of definition of the command.
 
 Example:
 
@@ -408,4 +408,3 @@ To be able to export the OID present in the database in the configuration file t
 6. Click on the **Generate** button
 
 .. |navigate_plus|      image:: /images/navigate_plus.png
-

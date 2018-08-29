@@ -19,6 +19,6 @@ CHANGELOG
 Features and Bug Fixes
 ======================
 
-- Fix: Non intialised value in Centreon ACL page
+- Fix: Non initialized value in Centreon ACL page
 - Fix : Security issue with autologin when user has no password
 - Enh: [Centreon Clapi] Add export filters

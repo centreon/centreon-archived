@@ -29,7 +29,7 @@ For every contact associated with the service (or the host):
 7. If these three conditions are confirmed, the monitoring engine alerts the contact using the notifications script defined for the service or the host.
 8. The monitoring engine increments the notification number by 1
 
-The diagram below summarises the notifications management in Centreon:
+The diagram below summarizes the notifications management in Centreon:
 
 .. image:: /images/guide_exploitation/hnotifications_schema.png
    :align: center

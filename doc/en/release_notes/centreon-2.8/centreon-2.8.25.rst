@@ -3,9 +3,9 @@ Centreon Web 2.8.25
 ###################
 =======
 
-Introduction to a new banner to preparate the next releases. This feature must be
+Introduction to a new banner to prepare the next releases. This feature must be
 enabled for each user. After the update, users will be asked to activate or not this
-feature. New banner will appear after refresh of the page. A rollback is still possible 
+feature. New banner will appear after refresh of the page. A rollback is still possible
 through the "My account" menu.
 
 Enhancements

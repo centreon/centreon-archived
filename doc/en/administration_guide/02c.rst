@@ -11,9 +11,9 @@ It is possible to install modules using the YUM utility or source files (\*.tar.
 
 There are 3 kinds of modules:
 
-* **Community** modules, under licence GPL v2, developed by the Centreon community
-* **Core** modules, under licence GPL v2, developed by the Centreon team
-* **Proprietary** modules, subject to a licence, developed by `Centreon <http://www.centreon.com>`_
+* **Community** modules, under license GPL v2, developed by the Centreon community
+* **Core** modules, under license GPL v2, developed by the Centreon team
+* **Proprietary** modules, subject to a license, developed by `Centreon <http://www.centreon.com>`_
 
 To install a module:
 
@@ -26,7 +26,7 @@ To install a module:
 3. Click on the |install| icon to start installation of the module
 4. Click now on Install to install the module
 
-The table below summarises the columns of the page:
+The table below summarizes the columns of the page:
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 |   Column                |  Description                                                                                               |
@@ -41,7 +41,7 @@ The table below summarises the columns of the page:
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | Author                  | Indicates the module author                                                                                |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
-| Expiration date         | Indicates licence expiration date                                                                          |
+| Expiration date         | Indicates license expiration date                                                                          |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | Installed               | Indicates if the module is installed or not                                                                |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
@@ -62,7 +62,7 @@ The table below summarises the columns of the page:
 Widgets
 *******
 
-Widgets enable us to construct customised views, dealt with in the chapter covering :ref:`widgets <leswidgets>`.
+Widgets enable us to construct customized views, dealt with in the chapter covering :ref:`widgets <leswidgets>`.
 
 To install a widget:
 
@@ -71,7 +71,7 @@ To install a widget:
 #. In the left menu, click on **Setup** under **Widgets**
 #. Click on |install| to start the installation of the widget
 
-The table below summarises the columns of the page:
+The table below summarizes the columns of the page:
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 |   Column                |  Description                                                                                               |

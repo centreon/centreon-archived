@@ -35,10 +35,10 @@ The following window is displayed:
 * **Proxy port** fields defines the port to access to the proxy
 * **Display downtime and acknowledgment on chart** allows to display downtime and acknowledgment on chart
 * **Display comment on chart** allows to display comment from service on chart
-* **Enable Autologin** box authorises the users to log into the web interface via the autologin mechanism
+* **Enable Autologin** box authorizes the users to log into the web interface via the autologin mechanism
 * **Display Autologin shortcut** box serves to display the connection short-cut at the top right
 * **Enable SSO authentication** box enables SSO authentication
-* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed). The mixed mode requires trsuted client addresses.
+* **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed). The mixed mode requires trusted client addresses.
 * **SSO trusted client addresses** field indicates which are hte IP/DNS of the trusted clients (corresponding to the reverse proxy) for SSO. The trusted clients are separated by comas.
 * **SSO login header** field indicates the variables of the header that will be used as a login / pseudo (i.e HTTP_AUTH_USER).
 * **Timezone** field indicates timezone of your monitoring server.
@@ -63,15 +63,15 @@ This part covers the general options of the real time monitoring interface.
    :align: center
 
 * **Default Engine** list defines the type of scheduler by default
-* **Interval Length** field indicates the time interval in seconds used to programme the checks and notifications
+* **Interval Length** field indicates the time interval in seconds used to program the checks and notifications
 * **Images Directory** field defines the image directory in which the medias are stored
 * **Plugins Directory** field defines the directory where monitoring plugins are stored
 * **Start script for broker daemon** field contains the path to the init script of the broker
 * **Centreon Broker socket path** Centreon Broker socket path for send external command
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
 * **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home** ==> **Home**)
-* **Page refresh interval** field defines the data refreshment interval in the overall view
-* The boxes in the **Default acknowledgement settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgement or of a downtime
+* **Page refresh interval** field defines the data refreshment interval in the overall view 
+* The boxes in the **Default acknowledgment settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgment or of a downtime
 
 
 ********
@@ -118,7 +118,7 @@ To add a new directory:
 * **Use service DNS** field indicates if it is necessary to use the DNS server to solve the IP address of the LDAP directory
 * **LDAP servers** field can be used to add one or more LDAP directories to which Centreon will connect
 
-The table below summarises the settings to add an LDAP server:
+The table below summarizes the settings to add an LDAP server:
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 |   Column                |  Description                                                                                               |

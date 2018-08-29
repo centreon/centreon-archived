@@ -4,7 +4,7 @@
 Macros
 ======
 
-A macro is a variable used to retrieve certain values. 
+A macro is a variable used to retrieve certain values.
 A macro always starts and finishes by the “$” sign.
 
 ***************
@@ -14,10 +14,11 @@ Standard macros
 Standard macros are macros predefined in the source code of the monitoring engines. These different macros allow us to retrieve the value of various objects from commands.
 
 E.g.:
+
 * The macro called **$HOSTADDRESS$** enables us to retrieve the IP address of a host
 * The macro called **$CONTACTEMAIL$** enables us to retrieve the e-mail address of the contact
 
-.. note:: 
+.. note::
    A complete list of macros is available at the following address: `List of macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
 
 .. _custommacros:
@@ -26,16 +27,16 @@ E.g.:
 Custom macros
 *************
 
-Definition 
+Definition
 ==========
 
-Customised macros are macros defined by the user at the creation of a host or a service. They are used in check commands. Customised macros start with $_HOST for customised macros of hosts and by $_SERVICE for customised macros of services. 
+Customized macros are macros defined by the user at the creation of a host or a service. They are used in check commands. Customized macros start with $_HOST for customized macros of hosts and by $_SERVICE for customized macros of services.
 
-There are several advantages to using customised macros instead of arguments:
+There are several advantages to using customized macros instead of arguments:
 
 * The function of the macro is defined in its name. The macro $_HOSTMOTDEPASSEINTRANET$ is easier to read than $ARG1$
 * The macros inherit models of hosts and of services, the hence it is possible to modify a single macro for a host or a service. On the other hand, the arguments all need to be redefined if a single argument is changed
-* The number of arguments is limited to 32, unlike customised macros which are unlimited
+* The number of arguments is limited to 32, unlike customized macros which are unlimited
 
 A macro of a host is used to define a variable that is specific to the host and which will not change regardless of the service questioned: host connection identifiers, a port of connection to a particular service, an SNMP community, etc.
 A macro of a service is used more to define settings specific to a service: a WARNING / CRITICAL threshold, a partition to be questioned, etc.
@@ -47,20 +48,20 @@ During the definition of a host, the following macros are created:
 
 .. image:: /images/user/configuration/10advanced_configuration/01hostmacros.png
       :align: center
- 
+
 To retrieve these macros in a check command, you need to call it using the following variables: $_HOSTUSERLOGIN$, $_HOSTUSERPASSWORD$.
 
 On definition of a service, the following macros are created:
 
 .. image:: /images/user/configuration/10advanced_configuration/01servicemacros.png
       :align: center
- 
+
 To retrieve these macros in a check command, you need to invoke them using the following variables:  $_SERVICEPARTITION$, $_SERVICEWARNING$, $_SERVICECRITICAL$.
 
 A special case
 ==============
 
-The **Community SNMP & Version** fields in a host form automatically generates the following customised macros: $_HOSTSNMPCOMMUNITY$ and $_HOSTSNMPVERSION$.
+The **Community SNMP & Version** fields in a host form automatically generates the following customized macros: $_HOSTSNMPCOMMUNITY$ and $_HOSTSNMPVERSION$.
 
 ***************
 Resource macros
@@ -72,9 +73,9 @@ In general, these macros are used to make reference to paths containing supervis
 
 To add a resources macro:
 
-* Go into the menu: **Configuration ==> Pollers ==> Ressources**
+* Go into the menu: **Configuration ==> Pollers ==> Resources**
 * Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/01macrosressources.png
       :align: center
 
@@ -99,6 +100,5 @@ The complete documentation on macros “on demand” is available at this addres
 .. note::
    The use of these macros is not recommended because the search for a value of a setting of an object from another object is a consumer in terms of resources.
 
-.. warning:: 
+.. warning::
    The enabling of the setting **Use large installation tweaks** makes it impossible to use environment macros.
-

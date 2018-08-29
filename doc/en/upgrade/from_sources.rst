@@ -13,11 +13,11 @@ Shell installation
 
 Extract the package::
 
-  $ tar xvfz centreon-2.x.x.tar.gz
+  $ tar xvfz centreon-web-2.8.x.tar.gz
 
 Change the directory::
 
-  $ cd centreon-2.x.x
+  $ cd centreon-web-2.8.x
 
 Run the upgrade script::
 

@@ -17,8 +17,8 @@ CHANGELOG
 Bug fixes
 =========
 
-- #3793: Porblem when creating an empty hostgroup with non admin user
-- #3795: Update Centreon Administration About page (forge -> Github)
+- #3793: Problem when creating an empty hostgroup with non admin user
+- #3795: Update Centreon Administration About page (forge -> GitHub)
 - #3796: Problem when connect two time with same user in API
 - #3797: Password in macro
 - #3800: Current State Duration isn't displayed

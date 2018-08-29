@@ -70,7 +70,7 @@ Select the hard disk drive and the **I will configure partitioning** option, the
    :align: center
    :scale: 65%
 
-Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**: 
+Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**:
 
 .. image :: /images/user/07_partitioning_filesystem.png
    :align: center
@@ -287,25 +287,37 @@ Start monitoring
 
 To start the monitoring engine :
 
- 1. On the web interface, go to **Configuration** ==> **Monitoring engines**
- 2. Leave the default options and click on **Export**
- 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4. Check **Move Export Files** and **Restart Monitoring Engine**
- 5. Click on **Export** again
- 6. Log into the ‘root’ user on your server
- 7. Start Centreon Broker
+ 1. On the web interface, go to **Configuration** ==> **Pollers**
+ 2. Leave the default options and click on **Export configuration**
+ 3. Select **Central** poller from the box input **Pollers**
+ 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 5. Check **Move Export Files** and **Restart Monitoring Engine** with option method **Restart** selected
+ 6. Click on **Export** again
+ 7. Log into the ‘root’ user on your server
+ 8. Verify if services **cbd**, **centengine** and **centcore** is running
+
+  ::
+
+    service cbd status
+    service centengine status
+    service centcore status
+
+ If they are not running, start them
+
+ * Start Centreon Broker
 
   ::
 
     service cbd start
 
- 8. Start Centreon Engine
+
+ * Start Centreon Engine
 
   ::
 
     service centengine start
 
- 9. Start centcore
+ * Start centcore
 
   ::
 
@@ -324,7 +336,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 
 |
 
-* The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+* The **Home** menu enables access to the first home screen after logging in. It summarizes the general status of the supervision.
 * The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 * The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 * The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
@@ -376,8 +388,8 @@ Then install Centreon Plugin Pack Manager itself.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-You're now ready to go to Administration -> Extensions -> Plugin packs -> Setup.
-You'll find there 6 free Plugin Packs to get you started. 5 more are
+You're now ready to go to Configuration -> Plugin packs -> Manager.
+You'll find there 10 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
 

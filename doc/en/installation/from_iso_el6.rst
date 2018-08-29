@@ -248,7 +248,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 
 |
 
-* The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+* The **Home** menu enables access to the first home screen after logging in. It summarizes the general status of the supervision.
 * The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 * The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 * The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
@@ -312,8 +312,8 @@ Then install Centreon Plugin Pack Manager itself.
 .. image:: /_static/images/installation/ppm_3.png
    :align: center
 
-You're now ready to go to Administration -> Extensions -> Plugin packs -> Setup.
-You'll find there 6 free Plugin Packs to get you started. 5 more are
+You're now ready to go to Configuration -> Plugin packs -> Manager.
+You'll find there 10 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
 

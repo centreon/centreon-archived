@@ -20,7 +20,7 @@ Features and Bug Fixes
 ======================
 
 - Fix eventlogs pages for performances and right for non admin users
-- Fix Recurent Downtimes behaviour with timezones
+- Fix Recurent Downtimes behavior with timezones
 - Fix some broken relations in web interface
 - Fix Reporting pages for non admin users
 - Fix some elements with the generation of the configuration

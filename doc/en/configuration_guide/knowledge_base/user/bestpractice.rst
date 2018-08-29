@@ -19,7 +19,7 @@ Here is an example of an host template configuration tree:
 To setup procedures for the *RedHat* host template, just proceed as
 indicated in :ref:`wiki-page-link`. 
 
-In the template tree we see that the **RehHat** template inherits from two other templates: **Linux** and **Generic-hosts**. In this example all hosts using the *RedHat* host
+In the template tree we see that the **RedHat** template inherits from two other templates: **Linux** and **Generic-hosts**. In this example all hosts using the *RedHat* host
 template will have the new procedure defined attached.
 
 We could setup a procedure at a higher level in the template tree, it will impact more hosts. 
