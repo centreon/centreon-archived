@@ -713,10 +713,10 @@ msgstr "Activer le processus de sauvegarde"
 
 #: centreon-web/www/include/Administration/parameters/backup/help.php:13
 msgid ""
-"Backup configuration files (MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-"
+"Backup configuration files (MySQL, Apache, PHP, SNMP, centreon, centreon-"
 "engine, centreon-broker)"
 msgstr ""
-"Activer la sauvegarde des fichiers de configuration (MySQL, Zend, Apache, PHP, "
+"Activer la sauvegarde des fichiers de configuration (MySQL, Apache, PHP, "
 "SNMP, centreon, centreon-engine, centreon-broker)"
 
 #: centreon-web/www/include/Administration/parameters/backup/help.php:17
@@ -763,11 +763,6 @@ msgid "MySQL configuration file path (i.e. /etc/my.cnf.d/centreon.cnf)"
 msgstr ""
 "Chemin d'accès au fichier de configuration MySQL (i.e. /etc/my.cnf.d/centreon."
 "cnf)"
-
-#: centreon-web/www/include/Administration/parameters/backup/help.php:53
-msgid "Zend configuration file path (i.e. /etc/php.d/zendguard.ini)"
-msgstr ""
-"Chemin d'accès au fichier de configuration Zend (i.e. /etc/php.d/zendguard.ini)"
 
 #: centreon-web/www/include/Administration/parameters/backup/help.php:57
 msgid "Use SCP to copy backup on remote host"

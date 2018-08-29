@@ -165,9 +165,7 @@ class CentreonContact extends CentreonObject
      */
     public function getContactID($contact_name = null)
     {
-        $this->object->setCache(true);
         $cIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($contact_name));
-        $this->object->setCache(false);
         if (!count($cIds)) {
             throw new CentreonClapiException("Unknown contact: " . $contact_name);
         }
