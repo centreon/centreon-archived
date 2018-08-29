@@ -8,22 +8,27 @@ import {connect} from 'react-redux';
 
 class RemoteServerStepOneRoute extends Component {
   state = {
-    error: null
+    error: null,
+    waitList: []
   }
 
   wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
   wizardFormWaitListApi = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
-  
-  componentWillMount = () => {
-    this.getWaitList = listData => {
-      this.wizardFormWaitListApi.get('', listData)
-        .then(response => {
+
+    getWaitList = () => {
+      this.wizardFormWaitListApi.get()
+        .then(({response}) => {
+          // TO DO
+          this.setState({waitList: response.data})
           console.log(response)
         })
         .catch(err => {
           console.log(err)
       });
     }
+  
+  componentDidMount = () => {
+    this.getWaitList()
   }
 
   handleSubmit = data => {
@@ -45,15 +50,16 @@ class RemoteServerStepOneRoute extends Component {
 
   links = [
     {active: true, number: 1, prevActive: true, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
-    {active: true, number: 2, path: this.goToPath.bind(this, routeMap.remoteServerStep1)}
+    {active: true, number: 2}
   ];
     
    render(){
     const {links} = this;
+    const {waitList} = this.state;
     return (
       <div>
         <ProgressBar links={links} />
-        <Form onSubmit={this.handleSubmit.bind(this)}/>
+        <Form waitList={waitList} onSubmit={this.handleSubmit.bind(this)}/>
       </div>
     )
   }
