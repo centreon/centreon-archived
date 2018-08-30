@@ -58,6 +58,43 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * @SWG\Post(
      *   path="/centreon/api/internal.php",
+     *   operationId="getRemotesList",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_configuration_remote",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="getRemotesList",
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON with the IPs of connected remotes"
+     *   )
+     * )
+     *
+     * Get list with connected remotes
+     *
+     * @return string
+     */
+    public function postGetRemotesList(): string
+    {
+        $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
+
+        return json_encode($statement->fetchAll());
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/centreon/api/internal.php",
      *   operationId="linkCentreonRemoteServer",
      *   @SWG\Parameter(
      *       in="query",

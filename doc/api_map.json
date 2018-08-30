@@ -33,6 +33,34 @@
                 }
             }
         },
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=getRemotesList": {
+            "post": {
+                "operationId": "getRemotesList",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getRemotesList"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs of connected remotes"
+                    }
+                }
+            }
+        },
         "/centreon/api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer": {
             "post": {
                 "operationId": "linkCentreonRemoteServer",
