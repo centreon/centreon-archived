@@ -16,14 +16,16 @@ class PollerStepOneRoute extends Component {
   wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
 
   handleSubmit = data => {
-    const {pollerData} = this.props
-    return this.wizardFormApi.post('', {...pollerData, ...data})
+    const {pollerData, history} = this.props;
+    
+    this.wizardFormApi.post('', {...pollerData, ...data})
       .then(response => {
         console.log(response)
       })
       .catch(err => {
         console.log(err)
     });
+    history.push(routeMap.pollerStep2);
   };
   
   goToPath = path => {
@@ -33,7 +35,8 @@ class PollerStepOneRoute extends Component {
 
   links = [
     {active: true, prevActive: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
-    {active: true, number: 2, path: this.goToPath.bind(this, routeMap.pollerStep1)}
+    {active: true, number: 2, path: this.goToPath.bind(this, routeMap.pollerStep1)},
+    {active: false, number: 3}
   ];
   
   render(){

@@ -4,7 +4,6 @@ import InputField from '../../form-fields/InputField';
 import CheckboxField from '../../form-fields/CheckboxField';
 import SelectField from '../../form-fields/SelectField';
 import RadioField from '../../form-fields/RadioField';
-import MultiSelect from '../../form-fields/MultiSelect';
 
 import { 
   serverNameValidator, 
@@ -13,14 +12,6 @@ import {
   databaseUserValidator,
   databasePasswordValidator
 } from '../../../helpers/validators';
-
-const waitList = [
-  { id: '1', name: 'One' },
-  { id: '2', name: 'Two' },
-  { id: '3', name: 'Three' },
-  { id: '4', name: 'Four' },
-  { id: '5', name: 'Five' }
-];
 
 class RemoteServerFormStepOne extends Component {
   state = {
@@ -82,19 +73,19 @@ class RemoteServerFormStepOne extends Component {
             <Field name="radio" onClick={this.autoInputToggle.bind(this)} component={RadioField} label="Please select a server" />
               {this.state.autoInput && 
                 <div>
-                  {/* <Field
+                  <Field
                     name="open_broker_flow"
                     component={SelectField}
                     label="Select linked Distant Pollers:"
                     required
                     options={['One', 'Two', 'Three', 'Four']}
-                  /> */}
-                  <MultiSelect options={waitList.map(wl => ({value: wl.id, label: wl.name}))} />
+                  />
+                  {/* <MultiSelect options={waitList.map(wl => ({value: wl.id, label: wl.name}))} /> */}
                 </div>
               }
             <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
             <div class="form-buttons">
-              <button className="button" type="submit">Apply</button>
+              <button className="button" type="submit">Next</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>
