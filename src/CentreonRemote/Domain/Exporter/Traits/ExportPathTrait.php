@@ -18,9 +18,12 @@ trait ExportPathTrait
         // Create export path
         $exportPath = $this->getPath($exportPath);
 
-        if (!is_dir($exportPath)) {
-            mkdir($exportPath, $this->commitment->getFilePermission(), true);
+        // remove directory
+        if (is_dir($exportPath)) {
+            system('rm -rf ' . escapeshellarg($exportPath));
         }
+
+        mkdir($exportPath, $this->commitment->getFilePermission(), true);
 
         return $exportPath;
     }
