@@ -7,7 +7,12 @@ class ServerConfigurationWizardRoute extends Component {
 
     handleSubmit = ({server_type}) => {
       const {history} = this.props;
-      server_type == 1 ? (history.push(routeMap.remoteServerStep1)) : (history.push(routeMap.pollerStep1))
+      if(server_type == 1) {
+        history.push(routeMap.remoteServerStep1)
+      }
+      if(server_type == 2) {
+        history.push(routeMap.pollerStep1)
+      }
     }
 
     goToPath = path => {
@@ -16,16 +21,16 @@ class ServerConfigurationWizardRoute extends Component {
     };
   
     links = [
-      {active: true, number: 1, path: this.goToPath.bind(this, routeMap.remoteServerStep1)},
+      {active: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
       {active: false, number: 2}
     ];
     
    render(){
-    const {links, disabled} = this;
+    const {links} = this;
     return (
       <div>
         <ProgressBar links={links} />
-        <Form disabled={disabled} onSubmit={this.handleSubmit.bind(this)}/>
+        <Form onSubmit={this.handleSubmit.bind(this)}/>
       </div>
     )
    }

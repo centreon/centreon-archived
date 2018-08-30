@@ -14,7 +14,7 @@ const configurationTypes = [
   }
 ];
 
-const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submitting, disabled}) => (
+const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submitting}) => (
   <div className="form-wrapper small">
     <div className="form-inner">
       <div className="form-heading">
@@ -24,7 +24,7 @@ const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submittin
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field name="server_type" component={RadioGroupFields} options={configurationTypes} />
         <div class="form-buttons">
-          <button disabled={disabled} className="button" type="submit">Next</button>
+          <button className="button" type="submit">Next</button>
         </div>
         {error ? <div class="error-block">{error.message}</div> : null}
       </form>

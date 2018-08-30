@@ -1,5 +1,4 @@
 import React from 'react';
-/* @jsx h */
 
 const FieldMsg = ({className, children, isError, tagName: FieldMsgTagName, ...restProps}) => (
   <FieldMsgTagName

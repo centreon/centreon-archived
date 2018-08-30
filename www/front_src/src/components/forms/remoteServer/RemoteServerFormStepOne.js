@@ -4,6 +4,7 @@ import InputField from '../../form-fields/InputField';
 import CheckboxField from '../../form-fields/CheckboxField';
 import SelectField from '../../form-fields/SelectField';
 import RadioField from '../../form-fields/RadioField';
+import MultiSelect from '../../form-fields/MultiSelect';
 
 import { 
   serverNameValidator, 
@@ -12,6 +13,14 @@ import {
   databaseUserValidator,
   databasePasswordValidator
 } from '../../../helpers/validators';
+
+const waitList = [
+  { id: '1', name: 'One' },
+  { id: '2', name: 'Two' },
+  { id: '3', name: 'Three' },
+  { id: '4', name: 'Four' },
+  { id: '5', name: 'Five' }
+];
 
 class RemoteServerFormStepOne extends Component {
   state = {
@@ -41,7 +50,7 @@ class RemoteServerFormStepOne extends Component {
       <div className="form-wrapper">
         <div className="form-inner">
           <div className="form-heading">
-            <h2 className="form-title">Server Configuration</h2>
+            <h2 className="form-title mb-2">Server Configuration</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field name="radio" onClick={this.manualInputToggle.bind(this)} component={RadioField} label="Manual input" />
@@ -70,16 +79,17 @@ class RemoteServerFormStepOne extends Component {
                   />
                 </div>
               }
-            <Field name="radio1" onClick={this.autoInputToggle.bind(this)} component={RadioField} label="Please select a server" />
+            <Field name="radio" onClick={this.autoInputToggle.bind(this)} component={RadioField} label="Please select a server" />
               {this.state.autoInput && 
                 <div>
-                  <Field
+                  {/* <Field
                     name="open_broker_flow"
                     component={SelectField}
                     label="Select linked Distant Pollers:"
                     required
                     options={['One', 'Two', 'Three', 'Four']}
-                  />
+                  /> */}
+                  <MultiSelect options={waitList.map(wl => ({value: wl.id, label: wl.name}))} />
                 </div>
               }
             <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
