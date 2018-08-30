@@ -3,8 +3,10 @@ import Home from "../route-components/home";
 import Module from "../route-components/module";
 import PollerStepOne from '../route-components/pollerStep1';
 import PollerStepTwo from '../route-components/pollerStep2';
+import PollerStepThree from '../route-components/pollerStep3';
 import RemoteServerStepOne from '../route-components/remoteServerStep1';
 import RemoteServerStepTwo from '../route-components/remoteServerStep2';
+import RemoteServerStepThree from '../route-components/remoteServerStep3';
 import ServerConfigurationWizard from '../route-components/serverConfigurationWizard';
 
 const classicRoutes = [
@@ -29,6 +31,11 @@ const classicRoutes = [
     exact: true
   },
   {
+    path: routeMap.pollerStep3,
+    comp: PollerStepThree,
+    exact: true
+  },
+  {
     path: routeMap.remoteServerStep1,
     comp: RemoteServerStepOne,
     exact: true
@@ -36,6 +43,11 @@ const classicRoutes = [
   {
     path: routeMap.remoteServerStep2,
     comp: RemoteServerStepTwo,
+    exact: true
+  },
+  {
+    path: routeMap.remoteServerStep3,
+    comp: RemoteServerStepThree,
     exact: true
   },
   {
