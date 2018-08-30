@@ -15,6 +15,10 @@ abstract class ServerConnectionConfigurationService
 
     protected $centralIp;
 
+    protected $dbUser;
+
+    protected $dbPassword;
+
     protected $name;
 
     protected $resourcesPath = '/Domain/Resources/remote_config/';
@@ -40,6 +44,16 @@ abstract class ServerConnectionConfigurationService
     public function setCentralIp($ip)
     {
         $this->centralIp = $ip;
+    }
+
+    public function setDbUser($user)
+    {
+        $this->dbUser = $user;
+    }
+
+    public function setDbPassword($password)
+    {
+        $this->dbPassword = $password;
     }
 
     protected function getDbAdapter(): CentreonDBAdapter
