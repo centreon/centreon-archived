@@ -23,8 +23,6 @@ class ServiceStatusMenu extends Component {
             return null;
         }
 
-        console.log(data)
-
         const { critical, ok, pending, total, unknown, warning } = data;
 
         const { toggled } = this.state;

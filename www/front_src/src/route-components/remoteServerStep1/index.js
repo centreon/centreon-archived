@@ -4,69 +4,64 @@ import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps';
 import axios from "../../axios";
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 class RemoteServerStepOneRoute extends Component {
+
+  links = [
+    { active: true, prevActive: true, number: 1, path: routeMap.serverConfigurationWizard },
+    { active: true, number: 2, path: routeMap.remoteServerStep1 },
+    { active: false, number: 3 },
+    {active: false, number: 4},
+  ];
+
   state = {
     error: null,
-    waitList: []
+    waitList: null
   }
 
   wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
   wizardFormWaitListApi = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
 
-    getWaitList = () => {
-      this.wizardFormWaitListApi.get()
-        .then(response => {
-          // TO DO
-          this.setState({waitList: response.data})
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err)
+  getWaitList = () => {
+    this.wizardFormWaitListApi.post()
+      .then(response => {
+        this.setState({ waitList: JSON.parse(response.data) })
+      })
+      .catch(err => {
+        console.log(err)
       });
-    }
-  
+  }
+
   componentDidMount = () => {
     this.getWaitList()
   }
 
   handleSubmit = data => {
-    const {history} = this.props;
+    const { history } = this.props;
     this.wizardFormApi.post('', data)
       .then(response => {
         console.log(response)
       })
       .catch(err => {
         console.log(err)
-    });
+      });
     history.push(routeMap.remoteServerStep2);
   };
 
-  goToPath = path => {
-    const {history} = this.props;
-    history.push(path);
-  };
-
-  links = [
-    {active: true, prevActive: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
-    {active: true, number: 2, path: this.goToPath.bind(this, routeMap.remoteServerStep1)},
-    {active: false, number: 3}
-  ];
-    
-   render(){
-    const {links} = this;
-    const {waitList} = this.state;
+  render() {
+    const { links } = this;
+    const { waitList } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
-        <Form waitList={waitList} onSubmit={this.handleSubmit.bind(this)}/>
+        <Form waitList={waitList} onSubmit={this.handleSubmit.bind(this)} />
       </div>
     )
   }
 }
 
-const mapStateToProps = ({pollerForm}) => ({
+const mapStateToProps = ({ pollerForm }) => ({
   pollerData: pollerForm
 });
 
