@@ -21,7 +21,7 @@ import UserMenu from "../userMenu";
 
 const instantiateDate = (tz, locale, timestamp) => {
   const currentTime = tz !== '' ? Moment.unix(timestamp).tz(tz) : Moment.unix(timestamp)
-  locale !== null ? currentTime.locale(locale) : currentTime
+  locale = locale !== null ? currentTime.locale(locale) : currentTime
 
   return {
       date: currentTime.format('LL'),
@@ -75,7 +75,7 @@ class TopHeader extends Component {
   }
 
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     this.navService.get().then(({ data }) => {
       this.transformToArray(data, (array) => {
         this.setState({
