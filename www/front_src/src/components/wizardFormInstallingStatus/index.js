@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default ({formTitle}) => (
-  <div className="form-wrapper">
+  <div className="form-wrapper installation">
     <div className="form-inner">
       <div className="form-heading">
         <h2 className="form-title">{formTitle}</h2>
