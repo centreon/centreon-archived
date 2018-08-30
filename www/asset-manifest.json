@@ -1,10 +1,14 @@
 {
-  "main.css": "static/css/main.89d270a5.css",
-  "main.css.map": "static/css/main.89d270a5.css.map",
-  "main.js": "static/js/main.81cf0c37.js",
-  "main.js.map": "static/js/main.81cf0c37.js.map",
-  "static\\media\\icomoon.eot": "static/media/icomoon.43838ab6.eot",
-  "static\\media\\icomoon.svg": "static/media/icomoon.000b6b2a.svg",
-  "static\\media\\icomoon.ttf": "static/media/icomoon.a8034a1d.ttf",
-  "static\\media\\icomoon.woff": "static/media/icomoon.2f6e8e51.woff"
+  "main.css": "/static/css/main.885d60f1.chunk.css",
+  "main.js": "/static/js/main.ca96b80e.chunk.js",
+  "main.js.map": "/static/js/main.ca96b80e.chunk.js.map",
+  "vendors.js": "/static/js/vendors.5e01bfc4.chunk.js",
+  "vendors.js.map": "/static/js/vendors.5e01bfc4.chunk.js.map",
+  "runtime~main.js": "/static/js/runtime~main.004f827c.js",
+  "runtime~main.js.map": "/static/js/runtime~main.004f827c.js.map",
+  "static/media/icomoon.eot": "/static/media/icomoon.43838ab6.eot",
+  "static/media/icomoon.woff": "/static/media/icomoon.2f6e8e51.woff",
+  "static/media/icomoon.svg": "/static/media/icomoon.c79780a8.svg",
+  "static/media/icomoon.ttf": "/static/media/icomoon.a8034a1d.ttf",
+  "index.html": "/index.html"
 }
