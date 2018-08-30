@@ -2,32 +2,32 @@
 # Copyright 2005-2017 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
+#
+# You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
 # General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
+#
+# As a special exception, the copyright holders of this program give Centreon
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of Centreon choice, provided that
+# Centreon also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 ####################################################################################
 
 package centreon::script::centcore;
@@ -62,13 +62,13 @@ sub new {
     $self->{sudo} = "sudo";
     $self->{service} = "service";
     $self->{timeout} = 5;
-    $self->{cmd_timeout} = 5; 
-    
+    $self->{cmd_timeout} = 5;
+
     $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
     $self->{rsync} .= " --timeout=$self->{timeout} ";
     $self->{scp} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
 
-    
+
     $self->{timeBetween2SyncPerf} = 60;
     $self->{perfdataSync} = 0;
     $self->{logSync} = 0;
@@ -78,9 +78,9 @@ sub new {
 
     $self->{timeSyncPerf} = 0;
     $self->{difTime} = 10;
-    
+
     %{$self->{commandBuffer}} = ();
-    
+
     $self->set_signal_handlers;
 
     return $self;
@@ -149,12 +149,12 @@ sub handle_DIE {
 
 sub reload {
     my $self = shift;
-    
+
     if (defined($self->{log_file})) {
         $self->{logger}->file_mode($self->{log_file});
     }
     $self->{logger}->redirect_output();
-    
+
     # Get Config
     unless (my $return = do $self->{config_file}) {
         $self->{logger}->writeLogError("couldn't parse $self->{config_file}: $@") if $@;
@@ -163,7 +163,7 @@ sub reload {
     } else {
         $self->{centreon_config} = $centreon_config;
     }
-    
+
     if ($self->{centreon_config}->{centreon_db} ne $self->{centreon_dbc}->db() ||
         $self->{centreon_config}->{db_host} ne $self->{centreon_dbc}->host() ||
         $self->{centreon_config}->{db_user} ne $self->{centreon_dbc}->user() ||
@@ -217,7 +217,7 @@ sub getAllBrokerStats {
 }
 
 ###########################################
-## Get a instant copy of the broker stat 
+## Get a instant copy of the broker stat
 ## fifo
 #
 sub getBrokerStats($) {
@@ -258,7 +258,7 @@ sub getBrokerStats($) {
                                                               );
         if ($lerror == -1) {
             $self->{logger}->writeLogError("Could not read pipe " . $statistics_file . " on poller ".$server_info->{ns_ip_address});
-        }         
+        }
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
@@ -277,7 +277,7 @@ sub getBrokerStats($) {
 }
 
 # -------------------
-#      Functions 
+#      Functions
 # -------------------
 
 sub getNagiosConfigurationField($$){
@@ -347,8 +347,8 @@ sub sendExternalCommand($$){
     # Get server informations
     my $server_info = $self->getServerConfig($id);
     my $port = checkSSHPort($server_info->{ssh_port});
-    
-    # Get command file 
+
+    # Get command file
     my $command_file = $self->getNagiosConfigurationField($id, "command_file");
 
     # check if ip address is defined
@@ -357,7 +357,7 @@ sub sendExternalCommand($$){
         if ($server_info->{localhost} == 1) {
             my $result = waitPipe($command_file);
             if ($result == 0) {
-                
+
                 # split $cmd in order to send it in multiple line
                 my $count = 0;
                 foreach my $cmd1 (split(/\n/, $cmd)) {
@@ -378,7 +378,7 @@ sub sendExternalCommand($$){
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                     $cmd_line = "";
                     $count = 0;
-                } 
+                }
                 if ($lerror == -1) {
                     $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
                 }
@@ -387,7 +387,7 @@ sub sendExternalCommand($$){
             }
         } else {
             $cmd =~ s/\'/\'\\\'\'/g;
-            
+
             # split $cmd in order to send it in multiple line
             my $count = 0;
             foreach my $cmd1 (split(/\n/, $cmd)) {
@@ -408,7 +408,7 @@ sub sendExternalCommand($$){
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                 $cmd_line = "";
                 $count = 0;
-            } 
+            }
             if ($lerror == -1) {
                 $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
             }
@@ -419,7 +419,7 @@ sub sendExternalCommand($$){
         }
     } else {
         $self->{logger}->writeLogError("Ip address not defined for poller $id");
-    }        
+    }
 }
 
 #######################################
@@ -449,11 +449,11 @@ sub checkRotation($$$$$) {
     my $localLogFile = $_[3];
     my $port = $_[4];
     my ($lerror, $stdout, $cmd);
-    
+
     my $archivePath = $self->getNagiosConfigurationField($instanceId, 'log_archive_path');
     my $getLastCmd = 'echo "$(find '.$archivePath.' -type f -exec stat -c "%Z:%n" {} \; | sort | tail -1)"';
     $cmd = "$self->{ssh} -p $port -q $remoteConnection '".$getLastCmd."'";
-    
+
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                           logger => $self->{logger},
                                                           timeout => 120
@@ -462,7 +462,7 @@ sub checkRotation($$$$$) {
     my $fileName = $2;
     if (defined($updateTime) && defined($lastUpdate) && $updateTime > $lastUpdate) {
         $cmd = "$self->{scp} -P $port $remoteConnection:$fileName $localLogFile.rotate > /dev/null";
-        
+
         ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
                                                               timeout => 120
@@ -472,7 +472,7 @@ sub checkRotation($$$$$) {
 }
 
 ##################################################
-# Send config files to a remote server 
+# Send config files to a remote server
 #
 sub sendConfigFile($){
     my $self = shift;
@@ -495,12 +495,12 @@ sub sendConfigFile($){
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send config files on poller $id");
     $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
-    
+
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 300
                                                                   );
-    
+
     $self->{logger}->writeLogInfo("Result : $stdout");
     $self->{logger}->writeLogInfo("End: Send config files on poller $id");
 
@@ -583,7 +583,7 @@ sub initEngine($$){
 
 ##################################################
 # Function for synchronize SNMP trap configuration
-# 
+#
 sub syncTraps($) {
     my $self = shift;
     my $id = $_[0];
@@ -597,7 +597,7 @@ sub syncTraps($) {
         if ($id != 0 && $ns_server->{localhost} == 0) {
             $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
             $self->{logger}->writeLogDebug($cmd);
-            
+
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 300
@@ -665,14 +665,14 @@ sub getInfos($) {
     if (defined($ns_server->{ns_ip_address}) && $ns_server->{ns_ip_address}) {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} ".$ns_server->{nagios_bin};
+            $cmd = "$self->{sudo} ".$ns_server->{nagios_bin}." -V | head -1";
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
                                                               timeout => 60
                                                               );
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." ".$ns_server->{nagios_bin};
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." ".$ns_server->{nagios_bin}." -V | head -1";
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
@@ -692,7 +692,7 @@ sub getInfos($) {
                 $self->{logger}->writeLogInfo("Version: $2");
                 $self->updateEngineInformation($id, $1, $2);
                 last;
-            } 
+            }
         }
     } else {
         $self->{logger}->writeLogError("Cannot get informations for poller $id");
@@ -705,10 +705,10 @@ sub getInfos($) {
 sub updateEngineInformation($$$) {
     my $self = shift;
     my $id = $_[0];
-    my $engine_name = $_[1]; 
+    my $engine_name = $_[1];
     my $engine_version = $_[2];
-    
-    $self->{centreon_dbc}->query("UPDATE `nagios_server` SET `engine_name` = '$engine_name', `engine_version` = '$engine_version' WHERE `id` = '$id'");    
+
+    $self->{centreon_dbc}->query("UPDATE `nagios_server` SET `engine_name` = '$engine_name', `engine_version` = '$engine_version' WHERE `id` = '$id'");
 }
 
 ################################
@@ -756,8 +756,8 @@ sub parseRequest($){
     if (!$action) {
         return ;
     }
-    
-    # Checks keys for launching commands 
+
+    # Checks keys for launching commands
     if ($action =~ /^RESTART\:([0-9]*)/){
         $self->initEngine($1, "restart");
     } elsif ($action =~ /^RELOAD\:([0-9]*)/){
@@ -791,7 +791,7 @@ sub parseRequest($){
 #
 sub checkProfile() {
     my $self = shift;
-    
+
     my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', 'centcore_cmd_timeout', 'enable_broker_stats')";
     my ($status, $sth) =  $self->{centreon_dbc}->query($request);
     return -1 if ($status == -1);
@@ -799,7 +799,7 @@ sub checkProfile() {
         if (defined($data->{key}) && $data->{key} ne "" && defined($data->{value}) && $data->{value} ne "") {
             if ($data->{key} eq "enable_perfdata_sync") {
                 $self->{perfdataSync} = $data->{value};
-            } 
+            }
             if ($data->{key} eq "enable_logs_sync") {
                 $self->{logSync} = $data->{value};
             }
@@ -840,7 +840,7 @@ sub checkDebugFlag {
 sub storeCommands($$) {
     my $self = shift;
     my ($poller_id, $command) = @_;
-    
+
     if (!defined($self->{commandBuffer}{$poller_id})) {
         $self->{commandBuffer}{$poller_id} = "";
     }
@@ -862,7 +862,7 @@ sub run {
                                                       force => 0,
                                                       logger => $self->{logger});
     $self->checkDebugFlag();
-        
+
     while ($self->{stop}) {
         if ($self->{reload} == 0) {
             $self->{logger}->writeLogInfo("Reload in progress...");
@@ -886,7 +886,7 @@ sub run {
                 $self->{logger}->writeLogError("Error When removing ".$self->{cmdFile}."_read file : $!") if (!unlink($self->{cmdFile}."_read"));
             }
         }
-            
+
         # Read Centcore Directory
         if (-d $self->{cmdDir}) {
             opendir(my $dh, $self->{cmdDir});
@@ -910,31 +910,30 @@ sub run {
             }
             closedir $dh;
         }
-            
+
         if (defined($self->{timeSyncPerf}) && $self->{timeSyncPerf}) {
             $self->{difTime} = time() - $self->{timeSyncPerf};
         }
-            
+
         # Get PerfData on Nagios Poller
         if ((defined($self->{difTime}) && $self->{timeBetween2SyncPerf} <= $self->{difTime}) || $self->{timeSyncPerf} == 0){
             # Check Activity profile Status
             $self->checkProfile();
-            
+
             # Check debug Flag
             $self->checkDebugFlag();
 
             $self->getAllBrokerStats();
-                  
+
             $self->{timeSyncPerf} = time();
         }
 
         sleep(1);
     }
-    
+
     $self->{logger}->writeLogInfo("Centcore stop...");
 }
 
 1;
 
 __END__
-
