@@ -184,20 +184,28 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         WizardConfigurationRequestValidator::validate();
 
+        // IF CONNECTING REMOTE
+        // I can have a $_POST list of poller ips from this current centreon
+        // - validate if each ip exists here as poller
+        // - then I need to make each of these pollers managed by the remote server I just inserted
+        // IF CONNECTING POLLER
+        // I can have a $_POST remote server ip linked to this centreon
+        // - validate that this ip is indeed remote in this centreon
+        // - then I need to set the poller which I just inserted to be managed by this remote
+
         $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
 
         /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
+        $serverConfigurationService->setServerIp($serverIP);
+        $serverConfigurationService->setName($serverName);
 
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
         }
-
-        $serverConfigurationService->setServerIp($serverIP);
-        $serverConfigurationService->setName($serverName);
 
         try {
             $serverConfigurationService->insert();
