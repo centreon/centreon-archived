@@ -62,6 +62,7 @@ require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
 require_once "Centreon/Object/Relation/Trap/Service.php";
 require_once "Centreon/Object/Relation/Service/Category/Service.php";
+require_once "Centreon/Object/Media/Media.php";
 
 /**
  * Centreon Service objects
@@ -76,6 +77,7 @@ class CentreonService extends CentreonObject
     const ORDER_SVCTPL = 2;
     const NB_UPDATE_PARAMS = 4;
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    const SERVICE_LOCATION = "timezone";
 
     public static $aDepends = array(
         'CMD',
@@ -452,9 +454,9 @@ class CentreonService extends CentreonObject
             'notes',
             'notes_url',
             'action_url',
+            'comment',
             'icon_image',
             'icon_image_alt',
-            'comment',
             'service_notification_options'
         );
         $unknownParam = array();
@@ -475,7 +477,9 @@ class CentreonService extends CentreonObject
             ),
             "AND"
         );
-        if (count($elements)) {
+        if (!count($elements)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDesc);
+        } else{
             $objectId = $elements[0]['service_id'];
             $listParam = explode('|', $params[2]);
             foreach ($listParam as $paramSearch) {
@@ -514,12 +518,17 @@ class CentreonService extends CentreonObject
                         case "icon_image_alt":
                         case "vrml_image":
                         case "statusmap_image":
+                            $extended = true;
+                            break;
                         case self::SERVICE_LOCATION:
                             $field = 'service_location';
                             break;
                         default:
-                            if (!preg_match("/^service_/", $paramSearch)) {
-                                $field = "service_" . $paramSearch;
+                            if ($paramSearch == "template") {
+                                $field = "template_model_stm_id";
+                            }
+                            if (!preg_match("/^service_/", $field)) {
+                                $field = "service_" . $field;
                             }
                             break;
                     }
@@ -528,8 +537,8 @@ class CentreonService extends CentreonObject
                         $ret = $this->object->getParameters($objectId, $field);
                         $ret = $ret[$field];
                     } else {
-                        $field = "ehi_" . $field;
-                        $extended = new \Centreon_Object_Host_Extended();
+                        $field = "esi_" . $field;
+                        $extended = new \Centreon_Object_Service_Extended();
                         $ret = $extended->getParameters($objectId, $field);
                         $ret = $ret[$field];
                     }
@@ -558,8 +567,6 @@ class CentreonService extends CentreonObject
                     echo $paramSearch . ' : ' . $ret . "\n";
                 }
             }
-        } else {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDesc);
         }
 
         if (!empty($unknownParam)) {
