@@ -406,6 +406,168 @@ class CentreonService extends CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 3) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'description',
+            'template',
+            'is_volatile',
+            'check_period',
+            'check_command',
+            'check_command_arguments',
+            'max_check_attempts',
+            'normal_check_interval',
+            'retry_check_interval',
+            'active_checks_enabled',
+            'passive_checks_enabled',
+            'notifications_enabled',
+            'contact_additive_inheritance',
+            'cg_additive_inheritance',
+            'notification_interval',
+            'notification_period',
+            'notification_options',
+            'first_notification_delay',
+            'parallelize_checks',
+            'obsess_over_service',
+            'check_freshness',
+            'freshness_threshold',
+            'event_handler_enabled',
+            'flap_detection_enabled',
+            'process_perf_data',
+            'retain_status_information',
+            'retain_nonstatus_information',
+            'event_handler',
+            'event_handler_arguments',
+            'flap_detection_options',
+            'notes',
+            'notes_url',
+            'action_url',
+            'icon_image',
+            'icon_image_alt',
+            'comment',
+            'service_notification_options'
+        );
+        $unknownParam = array();
+
+        $hostName = $params[0];
+        $serviceDesc = $params[1];
+        $relObject = new \Centreon_Object_Relation_Host_Service();
+        $elements = $relObject->getMergedParameters(
+            array("host_id"),
+            array("service_id"),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "host_name" => $hostName,
+                "service_description" => $serviceDesc
+            ),
+            "AND"
+        );
+        if (count($elements)) {
+            $objectId = $elements[0]['service_id'];
+            $listParam = explode('|', $params[2]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    $extended = false;
+                    switch ($paramSearch) {
+                        case "check_command":
+                            $field = "command_command_id";
+                            break;
+                        case "check_command_arguments":
+                            $field = "command_command_id_arg1";
+                            break;
+                        case "event_handler":
+                            $field = "command_command_id2";
+                            break;
+                        case "event_handler_arguments":
+                            $field = "command_command_id_arg2";
+                            break;
+                        case "check_period":
+                            $field = "timeperiod_tp_id";
+                            break;
+                        case "notification_period":
+                            $field = "timeperiod_tp_id2";
+                            break;
+                        case "contact_additive_inheritance":
+                        case "cg_additive_inheritance":
+                        case "flap_detection_options":
+                            break;
+                        case "notes":
+                        case "notes_url":
+                        case "action_url":
+                        case "icon_image":
+                        case "icon_image_alt":
+                        case "vrml_image":
+                        case "statusmap_image":
+                        case self::SERVICE_LOCATION:
+                            $field = 'service_location';
+                            break;
+                        default:
+                            if (!preg_match("/^service_/", $paramSearch)) {
+                                $field = "service_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    if (!$extended) {
+                        $ret = $this->object->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    } else {
+                        $field = "ehi_" . $field;
+                        $extended = new \Centreon_Object_Host_Extended();
+                        $ret = $extended->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    }
+
+                    switch ($paramSearch) {
+                        case "check_command":
+                        case "event_handler":
+                            $commandObject = new CentreonCommand();
+                            $field = $commandObject->object->getUniqueLabelField();
+                            $ret = $commandObject->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case "check_period":
+                        case "notification_period":
+                            $tpObj = new CentreonTimePeriod();
+                            $field = $tpObj->object->getUniqueLabelField();
+                            $ret = $tpObj->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case self::SERVICE_LOCATION:
+                            $field = $this->timezoneObject->getUniqueLabelField();
+                            $ret = $this->timezoneObject->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDesc);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+    }
+
+    /**
      * Set parameters
      *
      * @param string $parameters
