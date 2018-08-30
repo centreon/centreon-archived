@@ -3,6 +3,8 @@
 namespace CentreonRemote;
 
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\PollerConnectionConfigurationService;
@@ -63,9 +65,8 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         };
 
         $pimple['centreon.taskservice'] = function(Container $pimple): TaskService {
-
-            //todo: register the service
-            //return $service;
+            $service = new TaskService(new AppKeyGeneratorService(), new CentreonDBManagerService($pimple), new CentcoreCommandService());
+            return $service;
         };
 
         //-----------//

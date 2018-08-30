@@ -3,6 +3,7 @@
 namespace CentreonRemote\Application\Clapi;
 
 use Centreon\Domain\Repository\InformationsRepository;
+use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Domain\Repository\OptionsRepository;
 use Pimple\Container;
@@ -38,25 +39,29 @@ class CentreonWorker implements CentreonClapiServiceInterface
      */
     public function processQueue()
     {
-//        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-//            echo "Incorrect IP parameter, please pass `-v IP` of the master server\n"; return 200;
-//        }
-//
-//        echo "Starting Centreon Remote enable process: \n";
-//
-//        echo "\n Limiting Menu Access...";
-//        $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->disableMenus();
-//        echo ($result) ? 'Success' : 'Fail' . "\n";
-//
-//        echo "\n Limiting Actions...";
-//        $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
-//        echo 'Done'. "\n";
-//
-//        echo "\n Notifying Master...";
-//        $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
-//        echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";
-//
-//        echo "\n Centreon Remote enabling finished.\n";
+        echo "Checking for pending export tasks: ";
+
+        $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
+
+        if (count($tasks) == 0)
+        {
+            echo "None found\n";
+        } else {
+            // process export
+        }
+
+        echo "\n Checking for pending import tasks: ";
+
+        $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findImportTasks();
+
+        if (count($tasks) == 0)
+        {
+            echo "None found\n";
+        } else {
+            // process import
+        }
+
+        echo "\n Worker cycle completed.\n";
     }
 
     public function getDi(): Container

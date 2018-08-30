@@ -3,6 +3,7 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
+use Centreon\Domain\Entity\Task;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
@@ -272,7 +273,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $this->setCentreonInstanceAsCentral();
         }
 
-        return json_encode(['success' => true]);
+        //todo: update return based on success/fail
+        $this->createExportTask($serverIps);
+
+
+         return json_encode(['success' => true]);
     }
 
     /**
@@ -345,5 +350,17 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             ];
             $dbAdapter->insert('informations', $data);
         }
+    }
+
+    /**
+     * Create New Task for export
+     * @var $toIps array
+     * @return bool
+     */
+    private function createExportTask($toIps)
+    {
+        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('ips'=>$toIps));
+
+        return $result;
     }
 }
