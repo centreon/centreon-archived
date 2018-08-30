@@ -3,7 +3,9 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
+use CentreonRemote\Domain\Service\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
+use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
@@ -177,21 +179,12 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
-        $isRemoteConnection = isset($_POST['server_type']) && $_POST['server_type'] = 'remote';
+        $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
 
         WizardConfigurationRequestValidator::validate();
-
-        // IF CONNECTING REMOTE
-        // I can have a $_POST list of poller ips from this current centreon
-        // - validate if each ip exists here as poller
-        // - then I need to make each of these pollers managed by the remote server I just inserted
-        // IF CONNECTING POLLER
-        // I can have a $_POST remote server ip linked to this centreon
-        // - validate that this ip is indeed remote in this centreon
-        // - then I need to set the poller which I just inserted to be managed by this remote
 
         $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
@@ -208,10 +201,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         }
 
         try {
-            $serverConfigurationService->insert();
+            $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
             return json_encode(['error' => true, 'message' => $e->getMessage()]);
         }
+
+        //TODO
+        new LinkedPollerConfigurationService;
 
         // Finish server configuration by:
         // - $openBrokerFlow?

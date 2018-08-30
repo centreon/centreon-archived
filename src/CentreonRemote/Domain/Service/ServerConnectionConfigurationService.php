@@ -91,7 +91,7 @@ abstract class ServerConnectionConfigurationService
 
         $this->getDbAdapter()->commit();
 
-        return true;
+        return $serverID;
     }
 
     protected function insertNagiosServer()
