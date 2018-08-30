@@ -17,14 +17,9 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh centos7'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
+        junit 'ut.xml,jest-test-results.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
@@ -37,21 +32,15 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
-        junit 'jest-test-results.xml'
       }
     },
     'debian10': {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh debian10'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
+        junit 'ut.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -94,14 +83,9 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/18.9/mon-web-acceptance.sh centos7 @critical'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-        ])
+        junit 'xunit-reports/**/*.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     }
@@ -116,14 +100,9 @@ try {
         node {
           sh 'setup_centreon_build.sh'
           sh './centreon-build/jobs/web/18.9/mon-web-acceptance.sh centos7 ~@critical'
-          step([
-            $class: 'XUnitBuilder',
-            thresholds: [
-              [$class: 'FailedThreshold', failureThreshold: '0'],
-              [$class: 'SkippedThreshold', failureThreshold: '0']
-            ],
-            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-          ])
+          junit 'xunit-reports/**/*.xml'
+          if (currentBuild.result == 'UNSTABLE')
+            currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
         }
       }

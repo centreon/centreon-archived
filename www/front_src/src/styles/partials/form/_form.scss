@@ -31,6 +31,26 @@
       border-radius: 2px;
       border: 1px solid #cdcdcd;
     }
+    &.installation {
+      .form-text {
+        margin: 10px 0;
+      }
+    }
+  }
+  &-status {
+    font-family: Roboto,sans-serif;
+    &.valid {
+      color: #acd174;
+    }
+    &.failed {
+      color: #d0021b;
+    }
+  }
+  &-error-message {
+    color: #d0021b;
+    display: block;
+    text-align: center;
+    font-family: Roboto,sans-serif;
   }
   &-group {
     margin-bottom: 15px;

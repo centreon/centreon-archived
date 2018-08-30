@@ -3,7 +3,9 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
+use CentreonRemote\Domain\Service\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
+use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
@@ -177,7 +179,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
-        $isRemoteConnection = isset($_POST['server_type']) && $_POST['server_type'] = 'remote';
+        $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
@@ -190,20 +192,22 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
+        $serverConfigurationService->setServerIp($serverIP);
+        $serverConfigurationService->setName($serverName);
 
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
         }
 
-        $serverConfigurationService->setServerIp($serverIP);
-        $serverConfigurationService->setName($serverName);
-
         try {
-            $serverConfigurationService->insert();
+            $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
             return json_encode(['error' => true, 'message' => $e->getMessage()]);
         }
+
+        //TODO
+        new LinkedPollerConfigurationService;
 
         // Finish server configuration by:
         // - $openBrokerFlow?
