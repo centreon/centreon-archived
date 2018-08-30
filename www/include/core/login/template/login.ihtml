@@ -23,6 +23,7 @@
                 </div>
                 <div class="logintab">
                     <table id="logintab1" style="text-align:center;" align="center">
+                       {if $keycloakEnabled == 0 || ($keycloakEnabled == 1 && $keycloakMode == 1)}
                        <tr>
                             <td align='right'>{$form.useralias.label}</td>
                             <td>{$form.useralias.html}</td>
@@ -34,6 +35,7 @@
                         <tr>
                             <td colspan="2" align='center'>{$form.submitLogin.html}</td>
                         </tr>
+                        {/if}
                         {if $keycloakEnabled == 1}
                             <td colspan="2" align='center'><a href="?force=1"><input class="btc bt_info" name="submitLogin" value="Connect with Keycloak" type="button"/></a></td>
                         {/if}
