@@ -681,12 +681,6 @@ sub getInfos($) {
         }
         my @tab = split("\n", $stdout);
         foreach my $str (@tab) {
-            if ($str =~ m/(Nagios) Core ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
-                $self->{logger}->writeLogInfo("Engine: $1");
-                $self->{logger}->writeLogInfo("Version: $2");
-                $self->updateEngineInformation($id, $1, $2);
-                last;
-            }
             if ($str =~ m/(Centreon Engine) ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
                 $self->{logger}->writeLogInfo("Engine: $1");
                 $self->{logger}->writeLogInfo("Version: $2");
