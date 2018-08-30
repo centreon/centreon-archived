@@ -6,8 +6,7 @@ use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
 use Centreon\Domain\Entity;
-use Centreon\Domain\Repository\ViewImgRepository;
-use Centreon\Domain\Repository\ViewImgDirRepository;
+use Centreon\Domain\Repository;
 
 class MediaExporter implements ExporterServiceInterface
 {
@@ -38,6 +37,14 @@ class MediaExporter implements ExporterServiceInterface
     {
         $this->db = $services->get('centreon.db-manager');
     }
+    
+    /**
+     * Cleanup database
+     */
+    public function cleanup() : void
+    {
+        // ...
+    }
 
     /**
      * Export data
@@ -46,14 +53,29 @@ class MediaExporter implements ExporterServiceInterface
      */
     public function export(): void
     {
-        $dirs = $this->db
-            ->getRepository(ViewImgDirRepository::class)
-            ->export()
+        // create path
+        $this->createPath();
+
+        $pollerId = $this->commitment->getPoller();
+        
+        $hostTemplateChain = $this->db
+            ->getRepository(Repository\HostTemplateRelationRepository::class)
+            ->getChainByPoller($pollerId)
+        ;
+        
+        $serviceTemplateChain = $this->db
+            ->getRepository(Repository\ServiceRepository::class)
+            ->getChainByPoller($pollerId)
+        ;
+
+        $imgList = $this->db
+            ->getRepository(Repository\ViewImgRepository::class)
+            ->getChainByPoller($pollerId, $hostTemplateChain, $serviceTemplateChain)
         ;
 
         $imgs = $this->db
-            ->getRepository(ViewImgRepository::class)
-            ->export()
+            ->getRepository(Repository\ViewImgRepository::class)
+            ->export($imgList)
         ;
 
         $exportPath = $this->commitment->getPath() . '/' . $this->getName();
@@ -65,8 +87,8 @@ class MediaExporter implements ExporterServiceInterface
 
         // make copy of media files
         foreach ($imgs as $img) {
-            $pathSuffix = '/' . ($img['imgDirs'] ? "{$img['imgDirs']}/" : '') .
-                $img['imgPath']
+            $pathSuffix = '/' . ($img['img_dirs'] ? "{$img['img_dirs']}/" : '') .
+                $img['img_path']
             ;
             $imgPath = static::MEDIA_PATH . $pathSuffix;
 
@@ -87,6 +109,11 @@ class MediaExporter implements ExporterServiceInterface
 
             copy($imgPath, $imgPathExport);
         }
+
+        $dirs = $this->db
+            ->getRepository(Repository\ViewImgDirRepository::class)
+            ->export($imgList)
+        ;
 
         $this->commitment->getParser()::dump($dirs, $exportPath . '/' . static::EXPORT_FILE_DIR);
         $this->commitment->getParser()::dump($imgs, $exportPath . '/' . static::EXPORT_FILE_IMG);
@@ -115,23 +142,16 @@ class MediaExporter implements ExporterServiceInterface
         $db->query('SET FOREIGN_KEY_CHECKS=0;');
 
         // truncate tables
-        $db->getRepository(ViewImgDirRepository::class)->truncate();
-        $db->getRepository(ViewImgRepository::class)->truncate();
+        $db->getRepository(Repository\ViewImgDirRepository::class)->truncate();
+        $db->getRepository(Repository\ViewImgRepository::class)->truncate();
 
         // insert directories
         $exportPathDir = $exportPath . '/' . static::EXPORT_FILE_DIR;
         $dirs = $this->commitment->getParser()::parse($exportPathDir);
         $dirMap = [];
 
-        foreach ($dirs as $dir) {
-            $data = [
-                'dir_id' => $dir['dirId'],
-                'dir_name' => $dir['dirName'],
-                'dir_alias' => $dir['dirAlias'],
-                'dir_comment' => $dir['dirComment'],
-            ];
-
-            $dirMap[$dir['dirAlias']] = $db->insert(Entity\ViewImgDir::TABLE, $data);
+        foreach ($dirs as $data) {
+            $dirMap[$dir['dir_alias']] = $db->insert(Entity\ViewImgDir::TABLE, $data);
         }
         
         // cleanup memory
@@ -142,18 +162,13 @@ class MediaExporter implements ExporterServiceInterface
         $exportPathImg = $exportPath . '/' . static::EXPORT_FILE_IMG;
         $imgs = $this->commitment->getParser()::parse($exportPathImg);
 
-        foreach ($imgs as $img) {
-            $data = [
-                'img_id' => $img['imgId'],
-                'img_name' => $img['imgName'],
-                'img_path' => $img['imgPath'],
-                'img_comment' => $img['imgComment'],
-            ];
+        foreach ($imgs as $data) {
+            unset($data['img_dirs']);
 
             $db->insert(Entity\ViewImg::TABLE, $data);
 
             // add relation img to dir
-            $imgDirs = explode(',', $img['imgDirs']);
+            $imgDirs = explode(',', $img['img_dirs']);
             foreach ($imgDirs as $imgDir) {
                 // skip if dir is undefined
                 if (!array_key_exists($imgDir, $dirMap)) {
@@ -162,15 +177,15 @@ class MediaExporter implements ExporterServiceInterface
 
                 $data = [
                     'dir_dir_parent_id' => $dirMap[$imgDir],
-                    'img_img_id' => $img['imgId'],
+                    'img_img_id' => $img['img_id'],
                 ];
 
                 $db->insert('view_img_dir_relation', $data);
             }
 
             // copy img from export to media dir
-            $pathSuffix = '/' . ($img['imgDirs'] ? "{$img['imgDirs']}/" : '') .
-                $img['imgPath']
+            $pathSuffix = '/' . ($img['img_dirs'] ? "{$img['img_dirs']}/" : '') .
+                $img['img_path']
             ;
             $imgPath = static::MEDIA_PATH . $pathSuffix;
             $imgPathDir = dirname($imgPath);

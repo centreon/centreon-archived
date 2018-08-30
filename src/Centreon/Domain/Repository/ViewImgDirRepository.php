@@ -9,18 +9,26 @@ class ViewImgDirRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export options
+     * Export
      * 
+     * @param array $imgList
      * @return array
      */
-    public function export(): array
+    public function export(array $imgList = null): array
     {
+        if (!$imgList) {
+            return [];
+        }
+
+        $list = join(',', $imgList ?? []);
+
         $sql = <<<SQL
-SELECT vid.dir_id AS `dirId`,
-    vid.dir_name AS `dirName`,
-    vid.dir_alias AS `dirAlias`,
-    vid.dir_comment AS `dirComment`
-FROM view_img_dir as vid
+SELECT
+    t.*
+FROM view_img_dir AS t
+INNER JOIN view_img_dir_relation AS vidr ON vidr.dir_dir_parent_id = t.dir_id
+    AND vidr.img_img_id IN ({$list})
+GROUP BY t.dir_id
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -32,12 +40,5 @@ SQL;
         }
 
         return $result;
-    }
-
-    public function truncate()
-    {
-        $sql = 'TRUNCATE TABLE `view_img_dir`';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
     }
 }
