@@ -140,6 +140,18 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
+        
+        // Time periods
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\TimePeriodExporter($locator);
+
+            return $service;
+        });
 
         // Media
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
