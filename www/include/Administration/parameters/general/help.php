@@ -118,6 +118,18 @@ $help['keycloak_enable'] = dgettext(
     'help',
     'Enable login with Keycloak.'
 );
+$help['keycloak_mode'] = dgettext(
+    'help',
+    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+);
+$help['keycloak_trusted_clients'] = dgettext(
+    'help',
+    'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
 $help['keycloak_url'] = dgettext(
     'help',
     'Your Keycloak server url (with "/auth").'

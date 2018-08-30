@@ -673,6 +673,24 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "keycloak_mode",
+        isset($ret["keycloak_mode"]["keycloak_mode"]) && $ret["keycloak_mode"]["keycloak_mode"] != null
+            ? $pearDB->escape($ret["keycloak_mode"]["keycloak_mode"]) : 1
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_trusted_clients",
+        isset($ret["keycloak_trusted_clients"]) && $ret["keycloak_trusted_clients"] != null
+            ? $pearDB->escape($ret["keycloak_trusted_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_blacklist_clients",
+        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != NULL
+            ? $pearDB->escape($ret["keycloak_blacklist_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "keycloak_url",
         isset($ret["keycloak_url"]) && $ret["keycloak_url"] != null
             ? $pearDB->escape($ret["keycloak_url"]) : ""

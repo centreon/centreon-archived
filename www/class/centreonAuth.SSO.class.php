@@ -148,6 +148,28 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
+        } else if (isset($this->options_sso['keycloak_enable']) && $this->options_sso['keycloak_enable'] == 1 &&
+            isset($this->options_sso['keycloak_mode']) && $this->options_sso['keycloak_mode'] == 1) {
+            # Mixed
+
+            $blacklist = explode(',', $this->options_sso['keycloak_blacklist_clients']);
+            foreach ($blacklist as $value) {
+                $value = trim($value);
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 0;
+                }
+            }
+
+            $whitelist = explode(',', $this->options_sso['keycloak_trusted_clients']);
+            if(empty($whitelist[0])){
+                return 1;
+            }
+            foreach ($whitelist as $value) {
+                $value = trim($value);
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 1;
+                }
+            }
         } else {
             # Only SSO (no login from local users)
             return 1;

@@ -229,6 +229,16 @@ $keycloak_enable[] = HTML_QuickForm::createElement(
 );
 $form->addGroup($keycloak_enable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
 
+$keycloak_mode = array();
+$keycloak_mode[] = HTML_QuickForm::createElement('radio', 'keycloak_mode', null, _("Keycloak only"), '0');
+$keycloak_mode[] = HTML_QuickForm::createElement('radio', 'keycloak_mode', null, _("Mixed"), '1');
+$form->addGroup($keycloak_mode, 'keycloak_mode', _("Keycloak mode"), '&nbsp;');
+$form->setDefaults(array('keycloak_mode'=>'1'));
+
+$form->addElement('text', 'keycloak_trusted_clients', _('Keycloak trusted client addresses'), array('size' => 50));
+$form->addElement('text', 'keycloak_blacklist_clients', _('Keycloak blacklist client addresses'), array('size' => 50));
+
+
 $form->addElement('text', 'keycloak_url', _('Keycloak Server Url'), array('size' => 50));
 $form->addElement('text', 'keycloak_redirect_url', _('Keycloak Redirect Url'), array('size' => 50));
 $form->addElement('text', 'keycloak_realm', _('Keycloak Client Realm'), array('size' => 50));

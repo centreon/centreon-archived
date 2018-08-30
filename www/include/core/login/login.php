@@ -52,6 +52,9 @@ $release = $DBRESULT->fetch();
 $DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
 $keycloakEnabled = $DBRESULT->fetchRow()["value"];
 
+$DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
+$keycloakMode = $DBRESULT->fetchRow()["value"];
+
 /**
  * Defining Login Form
  */
@@ -121,6 +124,7 @@ $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
 $tpl->assign('keycloakEnabled', $keycloakEnabled);
+$tpl->assign('keycloakMode', $keycloakMode);
 
 // Redirect User
 $redirect = filter_input(

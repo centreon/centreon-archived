@@ -102,6 +102,9 @@
       </td>
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_enable">{$form.keycloak_enable.label}</td><td class="FormRowValue">{$form.keycloak_enable.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_mode">{$form.keycloak_mode.label}</td><td class="FormRowValue">{$form.keycloak_mode.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_trusted_clients">{$form.keycloak_trusted_clients.label}</td><td class="FormRowValue">{$form.keycloak_trusted_clients.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_blacklist_clients">{$form.keycloak_blacklist_clients.label}</td><td class="FormRowValue">{$form.keycloak_blacklist_clients.html}</td></tr>      
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_url">{$form.keycloak_url.label}</td><td class="FormRowValue">{$form.keycloak_url.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_redirect_url">{$form.keycloak_redirect_url.label}</td><td class="FormRowValue">{$form.keycloak_redirect_url.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_realm">{$form.keycloak_realm.label}</td><td class="FormRowValue">{$form.keycloak_realm.html}</td></tr>
