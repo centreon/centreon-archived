@@ -74,9 +74,10 @@ class TaskService
     /**
      * Adds a new task
      * @param string $type
+     * @param array $params
      * @return mixed
      */
-    public function addTask(string $type)
+    public function addTask(string $type, array $params)
     {
         $newTask = new Task();
         switch ($type) {
@@ -84,6 +85,7 @@ class TaskService
                 $newTask->setType(Task::TYPE_EXPORT);
                 $newTask->setCreatedAt(new \DateTime());
                 $newTask->setStatus(Task::STATE_PENDING);
+                $newTask->setParams(serialize($params));
                 $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
@@ -93,6 +95,7 @@ class TaskService
                 $newTask->setType(Task::TYPE_IMPORT);
                 $newTask->setCreatedAt(new \DateTime());
                 $newTask->setStatus(Task::STATE_PENDING);
+                $newTask->setParams(serialize($params));
                 $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);

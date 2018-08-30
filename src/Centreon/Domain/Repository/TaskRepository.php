@@ -23,4 +23,18 @@ class TaskRepository extends ServiceEntityRepository
 
         return $result ?: null;
     }
+
+    /**
+     * find all pending export tasks
+     */
+    public function findExportTasks()
+    {
+        $sql = 'SELECT * FROM task WHERE `type` = "export" AND `status` = "pending"';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Task::class);
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
 }
