@@ -58,7 +58,7 @@ class PollerFormStepOne extends Component {
             />
             <Field name="manage_broker_config" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
             <div class="form-buttons">
-              <button className="button" type="submit">Apply</button>
+              <button className="button" type="submit">Next</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>

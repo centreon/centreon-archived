@@ -19,13 +19,14 @@ class ServerConfigurationWizardRoute extends Component {
       const {history} = this.props;
       history.push(path);
     };
-  
+
     links = [
       {active: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
-      {active: false, number: 2}
+      {active: true, number: 2},
+      {active: false, number: 3}
     ];
     
-   render(){
+    render(){
     const {links} = this;
     return (
       <div>
@@ -33,7 +34,7 @@ class ServerConfigurationWizardRoute extends Component {
         <Form onSubmit={this.handleSubmit.bind(this)}/>
       </div>
     )
-   }
+  }
 }
 
 export default ServerConfigurationWizardRoute;

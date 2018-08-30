@@ -17,7 +17,7 @@ class RemoteServerStepOneRoute extends Component {
 
     getWaitList = () => {
       this.wizardFormWaitListApi.get()
-        .then(({response}) => {
+        .then(response => {
           // TO DO
           this.setState({waitList: response.data})
           console.log(response)
@@ -40,7 +40,7 @@ class RemoteServerStepOneRoute extends Component {
       .catch(err => {
         console.log(err)
     });
-    history.push(routeMap.pollerStep2);
+    history.push(routeMap.remoteServerStep2);
   };
 
   goToPath = path => {
@@ -49,8 +49,9 @@ class RemoteServerStepOneRoute extends Component {
   };
 
   links = [
-    {active: true, number: 1, prevActive: true, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
-    {active: true, number: 2}
+    {active: true, prevActive: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
+    {active: true, number: 2, path: this.goToPath.bind(this, routeMap.remoteServerStep1)},
+    {active: false, number: 3}
   ];
     
    render(){
