@@ -89,6 +89,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "manage_broker_configuration",
+                        "in": "formData",
+                        "description": "if broker configuration of poller should be managed",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "server_ip",
                         "in": "formData",
                         "description": "the remote server ip address",
@@ -107,6 +114,20 @@
                         "in": "formData",
                         "description": "the centreon central ip address",
                         "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "db_user",
+                        "in": "formData",
+                        "description": "database user",
+                        "required": false,
+                        "type": "string"
+                    }
+                    {
+                        "name": "db_password",
+                        "in": "formData",
+                        "description": "database password",
+                        "required": false,
                         "type": "string"
                     }
                 ],
