@@ -23,7 +23,8 @@ class ServerConfigurationWizardRoute extends Component {
     links = [
       {active: true, number: 1, path: this.goToPath.bind(this, routeMap.serverConfigurationWizard)},
       {active: false, number: 2},
-      {active: false, number: 3}
+      {active: false, number: 3},
+      {active: false, number: 4}
     ];
     
     render(){
