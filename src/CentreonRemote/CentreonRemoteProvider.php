@@ -23,7 +23,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
     /**
      * Register Centron Remote services
-     * 
+     *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
@@ -33,32 +33,32 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationTopology::class);
         $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
 
-        $pimple['centreon.notifymaster'] = function(Container $pimple): NotifyMasterService {
+        $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
             $service = new NotifyMasterService($pimple);
             return $service;
         };
 
-        $pimple['centreon_remote.informations_service'] = function(Container $pimple): InformationsService {
+        $pimple['centreon_remote.informations_service'] = function (Container $pimple): InformationsService {
             $service = new InformationsService($pimple);
             return $service;
         };
 
-        $pimple['centreon_remote.remote_connection_service'] = function(Container $pimple): RemoteConnectionConfigurationService {
+        $pimple['centreon_remote.remote_connection_service'] = function (Container $pimple): RemoteConnectionConfigurationService {
             $service = new RemoteConnectionConfigurationService($pimple);
             return $service;
         };
 
-        $pimple['centreon_remote.poller_connection_service'] = function(Container $pimple): PollerConnectionConfigurationService {
+        $pimple['centreon_remote.poller_connection_service'] = function (Container $pimple): PollerConnectionConfigurationService {
             $service = new PollerConnectionConfigurationService($pimple);
             return $service;
         };
 
-        $pimple['centreon_remote.poller_config_service'] = function(Container $pimple): LinkedPollerConfigurationService {
+        $pimple['centreon_remote.poller_config_service'] = function (Container $pimple): LinkedPollerConfigurationService {
             $service = new LinkedPollerConfigurationService($pimple);
             return $service;
         };
 
-        $pimple['centreon_remote.poller_config_bridge'] = function(Container $pimple): PollerConfigurationRequestBridge {
+        $pimple['centreon_remote.poller_config_bridge'] = function (Container $pimple): PollerConfigurationRequestBridge {
             $service = new PollerConfigurationRequestBridge($pimple);
             return $service;
         };
@@ -81,7 +81,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.taskservice'] = function(Container $pimple): TaskService {
+        $pimple['centreon.taskservice'] = function (Container $pimple): TaskService {
             $service = new TaskService(new AppKeyGeneratorService(), new CentreonDBManagerService($pimple), new CentcoreCommandService());
             return $service;
         };
@@ -89,7 +89,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         //-----------//
         // Exporters
         //-----------//
-        
+
         // Pollers
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
             $services = [
@@ -101,7 +101,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-        
+
         // Hosts
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function() use ($pimple) {
             $services = [
@@ -113,7 +113,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-        
+
         // Services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
             $services = [
@@ -125,7 +125,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-        
+
         // Traps
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function() use ($pimple) {
             $services = [
