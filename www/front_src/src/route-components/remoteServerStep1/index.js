@@ -23,7 +23,7 @@ class RemoteServerStepOneRoute extends Component {
   getWaitList = () => {
     this.wizardFormWaitListApi.post()
       .then(response => {
-        this.setState({ waitList: JSON.parse(response.data) })
+        this.setState({ waitList: response.data })
       })
       .catch(err => {
         this.setState({ waitList: [] })
