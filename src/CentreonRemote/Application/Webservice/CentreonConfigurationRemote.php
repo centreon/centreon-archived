@@ -2,8 +2,11 @@
 
 namespace CentreonRemote\Application\Webservice;
 
+use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
+use CentreonRemote\Domain\Service\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
 use Centreon\Domain\Entity\Task;
+use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
@@ -58,6 +61,43 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * @SWG\Post(
      *   path="/centreon/api/internal.php",
+     *   operationId="getRemotesList",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_configuration_remote",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="getRemotesList",
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON with the IPs of connected remotes"
+     *   )
+     * )
+     *
+     * Get list with connected remotes
+     *
+     * @return string
+     */
+    public function postGetRemotesList(): string
+    {
+        $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
+
+        return json_encode($statement->fetchAll());
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/centreon/api/internal.php",
      *   operationId="linkCentreonRemoteServer",
      *   @SWG\Parameter(
      *       in="query",
@@ -84,6 +124,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="manage_broker_configuration",
+     *       type="string",
+     *       description="if broker configuration of poller should be managed",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="server_ip",
      *       type="string",
      *       description="the remote server ip address",
@@ -103,6 +150,20 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *       description="the remote centreon instance name",
      *       required=true,
      *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="db_user",
+     *       type="string",
+     *       description="database username",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="db_password",
+     *       type="string",
+     *       description="database password",
+     *       required=false,
+     *   ),
      *   @SWG\Response(
      *     response=200,
      *     description="JSON"
@@ -118,60 +179,49 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $openBrokerFlow = isset($_POST['open_broker_flow']);
-        $isRemoteConnection = isset($_POST['server_type']) && $_POST['server_type'] = 'remote';
+        $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
+        $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
 
-        // - poller/remote ips can be a multiple select
-        //  -- form can have option to add IP of server without being pinged previously
-        if (!isset($_POST['server_ip']) || !$_POST['server_ip']) {
-            throw new \RestBadRequestException('You need to send \'server_ip\' in the request.');
-        }
+        WizardConfigurationRequestValidator::validate();
 
-        if (!isset($_POST['server_name']) || !$_POST['server_name']) {
-            throw new \RestBadRequestException('You need t send \'server_name\' in the request.');
-        }
-
-        if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
-            throw new \RestBadRequestException('You need t send \'centreon_central_ip\' in the request.');
-        }
-
-        $serverIps = (array) $_POST['server_ip'];
+        $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
-        $centreonCentralIp = $_POST['centreon_central_ip'];
 
         /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
-        $serverConfigurationService->setCentralIp($centreonCentralIp);
-
-        foreach ($serverIps as $index => $serverIp) {
-            $serverName = count($serverIps) > 1 ? "{$serverName}_1" : $serverName;
-
-            $serverConfigurationService->setServerIp($serverIp);
-            $serverConfigurationService->setName($serverName);
-
-            try {
-                $serverConfigurationService->insert();
-            } catch(\Exception $e) {
-                return json_encode(['error' => true, 'message' => $e->getMessage()]);
-            }
-
-            if ($isRemoteConnection) {
-                $this->addServerToListOfRemotes($serverIp);
-            }
-
-            // Finish remote connection by:
-            // - $openBrokerFlow?
-            // - update informations table set isRemote=yes in the slave server
-        }
+        $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
+        $serverConfigurationService->setServerIp($serverIP);
+        $serverConfigurationService->setName($serverName);
 
         if ($isRemoteConnection) {
+            $serverConfigurationService->setDbUser($_POST['db_user']);
+            $serverConfigurationService->setDbPassword($_POST['db_password']);
+        }
+
+        try {
+            $serverID = $serverConfigurationService->insert();
+        } catch(\Exception $e) {
+            return json_encode(['error' => true, 'message' => $e->getMessage()]);
+        }
+
+        //TODO
+        new LinkedPollerConfigurationService;
+
+        // Finish server configuration by:
+        // - $openBrokerFlow?
+        // - $manageBrokerConfiguration?
+        // - update informations table set isRemote=yes in the slave server
+
+        if ($isRemoteConnection) {
+            $this->addServerToListOfRemotes($serverIP);
             $this->setCentreonInstanceAsCentral();
         }
 
         //todo: update return based on success/fail
-        $this->createExportTask($serverIps);
+       // $this->createExportTask($serverIps);
 
 
          return json_encode(['success' => true]);
@@ -198,24 +248,24 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Add server ip in table of remote servers
      *
-     * @param $serverIp
+     * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIp)
+    private function addServerToListOfRemotes($serverIP)
     {
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
-        $dbAdapter->query($sql, [$serverIp]);
+        $dbAdapter->query($sql, [$serverIP]);
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
             $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
-            $data = ['1', $date, $serverIp];
+            $data = ['1', $date, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'           => $serverIp,
+                'ip'           => $serverIP,
                 'app_key'      => '',
                 'version'      => '',
                 'is_connected' => '1',

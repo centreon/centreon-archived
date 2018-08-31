@@ -20,9 +20,7 @@ $data = [
         'logger'          => $loggerBrokerData,
         'broker'          => $inputBrokerData,
         'output_rrd'      => $outputRRDMasterData,
-        'output_prefdata' => $outputPerfdataData,
         'output_forward'  => $outputForwardMasterData,
-        'output_sql'      => $outputSQLMasterData,
     ],
     'central-module' => [
         $loggerModuleData,
@@ -35,6 +33,9 @@ $data = [
     ]
 ];
 
-return function () use ($data) {
+return function ($dbUser, $dbPassword) use ($data, $outputPerfdataData, $outputSQLMasterData) {
+    $data['central-broker']['output_prefdata'] = $outputPerfdataData($dbUser, $dbPassword);
+    $data['central-broker']['output_sql'] = $outputSQLMasterData($dbUser, $dbPassword);
+
     return $data;
 };

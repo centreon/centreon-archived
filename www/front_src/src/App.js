@@ -9,7 +9,7 @@ import ClassicRoute from "./components/router/classicRoute";
 class App extends Component {
   render() {
     return (
-      <BrowserRouter history={history}>
+      <ConnectedRouter history={history}>
         <div>
           <div>
             <Header />
@@ -18,14 +18,14 @@ class App extends Component {
             {routes.map(({ path, comp, ...rest }, i) => (
               <ClassicRoute
                 history={history}
-                path={path}
+                path={path} 
                 component={comp}
                 {...rest}
               />
             ))}
           </Switch>
         </div>
-      </BrowserRouter>
+      </ConnectedRouter>
     );
   }
 }

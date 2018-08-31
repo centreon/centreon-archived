@@ -23,7 +23,6 @@ class PollerFormStepTwo extends Component {
               required
               options={['One', 'Two']}
             />
-            <br />
             <Field name="manage_broker_config" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
             <div class="form-buttons">
               <button className="button" type="submit">Next</button>

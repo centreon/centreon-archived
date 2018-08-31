@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import CheckboxField from '../../form-fields/CheckboxField';
+import SelectField from '../../form-fields/SelectField';
 
 import { selectRemoteServerValidator } from '../../../helpers/validators';
 
@@ -15,12 +16,16 @@ class RemoteServerFormStepTwo extends Component {
             <h2 className="form-title">Server Configuration</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-            
-            <br />
+            <Field
+              name="selectRemoteServer"
+              component={SelectField}
+              label="Select linked Remote Server:"
+              required
+              options={['One', 'Two']}
+            />
             <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
             <div class="form-buttons">
-              <button type="submit">Back</button>
-              <button type="submit">Apply</button>
+              <button className="button" type="submit">Apply</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>

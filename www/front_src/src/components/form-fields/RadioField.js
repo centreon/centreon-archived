@@ -9,7 +9,7 @@ const RadioField = ({checked, error, label, info, className, ...rest}) => (
       class="form-check-input"
       type="radio"
       aria-checked={checked}
-      info
+      info 
       {...prepareInputProps(rest)}
     />
 
