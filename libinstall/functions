@@ -1305,7 +1305,7 @@ Alias /centreon ${INSTALL_DIR_CENTREON}/www/
 
 <Directory "${INSTALL_DIR_CENTREON}/www">
     Options Indexes
-    AllowOverride AuthConfig Options
+    AllowOverride all
     Order allow,deny
     Allow from all
     Require all granted
@@ -1327,7 +1327,7 @@ Alias /centreon ${INSTALL_DIR_CENTREON}/www/
 
 <Directory "${INSTALL_DIR_CENTREON}/www">
     Options Indexes
-    AllowOverride AuthConfig Options
+    AllowOverride all
     Order allow,deny
     Allow from all
     Require all granted
