@@ -438,6 +438,7 @@ class CentreonService extends CentreonObject
             'event_handler_enabled',
             'first_notification_delay',
             'flap_detection_enabled',
+            'flap_detection_options',
             'freshness_threshold',
             'geo_coords',
             'high_flap_threshold',
@@ -518,14 +519,13 @@ class CentreonService extends CentreonObject
                         case "notification_period":
                             $field = "timeperiod_tp_id2";
                             break;
-                        case "geo_coords":
-                            $field = "geo_coords";
-                            break;
                         case "template":
                             $field = "service_template_model_stm_id";
                             break;
+                        case "geo_coords":
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
+                        case "flap_detection_options":
                             break;
                         case "notes":
                         case "notes_url":

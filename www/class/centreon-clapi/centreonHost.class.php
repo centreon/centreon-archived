@@ -358,28 +358,40 @@ class CentreonHost extends CentreonObject
         $authorizeParam = array(
             '2d_coords',
             '3d_coords',
+            'acknowledgement_timeout',
             'action_url',
+            'activate',
             'activate',
             'active_checks_enabled',
             'address',
             'alias',
+            'cg_additive_inheritance',
+            'checks_enabled',
             'check_command',
             'check_command_arguments',
-            'check_interval',
             'check_freshness',
+            'check_interval',
             'check_period',
+            'comment',
             'contact_additive_inheritance',
-            'cg_additive_inheritance',
             'event_handler',
             'event_handler_arguments',
+            'event_handler_enabled',
             'event_handler_enabled',
             'first_notification_delay',
             'flap_detection_enabled',
             'flap_detection_options',
-            'host_high_flap_threshold',
-            'host_low_flap_threshold',
+            'freshness_threshold',
+            'geo_coords',
+            'high_flap_threshold',
+            'high_flap_threshold',
             'icon_image',
             'icon_image_alt',
+            'id',
+            'location',
+            'locked',
+            'low_flap_threshold',
+            'low_flap_threshold',
             'max_check_attempts',
             'name',
             'notes',
@@ -388,10 +400,11 @@ class CentreonHost extends CentreonObject
             'notification_interval',
             'notification_options',
             'notification_period',
-            'recovery_notification_delay',
             'obsess_over_host',
             'passive_checks_enabled',
             'process_perf_data',
+            'recovery_notification_delay',
+            'register',
             'retain_nonstatus_information',
             'retain_status_information',
             'retry_check_interval',
@@ -399,7 +412,6 @@ class CentreonHost extends CentreonObject
             'snmp_version',
             'stalking_options',
             'statusmap_image',
-            'host_notification_options',
             'timezone'
         );
         $unknownParam = array();
@@ -431,6 +443,7 @@ class CentreonHost extends CentreonObject
                         case "notification_period":
                             $field = "timeperiod_tp_id2";
                             break;
+                        case "geo_coords":
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
                         case "flap_detection_options":
