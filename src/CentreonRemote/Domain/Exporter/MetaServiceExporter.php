@@ -134,6 +134,6 @@ class MetaServiceExporter implements ExporterServiceInterface
 
     public static function getName(): string
     {
-        return 'host';
+        return 'meta-service';
     }
 }

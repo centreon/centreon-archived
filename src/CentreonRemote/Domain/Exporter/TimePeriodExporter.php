@@ -178,6 +178,6 @@ class TimePeriodExporter implements ExporterServiceInterface
 
     public static function getName(): string
     {
-        return 'trap';
+        return 'time-period';
     }
 }
