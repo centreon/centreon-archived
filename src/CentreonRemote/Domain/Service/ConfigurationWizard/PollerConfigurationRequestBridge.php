@@ -3,6 +3,7 @@
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
+use CentreonRemote\Domain\Value\PollerServer;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 use Pimple\Container;
 
@@ -12,9 +13,11 @@ class PollerConfigurationRequestBridge
     /** @var CentreonDBAdapter */
     private $dbAdapter;
 
+    /** @var PollerServer[] */
     private $pollers = [];
 
-    private $remoteServer = [];
+    /** @var PollerServer */
+    private $remoteServer;
 
     private $serverID;
 
@@ -32,15 +35,18 @@ class PollerConfigurationRequestBridge
 
     public function hasPollersForUpdating(): bool
     {
-        return !empty($this->pollers) && !empty($this->remoteServer);
+        return !empty($this->pollers) && $this->remoteServer;
     }
 
+    /**
+     * @return PollerServer[]
+     */
     public function getLinkedPollersSelectedForUpdate(): array
     {
         return $this->pollers;
     }
 
-    public function getRemoteServerForConfiguration(): array
+    public function getRemoteServerForConfiguration(): ?PollerServer
     {
         return $this->remoteServer;
     }
@@ -53,11 +59,11 @@ class PollerConfigurationRequestBridge
             $this->collectPollersToLink();
 
             //todo: use the $serverID to get data for the remote from nagios_server
-            $this->remoteServer = [];
+            $this->remoteServer = null; // PollerServer
         } else {
             $this->collectRemoteForConfiguration();
             //todo: use the $serverID to get data for the poller from nagios_server
-            $this->pollers = [[]];
+            $this->pollers = [[]]; // PollerServer
         }
     }
 
@@ -81,7 +87,15 @@ class PollerConfigurationRequestBridge
 
         try {
             $this->dbAdapter->query($queryPollers, $pollerIDs);
-            $this->pollers = $this->dbAdapter->results();
+            $results = $this->dbAdapter->results();
+
+            foreach ($results as $result) {
+                $poller = new PollerServer;
+                $poller->setId($result->id);
+                $poller->setIp($result->ip);
+
+                $this->pollers[] = $poller;
+            }
         } catch (\Exception $e) {
             error_log($e->getMessage());
         }
@@ -89,12 +103,26 @@ class PollerConfigurationRequestBridge
 
     private function collectRemoteForConfiguration()
     {
-        // IF CONNECTING POLLER
-        // I can have (not required, can be empty) a $_POST remote server ip linked to this centreon
+        $remoteID = $_POST['linked_remote'] ?? '';
+        $queryPollers = 'SELECT id, ns_ip_address as ip FROM nagios_server WHERE id=?';
 
-        // $serverID is the one of the new poller
-        // - get ip of remote from $_POST
+        if (empty($remoteID)) {
+            $this->remoteServer = null;
+            return;
+        }
 
-        $this->remoteServer = null;
+        try {
+            $this->dbAdapter->query($queryPollers, [$remoteID]);
+            $results = $this->dbAdapter->results();
+
+            if (count($results)) {
+                $remoteData = reset($results);
+                $this->remoteServer = new PollerServer;
+                $this->remoteServer->setId($remoteData->id);
+                $this->remoteServer->setIp($remoteData->ip);
+            }
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+        }
     }
 }
