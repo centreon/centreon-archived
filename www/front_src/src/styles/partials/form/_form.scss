@@ -220,6 +220,28 @@
     }
   }  
 }
+.error-block {
+  font-size: 10px;
+  color: rgb(237,28,36);
+  font-family: "Roboto";
+  font-weight: 300;
+  text-align: center;
+  position: relative;
+  margin-top: 26px;
+  &:after {
+    content: "";
+    width: 23px;
+    height: 23px;
+    background: url("./img/icons/icon-error-message.png") center no-repeat;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 23px;
+    max-width: 23px;
+    margin: 0 auto;
+  }
+}
 
 input[type=checkbox]:checked ~.custom-control-label::after {
   background: url("./img/checkbox-buttons-stripe.png") no-repeat;
