@@ -52,6 +52,7 @@ class CentreonServiceGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
+    const SERVICEGROUP_LOCATION   = "timezone";
 
     public static $aDepends = array(
         'HOST',
@@ -115,7 +116,70 @@ class CentreonServiceGroup extends CentreonObject
         $this->checkParameters();
         parent::add();
     }
+    
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'alias',
+            'comment',
+            'geo_coords',
+            'id',
+            'name'
+        );
+        $unknownParam = array();
 
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "geo_coords":
+                            break;
+                        case self::SERVICEGROUP_LOCATION:
+                            $field = 'sg_location';
+                            break;
+                        default:
+                            if (!preg_match("/^sg_/", $paramSearch)) {
+                                $field = "sg_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+
+                    switch ($paramSearch) {
+                        case self::SERVICEGROUP_LOCATION:
+                            $field = $this->timezoneObject->getUniqueLabelField();
+                            $ret = $this->timezoneObject->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+    }
 
     /**
      * Set parameters

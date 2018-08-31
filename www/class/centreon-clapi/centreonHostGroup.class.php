@@ -56,6 +56,7 @@ class CentreonHostGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME        = 0;
     const ORDER_ALIAS             = 1;
+    const HOSTGROUP_LOCATION      = "timezone";
 
     public static $aDepends = array(
         'HOST'
@@ -136,7 +137,93 @@ class CentreonHostGroup extends CentreonObject
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
     }
+    
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'action_url',
+            'activate',
+            'alias',
+            'comment',
+            'geo_coords',
+            'icon_image',
+            'icon_image_alt',
+            'id',
+            'name',
+            'notes',
+            'notes_url',
+            'statusmap_image',
+        );
+        $unknownParam = array();
 
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    $extended = false;
+                    switch ($paramSearch) {
+                        case "geo_coords":
+                            break;
+                        case "notes":
+                        case "notes_url":
+                        case "action_url":
+                        case "icon_image":
+                        case "icon_image_alt":
+                        case "vrml_image":
+                        case "statusmap_image":
+                            $extended = true;
+                            break;
+                        case self::HOSTGROUP_LOCATION:
+                            $field = 'hg_location';
+                            break;
+                        default:
+                            if (!preg_match("/^hg_/", $paramSearch)) {
+                                $field = "hg_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    if (!$extended) {
+                        $ret = $this->object->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    } else {
+                        $field = "ehgi_" . $field;
+                        $extended = new \Centreon_Object_Host_Extended();
+                        $ret = $extended->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    }
+
+                    switch ($paramSearch) {
+                        case self::HOSTGROUP_LOCATION:
+                            $field = $this->timezoneObject->getUniqueLabelField();
+                            $ret = $this->timezoneObject->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+    }
 
     /**
      * Set params
