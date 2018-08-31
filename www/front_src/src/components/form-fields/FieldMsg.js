@@ -1,9 +1,15 @@
-import React from 'react';
+import React from "react";
 /* @jsx h */
 
-const FieldMsg = ({className, children, isError, tagName: FieldMsgTagName, ...restProps}) => (
+const FieldMsg = ({
+  className,
+  children,
+  isError,
+  tagName: FieldMsgTagName,
+  ...restProps
+}) => (
   <FieldMsgTagName
-    className={`field__msg ${className} ${isError ? 'field__msg--error' : ''}`}
+    className={`field__msg ${className} ${isError ? "field__msg--error" : ""}`}
     {...restProps}
   >
     {children}
@@ -11,9 +17,9 @@ const FieldMsg = ({className, children, isError, tagName: FieldMsgTagName, ...re
 );
 
 FieldMsg.defaultProps = {
-  className: '',
+  className: "",
   isError: true,
-  tagName: 'div',
+  tagName: "div"
 };
 
 export default FieldMsg;

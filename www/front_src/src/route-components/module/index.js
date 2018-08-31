@@ -26,7 +26,10 @@ class ModuleRoute extends Component {
     if (this.container) {
       const { contentWindow } = this.container;
       if (contentWindow) {
-        this.container.contentWindow.addEventListener("resize", this.handleResize);
+        this.container.contentWindow.addEventListener(
+          "resize",
+          this.handleResize
+        );
         this.handleResize();
       }
     }
@@ -56,8 +59,8 @@ class ModuleRoute extends Component {
     const { contentHeight } = this.state;
     return (
       <div>
-        {
-          search ? <iframe
+        {search ? (
+          <iframe
             frameBorder="0"
             onLoad={this.onLoad}
             ref={container => {
@@ -66,8 +69,10 @@ class ModuleRoute extends Component {
             scrolling="no"
             style={{ width: "100%", height: `${contentHeight}px` }}
             src={`/centreon/main.get.php${search}`}
-          /> : <Redirect to={'/centreon/main.php?p=1'} />
-        }
+          />
+        ) : (
+          <Redirect to={"/centreon/main.php?p=1"} />
+        )}
       </div>
     );
   }

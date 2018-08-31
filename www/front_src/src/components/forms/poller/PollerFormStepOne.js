@@ -1,21 +1,20 @@
-import React, { Component } from 'react';
-import { Field, reduxForm as connectForm } from 'redux-form';
-import InputField from '../../form-fields/InputField';
-import CheckboxField from '../../form-fields/CheckboxField';
-import PasswordInputField from '../../form-fields/PasswordInputField';
+import React, { Component } from "react";
+import { Field, reduxForm as connectForm } from "redux-form";
+import InputField from "../../form-fields/InputField";
+import CheckboxField from "../../form-fields/CheckboxField";
+import PasswordInputField from "../../form-fields/PasswordInputField";
 
-import { 
-  serverNameValidator, 
-  serverIpAddressValidator, 
+import {
+  serverNameValidator,
+  serverIpAddressValidator,
   centralIpAddressValidator,
   databaseUserValidator,
   databasePasswordValidator
-} from '../../../helpers/validators';
+} from "../../../helpers/validators";
 
 class PollerFormStepOne extends Component {
-
   render() {
-    const {error, handleSubmit, onSubmit, submitting} = this.props;
+    const { error, handleSubmit, onSubmit, submitting } = this.props;
     return (
       <div className="form-wrapper">
         <div className="form-inner">
@@ -56,9 +55,15 @@ class PollerFormStepOne extends Component {
               component={PasswordInputField}
               label="Database password:"
             />
-            <Field name="manage_broker_config" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
+            <Field
+              name="manage_broker_config"
+              component={CheckboxField}
+              label="Centreon must connect to poller to open Broker flow"
+            />
             <div class="form-buttons">
-              <button className="button" type="submit">Next</button>
+              <button className="button" type="submit">
+                Next
+              </button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>
@@ -68,7 +73,7 @@ class PollerFormStepOne extends Component {
   }
 }
 
-const validate = (server) => ({
+const validate = server => ({
   server_name: serverNameValidator(server.server_name),
   server_ip: serverIpAddressValidator(server.server_ip),
   centreon_central_ip: centralIpAddressValidator(server.centreon_central_ip),
@@ -77,8 +82,8 @@ const validate = (server) => ({
 });
 
 export default connectForm({
-  form: 'PollerFormStepOne',
+  form: "PollerFormStepOne",
   validate,
-  warn: () => { },
-  enableReinitialize: true,
+  warn: () => {},
+  enableReinitialize: true
 })(PollerFormStepOne);

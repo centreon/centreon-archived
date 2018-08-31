@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import {prepareInputProps} from './utils';
-import fieldHoc from './hoc';
+import { prepareInputProps } from "./utils";
+import fieldHoc from "./hoc";
 
-const RadioField = ({checked, error, label, info, className, ...rest}) => (
+const RadioField = ({ checked, error, label, info, className, ...rest }) => (
   <div class="custom-control custom-radio form-group">
     <input
       class="form-check-input"
       type="radio"
       checked={checked}
       aria-checked={checked}
-      info 
+      info
       {...prepareInputProps(rest)}
     />
 
@@ -22,15 +22,15 @@ const RadioField = ({checked, error, label, info, className, ...rest}) => (
     {error ? (
       <div class="invalid-feedback">
         <i class="fas fa-exclamation-triangle" />
-        <div class="field__msg  field__msg--error">{error}</div>{' '}
+        <div class="field__msg  field__msg--error">{error}</div>{" "}
       </div>
     ) : null}
   </div>
 );
 
-RadioField.displayName = 'RadioField';
-RadioField.defaultProps = {className: 'field'};
+RadioField.displayName = "RadioField";
+RadioField.defaultProps = { className: "field" };
 
-export {RadioField};
+export { RadioField };
 
 export default fieldHoc(RadioField);

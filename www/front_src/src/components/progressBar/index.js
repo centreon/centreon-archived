@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
-import { history } from '../../store';
+import { connect } from "react-redux";
+import { history } from "../../store";
 
 class ProgressBar extends Component {
-
   goToPath = path => {
     history.push(path);
   };
@@ -16,12 +15,21 @@ class ProgressBar extends Component {
           <ul class="progress-bar-items">
             {links
               ? links.map(link => (
-                <li class="progress-bar-item" onClick={this.goToPath.bind(this, link.path)}>
-                  <span class={'progress-bar-link ' + (link.active ? 'active' : '') + (link.prevActive ? ' prev' : '')}>
-                    {link.number}
-                  </span>
-                </li>
-              ))
+                  <li
+                    class="progress-bar-item"
+                    onClick={this.goToPath.bind(this, link.path)}
+                  >
+                    <span
+                      class={
+                        "progress-bar-link " +
+                        (link.active ? "active" : "") +
+                        (link.prevActive ? " prev" : "")
+                      }
+                    >
+                      {link.number}
+                    </span>
+                  </li>
+                ))
               : null}
           </ul>
         </div>
@@ -29,10 +37,8 @@ class ProgressBar extends Component {
     );
   }
 }
-const mapStateToProps = () => ({
-});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = {
-}
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar);

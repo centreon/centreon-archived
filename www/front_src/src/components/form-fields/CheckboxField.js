@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import fieldHoc from './hoc';
-import {prepareInputProps} from './utils';
+import fieldHoc from "./hoc";
+import { prepareInputProps } from "./utils";
 
 const callbackWithValue = (trueValue, falseValue, callback) => e =>
   callback(e.target.checked ? trueValue : falseValue);
@@ -21,14 +21,16 @@ const CheckboxField = ({
   info,
   ...rest
 }) => (
-  <div class={'form-group' + (error ? ' has-danger' : '')}>
-    <div class={'custom-control custom-checkbox orange'}>
+  <div class={"form-group" + (error ? " has-danger" : "")}>
+    <div class={"custom-control custom-checkbox orange"}>
       <input
         {...prepareInputProps(rest)}
         aria-checked={checked}
         checked={value}
         defaultChecked={value === trueValue}
-        onChange={onChange && callbackWithValue(trueValue, falseValue, onChange)}
+        onChange={
+          onChange && callbackWithValue(trueValue, falseValue, onChange)
+        }
         onBlur={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
         className="custom-control-input"
         type="checkbox"
@@ -41,13 +43,13 @@ const CheckboxField = ({
     {error ? (
       <div class="invalid-feedback">
         <i class="fas fa-exclamation-triangle" />
-        <div class="field__msg  field__msg--error">{error}</div>{' '}
+        <div class="field__msg  field__msg--error">{error}</div>{" "}
       </div>
     ) : null}
   </div>
 );
 
-CheckboxField.displayName = 'CheckboxField';
+CheckboxField.displayName = "CheckboxField";
 CheckboxField.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
@@ -55,14 +57,14 @@ CheckboxField.propTypes = {
   value: PropTypes.bool,
   trueValue: PropTypes.any,
   falseValue: PropTypes.any,
-  error: PropTypes.element,
+  error: PropTypes.element
 };
 CheckboxField.defaultProps = {
-  className: 'field',
+  className: "field",
   trueValue: true,
-  falseValue: false,
+  falseValue: false
 };
 
-export {CheckboxField};
+export { CheckboxField };
 
 export default fieldHoc(CheckboxField);

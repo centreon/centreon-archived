@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import className from 'class-name';
-import getErrorMsg from './getErrorMsg';
-import FieldMsg from './FieldMsg';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import className from "class-name";
+import getErrorMsg from "./getErrorMsg";
+import FieldMsg from "./FieldMsg";
 
 let fid = 0;
 
@@ -13,15 +13,15 @@ const fieldHoc = WrapComponent => {
     constructor(props) {
       super(props);
 
-      this.state = {isFocused: false};
+      this.state = { isFocused: false };
 
-      ['getId', 'handleFocus', 'handleBlur', 'isInputValue', 'renderError'].map(
-        fName => (this[fName] = this[fName].bind(this)),
+      ["getId", "handleFocus", "handleBlur", "isInputValue", "renderError"].map(
+        fName => (this[fName] = this[fName].bind(this))
       );
     }
 
     getId() {
-      const {name} = this.props.input;
+      const { name } = this.props.input;
 
       if (!this.fieldId) {
         this.fieldId = nextId();
@@ -32,49 +32,52 @@ const fieldHoc = WrapComponent => {
 
     handleFocus(e) {
       const {
-        input: {onFocus},
+        input: { onFocus }
       } = this.props;
 
-      this.setState({isFocused: true});
+      this.setState({ isFocused: true });
 
       if (onFocus) onFocus(e);
     }
 
     handleBlur(e) {
       const {
-        input: {onBlur},
+        input: { onBlur }
       } = this.props;
 
-      this.setState({isFocused: false});
+      this.setState({ isFocused: false });
 
       if (onBlur) onBlur(e);
     }
 
     isInputValue(value) {
-      return value !== undefined && value !== null && value !== '';
+      return value !== undefined && value !== null && value !== "";
     }
 
     renderError() {
       const {
-        meta: {touched, error},
+        meta: { touched, error }
       } = this.props;
 
-      return touched && error ? <FieldMsg>{getErrorMsg(error)}</FieldMsg> : null;
+      return touched && error ? (
+        <FieldMsg>{getErrorMsg(error)}</FieldMsg>
+      ) : null;
     }
 
     render() {
-      const {isFocused} = this.state;
-      const {input, meta, label, autoComplete, ...rest} = this.props;
+      const { isFocused } = this.state;
+      const { input, meta, label, autoComplete, ...rest } = this.props;
 
-      const extra = autoComplete === 'off' ? {autoComplete: this.getId()} : {};
+      const extra =
+        autoComplete === "off" ? { autoComplete: this.getId() } : {};
 
       return (
         <WrapComponent
           className={className({
             field: true,
-            'has-danger': meta.invalid && meta.touched,
-            'has-value': this.isInputValue(input.value),
-            'has-focus': isFocused,
+            "has-danger": meta.invalid && meta.touched,
+            "has-value": this.isInputValue(input.value),
+            "has-focus": isFocused
           })}
           {...input}
           {...rest}
@@ -96,7 +99,7 @@ const fieldHoc = WrapComponent => {
     input: PropTypes.object.isRequired,
     label: PropTypes.string,
     onFocus: PropTypes.func,
-    onBlur: PropTypes.func,
+    onBlur: PropTypes.func
   };
 
   return FieldHoc;

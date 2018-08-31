@@ -1,20 +1,25 @@
-import React from 'react';
-import {Field, reduxForm as connectForm} from 'redux-form';
+import React from "react";
+import { Field, reduxForm as connectForm } from "redux-form";
 
-import RadioGroupFields from '../form-fields/RadioGroupFields';
+import RadioGroupFields from "../form-fields/RadioGroupFields";
 
 const configurationTypes = [
   {
-    label: 'Add a Centreon Remote Server',
-    value: 1,
+    label: "Add a Centreon Remote Server",
+    value: 1
   },
   {
-    label: 'Add a Centreon Poller',
-    value: 2,
+    label: "Add a Centreon Poller",
+    value: 2
   }
 ];
 
-const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submitting}) => (
+const ServerConfigurationWizardForm = ({
+  error,
+  handleSubmit,
+  onSubmit,
+  submitting
+}) => (
   <div className="form-wrapper small">
     <div className="form-inner">
       <div className="form-heading">
@@ -22,9 +27,15 @@ const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submittin
         <p className="form-text">Choose a configuration type:</p>
       </div>
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-        <Field name="server_type" component={RadioGroupFields} options={configurationTypes} />
+        <Field
+          name="server_type"
+          component={RadioGroupFields}
+          options={configurationTypes}
+        />
         <div class="form-buttons">
-          <button className="button" type="submit">Next</button>
+          <button className="button" type="submit">
+            Next
+          </button>
         </div>
         {error ? <div class="error-block">{error.message}</div> : null}
       </form>
@@ -34,4 +45,6 @@ const ServerConfigurationWizardForm = ({error, handleSubmit, onSubmit, submittin
 
 const validate = () => ({});
 
-export default connectForm({form: 'ServerConfigurationWizardForm', validate})(ServerConfigurationWizardForm);
+export default connectForm({ form: "ServerConfigurationWizardForm", validate })(
+  ServerConfigurationWizardForm
+);

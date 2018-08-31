@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import FieldMsg from './FieldMsg';
-import RadioField from './RadioField';
+import FieldMsg from "./FieldMsg";
+import RadioField from "./RadioField";
 
 const getValue = item => (item.value ? item.value : item);
 
@@ -23,22 +23,22 @@ const renderOptions = (options, rest) =>
     />
   ));
 
-const RadioGroupField = ({options, className, label, meta, ...rest}) => {
-  const {error, touched, ...restMeta} = meta;
+const RadioGroupField = ({ options, className, label, meta, ...rest }) => {
+  const { error, touched, ...restMeta } = meta;
 
   return (
     <div className="form-group">
-      {renderOptions(options, {...rest, meta: {...restMeta}})}
+      {renderOptions(options, { ...rest, meta: { ...restMeta } })}
       {touched && error ? <FieldMsg>{error}</FieldMsg> : null}
     </div>
   );
 };
 
-RadioGroupField.displayName = 'RadioGroupField';
+RadioGroupField.displayName = "RadioGroupField";
 RadioGroupField.propTypes = {
-  options: PropTypes.array.isRequired,
+  options: PropTypes.array.isRequired
 };
 
-RadioGroupField.defaultProps = {className: 'radio-group-field'};
+RadioGroupField.defaultProps = { className: "radio-group-field" };
 
 export default RadioGroupField;
