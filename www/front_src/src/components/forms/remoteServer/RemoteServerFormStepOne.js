@@ -15,11 +15,11 @@ import {
 
 class RemoteServerFormStepOne extends Component {
   state = {
-    inputTypeManual:true,
-    initialized:false
+    inputTypeManual: true,
+    initialized: false
   }
 
-  onManualInputChanged = (e,value) => {
+  onManualInputChanged = (e, value) => {
     this.setState({
       inputTypeManual: value,
     })
@@ -29,21 +29,21 @@ class RemoteServerFormStepOne extends Component {
     this.props.change('inputTypeManual', !value);
     this.setState({
       initialized: true,
-      inputTypeManual:!value
+      inputTypeManual: !value
     })
   }
 
   componentWillReceiveProps = (nextProps) => {
-    const {waitList} = nextProps;
-    const {initialized} = this.state;
-    if(waitList && !initialized){
-        this.initializeFromRest((waitList.length>0))
+    const { waitList } = nextProps;
+    const { initialized } = this.state;
+    if (waitList && !initialized) {
+      this.initializeFromRest((waitList.length > 0))
     }
   }
 
   render() {
-    const { error, handleSubmit, onSubmit, submitting,waitList } = this.props;
-    const {inputTypeManual} = this.state;
+    const { error, handleSubmit, onSubmit, submitting, waitList } = this.props;
+    const { inputTypeManual } = this.state;
     return (
       <div className="form-wrapper">
         <div className="form-inner">
@@ -51,14 +51,14 @@ class RemoteServerFormStepOne extends Component {
             <h2 className="form-title mb-2">Server Configuration</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <Field 
-            name="inputTypeManual" 
-            onChange={this.onManualInputChanged.bind(this)} 
-            checked={inputTypeManual}
-            value={true}
-            component={RadioField} 
-            label="Manual input" />
-            {inputTypeManual ? 
+            <Field
+              name="inputTypeManual"
+              onChange={this.onManualInputChanged.bind(this)}
+              checked={inputTypeManual}
+              value={true}
+              component={RadioField}
+              label="Manual input" />
+            {inputTypeManual ?
               <div>
                 <Field
                   name="server_name"
@@ -82,45 +82,54 @@ class RemoteServerFormStepOne extends Component {
                   label="Centreon Central IP Address:"
                 />
               </div>
-            : null}
-            <Field 
-            name="inputTypeManual" 
-            onClick={this.onManualInputChanged.bind(this)} 
-            checked={!inputTypeManual}
-            value={false} 
-            component={RadioField} 
-            label="Please select a server" />
+              : null}
+            <Field
+              name="inputTypeManual"
+              onClick={this.onManualInputChanged.bind(this)}
+              checked={!inputTypeManual}
+              value={false}
+              component={RadioField}
+              label="Please select a server" />
             {!inputTypeManual ?
               <div>
-                {waitList ?  <Field
+                {waitList ? <Field
                   name="server_ip"
                   component={SelectField}
                   label="Select linked Distant Pollers:"
                   required
-                  options={waitList.map(c => ({value: c.ip, text: c.ip}))}
+                  options={[
+                    {
+                      disabled: true,
+                      selected: true,
+                      text: 'Select IP',
+                      value: '',
+                    },
+                  ].concat(
+                    waitList.map(c => ({ value: c.ip, text: c.ip }))
+                  )}
                 /> : null}
-                 <Field
+                <Field
                   name="server_name"
                   component={InputField}
                   type="text"
                   placeholder=""
                   label="Server name:"
                 />
-                  <Field
+                <Field
                   name="db_user"
                   component={InputField}
                   type="text"
                   placeholder=""
                   label="Database user:"
                 />
-                  <Field
+                <Field
                   name="db_password"
                   component={InputField}
                   type="password"
                   placeholder=""
                   label="Database password:"
                 />
-                  <Field
+                <Field
                   name="centreon_central_ip"
                   component={InputField}
                   type="text"
@@ -128,8 +137,8 @@ class RemoteServerFormStepOne extends Component {
                   label="Centreon Central IP Address:"
                 />
               </div>
-             : null}
-            <Field name="checkbox" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
+              : null}
+            <Field name="manage_broker_config" component={CheckboxField} label="Manage automatically Centreon Broker Configuration of selected poller?" />
             <div class="form-buttons">
               <button className="button" type="submit">Next</button>
             </div>

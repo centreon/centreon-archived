@@ -10,9 +10,10 @@ class MultiSelect extends React.Component {
   }
   render() {
     const { selectedOption } = this.state;
-    const {options} = this.props;
+    const { options, label } = this.props;
     return (
       <Select
+        label={label}
         value={selectedOption}
         onChange={this.handleChange}
         options={options}
