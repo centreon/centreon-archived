@@ -5,6 +5,7 @@ import routeMap from "../../route-maps";
 import axios from "../../axios";
 import { connect } from "react-redux";
 import { SubmissionError } from "redux-form";
+import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
 
 class PollerStepTwoRoute extends Component {
   state = {
@@ -41,11 +42,14 @@ class PollerStepTwoRoute extends Component {
   };
 
   handleSubmit = data => {
-    const { history, pollerData } = this.props;
+    const { history, pollerData, setPollerWizard } = this.props;
     let postData = { ...data, ...pollerData };
     return this.wizardFormApi
       .post("", postData)
-      .then(response => {})
+      .then(response => {
+        setPollerWizard({ submitStatus: response.data.success });
+        history.push(routeMap.pollerStep3);
+      })
       .catch(err => {
         throw new SubmissionError({ _error: new Error(err.response.data) });
       });
@@ -72,4 +76,8 @@ const mapStateToProps = ({ pollerForm }) => ({
   pollerData: pollerForm
 });
 
-export default connect(mapStateToProps, null)(PollerStepTwoRoute);
+const mapDispatchToProps = {
+  setPollerWizard
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepTwoRoute);

@@ -3,7 +3,12 @@ import WizardFormInstallingStatus from "../../components/wizardFormInstallingSta
 import ProgressBar from "../../components/progressBar";
 import routeMap from "../../route-maps";
 
+import { connect } from "react-redux";
 class PollerStepThreeRoute extends Component {
+  state = {
+    generateStatus: null,
+    processingStatus: null
+  };
   links = [
     {
       active: true,
@@ -18,10 +23,15 @@ class PollerStepThreeRoute extends Component {
 
   render() {
     const { links } = this;
+    const { pollerData } = this.props;
+    const { generateStatus, processingStatus } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
+          statusCreating={pollerData.submitStatus}
+          statusGenerating={generateStatus}
+          statusProcessing={processingStatus}
           formTitle={"Currently installing [step in progress]"}
         />
       </div>
@@ -29,4 +39,12 @@ class PollerStepThreeRoute extends Component {
   }
 }
 
-export default PollerStepThreeRoute;
+const mapStateToProps = ({ pollerForm }) => ({
+  pollerData: pollerForm
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  PollerStepThreeRoute
+);
