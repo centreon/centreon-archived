@@ -122,7 +122,7 @@
                         "description": "database user",
                         "required": false,
                         "type": "string"
-                    }
+                    },
                     {
                         "name": "db_password",
                         "in": "formData",

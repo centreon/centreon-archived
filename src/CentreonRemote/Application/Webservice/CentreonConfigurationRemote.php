@@ -50,13 +50,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get remotes servers waitlist
      * 
-     * @return string
+     * @return array
      */
-    public function postGetWaitList(): string
+    public function postGetWaitList(): array
     {
         $statement = $this->pearDB->query('SELECT ip, version FROM `remote_servers` WHERE `is_connected` = 0');
 
-        return json_encode($statement->fetchAll());
+        return $statement->fetchAll();
     }
 
     /**
@@ -87,13 +87,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return string
+     * @return array
      */
-    public function postGetRemotesList(): string
+    public function postGetRemotesList(): array
     {
         $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
 
-        return json_encode($statement->fetchAll());
+        return $statement->fetchAll();
     }
 
     /**
@@ -212,7 +212,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         try {
             $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
-            return json_encode(['error' => true, 'message' => $e->getMessage()]);
+            return ['error' => true, 'message' => $e->getMessage()];
         }
 
         // If you want to link pollers to a remote
@@ -238,7 +238,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         //todo: update return based on success/fail
         // $this->createExportTask($serverIP);
 
-        return json_encode(['success' => true]);
+        return ['success' => true];
     }
 
     /**
