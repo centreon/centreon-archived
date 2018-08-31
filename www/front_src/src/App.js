@@ -18,7 +18,7 @@ class App extends Component {
             {routes.map(({ path, comp, ...rest }, i) => (
               <ClassicRoute
                 history={history}
-                path={path} 
+                path={path}
                 component={comp}
                 {...rest}
               />

@@ -4,45 +4,50 @@ import routeMap from "../../route-maps";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import 'moment-timezone'
-import Moment from 'moment'
+import "moment-timezone";
+import Moment from "moment";
 
 import axios from "../../axios";
 
 import logo from "../../img/centreon.png";
-import IconMenu from '../iconMenu';
+import IconMenu from "../iconMenu";
 import LineMenu from "../lineMenu";
-import PollerMenu from '../pollerMenu';
-import Clock from '../clock';
+import PollerMenu from "../pollerMenu";
+import Clock from "../clock";
 import HostMenu from "../hostMenu";
-import ServiceStatusMenu from '../serviceStatusMenu';
+import ServiceStatusMenu from "../serviceStatusMenu";
 import UserMenu from "../userMenu";
 
-
 const instantiateDate = (tz, locale, timestamp) => {
-  const currentTime = tz !== '' ? Moment.unix(timestamp).tz(tz) : Moment.unix(timestamp)
-  locale = locale !== null ? currentTime.locale(locale) : currentTime
+  const currentTime =
+    tz !== "" ? Moment.unix(timestamp).tz(tz) : Moment.unix(timestamp);
+  locale = locale !== null ? currentTime.locale(locale) : currentTime;
 
   return {
-      date: currentTime.format('LL'),
-      time: currentTime.format('LT')
-  }
-}
+    date: currentTime.format("LL"),
+    time: currentTime.format("LT")
+  };
+};
 
 class TopHeader extends Component {
-
-  navService = axios('internal.php?object=centreon_menu&action=menu');
-  pollerService = axios('internal.php?object=centreon_topcounter&action=pollersListIssues');
-  hostsService = axios('internal.php?object=centreon_topcounter&action=hosts_status');
-  servicesStatusService = axios('internal.php?object=centreon_topcounter&action=servicesStatus');
-  userService = axios('internal.php?object=centreon_topcounter&action=user');
-  clockService = axios('internal.php?object=centreon_topcounter&action=clock');
+  navService = axios("internal.php?object=centreon_menu&action=menu");
+  pollerService = axios(
+    "internal.php?object=centreon_topcounter&action=pollersListIssues"
+  );
+  hostsService = axios(
+    "internal.php?object=centreon_topcounter&action=hosts_status"
+  );
+  servicesStatusService = axios(
+    "internal.php?object=centreon_topcounter&action=servicesStatus"
+  );
+  userService = axios("internal.php?object=centreon_topcounter&action=user");
+  clockService = axios("internal.php?object=centreon_topcounter&action=clock");
 
   state = {
     selectedMenu: {},
     pollerData: {},
     hostsData: {},
-    clockData:{},
+    clockData: {},
     servicesStatusData: {},
     userData: {},
     menuItems: []
@@ -56,54 +61,53 @@ class TopHeader extends Component {
       result.push(data[key]);
     }
     callback(result);
-  }
+  };
 
   setClock = () => {
-    this.clockService.get().then(({data}) => {
+    this.clockService.get().then(({ data }) => {
       this.setState({
-        clockData:instantiateDate(data.timezone, data.locale, data.time)
-      })
-    })
-  }
+        clockData: instantiateDate(data.timezone, data.locale, data.time)
+      });
+    });
+  };
 
   setRefreshInterval = () => {
-    this.refreshInterval = setInterval(this.setClock, 15000)
-  }
+    this.refreshInterval = setInterval(this.setClock, 15000);
+  };
 
   componentWillUnmount = () => {
     clearInterval(this.refreshInterval);
-  }
-
+  };
 
   UNSAFE_componentWillMount = () => {
     this.navService.get().then(({ data }) => {
-      this.transformToArray(data, (array) => {
+      this.transformToArray(data, array => {
         this.setState({
           menuItems: array,
           selectedMenu: array[0]
         });
-      })
+      });
     });
     this.pollerService.get().then(({ data }) => {
       this.setState({
-        pollerData:data
-      })
-    })
+        pollerData: data
+      });
+    });
     this.hostsService.get().then(({ data }) => {
       this.setState({
-        hostsData:data
-      })
-    })
+        hostsData: data
+      });
+    });
     this.servicesStatusService.get().then(({ data }) => {
       this.setState({
-        servicesStatusData:data
-      })
-    })
+        servicesStatusData: data
+      });
+    });
     this.userService.get().then(({ data }) => {
       this.setState({
-        userData:data
-      })
-    })
+        userData: data
+      });
+    });
     this.setClock();
     this.setRefreshInterval();
   };
@@ -115,7 +119,15 @@ class TopHeader extends Component {
   };
 
   render = () => {
-    const { menuItems, selectedMenu, pollerData, clockData, hostsData, servicesStatusData,userData } = this.state;
+    const {
+      menuItems,
+      selectedMenu,
+      pollerData,
+      clockData,
+      hostsData,
+      servicesStatusData,
+      userData
+    } = this.state;
     return (
       <div>
         <header class="header mb-3">
@@ -131,17 +143,18 @@ class TopHeader extends Component {
                   <IconMenu
                     items={menuItems}
                     selected={selectedMenu}
-                    onSwitch={this.switchTopLevelMenu.bind(this)} />
+                    onSwitch={this.switchTopLevelMenu.bind(this)}
+                  />
                   <div class="wrap-middle">
                     <div class="wrap-middle-left">
-                      <PollerMenu data={pollerData}/>
-                      <HostMenu data={hostsData}/>
+                      <PollerMenu data={pollerData} />
+                      <HostMenu data={hostsData} />
                     </div>
-                    <ServiceStatusMenu data={servicesStatusData}/>
+                    <ServiceStatusMenu data={servicesStatusData} />
                   </div>
                   <div class="wrap-right">
-                    <Clock clockData={clockData}/>
-                    <UserMenu data={userData}/>
+                    <Clock clockData={clockData} />
+                    <UserMenu data={userData} />
                   </div>
                 </div>
               </div>

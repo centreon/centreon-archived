@@ -1,19 +1,19 @@
-import React,{Component} from 'react';
+import React, { Component } from "react";
 
-import PropTypes from 'prop-types';
-import fieldHoc from './hoc';
-import {prepareInputProps} from './utils';
-import Icon from '../icon';
+import PropTypes from "prop-types";
+import fieldHoc from "./hoc";
+import { prepareInputProps } from "./utils";
+import Icon from "../icon";
 
 class PasswordInputField extends Component {
   state = {
-    shown: false,
+    shown: false
   };
 
   toggleShowPassword = () => {
-    const {shown} = this.state;
+    const { shown } = this.state;
     this.setState({
-      shown: !shown,
+      shown: !shown
     });
   };
 
@@ -30,29 +30,31 @@ class PasswordInputField extends Component {
       ...rest
     } = this.props;
 
-    const {shown} = this.state;
+    const { shown } = this.state;
 
     return (
-      <div class={'form-group' + (error ? ' has-danger' : '')}>
+      <div class={"form-group" + (error ? " has-danger" : "")}>
         <label>
           <span>{label}</span>
-          <span class="label-option required">{topRightLabel ? topRightLabel : null}</span>
+          <span class="label-option required">
+            {topRightLabel ? topRightLabel : null}
+          </span>
         </label>
         <div class="input-group">
           <input
-            type={shown ? 'text' : 'password'}
+            type={shown ? "text" : "password"}
             placeholder={placeholder}
-            class={'form-control password' + (error ? ' is-invalid' : '')}
+            class={"form-control password" + (error ? " is-invalid" : "")}
             {...prepareInputProps(rest)}
           />
           <span class="input-group-text" onClick={this.toggleShowPassword}>
-            <Icon face={shown ? 'eye' : 'eye-slash'} />
+            <Icon face={shown ? "eye" : "eye-slash"} />
           </span>
         </div>
         {error ? (
           <div class="invalid-feedback">
             <Icon face="exclamation-triangle" />
-            {error}{' '}
+            {error}{" "}
           </div>
         ) : null}
       </div>
@@ -60,16 +62,16 @@ class PasswordInputField extends Component {
   }
 }
 
-PasswordInputField.displayName = 'PasswordInputField';
+PasswordInputField.displayName = "PasswordInputField";
 PasswordInputField.defaultProps = {
-  className: 'form-control',
+  className: "form-control",
   modifiers: [],
-  renderMeta: null,
+  renderMeta: null
 };
 PasswordInputField.propTypes = {
-  error: PropTypes.element,
+  error: PropTypes.element
 };
 
-export {PasswordInputField};
+export { PasswordInputField };
 
 export default fieldHoc(PasswordInputField);

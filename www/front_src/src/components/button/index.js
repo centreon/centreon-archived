@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
-export default ({buttonClass, buttonTitle, disabled, buttonType}) => (
+export default ({ buttonClass, buttonTitle, disabled, buttonType }) => (
   <button
-    class={'btn btn-block btn-' + buttonClass}
+    class={"btn btn-block btn-" + buttonClass}
     disabled={disabled}
-    type={buttonType ? buttonType : 'submit'}
+    type={buttonType ? buttonType : "submit"}
   >
     {buttonTitle}
   </button>

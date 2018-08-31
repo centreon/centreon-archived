@@ -1,13 +1,13 @@
-import React from 'react';
-import Select from 'react-select';
+import React from "react";
+import Select from "react-select";
 
 class MultiSelect extends React.Component {
   state = {
-    selectedOption: null,
-  }
-  handleChange = (selectedOption) => {
+    selectedOption: null
+  };
+  handleChange = selectedOption => {
     this.setState({ selectedOption });
-  }
+  };
   render() {
     const { selectedOption } = this.state;
     const { options, label } = this.props;

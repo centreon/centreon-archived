@@ -1,3 +1,3 @@
-import React from 'react';
+import React from "react";
 
-export default ({face}) => <i class={'fas fa-' + face} />;
+export default ({ face }) => <i class={"fas fa-" + face} />;
