@@ -3,9 +3,9 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\LinkedPollerConfigurationService;
-use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
+use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
+use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
@@ -207,8 +207,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             return json_encode(['error' => true, 'message' => $e->getMessage()]);
         }
 
-        //TODO
-        new LinkedPollerConfigurationService;
+        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
+        $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
+        //$pollerConfigurationService->doSomething($serverID);
 
         // Finish server configuration by:
         // - $openBrokerFlow?
@@ -221,10 +222,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         }
 
         //todo: update return based on success/fail
-       // $this->createExportTask($serverIps);
+        // $this->createExportTask($serverIP);
 
-
-         return json_encode(['success' => true]);
+        return json_encode(['success' => true]);
     }
 
     /**
