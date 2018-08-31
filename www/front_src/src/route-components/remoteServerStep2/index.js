@@ -5,6 +5,7 @@ import ProgressBar from "../../components/progressBar";
 import axios from "../../axios";
 import { connect } from "react-redux";
 import { SubmissionError } from "redux-form";
+import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
 
 class RemoteServerStepTwoRoute extends Component {
   state = {
@@ -46,11 +47,14 @@ class RemoteServerStepTwoRoute extends Component {
   };
 
   handleSubmit = data => {
-    const { history, pollerData } = this.props;
+    const { history, pollerData, setPollerWizard } = this.props;
     let postData = { ...data, ...pollerData };
     return this.wizardFormApi
       .post("", postData)
-      .then(response => {})
+      .then(response => {
+        setPollerWizard({ submitStatus: response.data.success });
+        history.push(routeMap.remoteServerStep3);
+      })
       .catch(err => {
         throw new SubmissionError({ _error: new Error(err.response.data) });
       });
@@ -77,7 +81,9 @@ const mapStateToProps = ({ pollerForm }) => ({
   pollerData: pollerForm
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  setPollerWizard
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   RemoteServerStepTwoRoute

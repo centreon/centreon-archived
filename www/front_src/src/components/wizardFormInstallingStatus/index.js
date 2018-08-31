@@ -1,7 +1,13 @@
 import React from "react";
 import Loader from "../loader";
 
-export default ({ formTitle }) => {
+export default ({
+  formTitle,
+  statusCreating,
+  statusGenerating,
+  statusProcessing,
+  error
+}) => {
   return (
     <div className="form-wrapper installation">
       <div className="form-inner">
@@ -10,12 +16,46 @@ export default ({ formTitle }) => {
         </div>
         <Loader />
         <p className="form-text">
-          Status <span className="form-status valid">[OK]</span>
+          Creating Export Task{" "}
+          <span
+            className={"form-status" + (statusCreating ? " valid" : " failed")}
+          >
+            {statusCreating != null ? (
+              <span>{statusCreating ? "[OK]" : "[FAIL]"}</span>
+            ) : (
+              "..."
+            )}
+          </span>
         </p>
         <p className="form-text">
-          Status <span className="form-status failed">[failed]</span>
+          Generating Export Files{" "}
+          <span
+            className={
+              "form-status" + (statusGenerating ? " valid" : " failed")
+            }
+          >
+            {statusGenerating != null ? (
+              <span>{statusGenerating ? "[OK]" : "[FAIL]"}</span>
+            ) : (
+              "..."
+            )}
+          </span>
         </p>
-        <span className="form-error-message">Error message</span>
+        <p className="form-text">
+          Processing Remote Import/Configuration{" "}
+          <span
+            className={
+              "form-status" + (statusProcessing ? " valid" : " failed")
+            }
+          >
+            {statusProcessing != null ? (
+              <span>{statusProcessing ? "[OK]" : "[FAIL]"}</span>
+            ) : (
+              "..."
+            )}
+          </span>
+        </p>
+        {error ? <span className="form-error-message">{error}</span> : null}
       </div>
     </div>
   );
