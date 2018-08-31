@@ -47,7 +47,7 @@ class CentreonHostcategories
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -77,7 +77,7 @@ class CentreonHostcategories
                 $parameters['relationObject']['comparator'] = 'hostcategories_hc_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

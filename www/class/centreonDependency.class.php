@@ -217,7 +217,7 @@ class CentreonDependency
         )";
         $db->query($sql);
     }
-    
+
     /**
      *
      * @param integer $field
@@ -338,7 +338,7 @@ class CentreonDependency
                 $parameters['relationObject']['comparator'] = 'dependency_dep_id';
                 break;
         }
-        
+
         return $parameters;
     }
 }

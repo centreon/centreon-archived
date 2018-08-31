@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 if (!$centreon->user->admin) {
     if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
         $msg = new CentreonMsg();

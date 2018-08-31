@@ -50,7 +50,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
      * Set base value
      */
     $group = array_map("myDecode", $DBRESULT->fetchRow());
-    
+
     /*
      * Set Contact Childs
      */
@@ -64,7 +64,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     }
     $DBRESULT->free();
-    
+
     /*
      * Set ContactGroup Childs
      */
@@ -76,7 +76,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
     }
     $DBRESULT->free();
-    
+
     /*
      * Set Menu link List
      */
@@ -88,7 +88,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
     }
     $DBRESULT->free();
-    
+
     /*
      * Set resources List
      */
@@ -103,7 +103,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     }
 
     $DBRESULT->free();
-    
+
     /*
      * Set Action List
      */

@@ -73,10 +73,10 @@ try {
      */
     $pearDB = new CentreonDB();
     $pearDBO = new CentreonDB("centstorage");
-    
+
     $metaObj = new CentreonMeta($pearDB);
     $cgObj = new CentreonContactgroup($pearDB);
-    
+
     /*
      * Detect Which DB layer is used
      */
@@ -241,7 +241,7 @@ try {
     unset($result);
 
     if (count($tabGroups)) {
-        
+
         /** ***********************************************
          *  Caching of all Data
          *
@@ -256,7 +256,7 @@ try {
             $hostTemplateCache[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
         }
         $res->free();
-        
+
         $hostCache = array();
         $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
         while ($h = $DBRESULT->fetchRow()) {
@@ -264,7 +264,7 @@ try {
         }
         $DBRESULT->free();
         unset($h);
-        
+
         /** ***********************************************
          * Cache for host poller relation
          */
@@ -277,8 +277,8 @@ try {
             }
             $hostPollerCache[$row['nagios_server_id']][$row['host_host_id']] = $row['host_host_id'];
         }
-        
-        
+
+
         /** ***********************************************
          * Get all included Hosts
          */
@@ -291,7 +291,7 @@ try {
             $hostIncCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
         }
         $DBRESULT->free();
-        
+
         /** ***********************************************
          * Get all excluded Hosts
          */
@@ -304,7 +304,7 @@ try {
             $hostExclCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
         }
         $DBRESULT->free();
-        
+
         /** ***********************************************
          * Service Cache
          */
@@ -314,7 +314,7 @@ try {
             $svcCache[$s["service_id"]] = $s["service_description"];
         }
         $DBRESULT->free();
-        
+
         /** ***********************************************
          * Host Host relation
          */
@@ -328,8 +328,8 @@ try {
         }
         $DBRESULT->free();
         unset($hg);
-        
-        
+
+
         /** ***********************************************
          * Host Service relation
          */
@@ -354,7 +354,7 @@ try {
             }
         }
         $DBRESULT->free();
-        
+
         /** ***********************************************
          * Create Servive template modele Cache
          */
@@ -365,7 +365,7 @@ try {
         }
         $DBRESULT->free();
         unset($tpl);
-        
+
         $svcCatCache = array();
         $DBRESULT = $pearDB->query("SELECT sc_id, service_service_id FROM `service_categories_relation`");
         while ($res = $DBRESULT->fetchRow()) {
@@ -376,7 +376,7 @@ try {
         }
         $DBRESULT->free();
         unset($res);
-        
+
         $sgCache = array();
         $query = "SELECT argr.`acl_res_id`, acl_group_id " .
             "FROM `acl_res_group_relations` argr, `acl_resources` ar  " .
@@ -388,7 +388,7 @@ try {
         }
         $res->free();
         unset($row);
-        
+
         $query = "SELECT service_service_id, sgr.host_host_id, acl_res_id " .
             "FROM servicegroup sg, acl_resources_sg_relations acl, servicegroup_relation sgr " .
             "WHERE acl.sg_id = sg.sg_id " .
@@ -410,7 +410,7 @@ try {
         }
         $res->free();
         unset($row);
-        
+
         $query = "SELECT acl_res_id, hg_id FROM hostgroup, acl_resources_hg_relations
     			  WHERE acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id";
         $res = $pearDB->query($query);
@@ -421,8 +421,8 @@ try {
             }
             $hgResCache[$row['acl_res_id']][] = $row['hg_id'];
         }
-        
-        
+
+
         /** ***********************************************
          * Begin to build ACL
          */
@@ -435,7 +435,7 @@ try {
              * Delete old data for this group
              */
             $DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '" . $acl_group_id . "'");
-            
+
             /** ***********************************************
              * Select
              */
@@ -449,7 +449,7 @@ try {
             while ($res2 = $DBRESULT2->fetchRow()) {
                 $Host = array();
                 /* ------------------------------------------------------------------ */
-                
+
                 /*
                  * Get all Hosts
                  */
@@ -458,7 +458,7 @@ try {
                         $Host[$host_id] = $host_name;
                     }
                 }
-                
+
                 if (isset($hgResCache[$res2['acl_res_id']])) {
                     foreach ($hgResCache[$res2['acl_res_id']] as $hgId) {
                         if (isset($hostHGRelation[$hgId])) {
@@ -487,7 +487,7 @@ try {
                 /*
                  * get all Service groups
                  */
-                $sgReq = "SELECT host_name, host_id, service_description, service_id 
+                $sgReq = "SELECT host_name, host_id, service_description, service_id
                             FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
                             WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
                 		        AND host.host_id = servicegroup_relation.host_host_id
@@ -600,7 +600,7 @@ try {
                             }
                         }
                     }
-                    
+
                     /*
                      * Insert datas
                      */
@@ -610,24 +610,24 @@ try {
                         $str = "";
                     }
                 }
-                
+
                 /* ------------------------------------------------------------------
                  * reset Flags
                  */
                 $pearDB->query("UPDATE `acl_resources` SET `changed` = '0' WHERE acl_res_id = '" . $res2["acl_res_id"] . "'");
             }
             $DBRESULT2->free();
-            
+
             if ($debug) {
                 $time_end = microtime_float2();
                 $now = $time_end - $time_start;
                 print round($now, 3) . " " . _("seconds") . "\n";
             }
-            
+
             $cpt++;
             $pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
         }
-        
+
         /**
          * Include module specific ACL evaluation
          */
@@ -636,7 +636,7 @@ try {
             require_once $extensionPath . 'centAcl.php';
         }
     }
-    
+
     /*
      * Remove lock
      */

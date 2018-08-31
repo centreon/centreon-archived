@@ -62,7 +62,7 @@ if (function_exists("filter_var")) {
             <?php echo $name; ?>
         </div>
         <div id="colpick_color">
-            <img id="colpick_color_img" src="./include/common/javascript/colpick.jpg" 
+            <img id="colpick_color_img" src="./include/common/javascript/colpick.jpg"
                 onclick="compute_color(event, <?php echo $l_slice; ?>)"
                 onmousedown="cp_imd = true; return false;"
                 onmouseup="cp_imd = false;"
@@ -70,7 +70,7 @@ if (function_exists("filter_var")) {
                 onmouseover="cp_imo = true;"
                 onmouseout="cp_imo = false;">
         </div>
-        <div id="colpick_gradiant" 
+        <div id="colpick_gradiant"
                                 onclick="compute_gradiant(event)"
                                 onmousedown="cp_imd = true; return false;"
                                 onmouseup="cp_imd = false;"

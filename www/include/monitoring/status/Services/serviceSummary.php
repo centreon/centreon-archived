@@ -84,7 +84,7 @@ $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 $tpl->assign("order", strtolower($order));
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 $tpl->assign("tab_order", $tab_order);
-    
+
 $aTypeAffichageLevel1 = array(
     "svcOV" => _("Details"),
     "svcSum" => _("Summary")
@@ -95,7 +95,7 @@ $aTypeAffichageLevel2 = array(
     "ack_1" => _("Acknowledge"),
     "ack_0" => _("Not Acknowledged"),
 );
-    
+
 ##Toolbar select $lang["lgd_more_actions"]
 ?>
 <script type="text/javascript">
@@ -110,7 +110,7 @@ function setO(_i) {
 function displayingLevel1(val)
 {
     _o = val;
-    if (_o == 'svcOV') { 
+    if (_o == 'svcOV') {
         _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
         _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
     } else {
@@ -128,20 +128,20 @@ function displayingLevel2(val)
     if (val != '') {
         _o = _o + "_" + val;
     }
-    
+
     monitoring_refresh();
 }
 </script>
 <?php
-    
+
 $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
 $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-        
+
 foreach (array('o1', 'o2') as $option) {
     $attrs = array('onchange'=>"javascript: setO(this.form.elements['$option'].value); submit();");
-    $form->addElement('select', 
-                        'o1', 
-                        null, 
+    $form->addElement('select',
+                        'o1',
+                        null,
                         array(null => _("More actions..."),
                                 "3"     =>  _("Verification Check"),
                                 "4"     =>  _("Verification Check (Forced)"),

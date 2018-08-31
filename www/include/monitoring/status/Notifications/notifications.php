@@ -114,7 +114,7 @@ $obj->XML->startElement("data");
 if (!isset($_SESSION['centreon_notification_preferences'])) {
      $user_id = $centreon->user->get_id();
      $res_pref = $obj->DB->query("SELECT cp_key, cp_value
-         FROM contact_param 
+         FROM contact_param
          WHERE cp_key LIKE 'monitoring%notification%'
          AND cp_contact_id = '".$obj->DB->escape($user_id)."'");
      $notification_preferences = array();

@@ -330,7 +330,7 @@ function updateMetaService($meta_id = null)
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("meta", $meta_id, CentreonDB::escape($ret["meta_name"]), "c", $fields);
-    
+
     $DBRESULT = $pearDB->query($rq);
 
     $metaObj = new CentreonMeta($pearDB);
@@ -348,7 +348,7 @@ function updateMetaServiceContact($meta_id)
     /* Purge old relation */
     $queryPurge = "DELETE FROM meta_contact WHERE meta_id = " . $meta_id;
     $pearDB->query($queryPurge);
-    
+
     /* Add relation between metaservice and contact */
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cs');

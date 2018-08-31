@@ -1998,7 +1998,7 @@ function updateHostHostGroup($host_id, $ret = array())
         return;
     }
 
-    /* Special Case, delete relation between host/service, when service is linked 
+    /* Special Case, delete relation between host/service, when service is linked
      * to hostgroup in escalation, dependencies.
      * Get initial Hostgroup list to make a diff after deletion
      */
@@ -2102,8 +2102,8 @@ function updateHostHostCategory($host_id, $ret = array())
     $rq = "DELETE FROM hostcategories_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "' ";
     $rq .= "AND NOT EXISTS(
-                            SELECT hc_id 
-                            FROM hostcategories hc 
+                            SELECT hc_id
+                            FROM hostcategories hc
                             WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                             AND hc.level IS NOT NULL) ";
     $DBRESULT = $pearDB->query($rq);
@@ -2348,11 +2348,11 @@ function setHostCriticality($hostId, $criticalityId)
 {
     global $pearDB;
 
-    $pearDB->query("DELETE FROM hostcategories_relation  
+    $pearDB->query("DELETE FROM hostcategories_relation
                 WHERE host_host_id = " . $pearDB->escape($hostId) . "
                 AND NOT EXISTS(
-                    SELECT hc_id 
-                    FROM hostcategories hc 
+                    SELECT hc_id
+                    FROM hostcategories hc
                     WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                     AND hc.level IS NULL)");
     if ($criticalityId) {

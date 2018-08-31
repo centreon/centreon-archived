@@ -49,7 +49,7 @@ class PartEngine
     {
         ;
     }
-    
+
     private function createMaxvaluePartition($db, $tableName, $table)
     {
         # Check if we need to create it
@@ -57,7 +57,7 @@ class PartEngine
         $request .= "WHERE TABLE_NAME='".$table->getName()."' ";
         $request .= "AND TABLE_SCHEMA='".$table->getSchema()."' ";
         $request .= "AND PARTITION_DESCRIPTION = 'MAXVALUE' ";
-        
+
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
             throw new Exception(
@@ -65,7 +65,7 @@ class PartEngine
                 . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n"
             );
         }
-        
+
         if (!($row = $DBRESULT->fetchRow())) {
             #print "[".date(DATE_RFC822)."][createMaxvaluePartition] Create new part pmax for table " . $tableName . "\n";
             $request = "ALTER TABLE ".$tableName;
@@ -79,7 +79,7 @@ class PartEngine
             }
         }
     }
-    
+
     private function purgeDailyPartitionCondition($table)
     {
         date_default_timezone_set($table->getTimezone());
@@ -91,7 +91,7 @@ class PartEngine
 
         return $condition;
     }
-    
+
     private function updateAddDailyPartitions($db, $tableName, $month, $day, $year, $hasMaxValuePartition = false)
     {
         $current_time = mktime(0, 0, 0, $month, $day, $year);
@@ -104,7 +104,7 @@ class PartEngine
         if ($day < 10) {
             $day = "0" . $day;
         }
-            
+
         print "[".date(DATE_RFC822)."][updateParts] Create new part for table " . $tableName . " : "
             . ($ntime[5] + 1900) . $month . $day . " - Range: $current_time\n";
 
@@ -132,7 +132,7 @@ class PartEngine
 
         return $current_time;
     }
-    
+
     private function updateDailyPartitions($db, $tableName, $table, $lastTime)
     {
         $hasMaxValuePartition = $this->hasMaxValuePartition($db, $table);
@@ -141,7 +141,7 @@ class PartEngine
         $how_much_forward = 0;
         $ltime = localtime();
         $current_time = mktime(0, 0, 0, $ltime[4]+1, $ltime[3], $ltime[5]+1900);
-        
+
         # Gap when you have a cron not updated
         while ($lastTime < $current_time) {
             $ntime = localtime($lastTime);
@@ -170,12 +170,12 @@ class PartEngine
             );
             $how_much_forward++;
         }
-        
+
         if (!$hasMaxValuePartition) {
             $this->createMaxvaluePartition($db, $tableName, $table);
         }
     }
-    
+
     private function createDailyPartitions($table)
     {
         date_default_timezone_set($table->getTimezone());
@@ -184,7 +184,7 @@ class PartEngine
 
         $createPart = " PARTITION BY RANGE(".$table->getColumn().") (";
         $num_days = $table->getRetention();
-        
+
         $append = '';
         while ($num_days >= 0) {
             $current_time = mktime(0, 0, 0, $ltime[4]+1, $ltime[3]-$num_days, $ltime[5]+1900);
@@ -220,12 +220,12 @@ class PartEngine
             $append = ',';
             $count++;
         }
-      
+
         $createPart .= ");";
 
         return $createPart;
     }
-    
+
     /**
      * Create a new table with partitions
      */
@@ -235,18 +235,18 @@ class PartEngine
         if ($table->exists()) {
             throw new Exception("Warning: Table ".$tableName." already exists\n");
         }
-        
+
         $partition_part = null;
         if ($table->getType() == 'date' && $table->getDuration() == 'daily') {
             $partition_part = $this->createDailyPartitions($table);
         }
-        
+
         if (is_null($partition_part)) {
             throw new Exception(
                 "SQL Error: Cannot build partition part \n"
             );
         }
-        
+
         $DBRESULT = $db->query("use ".$table->getSchema());
         if (PEAR::isError($DBRESULT)) {
             throw new Exception(
@@ -266,7 +266,7 @@ class PartEngine
             $this->createMaxvaluePartition($db, $tableName, $table);
         }
     }
-    
+
     /**
      * Get last part range max value
      */
@@ -302,28 +302,28 @@ class PartEngine
             echo "[" . date(DATE_RFC822) . "][purge] No need to purge\n";
             return true;
         }
-    
+
         if ($table->getType() == 'date' && $table->getDuration() == 'daily') {
             $condition = $this->purgeDailyPartitionCondition($table);
         }
-    
+
         $tableName = $table->getSchema() . "." . $table->getName();
         if (!$table->exists()) {
             throw new Exception("Error: Table " . $tableName . " does not exists\n");
         }
-        
+
         $request = "SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS ";
         $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
         $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
         $request .= $condition;
-        
+
         $DBRESULT = $db->query($request);
         if (PEAR::isError($DBRESULT)) {
             throw new Exception("Error : Cannot get partitions to purge for table "
                 . $tableName . ", " . $DBRESULT->getDebugInfo() . "\n");
         }
-        
+
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $tableName . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
             $DBRESULT2 =& $db->query($request);
@@ -347,7 +347,7 @@ class PartEngine
         $tableName = $table->getSchema().".".$table->getName();
 
         $db->query("SET bulk_insert_buffer_size= 1024 * 1024 * 256");
-        
+
         if (!$table->exists() || !$table->columnExists()) {
             throw new Exception("Error: Table ".$table->getSchema().".".$table->getName()." does not exists\n");
         }
@@ -364,13 +364,13 @@ class PartEngine
                 . $DBRESULT->getDebugInfo() . "\n"
             );
         }
-        
+
         /*
          * creating new table with the initial name
          */
         echo "[".date(DATE_RFC822)."][migrate] Creating parts for new table ".$tableName."\n";
         $this->createParts($table, $db);
-        
+
         // dumping data from existing table
         echo "[".date(DATE_RFC822)."][migrate] Insert data from ".$tableName."_old to new table\n";
         $request = "INSERT INTO " . $tableName . " SELECT * FROM " . $tableName."_old";
@@ -392,13 +392,13 @@ class PartEngine
         if (!$table->exists()) {
             throw new Exception("Update error: Table ".$tableName." does not exists\n");
         }
-        
+
         //verifying if table is partitioned
         $DBRESULT = $db->query("use ".$table->getSchema());
         if (PEAR::isError($DBRESULT)) {
             throw new Exception("Error: cannot use database ".$table->getSchema()."\n");
         }
-        
+
         $DBRESULT = $db->query("SHOW TABLE STATUS LIKE '".$table->getName()."'");
         if (PEAR::isError($DBRESULT)) {
             throw new Exception("Error: cannot get table ".$tableName." status, ".$DBRESULT->getDebugInfo()."\n");
@@ -407,7 +407,7 @@ class PartEngine
             throw new Exception("Error: cannot get table ".$tableName." status\n");
         }
         $row = $DBRESULT->fetchRow();
-        
+
         if (!isset($row["Create_options"])) {
             throw new Exception("Cannot find Create_options for table ".$tableName."\n");
         }
@@ -417,12 +417,12 @@ class PartEngine
 
         // Get Last
         $lastTime = $this->getLastPartRange($table, $db);
-        
+
         if ($table->getType() == 'date' && $table->getDuration() == 'daily') {
             $this->updateDailyPartitions($db, $tableName, $table, $lastTime);
         }
     }
-    
+
     /**
      * optimize all partitions for a table
      * @param MysqlTable $table
@@ -520,7 +520,7 @@ class PartEngine
         if (!is_null($table->getBackupFormat()) && $table->getType() == "date" && $table->getDuration() == 'daily') {
             $format = "date_format(FROM_UNIXTIME(PARTITION_DESCRIPTION), '".$table->getBackupFormat()."')";
         }
-        
+
         $request = "SELECT PARTITION_NAME, PARTITION_DESCRIPTION, "
             . $format . " as filename FROM information_schema.`PARTITIONS` ";
         $request .= "WHERE `TABLE_NAME`='".$table->getName()."' ";
@@ -617,7 +617,7 @@ class PartEngine
      */
     private function hasMaxValuePartition($db, $table)
     {
-        # Check if pmax partition exists 
+        # Check if pmax partition exists
         $request = "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS ";
         $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
         $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";

@@ -40,7 +40,7 @@ abstract class AbstractObjectXML {
     protected $rootXML = 'centreonBroker';
     protected $exported = array();
     protected $fp = null;
-    
+
     protected $attributes_write = array();
     protected $attributes_array = array();
     protected $attributes_hash = array();
@@ -57,7 +57,7 @@ abstract class AbstractObjectXML {
 
         return $instances[$calledClass];
     }
-    
+
     protected function __construct() {
         $this->backend_instance = Backend::getInstance();
 
@@ -70,7 +70,7 @@ abstract class AbstractObjectXML {
     public function reset() {
         $this->exported = array();
     }
-    
+
     protected function writeFile($dir) {
         $full_file = $dir . '/' . $this->generate_filename;
         $this->writer->endDocument();
@@ -83,7 +83,7 @@ abstract class AbstractObjectXML {
             throw new Exception("Cannot open file " . $full_file);
         }
     }
-    
+
     protected function generateFile($object, $cdata = true, $root = null) {
         if (!is_null($root)) {
             $this->writer->startElement($root);

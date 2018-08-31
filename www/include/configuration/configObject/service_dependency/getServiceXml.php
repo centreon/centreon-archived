@@ -73,8 +73,8 @@ $aclCond = "";
 if (!$centreon->user->admin) {
     $dbmon = $acl->getNameDBAcl('broker');
     $aclFrom = ", $dbmon.centreon_acl acl ";
-    $aclCond = " WHERE res.host_id = acl.host_id 
-                 AND acl.service_id = res.service_id 
+    $aclCond = " WHERE res.host_id = acl.host_id
+                 AND acl.service_id = res.service_id
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
 
@@ -87,40 +87,40 @@ $xml->startElement("response");
 if (isset($hostId)) {
     if ($hostId == 0) {
         $query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
-					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
-					FROM service s, host h, host_service_relation hsr 
-					WHERE hsr.hostgroup_hg_id IS NULL 
-                    AND h.host_id = hsr.host_host_id 
-					AND s.service_id = hsr.service_service_id 
+					SELECT s.service_id, s.service_description, h.host_name, h.host_id
+					FROM service s, host h, host_service_relation hsr
+					WHERE hsr.hostgroup_hg_id IS NULL
+                    AND h.host_id = hsr.host_host_id
+					AND s.service_id = hsr.service_service_id
 					AND s.service_register = '1'
-					UNION 
-					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
-					FROM service s, hostgroup_relation hgr, host h, host_service_relation hsr 
-					WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id 
-                    AND hgr.host_host_id = h.host_id 
-					AND s.service_id = hsr.service_service_id 
+					UNION
+					SELECT s.service_id, s.service_description, h.host_name, h.host_id
+					FROM service s, hostgroup_relation hgr, host h, host_service_relation hsr
+					WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+                    AND hgr.host_host_id = h.host_id
+					AND s.service_id = hsr.service_service_id
 					AND s.service_register = '1'
 				) AS res $aclFrom $aclCond
 				ORDER BY res.host_name, res.service_description";
     } else {
         $query = "SELECT DISTINCT res.service_id, res.service_description, res.host_name, res.host_id FROM (
-					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
-					FROM service s, host h, host_service_relation hsr 
-					WHERE hsr.hostgroup_hg_id IS NULL 
-                                        AND h.host_id = '" . $db->escape($hostId). "' 
-                                        AND h.host_id = hsr.host_host_id 
-                                        AND s.service_id = hsr.service_service_id 
-                                        AND s.service_register = '1' 
-					UNION 
-					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
-					FROM service s, host h, host_service_relation hsr 
-					WHERE hsr.host_host_id IS NULL 
-                                        AND hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id 
-                                                                    FROM hostgroup_relation 
-                                                                    WHERE host_host_id = '" . $db->escape($hostId). "') 
-                                        AND h.host_id = '" . $db->escape($hostId). "' 
-                                        AND s.service_id = hsr.service_service_id 
-                                        AND s.service_register = '1' 
+					SELECT s.service_id, s.service_description, h.host_name, h.host_id
+					FROM service s, host h, host_service_relation hsr
+					WHERE hsr.hostgroup_hg_id IS NULL
+                                        AND h.host_id = '" . $db->escape($hostId). "'
+                                        AND h.host_id = hsr.host_host_id
+                                        AND s.service_id = hsr.service_service_id
+                                        AND s.service_register = '1'
+					UNION
+					SELECT s.service_id, s.service_description, h.host_name, h.host_id
+					FROM service s, host h, host_service_relation hsr
+					WHERE hsr.host_host_id IS NULL
+                                        AND hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id
+                                                                    FROM hostgroup_relation
+                                                                    WHERE host_host_id = '" . $db->escape($hostId). "')
+                                        AND h.host_id = '" . $db->escape($hostId). "'
+                                        AND s.service_id = hsr.service_service_id
+                                        AND s.service_register = '1'
                                 ) AS res $aclFrom $aclCond
 				ORDER BY res.host_name, res.service_description";
     }

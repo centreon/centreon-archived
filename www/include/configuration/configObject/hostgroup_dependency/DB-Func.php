@@ -178,7 +178,7 @@ function insertHostGroupDependency($ret = array())
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
     $dep_id = $DBRESULT->fetchRow();
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
 
@@ -210,7 +210,7 @@ function updateHostGroupDependency($dep_id = null)
     isset($ret["dep_comment"]) && $ret["dep_comment"] != null ? $rq .= "'".CentreonDB::escape($ret["dep_comment"])."' " : $rq .= "NULL ";
     $rq .= "WHERE dep_id = '".$dep_id."'";
     $DBRESULT = $pearDB->query($rq);
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("hostgroup dependency", $dep_id, CentreonDB::escape($ret["dep_name"]), "c", $fields);

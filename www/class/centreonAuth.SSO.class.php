@@ -51,9 +51,9 @@ class CentreonAuthSSO extends CentreonAuth
         $token = "",
         $generalOptions = array()
     ) {
-    
+
         $this->options_sso = $generalOptions;
-        
+
         if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
             isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '' &&
             isset($_SERVER[$this->options_sso['sso_header_username']])) {
@@ -78,7 +78,7 @@ class CentreonAuthSSO extends CentreonAuth
             global $msg_error;
             $msg_error = "Invalid User. SSO Protection (user=" . $this->sso_username . ")";
         }
-        
+
     }
 
     protected function checkSsoClient()

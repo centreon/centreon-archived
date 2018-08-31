@@ -210,7 +210,7 @@ function insertHostCategories($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-            
+
     $rq = "INSERT INTO hostcategories ";
     $rq .= "(hc_name, hc_alias, level, icon_id, hc_comment, hc_activate) ";
     $rq .= "VALUES (";
@@ -228,7 +228,7 @@ function insertHostCategories($ret = array())
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    
+
     $centreon->CentreonLogAction->insertLog("hostcategories", $hc_id["MAX(hc_id)"], CentreonDB::escape($ret["hc_name"]), "a", $fields);
     return ($hc_id["MAX(hc_id)"]);
 }
@@ -259,7 +259,7 @@ function updateHostCategories($hc_id)
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    
+
     $centreon->CentreonLogAction->insertLog("hostcategories", $hc_id, CentreonDB::escape($ret["hc_name"]), "c", $fields);
 }
 
@@ -289,7 +289,7 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
 	 */
     $pearDB->query("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
 
-    
+
     $ret = isset($ret["hc_hosts"]) ? $ret["hc_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
     $hgNEW = array();
 

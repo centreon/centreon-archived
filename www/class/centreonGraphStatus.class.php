@@ -66,7 +66,7 @@ class CentreonGraphStatus
     {
         /* Flush RRDCached for have the last values */
         $this->flushRrdCached($this->index);
-        
+
         $commandLine = "";
 
         /* Build command line */
@@ -81,7 +81,7 @@ class CentreonGraphStatus
             'ok' => array(),
             'unknown' => array()
         );
-        
+
         $path = $this->statusPath . '/' . $this->index . '.rrd';
         if (false === file_exists($path)) {
             throw new RuntimeException();
@@ -170,7 +170,7 @@ class CentreonGraphStatus
 
         return $metrics;
     }
-    
+
     /**
      * Flush status rrdfile from cache
      *
@@ -183,7 +183,7 @@ class CentreonGraphStatus
            $this->generalOpt['rrdcached_enabled'] == 0) {
             return true;
         }
-        
+
         /*
          * Connect to rrdcached
          */
@@ -245,7 +245,7 @@ class CentreonGraphStatus
         @fclose($sock);
         return true;
     }
-    
+
     /**
      * Get general options
      *
@@ -265,7 +265,7 @@ class CentreonGraphStatus
         }
         return $result;
     }
-    
+
     /**
      * Get the status RRD path
      *

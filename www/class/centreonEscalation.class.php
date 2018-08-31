@@ -47,7 +47,7 @@ class CentreonEscalation
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -106,7 +106,7 @@ class CentreonEscalation
                 $parameters['relationObject']['comparator'] = 'escalation_esc_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

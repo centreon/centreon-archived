@@ -184,7 +184,7 @@ while ($topo1 = $DBRESULT1->fetchRow()) {
             $acl_topos2[$a]["childs"][$b]["childs"][$c]["c_id"] = $a."_".$b."_".$c;
             $acl_topos2[$a]["childs"][$b]["childs"][$c]['readonly'] = $topo3['readonly'];
             $acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
-            
+
             $acl_topos[] = HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, _($topo3["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 
             $d = 0;

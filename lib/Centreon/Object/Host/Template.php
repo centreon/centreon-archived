@@ -45,8 +45,8 @@ class Centreon_Object_Host_Template extends Centreon_Object
     protected $table = "host";
     protected $primaryKey = "host_id";
     protected $uniqueLabelField = "host_name";
-    
-    
+
+
     /**
      * Generic method that allows to retrieve object ids
      * from another object parameter

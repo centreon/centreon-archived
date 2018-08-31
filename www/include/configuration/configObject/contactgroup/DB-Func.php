@@ -72,7 +72,7 @@ function enableContactGroupInDB($cg_id = null)
         return;
     }
     $DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '" . intval($cg_id) . "'");
-    
+
     $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
     $row = $DBRESULT2->fetchRow();
 
@@ -87,10 +87,10 @@ function disableContactGroupInDB($cg_id = null)
         return;
     }
     $DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '" . intval($cg_id) . "'");
-    
+
     $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
     $row = $DBRESULT2->fetchRow();
-    
+
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 }
 
@@ -103,7 +103,7 @@ function deleteContactGroupInDB($contactGroups = array())
         $row = $DBRESULT2->fetchRow();
 
         $DBRESULT = $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "'");
-        
+
         $centreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
     }
 }
@@ -187,7 +187,7 @@ function insertContactGroup($ret)
 
     $DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
     $cg_id = $DBRESULT->fetchRow();
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], CentreonDB::escape($ret["cg_name"]), "a", $fields);
@@ -227,7 +227,7 @@ function updateContactGroup($cg_id = null, $params = array())
             "`cg_activate` = '" . $ret["cg_activate"]["cg_activate"] . "' " .
             "WHERE `cg_id` = '" . intval($cg_id) . "'";
     $DBRESULT = $pearDB->query($rq);
-    
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, CentreonDB::escape($ret["cg_name"]), "c", $fields);

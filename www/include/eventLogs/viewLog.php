@@ -402,15 +402,15 @@ function logsEngine(type) {
             }
         });
     }
-    
+
     if (window.history.pushState) {
         window.history.pushState("", "", "main.php?p=20302&engine=true"+urlargs);
     }
-    
+
     controlTimePeriod();
     var proc = new Transformation();
     var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
-    
+
     if (!type) {
         var _addr = './include/eventLogs/xml/data.php?engine=true&output=' + _output +
             '&error=true&alert=false&ok=false&unreachable=false&down=false&up=false' +
@@ -467,7 +467,7 @@ function logs(id, formu, type) {
     if (jQuery( "#output" ) !== "undefined") {
         _output = jQuery( "#output" ).val();
     }
-    
+
     controlTimePeriod();
 
     if (document.formu2 && document.formu2.notification) _notification = document.formu2.notification.checked;
@@ -569,9 +569,9 @@ function logs(id, formu, type) {
 }
 
 /**
- * Javascript action depending on the status checkboxes 
+ * Javascript action depending on the status checkboxes
  *
- * @param bool isChecked 
+ * @param bool isChecked
  * @return void
  */
 function checkStatusCheckbox(isChecked) {
@@ -604,7 +604,7 @@ function getArgsForHost() {
     var service_value = jQuery("#service_filter").val();
     var hg_value = jQuery("#host_group_filter").val();
     var sg_value = jQuery("#service_group_filter").val();
-    
+
     var args = "";
     var urlargs = "";
      if (host_value !== null) {
@@ -728,14 +728,14 @@ jQuery(function () {
                                 jQuery("#host_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
                             }
                             host_value.push(elem.id);
-                        }    
+                        }
                     });
                     jQuery("#host_filter").val(host_value).trigger("change",[{origin:"select2defaultinit"}]);
                     jQuery("#host_group_filter").val('');
                     jQuery("#host_group_filter").empty().append(jQuery('<option>'));
                     jQuery("#host_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
                 }
-            });    
+            });
 
         });
 
@@ -764,14 +764,14 @@ jQuery(function () {
                                 jQuery("#service_filter").append(jQuery('<option>').val(elem.id).html(elem.text));
                             }
                             service_value.push(elem.id);
-                        }    
+                        }
                     });
                     jQuery("#service_filter").val(service_value).trigger("change",[{origin:"select2defaultinit"}]);
                     jQuery("#service_group_filter").val('');
                     jQuery("#service_group_filter").empty().append(jQuery('<option>'));
                     jQuery("#service_group_filter").trigger("change",[{origin:"select2defaultinit"}]);
                 }
-            });    
+            });
         });
 
         jQuery( "#output" ).keypress(function(  event ) {
@@ -783,7 +783,7 @@ jQuery(function () {
                event.preventDefault();
             }
         });
-        
+
     } else {
         jQuery("#poller_filter").change(function(event,infos) {
             if (typeof infos !== "undefined" && infos.origin === "select2defaultinit") {

@@ -51,7 +51,7 @@ class CentreonWidgetParamsConnectorHost extends CentreonWidgetParamsList
                       FROM host
             	      WHERE host_activate = '1'
             	      AND host_register = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 
+            $query .= $this->acl->queryBuilder('AND',
                                                'host_id',
                                                $this->acl->getHostsString('ID', $this->monitoringDb));
             $query .= " ORDER BY host_name";

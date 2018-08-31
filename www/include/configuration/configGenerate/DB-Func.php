@@ -43,11 +43,11 @@
 function getMyHostTemplateCriticality($host_id)
 {
     global $pearDB, $critHTpl;
-    
+
     if (!$host_id) {
         return null;
     }
-    
+
     $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order`";
     $DBRESULT = $pearDB->query($rq);
     while ($row = $DBRESULT->fetchRow()) {
@@ -72,14 +72,14 @@ function getMyHostTemplateCriticality($host_id)
 function intCmdParam($DB, $pollerId)
 {
     $cache = array('tpl' => array(), 'svc' => array());
-    
+
     $commands = array();
     $DBRESULT = $DB->query("SELECT command_id, command_name FROM command");
     while ($data = $DBRESULT->fetchRow()) {
         $commands[$data["command_id"]] = $data["command_name"];
     }
     $DBRESULT->free();
-    
+
     $i = 0;
     $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr
@@ -160,7 +160,7 @@ function getMyServiceTPInCache($service_id = null, $cache)
     if (!$service_id) {
         return;
     }
-    
+
     $tab = array();
     while (1) {
         if (isset($cache[$service_id]["tp"])) {
@@ -335,7 +335,7 @@ function isHostOnThisInstance($host_id, $instance_id)
 function isLocalInstance($instance_id)
 {
     global $pearDB;
-    
+
     $DBRESULT_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '".$instance_id."'");
     $data = $DBRESULT_relation->fetchRow();
     return $data["localhost"];
@@ -344,13 +344,13 @@ function isLocalInstance($instance_id)
 function manageDependencies($ret = array())
 {
     global $pearDB, $form;
-    
+
     /*
      * Init Dependancies table
      */
     $gbArr = array();
     $gbArr = checkDependenciesStrong();
-    
+
     return ($gbArr);
 }
 
@@ -670,35 +670,35 @@ function verifyIfMustBeGenerated($id, $gbArr, $ret)
 /*
   Function to replace PHP's parse_ini_file() with much fewer restritions, and
   a matching function to write to a .INI file, both of which are binary safe.
-  
+
   Version 1.0
-  
+
   Copyright (C) 2005 Justin Frim <phpcoder@cyberpimp.pimpdomain.com>
-  
+
   Sections can use any character excluding ASCII control characters and ASCII
   DEL.  (You may even use [ and ] characters as literals!)
-  
+
   Keys can use any character excluding ASCII control characters, ASCII DEL,
   ASCII equals sign (=), and not start with the user-defined comment
   character.
-  
+
   Values are binary safe (encoded with C-style backslash escape codes) and may
   be enclosed by double-quotes (to retain leading & trailing spaces).
-  
+
   User-defined comment character can be any non-white-space ASCII character
   excluding ASCII opening bracket ([).
-  
+
   readINIfile() is case-insensitive when reading sections and keys, returning
   an array with lower-case keys.
   writeINIfile() writes sections and keys with first character capitalization.
   Invalid characters are converted to ASCII dash / hyphen (-).  Values are
   always enclosed by double-quotes.
-  
+
   writeINIfile() also provides a method to automatically prepend a comment
   header from ASCII text with line breaks, regardless of whether CRLF, LFCR,
   CR, or just LF line break sequences are used!  (All line breaks are
   translated to CRLF)
-  
+
   Modified for Oreon by Christophe Coraboeuf
 */
 

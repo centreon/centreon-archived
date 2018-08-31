@@ -50,7 +50,7 @@ class CentreonGraphVirtualMetric
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field

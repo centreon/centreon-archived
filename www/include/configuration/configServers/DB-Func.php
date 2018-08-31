@@ -49,14 +49,14 @@ function testExistence($name = null)
     global $pearDB, $form;
 
     $id = null;
-    
+
     if (isset($form)) {
         $id = $form->getSubmitValue('id');
     }
 
     $DBRESULT = $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
     $row = $DBRESULT->fetchRow();
-    
+
     if ($DBRESULT->numRows() >= 1 && $row["id"] == $id) {
         return true;
     } elseif ($DBRESULT->numRows() >= 1 && $row["id"] != $id) {
@@ -132,7 +132,7 @@ function deleteServerInDB($server = array())
         $pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
         $pearDBO->query("UPDATE `instances` SET deleted = '1' WHERE instance_id = '".$key."'");
         deleteCentreonBrokerByPollerId($key);
-    
+
         $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "d");
     }
 }
@@ -147,7 +147,7 @@ function deleteCentreonBrokerByPollerId($id)
     if (empty($id)) {
         return;
     }
-    
+
     global $pearDB;
     $pearDB->query("DELETE FROM cfg_centreonbroker WHERE ns_nagios_server = ".$id);
 }
@@ -155,7 +155,7 @@ function deleteCentreonBrokerByPollerId($id)
 function multipleServerInDB($server = array(), $nbrDup = array())
 {
     global $pearDB;
-    
+
     $obj = new CentreonMainCfg();
 
     foreach ($server as $key => $value) {
@@ -166,7 +166,7 @@ function multipleServerInDB($server = array(), $nbrDup = array())
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
         $DBRESULT->free();
-        
+
         $rowBks = $obj->getBrokerModules($key);
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -178,13 +178,13 @@ function multipleServerInDB($server = array(), $nbrDup = array())
             if (testExistence($server_name)) {
                 $val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
-                
+
                 $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $server_name . '"';
                 $res = $pearDB->query($queryGetId);
                 if (false === PEAR::isError($res)) {
                     if ($res->numRows() > 0) {
                         $row = $res->fetchRow();
-                        
+
                         $iId = $obj->insertServerInCfgNagios($key, $row['id'], $server_name);
 
                         if (isset($rowBks)) {
@@ -198,7 +198,7 @@ function multipleServerInDB($server = array(), $nbrDup = array())
 
                         $queryRel = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) SELECT b.resource_id, ' . $row['id'] . ' FROM cfg_resource_instance_relations as b WHERE b.instance_id = ' . $key;
                         $pearDB->query($queryRel);
-                        
+
                         $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order) SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM poller_command_relations as b WHERE b.poller_id = ' . $key;
                         $pearDB->query($queryCmd);
                     }
@@ -241,7 +241,7 @@ function insertServerInDB()
 function insertServer($ret = array())
 {
     global $form, $pearDB, $centreon;
-    
+
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
@@ -297,7 +297,7 @@ function addUserRessource($serverId)
 
     $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%s, %s)";
     $queryGetResources = "SELECT resource_id, resource_name FROM cfg_resource ORDER BY resource_id";
-    
+
     $res = $pearDB->query($queryGetResources);
     if (PEAR::isError($res)) {
         return false;
@@ -308,7 +308,7 @@ function addUserRessource($serverId)
             $isInsert[] = $row['resource_name'];
             $query = sprintf($queryInsert, $row['resource_id'], $serverId);
             $pearDB->query($query);
-            
+
             /* Prepare value for changelog */
             $fields = CentreonLogAction::prepareChanges($row);
             $centreon->CentreonLogAction->insertLog("resource", $serverId, CentreonDB::escape($row["resource_name"]), "a", $fields);
@@ -320,7 +320,7 @@ function addUserRessource($serverId)
 function updateServer($id = null)
 {
     global $form, $pearDB, $centreon;
-    
+
     if (!$id) {
         return;
     }

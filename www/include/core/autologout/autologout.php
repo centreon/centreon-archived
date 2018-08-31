@@ -7,7 +7,7 @@ function check_session() {
     } else if (window.ActiveXObject) {
         xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
     }
-    
+
     if (xhr2 == null) {
     	alert("Le web browser ne supporte pas l'AJAX.");
     }

@@ -56,7 +56,7 @@ if (!isset($oreon)) {
     $tpl->assign("headerMenu_infos", _("Additional Information"));
     $tpl->assign("headerMenu_isinstalled", _("Installed"));
     $tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
-    
+
     /*
 	 * "Name" case, it's not a module which is installed
 	 */

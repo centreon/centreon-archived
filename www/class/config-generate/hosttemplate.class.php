@@ -129,23 +129,23 @@ class HostTemplate extends AbstractHost {
     protected $attributes_array = array(
         'use'
     );
-    
+
     private function getHosts() {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
+        $stmt = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
-            FROM host 
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id 
-            WHERE  
+            FROM host
+                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE
                 host.host_register = '0' AND host.host_activate = '1'");
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
-    
+
     private function getSeverity($host_id) {
         if (isset($this->hosts[$host_id]['severity_id'])) {
             return 0;
         }
-        
+
         $this->hosts[$host_id]['severity_id'] = Severity::getInstance()->getHostSeverityByHostId($host_id);
         $severity = Severity::getInstance()->getHostSeverityById($this->hosts[$host_id]['severity_id']);
         if (!is_null($severity)) {
@@ -153,12 +153,12 @@ class HostTemplate extends AbstractHost {
             $this->hosts[$host_id]['macros']['_CRITICALITY_ID'] = $severity['hc_id'];
         }
     }
-    
+
     public function generateFromHostId($host_id) {
         if (is_null($this->hosts)) {
             $this->getHosts();
         }
-        
+
         if (!isset($this->hosts[$host_id])) {
             return null;
         }
@@ -171,7 +171,7 @@ class HostTemplate extends AbstractHost {
             return $this->hosts[$host_id]['name'];
         }
         $this->loop_htpl[$host_id] = 1;
-        
+
         $this->hosts[$host_id]['host_id'] = $host_id;
         $this->getImages($this->hosts[$host_id]);
         $this->getMacros($this->hosts[$host_id]);
@@ -182,11 +182,11 @@ class HostTemplate extends AbstractHost {
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);
-        
+
         $this->generateObjectInFile($this->hosts[$host_id], $host_id);
         return $this->hosts[$host_id]['name'];
     }
-    
+
     public function reset() {
         $this->loop_htpl = array();
         parent::reset();

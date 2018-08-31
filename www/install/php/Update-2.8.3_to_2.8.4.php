@@ -37,9 +37,9 @@
 /* Update comments unique key */
 if (isset($pearDBO)) {
     $query = "SELECT count(*) AS number
-                FROM INFORMATION_SCHEMA.COLUMNS 
-                WHERE table_name = 'hosts' 
-                AND table_schema = '".$conf_centreon['dbcstg']."' 
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE table_name = 'hosts'
+                AND table_schema = '".$conf_centreon['dbcstg']."'
                 AND column_name = 'timezone'";
     $res = $pearDBO->query($query);
     $data = $res->fetchRow();

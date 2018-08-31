@@ -8,7 +8,7 @@ class TestProxyConfigurationContext extends CentreonContext
     private $page;
     private $wrongProxyAddress = 'squad';
     private $wrongProxyPort = '9999';
-    
+
     /**
      * @When I test the proxy configuration in the interface
      */
@@ -17,7 +17,7 @@ class TestProxyConfigurationContext extends CentreonContext
         $this->visit('main.php?p=50110&o=general');
         $this->assertFind('css', 'input[name="test_proxy"]')->click();
     }
-    
+
     /**
      * @Then a popin displays a successful connexion
      */
@@ -37,7 +37,7 @@ class TestProxyConfigurationContext extends CentreonContext
             throw new \Exception('The URL to reach failed');
         }
     }
-    
+
     /**
      * @Given I am logged in a Centreon server with a wrongly configured proxy
      */
@@ -51,7 +51,7 @@ class TestProxyConfigurationContext extends CentreonContext
         ));
         $this->page->save();
     }
-    
+
     /**
      * @Then a popin displays an error message
      */

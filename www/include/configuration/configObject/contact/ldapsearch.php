@@ -136,7 +136,7 @@ foreach ($ids as $arId) {
         if (isset($ldap_search_filters[$arId]) && $ldap_search_filters[$arId]) {
             $ldap_search_filter = $ldap_search_filters[$arId];
         }
-        
+
         $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
         $number_returned = count($searchResult);
         if ($number_returned) {
@@ -165,7 +165,7 @@ foreach ($ids as $arId) {
                     $searchResult[$i]["name"] = str_replace("\'", "\\\'", $searchResult[$i]["name"]);
 
                     $buffer->startElement("user");
-                    $query = "SELECT `ar_id`, `ar_name` 
+                    $query = "SELECT `ar_id`, `ar_name`
                               FROM auth_ressource
                               WHERE ar_id = " . $pearDB->escape($arId);
                     $resServer = $pearDB->query($query);

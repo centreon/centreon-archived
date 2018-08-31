@@ -196,7 +196,7 @@ var _criticality_id = 0;
         } else if (document.getElementById("input_search").length == 0) {
             _search = "";
         }
-        
+
         if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
             _criticality_id = document.getElementById("critFilter").value;
             viewDebugInfo('service criticality: '+document.getElementById("critFilter").value);
@@ -223,10 +223,10 @@ var _criticality_id = 0;
             document.getElementById("output_search").value = _output_search;
             _counter += 1;
         }
-        
+
         var statusService = jQuery.trim(jQuery('#statusService').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
-               
+
         proc.setCallback(monitoringCallBack);
         proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
         proc.setXslt(_addrXSL);
@@ -247,7 +247,7 @@ var _criticality_id = 0;
         for (keyz in _selectedElem) {
             if (keyz == _selectedElem[keyz]) {
                 removeFromSelectedElem(decodeURIComponent(keyz));
-                if (document.getElementById(decodeURIComponent(keyz))) { 
+                if (document.getElementById(decodeURIComponent(keyz))) {
                     document.getElementById(decodeURIComponent(keyz)).checked = false;
                 }
             }
@@ -272,10 +272,10 @@ var _criticality_id = 0;
                     }
                 }
             }
-            
-            
+
+
         var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
-        
+
         var popin = jQuery('<div>');
         popin.centreonPopin({open:true,url:url});
         window.currentPopin = popin;

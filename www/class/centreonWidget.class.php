@@ -412,8 +412,8 @@ class CentreonWidget
             		  WHERE w.widget_id = wv.widget_id
             		  AND wv.custom_view_id = ?
             		  AND w.widget_model_id = wm.widget_model_id
-                      ORDER BY 
-                      CAST(SUBSTRING_INDEX(widget_order, '_', 1) AS SIGNED INTEGER), 
+                      ORDER BY
+                      CAST(SUBSTRING_INDEX(widget_order, '_', 1) AS SIGNED INTEGER),
                       CAST(SUBSTRING_INDEX(widget_order, '_', -1) AS SIGNED INTEGER)";
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$viewId));

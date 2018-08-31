@@ -1904,7 +1904,7 @@ class CentreonACL
             $empty_exists = "";
             if (!is_null($sg_empty)) {
                 $empty_exists = 'AND EXISTS (
-                    SELECT * FROM servicegroup_relation 
+                    SELECT * FROM servicegroup_relation
                         WHERE (servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id
                             AND servicegroup_relation.service_service_id IS NOT NULL)) ';
             }
@@ -2420,10 +2420,10 @@ class CentreonACL
     {
         global $pearDB;
 
-        $sql = "INSERT INTO %s 
+        $sql = "INSERT INTO %s
                     (host_host_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
+                    (SELECT %d, acl_res_id
+                    FROM %s
                     WHERE host_host_id = %d)";
         $tbHost = "acl_resources_host_relations";
         $tbHostEx = "acl_resources_hostex_relations";
@@ -2443,10 +2443,10 @@ class CentreonACL
     {
         global $pearDB;
 
-        $sql = "INSERT INTO %s 
+        $sql = "INSERT INTO %s
                     (hg_hg_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
+                    (SELECT %d, acl_res_id
+                    FROM %s
                     WHERE hg_hg_id = %d)";
         $tb = "acl_resources_hg_relations";
         foreach ($hgs as $copyId => $originalId) {
@@ -2464,10 +2464,10 @@ class CentreonACL
     {
         global $pearDB;
 
-        $sql = "INSERT INTO %s 
+        $sql = "INSERT INTO %s
                     (sg_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
+                    (SELECT %d, acl_res_id
+                    FROM %s
                     WHERE sg_id = %d)";
         $tb = "acl_resources_sg_relations";
         foreach ($sgs as $copyId => $originalId) {
@@ -2485,10 +2485,10 @@ class CentreonACL
     {
         global $pearDB;
 
-        $sql = "INSERT INTO %s 
+        $sql = "INSERT INTO %s
                     (hc_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
+                    (SELECT %d, acl_res_id
+                    FROM %s
                     WHERE hc_id = %d)";
         $tb = "acl_resources_hc_relations";
         foreach ($hcs as $copyId => $originalId) {
@@ -2506,10 +2506,10 @@ class CentreonACL
     {
         global $pearDB;
 
-        $sql = "INSERT INTO %s 
+        $sql = "INSERT INTO %s
                     (sc_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
+                    (SELECT %d, acl_res_id
+                    FROM %s
                     WHERE sc_id = %d)";
         $tb = "acl_resources_sc_relations";
         foreach ($scs as $copyId => $originalId) {

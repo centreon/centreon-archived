@@ -35,40 +35,40 @@
 
 /*
  *  Class that contains various methods for managing connectors
- * 
+ *
  * Usage example:
- * 
+ *
  * <?php
  * require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
  * require_once _CENTREON_PATH_ . 'www/class/centreonConnector.class.php';
  * require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
- * 
+ *
  * $connector = new CentreonConnector(new CentreonDB);
- * 
+ *
  * //$connector->create(array(
  * //    'name' => 'jackyse',
  * //    'description' => 'some jacky',
  * //    'command_line' => 'ls -la',
  * //    'enabled' => true
  * //        ), true);
- * 
+ *
  * //$connector->update(10, array(
  * //    'name' => 'soapy',
  * //    'description' => 'Lorem ipsum',
  * //    'enabled' => true,
  * //    'command_line' => 'ls -laph --color'
  * //));
- * 
+ *
  * //$connector->getList(false, 20, false);
- * 
+ *
  * //$connector->delete(10);
- * 
+ *
  * //$connector->read(7);
- * 
+ *
  * //$connector->copy(1, 5, true);
- * 
+ *
  * //$connector->count(false);
- * 
+ *
  * //$connector->isNameAvailable('norExists');
  */
 
@@ -286,7 +286,7 @@ class CentreonConnector
         if (PEAR::isError($updateResult)) {
             throw new RuntimeException('Cannot update connector');
         }
-        
+
         if (isset($connector["command_id"])) {
             foreach ($connector["command_id"] as $key => $value) {
                 $updateResult = $this->dbConnection->query(
@@ -297,8 +297,8 @@ class CentreonConnector
                 }
             }
         }
-        
-        
+
+
         return $this;
     }
 
@@ -352,7 +352,7 @@ class CentreonConnector
             $restrictSql = " LIMIT $perPage OFFSET $offset";
         }
 
-        $sql = "SELECT 
+        $sql = "SELECT
                     `id`,
                     `name`,
                     `description`,
@@ -504,7 +504,7 @@ class CentreonConnector
         }
         return !((boolean) $existsResult->fetchRow());
     }
-    
+
     /**
      *
      * @param integer $field
@@ -527,12 +527,12 @@ class CentreonConnector
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
-  
+
         }
-        
+
         return $parameters;
     }
-    
+
     /**
      *
      * @param array $values

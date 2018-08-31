@@ -450,17 +450,17 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
     /* $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication */
     // Foreach Service
     $maxId["MAX(service_id)"] = null;
-    
+
     foreach ($services as $key => $value) {
         // Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
         $row = $DBRESULT->fetchRow();
         $row["service_id"] = '';
-        
+
         // Loop on the number of Service we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
-            
+
             // Create a sentence which contains all the value
             foreach ($row as $key2 => $value2) {
                 if ($key2 == "service_description" && $descKey) {
@@ -476,14 +476,14 @@ function multipleServiceInDB($services = array(), $nbrDup = array(), $host = nul
                     $fields["service_description"] = $service_description;
                 }
             }
-            
+
             if (!count($hPars)) {
                 $hPars = getMyServiceHosts($key);
             }
             if (!count($hgPars)) {
                 $hgPars = getMyServiceHostGroups($key);
             }
-            
+
             if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
                 (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
                 $hPars = array();
@@ -676,7 +676,7 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
         updateServiceContactGroup($service_id, $params);
         updateServiceContact($service_id, $params);
     }
-    
+
     // Function for updating notification options
     // 1 - MC with deletion of existing options (Replacement)
     // 2 - MC with addition of new options (incremental)
@@ -1051,12 +1051,12 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     isset($ret['service_recovery_notification_delay']) && $ret['service_recovery_notification_delay'] != null ? $rq .= $ret['service_recovery_notification_delay'] . ', ' : $rq .= 'NULL, ';
     $rq .= "service_use_only_contacts_from_host = ";
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]) && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null ? $rq .= "'".$ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"]."', " : $rq .= "NULL, ";
-  
+
     $rq.= "contact_additive_inheritance = ";
     $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
     $rq.= "cg_additive_inheritance = ";
     $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
-                                
+
     $rq .= "service_stalking_options = ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
     $rq .= "service_comment = ";
@@ -1099,7 +1099,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
     }
-        
+
     if (isset($ret['criticality_id'])) {
         setServiceCriticality($service_id, $ret['criticality_id']);
     }
@@ -1490,7 +1490,7 @@ function updateServiceNotifOptionFirstNotificationDelay($service_id = null, $ret
     if (!$service_id) {
         return;
     }
-    
+
     if (isset($ret["service_first_notification_delay"])) {
         $ret = $ret["service_first_notification_delay"];
     } else {
@@ -1740,7 +1740,7 @@ function updateServiceTrap_MC($service_id = null)
         }
     }
 }
-    
+
 function updateServiceHost($service_id = null, $ret = array(), $from_MC = false)
 {
     global $form, $pearDB;
@@ -1848,7 +1848,7 @@ function updateServiceHost_MC($service_id = null)
     if (!$service_id) {
         return;
     }
-    
+
     $rq = "SELECT * FROM host_service_relation ";
     $rq .= "WHERE service_service_id = '".$service_id."'";
     $DBRESULT = $pearDB->query($rq);
@@ -1904,7 +1904,7 @@ function updateServiceExtInfos($service_id = null, $ret = array())
     if (!$service_id) {
         return;
     }
-    
+
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
@@ -1941,7 +1941,7 @@ function updateServiceExtInfos_MC($service_id = null, $params = array())
     if (!$service_id) {
         return;
     }
-    
+
     if (count($params)) {
         $ret = $params;
     } else {
@@ -1993,7 +1993,7 @@ function updateServiceCategories_MC($service_id = null, $ret = array())
     if (!$service_id) {
         return;
     }
-    
+
     if (isset($ret["service_categories"])) {
         $ret = $ret["service_categories"];
     } else {
@@ -2014,7 +2014,7 @@ function updateServiceCategories($service_id = null, $ret = array())
     if (!$service_id) {
         return;
     }
-    
+
     $rq = "DELETE FROM service_categories_relation
                     WHERE service_service_id = '".$service_id."'
                     AND NOT EXISTS(
@@ -2050,11 +2050,11 @@ function setServiceCriticality($serviceId, $criticalityId)
 {
     global $pearDB;
 
-    $pearDB->query("DELETE FROM service_categories_relation 
+    $pearDB->query("DELETE FROM service_categories_relation
                 WHERE service_service_id = " . $pearDB->escape($serviceId) . "
                 AND NOT EXISTS(
-                    SELECT sc_id 
-                    FROM service_categories sc 
+                    SELECT sc_id
+                    FROM service_categories sc
                     WHERE sc.sc_id = service_categories_relation.sc_id
                     AND sc.level IS NULL)");
     if ($criticalityId) {

@@ -209,8 +209,8 @@ if (!$min) {
 
 if (!$centreon->user->showDiv("header")) {
 ?><script type="text/javascript">
-    new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { 
-        setQuickSearchPosition(); } 
+    new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() {
+        setQuickSearchPosition(); }
     });
 </script> <?php
 }
@@ -327,7 +327,7 @@ if (!$min) {
 }
 
 /*
- * Include Footer 
+ * Include Footer
  */
 include_once "./include/core/footer/footer.php";
 

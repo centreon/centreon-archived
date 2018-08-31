@@ -161,16 +161,16 @@ class CentreonLogAction
     public function getHostId($service_id)
     {
         global $pearDBO;
-        
+
         /* Get Hosts */
-        $query = "SELECT a.action_log_id, field_value 
-                    FROM log_action a, log_action_modification m 
-                    WHERE m.action_log_id = a.action_log_id 
-                    AND field_name LIKE 'service_hPars' 
-                    AND object_id = $service_id 
-                    AND object_type = 'service' 
+        $query = "SELECT a.action_log_id, field_value
+                    FROM log_action a, log_action_modification m
+                    WHERE m.action_log_id = a.action_log_id
+                    AND field_name LIKE 'service_hPars'
+                    AND object_id = $service_id
+                    AND object_type = 'service'
                     AND field_value <> ''
-                    ORDER BY action_log_date DESC 
+                    ORDER BY action_log_date DESC
                     LIMIT 1";
         $DBRESULT2 = $pearDBO->query($query);
         $info = $DBRESULT2->fetchRow();
@@ -179,14 +179,14 @@ class CentreonLogAction
         }
 
         /* Get hostgroups */
-        $query = "SELECT a.action_log_id, field_value 
-                    FROM log_action a, log_action_modification m 
-                    WHERE m.action_log_id = a.action_log_id 
-                    AND field_name LIKE 'service_hgPars' 
-                    AND object_id = $service_id 
+        $query = "SELECT a.action_log_id, field_value
+                    FROM log_action a, log_action_modification m
+                    WHERE m.action_log_id = a.action_log_id
+                    AND field_name LIKE 'service_hgPars'
+                    AND object_id = $service_id
                     AND object_type = 'service'
-                    AND field_value <> '' 
-                    ORDER BY action_log_date DESC 
+                    AND field_value <> ''
+                    ORDER BY action_log_date DESC
                     LIMIT 1";
         $DBRESULT2 = $pearDBO->query($query);
         $info = $DBRESULT2->fetchRow();
@@ -199,7 +199,7 @@ class CentreonLogAction
     public function getHostName($host_id)
     {
         global $pearDB, $pearDBO;
-        
+
         $query = "SELECT host_name FROM host WHERE host_register = '1' AND host_id = ".$host_id;
         $DBRESULT2 = $pearDB->query($query);
         $info = $DBRESULT2->fetchRow();
@@ -219,7 +219,7 @@ class CentreonLogAction
     public function getHostGroupName($hg_id)
     {
         global $pearDB, $pearDBO;
-        
+
         $query = "SELECT hg_name FROM hostgroup WHERE hg_id = ".$hg_id;
         $DBRESULT2 = $pearDB->query($query);
         $info = $DBRESULT2->fetchRow();

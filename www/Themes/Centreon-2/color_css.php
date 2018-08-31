@@ -75,7 +75,7 @@ unset($res);
     border-right-color: <?php print $color7; ?>;
 }
 
-.list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td, 
+.list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td,
 .line_downtime td, .list_unreachable td, .row_disabled td {
     border-top-color: <?php print $color8; ?>;
     border-left-color: <?php print $color8; ?>;
@@ -83,7 +83,7 @@ unset($res);
     border-right-color: <?php print $color8; ?>;
 }
 
-.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, 
+.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td,
 .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td, .tab .row_disabled td {
     border-top-color: <?php print $color8; ?>;
     border-left-color: <?php print $color8; ?>;
@@ -215,7 +215,7 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
     width:200px;
 }
 
-.Toolbar_TDSelectAction_Top a { 
+.Toolbar_TDSelectAction_Top a {
     font-family:Arial, Helvetica, Sans-Serif;
     font-size:11px;
     color:<?php print $color13; ?>;

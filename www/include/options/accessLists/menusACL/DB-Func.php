@@ -95,7 +95,7 @@ function enableLCAInDB($acl_topo_id = null, $acls = array())
 function disableLCAInDB($acl_topo_id = null, $acls = array())
 {
     global $pearDB, $centreon;
-    
+
     if (!$acl_topo_id && !count($acls)) {
         return;
     }
@@ -157,7 +157,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
                 $maxId = $DBRESULT->fetchRow();
                 $DBRESULT->free();
-                
+
                 if (isset($maxId["MAX(acl_topo_id)"])) {
                     $maxTopoId = $maxId['MAX(acl_topo_id)'];
                     $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right)
@@ -179,11 +179,11 @@ function updateLCAInDB($acl_id = null)
     if (!$acl_id) {
         return;
     }
-    
+
     updateLCA($acl_id);
     updateLCATopology($acl_id);
     updateGroups($acl_id);
-        
+
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("menu access", $acl_id, $ret['acl_topo_name'], "c", $fields);
@@ -192,11 +192,11 @@ function updateLCAInDB($acl_id = null)
 function insertLCAInDB()
 {
     global $form, $centreon;
-    
+
     $acl_id = insertLCA();
     updateLCATopology($acl_id);
     updateGroups($acl_id);
-    
+
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("menu access", $acl_id, $ret['acl_topo_name'], "a", $fields);

@@ -47,10 +47,10 @@ isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
     $aclCond = "";
 if (!$centreon->user->admin) {
     $aclFrom = ", $dbmon.centreon_acl acl ";
-    $aclCond = " AND dhpr.host_host_id = acl.host_id 
+    $aclCond = " AND dhpr.host_host_id = acl.host_id
                      AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
-    
+
 $rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
     . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
     . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";

@@ -105,10 +105,10 @@ if (isset($_GET["host_name"]) && $_GET["host_name"]) {
  */
 $haveAccess = 0;
 if (!$is_admin) {
-    $DBRESULT = $pearDBO->query("SELECT host_id 
-                                FROM centreon_acl 
-                                WHERE host_id = '" . getMyHostId($host_name) . "' 
-                                AND group_id 
+    $DBRESULT = $pearDBO->query("SELECT host_id
+                                FROM centreon_acl
+                                WHERE host_id = '" . getMyHostId($host_name) . "'
+                                AND group_id
                                 IN (" . $centreon->user->access->getAccessGroupsString() . ")");
     if ($DBRESULT->numRows()) {
         $haveAccess = 1;
@@ -139,8 +139,8 @@ if (!$is_admin && !$haveAccess) {
     $host_id = getMyHostID($host_name);
     if (!is_null($host_id)) {
         /* Get HG relations */
-        $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id 
-                                    FROM hostgroup_relation 
+        $DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id
+                                    FROM hostgroup_relation
                                     WHERE host_host_id = '" . $host_id . "'");
         for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
@@ -154,10 +154,10 @@ if (!$is_admin && !$haveAccess) {
             $hostIds[] = $hostTemplate['host_id'];
         }
 
-        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.* 
-                                    FROM hostcategories hc 
-                                    INNER JOIN hostcategories_relation hcr 
-                                    ON hc.hc_id = hcr.hostcategories_hc_id 
+        $DBRESULT = $pearDB->query("SELECT DISTINCT hc.*
+                                    FROM hostcategories hc
+                                    INNER JOIN hostcategories_relation hcr
+                                    ON hc.hc_id = hcr.hostcategories_hc_id
                                     AND hcr.host_host_id IN ('" . implode("','", $hostIds) . "') ");
         while ($hc = $DBRESULT->fetchRow()) {
             $hostCategorie[] = $hc['hc_name'];
@@ -221,11 +221,11 @@ if (!$is_admin && !$haveAccess) {
              * Get Service Graph index
              */
             if (!isset($graphs[$row["host_id"]]) || !isset($graphs[$row["host_id"]][$row["service_id"]])) {
-                $request2 = "SELECT service_id, id 
-                              FROM index_data, metrics 
-                              WHERE metrics.index_id = index_data.id 
-                              AND host_id = '" . $row["host_id"] . "' 
-                              AND service_id = '" . $row["service_id"] . "' 
+                $request2 = "SELECT service_id, id
+                              FROM index_data, metrics
+                              WHERE metrics.index_id = index_data.id
+                              AND host_id = '" . $row["host_id"] . "'
+                              AND service_id = '" . $row["service_id"] . "'
                               AND index_data.hidden = '0'";
                 $DBRESULT2 = $pearDBO->query($request2);
                 while ($dataG = $DBRESULT2->fetchRow()) {
@@ -355,10 +355,10 @@ if (!$is_admin && !$haveAccess) {
         $rq2 = " SELECT FROM_UNIXTIME(cmt.entry_time) as comment_time, cmt.comment_id, cmt.author AS author_name,
          cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
             " FROM comments cmt, hosts h " .
-            " WHERE cmt.host_id = '" . $host_id . "' 
-                  AND h.host_id = cmt.host_id 
-                  AND cmt.service_id IS NULL 
-                  AND cmt.expires = 0 
+            " WHERE cmt.host_id = '" . $host_id . "'
+                  AND h.host_id = cmt.host_id
+                  AND cmt.service_id IS NULL
+                  AND cmt.expires = 0
                   AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                   ORDER BY cmt.entry_time DESC";
         $DBRESULT = $pearDBO->query($rq2);

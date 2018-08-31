@@ -75,7 +75,7 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
      */
     protected function getServiceIds($hostId)
     {
-        $aclString = $this->acl->queryBuilder('AND', 
+        $aclString = $this->acl->queryBuilder('AND',
                                          's.service_id',
                                          $this->acl->getServicesString('ID', $this->monitoringDb));
         $sql = "SELECT service_id, service_description
@@ -108,7 +108,7 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
                       FROM host
             	      WHERE host_activate = '1'
             	      AND host_register = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 
+            $query .= $this->acl->queryBuilder('AND',
                                                'host_id',
                                                $this->acl->getHostsString('ID', $this->monitoringDb));
             $query .= " ORDER BY host_name";

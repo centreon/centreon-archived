@@ -324,7 +324,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $defaultData = $this->setFixedDatas() . ',';
             $this->setDefaultFixedDatas();
         }
-        
+
         $additionnalJs .= ' ' . $this->_jsCallback;
 
         $javascriptString = '<script>
@@ -339,7 +339,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                         disabled: ' . $disabled . '
                     }
                 });
-                
+
                 ' . $additionnalJs . '
             });
          </script>';
@@ -449,28 +449,28 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "'. $this->_defaultDatasetRoute .'",
         });
-        
+
         $request' . $this->getName() . '.success(function (data) {
             for (var d = 0; d < data.length; d++) {
                 var item = data[d];
-                
+
                 // Create the DOM option that is pre-selected by default
                 var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
                 if (item.hide === true) {
                     option += "hidden";
                 }
                 option += ">" + item.text + "</option>";
-              
+
                 // Append it to the select
                 $currentSelect2Object'.$this->getName().'.append(option);
             }
- 
+
             // Update the selected options that are displayed
             $currentSelect2Object'.$this->getName().'.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
 
         $request' . $this->getName() . '.error(function(data) {
-            
+
         });
         ';
 

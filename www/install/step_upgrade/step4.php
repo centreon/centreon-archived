@@ -148,7 +148,7 @@ function nextStep(current, next) {
 
 /**
  * Replace dot with dash characters
- * 
+ *
  * @param string str
  * @return void
  */
@@ -158,7 +158,7 @@ function replaceDot(str) {
 
 /**
  * Validates info
- * 
+ *
  * @return bool
  */
 function validation() {

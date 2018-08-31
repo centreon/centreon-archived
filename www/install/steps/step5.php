@@ -42,10 +42,10 @@ $template = getTemplate('./templates');
 
 $title = _('Admin information');
 
-$defaults = array('ADMIN_PASSWORD' => '', 
-                'confirm_password' => '', 
-                'firstname' => '', 
-                'lastname' => '', 
+$defaults = array('ADMIN_PASSWORD' => '',
+                'confirm_password' => '',
+                'firstname' => '',
+                'lastname' => '',
                 'email' => '');
 foreach ($defaults as $k => $v) {
     if (isset($_SESSION[$k])) {
@@ -53,7 +53,7 @@ foreach ($defaults as $k => $v) {
     }
 }
 $star = "<span style='color:#e00b3d'> *</span>";
-$contents = " 
+$contents = "
     <form id='form_step".STEP_NUMBER."'>
         <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
@@ -116,10 +116,10 @@ $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
     var step = <?php echo STEP_NUMBER;?>;
-    
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {

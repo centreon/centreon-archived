@@ -383,7 +383,7 @@ class CentreonTimeperiodRenderer
     {
         return $this->exceptionList;
     }
-    
+
     /**
      *
      * @param type $field
@@ -419,7 +419,7 @@ class CentreonTimeperiodRenderer
                 $parameters['relationObject']['comparator'] = 'timeperiod_id';
                 break;
         }
-        
+
         return $parameters;
     }
 }

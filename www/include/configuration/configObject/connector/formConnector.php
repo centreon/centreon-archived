@@ -37,7 +37,7 @@ require_once dirname(__FILE__) . "/formConnectorFunction.php";
 try {
     $tpl = new Smarty();
     $tpl = initSmartyTpl($path, $tpl);
-    
+
     $cnt = array();
     if (($o == "c" || $o == "w") && isset($connector_id)) {
         $cnt = $connectorObj->read((int)$connector_id);
@@ -62,8 +62,8 @@ try {
      * Resource Macro
      */
     $resource = array();
-    $DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` 
-                                FROM `cfg_resource` 
+    $DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment`
+                                FROM `cfg_resource`
                                 ORDER BY `resource_line`");
     while ($row = $DBRESULT->fetchRow()) {
         $resource[$row["resource_name"]] = $row["resource_name"];
@@ -156,7 +156,7 @@ try {
         $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
         $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     }
-    
+
     $form->addRule('connector_name', _("Name"), 'required');
     $form->addRule('command_line', _("Command Line"), 'required');
     $form->registerRule('exist', 'callback', 'testConnectorExistence');
@@ -177,7 +177,7 @@ try {
         $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
         $connectorValues['command_id'] = $tab['command_id'];
         $connectorId = $tab['connector_id'];
-        
+
         if ($form->getSubmitValue("submitA")) {
             $connectorId = $cntObj->create($connectorValues, true);
         } elseif ($form->getSubmitValue("submitC")) {
@@ -207,7 +207,7 @@ try {
             $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
         }
         $tpl->assign("helptext", $helptext);
-        
+
         $tpl->display("formConnector.ihtml");
     }
 } catch (Exception $e) {

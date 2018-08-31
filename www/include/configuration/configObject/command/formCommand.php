@@ -92,7 +92,7 @@ if (count($aMacroDescription) > 0) {
 } else {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
-   
+
     $aMacroDescription = array_merge($macrosServiceDesc, $macrosHostDesc);
 
     foreach ($aMacroDescription as $macro) {
@@ -294,7 +294,7 @@ if ($form->validate()) {
     } elseif ($form->getSubmitValue("submitC")) {
         updateCommandInDB($cmdObj->getValue());
     }
-    
+
     $o = null;
     $cmdObj = $form->getElement('command_id');
     $valid = true;

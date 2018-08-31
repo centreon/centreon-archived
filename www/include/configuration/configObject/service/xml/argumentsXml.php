@@ -90,8 +90,8 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
     $tab = array();
     if (!$cmdId && $svcTplId) {
         while (1) {
-            $query4 = "SELECT service_template_model_stm_id, command_command_id, command_command_id_arg 
-                            FROM `service` 
+            $query4 = "SELECT service_template_model_stm_id, command_command_id, command_command_id_arg
+                            FROM `service`
                             WHERE service_id = '" . $svcTplId . "'";
             $res4 = $db->query($query4);
             $row4 = $res4->fetchRow();

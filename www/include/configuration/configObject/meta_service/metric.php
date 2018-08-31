@@ -32,8 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
-    
-/* 
+
+/*
  * Database retrieve information
  */
 require_once("./class/centreonDB.class.php");
@@ -120,7 +120,7 @@ if ($o == "as") {
     $form->addElement('header', 'title', _("Modify a Meta Service indicator"));
 }
 
-/* 
+/*
  * Indicator basic information
  */
 $redirect = $form->addElement('hidden', 'o');

@@ -45,7 +45,7 @@ if (isset($pearDB)) {
             . "AND h.host_id = hsr.host_host_id "
             . "AND s.service_id = hsr.service_service_id;";
         $pearDB->query($queryUpdate);
-    } 
+    }
 }
 
 ?>
