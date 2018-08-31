@@ -16,6 +16,7 @@
     "axios": "^0.18.0",
     "class-name": "^0.1.3",
     "cross-env": "^5.2.0",
+    "loaders.css": "^0.1.2",
     "moment-timezone": "^0.5.21",
     "numeral": "^2.0.6",
     "react": "^16.4.2",
