@@ -2,7 +2,7 @@
 /*
  * MERETHIS
  *
- * Source Copyright 2005-2010 MERETHIS
+ * Source Copyright 2005-2018 MERETHIS
  *
  * Unauthorized reproduction, copy and distribution
  * are not allowed.
