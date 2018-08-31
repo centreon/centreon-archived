@@ -5,6 +5,7 @@ namespace CentreonRemote;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use CentreonRemote\Application\Webservice\CentreonTaskService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService;
@@ -31,6 +32,8 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         $pimple['centreon.webservice']->add(Webservice\CentreonRemoteServer::class);
         $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationRemote::class);
         $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationTopology::class);
+        $pimple['centreon.webservice']->add(Webservice\CentreonTaskService::class);
+
         $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
 
         $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
@@ -82,7 +85,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         };
 
         $pimple['centreon.taskservice'] = function (Container $pimple): TaskService {
-            $service = new TaskService(new AppKeyGeneratorService(), new CentreonDBManagerService($pimple), new CentcoreCommandService());
+            $service = new TaskService(new AppKeyGeneratorService(), $pimple['centreon.db-manager'], new CentcoreCommandService());
             return $service;
         };
 
