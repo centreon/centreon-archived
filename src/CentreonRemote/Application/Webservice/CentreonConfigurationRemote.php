@@ -3,8 +3,10 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\LinkedPollerConfigurationService;
-use CentreonRemote\Domain\Service\ServerConnectionConfigurationService;
+use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
+use Centreon\Domain\Entity\Task;
+use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
+use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
@@ -48,13 +50,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get remotes servers waitlist
      * 
-     * @return string
+     * @return array
      */
-    public function postGetWaitList(): string
+    public function postGetWaitList(): array
     {
         $statement = $this->pearDB->query('SELECT ip, version FROM `remote_servers` WHERE `is_connected` = 0');
 
-        return json_encode($statement->fetchAll());
+        return $statement->fetchAll();
     }
 
     /**
@@ -85,13 +87,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return string
+     * @return array
      */
-    public function postGetRemotesList(): string
+    public function postGetRemotesList(): array
     {
         $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
 
-        return json_encode($statement->fetchAll());
+        return $statement->fetchAll();
     }
 
     /**
@@ -186,11 +188,17 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         WizardConfigurationRequestValidator::validate();
 
+        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
+        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
+        /** @var $serverConfigurationService ServerConnectionConfigurationService */
+        $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
+        $serverConfigurationService = $this->getDi()[$configurationServiceName];
+        $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
+        $pollerConfigurationBridge->collectDataFromRequest();
+
         $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
 
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
-        $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
@@ -200,14 +208,22 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $serverConfigurationService->setDbPassword($_POST['db_password']);
         }
 
+        // Add configuration of the new server in the database
         try {
             $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
-            return json_encode(['error' => true, 'message' => $e->getMessage()]);
+            return ['error' => true, 'message' => $e->getMessage()];
         }
 
-        //TODO
-        new LinkedPollerConfigurationService;
+        // If you want to link pollers to a remote
+        //todo: update api map and doc
+//        if ($pollerConfigurationBridge->hasPollersForUpdating()) {
+//            $pollerConfigurationBridge->setServerID($serverID);
+//
+//            //todo: give this data to LinkedPollerConfigurationService
+//            $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+//            $pollerConfigurationBridge->getRemoteServerForConfiguration();
+//        }
 
         // Finish server configuration by:
         // - $openBrokerFlow?
@@ -219,7 +235,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $this->setCentreonInstanceAsCentral();
         }
 
-        return json_encode(['success' => true]);
+        //todo: update return based on success/fail
+        // $this->createExportTask($serverIP);
+
+        return ['success' => true];
     }
 
     /**
@@ -292,5 +311,17 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             ];
             $dbAdapter->insert('informations', $data);
         }
+    }
+
+    /**
+     * Create New Task for export
+     * @var $toIps array
+     * @return bool
+     */
+    private function createExportTask($toIps)
+    {
+        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('ips'=>$toIps));
+
+        return $result;
     }
 }

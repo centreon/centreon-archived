@@ -5,6 +5,8 @@
 @import "partials/form/form";
 @import "partials/progress-bar";
 @import "partials/helpers";
+@import "partials/mixins";
+@import "partials/loader";
 
 body {
   margin: 0;

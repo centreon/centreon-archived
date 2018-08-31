@@ -67,10 +67,10 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('No topology found.');
         }
 
-        return json_encode([
+        return [
             'url'      => $result['topology_url'],
             'is_react' => (bool) $result['is_react'],
-        ]);
+        ];
     }
 
     /**

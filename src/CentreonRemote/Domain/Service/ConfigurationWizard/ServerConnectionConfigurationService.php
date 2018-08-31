@@ -1,6 +1,6 @@
 <?php
 
-namespace CentreonRemote\Domain\Service;
+namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Pimple\Container;
@@ -63,7 +63,7 @@ abstract class ServerConnectionConfigurationService
 
     protected function getResource($resourceName): callable
     {
-        return require_once dirname(dirname(dirname(__FILE__))) . "{$this->resourcesPath}{$resourceName}";
+        return require_once dirname(dirname(dirname(dirname(__FILE__)))) . "{$this->resourcesPath}{$resourceName}";
     }
 
     /**
