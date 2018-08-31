@@ -12,24 +12,21 @@ class RemoteServerStepOneRoute extends Component {
     { active: true, prevActive: true, number: 1, path: routeMap.serverConfigurationWizard },
     { active: true, number: 2, path: routeMap.remoteServerStep1 },
     { active: false, number: 3 },
-    {active: false, number: 4},
+    { active: false, number: 4 },
   ];
 
   state = {
-    error: null,
     waitList: null
   }
-
-  wizardFormApi = axios('internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer');
   wizardFormWaitListApi = axios('internal.php?object=centreon_configuration_remote&action=getWaitList');
 
   getWaitList = () => {
     this.wizardFormWaitListApi.post()
       .then(response => {
-        this.setState({ waitList: JSON.parse(response.data) })
+        this.setState({ waitList: response.data })
       })
       .catch(err => {
-        console.log(err)
+        this.setState({ waitList: [] })
       });
   }
 
@@ -38,24 +35,19 @@ class RemoteServerStepOneRoute extends Component {
   }
 
   handleSubmit = data => {
-    const { history } = this.props;
-    this.wizardFormApi.post('', data)
-      .then(response => {
-        console.log(response)
-      })
-      .catch(err => {
-        console.log(err)
-      });
+    const { history, setPollerWizard } = this.props;
+    setPollerWizard(data);
     history.push(routeMap.remoteServerStep2);
   };
 
   render() {
     const { links } = this;
+    const {pollerData} = this.props;
     const { waitList } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
-        <Form waitList={waitList} onSubmit={this.handleSubmit.bind(this)} />
+        <Form waitList={waitList} initialValues={pollerData} onSubmit={this.handleSubmit.bind(this)} />
       </div>
     )
   }

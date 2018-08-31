@@ -1,5 +1,4 @@
-export default Loader;
-import React, {Component} from 'preact';
+import React, {Component} from 'react';
 
 class Loader extends Component {
 
