@@ -8,7 +8,7 @@ import { selectRemoteServerValidator } from '../../../helpers/validators';
 class PollerFormStepTwo extends Component {
 
   render() {
-    const {error, handleSubmit, onSubmit, submitting} = this.props;
+    const { error, handleSubmit, onSubmit, submitting, pollers } = this.props;
     return (
       <div className="form-wrapper">
         <div className="form-inner">
@@ -16,16 +16,23 @@ class PollerFormStepTwo extends Component {
             <h2 className="form-title">Server Configuration</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <Field
-              name="selectRemoteServer"
+
+            {pollers ? <Field
+              name="linked_remote"
               component={SelectField}
               label="Select linked Remote Server:"
-              required
-              options={['One', 'Two']}
-            />
+              options={[
+                {
+                  disabled: true,
+                  selected: true,
+                  text: 'Select Remote Server',
+                  value: '',
+                },
+              ].concat(
+                pollers.items.map(c => ({ value: c.id, label: c.text })))} /> : null}
             <Field name="manage_broker_config" component={CheckboxField} label="Centreon must connect to poller to open Broker flow" />
             <div class="form-buttons">
-              <button className="button" type="submit">Next</button>
+              <button className="button" type="submit">Apply</button>
             </div>
             {error ? <div class="error-block">{error.message}</div> : null}
           </form>
@@ -35,9 +42,7 @@ class PollerFormStepTwo extends Component {
   }
 }
 
-const validate = (server) => ({
-  selectRemoteServer: selectRemoteServerValidator(server.selectRemoteServer)
-});
+const validate = () => ({});
 
 export default connectForm({
   form: 'PollerFormStepTwo',
