@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 ###################################################################
-# Centreon is developped with GPL Licence 2.0
+# Centreon is developed with GPL Licence 2.0
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #

@@ -1,5 +1,5 @@
 /*
- * Centreon is developped with GPL Licence 2.0 :
+ * Centreon is developed with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  * Developped by : Julien Mathis - Romain Le Merlus
  *
