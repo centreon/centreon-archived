@@ -195,7 +195,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
-        $pollerConfigurationBridge->collectDataFromRequest();
 
         $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
@@ -216,15 +215,16 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             return ['error' => true, 'message' => $e->getMessage()];
         }
 
+        $pollerConfigurationBridge->setServerID($serverID);
+        $pollerConfigurationBridge->collectDataFromRequest();
+
         // If you want to link pollers to a remote
         //todo: update api map and doc
-//        if ($pollerConfigurationBridge->hasPollersForUpdating()) {
-//            $pollerConfigurationBridge->setServerID($serverID);
-//
-//            //todo: give this data to LinkedPollerConfigurationService
-//            $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
-//            $pollerConfigurationBridge->getRemoteServerForConfiguration();
-//        }
+        if ($pollerConfigurationBridge->hasPollersForUpdating()) {
+            //todo: give this data to LinkedPollerConfigurationService
+            $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
+            $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+        }
 
         // Finish server configuration by:
         // - $openBrokerFlow?
