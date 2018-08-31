@@ -5,6 +5,7 @@ namespace CentreonRemote\Application\Webservice;
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
+use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
 use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
@@ -187,11 +188,17 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         WizardConfigurationRequestValidator::validate();
 
+        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
+        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
+        /** @var $serverConfigurationService ServerConnectionConfigurationService */
+        $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
+        $serverConfigurationService = $this->getDi()[$configurationServiceName];
+        $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
+        $pollerConfigurationBridge->collectDataFromRequest();
+
         $serverIP = $_POST['server_ip'];
         $serverName = substr($_POST['server_name'], 0, 40);
 
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
-        $serverConfigurationService = $this->getDi()[$configurationServiceName];
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
@@ -201,15 +208,22 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $serverConfigurationService->setDbPassword($_POST['db_password']);
         }
 
+        // Add configuration of the new server in the database
         try {
             $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
             return json_encode(['error' => true, 'message' => $e->getMessage()]);
         }
 
-        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
-        $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
-        //$pollerConfigurationService->doSomething($serverID);
+        // If you want to link pollers to a remote
+        //todo: update api map and doc
+//        if ($pollerConfigurationBridge->hasPollersForUpdating()) {
+//            $pollerConfigurationBridge->setServerID($serverID);
+//
+//            //todo: give this data to LinkedPollerConfigurationService
+//            $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+//            $pollerConfigurationBridge->getRemoteServerForConfiguration();
+//        }
 
         // Finish server configuration by:
         // - $openBrokerFlow?
