@@ -6,6 +6,7 @@ use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
+use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\RemoteConnectionConfigurationService;
 use CentreonRemote\Domain\Service\InformationsService;
@@ -54,6 +55,11 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
         $pimple['centreon_remote.poller_config_service'] = function(Container $pimple): LinkedPollerConfigurationService {
             $service = new LinkedPollerConfigurationService($pimple);
+            return $service;
+        };
+
+        $pimple['centreon_remote.poller_config_bridge'] = function(Container $pimple): PollerConfigurationRequestBridge {
+            $service = new PollerConfigurationRequestBridge($pimple);
             return $service;
         };
 
