@@ -152,6 +152,18 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
+        
+        // Graphs
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\GraphExporter($locator);
+
+            return $service;
+        });
 
         // Media
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
