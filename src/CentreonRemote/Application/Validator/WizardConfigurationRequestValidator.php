@@ -21,14 +21,6 @@ class WizardConfigurationRequestValidator
         if ($isRemoteConnection) {
             $this->validateRemoteSpecificFields();
         }
-
-        //TODO
-        // IF CONNECTING REMOTE
-        // I can have (not required, can be empty) a $_POST list of poller ips from this current centreon
-        // - validate if each ip exists here as poller
-        // IF CONNECTING POLLER
-        // I can have (not required, can be empty) a $_POST remote server ip linked to this centreon
-        // - validate that this ip is indeed remote in this centreon
     }
 
     private function validateServerGeneralFields()
