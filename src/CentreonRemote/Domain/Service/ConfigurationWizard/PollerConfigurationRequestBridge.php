@@ -56,26 +56,23 @@ class PollerConfigurationRequestBridge
         $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
 
         if ($isRemoteConnection) {
-            $this->collectPollersToLink();
-
-            //todo: use the $serverID to get data for the remote from nagios_server
-            $this->remoteServer = null; // PollerServer
+            $pollerIDs = $_POST['linked_pollers'] ?? ''; // Poller ids are coming form the request
+            $pollerIDs = (array) $pollerIDs;
+            $this->pollers = $this->getPollersToLink($pollerIDs);
+            $this->remoteServer = $this->getRemoteForConfiguration($this->serverID); // The server id is of the new remote
         } else {
-            $this->collectRemoteForConfiguration();
-            //todo: use the $serverID to get data for the poller from nagios_server
-            $this->pollers = [[]]; // PollerServer
+            $remoteID = $_POST['linked_remote'] ?? ''; // Remote id is coming from the request
+            $this->remoteServer = $this->getRemoteForConfiguration($remoteID);
+            $this->pollers = $this->getPollersToLink([$this->serverID]); // The server id is of the new poller
         }
     }
 
-    private function collectPollersToLink()
+    private function getPollersToLink(array $pollerIDs)
     {
         $idBindString = '';
-        $pollerIDs = $_POST['linked_pollers'] ?? '';
-        $pollerIDs = (array) $pollerIDs;
 
         if (empty($pollerIDs)) {
-            $this->pollers = [];
-            return;
+            return [];
         }
 
         foreach ($pollerIDs as $key => $id) {
@@ -88,27 +85,30 @@ class PollerConfigurationRequestBridge
         try {
             $this->dbAdapter->query($queryPollers, $pollerIDs);
             $results = $this->dbAdapter->results();
+            $data = [];
 
             foreach ($results as $result) {
                 $poller = new PollerServer;
                 $poller->setId($result->id);
                 $poller->setIp($result->ip);
 
-                $this->pollers[] = $poller;
+                $data[] = $poller;
             }
+
+            return $data;
         } catch (\Exception $e) {
             error_log($e->getMessage());
         }
+
+        return [];
     }
 
-    private function collectRemoteForConfiguration()
+    private function getRemoteForConfiguration($remoteID)
     {
-        $remoteID = $_POST['linked_remote'] ?? '';
         $queryPollers = 'SELECT id, ns_ip_address as ip FROM nagios_server WHERE id=?';
 
         if (empty($remoteID)) {
-            $this->remoteServer = null;
-            return;
+            return null;
         }
 
         try {
@@ -117,12 +117,16 @@ class PollerConfigurationRequestBridge
 
             if (count($results)) {
                 $remoteData = reset($results);
-                $this->remoteServer = new PollerServer;
-                $this->remoteServer->setId($remoteData->id);
-                $this->remoteServer->setIp($remoteData->ip);
+                $remoteServer = new PollerServer;
+                $remoteServer->setId($remoteData->id);
+                $remoteServer->setIp($remoteData->ip);
+
+                return $remoteServer;
             }
         } catch (\Exception $e) {
             error_log($e->getMessage());
         }
+
+        return null;
     }
 }
