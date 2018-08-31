@@ -1,6 +1,6 @@
 <?php
 
-namespace CentreonRemote\Domain\Service;
+namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 class RemoteConnectionConfigurationService extends ServerConnectionConfigurationService
 {
