@@ -420,44 +420,55 @@ class CentreonService extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         $authorizeParam = array(
+            'acknowledgement_timeout',
+            'action_url',
             'activate',
-            'description',
-            'template',
-            'is_volatile',
-            'check_period',
+            'active_checks_enabled',
+            'alias',
+            'cg_additive_inheritance',
             'check_command',
             'check_command_arguments',
-            'max_check_attempts',
-            'normal_check_interval',
-            'retry_check_interval',
-            'active_checks_enabled',
-            'passive_checks_enabled',
-            'notifications_enabled',
-            'contact_additive_inheritance',
-            'cg_additive_inheritance',
-            'notification_interval',
-            'notification_period',
-            'notification_options',
-            'first_notification_delay',
-            'parallelize_checks',
-            'obsess_over_service',
             'check_freshness',
-            'freshness_threshold',
-            'event_handler_enabled',
-            'flap_detection_enabled',
-            'process_perf_data',
-            'retain_status_information',
-            'retain_nonstatus_information',
+            'check_period',
+            'comment',
+            'contact_additive_inheritance',
+            'description',
             'event_handler',
             'event_handler_arguments',
-            'flap_detection_options',
-            'notes',
-            'notes_url',
-            'action_url',
-            'comment',
+            'event_handler_enabled',
+            'first_notification_delay',
+            'flap_detection_enabled',
+            'freshness_threshold',
+            'geo_coords',
+            'high_flap_threshold',
             'icon_image',
             'icon_image_alt',
-            'service_notification_options'
+            'id',
+            'inherit_contacts_from_host',
+            'is_volatile',
+            'locked',
+            'low_flap_threshold',
+            'max_check_attempts',
+            'normal_check_interval',
+            'notes',
+            'notes_url',
+            'notifications_enabled',
+            'notification_interval',
+            'notification_options',
+            'notification_period',
+            'notification_period',
+            'obsess_over_service',
+            'parallelize_check',
+            'passive_checks_enabled',
+            'process_perf_data',
+            'recovery_notification_delay',
+            'register',
+            'retain_nonstatus_information',
+            'retain_status_information',
+            'retry_check_interval',
+            'stalking_options',
+            'template',
+            'use_only_contacts_from_host'
         );
         $unknownParam = array();
 
@@ -493,7 +504,7 @@ class CentreonService extends CentreonObject
                             $field = "command_command_id";
                             break;
                         case "check_command_arguments":
-                            $field = "command_command_id_arg1";
+                            $field = "command_command_id_arg";
                             break;
                         case "event_handler":
                             $field = "command_command_id2";
@@ -507,9 +518,14 @@ class CentreonService extends CentreonObject
                         case "notification_period":
                             $field = "timeperiod_tp_id2";
                             break;
+                        case "geo_coords":
+                            $field = "geo_coords";
+                            break;
+                        case "template":
+                            $field = "service_template_model_stm_id";
+                            break;
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
-                        case "flap_detection_options":
                             break;
                         case "notes":
                         case "notes_url":
@@ -524,9 +540,6 @@ class CentreonService extends CentreonObject
                             $field = 'service_location';
                             break;
                         default:
-                            if ($paramSearch == "template") {
-                                $field = "template_model_stm_id";
-                            }
                             if (!preg_match("/^service_/", $field)) {
                                 $field = "service_" . $field;
                             }
