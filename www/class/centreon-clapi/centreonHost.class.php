@@ -382,7 +382,6 @@ class CentreonHost extends CentreonObject
             'flap_detection_enabled',
             'flap_detection_options',
             'freshness_threshold',
-            'geo_coords',
             'high_flap_threshold',
             'high_flap_threshold',
             'icon_image',
@@ -443,7 +442,6 @@ class CentreonHost extends CentreonObject
                         case "notification_period":
                             $field = "timeperiod_tp_id2";
                             break;
-                        case "geo_coords":
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
                         case "flap_detection_options":
