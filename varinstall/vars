@@ -1,3 +1,4 @@
+#!/bin/sh
 # -*-Shell-script-*-
 # install_vars
 # This file contain reconfigured variables used in install scripts
