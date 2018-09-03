@@ -165,6 +165,20 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *       description="database password",
      *       required=false,
      *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="linked_pollers",
+     *       type="string",
+     *       description="pollers to link with the new remote",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="linked_remote",
+     *       type="string",
+     *       description="remote to manage the new poller",
+     *       required=false,
+     *   ),
      *   @SWG\Response(
      *     response=200,
      *     description="JSON"
@@ -219,17 +233,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationBridge->collectDataFromRequest();
 
         // If you want to link pollers to a remote
-        //todo: update api map and doc
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             //todo: give this data to LinkedPollerConfigurationService
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
             $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
         }
 
-        // Finish server configuration by:
+        //todo: what do I do with these
         // - $openBrokerFlow?
         // - $manageBrokerConfiguration?
-        // - update informations table set isRemote=yes in the slave server
 
         if ($isRemoteConnection) {
             $this->addServerToListOfRemotes($serverIP);

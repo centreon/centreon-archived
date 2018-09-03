@@ -4,7 +4,7 @@ return function ($serverID, $pollerName) {
     $configName = strtolower(str_replace(' ', '-', $pollerName));
 
     return [
-        [
+        'broker' => [
             'config_name'            => "central-broker-{$configName}",
             'config_filename'        => "{$configName}-broker.xml",
             'config_write_timestamp' => '0',
@@ -18,7 +18,7 @@ return function ($serverID, $pollerName) {
             'correlation_activate'   => '0',
             'daemon'                 => '1',
         ],
-        [
+        'module' => [
             'config_name'            => "central-module-{$configName}",
             'config_filename'        => "{$configName}-module.xml",
             'config_write_timestamp' => '0',
@@ -32,7 +32,7 @@ return function ($serverID, $pollerName) {
             'correlation_activate'   => '0',
             'daemon'                 => '0',
         ],
-        [
+        'rrd' => [
             'config_name'            => "central-rrd-{$configName}",
             'config_filename'        => "{$configName}-rrd.xml",
             'config_write_timestamp' => '0',

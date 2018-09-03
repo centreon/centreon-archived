@@ -17,19 +17,19 @@ $outputModuleMasterData = require_once 'broker_info/output_module_master.php';
 
 $data = [
     'central-broker' => [
-        'logger'          => $loggerBrokerData,
-        'broker'          => $inputBrokerData,
-        'output_rrd'      => $outputRRDMasterData,
-        'output_forward'  => $outputForwardMasterData,
+        'logger'         => $loggerBrokerData,
+        'broker'         => $inputBrokerData,
+        'output_rrd'     => $outputRRDMasterData,
+        'output_forward' => $outputForwardMasterData,
     ],
     'central-module' => [
-        $loggerModuleData,
-        $outputModuleMasterData,
+        'logger' => $loggerModuleData,
+        'output' => $outputModuleMasterData,
     ],
     'central-rrd' => [
-        $loggerRRDData,
-        $inputRRDData,
-        $outputRRDData,
+        'logger' => $loggerRRDData,
+        'input'  => $inputRRDData,
+        'output' => $outputRRDData,
     ]
 ];
 
