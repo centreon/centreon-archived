@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '18.9.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.26' LIMIT 1;
+UPDATE `informations` SET `value` = '18.10.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.26' LIMIT 1;
 
 -- Move "Graphs" & "Broker Statistics" as "Server status" sub menu
 UPDATE topology SET topology_parent = '505' WHERE topology_page = '10205';
