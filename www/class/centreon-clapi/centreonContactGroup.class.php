@@ -116,6 +116,62 @@ class CentreonContactGroup extends CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'alias',
+            'ar_id',
+            'comment',
+            'id',
+            'ldap_dn',
+            'name',
+            'type'
+        );
+        $unknownParam = array();
+
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "ar_id":
+                            break;
+                        default:
+                            if (!preg_match("/^cg_/", $paramSearch)) {
+                                $field = "cg_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+                    
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+    }
+
+    /**
      * Update contact groups
      *
      * @param string $parameters
