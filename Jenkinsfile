@@ -37,7 +37,7 @@ try {
     'debian10': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian10'
+        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian9'
         junit 'ut.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
@@ -58,7 +58,7 @@ try {
     'debian10': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian10'
+        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian9'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
