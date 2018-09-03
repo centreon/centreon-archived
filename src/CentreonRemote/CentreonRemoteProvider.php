@@ -153,6 +153,18 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             return $service;
         });
         
+        // Downtimes
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\DowntimeExporter($locator);
+
+            return $service;
+        });
+        
         // Graphs
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function() use ($pimple) {
             $services = [
