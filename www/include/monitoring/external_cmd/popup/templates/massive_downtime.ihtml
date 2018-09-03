@@ -2,25 +2,23 @@
 <form {$form.attributes}>
 	<div id="popupDowntime" align=center>
 		 <table class="table">
-            <tr><td colspan='2' class="FormHeader"><h3 style="color: #00bfb3;">{$form.header.title}</h3></td></tr>
+            <tr>
+				<td colspan='2' class="FormHeader"><h3 style="color: #00bfb3;">{$form.header.title}</h3></td>
+			</tr>
 			<tr>
                 <td colspan=2>{$form.timezone_warning.label}</td>
 			</tr>
             <tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>
-                                    {$form.start.html}&nbsp;{$form.start_time.html}
-                                </td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}&nbsp;{$form.start_time.html}</td>
 			</tr>
-                        <tr>
+			<tr>
 				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.label}</td>
 				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.html}</td>
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>
-                                    {$form.end.html}&nbsp;{$form.end_time.html}
-                                </td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}&nbsp;{$form.end_time.html}</td>
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>
@@ -28,7 +26,8 @@
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" onClick="toggleFields(this);" {$defaultFixed}></td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+					<input type="checkbox" id="fixed" onClick="toggleFields(this);" {$defaultFixed}></td>
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
@@ -41,7 +40,8 @@
 			{if $cmd == '75'}
 			<tr>
 	            <td class="FormRowField" style='padding-left:15px;'>{$form.downtimehostservice.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="downtimehostservice" {$defaultSetDwtOnSvc}></td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+					<input type="checkbox" id="downtimehostservice" {$defaultSetDwtOnSvc}></td>
 	        </tr>
 			{/if}
 		</table>

@@ -379,7 +379,7 @@ function host_flapping_enable($arg, $type)
  * enable or disable notification for a hostgroup
  */
 
-function notifi_host_hostgroup($arg, $type)
+function notify_host_hostgroup($arg, $type)
 {
     global $pearDB, $tab, $is_admin;
     $tab_data = preg_split("/\;/", $arg);
@@ -556,7 +556,7 @@ function submitHostPassiveCheck()
     return null;
 }
 
-function notifi_svc_host_hostgroup($arg, $type)
+function notify_svc_host_hostgroup($arg, $type)
 {
     global $tab, $pearDB, $is_admin;
     /* 	$res = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");

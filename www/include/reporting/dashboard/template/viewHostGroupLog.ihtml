@@ -13,20 +13,20 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap; border-left-width:0.0px;border-left-style:none;'>
 			<!-- hostgroup selection -->
-			<form {$formItem.attributes} style="margin:0px;padding:0px;">
-				&nbsp;{$formItem.item.label}:&nbsp;&nbsp;{$formItem.item.html}{$formItem.hidden}
+			<form {$formItem.attributes} style="margin:0px;padding:0px;">&nbsp;
+				{$formItem.item.label}:&nbsp;&nbsp;{$formItem.item.html}{$formItem.hidden}
 				{if $date_start != 0}
-					&nbsp;&nbsp;&nbsp;{$period_name} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end}</span>
+				&nbsp;&nbsp;&nbsp;{$period_name} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end}</span>
 				{/if}
 			</form>
 		</td>
 		<td style='padding:5px;vertical-align:top;'>
 			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
-			<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
+				<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
 					{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
-					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
-							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-							{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
+					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}
 			</form>
 		</td>
@@ -35,113 +35,111 @@
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
-				<td style='width:300px; padding:5px'>
-					<!-- chart drawing -->
-					{if $name}	
-						<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
-					{/if}
-				</td>
-			<!-- period selection -->
-			<!-- host statistics -->
-				<td style='vertical-align:top;padding:5px;' colspan="2">
-					<table class="ListTable">
-						<tr class='ListHeader'>
-							<td colspan=5>&nbsp;{$resumeTitle}</td>
-						</tr>
-						<!-- headers -->
-						<tr class='list_lvl_1'>
-							<td style="padding:5px;" class="ListColHeaderCenter">{$stateLabel}</td>
-							<td style="padding:5px;" class="ListColHeaderCenter">{$totalTimeLabel}</td>
-							<td style="padding:5px;" class="ListColHeaderCenter">{$meanTimeLabel}</td>
-							<td style="padding:5px;" class="ListColHeaderCenter">{$alertsLabel}</td>
-						</tr>
-						<!-- Values -->
-						<tr class="list_one">
-							<td {$style.UP}><span {$badge_UP}></span> <b>{$states.UP}</b></td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_TP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_MP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UP_A}</td>
-						</tr>
-						<tr class="list_two">
-							<td {$style.DOWN}><span {$badge_DOWN}></span> <b>{$states.DOWN}</b></td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_TP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_MP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_A}</td>
-						</tr>
-						<tr class="list_one">
-							<td {$style.UNREACHABLE}><span {$badge_UNREACHABLE}></span> <b>{$states.UNREACHABLE}</b></td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_TP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_MP}%</td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_A}</td>
-						</tr>
-						<tr class="list_one">
-							<td {$style.MAINTENANCE}><span {$badge_MAINTENANCE}></span> <b>{$states.MAINTENANCE}</b></td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.MAINTENANCE_TP}%</td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-						</tr>
-						<tr class="list_one">
-							<td {$style.UNDETERMINED}><span {$badge_UNDETERMINED}></span> <b>{$states.UNDETERMINED}</b></td>
-							<td style="padding:5px;" class='ListColCenter'>{$summary.UNDETERMINED_TP}%</td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-						</tr>
-						<!-- Total -->
-						<tr class='list_lvl_2'>
-							<td style="padding:5px;" class="ListColHeaderCenter">{$totalLabel}</td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-							<td style="padding:5px;" class='ListColCenter'></td>
-							<td style="padding:5px;" class='ListColCenter'>{$totalAlert}</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3" style=' padding:5px;'>
-					<table class="ListTable">
-						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=12>&nbsp;{$svcTitle}</td>
-						</tr>
-						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$hostTitle}</td>							
-							<td colspan=2 class="ListColHeaderCenter">{$states.UP}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$states.DOWN}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
-							<td class="ListColHeaderCenter">{$states.MAINTENANCE}</td>
-							<td class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
-						</tr>
-						 <tr class='list_lvl_1'>
-                            <td class="ListColHeaderCenter"></td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">%</td>
-                        </tr>
-						{foreach item=tb from=$components}
-						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>							
-							<td class="ListColCenter" {$style.UP_BOTTOM}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
-							<td class="ListColCenter" {$style.UP_BOTTOM} >{$tb.UP_A}</td>
-							<td class="ListColCenter" {$style.DOWN_BOTTOM}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
-							<td class="ListColCenter" {$style.DOWN_BOTTOM} style="width:30px;">{$tb.DOWN_A}</td>
-							<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM}>{$tb.UNREACHABLE_TP}% ({$tb.UNREACHABLE_MP}%)</td>
-							<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM} style="width:30px;">{$tb.UNREACHABLE_A}</td>
-							<td class="ListColCenter" {$style.MAINTENANCE_BOTTOM}>{$tb.MAINTENANCE_TP}%</td>
-							<td class="ListColCenter" {$style.UNDETERMINED_BOTTOM}>{$tb.UNDETERMINED_TP}%</td>
-						</tr>
-						{/foreach}
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3" style=' padding:5px;'>
-					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
-				</td>
-			</tr>		
+		<td style='width:300px; padding:5px'>
+			<!-- chart drawing -->
+			{if $name}
+			<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
+			{/if}
+		</td>
+		<!-- period selection -->
+		<!-- host statistics -->
+		<td style='vertical-align:top;padding:5px;' colspan="2">
+			<table class="ListTable">
+				<tr class='ListHeader'>
+					<td colspan=5>&nbsp;{$resumeTitle}</td>
+				</tr>
+				<!-- headers -->
+				<tr class='list_lvl_1'>
+					<td style="padding:5px;" class="ListColHeaderCenter">{$stateLabel}</td>
+					<td style="padding:5px;" class="ListColHeaderCenter">{$totalTimeLabel}</td>
+					<td style="padding:5px;" class="ListColHeaderCenter">{$meanTimeLabel}</td>
+					<td style="padding:5px;" class="ListColHeaderCenter">{$alertsLabel}</td>
+				</tr>
+				<!-- Values -->
+				<tr class="list_one">
+					<td {$style.UP}><span {$badge_UP}></span> <b>{$states.UP}</b></td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UP_TP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UP_MP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UP_A}</td>
+				</tr>
+				<tr class="list_two">
+					<td {$style.DOWN}><span {$badge_DOWN}></span> <b>{$states.DOWN}</b></td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_TP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_MP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.DOWN_A}</td>
+				</tr>
+				<tr class="list_one">
+					<td {$style.UNREACHABLE}><span {$badge_UNREACHABLE}></span> <b>{$states.UNREACHABLE}</b></td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_TP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_MP}%</td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UNREACHABLE_A}</td>
+				</tr>
+				<tr class="list_one">
+					<td {$style.MAINTENANCE}><span {$badge_MAINTENANCE}></span> <b>{$states.MAINTENANCE}</b></td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.MAINTENANCE_TP}%</td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+				</tr>
+				<tr class="list_one">
+					<td {$style.UNDETERMINED}><span {$badge_UNDETERMINED}></span> <b>{$states.UNDETERMINED}</b></td>
+					<td style="padding:5px;" class='ListColCenter'>{$summary.UNDETERMINED_TP}%</td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+				</tr>
+				<!-- Total -->
+				<tr class='list_lvl_2'>
+					<td style="padding:5px;" class="ListColHeaderCenter">{$totalLabel}</td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+					<td style="padding:5px;" class='ListColCenter'></td>
+					<td style="padding:5px;" class='ListColCenter'>{$totalAlert}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style=' padding:5px;'>
+			<table class="ListTable">
+				<tr class='ListHeader'>
+					<td class="FormHeader" colspan=12>&nbsp;{$svcTitle}</td>
+				</tr>
+				<tr class='list_lvl_1'>
+					<td class="ListColHeaderCenter">{$hostTitle}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$states.UP}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$states.DOWN}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
+					<td class="ListColHeaderCenter">{$states.MAINTENANCE}</td>
+					<td class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
+				</tr>
+				<tr class='list_lvl_1'>
+					<td class="ListColHeaderCenter"></td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">%</td>
+				</tr>
+				{foreach item=tb from=$components}
+				<tr class={cycle values="list_two, list_one"}>
+					<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>
+					<td class="ListColCenter" {$style.UP_BOTTOM}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
+					<td class="ListColCenter" {$style.UP_BOTTOM} >{$tb.UP_A}</td>
+					<td class="ListColCenter" {$style.DOWN_BOTTOM}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
+					<td class="ListColCenter" {$style.DOWN_BOTTOM} style="width:30px;">{$tb.DOWN_A}</td>
+					<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM}>{$tb.UNREACHABLE_TP}% ({$tb.UNREACHABLE_MP}%)</td>
+					<td class="ListColCenter" {$style.UNREACHABLE_BOTTOM} style="width:30px;">{$tb.UNREACHABLE_A}</td>
+					<td class="ListColCenter" {$style.MAINTENANCE_BOTTOM}>{$tb.MAINTENANCE_TP}%</td>
+					<td class="ListColCenter" {$style.UNDETERMINED_BOTTOM}>{$tb.UNDETERMINED_TP}%</td>
+				</tr>
+				{/foreach}
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style=' padding:5px;'>
+			<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 		</td>
 	</tr>
 </table>
@@ -151,6 +149,7 @@
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
 
+/*
     jQuery("#StartDate").datepicker({
         maxDate: '-1',
         onSelect : function(data){  
@@ -166,7 +165,7 @@
             jQuery( "input[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
     });
-
+*/
     jQuery( "select[name='period']" ).click(function() {
         jQuery( "input[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
     });

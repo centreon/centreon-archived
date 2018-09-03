@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -197,15 +197,56 @@ $lang = array(
 );
 
 $form->addElement('select', 'period', _("Log Period"), $periods);
-$form->addElement('text', 'StartDate', '', array("id" => "StartDate", "class" => "datepicker", "size" => 8));
-$form->addElement('text', 'StartTime', '', array("id" => "StartTime", "class" => "timepicker", "size" => 5));
-$form->addElement('text', 'EndDate', '', array("id" => "EndDate", "class" => "datepicker", "size" => 8));
-$form->addElement('text', 'EndTime', '', array("id" => "EndTime", "class" => "timepicker", "size" => 5));
+$form->addElement(
+    'text',
+    'StartDate',
+    '',
+    array(
+        "id" => "StartDate",
+        "class" => "datepicker",
+        "size" => 8
+    )
+);
+$form->addElement(
+    'text',
+    'StartTime',
+    '',
+    array(
+        "id" => "StartTime",
+        "class" => "timepicker",
+        "size" => 5
+    )
+);
+$form->addElement(
+    'text',
+    'EndDate',
+    '',
+    array(
+        "id" => "EndDate",
+        "class" => "datepicker",
+        "size" => 8
+    )
+);
+$form->addElement(
+    'text',
+    'EndTime',
+    '',
+    array(
+        "id" => "EndTime",
+        "class" => "timepicker",
+        "size" => 5
+    )
+);
 $form->addElement(
     'text',
     'output',
     _("Output"),
-    array("id" => "output", "style" => "width: 203px;", "size" => 15, "value" => $user_params['output'])
+    array(
+        "id" => "output",
+        "style" => "width: 203px;",
+        "size" => 15,
+        "value" => $user_params['output']
+    )
 );
 
 if ($engine == "false") {
@@ -213,14 +254,20 @@ if ($engine == "false") {
         'button',
         'graph',
         _("Apply period"),
-        array("onclick" => "apply_period()", "class" => "btc bt_success")
+        array(
+            "onclick" => "apply_period()",
+            "class" => "btc bt_success"
+        )
     );
 } else {
     $form->addElement(
         'button',
         'graph',
         _("Apply period"),
-        array("onclick" => "apply_period_engine()", "class" => "btc bt_success")
+        array(
+            "onclick" => "apply_period_engine()",
+            "class" => "btc bt_success"
+        )
     );
 }
 
@@ -232,7 +279,13 @@ $attrHost1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultHosts
 );
-$form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
+$form->addElement(
+    'select2',
+    'host_filter',
+    _("Hosts"),
+    array(),
+    $attrHost1
+);
 
 $serviceGroupRoute = './include/common/webServices/rest/'
     . 'internal.php?object=centreon_configuration_servicegroup&action=list';
@@ -243,7 +296,13 @@ $attrServicegroup1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultServicegroups
 );
-$form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
+$form->addElement(
+    'select2',
+    'service_group_filter',
+    _("Services Groups"),
+    array(),
+    $attrServicegroup1
+);
 
 $serviceRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 $attrService1 = array(
@@ -253,7 +312,13 @@ $attrService1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultServices
 );
-$form->addElement('select2', 'service_filter', _("Services"), array(), $attrService1);
+$form->addElement(
+    'select2',
+    'service_filter',
+    _("Services"),
+    array(),
+    $attrService1
+);
 
 $hostGroupRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostGroup1 = array(
@@ -263,7 +328,13 @@ $attrHostGroup1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultHostgroups
 );
-$form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $attrHostGroup1);
+$form->addElement(
+    'select2',
+    'host_group_filter',
+    _("Hosts Groups"),
+    array(),
+    $attrHostGroup1
+);
 
 $pollerRoute = './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list';
 $attrPoller1 = array(
@@ -273,9 +344,19 @@ $attrPoller1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultPollers
 );
-$form->addElement('select2', 'poller_filter', _("Pollers"), array(), $attrPoller1);
+$form->addElement(
+    'select2',
+    'poller_filter',
+    _("Pollers"),
+    array(),
+    $attrPoller1
+);
 
-$form->setDefaults(array("period" => $user_params['log_filter_period']));
+$form->setDefaults(
+    array(
+        "period" => $user_params['log_filter_period']
+    )
+);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

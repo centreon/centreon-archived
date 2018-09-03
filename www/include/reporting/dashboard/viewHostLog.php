@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,15 +59,35 @@ isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UT
 /*
  * Host Selection
  */
-$formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=".$p);
+$formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
 $hosts = getAllHostsForReporting($is_admin, $lcaHoststr, $search);
-$selHost = $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
-$formHost->addElement('hidden', 'period', $period);
-$formHost->addElement('hidden', 'StartDate', $get_date_start);
-$formHost->addElement('hidden', 'EndDate', $get_date_end);
+$selHost = $formHost->addElement(
+    'select',
+    'host',
+    _("Host"),
+    $hosts,
+    array(
+        "onChange" =>"this.form.submit();"
+    )
+);
+$formHost->addElement(
+    'hidden',
+    'period',
+    $period
+);
+$formHost->addElement(
+    'hidden',
+    'StartDate',
+    $get_date_start
+);
+$formHost->addElement(
+    'hidden',
+    'EndDate',
+    $get_date_end
+);
 if (isset($id)) {
     $formHost->setDefaults(array('host' => $id));
 }
@@ -76,7 +96,11 @@ if (isset($id)) {
  * Set host id with period selection form
  */
 if ($id != "NULL") {
-    $formPeriod->addElement('hidden', 'host', $id);
+    $formPeriod->addElement(
+        'hidden',
+        'host',
+        $id
+    );
 }
 
 /*
@@ -147,16 +171,19 @@ if (isset($id) && $id != "NULL") {
      */
     $tpl->assign(
         "link_csv_url",
-        "./include/reporting/dashboard/csvExport/csv_HostLogs.php?host=".$id."&start=".$start_date."&end=".$end_date
+        "./include/reporting/dashboard/csvExport/csv_HostLogs.php?host=" .
+            $id . "&start=" . $start_date . "&end=" . $end_date
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
     /*
      * Status colors
      */
-    $color = substr($colors["up"], 1).':'.substr($colors["down"], 1)
-        . ':'.substr($colors["unreachable"], 1).':'.substr($colors["undetermined"], 1)
-        . ':'.substr($colors["maintenance"], 1);
+    $color = substr($colors["up"], 1)
+        . ':'.substr($colors["down"], 1)
+        . ':' . substr($colors["unreachable"], 1)
+        . ':' . substr($colors["undetermined"], 1)
+        . ':' . substr($colors["maintenance"], 1);
 
     /*
      * Ajax timeline
