@@ -16,7 +16,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 {
 
     /**
-     * Register Centron Remote services
+     * Register Centreon Remote services
      * 
      * @param \Pimple\Container $pimple
      */
