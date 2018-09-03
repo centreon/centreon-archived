@@ -12,9 +12,9 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
         $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->dbUser, $this->dbPassword);
 
-        $brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[0]);
-        $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[1]);
-        $rrdID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[2]);
+        $brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['broker']);
+        $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
+        $rrdID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['rrd']);
 
         foreach ($configCentreonBrokerInfoData['central-broker'] as $brokerConfig => $brokerData) {
             foreach ($brokerData as $row) {
@@ -27,15 +27,23 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
             }
         }
 
-        foreach ($configCentreonBrokerInfoData['central-module'] as $brokerData) {
+        foreach ($configCentreonBrokerInfoData['central-module'] as $brokerConfig => $brokerData) {
             foreach ($brokerData as $row) {
+                if ($brokerConfig == 'output' && $row['config_key'] == 'host') {
+                    $row['config_value'] = $this->centralIp;
+                }
+
                 $row['config_id'] = $moduleID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }
         }
 
-        foreach ($configCentreonBrokerInfoData['central-rrd'] as $brokerData) {
+        foreach ($configCentreonBrokerInfoData['central-rrd'] as $brokerConfig => $brokerData) {
             foreach ($brokerData as $row) {
+                if ($brokerConfig == 'input' && $row['config_key'] == 'host') {
+                    $row['config_value'] = $this->centralIp;
+                }
+
                 $row['config_id'] = $rrdID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }

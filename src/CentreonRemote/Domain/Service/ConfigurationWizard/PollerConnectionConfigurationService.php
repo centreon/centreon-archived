@@ -12,14 +12,14 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
         $configCentreonBrokerInfoData = $configCentreonBrokerInfoData(null, null);
 
-        $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData[0]);
+        $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
 
-        foreach ($configCentreonBrokerInfoData['central-broker']['logger'] as $row) {
+        foreach ($configCentreonBrokerInfoData['central-module']['logger'] as $row) {
             $row['config_id'] = $moduleID;
             $this->insertWithAdapter('cfg_centreonbroker_info', $row);
         }
 
-        foreach ($configCentreonBrokerInfoData['central-broker']['output_forward'] as $row) {
+        foreach ($configCentreonBrokerInfoData['central-module']['output'] as $row) {
             if ($row['config_key'] == 'host') {
                 $row['config_value'] = $this->centralIp;
             }
