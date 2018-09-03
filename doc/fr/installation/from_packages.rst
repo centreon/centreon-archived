@@ -58,8 +58,8 @@ droits suffisants.
 
 Installation ::
 
-   $ wget http://yum.centreon.com/standard/18.9/el7/stable/noarch/RPMS/centreon-release-18.9.el7.centos.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-18.9.el7.centos.noarch.rpm
+   $ wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-1.el7.centos.noarch.rpm
+   $ yum install --nogpgcheck centreon-release-18.10-1.el7.centos.noarch.rpm
 
 Le dépôt est maintenant installé.
 
