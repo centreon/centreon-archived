@@ -203,6 +203,7 @@ $form->addElement(
     '',
     array(
         "id" => "StartDate",
+        "onClick" => "resetPeriod()",
         "class" => "datepicker",
         "size" => 8
     )
@@ -213,6 +214,7 @@ $form->addElement(
     '',
     array(
         "id" => "StartTime",
+        "onChange" => "resetPeriod()",
         "class" => "timepicker",
         "size" => 5
     )
@@ -223,6 +225,7 @@ $form->addElement(
     '',
     array(
         "id" => "EndDate",
+        "onClick" => "resetPeriod()",
         "class" => "datepicker",
         "size" => 8
     )
@@ -233,6 +236,7 @@ $form->addElement(
     '',
     array(
         "id" => "EndTime",
+        "onChange" => "resetPeriod()",
         "class" => "timepicker",
         "size" => 5
     )
@@ -246,6 +250,26 @@ $form->addElement(
         "style" => "width: 203px;",
         "size" => 15,
         "value" => $user_params['output']
+    )
+);
+
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$form->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$form->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
     )
 );
 
@@ -374,6 +398,9 @@ if ($engine == 'false') {
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
+    /*
+     * Selecting choosen Host, Service, HG and/or SG
+     */
     function apply_period() {
         var openid = getArgsForHost();
         logs(openid[0], '', '');
@@ -400,7 +427,6 @@ if ($engine == 'false') {
         _num = num;
         logsEngine();
     }
-
     var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
     var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
     var _engine = <?php echo $engine; ?>;
@@ -449,8 +475,8 @@ if ($engine == 'false') {
     }
 
     if (document.FormPeriod && document.FormPeriod.period.value == "") {
-        document.FormPeriod.StartDate.value = StartDate;
-        document.FormPeriod.EndDate.value = EndDate;
+        jQuery("input[name=alternativeDateStartDate]").val(StartDate);
+        jQuery("input[name=alternativeDateEndDate]").val(EndDate);
         document.FormPeriod.StartTime.value = StartTime;
         document.FormPeriod.EndTime.value = EndTime;
     }
@@ -482,7 +508,6 @@ if ($engine == 'false') {
         if (window.history.pushState) {
             window.history.pushState("", "", "main.php?p=20302&engine=true" + urlargs);
         }
-
         controlTimePeriod();
         var proc = new Transformation();
         var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
@@ -516,27 +541,34 @@ if ($engine == 'false') {
 
     }
 
+
+    function resetPeriod(){
+        document.FormPeriod.period.value = "";
+    }
+
+
     function controlTimePeriod() {
         if (document.FormPeriod) {
             if (document.FormPeriod.period.value != "") {
                 period = document.FormPeriod.period.value;
-            } else {
+                jQuery("input[name=alternativeDateStartDate]").val("");
+                jQuery("#StartDate").val("");
+                jQuery("#StartTime").val("");
+                jQuery("input[name=alternativeDateEndDate]").val("");
+                jQuery("#EndDate").val("");
+                jQuery("#EndTime").val("");
+            } else if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
+                jQuery("input[name=alternativeDateEndDate]").val() != "" &&
+                document.FormPeriod.StartTime.value != "" &&
+                document.FormPeriod.EndTime.value != ""
+            ) {
                 period = '';
-                StartDate = document.FormPeriod.StartDate.value;
-                EndDate = document.FormPeriod.EndDate.value;
+                StartDate = jQuery("input[name=alternativeDateStartDate]").val();
+                EndDate = jQuery("input[name=alternativeDateEndDate]").val();
                 StartTime = document.FormPeriod.StartTime.value;
                 EndTime = document.FormPeriod.EndTime.value;
             }
         }
-        if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
-            StartDate = document.FormPeriod.StartDate.value;
-        if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
-            EndDate = document.FormPeriod.EndDate.value;
-
-        if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
-            StartTime = document.FormPeriod.StartTime.value;
-        if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
-            EndTime = document.FormPeriod.EndTime.value;
     }
 
     function logs(id, formu, type) {
@@ -579,7 +611,6 @@ if ($engine == 'false') {
                     print " + &search_service=" . $search_service;
                 }
                 ?>;
-
 
             proc.setXml(_addr)
             proc.setXslt(_addrXSL)
@@ -774,6 +805,9 @@ if ($engine == 'false') {
         if (_engine == 0) {
             // Here is your precious function
             // You can call as many functions as you want here;
+
+            /* initializing datepicker and the alternative format field */
+            initDatepicker("datepicker", "mm/dd/yy", null);
 
             jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(
                 function (event, infos) {
