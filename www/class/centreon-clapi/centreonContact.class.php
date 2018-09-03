@@ -294,6 +294,120 @@ class CentreonContact extends CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'address1',
+            'address2',
+            'address3',
+            'address4',
+            'address5',
+            'address6',
+            'admin',
+            'alias',
+            'ar_id',
+            'authtype',
+            'charset',
+            'comment',
+            'default_page',
+            'email',
+            'enable_notifications',
+            'hostnotifopt',
+            'hostnotifperiod',
+            'id',
+            'language',
+            'ldap_dn',
+            'name',
+            'pager',
+            'reach_api',
+            'reach_api_rt',
+            'register',
+            'servicenotifopt',
+            'svcnotifperiod',
+            'template',
+            'type_msg'
+        );
+        $unknownParam = array();
+
+        $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
+        if (($objectId = $this->getObjectId($params[self::ORDER_NAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            foreach ($listParam as $paramSearch) {
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "hostnotifperiod":
+                            $field = "timeperiod_tp_id";
+                            break;
+                        case "svcnotifperiod":
+                            $field = "timeperiod_tp_id2";
+                            break;
+                        case "reach_api":
+                        case "reach_api_rt":
+                        case "ar_id":
+                        case "default_page":
+                            break;
+                        case "authtype":
+                            $field = "auth_type";
+                        case "hostnotifopt":
+                            $field = "host_notification_options";
+                        case "servicenotifopt":
+                            $field = "service_notification_options";
+                        case "language":
+                            $field = "lang";
+                        case "template":
+                            $field = "template_id";
+                        default:
+                            if (!preg_match("/^contact_/", $field)) {
+                                $field = "contact_" . $field;
+                            }
+                            break;
+                    }
+
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+
+                    switch ($paramSearch) {
+                        case "hostnotifcmd":
+                        case "svcnotifcmd":
+                            $commandObject = new CentreonCommand();
+                            $field = $commandObject->object->getUniqueLabelField();
+                            $ret = $commandObject->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case "hostnotifperiod":
+                        case "svcnotifperiod":
+                            $tpObj = new CentreonTimePeriod();
+                            $field = $tpObj->object->getUniqueLabelField();
+                            $ret = $tpObj->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    echo $paramSearch . ' : ' . $ret . "\n";
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+    }
+
+    /**
      * Set parameters
      *
      * @param string $parameters
