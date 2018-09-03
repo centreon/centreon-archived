@@ -65,21 +65,74 @@ $tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', 'main.php');
 
-$form->addElement('header', 'title', _("Set downtimes"));
+$form->addElement(
+    'header',
+    'title',
+    _("Set downtimes")
+);
 
 $tpl->assign('authorlabel', _("Alias"));
 $tpl->assign('authoralias', $centreon->user->get_alias());
 
-$form->addElement('textarea', 'comment', _("Comment"), array("rows" => "5", "cols" => "70", "id" => "popupComment"));
+$form->addElement(
+    'textarea',
+    'comment',
+    _("Comment"),
+    array(
+        "rows" => "5",
+        "cols" => "70",
+        "id" => "popupComment"
+    )
+);
 $form->setDefaults(array("comment" => sprintf(_("Downtime set by %s"), $centreon->user->alias)));
 
-$form->addElement('text', 'start', _('Start Time'), array('id' => 'start', 'size' => 10, 'class' => 'datepicker'));
-$form->addElement('text', 'end', _('End Time'), array('id' => 'end', 'size' => 10, 'class' => 'datepicker'));
+$form->addElement(
+    'text',
+    'start',
+    _('Start Time'),
+    array(
+        'id' => 'start',
+        'size' => 10,
+        'class' => 'datepicker'
+    )
+);
+$form->addElement(
+    'text',
+    'end',
+    _('End Time'),
+    array(
+        'id' => 'end',
+        'size' => 10,
+        'class' => 'datepicker'
+    )
+);
 
-$form->addElement('text', 'start_time', '', array('id' => 'start_time', 'size' => 5, 'class' => 'timepicker'));
-$form->addElement('text', 'end_time', '', array('id' => 'end_time', 'size' => 5, 'class' => 'timepicker'));
+$form->addElement(
+    'text',
+    'start_time',
+    '',
+    array(
+        'id' => 'start_time',
+        'size' => 5,
+        'class' => 'timepicker'
+    )
+);
+$form->addElement(
+    'text',
+    'end_time',
+    '',
+    array(
+        'id' => 'end_time',
+        'size' => 5,
+        'class' => 'timepicker'
+    )
+);
 
-$form->addElement('text', 'timezone_warning', _("*The timezone used is configured on your user settings"));
+$form->addElement(
+    'text',
+    'timezone_warning',
+    _("*The timezone used is configured on your user settings")
+);
 
 $form->setDefaults(
     array(
@@ -96,9 +149,20 @@ $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centr
 $form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
 $form->setDefaults(array('host_or_centreon_time' => '0'));   
 */
-$form->addElement('text', 'duration', _('Duration'), array('id' => 'duration', 'width' => '30', 'disabled' => 'true'));
+$form->addElement(
+    'text',
+    'duration',
+    _('Duration'),
+    array(
+        'id' => 'duration',
+        'width' => '30',
+        'disabled' => 'true'
+    )
+);
 $defaultDuration = 3600;
-if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
+if (isset($centreon->optGen['monitoring_dwt_duration']) &&
+    $centreon->optGen['monitoring_dwt_duration']
+) {
     $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
 }
 $form->setDefaults(array('duration' => $defaultDuration));
@@ -109,14 +173,30 @@ $scaleChoices = array(
     "h" => _("Hours"),
     "d" => _("Days")
 );
-$form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices, array('id' => 'duration_scale'));
+$form->addElement(
+    'select',
+    'duration_scale',
+    _("Scale of time"),
+    $scaleChoices,
+    array(
+        'id' => 'duration_scale'
+    )
+);
 $defaultScale = 's';
 if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optGen['monitoring_dwt_duration_scale']) {
     $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
 }
 $form->setDefaults(array('duration_scale' => $defaultScale));
 
-$chckbox[] = $form->addElement('checkbox', 'fixed', _("Fixed"), "", array("id" => "fixed"));
+$chckbox[] = $form->addElement(
+    'checkbox',
+    'fixed',
+    _("Fixed"),
+    "",
+    array(
+        "id" => "fixed"
+    )
+);
 $chckbox[0]->setChecked(true);
 
 $chckbox2[] = $form->addElement(
@@ -124,22 +204,47 @@ $chckbox2[] = $form->addElement(
     'downtimehostservice',
     _("Set downtimes on services attached to hosts"),
     "",
-    array("id" => "downtimehostservice")
+    array(
+        "id" => "downtimehostservice"
+    )
 );
 $chckbox2[0]->setChecked(true);
 
-$form->addElement('hidden', 'author', $centreon->user->get_alias(), array("id" => "author"));
+$form->addElement(
+    'hidden',
+    'author',
+    $centreon->user->get_alias(),
+    array(
+        "id" => "author"
+    )
+);
 
-$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
+$form->addRule(
+    'comment',
+    _("Comment is required"),
+    'required',
+    '',
+    'client'
+);
 $form->setJsWarnings(_("Invalid information entered"), _("Please correct these fields"));
 
 $form->addElement(
     'button',
     'submit',
     _("Set downtime"),
-    array("onClick" => "send_the_command();", "class" => "btc bt_info")
+    array(
+        "onClick" => "send_the_command();",
+        "class" => "btc bt_info"
+    )
 );
-$form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+$form->addElement(
+    'reset',
+    'reset',
+    _("Reset"),
+    array(
+        "class" => "btc bt_default"
+    )
+);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -149,13 +254,17 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 
 $defaultFixed = "";
-if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
+if (isset($centreon->optGen['monitoring_dwt_fixed']) &&
+    $centreon->optGen['monitoring_dwt_fixed']
+) {
     $defaultFixed = "checked";
 }
 $tpl->assign('defaultFixed', $defaultFixed);
 
 $defaultSetDwtOnSvc = "";
-if (isset($centreon->optGen['monitoring_dwt_svc']) && $centreon->optGen['monitoring_dwt_svc']) {
+if (isset($centreon->optGen['monitoring_dwt_svc']) &&
+    $centreon->optGen['monitoring_dwt_svc']
+) {
     $defaultSetDwtOnSvc = "checked";
 }
 $tpl->assign('defaultSetDwtOnSvc', $defaultSetDwtOnSvc);

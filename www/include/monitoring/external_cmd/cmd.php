@@ -253,18 +253,20 @@ if (isset($param["select"])) {
                     add_svc_hostgroup_downtime($param["dtm"]);
                     break;
                 case 61:
-                    notifi_host_hostgroup($key, 1);
+                    notify_host_hostgroup($key, 1);
                     break;
                 case 62:
-                    notifi_host_hostgroup($key, 0);
+                    notify_host_hostgroup($key, 0);
                     break;
                 case 63:
-                    notifi_svc_host_hostgroup($key, 1);
+                    /* not active in functions.php*/
+                    notify_svc_host_hostgroup($key, 1);
                     break;
                 case 64:
-                    notifi_svc_host_hostgroup($key, 0);
+                    notify_svc_host_hostgroup($key, 0);
                     break;
                 case 65:
+                    /* not active in functions.php*/
                     checks_svc_host_hostgroup($key, 1);
                     break;
                 case 66:
@@ -274,7 +276,7 @@ if (isset($param["select"])) {
                     schedule_svc_check($key, 1, 1);
                     break;
 
-                /* Auto Aknowledge */
+                /* Auto Acknowledge */
                 case 70:
                     autoAcknowledgeServiceStart($key);
                     break;

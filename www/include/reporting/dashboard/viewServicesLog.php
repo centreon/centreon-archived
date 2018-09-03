@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,7 +53,7 @@ isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
 /*
  * FORMS
  */
-$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
 $host_name = getMyHostName($host_id);
 $items = $centreon->user->access->getHostServices($pearDBO, $host_id);
@@ -64,10 +64,30 @@ foreach ($items as $key => $value) {
 }
 $service_name = $itemsForUrl[$service_id];
 
-$select = $form->addElement('select', 'item', _("Service"), $items, array("onChange" =>"this.form.submit();"));
-$form->addElement('hidden', 'period', $period);
-$form->addElement('hidden', 'StartDate', $get_date_start);
-$form->addElement('hidden', 'EndDate', $get_date_end);
+$select = $form->addElement(
+    'select',
+    'item',
+    _("Service"),
+    $items,
+    array(
+        "onChange" =>"this.form.submit();"
+    )
+);
+$form->addElement(
+    'hidden',
+    'period',
+    $period
+);
+$form->addElement(
+    'hidden',
+    'StartDate',
+    $get_date_start
+);
+$form->addElement(
+    'hidden',
+    'EndDate',
+    $get_date_end
+);
 $form->addElement('hidden', 'p', $p);
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -76,9 +96,21 @@ $redirect->setValue($o);
  * Set service id with period selection form
  */
 if ($service_id != "NULL" && $host_id != "NULL") {
-    $formPeriod->addElement('hidden', 'item', $service_id);
-    $formPeriod->addElement('hidden', 'host_id', $host_id);
-    $form->addElement('hidden', 'host_id', $host_id);
+    $formPeriod->addElement(
+        'hidden',
+        'item',
+        $service_id
+    );
+    $formPeriod->addElement(
+        'hidden',
+        'host_id',
+        $host_id
+    );
+    $form->addElement(
+        'hidden',
+        'host_id',
+        $host_id
+    );
     $form->setDefaults(array('item' => $service_id));
 }
 
@@ -148,16 +180,18 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host="
-        .$host_id."&service=".$service_id."&start=".$start_date."&end=".$end_date
+        . $host_id . "&service=" . $service_id . "&start=" . $start_date . "&end=" . $end_date
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
     /*
      * status colors
      */
-    $color = substr($colors["up"], 1).':'.substr($colors["down"], 1)
-        . ':'.substr($colors["unreachable"], 1).':'.substr($colors["undetermined"], 1)
-        . ':'.substr($colors["maintenance"], 1);
+    $color = substr($colors["up"], 1)
+        . ':' . substr($colors["down"], 1)
+        . ':' . substr($colors["unreachable"], 1)
+        . ':' . substr($colors["undetermined"], 1)
+        . ':' . substr($colors["maintenance"], 1);
 
     /*
      * Ajax timeline

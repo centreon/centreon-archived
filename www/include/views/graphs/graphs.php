@@ -1,7 +1,7 @@
 <?php
 /*
-* Copyright 2005-2015 Centreon
-* Centreon is developped by : Julien Mathis and Romain Le Merlus under
+* Copyright 2005-2018 Centreon
+* Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -152,6 +152,7 @@ $period_end = 'undefined';
 if (isset($_REQUEST['start']) && is_numeric($_REQUEST['start'])) {
     $period_start = $_REQUEST['start'];
 }
+
 if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
     $period_end = $_REQUEST['end'];
 }
@@ -182,7 +183,15 @@ $periods = array(
     "6M" => _("Last 6 Months"),
     "1y" => _("Last Year")
 );
-$sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"changeInterval()"));
+$sel = $form->addElement(
+    'select',
+    'period',
+    _("Graph Period"),
+    $periods,
+    array(
+        "onchange"=>"changeInterval()"
+    )
+);
 $form->addElement(
     'text',
     'StartDate',
@@ -234,12 +243,14 @@ if ($period_start != 'undefined' && $period_end != 'undefined') {
     $startTime = date('H:i', $period_start);
     $endDay = date('Y-m-d', $period_end);
     $endTime = date('H:i', $period_end);
-    $form->setDefaults(array(
-        'StartDate' => $startDay,
-        'StartTime' => $startTime,
-        'EndDate' => $endDay,
-        'EndTime' => $endTime
-    ));
+    $form->setDefaults(
+        array(
+            'StartDate' => $startDay,
+            'StartTime' => $startTime,
+            'EndDate' => $endDay,
+            'EndTime' => $endTime
+        )
+    );
 } else {
     $form->setDefaults(array(
         'period' => '3h'
