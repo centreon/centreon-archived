@@ -51,23 +51,22 @@ class GraphExporter implements ExporterServiceInterface
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
         
         $serviceTemplateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         // Extract data
         $graphs = $this->db
             ->getRepository(Repository\GivGraphTemplateRepository::class)
-            ->export($pollerId, $hostTemplateChain, $serviceTemplateChain)
+            ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
         ;
 
         $this->commitment->getParser()::dump($graphs, $this->getFile(static::EXPORT_FILE_GRAPH));

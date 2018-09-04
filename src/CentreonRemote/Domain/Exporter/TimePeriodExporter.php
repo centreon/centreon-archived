@@ -49,62 +49,64 @@ class TimePeriodExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
-        
+
         $serviceTemplateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         $timeperiodList = $this->db
             ->getRepository(Repository\TimePeriodRepository::class)
-            ->getChainByPoller($pollerId, $hostTemplateChain, $serviceTemplateChain)
+            ->getChainByPoller($pollerIds, $hostTemplateChain, $serviceTemplateChain)
         ;
 
         // Extract data
-        $timePeriods = $this->db
-            ->getRepository(Repository\TimePeriodRepository::class)
-            ->export($timeperiodList)
-        ;
+        (function() use ($timeperiodList) {
+            $timePeriods = $this->db
+                ->getRepository(Repository\TimePeriodRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->commitment->getParser()::dump($timePeriods, $this->getFile(static::EXPORT_FILE_TIMEPERIOD));
+        })();
 
-        $timePeriodExceptions = $this->db
-            ->getRepository(Repository\TimePeriodExceptionRepository::class)
-            ->export($timeperiodList)
-        ;
+        (function() use ($timeperiodList) {
+            $timePeriodExceptions = $this->db
+                ->getRepository(Repository\TimePeriodExceptionRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->commitment->getParser()::dump($timePeriodExceptions, $this->getFile(static::EXPORT_FILE_EXCEPTION));
+        })();
 
-        $timePeriodIncludes = $this->db
-            ->getRepository(Repository\TimePeriodIncludeRelationRepository::class)
-            ->export($timeperiodList)
-        ;
+        (function() use ($timeperiodList) {
+            $timePeriodIncludes = $this->db
+                ->getRepository(Repository\TimePeriodIncludeRelationRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->commitment->getParser()::dump($timePeriodIncludes, $this->getFile(static::EXPORT_FILE_INCLUDE));
+        })();
 
-        $timePeriodExcludes = $this->db
-            ->getRepository(Repository\TimePeriodExcludeRelationRepository::class)
-            ->export($timeperiodList)
-        ;
-
-        $this->commitment->getParser()::dump($timePeriods, $this->getFile(static::EXPORT_FILE_TIMEPERIOD));
-        $this->commitment->getParser()::dump($timePeriodExceptions, $this->getFile(static::EXPORT_FILE_EXCEPTION));
-        $this->commitment->getParser()::dump($timePeriodIncludes, $this->getFile(static::EXPORT_FILE_INCLUDE));
-        $this->commitment->getParser()::dump($timePeriodExcludes, $this->getFile(static::EXPORT_FILE_EXCLUDE));
+        (function() use ($timeperiodList) {
+            $timePeriodExcludes = $this->db
+                ->getRepository(Repository\TimePeriodExcludeRelationRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->commitment->getParser()::dump($timePeriodExcludes, $this->getFile(static::EXPORT_FILE_EXCLUDE));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

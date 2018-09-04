@@ -53,8 +53,22 @@ SQL;
         $stmt->execute();
     }
 
-    public function getChainByPoller(int $pollerId, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
+    /**
+     * Get a chain of the related objects
+     * 
+     * @param int[] $pollerIds
+     * @param int[] $hostTemplateChain
+     * @param int[] $serviceTemplateChain
+     * @return array
+     */
+    public function getChainByPoller(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $hostList = join(',', $hostTemplateChain ?? []);
         $sqlFilterHostList = $hostList ? " OR ehi.host_host_id IN ({$hostList})" : '';
         $sqlFilterHostList2 = $hostList ? " OR hcr2.host_host_id IN ({$hostList})" : '';
@@ -73,7 +87,7 @@ INNER JOIN extended_host_information AS ehi ON ehi.ehi_icon_image = t.img_id
     OR ehi.ehi_vrml_image = t.img_id
     OR ehi.ehi_statusmap_image = t.img_id
 LEFT JOIN ns_host_relation AS hr ON hr.host_host_id = ehi.host_host_id
-WHERE hr.nagios_server_id = :id{$sqlFilterHostList} 
+WHERE hr.nagios_server_id IN ({$ids}){$sqlFilterHostList} 
 GROUP BY t.img_id
 
 UNION
@@ -84,7 +98,7 @@ FROM view_img AS t2
 INNER JOIN hostcategories AS hc2 ON hc2.icon_id = t2.img_id
 INNER JOIN hostcategories_relation AS hcr2 ON hcr2.hostcategories_hc_id = hc2.hc_id
 LEFT JOIN ns_host_relation AS hr2 ON hr2.host_host_id = hcr2.host_host_id
-WHERE hr2.nagios_server_id = :id{$sqlFilterHostList2} 
+WHERE hr2.nagios_server_id IN ({$ids}){$sqlFilterHostList2} 
 GROUP BY t2.img_id
 
 UNION
@@ -96,7 +110,7 @@ INNER JOIN hostgroup AS hg3 ON hg3.hg_icon_image = t3.img_id
     OR hg3.hg_map_icon_image = t3.img_id
 INNER JOIN hostgroup_relation AS hcr3 ON hcr3.hostgroup_hg_id = hg3.hg_id
 LEFT JOIN ns_host_relation AS hr3 ON hr3.host_host_id = hcr3.host_host_id
-WHERE hr3.nagios_server_id = :id{$sqlFilterHostList3} 
+WHERE hr3.nagios_server_id IN ({$ids}){$sqlFilterHostList3} 
 GROUP BY t3.img_id
 
 UNION
@@ -116,7 +130,7 @@ WHERE esi4.service_service_id IN (SELECT t4a.service_service_id
         ns_host_relation AS hr4a ON hr4a.host_host_id = t4a.host_host_id
             OR hr4a.host_host_id = hgr4a.host_host_id
     WHERE
-        hr4a.nagios_server_id = :id
+        hr4a.nagios_server_id IN ({$ids})
     GROUP BY t4a.service_service_id){$sqlFilterServiceList}
 GROUP BY t4.img_id
 
@@ -138,14 +152,13 @@ WHERE scr5.service_service_id IN (SELECT t5a.service_service_id
         ns_host_relation AS hr5a ON hr5a.host_host_id = t5a.host_host_id
             OR hr5a.host_host_id = hgr5a.host_host_id
     WHERE
-        hr5a.nagios_server_id = :id
+        hr5a.nagios_server_id IN ({$ids})
     GROUP BY t5a.service_service_id){$sqlFilterServiceList2}
 GROUP BY t5.img_id
 ) AS l
 GROUP BY l.img_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

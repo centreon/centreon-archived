@@ -56,71 +56,80 @@ class PollerExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
+        (function() use ($pollerIds) {
+            $nagiosServer = $this->db
+                ->getRepository(Repository\NagiosServerRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
+        })();
 
-        $nagiosServer = $this->db
-            ->getRepository(Repository\NagiosServerRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $cfgResource = $this->db
+                ->getRepository(Repository\CfgResourceRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
+        })();
 
-        $cfgResource = $this->db
-            ->getRepository(Repository\CfgResourceRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $pollerCommand = $this->db
+                ->getRepository(Repository\PollerCommandRelationsRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
+        })();
 
-        $pollerCommand = $this->db
-            ->getRepository(Repository\PollerCommandRelationsRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $cfgNagios = $this->db
+                ->getRepository(Repository\CfgNagiosRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
+        })();
 
-        $cfgNagios = $this->db
-            ->getRepository(Repository\CfgNagiosRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $cfgNagiosBrokerModule = $this->db
+                ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
+        })();
 
-        $cfgNagiosBrokerModule = $this->db
-            ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $cfgCentreonBroker = $this->db
+                ->getRepository(Repository\CfgCentreonBorkerRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
+        })();
 
-        $cfgCentreonBroker = $this->db
-            ->getRepository(Repository\CfgCentreonBorkerRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $cfgCentreonBrokerInfo = $this->db
+                ->getRepository(Repository\CfgCentreonBorkerInfoRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
+        })();
 
-        $cfgCentreonBrokerInfo = $this->db
-            ->getRepository(Repository\CfgCentreonBorkerInfoRepository::class)
-            ->export($pollerId)
-        ;
-
-        $timezone = $this->db
-            ->getRepository(Repository\TimezoneRepository::class)
-            ->export($pollerId)
-        ;
-
-        // Store exportsands
-        $this->commitment->getParser()::dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
-        $this->commitment->getParser()::dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
-        $this->commitment->getParser()::dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
-        $this->commitment->getParser()::dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
-        $this->commitment->getParser()::dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
-        $this->commitment->getParser()::dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
-        $this->commitment->getParser()::dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
-        $this->commitment->getParser()::dump($timezone, $this->getFile(static::EXPORT_FILE_TIMEZONE));
+        (function() use ($pollerIds) {
+            $timezone = $this->db
+                ->getRepository(Repository\TimezoneRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($timezone, $this->getFile(static::EXPORT_FILE_TIMEZONE));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

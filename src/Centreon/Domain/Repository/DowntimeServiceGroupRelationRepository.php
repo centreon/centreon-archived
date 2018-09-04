@@ -10,12 +10,18 @@ class DowntimeServiceGroupRelationRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $serviceTemplateChain
      * @return array
      */
-    public function export(int $pollerId, array $serviceTemplateChain = null): array
+    public function export(array $pollerIds, array $serviceTemplateChain = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $serviceList = join(',', $serviceTemplateChain ?? []);
         $sqlFilterServiceList = $serviceList ? " OR dsgr.sg_sg_id IN ({$serviceList})" : '';
 
@@ -28,13 +34,12 @@ INNER JOIN downtime_servicegroup_relation AS dsgr ON dsgr.dt_id = t.dt_id
         FROM
             ns_host_relation AS t1a
         WHERE
-            t1a.nagios_server_id = :id
+            t1a.nagios_server_id IN ({$ids})
         GROUP BY t1a.host_host_id){$sqlFilterServiceList}
 GROUP BY t.dt_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

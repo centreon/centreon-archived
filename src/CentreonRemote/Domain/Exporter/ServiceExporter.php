@@ -9,6 +9,7 @@ use Centreon\Domain\Repository;
 
 class ServiceExporter implements ExporterServiceInterface
 {
+
     use ExportPathTrait;
 
     const EXPORT_FILE_HOST_RELATION = 'host_service_relation.yaml';
@@ -39,11 +40,11 @@ class ServiceExporter implements ExporterServiceInterface
     {
         $this->db = $services->get('centreon.db-manager');
     }
-    
+
     /**
      * Cleanup database
      */
-    public function cleanup() : void
+    public function cleanup(): void
     {
         $db = $this->db->getAdapter('configuration_db');
 
@@ -52,76 +53,86 @@ class ServiceExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
-        $exportPath = $this->createPath();
+        $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $templateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
-        
+
         // Extract data
-        $hostRelation = $this->db
-            ->getRepository(Repository\HostServiceRelationRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $hostRelation = $this->db
+                ->getRepository(Repository\HostServiceRelationRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
+        })();
 
-        $services = $this->db
-            ->getRepository(Repository\ServiceRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $services = $this->db
+                ->getRepository(Repository\ServiceRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
+        })();
 
-        $serviceGroups = $this->db
-            ->getRepository(Repository\ServiceGroupRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $serviceGroups = $this->db
+                ->getRepository(Repository\ServiceGroupRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
+        })();
 
-        $serviceGroupRelation = $this->db
-            ->getRepository(Repository\ServiceGroupRelationRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $serviceGroupRelation = $this->db
+                ->getRepository(Repository\ServiceGroupRelationRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+        })();
 
-        $serviceCategories = $this->db
-            ->getRepository(Repository\ServiceCategoryRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $serviceCategories = $this->db
+                ->getRepository(Repository\ServiceCategoryRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
+        })();
 
-        $serviceCategoryRelation = $this->db
-            ->getRepository(Repository\ServiceCategoryRelationRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
-        
-        $serviceMacros = $this->db
-            ->getRepository(Repository\OnDemandMacroServiceRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
-        
-        $serviceInfo = $this->db
-            ->getRepository(Repository\ExtendedServiceInformationRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $serviceCategoryRelation = $this->db
+                ->getRepository(Repository\ServiceCategoryRelationRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+        })();
 
-        $this->commitment->getParser()::dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
-        $this->commitment->getParser()::dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
-        $this->commitment->getParser()::dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
-        $this->commitment->getParser()::dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
-        $this->commitment->getParser()::dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
-        $this->commitment->getParser()::dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
-        $this->commitment->getParser()::dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
-        $this->commitment->getParser()::dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
+        (function() use ($pollerIds, $templateChain) {
+            $serviceMacros = $this->db
+                ->getRepository(Repository\OnDemandMacroServiceRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
+        })();
+
+        (function() use ($pollerIds, $templateChain) {
+            $serviceInfo = $this->db
+                ->getRepository(Repository\ExtendedServiceInformationRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
+        })();
     }
-    
+
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

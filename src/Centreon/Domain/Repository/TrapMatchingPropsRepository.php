@@ -10,17 +10,23 @@ class TrapMatchingPropsRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
      */
-    public function export(int $pollerId, array $templateChainList = null): array
+    public function export(array $pollerIds, array $templateChainList = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $list = join(',', $templateChainList ?? []);
         $sqlFilterList = $list ? " OR tsr.service_id IN ({$list})" : '';
-        $sqlFilter = TrapRepository::exportFilterSql();
+        $sqlFilter = TrapRepository::exportFilterSql($pollerIds);
+
         $sql = <<<SQL
-SELECT l.* FROM (
 SELECT
     t.*
 FROM traps_matching_properties AS t
@@ -31,7 +37,6 @@ GROUP BY t.tmo_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

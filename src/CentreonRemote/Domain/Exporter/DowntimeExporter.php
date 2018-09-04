@@ -52,75 +52,83 @@ class DowntimeExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
-        
+
         $serviceTemplateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         // Extract data
-        $downtimes = $this->db
-            ->getRepository(Repository\DowntimeRepository::class)
-            ->export($pollerId, $hostTemplateChain, $serviceTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain, $serviceTemplateChain) {
+            $downtimes = $this->db
+                ->getRepository(Repository\DowntimeRepository::class)
+                ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimes, $this->getFile(static::EXPORT_FILE_DOWNTIME));
+        })();
 
-        $downtimePeriods = $this->db
-            ->getRepository(Repository\DowntimePeriodRepository::class)
-            ->export($pollerId, $hostTemplateChain, $serviceTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain, $serviceTemplateChain) {
+            $downtimePeriods = $this->db
+                ->getRepository(Repository\DowntimePeriodRepository::class)
+                ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimePeriods, $this->getFile(static::EXPORT_FILE_PERIOD));
+        })();
 
-        $downtimeCaches = $this->db
-            ->getRepository(Repository\DowntimeCacheRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $downtimeCaches = $this->db
+                ->getRepository(Repository\DowntimeCacheRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimeCaches, $this->getFile(static::EXPORT_FILE_CACHE));
+        })();
 
-        $downtimeHostRelation = $this->db
-            ->getRepository(Repository\DowntimeHostRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $downtimeHostRelation = $this->db
+                ->getRepository(Repository\DowntimeHostRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimeHostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
+        })();
 
-        $downtimeHostGroupRelation = $this->db
-            ->getRepository(Repository\DowntimeHostGroupRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $downtimeHostGroupRelation = $this->db
+                ->getRepository(Repository\DowntimeHostGroupRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimeHostGroupRelation, $this->getFile(static::EXPORT_FILE_HOST_GROUP_RELATION));
+        })();
 
-        $downtimeServiceRelation = $this->db
-            ->getRepository(Repository\DowntimeServiceRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $downtimeServiceRelation = $this->db
+                ->getRepository(Repository\DowntimeServiceRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimeServiceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
+        })();
 
-        $downtimeServiceGroupRelation = $this->db
-            ->getRepository(Repository\DowntimeServiceGroupRelationRepository::class)
-            ->export($pollerId, $serviceTemplateChain)
-        ;
-
-        $this->commitment->getParser()::dump($downtimes, $this->getFile(static::EXPORT_FILE_DOWNTIME));
-        $this->commitment->getParser()::dump($downtimePeriods, $this->getFile(static::EXPORT_FILE_PERIOD));
-        $this->commitment->getParser()::dump($downtimeCaches, $this->getFile(static::EXPORT_FILE_CACHE));
-        $this->commitment->getParser()::dump($downtimeHostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
-        $this->commitment->getParser()::dump($downtimeHostGroupRelation, $this->getFile(static::EXPORT_FILE_HOST_GROUP_RELATION));
-        $this->commitment->getParser()::dump($downtimeServiceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
-        $this->commitment->getParser()::dump($downtimeServiceGroupRelation, $this->getFile(static::EXPORT_FILE_SERVICE_GROUP_RELATION));
+        (function() use ($pollerIds, $serviceTemplateChain) {
+            $downtimeServiceGroupRelation = $this->db
+                ->getRepository(Repository\DowntimeServiceGroupRelationRepository::class)
+                ->export($pollerIds, $serviceTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($downtimeServiceGroupRelation, $this->getFile(static::EXPORT_FILE_SERVICE_GROUP_RELATION));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

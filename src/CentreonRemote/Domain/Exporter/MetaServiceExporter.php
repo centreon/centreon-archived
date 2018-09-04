@@ -47,40 +47,38 @@ class MetaServiceExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
-
-        $pollerId = $this->commitment->getPoller();
+        $pollerIds = $this->commitment->getPollers();
 
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         // Extract data
-        $metaServices = $this->db
-            ->getRepository(Repository\MetaServiceRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $metaServices = $this->db
+                ->getRepository(Repository\MetaServiceRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($metaServices, $this->getFile(static::EXPORT_FILE_META));
+        })();
 
-        $metaServiceRelation = $this->db
-            ->getRepository(Repository\MetaServiceRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
-
-        $this->commitment->getParser()::dump($metaServices, $this->getFile(static::EXPORT_FILE_META));
-        $this->commitment->getParser()::dump($metaServiceRelation, $this->getFile(static::EXPORT_FILE_RELATION));
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $metaServiceRelation = $this->db
+                ->getRepository(Repository\MetaServiceRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($metaServiceRelation, $this->getFile(static::EXPORT_FILE_RELATION));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

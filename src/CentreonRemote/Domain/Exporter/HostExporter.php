@@ -54,82 +54,94 @@ class HostExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
-
-        $pollerId = $this->commitment->getPoller();
+        $pollerIds = $this->commitment->getPollers();
 
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         // Extract data
-        $hosts = $this->db
-            ->getRepository(Repository\HostRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hosts = $this->db
+                ->getRepository(Repository\HostRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
+        })();
 
-        $hostCategories = $this->db
-            ->getRepository(Repository\HostCategoryRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostCategories = $this->db
+                ->getRepository(Repository\HostCategoryRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
+        })();
 
-        $hostCategoryRelation = $this->db
-            ->getRepository(Repository\HostCategoryRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostCategoryRelation = $this->db
+                ->getRepository(Repository\HostCategoryRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+        })();
 
-        $hostGroups = $this->db
-            ->getRepository(Repository\HostGroupRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostGroups = $this->db
+                ->getRepository(Repository\HostGroupRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
+        })();
 
-        $hostGroupRelation = $this->db
-            ->getRepository(Repository\HostGroupRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostGroupRelation = $this->db
+                ->getRepository(Repository\HostGroupRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+        })();
 
-        $hostGroupHgRelation = $this->db
-            ->getRepository(Repository\HostGroupHgRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostGroupHgRelation = $this->db
+                ->getRepository(Repository\HostGroupHgRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
+        })();
 
-        $hostInfo = $this->db
-            ->getRepository(Repository\ExtendedHostInformationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostInfo = $this->db
+                ->getRepository(Repository\ExtendedHostInformationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
+        })();
 
-        $hostMacros = $this->db
-            ->getRepository(Repository\OnDemandMacroHostRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostMacros = $this->db
+                ->getRepository(Repository\OnDemandMacroHostRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
+        })();
 
-        $hostTemplates = $this->db
-            ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->export($pollerId, $hostTemplateChain)
-        ;
-
-        $this->commitment->getParser()::dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
-        $this->commitment->getParser()::dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
-        $this->commitment->getParser()::dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
-        $this->commitment->getParser()::dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
-        $this->commitment->getParser()::dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
-        $this->commitment->getParser()::dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
-        $this->commitment->getParser()::dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
-        $this->commitment->getParser()::dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
-        $this->commitment->getParser()::dump($hostTemplates, $this->getFile(static::EXPORT_FILE_TEMPLATE));
+        (function() use ($pollerIds, $hostTemplateChain) {
+            $hostTemplates = $this->db
+                ->getRepository(Repository\HostTemplateRelationRepository::class)
+                ->export($pollerIds, $hostTemplateChain)
+            ;
+            $this->commitment->getParser()::dump($hostTemplates, $this->getFile(static::EXPORT_FILE_TEMPLATE));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

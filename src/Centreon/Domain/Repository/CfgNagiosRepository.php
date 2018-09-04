@@ -10,16 +10,23 @@ class CfgNagiosRepository extends ServiceEntityRepository
     /**
      * Export poller's Nagios configurations
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(array $pollerIds): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
-SELECT * FROM cfg_nagios WHERE nagios_id = :id
+SELECT * FROM cfg_nagios WHERE nagios_id IN ({$ids})
 SQL;
+
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

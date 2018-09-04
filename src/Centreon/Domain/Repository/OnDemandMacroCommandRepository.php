@@ -10,11 +10,18 @@ class OnDemandMacroCommandRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(array $pollerIds): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
 SELECT
     odmc1.*
@@ -30,7 +37,7 @@ INNER JOIN cfg_nagios AS cn1 ON
     cn1.host_perfdata_file_processing_command = t1.command_id OR
     cn1.service_perfdata_file_processing_command = t1.command_id
 WHERE
-    cn1.nagios_id = :id
+    cn1.nagios_id IN ({$ids})
 GROUP BY odmc1.command_command_id
 
 UNION
@@ -41,7 +48,7 @@ FROM command AS t2
 INNER JOIN on_demand_macro_command AS odmc2 ON odmc2.command_command_id = t2.connector_id
 INNER JOIN poller_command_relations AS pcr2 ON pcr2.command_id = t2.command_id
 WHERE
-    pcr2.poller_id = :id
+    pcr2.poller_id IN ({$ids})
 GROUP BY odmc2.command_command_id
 
 UNION
@@ -55,7 +62,7 @@ INNER JOIN host AS h3 ON
     h3.command_command_id2 = t3.command_id
 INNER JOIN ns_host_relation AS nhr3 ON nhr3.host_host_id = h3.host_id
 WHERE
-    nhr3.nagios_server_id = :id
+    nhr3.nagios_server_id IN ({$ids})
 GROUP BY odmc3.command_command_id
 
 UNION
@@ -69,7 +76,7 @@ INNER JOIN host AS h4 ON
     h4.command_command_id2 = t4.command_id
 INNER JOIN ns_host_relation AS nhr4 ON nhr4.host_host_id = h4.host_id
 WHERE
-    nhr4.nagios_server_id = :id
+    nhr4.nagios_server_id IN ({$ids})
 GROUP BY odmc4.command_command_id
 
 UNION
@@ -88,11 +95,10 @@ LEFT JOIN ns_host_relation AS nhr ON
 	nhr.host_host_id = hsr.host_host_id OR
 	nhr.host_host_id = hgr.host_host_id
 WHERE
-    nhr.nagios_server_id = :id
+    nhr.nagios_server_id IN ({$ids})
 GROUP BY odmc.command_command_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

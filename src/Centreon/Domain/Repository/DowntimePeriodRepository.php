@@ -10,14 +10,14 @@ class DowntimePeriodRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $hostTemplateChain
      * @param array $serviceTemplateChain
      * @return array
      */
-    public function export(int $pollerId, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
+    public function export(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
-        $sqlFilter = DowntimeRepository::getFilterSql($hostTemplateChain, $serviceTemplateChain);
+        $sqlFilter = DowntimeRepository::getFilterSql($pollerIds, $hostTemplateChain, $serviceTemplateChain);
         $sql = <<<SQL
 SELECT
     t.*
@@ -29,7 +29,6 @@ SQL;
         $sql2 = <<<SQL
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

@@ -10,14 +10,14 @@ class DowntimeRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $hostTemplateChain
      * @param array $serviceTemplateChain
      * @return array
      */
-    public function export(int $pollerId, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
+    public function export(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
-        $sqlFilter = static::getFilterSql($hostTemplateChain, $serviceTemplateChain);
+        $sqlFilter = static::getFilterSql($pollerIds, $hostTemplateChain, $serviceTemplateChain);
         $sql = <<<SQL
 SELECT
     t.*
@@ -27,7 +27,6 @@ GROUP BY t.dt_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];
@@ -54,8 +53,14 @@ SQL;
         $stmt->execute();
     }
 
-    public static function getFilterSql(array $hostTemplateChain = null, array $serviceTemplateChain = null): string
+    public static function getFilterSql(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): string
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $hostList = join(',', $hostTemplateChain ?? []);
         $sqlFilterHostList = $hostList ? " OR dhr1.host_host_id IN ({$hostList})" : '';
         $sqlFilterHostList2 = $hostList ? " OR hgr2.host_host_id IN ({$hostList})" : '';
@@ -75,7 +80,7 @@ INNER JOIN downtime_host_relation AS dhr1 ON dhr1.dt_id = t1.dt_id
         FROM
             ns_host_relation AS t1a
         WHERE
-            t1a.nagios_server_id = :id
+            t1a.nagios_server_id IN ({$ids})
         GROUP BY t1a.host_host_id){$sqlFilterHostList}
 GROUP BY t1.dt_id
 
@@ -90,7 +95,7 @@ INNER JOIN hostgroup_relation AS hgr2 ON hgr2.hostgroup_hg_id = dhgr2.hg_hg_id
         FROM
             ns_host_relation AS t2a
         WHERE
-            t2a.nagios_server_id = :id
+            t2a.nagios_server_id IN ({$ids})
         GROUP BY t2a.host_host_id){$sqlFilterHostList2}
 GROUP BY t2.dt_id
 
@@ -104,7 +109,7 @@ INNER JOIN downtime_service_relation AS dsr3 ON dsr3.dt_id = t3.dt_id
         FROM
             ns_host_relation AS t3a
         WHERE
-            t3a.nagios_server_id = :id
+            t3a.nagios_server_id IN ({$ids})
         GROUP BY t3a.host_host_id){$sqlFilterHostList3}
 GROUP BY t3.dt_id
 
@@ -118,7 +123,7 @@ INNER JOIN downtime_servicegroup_relation AS dsgr4 ON dsgr4.dt_id = t4.dt_id
         FROM
             ns_host_relation AS t4a
         WHERE
-            t4a.nagios_server_id = :id
+            t4a.nagios_server_id IN ({$ids})
         GROUP BY t4a.host_host_id){$sqlFilterServiceList4}
 GROUP BY t4.dt_id
 
@@ -132,7 +137,7 @@ INNER JOIN downtime_cache AS dc5 ON dc5.downtime_id = t5.dt_id
         FROM
             ns_host_relation AS t5a
         WHERE
-            t5a.nagios_server_id = :id
+            t5a.nagios_server_id IN ({$ids})
         GROUP BY t5a.host_host_id){$sqlFilterHostList5}
 GROUP BY t5.dt_id
 ) AS l

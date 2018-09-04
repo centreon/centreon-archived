@@ -51,60 +51,64 @@ class CommandExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
+        (function() use ($pollerIds) {
+            $command = $this->db
+                ->getRepository(Repository\CommandRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
+        })();
 
-        $command = $this->db
-            ->getRepository(Repository\CommandRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $commandArg = $this->db
+                ->getRepository(Repository\CommandArgDescriptionRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
+        })();
 
-        $commandArg = $this->db
-            ->getRepository(Repository\CommandArgDescriptionRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $commandMacro = $this->db
+                ->getRepository(Repository\OnDemandMacroCommandRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
+        })();
 
-        $commandMacro = $this->db
-            ->getRepository(Repository\OnDemandMacroCommandRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $connector = $this->db
+                ->getRepository(Repository\ConnectorRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
+        })();
 
-        $connector = $this->db
-            ->getRepository(Repository\ConnectorRepository::class)
-            ->export($pollerId)
-        ;
+        (function() use ($pollerIds) {
+            $category = $this->db
+                ->getRepository(Repository\CommandCategoryRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
+        })();
 
-        $category = $this->db
-            ->getRepository(Repository\CommandCategoryRepository::class)
-            ->export($pollerId)
-        ;
-
-        $categoryRelation = $this->db
-            ->getRepository(Repository\CommandCategoryRelationRepository::class)
-            ->export($pollerId)
-        ;
-
-
-        // Store exports
-        $this->commitment->getParser()::dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
-        $this->commitment->getParser()::dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
-        $this->commitment->getParser()::dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
-        $this->commitment->getParser()::dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
-        $this->commitment->getParser()::dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
-        $this->commitment->getParser()::dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+        (function() use ($pollerIds) {
+            $categoryRelation = $this->db
+                ->getRepository(Repository\CommandCategoryRelationRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->commitment->getParser()::dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

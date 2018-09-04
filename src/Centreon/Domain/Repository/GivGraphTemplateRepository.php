@@ -10,13 +10,19 @@ class GivGraphTemplateRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $hostTemplateChain
      * @param array $serviceTemplateChain
      * @return array
      */
-    public function export(int $pollerId, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
+    public function export(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $hostList = join(',', $hostTemplateChain ?? []);
         $sqlFilterHostList = $hostList ? " OR msr.host_id IN ({$hostList})" : '';
 
@@ -34,7 +40,7 @@ WHERE msr.host_id IN (SELECT t1a.host_host_id
     FROM
         ns_host_relation AS t1a
     WHERE
-        t1a.nagios_server_id = :id
+        t1a.nagios_server_id IN ({$ids})
     GROUP BY t1a.host_host_id){$sqlFilterHostList}
 GROUP BY t.graph_id
 
@@ -55,14 +61,13 @@ WHERE esi2.service_service_id IN (SELECT t2a.service_service_id
         ns_host_relation AS hr2a ON hr2a.host_host_id = t2a.host_host_id
             OR hr2a.host_host_id = hgr2a.host_host_id
     WHERE
-        hr2a.nagios_server_id = :id
+        hr2a.nagios_server_id IN ({$ids})
     GROUP BY t2a.service_service_id){$sqlFilterServiceList}
 GROUP BY t2.graph_id
 ) AS l
 GROUP BY l.graph_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

@@ -10,12 +10,19 @@ class MetaServiceRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
      */
-    public function export(int $pollerId, array $templateChainList = null): array
+    public function export(array $pollerIds, array $templateChainList = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
 SELECT l.* FROM(
 SELECT
@@ -23,7 +30,7 @@ SELECT
 FROM meta_service AS t
 INNER JOIN meta_service_relation AS msr ON msr.meta_id = t.meta_id
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = msr.host_id
-WHERE hr.nagios_server_id = :id
+WHERE hr.nagios_server_id IN ({$ids})
 GROUP BY t.meta_id
 SQL;
 
@@ -49,7 +56,6 @@ GROUP BY l.meta_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

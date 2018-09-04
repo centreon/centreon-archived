@@ -10,19 +10,25 @@ class PollerCommandRelationsRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(array $pollerIds): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
 SELECT
     t.*
 FROM poller_command_relations AS t
-WHERE t.poller_id = :id
+WHERE t.poller_id IN ({$ids})
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

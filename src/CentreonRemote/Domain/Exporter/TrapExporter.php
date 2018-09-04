@@ -52,70 +52,78 @@ class TrapExporter implements ExporterServiceInterface
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $templateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         // Extract data
-        $traps = $this->db
-            ->getRepository(Repository\TrapRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $traps = $this->db
+                ->getRepository(Repository\TrapRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
+        })();
 
-        $vendors = $this->db
-            ->getRepository(Repository\TrapVendorRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $vendors = $this->db
+                ->getRepository(Repository\TrapVendorRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
+        })();
 
-        $serviceRelation = $this->db
-            ->getRepository(Repository\TrapServiceRelationRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $serviceRelation = $this->db
+                ->getRepository(Repository\TrapServiceRelationRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
+        })();
 
-        $groups = $this->db
-            ->getRepository(Repository\TrapGroupRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $groups = $this->db
+                ->getRepository(Repository\TrapGroupRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
+        })();
 
-        $groupRelation = $this->db
-            ->getRepository(Repository\TrapGroupRelationRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $groupRelation = $this->db
+                ->getRepository(Repository\TrapGroupRelationRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+        })();
 
-        $matchingProps = $this->db
-            ->getRepository(Repository\TrapMatchingPropsRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
+        (function() use ($pollerIds, $templateChain) {
+            $matchingProps = $this->db
+                ->getRepository(Repository\TrapMatchingPropsRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
+        })();
 
-        $preexec = $this->db
-            ->getRepository(Repository\TrapPreexecRepository::class)
-            ->export($pollerId, $templateChain)
-        ;
-
-        $this->commitment->getParser()::dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
-        $this->commitment->getParser()::dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
-        $this->commitment->getParser()::dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
-        $this->commitment->getParser()::dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
-        $this->commitment->getParser()::dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
-        $this->commitment->getParser()::dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
-        $this->commitment->getParser()::dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
+        (function() use ($pollerIds, $templateChain) {
+            $preexec = $this->db
+                ->getRepository(Repository\TrapPreexecRepository::class)
+                ->export($pollerIds, $templateChain)
+            ;
+            $this->commitment->getParser()::dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
+        })();
     }
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {

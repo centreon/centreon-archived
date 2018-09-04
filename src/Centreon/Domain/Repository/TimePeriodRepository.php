@@ -10,7 +10,7 @@ class TimePeriodRepository extends ServiceEntityRepository
     /**
      * Export
      * 
-     * @param array $timeperiodList
+     * @param int[] $timeperiodList
      * @return array
      */
     public function export(array $timeperiodList = null): array
@@ -52,8 +52,22 @@ SQL;
         $stmt->execute();
     }
 
-    public function getChainByPoller(int $pollerId, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
+    /**
+     * Get a chain of the related objects
+     * 
+     * @param int[] $pollerIds
+     * @param int[] $hostTemplateChain
+     * @param int[] $serviceTemplateChain
+     * @return array
+     */
+    public function getChainByPoller(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $hostList = join(',', $hostTemplateChain ?? []);
         $sqlFilterHostList = $hostList ? " OR h.host_id IN ({$hostList})" : '';
         $sqlFilterHostList2 = $hostList ? " OR msr2.host_id IN ({$hostList})" : '';
@@ -67,7 +81,7 @@ SELECT
 FROM timeperiod AS t
 INNER JOIN host AS h ON h.timeperiod_tp_id = t.tp_id OR h.timeperiod_tp_id2 = t.tp_id
 LEFT JOIN ns_host_relation AS hr ON hr.host_host_id = h.host_id
-WHERE hr.nagios_server_id = :id{$sqlFilterHostList} 
+WHERE hr.nagios_server_id IN ({$ids}){$sqlFilterHostList} 
 GROUP BY t.tp_id
 
 UNION
@@ -78,7 +92,7 @@ FROM timeperiod AS t2
 INNER JOIN meta_service AS ms2 ON ms2.check_period = t2.tp_id OR ms2.notification_period = t2.tp_id
 INNER JOIN meta_service_relation AS msr2 ON msr2.meta_id = ms2.meta_id
 LEFT JOIN ns_host_relation AS hr2 ON hr2.host_host_id = msr2.host_id
-WHERE hr2.nagios_server_id = :id{$sqlFilterHostList2} 
+WHERE hr2.nagios_server_id IN ({$ids}){$sqlFilterHostList2} 
 GROUP BY t2.tp_id
 
 UNION
@@ -98,12 +112,11 @@ WHERE s3.service_id IN (SELECT t3a.service_service_id
         ns_host_relation AS hr3a ON hr3a.host_host_id = t3a.host_host_id
             OR hr3a.host_host_id = hgr3a.host_host_id
     WHERE
-        hr3a.nagios_server_id = :id
+        hr3a.nagios_server_id IN ({$ids})
     GROUP BY t3a.service_service_id){$sqlFilterServiceList}
 GROUP BY t3.tp_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

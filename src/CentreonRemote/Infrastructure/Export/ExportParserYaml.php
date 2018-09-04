@@ -16,6 +16,10 @@ class ExportParserYaml implements ExportParserInterface
 
     public static function dump(array $input, string $filename): void
     {
+        if (!$input) {
+            return;
+        }
+
         $yaml = Yaml::dump($input);
 
         file_put_contents($filename, $yaml);

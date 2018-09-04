@@ -10,21 +10,26 @@ class HostTemplateRelationRepository extends ServiceEntityRepository
     /**
      * Export host's templates relation
      * 
-     * @todo must be implement solution if template is not for that poller
-     * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
      */
-    public function export(int $pollerId, array $templateChainList = null): array
+    public function export(array $pollerIds, array $templateChainList = null): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
 SELECT l.* FROM(
 SELECT
     t.*
 FROM host_template_relation AS t
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
-WHERE hr.nagios_server_id = :id
+WHERE hr.nagios_server_id IN ({$ids})
 GROUP BY t.host_host_id, t.host_tpl_id
 SQL;
         if ($templateChainList) {
@@ -47,7 +52,6 @@ GROUP BY l.host_host_id, l.host_tpl_id
 SQL;
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];
@@ -59,18 +63,29 @@ SQL;
         return $result;
     }
 
-    public function getChainByPoller(int $pollerId): array
+    /**
+     * Get a chain of the related objects
+     * 
+     * @param int[] $pollerIds
+     * @return array
+     */
+    public function getChainByPoller(array $pollerIds): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
         $sql = <<<SQL
 SELECT
     t.host_tpl_id AS `id`
 FROM host_template_relation AS t
 INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
-WHERE hr.nagios_server_id = :id
+WHERE hr.nagios_server_id IN ({$ids})
 GROUP BY t.host_tpl_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

@@ -37,40 +37,37 @@ class MediaExporter implements ExporterServiceInterface
     {
         $this->db = $services->get('centreon.db-manager');
     }
-    
+
     /**
      * Cleanup database
      */
-    public function cleanup() : void
+    public function cleanup(): void
     {
-        // ...
+        
     }
 
     /**
      * Export data
-     * 
-     * @todo add exceptions
      */
     public function export(): void
     {
         // create path
         $this->createPath();
+        $pollerIds = $this->commitment->getPollers();
 
-        $pollerId = $this->commitment->getPoller();
-        
         $hostTemplateChain = $this->db
             ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
-        
+
         $serviceTemplateChain = $this->db
             ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerId)
+            ->getChainByPoller($pollerIds)
         ;
 
         $imgList = $this->db
             ->getRepository(Repository\ViewImgRepository::class)
-            ->getChainByPoller($pollerId, $hostTemplateChain, $serviceTemplateChain)
+            ->getChainByPoller($pollerIds, $hostTemplateChain, $serviceTemplateChain)
         ;
 
         $imgs = $this->db
@@ -94,8 +91,6 @@ class MediaExporter implements ExporterServiceInterface
 
             // prevent reading of non-exists files
             if (!is_file($imgPath)) {
-                // @todo throw exception
-
                 continue;
             }
 
@@ -121,8 +116,6 @@ class MediaExporter implements ExporterServiceInterface
 
     /**
      * Import data
-     * 
-     * @todo add exceptions
      */
     public function import(): void
     {
@@ -153,10 +146,10 @@ class MediaExporter implements ExporterServiceInterface
         foreach ($dirs as $data) {
             $dirMap[$dir['dir_alias']] = $db->insert(Entity\ViewImgDir::TABLE, $data);
         }
-        
+
         // cleanup memory
         unset($dirs);
-        
+
         // insert images
         $exportPathMedia = $exportPath . '/' . static::EXPORT_FILES;
         $exportPathImg = $exportPath . '/' . static::EXPORT_FILE_IMG;
@@ -201,7 +194,7 @@ class MediaExporter implements ExporterServiceInterface
 
             copy($imgPathExport, $imgPath);
         }
-        
+
         // cleanup memory
         unset($dirMap, $imgs);
 
