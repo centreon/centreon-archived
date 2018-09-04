@@ -35,17 +35,23 @@
 
 /*
  * return the interval of time which must be reported
+ * @alternate type string : Needed to choose between the localized or the unlocalized date format
  */
-function getPeriodToReport()
+function getPeriodToReport($alternate = null)
 {
     $period = (isset($_POST["period"])) ? $_POST["period"] : "";
     $period = (isset($_GET["period"])) ? $_GET["period"] : $period;
     $period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "";
     $end_date = 0;
     $start_date = 0;
-    $start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
+    if (null != $alternate) {
+        $start_date = (isset($_POST["alternativeDateStartDate"])) ? $_POST["alternativeDateStartDate"] : "";
+        $end_date = (isset($_POST["alternativeDateEndDate"])) ? $_POST["alternativeDateEndDate"] : "";
+    } else {
+        $start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
+        $end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
+    }
     $start_date = (isset($_GET["start"])) ? $_GET["start"] : $start_date;
-    $end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
     $end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
     $interval = array(0, 0);
     if ($period_choice == "custom" &&
