@@ -41,8 +41,20 @@ if (!isset($default_poller)) {
     include_once "./include/monitoring/status/Common/default_poller.php";
 }
 
+// Get the current header version to define the correct header id in javascript
+$headerVersion = 1;
+$userFeatures = $centreonFeature->userFeaturesValue(
+    $centreon->user->get_id()
+);
+foreach($userFeatures as $feature) {
+    if($feature['name'] == 'Header' && $feature['enabled'] == 1) {
+        $headerVersion = (int) $feature['version'];
+    }
+}
+
 ?>
 // Dynamique
+var _headerId='<?= ($headerVersion == 1) ? 'header' : 'header-react'?>';
 var _sid='<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
 var _search_type_host='<?php echo $search_type_host?>';
@@ -1015,7 +1027,7 @@ function initM(_time_reload, _sid, _o) {
         var _debugtr = document.createElement("tr");
         _debugtable.appendChild(_debugtr);
         _divdebug.appendChild(_debugtable);
-        _header = document.getElementById('header');
+        var _header = document.getElementById(_headerId);
         _header.appendChild(_divdebug);
     }
 
