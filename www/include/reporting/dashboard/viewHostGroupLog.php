@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -92,6 +92,25 @@ $form->addElement(
     $get_date_end
 );
 
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
 
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -114,7 +133,7 @@ if (isset($id) && $id != "NULL") {
     /*
      * Getting periods values
      */
-    $dates = getPeriodToReport();
+    $dates = getPeriodToReport("alternate");
     $start_date = $dates[0];
     $end_date = $dates[1];
 
