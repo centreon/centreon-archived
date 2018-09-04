@@ -86,6 +86,26 @@ if (isset($id)) {
     $form->setDefaults(array('item' => $id));
 }
 
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+
 /*
  * Set servicegroup id with period selection form
  */
@@ -104,7 +124,7 @@ if (isset($id) && $id != "NULL") {
     /*
      * Getting periods values
      */
-    $dates = getPeriodToReport();
+    $dates = getPeriodToReport("alternate");
     $start_date = $dates[0];
     $end_date = $dates[1];
 
