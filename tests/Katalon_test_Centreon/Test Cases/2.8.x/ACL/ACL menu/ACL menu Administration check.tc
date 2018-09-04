@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Administration check</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>4b3b927b-d4bb-420b-9e9f-5819c73d91c2</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>173abd9b-1728-47f4-9b28-b95b6bbeb84f</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>1c969533-cd5c-44d6-817a-62d82f129f02</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+</TestCaseEntity>

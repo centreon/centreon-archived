@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Create widget view</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>c4899ce6-0b4b-497b-aa52-234250ee69c0</testCaseGuid>
+   <variable>
+      <defaultValue>'admin'</defaultValue>
+      <description></description>
+      <id>9f01fdaf-ca17-4d21-a113-dea757e2ca66</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>'centreon'</defaultValue>
+      <description></description>
+      <id>8a91c8f3-2b94-48c8-8b08-a6ae009f374c</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+   <variable>
+      <defaultValue>'1'</defaultValue>
+      <description></description>
+      <id>813af8c3-9ba5-44c4-aca0-05ffc2b1a61d</id>
+      <masked>false</masked>
+      <name>addWidget</name>
+   </variable>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Downtime on a host through Monitoring page</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>cf29c273-317f-45e7-820e-89046be167ef</testCaseGuid>
+</TestCaseEntity>

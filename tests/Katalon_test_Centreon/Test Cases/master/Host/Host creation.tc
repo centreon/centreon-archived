@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Host creation</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>0f886983-eb84-4f1c-8382-36832c930aa7</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>84fdf71b-64af-4c97-97a3-067dbdb8c7ff</id>
+      <masked>false</masked>
+      <name>text</name>
+   </variable>
+</TestCaseEntity>

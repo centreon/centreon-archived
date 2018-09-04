@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Create view</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>d7a68668-181c-4b08-8743-2b7b19357ae9</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>18931675-1d7c-498c-a5c5-efe7274c5350</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>e88a5555-215d-4653-8e7e-edd0db9964c0</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+   <variable>
+      <defaultValue>'1'</defaultValue>
+      <description></description>
+      <id>da5ab1d6-bb4a-4539-990b-4903e9d7ffc8</id>
+      <masked>false</masked>
+      <name>addView</name>
+   </variable>
+</TestCaseEntity>

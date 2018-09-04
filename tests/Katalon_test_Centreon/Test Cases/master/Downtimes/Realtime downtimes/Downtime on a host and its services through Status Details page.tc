@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Downtime on a host and its services through Status Details page</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>56c49b44-3eb3-44ca-9acb-27244ba1f406</testCaseGuid>
+</TestCaseEntity>

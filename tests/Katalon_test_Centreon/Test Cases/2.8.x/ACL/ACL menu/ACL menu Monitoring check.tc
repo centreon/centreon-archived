@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Monitoring check</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>7f0aef1e-9fc1-4e79-b046-07b5791c6500</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>4e570d99-9975-4a3e-b225-3ae0749123c6</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>81fffd24-b470-4b89-9fd0-5cf87c91ceeb</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+</TestCaseEntity>

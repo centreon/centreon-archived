@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Monitoring configuration</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>83a42e06-2a7a-4f12-a273-c3784df10c99</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>11dc968e-d6a4-41b2-add7-b7ca6b828419</id>
+      <masked>false</masked>
+      <name>ACLMenuName</name>
+   </variable>
+</TestCaseEntity>

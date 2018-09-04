@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Autologin</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>5342af32-c818-413c-98c7-7538b0ffdcaa</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>06bf85af-5df4-43bb-95e8-eceac88c5ecb</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>4b5c38bc-705e-424c-b368-d20f19c9961d</id>
+      <masked>false</masked>
+      <name>autologin</name>
+   </variable>
+</TestCaseEntity>

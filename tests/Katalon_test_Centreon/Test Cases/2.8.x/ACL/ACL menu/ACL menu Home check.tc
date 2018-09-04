@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Home check</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>2a3aa1f7-62cd-4d0b-b292-0fca121da863</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>283d169d-8cfa-4487-b91b-f3f3dcd73295</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>5a996a26-5901-4ab0-a3b3-86ceb975909f</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+</TestCaseEntity>

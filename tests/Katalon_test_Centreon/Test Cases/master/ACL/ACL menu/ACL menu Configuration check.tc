@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Configuration check</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>2691eea5-70c0-4616-93ea-78e703146e69</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>6caa8acb-70cf-46e5-b5f2-88e3bf74d6c5</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>1889a1b8-39ab-4ad2-9424-ef4440ad55b0</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+</TestCaseEntity>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Authentication with a non existing user</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>098cf4b3-83d2-486f-9f20-2e20607879e3</testCaseGuid>
+</TestCaseEntity>

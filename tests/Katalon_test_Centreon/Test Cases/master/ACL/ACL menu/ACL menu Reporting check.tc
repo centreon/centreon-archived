@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>ACL menu Reporting check</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>6e4b8bf3-d3a5-4843-be8d-316e335669b2</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>13d792de-891f-4dec-8e27-fb10c933f7ef</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>95bd1ceb-175f-42ab-942a-8f1f6f858e4e</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+</TestCaseEntity>

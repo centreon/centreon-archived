@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>add_metaservice</name>
+   <tag></tag>
+   <elementGuidId>802d634a-abdd-4805-aace-4945cd8d5c35</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+         <value>//input[@name = 'add' and @value = 'Add' and @class = 'btc bt_success' and @onclick = concat('QFAMS.moveSelection(' , &quot;'&quot; , 'acl_meta' , &quot;'&quot; , ', this.form.elements[' , &quot;'&quot; , 'acl_meta-f[]' , &quot;'&quot; , '], this.form.elements[' , &quot;'&quot; , 'acl_meta-t[]' , &quot;'&quot; , '], this.form.elements[' , &quot;'&quot; , 'acl_meta[]' , &quot;'&quot; , '], ' , &quot;'&quot; , 'add' , &quot;'&quot; , ', ' , &quot;'&quot; , 'asc' , &quot;'&quot; , '); return false;') and @type = 'button']</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>BASIC</selectorMethod>
+   <useRalativeImagePath>false</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>input</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>name</name>
+      <type>Main</type>
+      <value>add</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>value</name>
+      <type>Main</type>
+      <value>Add</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btc bt_success</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>onclick</name>
+      <type>Main</type>
+      <value>QFAMS.moveSelection('acl_meta', this.form.elements['acl_meta-f[]'], this.form.elements['acl_meta-t[]'], this.form.elements['acl_meta[]'], 'add', 'asc'); return false;</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>type</name>
+      <type>Main</type>
+      <value>button</value>
+   </webElementProperties>
+</WebElementEntity>

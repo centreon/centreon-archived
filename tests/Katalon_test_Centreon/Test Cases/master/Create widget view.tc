@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>Create widget view</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>a4870431-70fc-4846-9d5a-7a97b39694f1</testCaseGuid>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>4b121fb2-8007-4766-9991-4da668ad96c6</id>
+      <masked>false</masked>
+      <name>userName</name>
+   </variable>
+   <variable>
+      <defaultValue>''</defaultValue>
+      <description></description>
+      <id>bc48abd4-ea78-4223-9200-26f847f2d647</id>
+      <masked>false</masked>
+      <name>userPassword</name>
+   </variable>
+   <variable>
+      <defaultValue>'1'</defaultValue>
+      <description></description>
+      <id>cd5f1b96-1f82-4bec-bb9b-180bef3869d0</id>
+      <masked>false</masked>
+      <name>addWidget</name>
+   </variable>
+</TestCaseEntity>

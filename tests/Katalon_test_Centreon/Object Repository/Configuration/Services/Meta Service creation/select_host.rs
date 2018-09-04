@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>select_host</name>
+   <tag></tag>
+   <elementGuidId>e3225ce0-2513-47be-aa98-2440b7ab0416</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+         <value>id(&quot;Form&quot;)/table[@class=&quot;ListTable&quot;]/tbody[1]/tr[@class=&quot;list_one&quot;]/td[2]/select[1][count(. | //select[@onchange = 'this.form.submit()' and @name = 'host_id']) = count(//select[@onchange = 'this.form.submit()' and @name = 'host_id'])]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>BASIC</selectorMethod>
+   <useRalativeImagePath>false</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>select</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>onchange</name>
+      <type>Main</type>
+      <value>this.form.submit()</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>name</name>
+      <type>Main</type>
+      <value>host_id</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;Form&quot;)/table[@class=&quot;ListTable&quot;]/tbody[1]/tr[@class=&quot;list_one&quot;]/td[2]/select[1]</value>
+   </webElementProperties>
+</WebElementEntity>
