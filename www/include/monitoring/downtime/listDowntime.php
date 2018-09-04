@@ -41,52 +41,57 @@ include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
-if (isset($_POST["search_service"])) {
+$search_service = null;
+$host_name = null;
+$search_output = null;
+
+if (isset($_POST['SearchB'])) {
+    $centreon->historySearch[$url] = array();
     $search_service = $_POST["search_service"];
-} elseif (isset($_GET["search_service"])) {
-    $search_service = $_GET["search_service"];
-} else {
-    $search_service = null;
-}
-
-if (isset($_POST["search_host"])) {
+    $centreon->historySearch[$url]["search_service"] = $search_service;
     $host_name = $_POST["search_host"];
-} elseif (isset($_GET["search_host"])) {
-    $host_name = $_GET["search_host"];
-} else {
-    $host_name = null;
-}
-
-if (isset($_POST["search_output"])) {
+    $centreon->historySearch[$url]["search_host"] = $host_name;
     $search_output = $_POST["search_output"];
-} elseif (isset($_GET["search_output"])) {
-    $search_output = $_GET["search_output"];
-} else {
-    $search_output = null;
-}
-
-if (isset($_POST["view_all"])) {
-    $view_all = 1;
-} elseif (isset($_GET["view_all"]) && !isset($_POST["SearchB"])) {
-    $view_all = 1;
-} else {
-    $view_all = 0;
-}
-
-if (isset($_POST["view_downtime_cycle"])) {
-    $view_downtime_cycle = 1;
-} elseif (isset($_GET["view_downtime_cycle"]) && !isset($_POST["SearchB"])) {
-    $view_downtime_cycle = 1;
-} else {
-    $view_downtime_cycle = 0;
-}
-
-if (isset($_POST["search_author"])) {
+    $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_POST["search_author"];
-} elseif (isset($_GET["search_author"]) && !isset($_POST["SearchB"])) {
+    $centreon->historySearch[$url]["search_author"] = $search_author;
+    isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
+    $centreon->historySearch[$url]["view_all"] = $view_all;
+    isset($_POST["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
+} elseif (isset($_GET['SearchB'])) {
+    $centreon->historySearch[$url] = array();
+    $search_service = $_GET['search_service'];
+    $centreon->historySearch[$url]['search_service'] = $search_service;
+    $host_name = $_GET["search_host"];
+    $centreon->historySearch[$url]["search_host"] = $host_name;
+    $search_output = $_GET["search_output"];
+    $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_GET["search_author"];
+    $centreon->historySearch[$url]["search_author"] = $search_author;
+    isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
+    $centreon->historySearch[$url]["view_all"] = $view_all;
+    isset($_GET["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } else {
-    $search_author = null;
+    if (isset($centreon->historySearch[$url]['search_service'])) {
+        $search_service = $centreon->historySearch[$url]['search_service'];
+    }
+    if (isset($centreon->historySearch[$url]["search_host"])) {
+        $host_name = $centreon->historySearch[$url]["search_host"];
+    }
+    if (isset($centreon->historySearch[$url]["search_output"])) {
+        $search_output = $centreon->historySearch[$url]["search_output"];
+    }
+    if (isset($centreon->historySearch[$url]["search_author"])) {
+        $search_author = $centreon->historySearch[$url]["search_author"];
+    }
+    if (isset($centreon->historySearch[$url]["view_all"])) {
+        $view_all = $centreon->historySearch[$url]["view_all"];
+    }
+    if (isset($centreon->historySearch[$url]["view_downtime_cycle"])) {
+        $view_downtime_cycle = $centreon->historySearch[$url]["view_downtime_cycle"];
+    }
 }
 
 /*
@@ -183,7 +188,8 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
     "LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDBO->query($request);
 
-$rows = $pearDBO->numberRows();
+$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
@@ -218,9 +224,6 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
 }
 unset($data);
 
-/*
- * Number Rows
- */
 include("./include/common/checkPagination.php");
 
 $en = array("0" => _("No"), "1" => _("Yes"));

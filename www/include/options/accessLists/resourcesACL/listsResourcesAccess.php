@@ -40,17 +40,30 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $searchStr = '';
-$search = '';
-if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
-    $search = $_POST['searchACLR'];
-    $searchStr .= " WHERE (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
-}
-$dbResult = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $searchStr);
+$search = null;
 
-$tmp = $dbResult->fetchRow();
-$rows = $tmp["COUNT(*)"];
-$dbResult->closeCursor();
+if (isset($_POST['searchACLR'])) {
+    $search = $_POST['searchACLR'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchACLR'])) {
+    $search = $_GET['searchACLR'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $searchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+}
+$rq = 'SELECT SQL_CALC_FOUND_ROWS acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, ' .
+    'all_servicegroups, acl_res_activate FROM acl_resources '
+    . 'WHERE locked = 0 '
+    . $searchStr . ' '
+    . 'ORDER BY acl_res_name '
+    . 'LIMIT ' . $num * $limit . ', ' . $limit;
+$dbResult = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -71,19 +84,6 @@ $tpl->assign("headerMenu_allHG", _("All Hostgroups"));
 $tpl->assign("headerMenu_allSG", _("All Servicegroups"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-$searchStr = "";
-if ($search) {
-    $searchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq = 'SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate '
-    . 'FROM acl_resources '
-    . 'WHERE locked = 0 '
-    . $searchStr . ' '
-    . 'ORDER BY acl_res_name '
-    . 'LIMIT ' . $num * $limit . ', ' . $limit;
-$dbResult = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 

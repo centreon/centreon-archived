@@ -53,9 +53,18 @@ unset($data);
 $DBRESULT->closeCursor();
 
 $clauses = array();
-$search = '';
-if (isset($_POST['searchC']) && $_POST['searchC']) {
+$search = null;
+if (isset($_POST['searchC'])) {
     $search = $_POST['searchC'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $clauses = array(
         'contact_name' => array('LIKE', '%' . $search . '%'),
         'contact_alias' => array('OR', 'LIKE', '%' . $search . '%')
@@ -193,20 +202,22 @@ foreach ($contacts as $contact) {
             html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")
         ),
         "RowMenu_email" => $contact["contact_email"],
-        "RowMenu_hostNotif" => html_entity_decode(
-            $tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")],
-            ENT_QUOTES,
-            "UTF-8"
-        ) . " (" . (isset($contact["contact_host_notification_options"])
-            ? $contact["contact_host_notification_options"]
-            : "") . ")",
-        "RowMenu_svNotif" => html_entity_decode(
-            $tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")],
-            ENT_QUOTES,
-            "UTF-8"
-        ) . " (" . (isset($contact["contact_service_notification_options"])
-            ? $contact["contact_service_notification_options"]
-            : "") . ")",
+        "RowMenu_hostNotif" =>
+            html_entity_decode(
+                $tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")],
+                ENT_QUOTES,
+                "UTF-8"
+            ) . " (" . (isset($contact["contact_host_notification_options"])
+                ? $contact["contact_host_notification_options"]
+                : "") . ")",
+        "RowMenu_svNotif" =>
+            html_entity_decode(
+                $tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")],
+                ENT_QUOTES,
+                "UTF-8"
+            ) . " (" . (isset($contact["contact_service_notification_options"])
+                ? $contact["contact_service_notification_options"]
+                : "") . ")",
         "RowMenu_lang" => $contact["contact_lang"],
         "RowMenu_access" => $contact["contact_oreon"] ? _("Enabled") : _("Disabled"),
         "RowMenu_admin" => $contact["contact_admin"] ? _("Yes") : _("No"),
@@ -246,7 +257,7 @@ if ($row['count_ldap'] > 0) {
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 
 /* Manage options */

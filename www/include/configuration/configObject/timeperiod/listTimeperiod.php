@@ -39,16 +39,28 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchTP']) && $_POST['searchTP']) {
+$SearchTool = '';
+$search = null;
+
+if (isset($_POST['searchTP'])) {
     $search = $_POST['searchTP'];
-    $SearchTool = " WHERE tp_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchTP'])) {
+    $search = $_GET['searchTP'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM timeperiod $SearchTool");
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+if ($search) {
+    $SearchTool .= " WHERE tp_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+}
+
+//Timeperiod list
+$query = "SELECT SQL_CALC_FOUND_ROWS tp_id, tp_name, tp_alias FROM timeperiod $SearchTool " .
+    "ORDER BY tp_name LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($query);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -68,13 +80,6 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Timeperiod list
- */
-$query = "SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool " .
-    "ORDER BY tp_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -124,7 +129,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {

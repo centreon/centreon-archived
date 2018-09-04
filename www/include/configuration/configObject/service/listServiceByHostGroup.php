@@ -41,51 +41,44 @@ include_once("./class/centreonUtils.class.php");
 
 $mediaObj = new CentreonMedia($pearDB);
 
-if (isset($_POST['hostgroups'])) {
+$searchHG = null;
+$searchS = null;
+$template = null;
+$status = -1;
+
+if (isset($_POST['Search'])) {
+    $centreon->historySearch[$url] = array();
     $searchHG = $_POST['hostgroups'];
-    $centreon->svc_hostgroup_search = $searchHG;
-
-    if (isset($_POST['searchH']) && $_POST['searchH'] != '') {
-        $search_type_host = 1;
-        $centreon->search_type_host = 1;
-    }
-} else {
-    if (isset($centreon->svc_hostgroup_search) && $centreon->svc_hostgroup_search) {
-        $searchHG = $centreon->svc_hostgroup_search;
-    } else {
-        $searchHG = null;
-    }
-}
-
-if (isset($_POST["searchS"])) {
+    $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $searchS = $_POST["searchS"];
-    $centreon->svc_svc_search = $searchS;
-    if ($_POST["searchS"] != "") {
-        $search_type_service = 1;
-        $centreon->search_type_service = 1;
-    }
-} else {
-    if (isset($centreon->svc_svc_search) && $centreon->svc_svc_search) {
-        $searchS = $centreon->svc_svc_search;
-    } else {
-        $searchS = null;
-    }
-}
-
-if (isset($_POST["template"])) {
+    $centreon->historySearch[$url]["searchS"] = $searchS;
     $template = $_POST["template"];
-} elseif (isset($_GET["template"])) {
-    $template = $_GET["template"];
-} else {
-    $template = null;
-}
-
-if (isset($_POST["status"])) {
+    $centreon->historySearch[$url]["template"] = $template;
     $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
+    $centreon->historySearch[$url]["status"] = $status;
+} elseif (isset($_GET['Search'])) {
+    $centreon->historySearch[$url] = array();
+    $searchHG = $_GET['hostgroups'];
+    $centreon->historySearch[$url]['hostgroups'] = $searchHG;
+    $searchS = $_GET["searchS"];
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $template = $_GET["template"];
+    $centreon->historySearch[$url]["template"] = $template;
     $status = $_GET["status"];
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
-    $status = -1;
+    if (isset($centreon->historySearch[$url]['hostgroups'])) {
+        $searchHG = $centreon->historySearch[$url]['hostgroups'];
+    }
+    if (isset($centreon->historySearch[$url]["searchS"])) {
+        $searchS = $centreon->historySearch[$url]["searchS"];
+    }
+    if (isset($centreon->historySearch[$url]["template"])) {
+        $template = $centreon->historySearch[$url]["template"];
+    }
+    if (isset($centreon->historySearch[$url]["status"])) {
+        $status = $centreon->historySearch[$url]["status"];
+    }
 }
 
 /*
@@ -103,13 +96,11 @@ while ($tpl = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
-/*
- * Status Filter
- */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-;
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+//Status Filter
+$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter .= "<option value='0'" .
+    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
@@ -284,17 +275,13 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' " .
         "style=\"margin-bottom:0px;\" name='dupNbr[" . $service['service_id'] . "]' />";
 
-    /*
-	 * If the description of our Service is in the Template definition,
-     *  we have to catch it, whatever the level of it :-)
-	 */
+    /*If the description of our Service is in the Template definition,
+    we have to catch it, whatever the level of it :-)*/
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
     }
 
-    /*
-	 * TPL List
-	 */
+    //TPL List
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
@@ -318,9 +305,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         $svc_icon = "./img/icons/service.png ";
     }
 
-    /*
-	 * Get service intervals in seconds
-	 */
+    //Get service intervals in seconds
     $normal_check_interval =
         getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
     $retry_check_interval =

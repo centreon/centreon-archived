@@ -41,38 +41,32 @@ include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
-if (isset($_POST["search_service"])) {
+if (isset($_POST['SearchB'])) {
+    $centreon->historySearch[$url] = array();
     $search_service = $_POST["search_service"];
-} elseif (isset($_GET["search_service"])) {
-    $search_service = $_GET["search_service"];
-} else {
-    $search_service = null;
-}
-
-if (isset($_POST["search_host"])) {
+    $centreon->historySearch[$url]["search_service"] = $search_service;
     $host_name = $_POST["search_host"];
-} elseif (isset($_GET["search_host"])) {
-    $host_name = $_GET["search_host"];
-} else {
-    $host_name = null;
-}
-
-if (isset($_POST["search_output"])) {
+    $centreon->historySearch[$url]["search_host"] = $host_name;
     $search_output = $_POST["search_output"];
-} elseif (isset($_GET["search_output"])) {
+    $centreon->historySearch[$url]["search_output"] = $search_output;
+} elseif (isset($_GET['SearchB'])) {
+    $centreon->historySearch[$url] = array();
+    $search_service = $_GET['search_service'];
+    $centreon->historySearch[$url]['search_service'] = $search_service;
+    $host_name = $_GET["search_host"];
+    $centreon->historySearch[$url]["search_host"] = $host_name;
     $search_output = $_GET["search_output"];
+    $centreon->historySearch[$url]["search_output"] = $search_output;
 } else {
-    $search_output = null;
-}
-
-if (isset($_POST["hostgroup"])) {
-    $hostgroup = $_POST["hostgroup"];
-} elseif (isset($_GET["hostgroup"])) {
-    $hostgroup = $_GET["hostgroup"];
-} elseif (isset($centreon->hostgroup) && $centreon->hostgroup) {
-    $hostgroup = $centreon->hostgroup;
-} else {
-    $hostgroup = "0";
+    if (isset($centreon->historySearch[$url]['search_service'])) {
+        $search_service = $centreon->historySearch[$url]['search_service'];
+    }
+    if (isset($centreon->historySearch[$url]["search_host"])) {
+        $host_name = $centreon->historySearch[$url]["search_host"];
+    }
+    if (isset($centreon->historySearch[$url]["search_output"])) {
+        $search_output = $centreon->historySearch[$url]["search_output"];
+    }
 }
 
 /*
@@ -140,7 +134,8 @@ $rq2 .= (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$se
 $rq2 .= " ORDER BY entry_time DESC LIMIT " . $num * $limit . ", " . $limit;
 
 $DBRESULT = $pearDBO->query($rq2);
-$rows = $pearDBO->numberRows();
+$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];

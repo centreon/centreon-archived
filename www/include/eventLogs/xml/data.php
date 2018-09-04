@@ -70,7 +70,6 @@ bindtextdomain("messages", _CENTREON_PATH_ . "/www/locale/");
 bind_textdomain_codeset("messages", "UTF-8");
 textdomain("messages");
 
-
 define("STATUS_OK", 0);
 define("STATUS_WARNING", 1);
 define("STATUS_CRITICAL", 2);
@@ -451,8 +450,6 @@ foreach ($tab_id as $openid) {
     }
 
     $type = $tab_tmp[0];
-
-
     if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)) {
         $filters = true;
         // Get hosts from hostgroups
@@ -514,14 +511,13 @@ $req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
         logs.instance_name
         FROM logs " . $innerJoinEngineLog
     . (
-        !$is_admin ?
+    !$is_admin ?
         " INNER JOIN centreon_acl acl ON (logs.host_id = acl.host_id AND (acl.service_id IS NULL OR "
-            . " acl.service_id = logs.service_id)) "
-            . " WHERE acl.group_id IN (" . $access->getAccessGroupsString() . ") AND " :
+        . " acl.service_id = logs.service_id)) "
+        . " WHERE acl.group_id IN (" . $access->getAccessGroupsString() . ") AND " :
         "WHERE "
     )
-    . " logs.ctime > '{$start}' AND logs.ctime <= '{$end}' {$whereOutput} {$msg_req}"
-;
+    . " logs.ctime > '{$start}' AND logs.ctime <= '{$end}' {$whereOutput} {$msg_req}";
 
 /*
  * Add Host
@@ -613,7 +609,7 @@ if (isset($req) && $req) {
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
     }
     $DBRESULT = $pearDBO->query($req . $limitReq);
-    $rows = $pearDBO->numberRows();
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     if (!($DBRESULT->rowCount()) && ($num != 0)) {
         if ($export !== "1") {

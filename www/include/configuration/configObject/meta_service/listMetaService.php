@@ -41,21 +41,31 @@ include_once("./class/centreonUtils.class.php");
 
 include("./include/common/autoNumLimit.php");
 
-
-$search = '';
-if (isset($_POST['searchMS']) && $_POST['searchMS'] != "") {
+$search = null;
+if (isset($_POST['searchMS'])) {
     $search = $_POST['searchMS'];
-    $query = "SELECT COUNT(*) FROM meta_service " .
-        "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
-        $acl->queryBuilder('AND', 'meta_id', $metaStr);
-    $DBRESULT = $pearDB->query($query);
-} else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*)
-                                FROM meta_service " .
-        $acl->queryBuilder('WHERE', 'meta_id', $metaStr));
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchMS'])) {
+    $search = $_GET['searchMS'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+
+/*
+ * Meta Service list
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM meta_service ";
+if ($search) {
+    $rq .= "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
+        $acl->queryBuilder("AND", "meta_id", $metaStr);
+} else {
+    $rq .= $acl->queryBuilder("WHERE", "meta_id", $metaStr);
+}
+$rq .= " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 

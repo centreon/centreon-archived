@@ -116,7 +116,7 @@ class CentreonDowntime
             return $this->nbRows;
         }
         /* Get the number of rows with a COUNT(*) */
-        $query = "SELECT COUNT(*) FROM downtime" . $this->search;
+        $query = "SELECT COUNT(*) FROM downtime WHERE " . $this->search;
         try {
             $res = $this->db->query($query);
         } catch (\PDOException $e) {

@@ -44,8 +44,7 @@ function searchUserName($user_name)
     global $pearDB;
     $str = "";
 
-    $DBRES = $pearDB->query("SELECT contact_id
-        FROM contact
+    $DBRES = $pearDB->query("SELECT contact_id FROM contact
         WHERE contact_name LIKE '%" . $pearDB->escape($user_name) . "%'
             OR contact_alias LIKE '%" . $pearDB->escape($user_name) . "%'");
     while ($row = $DBRES->fetchRow()) {
@@ -79,44 +78,45 @@ $pearDBO = new CentreonDB("centstorage");
 $contactList = array();
 $DBRES = $pearDB->query("SELECT contact_id, contact_name, contact_alias FROM contact");
 while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] = $row["contact_name"] . " (".$row["contact_alias"].")";
+    $contactList[$row["contact_id"]] = $row["contact_name"] . " (" . $row["contact_alias"] . ")";
 }
 
-if (isset($_POST["searchO"])) {
+$searchO = null;
+$searchU = null;
+$searchP = null;
+
+if (isset($_POST['SearchB'])) {
+    $centreon->historySearch[$url] = array();
     $searchO = $_POST["searchO"];
-    $_SESSION['searchO'] = $searchO;
-} elseif (isset($_SESSION["searchO"])) {
-    $searchO = $_SESSION["searchO"];
-} else {
-    $searchO = null;
-}
-
-if (isset($_POST["searchU"])) {
+    $centreon->historySearch[$url]["searchO"] = $searchO;
     $searchU = $_POST["searchU"];
-    $_SESSION['searchU'] = $searchU;
-} elseif (isset($_SESSION["searchU"])) {
-    $searchU = $_SESSION["searchU"];
-} else {
-    $searchU = null;
-}
-
-if (isset($_POST["otype"])) {
+    $centreon->historySearch[$url]["searchU"] = $searchU;
     $otype = $_POST["otype"];
-    $_SESSION['otype'] = $otype;
-} elseif (isset($_SESSION["otype"])) {
-    $otype = $_SESSION["otype"];
+    $centreon->historySearch[$url]["otype"] = $otype;
+} elseif (isset($_GET['SearchB'])) {
+    $centreon->historySearch[$url] = array();
+    $searchO = $_GET['searchO'];
+    $centreon->historySearch[$url]["searchO"] = $searchO;
+    $searchU = $_GET['searchU'];
+    $centreon->historySearch[$url]["searchU"] = $searchU;
+    $otype = $_GET['otype'];
+    $centreon->historySearch[$url]["otype"] = $otype;
 } else {
-    $otype = null;
+    if (isset($centreon->historySearch[$url]['searchO'])) {
+        $searchO = $centreon->historySearch[$url]['searchO'];
+    }
+    if (isset($centreon->historySearch[$url]['searchU'])) {
+        $searchU = $centreon->historySearch[$url]['searchU'];
+    }
+    if (isset($centreon->historySearch[$url]['otype'])) {
+        $otype = $centreon->historySearch[$url]['otype'];
+    }
 }
 
-/*
- * Init QuickForm
- */
-$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
+//Init QuickForm
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Init Smarty
- */
+//Init Smarty
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
@@ -128,7 +128,14 @@ $tabAction["enable"] = _("Enabled");
 $tabAction["disable"] = _("Disabled");
 $tabAction["d"] = _("Deleted");
 
-$badge = array(_("Added") => "ok", _("Changed") => "warning", _("Massive Change") => 'warning', _("Deleted") => 'critical', _("Enabled") => 'ok', _("Disabled") => 'critical');
+$badge = array(
+    _("Added") => "ok",
+    _("Changed") => "warning",
+    _("Massive Change") => 'warning',
+    _("Deleted") => 'critical',
+    _("Enabled") => 'ok',
+    _("Disabled") => 'critical'
+);
 
 $tpl->assign("object_id", _("Object ID"));
 $tpl->assign("action", _("Action"));
@@ -148,12 +155,13 @@ sort($objects_type_tab);
 $options = "";
 foreach ($objects_type_tab as $key => $name) {
     $name = _("$name");
-    $options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>";
+    $options .= "<option value='$key' " . (($otype == $key) ? 'selected' : "") . ">$name</option>";
 }
 
 $tpl->assign("obj_type", $options);
 
-$query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action_log_date, action_type, log_contact_id, action_log_id FROM log_action";
+$query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action_log_date, action_type, " .
+    "log_contact_id, action_log_id FROM log_action";
 
 $where_flag = 1;
 if ($searchO) {
@@ -165,6 +173,7 @@ if ($searchO) {
     }
     $query .= " object_name LIKE '%" . $pearDB->escape($searchO) . "%' ";
 }
+
 if ($searchU) {
     if ($where_flag) {
         $query .= " WHERE ";
@@ -172,8 +181,9 @@ if ($searchU) {
     } else {
         $query .= " AND ";
     }
-    $query .= " log_contact_id IN (".searchUserName($searchU).") ";
+    $query .= " log_contact_id IN (" . searchUserName($searchU) . ") ";
 }
+
 if (!is_null($otype)) {
     if ($otype != 0) {
         if ($where_flag) {
@@ -182,14 +192,14 @@ if (!is_null($otype)) {
         } else {
             $query .= " AND ";
         }
-        $query .= " object_type = '".$objects_type_tab[$otype]."' ";
+        $query .= " object_type = '" . $objects_type_tab[$otype] . "' ";
     }
 }
-$query .= " ORDER BY action_log_date DESC LIMIT ".$num * $limit.", ".$limit;
+$query .= " ORDER BY action_log_date DESC LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDBO->query($query);
 
 /* Get rows number */
-$rows = $pearDB->numberRows();
+$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 $elemArray = array();

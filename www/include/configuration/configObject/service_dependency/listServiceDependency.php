@@ -43,6 +43,17 @@ include("./include/common/autoNumLimit.php");
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
+$search = null;
+if (isset($_POST['searchSD'])) {
+    $search = $_POST['searchSD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchSD'])) {
+    $search = $_GET['searchSD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
 $aclFrom = "";
 $aclCond = "";
 if (!$oreon->user->admin) {
@@ -52,21 +63,19 @@ if (!$oreon->user->admin) {
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
+$rq = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
     . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
     . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
 
-$search = '';
-if (isset($_POST['searchSD']) && $_POST['searchSD']) {
-    $search = $_POST['searchSD'];
+if ($search) {
     $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$DBRESULT = $pearDB->query($rq);
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["count_dep"];
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -84,19 +93,6 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-# Dependency list
-$rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
-    . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
-    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
-    . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
-
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -142,7 +138,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -210,4 +206,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceDependency.ihtml");
-

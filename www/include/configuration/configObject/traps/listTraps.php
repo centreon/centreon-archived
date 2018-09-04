@@ -1,36 +1,36 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
@@ -48,26 +48,39 @@ $searchT = filter_input(
     FILTER_SANITIZE_STRING
 );
 
-$search = '';
+$searchG = filter_input(
+    INPUT_GET,
+    'searchT',
+    FILTER_SANITIZE_STRING
+);
+
+$search = null;
 if (isset($searchT)) {
     $search = $searchT;
-    $_SESSION['searchT'] = $searchT;
-} elseif (isset($_SESSION['searchT']) && $_SESSION['searchT'] != "") {
-    $search = $_SESSION['searchT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($searchG)) {
+    $search = $searchG;
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
+/*
+ * List of elements - Depends on different criteria
+ */
+if ($search) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE traps_oid LIKE '%" .
+        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR traps_name LIKE '%" .
+        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR manufacturer_id IN (SELECT id FROM traps_vendor " .
+        " WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ) " .
+        " ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+} else {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " .
+        $num * $limit . ", " . $limit;
+}
 
-$query = "SELECT COUNT(*) "
-    . "FROM traps "
-    . "WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR manufacturer_id IN (SELECT id 
-                             FROM traps_vendor 
-                             WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             ) ";
-$DBRESULT = $pearDB->query($query);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -91,27 +104,7 @@ $tpl->assign("headerMenu_manufacturer", _("Vendor Name"));
 $tpl->assign("headerMenu_args", _("Output Message"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * List of elements - Depends on different criteria
- */
 
-
-if ($search) {
-    $rq = "SELECT *
-      FROM traps
-      WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR manufacturer_id IN (SELECT id
-                             FROM traps_vendor
-                             WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             )
-      ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
-}
-
-
-$DBRESULT = $pearDB->query($rq);
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 /*
@@ -141,7 +134,8 @@ for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_name" => myDecode($trap["traps_name"]),
         "RowMenu_link" => "?p=" . $p . "&o=c&traps_id=" . $trap['traps_id'],
         "RowMenu_desc" => myDecode(substr($trap["traps_oid"], 0, 40)),
-        "RowMenu_status" => isset($tabStatus[$trap["traps_status"]]) ? $tabStatus[$trap["traps_status"]] : $tabStatus[3],
+        "RowMenu_status" =>
+            isset($tabStatus[$trap["traps_status"]]) ? $tabStatus[$trap["traps_status"]] : $tabStatus[3],
         "RowMenu_args" => myDecode($trap["traps_args"]),
         "RowMenu_manufacturer" => myDecode($mnftr["alias"]),
         "RowMenu_options" => $moptions
@@ -161,7 +155,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .

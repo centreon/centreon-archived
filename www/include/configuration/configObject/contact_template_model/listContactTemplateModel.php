@@ -60,9 +60,19 @@ unset($data);
 $DBRESULT->closeCursor();
 
 $clauses = array();
-$search = '';
-if (isset($_POST['searchCT']) && $_POST['searchCT']) {
+$search = null;
+
+if (isset($_POST['searchCT'])) {
     $search = $_POST['searchCT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $clauses = array('contact_name' => '%' . $search . '%');
 }
 
@@ -80,7 +90,7 @@ $contacts = $contactObj->getContactTemplates(
     array('contact_name', 'ASC'),
     array(($num * $limit), $limit)
 );
-$rows = $pearDB->numberRows();
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 /*

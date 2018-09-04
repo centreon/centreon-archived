@@ -48,31 +48,35 @@ include("./include/common/autoNumLimit.php");
 
 $o = "";
 
-$search = '';
-if (isset($_POST['searchST']) && $_POST['searchST']) {
+$search = null;
+if (isset($_POST['searchST'])) {
     $search = $_POST['searchST'];
     $search = str_replace('/', "#S#", $search);
     $search = str_replace('\\', "#BS#", $search);
-    $_SESSION['searchST'] = $search;
-} elseif (isset($_POST['searchST']) && $_POST['searchST'] === '') {
-    $_SESSION['searchST'] = '';
-    $search = '';
-} elseif (isset($_SESSION['searchST']) && $_SESSION['searchST']) {
-    $search = $_SESSION['searchST'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchST'])) {
+    $search = $_GET['searchST'];
+    $search = str_replace('/', "#S#", $search);
+    $search = str_replace('\\', "#BS#", $search);
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-if ($search != '') {
-    $query = "SELECT COUNT(*) FROM service sv " .
-        "WHERE (sv.service_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sv.service_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%') AND sv.service_register = '0'";
-    $DBRESULT = $pearDB->query($query);
+//Service Template Model list
+if ($search) {
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
+        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
+        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
+        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
+        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
-
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$DBRESULT = $pearDB->query($query);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -95,22 +99,6 @@ $tpl->assign("headerMenu_retry", _("Scheduling"));
 $tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Service Template Model list
- */
-if ($search) {
-    $query = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $query = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
-}
-$DBRESULT = $pearDB->query($query);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -152,17 +140,13 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             $service['service_id'] . "]' />";
     }
 
-    /*
-	 * If the description of our Service Model is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
+    /*If the description of our Service Model is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
     }
 
-    /*
-	 * TPL List
-	 */
+    //TPL List
     $tplArr = array();
     $tplStr = "";
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);

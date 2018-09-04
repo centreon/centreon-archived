@@ -45,11 +45,21 @@ include("./include/common/autoNumLimit.php");
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$LCASearch = "";
-$search = '';
-if (isset($_POST['searchP']) && $_POST['searchP']) {
+$LCASearch = '';
+$search = null;
+
+if (isset($_POST['searchP'])) {
     $search = $_POST['searchP'];
-    $LCASearch = " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchP'])) {
+    $search = $_GET['searchP'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $LCASearch .= " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 // Get Authorized Actions
@@ -130,14 +140,14 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Poller list
  */
 $ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
+
 $query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default " .
     "FROM `nagios_server` " . $ACLString . " " .
     ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
     " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($query);
 
-
-$rows = $pearDB->numberRows();
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -185,7 +195,10 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     */
     $confChangedMessage = _("N/A");
     if ($config["ns_activate"]) {
-        $hasChanged = checkChangeState($config['id'], (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null));
+        $hasChanged = checkChangeState(
+            $config['id'],
+            (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null)
+        );
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
@@ -199,10 +212,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $lastUpdateTimeFlag = 1;
     }
 
-    /*
-	 * Get cfg_id
-	 */
-
+    //Get cfg_id
     $query = "SELECT nagios_id FROM cfg_nagios " .
         "WHERE nagios_server_id = " . $config["id"] . " AND nagios_activate = '1'";
     $DBRESULT2 = $pearDB->query($query);
@@ -273,7 +283,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {

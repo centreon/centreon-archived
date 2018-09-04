@@ -63,59 +63,53 @@ while ($ehi = $DBRESULT->fetch()) {
 
 $DBRESULT->closeCursor();
 $mainQueryParameters = [];
+$search = null;
+$poller = 0;
+$hostgroup = 0;
+$template = 0;
+$status = -1;
 
-if (isset($_POST['searchH'])) {
+if (isset($_POST['SearchB'])) {
     $num = 0;
-    $search = $_POST['searchH'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchH'])) {
+    $centreon->historySearch[$url] = array();
+    $search = $_POST["searchH"];
+    $centreon->historySearch[$url]["searchH"] = $search;
+    $poller = $_POST["poller"];
+    $centreon->historySearch[$url]["poller"] = $poller;
+    $hostgroup = $_POST["hostgroup"];
+    $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
+    $template = $_POST["template"];
+    $centreon->historySearch[$url]["template"] = $template;
+    $status = $_POST["status"];
+    $centreon->historySearch[$url]["status"] = $status;
+} elseif (isset($_GET['SearchB'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_GET['searchH'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url]['searchH'] = $search;
+    $poller = $_GET["poller"];
+    $centreon->historySearch[$url]["poller"] = $poller;
+    $hostgroup = $_GET["hostgroup"];
+    $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
+    $template = $_GET["template"];
+    $centreon->historySearch[$url]["template"] = $template;
+    $status = $_GET["status"];
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
-    $search = null;
-}
-
-/*
- * Get Poller -> used for poller section in host display list
- */
-if (isset($_POST['poller'])) {
-    $poller = $_POST['poller'];
-} elseif (isset($_GET['poller'])) {
-    $poller = $_GET['poller'];
-} elseif (isset($centreon->poller) && $centreon->poller) {
-    $poller = $centreon->poller;
-} else {
-    $poller = 0;
-}
-
-if (isset($_POST['hostgroup'])) {
-    $hostgroup = $_POST['hostgroup'];
-} elseif (isset($_GET['hostgroup'])) {
-    $hostgroup = $_GET['hostgroup'];
-} elseif (isset($centreon->hostgroup) && $centreon->hostgroup) {
-    $hostgroup = $centreon->hostgroup;
-} else {
-    $hostgroup = 0;
-}
-
-if (isset($_POST['template'])) {
-    $template = $_POST['template'];
-} elseif (isset($_GET['template'])) {
-    $template = $_GET['template'];
-} elseif (isset($centreon->template) && $centreon->template) {
-    $template = $centreon->template;
-} else {
-    $template = 0;
-}
-
-if (isset($_POST['status'])) {
-    $status = $_POST['status'];
-} elseif (isset($_GET['status'])) {
-    $status = $_GET['status'];
-} else {
-    $status = -1;
+    if (isset($centreon->historySearch[$url]['searchH'])) {
+        $search = $centreon->historySearch[$url]['searchH'];
+    }
+    if (isset($centreon->historySearch[$url]["poller"])) {
+        $poller = $centreon->historySearch[$url]["poller"];
+    }
+    if (isset($centreon->historySearch[$url]["hostgroup"])) {
+        $hostgroup = $centreon->historySearch[$url]["hostgroup"];
+    }
+    if (isset($centreon->historySearch[$url]["template"])) {
+        $template = $centreon->historySearch[$url]["template"];
+    }
+    if (isset($centreon->historySearch[$url]["status"])) {
+        $status = $centreon->historySearch[$url]["status"];
+    }
 }
 
 /*
@@ -128,9 +122,10 @@ $centreon->template = $template;
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter .= "<option value='0'" .
+    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = '';
 if ($status == 1) {
@@ -267,7 +262,7 @@ if ($hostgroup) {
     }
 }
 
-$rows = $DBRESULT->rowCount();
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include('./include/common/checkPagination.php');
 
 $search = tidySearchKey($search, $advanced_search);

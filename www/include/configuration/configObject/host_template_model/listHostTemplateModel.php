@@ -57,22 +57,30 @@ while ($ehi = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
-$search = '';
+$search = null;
 if (isset($_POST['searchHT'])) {
     $search = $_POST['searchHT'];
-    $_SESSION['searchHT'] = $_POST['searchHT'];
-} elseif (isset($_SESSION['searchHT']) && $_SESSION['searchHT'] != "") {
-    $search = $_SESSION['searchHT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchHT'])) {
+    $search = $_GET['searchHT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-$query = "SELECT COUNT(*) "
-    . "FROM host "
-    . "WHERE host_register = '0' "
-    . "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
-    CentreonDB::escape($search) . "%') ";
-$DBRESULT = $pearDB->query($query);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+/*
+ * Host Template list
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host" .
+    " WHERE host_register = '0' ";
+if ($search) {
+    $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
+        CentreonDB::escape($search) . "%')";
+}
+$rq .= " ORDER BY host_name LIMIT " . $num * $limit . ", " . $limit;
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -95,20 +103,6 @@ $tpl->assign("headerMenu_svChilds", _("Linked Services Templates"));
 $tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Host Template list
- */
-if ($search) {
-    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host " .
-        "WHERE (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
-        CentreonDB::escape($search) . "%') AND host_register = '0' ORDER BY host_name LIMIT " . $num * $limit .
-        ", " . $limit;
-} else {
-    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host " .
-        "WHERE host_register = '0' ORDER BY host_name LIMIT " . $num * $limit . ", " . $limit;
-}
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -162,9 +156,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
     }
 
-    /*
-	 * Check icon
-	 */
+    //Check icon
     if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
     } elseif ($icone = $host_method->replaceMacroInString(
@@ -177,9 +169,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $host_icone = "./img/icons/host.png";
     }
 
-    /*
-	 * Service List
-	 */
+    //Service List
     $svArr = array();
     $svStr = null;
     $svArr = getMyHostServices($host['host_id']);
