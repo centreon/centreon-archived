@@ -97,9 +97,7 @@ if ($list && $list == "h") {
                             WHERE emsr.escalation_esc_id = esc.esc_id " . $aclCond['ms'] . ") > 0 ";
 }
 
-/*
- * Check if $search is init
- */
+//Check if $search was init
 if ($search && $list) {
     $rq .= " AND (esc.esc_name LIKE '%" . $search . "%' OR esc.esc_alias LIKE '%" . $search . "%')";
 } elseif ($search) {
@@ -187,7 +185,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .

@@ -57,8 +57,8 @@ if ($search) {
     $queryValues['search'] = '%' . $search . '%';
 }
 
-$rq = "SELECT SQL_CALC_FOUND_ROWS graph_id, name, default_tpl1, vertical_label, base, split_component " .
-    "FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
+$rq = 'SELECT SQL_CALC_FOUND_ROWS graph_id, name, default_tpl1, vertical_label, base, split_component FROM ' .
+    'giv_graphs_template gg ' . $SearchTool . ' ORDER BY name LIMIT ' . $num * $limit . ', ' . $limit;
 $stmt = $pearDB->prepare($rq);
 foreach ($queryValues as $key => $value) {
     $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
