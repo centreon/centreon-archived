@@ -39,7 +39,7 @@ final class ExportCommitment
      * @param string $path
      * @param array $exporters
      */
-    public function __construct(int $remote, array $pollers = null, string $path = null, array $exporters = null)
+    public function __construct(int $remote = null, array $pollers = null, string $path = null, array $exporters = null)
     {
         $this->remote = $remote;
         $this->pollers = $pollers;

@@ -7,6 +7,8 @@ use CentreonRemote\Infrastructure\Export\ExportParserYaml;
 
 class ExportService
 {
+    
+    const PATH_EXPORTED_DATA = '/var/lib/centreon/remote-data';
 
     /**
      * @var ExporterService
@@ -42,7 +44,7 @@ class ExportService
         unset($exportPath);
 
         foreach ($this->exporter->all() as $exporterMeta) {
-            if ($filterExporters !== null && !in_array($exporterMeta['classname'], $filterExporters)) {
+            if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
                 continue;
             }
 
@@ -57,12 +59,21 @@ class ExportService
      * 
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
-    public function import(ExportCommitment $commitment): void
+    public function import(ExportCommitment $commitment = null): void
     {
+        $commitment = $commitment ?? new ExportCommitment(null, null, static::PATH_EXPORTED_DATA);
+
+        // check is export directory
+        $exportPath = $commitment->getPath();
+
+        if (!is_dir($exportPath)) {
+            return;
+        }
+
         $filterExporters = $commitment->getExporters();
 
         foreach ($this->exporter->all() as $exporterMeta) {
-            if ($filterExporters !== null && !in_array($exporterMeta['classname'], $filterExporters)) {
+            if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
                 continue;
             }
 
@@ -70,5 +81,8 @@ class ExportService
             $exporter->setCommitment($commitment);
             $exporter->import();
         }
+        
+        // backup expot directory
+        system('rm -rf ' . escapeshellarg($exportPath));
     }
 }

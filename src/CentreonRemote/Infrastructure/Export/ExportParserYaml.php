@@ -9,6 +9,10 @@ class ExportParserYaml implements ExportParserInterface
 
     public static function parse(string $filename): array
     {
+        if (!file_exists($filename)) {
+            return [];
+        }
+
         $value = Yaml::parseFile($filename);
 
         return $value;
