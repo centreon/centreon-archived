@@ -7,7 +7,7 @@
    <selectorCollection>
       <entry>
          <key>BASIC</key>
-         <value>//div[@class = 'chart-legend-color' and @style = 'background-color: rgb(204, 153, 255);']</value>
+         <value>id(&quot;graphs&quot;)/div[@class=&quot;graphZone ui-sortable&quot;]/div[@class=&quot;graph&quot;]/div[@class=&quot;content&quot;]/div[@class=&quot;chart-legends&quot;]/div[4]/div[1]/div[@class=&quot;chart-legend-color&quot;][count(. | //div[@class = 'chart-legend-color']) = count(//div[@class = 'chart-legend-color'])]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>BASIC</selectorMethod>
@@ -29,8 +29,8 @@
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
-      <name>style</name>
+      <name>xpath</name>
       <type>Main</type>
-      <value>background-color: rgb(204, 153, 255);</value>
+      <value>id(&quot;graphs&quot;)/div[@class=&quot;graphZone ui-sortable&quot;]/div[@class=&quot;graph&quot;]/div[@class=&quot;content&quot;]/div[@class=&quot;chart-legends&quot;]/div[4]/div[1]/div[@class=&quot;chart-legend-color&quot;]</value>
    </webElementProperties>
 </WebElementEntity>

@@ -25,46 +25,11 @@ def config = TestDataFactory.findTestData('Configuration')
 WebUI.openBrowser(config.getValue('url', 1))
 
 //**************************************************************Login**************************************************************//
-
 WebUI.setText(findTestObject('General/Login/input_useralias'), config.getValue('login', 1))
 
 WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('password', 1))
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//*****************************************************Go to Performances page*****************************************************//
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Performances'))
-
-WebUI.waitForPageLoad(3)
-
-//********************************************************Configure a graph********************************************************//
-
-WebUI.click(findTestObject('Monitoring/Performances/button_Dismiss'))
-
-WebUI.click(findTestObject('Monitoring/Performances/ul_Filter by Host'))
-
-def hostFile = TestDataFactory.findTestData('Host data')
-
-def element = WebUI.modifyObjectProperty(findTestObject('General/div'), 'title', 'equals', 
-	config.getValue('TimeIndicator', 1) + hostFile.getValue('hostName', 1) + '1', true)
-
-WebUI.click(element)
-
-WebUI.click(findTestObject('Monitoring/Performances/span_Chart'))
-
-def servicesFile = TestDataFactory.findTestData('Services')
-
-element = WebUI.modifyObjectProperty(element, 'title', 'equals', 
-	config.getValue('TimeIndicator', 1) + hostFile.getValue('hostName', 1) + '1 - ' + servicesFile.getValue(1, 2), true)
-
-WebUI.click(element)
-
-WebUI.click(findTestObject('null'))
-
-WebUI.click(findTestObject('null'))
-
-WebUI.click(findTestObject('null'))
+CustomKeywords.'custom.NavigationAdministration.accessACLMenu'()
 

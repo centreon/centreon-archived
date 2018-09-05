@@ -31,11 +31,9 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//*****************************************************Go to Performances page*****************************************************//
+//********************************************************Go to Graphs page********************************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Performances'))
+CustomKeywords.'custom.NavigationMonitoring.accessGraphs'()
 
 WebUI.waitForPageLoad(3)
 

@@ -92,6 +92,8 @@ WebUI.click(findTestObject('Home/create view/span_Custom Views'))
 
 WebUI.delay(1)
 
+//**********************************************************create a View**********************************************************//
+
 //Click on the button on the right of the Custom Views page that allows you to modify, create, delete... a view
 WebUI.click(findTestObject('Home/create view/img_editView'))
 

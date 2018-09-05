@@ -33,11 +33,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*********************************************************go to host page*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Hosts'))
+CustomKeywords.'custom.NavigationConfiguration.accessHosts'()
 
 //*********************************************************duplicate a host********************************************************//
 

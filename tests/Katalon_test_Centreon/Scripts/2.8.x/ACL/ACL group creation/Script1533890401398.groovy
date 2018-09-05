@@ -34,11 +34,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*****************************************************Go to the acl group page****************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Access Groups'))
+CustomKeywords.'custom.NavigationAdministration.accessAccessGroups'()
 
 //******************************************************Create a new acl group*****************************************************//
 

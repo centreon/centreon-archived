@@ -36,13 +36,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*****************************************************go to host template page****************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Hosts'))
-
-WebUI.click(findTestObject('Old menu/Configuration/Hosts/a_Host templates'))
+CustomKeywords.'custom.NavigationConfiguration.accessHostTemplates'()
 
 WebUI.waitForPageLoad(3)
 
@@ -75,9 +69,9 @@ for (def index : (1..htFile.getRowNumbers())) {
 	testObject.add(array[1])
 }
 
-//************************************************************fin get id***********************************************************//
+//*********************************************************Go to Host page*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/Hosts/a_Host'))
+CustomKeywords.'custom.NavigationConfiguration.accessHosts'()
 
 WebUI.waitForPageLoad(3)
 

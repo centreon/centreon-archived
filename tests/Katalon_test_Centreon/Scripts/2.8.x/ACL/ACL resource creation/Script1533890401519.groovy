@@ -34,11 +34,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //********************************************************go to ACL resource*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Resources Access'))
+CustomKeywords.'custom.NavigationAdministration.accessResourcesAccess'()
 
 WebUI.waitForPageLoad(3)
 

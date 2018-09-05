@@ -40,11 +40,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //****************************************************Go to Recurrent downtimes****************************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Downtimes'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Recurrent downtimes'))
+CustomKeywords.'custom.NavigationMonitoring.accessRecurrentDowntimes'()
 
 //*****************************************************Delete all the downtimes****************************************************//
 

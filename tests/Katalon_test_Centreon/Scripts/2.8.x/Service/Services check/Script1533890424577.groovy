@@ -31,11 +31,9 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//*******************************************************go to Status Details******************************************************//
+//***************************************************go to Status Details services*************************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Status Details'))
+CustomKeywords.'custom.NavigationMonitoring.accessStatusDetailsServices'()
 
 //****************************************schedule immediate check (forced) of the services****************************************//
 

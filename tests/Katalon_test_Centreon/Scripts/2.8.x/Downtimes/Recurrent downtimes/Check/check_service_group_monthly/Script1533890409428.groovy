@@ -31,13 +31,9 @@ WebUI.setText(findTestObject('Monitoring/Downtimes/input_password'), config.getV
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//****************************************************Go to Status Details page****************************************************//
+//************************************************Go to Status Details services page***********************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Status Details'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Services'))
+CustomKeywords.'custom.NavigationMonitoring.accessStatusDetailsServices'()
 
 //*******************************************************Verify the downtime*******************************************************//
 

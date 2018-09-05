@@ -34,13 +34,9 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//********************************************************go to ACL resource*******************************************************//
+//**********************************************************go to ACL menu*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
 WebUI.waitForPageLoad(3)
 
@@ -125,13 +121,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*******************************************************Go to the host page*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Hosts'))
-
-WebUI.click(findTestObject('Old menu/Configuration/Hosts/a_Host'))
+CustomKeywords.'custom.NavigationConfiguration.accessHosts'()
 
 //**************************************************Verify the acl resource effet**************************************************//
 
@@ -163,9 +153,7 @@ WebUI.verifyElementPresent(a, 1)
 
 //*****************************************************Go to the services page*****************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/Services/a_Services'))
-
-WebUI.waitForPageLoad(3)
+CustomKeywords.'custom.NavigationConfiguration.accessServices'()
 
 //**************************************************Verify the acl resource effet**************************************************//
 
@@ -196,9 +184,7 @@ WebUI.verifyElementPresent(a, 1)
 
 //***************************************************Go to the service group page**************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/Services/a_Service Groups'))
-
-WebUI.waitForPageLoad(3)
+CustomKeywords.'custom.NavigationConfiguration.accessServiceGroups'()
 
 //**************************************************Verify the acl resource effet**************************************************//
 
@@ -217,9 +203,7 @@ WebUI.verifyElementPresent(a, 1)
 
 //***************************************************Go to the meta service page***************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/Services/a_Meta Services'))
-
-WebUI.waitForPageLoad(3)
+CustomKeywords.'custom.NavigationConfiguration.accessMetaServices'()
 
 //**************************************************Verify the acl resource effet**************************************************//
 
@@ -249,13 +233,9 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//********************************************************go to ACL resource*******************************************************//
+//**********************************************************go to ACL menu*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
 //*******************************************************Restore the acl menu******************************************************//
 

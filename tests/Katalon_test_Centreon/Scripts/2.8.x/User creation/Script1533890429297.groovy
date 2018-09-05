@@ -41,11 +41,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*******************************************************go to Contacts/Users******************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Users'))
+CustomKeywords.'custom.NavigationConfiguration.accessUsers'()
 
 //********************************************************create a new user********************************************************//
 
@@ -70,7 +66,7 @@ for(def line : (1..userFile.getRowNumbers()))
 		WebUI.setText(findTestObject('Configuration/User creation/input_contact_email'), userFile.getValue('UserAddress', 1))
 		
 		//This contains the list of host notification options
-		def array = userFile.getValue('HostNotifStatus', line).split(" ")
+		def array = userFile.getValue('HostNotifOptions', line).split(" ")
 		
 		//This goes through the list of host notification options and select them
 		for (def index : (0..array.length - 1)) {
@@ -99,7 +95,7 @@ for(def line : (1..userFile.getRowNumbers()))
 		WebUI.click(hostNotif)
 		
 		//This contains the list of service notification options
-		array = userFile.getValue('ServNotifStatus', line).split(" ")
+		array = userFile.getValue('ServNotifOptions', line).split(" ")
 		
 		//This goes through the list of service notification status and select them
 		for (def index : (0..array.length - 1)) {

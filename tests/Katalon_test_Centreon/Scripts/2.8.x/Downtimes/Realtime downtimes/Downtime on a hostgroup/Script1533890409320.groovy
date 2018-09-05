@@ -33,9 +33,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*********************************************************Go to Downtimes*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Downtimes'))
+CustomKeywords.'custom.NavigationMonitoring.accessDowntimes'()
 
 WebUI.waitForPageLoad(3)
 
@@ -89,9 +87,9 @@ WebUI.waitForPageLoad(3)
 //Let one second to be sure the downtime is correctly configured and will be displayed
 WebUI.delay(1)
 
-//****************************************************Go to Status Details page****************************************************//
+//************************************************Go to Status Details services page***********************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Status Details'))
+CustomKeywords.'custom.NavigationMonitoring.accessStatusDetailsServices'()
 
 //*******************************************************Verify the downtime*******************************************************//
 

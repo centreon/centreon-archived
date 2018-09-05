@@ -82,11 +82,13 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 WebUI.click(findTestObject('Home/button_Home'))
 
-//Click on the button on the right of the Custom Views page that allows you to modify, create, delete... a view
 WebUI.click(findTestObject('Home/Create widget view/span_Custom Views'))
+
+//******************************************************create a Custom Views******************************************************//
 
 WebUI.waitForElementClickable(findTestObject('Home/Create widget view/img_ico-14'), 3)
 
+//Click on the button on the right of the Custom Views page that allows you to modify, create, delete... a view
 WebUI.click(findTestObject('Home/Create widget view/img_ico-14'))
 
 //This is to avoid Chrome's failure

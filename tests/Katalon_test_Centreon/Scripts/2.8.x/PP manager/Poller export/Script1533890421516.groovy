@@ -34,11 +34,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //********************************************************go to pollers page*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Pollers'))
+CustomKeywords.'custom.NavigationConfiguration.accessPollers'()
 
 //*****************************************************Export the configuration****************************************************//
 

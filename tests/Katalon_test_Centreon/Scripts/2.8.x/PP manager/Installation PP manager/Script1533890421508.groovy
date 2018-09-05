@@ -35,7 +35,7 @@ use(TimeCategory, {
 	today = new Date()
 })
 
-str = today.format('yyyyddMM')
+str = today.format('yyyyMMdd')
 
 str = str + '_' + today.format('HHmmss')
 
@@ -78,9 +78,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //********************************************************go to modules page*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Extensions'))
+CustomKeywords.'custom.NavigationAdministration.accessModules'()
 
 WebUI.delay(1)
 

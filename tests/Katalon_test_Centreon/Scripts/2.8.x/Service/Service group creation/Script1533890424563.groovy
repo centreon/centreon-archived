@@ -34,13 +34,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*******************************************************go to service group*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/Services/a_Services'))
-
-WebUI.click(findTestObject('Old menu/Configuration/Services/a_Service Groups'))
+CustomKeywords.'custom.NavigationConfiguration.accessServiceGroups'()
 
 WebUI.waitForPageLoad(3)
 

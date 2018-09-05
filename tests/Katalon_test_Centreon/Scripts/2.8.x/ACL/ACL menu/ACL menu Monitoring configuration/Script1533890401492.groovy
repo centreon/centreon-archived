@@ -36,11 +36,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*******************************************************Go to ACL menu page*******************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
 WebUI.waitForPageLoad(3)
 

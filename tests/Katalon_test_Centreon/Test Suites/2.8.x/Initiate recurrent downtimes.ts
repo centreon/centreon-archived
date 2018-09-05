@@ -4,7 +4,7 @@
    <name>Initiate recurrent downtimes</name>
    <tag></tag>
    <isRerun>false</isRerun>
-   <lastRun>2018-09-03T16:29:35</lastRun>
+   <lastRun>2018-09-05T15:48:06</lastRun>
    <mailRecipient></mailRecipient>
    <numberOfRerun>0</numberOfRerun>
    <pageLoadTimeout>30</pageLoadTimeout>
@@ -14,25 +14,25 @@
    <testCaseLink>
       <guid>3d786d0f-f6b7-4401-99ba-02c68919b4db</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/2.8.x/Host/Duplicate_host_for_recc_downtimes</testCaseId>
    </testCaseLink>
    <testCaseLink>
       <guid>17f4460a-941c-4e95-8a97-ee7459658586</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/2.8.x/Host/Host Group for recurrent downtimes</testCaseId>
    </testCaseLink>
    <testCaseLink>
       <guid>b5efd6d6-1b0e-452f-865f-3b72818ad930</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/2.8.x/Service/Service Group for recurrent downtimes</testCaseId>
    </testCaseLink>
    <testCaseLink>
       <guid>c62f7e0f-5050-42c0-b35b-ea2d3332fc67</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/2.8.x/PP manager/Poller export</testCaseId>
    </testCaseLink>
    <testCaseLink>

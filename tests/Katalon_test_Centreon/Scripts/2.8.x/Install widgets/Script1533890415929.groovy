@@ -33,11 +33,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //******************************************************go to the widget page******************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Extensions'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Widgets'))
+CustomKeywords.'custom.NavigationAdministration.accessWidgets'()
 
 WebUI.waitForPageLoad(3)
 

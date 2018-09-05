@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>a_Services</name>
+   <name>a_Services by host</name>
    <tag></tag>
-   <elementGuidId>2da4479d-2636-49e7-952e-1e29a3ad6dbd</elementGuidId>
+   <elementGuidId>f7124000-3f4b-4791-bea1-526ef922f5a7</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
-         <value></value>
+         <value>//a[@title = 'Services by host']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>BASIC</selectorMethod>
@@ -22,8 +22,8 @@
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
-      <name>text</name>
+      <name>title</name>
       <type>Main</type>
-      <value>Services</value>
+      <value>Services by host</value>
    </webElementProperties>
 </WebElementEntity>

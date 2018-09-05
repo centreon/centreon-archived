@@ -4,7 +4,7 @@
    <name>Check recurrent downtimes</name>
    <tag></tag>
    <isRerun>false</isRerun>
-   <lastRun>2018-09-03T16:51:45</lastRun>
+   <lastRun>2018-09-05T15:48:06</lastRun>
    <mailRecipient></mailRecipient>
    <numberOfRerun>0</numberOfRerun>
    <pageLoadTimeout>30</pageLoadTimeout>

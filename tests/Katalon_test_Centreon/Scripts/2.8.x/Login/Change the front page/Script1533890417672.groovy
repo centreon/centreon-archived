@@ -35,11 +35,7 @@ WebUI.waitForPageLoad(3)
 
 //*********************************************************Go to My Account********************************************************//
 
-WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_Parameters'))
-
-WebUI.click(findTestObject('Old menu/Administration/a_My Account'))
+CustomKeywords.'custom.NavigationAdministration.accessMyAccount'()
 
 //*****************************************************Change the default page*****************************************************//
 

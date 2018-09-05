@@ -34,7 +34,7 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//********************************************************go to ACL resource*******************************************************//
+//**********************************************************go to ACL menu*********************************************************//
 
 WebUI.click(findTestObject('Administration/button_Administration'))
 
@@ -268,13 +268,13 @@ WebUI.setText(findTestObject('General/Login/input_password'), config.getValue('p
 
 WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
-//********************************************************go to ACL resource*******************************************************//
+//**********************************************************go to ACL menu*********************************************************//
 
 WebUI.click(findTestObject('Administration/button_Administration'))
 
 WebUI.mouseOver(findTestObject('Administration/ACL/span_ACL'))
 
-WebUI.click(findTestObject('Administration/ACL/ACL menu/p_Resources Access'))
+WebUI.click(findTestObject('Administration/ACL/ACL menu/p_Menus Access'))
 
 //*******************************************************Restore the acl menu******************************************************//
 

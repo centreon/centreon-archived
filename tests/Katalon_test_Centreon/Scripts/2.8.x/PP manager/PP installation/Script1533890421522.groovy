@@ -34,11 +34,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*****************************************************go to Plugin Packs page*****************************************************//
 
-WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
-
-WebUI.delay(1)
-
-WebUI.click(findTestObject('Old menu/Configuration/a_Plugin Packs'))
+CustomKeywords.'custom.NavigationConfiguration.accessPluginPacks'()
 
 //*****************************************************install the Plugin Packs****************************************************//
 

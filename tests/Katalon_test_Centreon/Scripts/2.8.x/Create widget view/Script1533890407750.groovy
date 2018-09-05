@@ -40,11 +40,7 @@ if(addWidget == '0'){
 	
 	//********************************************************go to ACL menu*******************************************************//
 
-	WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-	
-	WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-	
-	WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+	CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
 	//****************************************************Configure the ACL menu***************************************************//
 	
@@ -76,13 +72,11 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //********************************************************go to Custom Views*******************************************************//
 
-WebUI.click(findTestObject('Old menu/a_Home'))
+CustomKeywords.'custom.NavigationHome.accessCustomViews'()
 
-WebUI.delay(1)
+//******************************************************create a Custom Views******************************************************//
 
 //Click on the button on the right of the Custom Views page that allows you to modify, create, delete... a view
-WebUI.click(findTestObject('Old menu/a_Custom Views'))
-
 WebUI.click(findTestObject('Home/Create widget view/img_ico-14'))
 
 //This is to avoid Chrome's failure
@@ -115,11 +109,7 @@ if(addWidget == '0'){
 	
 	//********************************************************go to ACL menu*******************************************************//
 	
-	WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-	
-	WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-	
-	WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+	CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
 	//****************************************************Configure the ACL menu***************************************************//
 	

@@ -2,6 +2,9 @@ import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
 import static com.kms.katalon.core.testobject.ObjectRepository.findTestObject
+
+import org.junit.After
+
 import com.kms.katalon.core.checkpoint.Checkpoint as Checkpoint
 import com.kms.katalon.core.checkpoint.CheckpointFactory as CheckpointFactory
 import com.kms.katalon.core.mobile.keyword.MobileBuiltInKeywords as MobileBuiltInKeywords
@@ -33,9 +36,7 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 //*********************************************************Go to Downtimes*********************************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Monitoring'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Downtimes'))
+CustomKeywords.'custom.NavigationMonitoring.accessDowntimes'()
 
 WebUI.waitForPageLoad(3)
 
@@ -89,11 +90,9 @@ WebUI.waitForPageLoad(3)
 //Let one second to be sure the downtime is correctly configured and will be displayed
 WebUI.delay(1)
 
-//****************************************************Go to Status Details page****************************************************//
+//************************************************Go to Status Details services page***********************************************//
 
-WebUI.click(findTestObject('Old menu/Monitoring/a_Status Details'))
-
-WebUI.click(findTestObject('Old menu/Monitoring/a_Services'))
+CustomKeywords.'custom.NavigationMonitoring.accessStatusDetailsServices'()
 
 //*******************************************************Verify the downtime*******************************************************//
 

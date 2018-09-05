@@ -59,11 +59,7 @@ if (home.getValue('Home/Custom Views', 1) == '0') {
 
     //********************************************************go to ACL menu*******************************************************//
 	
-	WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-	
-    WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-    WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+	CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
     //****************************************************Configure the ACL menu***************************************************//
 	
@@ -117,11 +113,7 @@ if (home.getValue('Home/Custom Views', 1) == '0') {
 
     //********************************************************go to ACL menu*******************************************************//
 
-	WebUI.click(findTestObject('Old menu/Administration/a_Administration'))
-
-    WebUI.click(findTestObject('Old menu/Administration/a_ACL'))
-
-    WebUI.click(findTestObject('Old menu/Administration/a_Menus Access'))
+	CustomKeywords.'custom.NavigationAdministration.accessMenusAccess'()
 
     //****************************************************Configure the ACL menu***************************************************//
 	
