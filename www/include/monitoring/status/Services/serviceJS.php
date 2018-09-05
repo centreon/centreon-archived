@@ -381,9 +381,10 @@ if (isset($_GET["acknowledge"])) {
             if (searchElement.find('#fixed').length && searchElement.find('#fixed').is(':checked')) {
                 fixed = true;
             }
-
-            var start = searchElement.find('#start').val() + ' ' + searchElement.find('#start_time').val();
-            var end = searchElement.find('#end').val() + ' ' + searchElement.find('#end_time').val();
+            var start = searchElement.find('[name="alternativeDateStart"]').val() + ' '
+                + searchElement.find('#start_time').val();
+            var end = searchElement.find('[name="alternativeDateEnd"]').val() + ' '
+                + searchElement.find('#end_time').val();
             var author = jQuery('#author').val();
             var duration = searchElement.find('#duration').val();
             var duration_scale = searchElement.find('#duration_scale').val();

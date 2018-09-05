@@ -246,6 +246,27 @@ $form->addElement(
     )
 );
 
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$form->addElement(
+    'hidden',
+    'alternativeDateStart',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$form->addElement(
+    'hidden',
+    'alternativeDateEnd',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+
+
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
