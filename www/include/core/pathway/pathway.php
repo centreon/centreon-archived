@@ -134,7 +134,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($tabPath as $cle => $valeur) {
         echo $flag;
         ?>
-        <a href="main.php?p=<?php echo $cle . $valeur["opt"]; ?>" class="pathWay"><?php print $valeur["name"]; ?></a>
+        <a href="main.get.php?p=<?php echo $cle . $valeur["opt"]; ?>" class="pathWay"><?php print $valeur["name"]; ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }
