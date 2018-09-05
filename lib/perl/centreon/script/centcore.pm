@@ -564,7 +564,7 @@ sub sendExportFile($){
     }
 
     my $origin = $self->{centreonDir} . "/filesGeneration/export/".$id."/*";
-    my $dest = $server_info->{'ns_ip_address'}.":/tmp/centreonRemoteExport/";
+    my $dest = $server_info->{'ns_ip_address'}.":/var/lib/centreon/remote-data/";
 
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
