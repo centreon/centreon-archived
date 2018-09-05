@@ -163,7 +163,7 @@ class HostExporter implements ExporterServiceInterface
 
         // insert host
         (function() use ($db) {
-            $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
+            $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST);
             $result = $this->commitment->getParser()::parse($exportPathFile);
 
             foreach ($result as $data) {
@@ -186,7 +186,7 @@ class HostExporter implements ExporterServiceInterface
             $result = $this->commitment->getParser()::parse($exportPathFile);
 
             foreach ($result as $data) {
-                $db->insert('hostcategories', $data);
+                $db->insert('hostgroup', $data);
             }
         })();
 
