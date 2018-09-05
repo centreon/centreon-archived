@@ -2375,11 +2375,6 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,
   `connected_at` TIMESTAMP NULL
-  `app_key` VARCHAR(40) NOT NULL,
-  `version` VARCHAR(16) NOT NULL,
-  `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_at` TIMESTAMP NOT NULL,
-  `connected_at` TIMESTAMP NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
