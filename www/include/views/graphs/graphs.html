@@ -17,8 +17,8 @@
                     <select id="select-chart" multiple size="1"></select>
                 </td>
                 <td class="tour-choose-period tour-global-period" id="tour-choose-period">{$form.period.html}</td>
-                <td class="tour-define-period tour-global-period" id="tour-define-period">{$form.StartDate.html} {$form.StartTime.html}</td>
-                <td class="tour-define-period tour-global-period">{$form.EndDate.html} {$form.EndTime.html}</td>
+                <td class="tour-define-period tour-global-period" id="tour-define-period">{$form.StartDate.html} {$form.StartTime.html} {$form.alternativeDateStartDate.html}</td>
+                <td class="tour-define-period tour-global-period">{$form.EndDate.html} {$form.EndTime.html} {$form.alternativeDateEndDate.html}</td>
             </tr>
             <tr>
                 <td class="divider" colspan="4"><hr></td>
@@ -67,6 +67,9 @@
     </div>
     <div id="graphs" class="graph_content">
         <div class="graphZone"></div>
+    </div>
+    <div>
+        {$form.hidden}
     </div>
 </div>
 
@@ -183,6 +186,7 @@
 <script src="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.js"></script>
 <script src="./include/common/javascript/jquery/jquery.cookie.js"></script>
 <script src="./include/common/javascript/centreon/centreon-tour.js"></script>
+<script src="./include/common/javascript/datepicker/localizedDatepicker.js"></script>
 <script>
 var defaultCharts = {$defaultCharts};
 var nbDisplayedCharts = {$nbDisplayedCharts};
@@ -283,6 +287,8 @@ function initRefresh() {
 function addChart(id, name, times) {
     var refreshInterval;
     var parseInterval;
+    var datepickerFormat = jQuery("#StartDate").datepicker("option", "dateFormat");
+
     if (charts.indexOf(id) !== -1) {
         return;
     }
@@ -296,9 +302,11 @@ function addChart(id, name, times) {
         onzoom: function (period) {
             var start = moment(period[0]);
             var end = moment(period[1]);
-            jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateStartDate"]').val(start.format('YYYY-MM-DD'));
+            jQuery('#StartDate').val(start.format(datepickerFormat.toUpperCase()));
             jQuery('#StartTime').val(start.format('HH:mm'));
-            jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateEndDate"]').val(end.format('YYYY-MM-DD'));
+            jQuery('#EndDate').val(end.format(datepickerFormat.toUpperCase()));
             jQuery('#EndTime').val(end.format('HH:mm'));
             changePeriod();
         }
@@ -338,13 +346,11 @@ function loadChart(chart, callback) {
     if (jQuery('select[name="period"]').val() === '') {
         times = {
             period: {
-                startTime: jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
-                endTime: jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val()
+                startTime: jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val(),
+                endTime: jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val()
             }
         };
-
-    end = end;
-
+        end = end;
     } else {
         times = {
             interval: jQuery('select[name="period"]').val()
@@ -376,7 +382,6 @@ function loadChart(chart, callback) {
 }
 
 function switchCols(number) {
-
     jQuery('.graphZone').removeClass(function (index, css) {
         return (css.match(/\bcol\S+/g) || []).join(' ');
     });
@@ -392,11 +397,11 @@ function changePeriod() {
     var start;
     var end;
     jQuery('select[name="period"]').val('');
-    start = jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val();
-    end = jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val();
+    start = jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val();
+    end = jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val();
     /* Test If all period field are not empty */
     if (start.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) && end.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
-        /* Test if date start is lower of date end */
+        /* Test if date start is lower than date end */
         if (moment(start).isBefore(end)) {
             jQuery('.graphZone .chart').centreonGraph(
                 'setPeriod',
@@ -405,8 +410,8 @@ function changePeriod() {
             );
             displayNav(end);
         } else {
-            // @todo change
-            alert('The start date must be before the date end.');
+            // @todo change - the message isn't localized using getText
+            alert('The start date must be before the end date.');
         }
     }
 }
@@ -415,12 +420,14 @@ function changeInterval() {
     if (jQuery('select[name="period"]').val() === '') {
         return;
     }
+    /* reseting the datepicker choosen date when choosing an interval instead */
     jQuery('.datepicker-iso').datepicker('setDate', null);
     jQuery('.timepicker').val('');
     jQuery('.graphZone .chart').centreonGraph(
         'setInterval',
         jQuery('select[name="period"]').val()
     );
+
     displayNav(moment());
 }
 
@@ -436,6 +443,9 @@ function displayNav(end) {
 jQuery(function () {
     initRefresh();
     loadChart(defaultCharts);
+
+    /* initializing datepicker and the alternative format field */
+    initDatepicker("datepicker-iso", "yy-mm-dd", null);
 
     /* Add events */
     jQuery('#select-chart').on('change', function () {
@@ -466,8 +476,8 @@ jQuery(function () {
         var end;
         /* Get the period */
         if (jQuery('select[name="period"]').val() === '') {
-            start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
-            end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+            start = moment(jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val());
+            end = moment(jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val());
             duration = moment.duration(end.diff(start));
         } else {
             parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
@@ -509,10 +519,11 @@ jQuery(function () {
         var parseInterval;
         var start;
         var end;
+        var datepickerFormat = jQuery("#StartDate").datepicker("option", "dateFormat");
 
         if (jQuery('select[name="period"]').val() === '') {
-            start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
-            end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+            start = moment(jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val());
+            end = moment(jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val());
             duration = moment.duration(end.diff(start));
         } else {
             parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
@@ -528,24 +539,24 @@ jQuery(function () {
         jQuery('select[name="period"]').val('');
         if (text === '<<') {
             end = start;
-            jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateEndDate"]').val(end.format('YYYY-MM-DD'));
+            jQuery('#EndDate').val(end.format(datepickerFormat.toUpperCase()));
             jQuery('#EndTime').val(end.format('HH:mm'));
             start.subtract(duration);
-            jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateStartDate"]').val(start.format('YYYY-MM-DD'));
+            jQuery('#StartDate').val(start.format(datepickerFormat.toUpperCase()));
             jQuery('#StartTime').val(start.format('HH:mm'));
         } else {
             start = end;
-            jQuery('#StartDate').val(start.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateStartDate"]').val(start.format('YYYY-MM-DD'));
+            jQuery('#StartDate').val(start.format(datepickerFormat.toUpperCase()));
             jQuery('#StartTime').val(start.format('HH:mm'));
             end.add(duration);
-            jQuery('#EndDate').val(end.format('YYYY-MM-DD'));
+            jQuery('input[name="alternativeDateEndDate"]').val(end.format('YYYY-MM-DD'));
+            jQuery('#EndDate').val(end.format(datepickerFormat.toUpperCase()));
             jQuery('#EndTime').val(end.format('HH:mm'));
         }
         changePeriod();
-    });
-
-    jQuery('.datepicker-iso').datepicker({
-        dateFormat: 'yy-mm-dd'
     });
 
     /* Initialize the select chart */
@@ -637,3 +648,4 @@ jQuery(function () {
 });
 </script>
 {/literal}
+
