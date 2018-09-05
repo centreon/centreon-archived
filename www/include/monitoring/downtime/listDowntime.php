@@ -44,6 +44,8 @@ include("./include/common/autoNumLimit.php");
 $search_service = null;
 $host_name = null;
 $search_output = null;
+$view_all = 0;
+$view_downtime_cycle = 0;
 
 if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url] = array();
