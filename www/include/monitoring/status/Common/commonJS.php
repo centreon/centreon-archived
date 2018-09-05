@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,21 +46,23 @@ $headerVersion = 1;
 $userFeatures = $centreonFeature->userFeaturesValue(
     $centreon->user->get_id()
 );
-foreach($userFeatures as $feature) {
-    if($feature['name'] == 'Header' && $feature['enabled'] == 1) {
+foreach ($userFeatures as $feature) {
+    if ($feature['name'] == 'Header' &&
+        $feature['enabled'] == 1
+    ) {
         $headerVersion = (int) $feature['version'];
     }
 }
 
 ?>
 // Dynamique
-var _headerId='<?= ($headerVersion == 1) ? 'header' : 'header-react'?>';
-var _sid='<?php echo $sid?>';
+var _headerId = '<?= ($headerVersion == 1) ? 'header' : 'header-react'?>';
+var _sid = '<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
-var _search_type_host='<?php echo $search_type_host?>';
+var _search_type_host = '<?php echo $search_type_host?>';
 <?php } ?>
 <?php if (isset($search_type_service)) { ?>
-var _search_type_service='<?php echo $search_type_service?>';
+var _search_type_service = '<?php echo $search_type_service?>';
 <?php } ?>
 
 var _search = '<?php global $url ;
@@ -72,11 +74,11 @@ echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->his
 var _output_search = '<?php global $url ;
 echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
 
-var _num='<?php echo $num?>';
-var _limit='<?php echo $limit?>';
-var _sort_type='<?php echo $sort_type?>';
-var _order='<?php echo $order?>';
-var _date_time_format_status='<?php echo addslashes(_("Y/m/d H:i:s"))?>';
+var _num = '<?php echo $num?>';
+var _limit = '<?php echo $limit?>';
+var _sort_type = '<?php echo $sort_type?>';
+var _order = '<?php echo $order?>';
+var _date_time_format_status = '<?php echo addslashes(_("Y/m/d H:i:s"))?>';
 var _o='<?php echo (isset($obis) && $obis) ? $obis : $o;?>';
 var _p='<?php echo $p?>';
 
@@ -92,8 +94,8 @@ var _nb = 0;
 var _oldInputFieldValue = '';
 var _oldInputHostFieldValue = '';
 var _oldInputOutputFieldValue = '';
-var _currentInputFieldValue=""; // valeur actuelle du champ texte
-var _resultCache=new Object();
+var _currentInputFieldValue = ""; // valeur actuelle du champ texte
+var _resultCache = new Object();
 var _first = 1;
 var _lock = 0;
 var _instance = "-1";
