@@ -43,7 +43,9 @@ class MediaExporter implements ExporterServiceInterface
      */
     public function cleanup(): void
     {
-        
+        $db = $this->db->getAdapter('configuration_db');
+
+        $db->getRepository(Repository\ViewImgRepository::class)->truncate();
     }
 
     /**
@@ -135,8 +137,7 @@ class MediaExporter implements ExporterServiceInterface
         $db->query('SET FOREIGN_KEY_CHECKS=0;');
 
         // truncate tables
-        $db->getRepository(Repository\ViewImgDirRepository::class)->truncate();
-        $db->getRepository(Repository\ViewImgRepository::class)->truncate();
+        $this->cleanup();
 
         // insert directories
         $exportPathDir = $exportPath . '/' . static::EXPORT_FILE_DIR;
@@ -144,7 +145,7 @@ class MediaExporter implements ExporterServiceInterface
         $dirMap = [];
 
         foreach ($dirs as $data) {
-            $dirMap[$dir['dir_alias']] = $db->insert(Entity\ViewImgDir::TABLE, $data);
+            $dirMap[$data['dir_alias']] = $db->insert(Entity\ViewImgDir::TABLE, $data);
         }
 
         // cleanup memory
@@ -156,12 +157,15 @@ class MediaExporter implements ExporterServiceInterface
         $imgs = $this->commitment->getParser()::parse($exportPathImg);
 
         foreach ($imgs as $data) {
+            $imgDirs = explode(',', $data['img_dirs']);
+            $pathSuffix = '/' . ($data['img_dirs'] ? "{$data['img_dirs']}/" : '') .
+                $data['img_path']
+            ;
             unset($data['img_dirs']);
 
             $db->insert(Entity\ViewImg::TABLE, $data);
 
             // add relation img to dir
-            $imgDirs = explode(',', $img['img_dirs']);
             foreach ($imgDirs as $imgDir) {
                 // skip if dir is undefined
                 if (!array_key_exists($imgDir, $dirMap)) {
@@ -170,16 +174,13 @@ class MediaExporter implements ExporterServiceInterface
 
                 $data = [
                     'dir_dir_parent_id' => $dirMap[$imgDir],
-                    'img_img_id' => $img['img_id'],
+                    'img_img_id' => $data['img_id'],
                 ];
 
                 $db->insert('view_img_dir_relation', $data);
             }
 
             // copy img from export to media dir
-            $pathSuffix = '/' . ($img['img_dirs'] ? "{$img['img_dirs']}/" : '') .
-                $img['img_path']
-            ;
             $imgPath = static::MEDIA_PATH . $pathSuffix;
             $imgPathDir = dirname($imgPath);
             $imgPathExport = $exportPathMedia . $pathSuffix;
