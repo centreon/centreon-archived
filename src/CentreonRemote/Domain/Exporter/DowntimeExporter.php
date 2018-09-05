@@ -47,7 +47,7 @@ class DowntimeExporter implements ExporterServiceInterface
     {
         $db = $this->db->getAdapter('configuration_db');
 
-        $db->getRepository(Repository\TimePeriodRepository::class)->truncate();
+        $db->getRepository(Repository\DowntimeRepository::class)->truncate();
     }
 
     /**
