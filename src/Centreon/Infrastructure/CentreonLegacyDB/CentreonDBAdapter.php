@@ -43,6 +43,11 @@ class CentreonDBAdapter
         return $repositoryInstance;
     }
 
+    public function getCentreonDBInstance(): CentreonDB
+    {
+        return $this->db;
+    }
+
     /**
      * @param string $query
      * @param array $params
