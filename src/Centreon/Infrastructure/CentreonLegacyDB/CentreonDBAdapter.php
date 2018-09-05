@@ -95,18 +95,40 @@ class CentreonDBAdapter
      *
      * @throws \Exception
      *
-     * @return bool|int Last inserted ID
+     * @return int Last inserted ID
      */
     public function insert($table, array $fields)
     {
-        $keys = array_keys($fields);
-        $values = '?' . str_repeat(", ?", count($fields) - 1);
+        if (!$fields) {
+            throw new \Exception("The argument `fields` can't be empty");
+        }
+        
+        $keys = [];
+        $keyVars = [];
 
-        $sql = "INSERT INTO {$table} (`". implode('`,`', $keys) ."`) VALUES ({$values})";
+        foreach ($fields as $key => $value) {
+            $keys[] = "`{$key}`";
+            $keyVars[] = ":{$key}";
+        }
 
-        $this->query($sql, $fields);
+        $columns = join(',', $keys);
+        $values = join(',', $keyVars);
 
-        return $this->passes() ? $this->db->lastInsertId() : false;
+        $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$values})";
+
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($fields as $key => $value) {
+            $stmt->bindValue(':' . $key, $value);
+        }
+
+        try {
+            $stmt->execute();
+        } catch(\Exception $e) {
+            throw new \Exception('Query failed. ' . $e->getMessage());
+        }
+
+        return $this->db->lastInsertId();
     }
 
     /**
