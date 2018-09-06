@@ -16,7 +16,7 @@ Installation
 Le processus d'installation est identique à celui d'un serveur Centreon central réalisé à partir du fichier ISO de Centreon.
 
 .. note::
-    Référez-vous à la documentation :ref:`premier pas avec Centreon 3.4<firststepsces3>`
+    Référez-vous à la documentation :ref:`premier pas avec Centreon 3.4<installisoel7>`
 
 A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
 
