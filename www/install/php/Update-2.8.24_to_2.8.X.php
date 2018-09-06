@@ -43,7 +43,7 @@ $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueK
 $pearDBO->query($query);
 
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
-$pearDBO->query($query);// Add column to topology table to mark which pages are with React
+$pearDBO->query($query);
 
-$query = "ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`";
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isCentral', 'no')";
 $pearDBO->query($query);
