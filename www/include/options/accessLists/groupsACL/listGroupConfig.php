@@ -92,7 +92,7 @@ $style = "one";
 $elemArr = array();
 for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
-
+    
     if ($group["acl_group_activate"]) {
         $moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']
             . "&o=u&limit=".$limit."&num=".$num."&search=". $search
@@ -104,26 +104,26 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled")."'></a>&nbsp;&nbsp;";
     }
-
+    
     $moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) "
         . "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) "
         . "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" "
         . "name='dupNbr[".$group['acl_group_id']."]'></input>";
-
+    
     /* Contacts */
     $ctNbr = array();
     $DBRESULT2 = $pearDB->query("SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations
         WHERE acl_group_id = '".$group['acl_group_id']."'");
     $ctNbr = $DBRESULT2->fetchRow();
     $DBRESULT2->free();
-
+    
     $cgNbr = array();
     $DBRESULT2 = $pearDB->query("SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations
         WHERE acl_group_id = '".$group['acl_group_id']."'");
     $cgNbr = $DBRESULT2->fetchRow();
     $DBRESULT2->free();
-
+    
     $elemArr[$i] = array("MenuClass" => "list_".$style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $group["acl_group_name"],

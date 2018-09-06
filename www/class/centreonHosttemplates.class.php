@@ -52,7 +52,7 @@ class CentreonHosttemplates extends CentreonHost
     {
         return parent::getObjectForSelect2($values, $options, '0');
     }
-
+    
     /**
      * Returns array of host linked to the template
      *
@@ -74,7 +74,7 @@ class CentreonHosttemplates extends CentreonHost
             . 'AND ht.host_register = "0" '
             . 'AND h.host_register = "' . $register . '" '
             . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
-
+ 
         $result = $this->db->query($query);
 
         if (PEAR::isError($result)) {

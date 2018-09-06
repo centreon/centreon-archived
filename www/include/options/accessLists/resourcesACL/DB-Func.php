@@ -67,7 +67,7 @@ function testExistence($name = null)
 function enableLCAInDB($acl_res_id = null, $acls = array())
 {
     global $pearDB, $centreon;
-
+    
     if (!$acl_res_id && !count($acls)) {
         return;
     }
@@ -96,7 +96,7 @@ function enableLCAInDB($acl_res_id = null, $acls = array())
 function disableLCAInDB($acl_res_id = null, $acls = array())
 {
     global $pearDB, $centreon;
-
+    
     if (!$acl_res_id && !count($acls)) {
         return;
     }
@@ -173,7 +173,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);
-
+                    
                     $centreon->CentreonLogAction->insertLog("resource access", $maxId["MAX(acl_res_id)"], $acl_name, "a", $fields);
                 }
             }
@@ -192,11 +192,11 @@ function duplicateGroups($idTD, $acl_id, $pearDB)
 {
     $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT '$acl_id'
         AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
-
+    
     //host categories
     $pearDB->query("INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id)
         (SELECT $acl_id, hc_id FROM acl_resources_hc_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
-
+    
     //hostgroups
     $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id)
         (SELECT $acl_id, hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
@@ -235,7 +235,7 @@ function duplicateGroups($idTD, $acl_id, $pearDB)
  */
 function duplicateContactGroups($idTD, $acl_id, $pearDB)
 {
-    $DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id)
+    $DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) 
         SELECT acl_res_id, '$acl_id' AS acl_group_id FROM acl_res_group_relations WHERE acl_group_id = '$idTD'");
 }
 
@@ -247,7 +247,7 @@ function duplicateContactGroups($idTD, $acl_id, $pearDB)
 function updateLCAInDB($acl_id = null)
 {
     global $form, $centreon;
-
+    
     if (!$acl_id) {
         return;
     }
@@ -262,7 +262,7 @@ function updateLCAInDB($acl_id = null)
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
-
+    
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "c", $fields);
@@ -286,7 +286,7 @@ function insertLCAInDB()
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
-
+    
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "a", $fields);
@@ -318,7 +318,7 @@ function insertLCA()
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
     $acl = $DBRESULT->fetchRow();
-
+    
     return ($acl["MAX(acl_res_id)"]);
 }
 
@@ -473,7 +473,7 @@ function updateHostGroups($acl_id = null)
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id)
+                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) 
                     VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -577,7 +577,7 @@ function updateMetaServices($acl_id = null)
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id)
+                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) 
                     VALUES ('".$acl_id."', '".$value."')");
             }
         }

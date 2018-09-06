@@ -36,7 +36,7 @@
 
 /**
  * Base class for form elements
- */
+ */ 
 require_once 'HTML/QuickForm/select2.php';
 
 /**
@@ -46,9 +46,9 @@ require_once 'HTML/QuickForm/select2.php';
  */
 class HTML_QuickForm_tags extends HTML_QuickForm_select2
 {
-
+ 
     /**
-     *
+     * 
      * @param string $elementName
      * @param string $elementLabel
      * @param array $options
@@ -74,12 +74,12 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
         $this->_pagination = $centreon->optGen['selectPaginationSize'];
         $this->parseCustomAttributes($attributes);
         $this->HTML_QuickForm_select2($elementName, $elementLabel, $options, $attributes);
-
+        
     }
-
-
+    
+   
     /**
-     *
+     * 
      * @return string
      */
     function getJsInit()
@@ -135,14 +135,14 @@ class HTML_QuickForm_tags extends HTML_QuickForm_select2
                         disabled: ' . $disabled . '
                     }
                 });
-
+                
                 ' . $additionnalJs . '
             });
          </script>';
 
         return $javascriptString;
     }
-
+    
 }
 
 if (class_exists('HTML_QuickForm')) {

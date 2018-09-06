@@ -137,7 +137,7 @@ $tpl->display("formGenerateFiles.ihtml");
     tooltip.render();
     var progressBar;
     var msgTab = new Array();
-
+    
     msgTab['start'] = "<?php echo addslashes(_("Preparing environment")); ?>";
     msgTab['gen'] = "<?php echo addslashes(_("Generating files")); ?>";
     msgTab['debug'] = "<?php echo addslashes(_("Running debug mode")); ?>";
@@ -184,7 +184,7 @@ $tpl->display("formGenerateFiles.ihtml");
 
     /**
      * Next step
-     *
+     * 
      * @returns void
      */
     function nextStep() {
@@ -494,7 +494,7 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function toggleErrorPhp(action)
+    function toggleErrorPhp(action) 
     {
         var linkEl = document.getElementById('expend_' + action);
         var divErrors = document.getElementById('errors_' + action);
@@ -507,7 +507,7 @@ $tpl->display("formGenerateFiles.ihtml");
         }
     }
 
-    function cleanErrorPhp()
+    function cleanErrorPhp() 
     {
         var bodyErrors = document.getElementById('error_log');
         while (bodyErrors.hasChildNodes()) {

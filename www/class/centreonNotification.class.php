@@ -161,7 +161,7 @@ class CentreonNotification
         }
         return $resources;
     }
-
+    
     /**
      * Get notifications
      *
@@ -184,9 +184,9 @@ class CentreonNotification
         }
         return $resources;
     }
-
-
-
+    
+    
+    
 
     /**
      * Get host escalatiosn

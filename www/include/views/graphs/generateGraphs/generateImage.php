@@ -94,19 +94,19 @@ if (isset($_GET['chartId'])) {
         die('Resource not found');
     }
     $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
-    $res = $pearDBO->execute($res, array($hostId, $serviceId));
+    $res = $pearDBO->execute($res, array($hostId, $serviceId)); 
     if ($res->numRows()) {
         $row = $res->fetchRow();
-        $index = $row['id'];
+        $index = $row['id'];     
     } else {
         die('Resource not found');
     }
 }
 
-$sql = "SELECT c.contact_id, c.contact_admin
+$sql = "SELECT c.contact_id, c.contact_admin 
         FROM session s, contact c
         WHERE s.session_id = '".$mySessionId."'
-        AND s.user_id = c.contact_id
+        AND s.user_id = c.contact_id 
         LIMIT 1";
 $res = $pearDB->query($sql);
 if (!$res->numRows()) {

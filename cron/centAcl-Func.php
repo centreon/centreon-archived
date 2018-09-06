@@ -387,7 +387,7 @@ function getMyHostServicesByName($host_id = null)
             if (isset($svcCache[$service_id])) {
                 $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
                 $service_description = str_replace('#BS#', '\\', $service_description);
-                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
+                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);                
             }
         }
     }
@@ -404,7 +404,7 @@ function getMyHostServicesByName($host_id = null)
  */
 function getMetaServices($resId, $db, $metaObj)
 {
-    $sql = "SELECT meta_id
+    $sql = "SELECT meta_id 
                 FROM acl_resources_meta_relations
                 WHERE acl_res_id = {$db->escape($resId)}";
     $res = $db->query($sql);
@@ -426,6 +426,6 @@ function getModulesExtensionsPaths($db)
     while ($row = $res->fetchRow()) {
         $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name'] . '/extensions/acl/'));
     }
-
+    
     return $extensionsPaths;
 }

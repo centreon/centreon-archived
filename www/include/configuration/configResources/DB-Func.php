@@ -158,7 +158,7 @@ function insertResourceInDB()
 function insertResource($ret = array())
 {
     global $form, $pearDB, $centreon;
-
+    
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }

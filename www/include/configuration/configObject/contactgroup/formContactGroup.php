@@ -51,9 +51,9 @@ if (!$centreon->user->admin && $cg_id) {
         return null;
     }
 }
-
+        
 $initialValues = array();
-
+        
 /*
  * Database retrieve information for Contact
  */
@@ -85,8 +85,8 @@ if (($o == "c" || $o == "w") && $cg_id) {
     /*
      * Get acl group
      */
-    $sql = "SELECT acl_group_id
-        FROM acl_group_contactgroups_relations
+    $sql = "SELECT acl_group_id 
+        FROM acl_group_contactgroups_relations 
         WHERE cg_cg_id = " .$pearDB->escape($cg_id);
     $res = $pearDB->query($sql);
     for ($i = 0; $aclgroup = $res->fetchRow(); $i++) {
@@ -102,7 +102,7 @@ if (($o == "c" || $o == "w") && $cg_id) {
  * Contacts comes from DB -> Store in $contacts Array
  */
 $contacts = array();
-$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_id`, `contact_name`, `contact_register`
+$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_id`, `contact_name`, `contact_register` 
                                 FROM `contact` ".
                                $acl->queryBuilder('WHERE', 'contact_id', $contactstring).
                                " ORDER BY `contact_name`");
@@ -203,7 +203,7 @@ $redirect->setValue($o);
 
     $init = $form->addElement('hidden', 'initialValues');
     $init->setValue(serialize($initialValues));
-
+    
 /*
  * Set rules
  */

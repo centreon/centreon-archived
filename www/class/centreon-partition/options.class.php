@@ -50,7 +50,7 @@ class Options
     public $verbosity = "info";
     public $confFile;
     public $version = '1.1';
-
+    
     /*
      *
      * Class constructor
@@ -69,7 +69,7 @@ class Options
         $this->options = getopt($this->shortopts);
         $this->updateVerboseLevel();
     }
-
+    
     /*
      * get option value
      */
@@ -79,7 +79,7 @@ class Options
 
         return $value;
     }
-
+    
     /*
      * Check options and print help if necessary
      */
@@ -111,7 +111,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if partitions initialization option is set
      */
@@ -124,7 +124,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if partitionned table update option is set
      */
@@ -137,7 +137,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if backup option is set
      */
@@ -150,7 +150,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if optimize option is set
      */
@@ -163,7 +163,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if purge option is set
      */
@@ -176,7 +176,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Check if parts list option is set
      */
@@ -189,7 +189,7 @@ class Options
 
         return(false);
     }
-
+    
     /*
      * Update verbose level of program
      */
@@ -199,7 +199,7 @@ class Options
             $this->verbosity = $verbosity;
         }
     }
-
+    
     /*
      * returns verbose level of program
      */
@@ -207,7 +207,7 @@ class Options
     {
         return $this->verbosity;
     }
-
+    
     /*
      * returns centreon partitioning $confFile
      */
@@ -215,7 +215,7 @@ class Options
     {
         return $this->confFile;
     }
-
+    
     /*
      * Print program usage
      */

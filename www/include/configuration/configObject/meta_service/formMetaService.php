@@ -73,7 +73,7 @@ if (($o == "c" || $o == "w") && $meta_id) {
     foreach ($tmp as $key => $value) {
         $ms["ms_notifOpts"][trim($value)] = 1;
     }
-
+    
     /*
 	 * Set Contacts
 	 */

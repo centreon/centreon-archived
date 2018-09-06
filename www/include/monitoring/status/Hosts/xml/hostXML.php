@@ -240,7 +240,7 @@ $numRows = $obj->DBC->numberRows();
 /**
  * Get criticality ids
  */
-$critRes = $obj->DBC->query("SELECT value, host_id
+$critRes = $obj->DBC->query("SELECT value, host_id 
                                      FROM customvariables
                                      WHERE name = 'CRITICALITY_ID'
                                      AND service_id IS NULL");

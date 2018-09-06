@@ -43,7 +43,7 @@ class CentreonAclGroup
      * @var type
      */
     protected $db;
-
+    
     /**
      *  Constructor
      *

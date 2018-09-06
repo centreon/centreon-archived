@@ -206,7 +206,7 @@ function getTotalTimeFromInterval($start, $end, $reportTimePeriod)
     $one_day_real_duration = 60 * 60 * 24;
     $totalTime = 0;
     $reportTime = 0;
-
+    
     $reportTimePeriodEnd = mktime(
         $reportTimePeriod["report_hour_end"],
         $reportTimePeriod["report_minute_end"],

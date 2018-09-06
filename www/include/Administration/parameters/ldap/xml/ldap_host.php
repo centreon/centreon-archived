@@ -122,7 +122,7 @@ while ($row = $res->fetchRow()) {
     $xml->writeElement('order', $row['host_order']);
     $xml->writeElement('id', $id);
     $xml->startElement('inputs');
-
+    
     /**
      * Host name
      */

@@ -86,7 +86,7 @@ $form->addElement('header', 'opt', _("Export Options"));
 $form->addElement('header', 'result', _("Actions"));
 $form->addElement('header', 'infos', _("Implied Server"));
 $form->addElement('select', 'host', _("Poller"), $tab_nagios_server, $attrSelect);
-
+    
 /*
  * Add checkbox for enable restart
  */
@@ -98,7 +98,7 @@ $options = array(null => null,
                 'RESTARTCENTREONTRAPD' => _('Restart')
                 );
 $form->addElement('select', 'signal', _('Send signal'), $options);
-
+    
 /*
  * Set checkbox checked.
  */

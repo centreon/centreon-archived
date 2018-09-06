@@ -56,9 +56,9 @@ $pollers = explode(',', $_POST['poller']);
 
 $xml = new CentreonXML();
 
-$res = $db->query("SELECT `name`, `id`, `localhost`
-    FROM `nagios_server`
-    WHERE `ns_activate` = '1'
+$res = $db->query("SELECT `name`, `id`, `localhost` 
+    FROM `nagios_server` 
+    WHERE `ns_activate` = '1' 
     ORDER BY `name` ASC");
 $xml->startElement('response');
 $str = sprintf("<br/><b>%s</b><br/>", _("Post execution command results"));

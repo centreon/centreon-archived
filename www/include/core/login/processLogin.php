@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-
+        
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
     || (isset($_POST["autologin"]) && $_POST["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
@@ -45,7 +45,7 @@ if (isset($_POST["centreon_token"])
     if (isset($_POST['p'])) {
         $_GET["p"] = $_POST["p"];
     }
-
+        
     if (isset($_POST['min'])) {
         $_GET["min"] = $_POST["min"];
     }
@@ -56,7 +56,7 @@ if (isset($_POST["centreon_token"])
     isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
     isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = null;
     isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = null;
-
+    
     $useraliasP = null;
     $passwordP = null;
     if ($loginValidate) {

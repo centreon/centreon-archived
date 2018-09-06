@@ -36,7 +36,7 @@
 class CentreonContact
 {
     protected $db;
-
+    
     /**
      * Constructor
      */
@@ -44,7 +44,7 @@ class CentreonContact
     {
         $this->db = $db;
     }
-
+    
     /**
      * Get contact templates
      *
@@ -72,8 +72,8 @@ class CentreonContact
         if (count($limit) === 2) {
             $limitStr = " LIMIT {$limit[0]},{$limit[1]}";
         }
-        $res = $this->db->query("SELECT {$fieldStr}
-                                FROM contact
+        $res = $this->db->query("SELECT {$fieldStr} 
+                                FROM contact 
                                 {$filterStr}
                                 {$orderStr}
                                 {$limitStr}");
@@ -93,7 +93,7 @@ class CentreonContact
     public static function getContactGroupsFromContact($db, $contactId)
     {
         $sql = "SELECT cg_id, cg_name
-            FROM contactgroup_contact_relation r, contactgroup cg
+            FROM contactgroup_contact_relation r, contactgroup cg 
             WHERE cg.cg_id = r.contactgroup_cg_id
             AND r.contact_contact_id = " . $db->escape($contactId);
         $stmt = $db->query($sql);
@@ -104,7 +104,7 @@ class CentreonContact
         }
         return $cgs;
     }
-
+    
     /**
      *
      * @param integer $field
@@ -175,7 +175,7 @@ class CentreonContact
                 $parameters['relationObject']['comparator'] = 'contact_contact_id';
                 break;
         }
-
+        
         return $parameters;
     }
 

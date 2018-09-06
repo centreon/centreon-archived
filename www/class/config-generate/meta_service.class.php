@@ -81,7 +81,7 @@ class MetaService extends AbstractObject {
 
     private function getCtFromMetaId($meta_id) {
         if (is_null($this->stmt_contact)) {
-            $this->stmt_contact = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
                     contact_id
                 FROM meta_contact
                 WHERE meta_id = :meta_id
@@ -97,7 +97,7 @@ class MetaService extends AbstractObject {
 
     private function getCgFromMetaId($meta_id) {
         if (is_null($this->stmt_cg)) {
-            $this->stmt_cg = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
                     cg_cg_id
                 FROM meta_contactgroup_relation
                 WHERE meta_id = :meta_id
@@ -133,9 +133,9 @@ class MetaService extends AbstractObject {
         }
 
         return $service_id;
-
+        
     }
-
+    
     private function buildCacheMetaServices() {
         $stmt = $this->backend_instance->db->prepare("SELECT $this->attributes_select FROM meta_service WHERE meta_activate = '1'");
         $stmt->execute();
@@ -144,13 +144,13 @@ class MetaService extends AbstractObject {
             $this->meta_services[$meta_id]['service_id'] = $this->getServiceIdFromMetaId($meta_id, $meta_infos['display_name']);
         }
     }
-
+    
     public function generateObjects() {
         $this->buildCacheMetaServices();
         if (count($this->meta_services) == 0) {
             return 0;
         }
-
+        
         $host_id = MetaHost::getInstance()->getHostIdByHostName('_Module_Meta');
         if (is_null($host_id)) {
             return 0;
@@ -158,13 +158,13 @@ class MetaService extends AbstractObject {
         MetaCommand::getInstance()->generateObjects();
         MetaTimeperiod::getInstance()->generateObjects();
         MetaHost::getInstance()->generateObject($host_id);
-
+        
         $this->has_meta_services = 1;
-
+        
         foreach ($this->meta_services as $meta_id => &$meta_service) {
             $meta_service['macros'] = array('_SERVICE_ID' => $meta_service['service_id']);
             $this->getCtFromMetaId($meta_id);
-            $this->getCgFromMetaId($meta_id);
+            $this->getCgFromMetaId($meta_id);            
             $meta_service['check_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['check_period_id']);
             $meta_service['notification_period'] = Timeperiod::getInstance()->generateFromTimeperiodId($meta_service['notification_period_id']);
             $meta_service['register'] = 1;
@@ -174,7 +174,7 @@ class MetaService extends AbstractObject {
             $meta_service['service_description'] = 'meta_' . $meta_id;
             $meta_service['display_name'] = $meta_service['display_name'];
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
-
+            
             $this->generated_services[] = $meta_id;
             $this->generateObjectInFile($meta_service, $meta_id);
         }
@@ -187,7 +187,7 @@ class MetaService extends AbstractObject {
     public function hasMetaServices() {
         return $this->has_meta_services;
     }
-
+    
     public function getGeneratedServices() {
         return $this->generated_services;
     }

@@ -47,7 +47,7 @@ if (isset($pearDB)) {
             $data[$row['key']] = $row['value'];
         }
         $res = $pearDB->query("SELECT ari.ari_name, ari.ari_value, ari.ar_id, ar.ar_enable
-                               FROM auth_ressource ar, auth_ressource_info ari
+                               FROM auth_ressource ar, auth_ressource_info ari 
                                WHERE ar.ar_id = ari.ar_id
                                ORDER BY ar.ar_id");
         $hostData = array();
@@ -71,22 +71,22 @@ if (isset($pearDB)) {
                 $pearDB->query($sql);
                 $pearDB->query("DELETE FROM auth_ressource_info WHERE `ari_name` IN ('host', 'port', 'use_ssl', 'use_tls') AND ar_id = $arId");
                 foreach ($data as $k => $v) {
-                    $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
+                    $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
                                     VALUES (".$arId.", '".$k."', '".$v."')");
                 }
                 foreach ($templateData as $k => $v) {
-                    $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
+                    $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
                                     VALUES (".$arId.", '".$k."', '".$v."')");
                 }
             }
         }
-        $pearDB->query("UPDATE auth_ressource
+        $pearDB->query("UPDATE auth_ressource 
                         SET ar_name = 'Default configuration', ar_description = 'Default configuration'
                         WHERE ar_enable = '1'");
         $pearDB->query("DELETE FROM `options` WHERE `key` LIKE 'ldap\_%' AND `key` <> 'ldap_auth_enable' AND `key` <> 'ldap_last_acl_update'");
         $pearDB->query("DELETE FROM `auth_ressource` WHERE `ar_enable` = '0'");
     }
-
+    
     /*
      * Checks if enable_perfdata_sync exists
      */
@@ -95,7 +95,7 @@ if (isset($pearDB)) {
         $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '1')");
     }
     unset($res);
-
+    
     /*
      * Checks if enable_logs_sync exists
      */

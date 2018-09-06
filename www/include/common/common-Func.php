@@ -873,14 +873,14 @@ function getMyServiceGroupActivateServices($sg_id = null, $access = null)
 				      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
                                       AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id
                                       AND service.service_id = servicegroup_relation.service_service_id
-                                      AND servicegroup_relation.host_host_id = host.host_id
+                                      AND servicegroup_relation.host_host_id = host.host_id 
                                       AND servicegroup_relation.host_host_id IS NOT NULL
                                       AND service.service_activate = '1'
                                       UNION
                                       SELECT service_description, service_id, h.host_id as host_host_id, host_name
-                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h
-                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
-                                      AND service.service_id = servicegroup_relation.service_service_id
+                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h 
+                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' 
+                                      AND service.service_id = servicegroup_relation.service_service_id 
                                       AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id
                                       AND servicegroup_relation.hostgroup_hg_id IS NOT NULL
                                       AND service.service_activate = '1'
@@ -1457,7 +1457,7 @@ function getMyHostID($host_name = null)
     }
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "'
+    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "' 
 			OR host_name = '" . $pearDB->escape(utf8_encode($host_name)) . "'LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
@@ -1734,7 +1734,7 @@ function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca)
             }
             if ($hostIdString) {
                 $DBRESULT2 = $pearDBO->query("SELECT host_id, service_id
-                                                          FROM index_data
+                                                          FROM index_data 
                                                           WHERE host_id IN ($hostIdString)");
                 $result = false;
                 while ($row = $DBRESULT2->fetchRow()) {
@@ -1999,22 +1999,22 @@ function cleanString($str)
     return $str;
 }
 
-// Global Function
+// Global Function 
 
 function get_my_first_allowed_root_menu($lcaTStr)
 {
     global $pearDB;
 
     if (trim($lcaTStr) != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt
-                FROM topology
-                WHERE topology_page IN ($lcaTStr)
-                AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1'
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+                FROM topology 
+                WHERE topology_page IN ($lcaTStr) 
+                AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
                 LIMIT 1";
     } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt
-                FROM topology
-                WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1'
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+                FROM topology 
+                WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
                 LIMIT 1";
     }
     $DBRESULT = $pearDB->query($rq);
@@ -2043,15 +2043,15 @@ function get_child($id_page, $lcaTStr)
     global $pearDB;
 
     if (trim($lcaTStr) != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt
-                FROM topology
-                WHERE  topology_page IN ($lcaTStr)
-                AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1'
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+                FROM topology 
+                WHERE  topology_page IN ($lcaTStr) 
+                AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
                 ORDER BY topology_order, topology_group ";
     } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt
-                FROM topology
-                WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1'
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+                FROM topology 
+                WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
                 ORDER BY topology_order, topology_group ";
     }
 

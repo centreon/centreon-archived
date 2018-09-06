@@ -617,21 +617,21 @@ class CentreonDowntime
             } else {
                 $scale = trim($infos['scale']);
             }
-
+            
             switch ($scale) {
                 default:
                 case 's':
                     $infos['duration'] = $infos['duration'];
                     break;
-
+                
                 case 'm':
                     $infos['duration'] = $infos['duration'] * 60;
                     break;
-
+                
                 case 'h':
                     $infos['duration'] = $infos['duration'] * 60 * 60;
                     break;
-
+                
                 case 'd':
                     $infos['duration'] = $infos['duration'] * 60 * 60 * 24;
                     break;
@@ -641,8 +641,8 @@ class CentreonDowntime
         if (!isset($infos['days'])) {
             $infos['days'] = array();
         }
-
-
+        
+        
         switch ($infos['period_type']) {
             case 'weekly_basis':
                 $query = "INSERT INTO downtime_period (dt_id, dtp_day_of_week, dtp_month_cycle, dtp_start_time,
@@ -836,7 +836,7 @@ class CentreonDowntime
         }
         return $list;
     }
-
+    
     /**
      *
      * @param integer $field
@@ -896,7 +896,7 @@ class CentreonDowntime
                 $parameters['relationObject']['comparator'] = 'dt_id';
                 break;
         }
-
+        
         return $parameters;
     }
 }

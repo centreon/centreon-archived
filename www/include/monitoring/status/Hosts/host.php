@@ -362,20 +362,20 @@ $tpl->display("host.ihtml");
     tabSortPb['ordre'] = '<?php echo $problem_sort_order;?>';
 
     var tabSortAll = [];
-    tabSortAll['champ'] = '<?php echo $global_sort_type;?>';
+    tabSortAll['champ'] = '<?php echo $global_sort_type;?>'; 
     tabSortAll['ordre'] = '<?php echo $global_sort_order;?>';
-
+   
     var up = '<?php echo _("Up");?>';
     var down = '<?php echo _("Down");?>';
     var unreachable = '<?php echo _("Unreachable");?>';
     var pending = '<?php echo _("Pending");?>';
-
+    
     var _keyPrefix;
-
+    
     jQuery('#statusHost').change(function() {
         updateSelect();
     });
-
+    
     function updateSelect()
     {
         var oldStatus = jQuery('#statusFilter').val();
@@ -412,7 +412,7 @@ $tpl->display("host.ihtml");
         _o = '<?php echo $o; ?>';
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
-
+        
         if (_sDefaultOrder == "0") {
             if (_o == 'h') {
                 jQuery("#statusHost option[value='h']").prop('selected', true);

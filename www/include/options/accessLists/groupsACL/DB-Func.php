@@ -90,7 +90,7 @@ function testGroupExistence($name = null)
 function enableGroupInDB($acl_group_id = null, $groups = array())
 {
     global $pearDB, $centreon;
-
+    
     if (!$acl_group_id && !count($groups)) {
         return;
     }
@@ -116,7 +116,7 @@ function enableGroupInDB($acl_group_id = null, $groups = array())
 function disableGroupInDB($acl_group_id = null, $groups = array())
 {
     global $pearDB, $centreon;
-
+    
     if (!$acl_group_id && !count($groups)) {
         return;
     }
@@ -194,7 +194,7 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
                 duplicateResources($key, $maxId["MAX(acl_group_id)"], $pearDB);
                 duplicateActions($key, $maxId["MAX(acl_group_id)"], $pearDB);
                 duplicateMenus($key, $maxId["MAX(acl_group_id)"], $pearDB);
-
+                
                 $centreon->CentreonLogAction->insertLog("access group", $maxId["MAX(acl_group_id)"], $acl_group_name, "a", $fields);
             }
         }
@@ -209,7 +209,7 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
 function insertGroupInDB($ret = array())
 {
     global $form, $centreon;
-
+    
     $acl_group_id = insertGroup($ret);
     updateGroupContacts($acl_group_id, $ret);
     updateGroupContactGroups($acl_group_id);
@@ -268,7 +268,7 @@ function updateGroupInDB($acl_group_id = null)
     updateGroupActions($acl_group_id);
     updateGroupResources($acl_group_id);
     updateGroupMenus($acl_group_id);
-
+    
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("access group", $acl_group_id, $ret['acl_group_name'], "c", $fields);

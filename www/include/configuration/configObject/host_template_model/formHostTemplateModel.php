@@ -49,7 +49,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     }
     $DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
-
+    
     # Set base value
     if ($DBRESULT->numRows()) {
         $host = array_map("myDecode", $DBRESULT->fetchRow());
@@ -104,7 +104,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         /*
          * Set Host Category Parents
          */
-        $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id
+        $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
             FROM hostcategories_relation hcr, hostcategories hc
             WHERE hcr.hostcategories_hc_id = hc.hc_id
             AND hc.level IS NULL
@@ -113,11 +113,11 @@ if (($o == "c" || $o == "w") && $host_id) {
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         }
         $DBRESULT->free();
-
+                    
         /*
          * Set criticality
          */
-        $res = $pearDB->query("SELECT hc.hc_id
+        $res = $pearDB->query("SELECT hc.hc_id 
             FROM hostcategories hc, hostcategories_relation hcr
             WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
             AND hcr.hostcategories_hc_id = hc.hc_id
@@ -129,7 +129,7 @@ if (($o == "c" || $o == "w") && $host_id) {
             $host['criticality_id'] = $cr['hc_id'];
         }
     }
-
+    
     /*
      * Preset values of macros
      */
@@ -159,7 +159,7 @@ $cdata->addJsData('clone-values-template', htmlspecialchars(
     ENT_QUOTES
 ));
 $cdata->addJsData('clone-count-template', count($tplArray));
-
+    
 #
 ## Database retrieve information for differents elements list we need on the page
 #
@@ -338,7 +338,7 @@ $attrCommands = array(
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */
+ */ 
 unset($_POST['o']);
 #
 ## Form begin
@@ -440,7 +440,7 @@ $cloneSetMacro[] = $form->addElement(
     'direct',
     array('id' => 'macroFrom_#index#')
 );
-
+    
 /*
  * Check information
  */
@@ -530,7 +530,7 @@ if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-
+    
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
@@ -771,7 +771,7 @@ $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
 /*
- * Criticality
+ * Criticality 
  */
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList();
@@ -958,7 +958,7 @@ if ($valid) {
         showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
         showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
         showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
-
+        
         function uncheckNotifOption(object)
         {
             if (object.id == "notifN" && object.checked) {

@@ -113,7 +113,7 @@ $thread_id = array();
 $thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("Yes"), 1);
 $thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("No"), 0);
 $form->addGroup($thread_id, 'write_thread_id', _("Write thread id"), '&nbsp;');
-
+    
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);

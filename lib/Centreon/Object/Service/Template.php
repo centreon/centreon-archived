@@ -45,8 +45,8 @@ class Centreon_Object_Service_Template extends Centreon_Object
     protected $table = "service";
     protected $primaryKey = "service_id";
     protected $uniqueLabelField = "service_description";
-
-
+    
+    
     /**
      * Generic method that allows to retrieve object ids
      * from another object parameter

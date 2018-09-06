@@ -614,9 +614,9 @@ class Zend_Db_Adapter_Sqlsrv extends Zend_Db_Adapter_Abstract
                 $order = str_ireplace('ORDER BY', '', $orderby);
                 $order = trim(preg_replace('/\bASC\b|\bDESC\b/i', '', $order));
             }
-
+    
             $sql = preg_replace('/^SELECT\s/i', 'SELECT TOP ' . ($count+$offset) . ' ', $sql);
-
+    
             $sql = 'SELECT * FROM (SELECT TOP ' . $count . ' * FROM (' . $sql . ') AS inner_tbl';
             if ($orderby !== false) {
                 $innerOrder = preg_replace('/\".*\".\"(.*)\"/i', '"inner_tbl"."$1"', $order);

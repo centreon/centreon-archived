@@ -54,7 +54,7 @@ class CentreonDB
     protected $requestSuccessful;
     protected $lineRead;
     protected $debug;
-
+    
     protected static $aForbiden = array('UNION', 'DELETE', 'ORDER', 'SELECT', 'WHERE', 'UPDATE');
 
     /**
@@ -69,7 +69,7 @@ class CentreonDB
     public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
-
+           
 
             $conf_centreon['hostCentreon'] = hostCentreon;
             $conf_centreon['hostCentstorage'] = hostCentstorage;
@@ -126,42 +126,42 @@ class CentreonDB
             }
         }
     }
-
+    
     public function autoCommit($val)
     {
         $this->db->autoCommit($val);
     }
-
+    
     public function prepare($query)
     {
         return $this->db->prepare($query);
     }
-
+    
     public function executeMultiple($stmt, $arrayValues)
     {
         return $this->db->executeMultiple($stmt, $arrayValues);
     }
-
+    
     public function autoPrepare($query)
     {
         return $this->db->autoPrepare($query);
     }
-
+    
     public function commit()
     {
         $this->db->commit();
     }
-
+    
     public function execute($stmt, $arrayValues)
     {
         return $this->db->execute($stmt, $arrayValues);
     }
-
+    
     public function rollback()
     {
         $this->db->rollback();
     }
-
+    
     /**
      *
      * @return type
@@ -170,7 +170,7 @@ class CentreonDB
     {
         return $this->db->getMessage();
     }
-
+    
     /**
      *
      * @return type
@@ -331,7 +331,7 @@ class CentreonDB
     {
         $this->db->disconnect();
     }
-
+    
     /**
      *  Removes quotes from values
      *
@@ -366,9 +366,9 @@ class CentreonDB
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
-
+        
         $escapedStr = mysql_real_escape_string($str);
-
+        
         return $escapedStr;
     }
 
@@ -490,9 +490,9 @@ class CentreonDB
         }
         return $number;
     }
-
+    
     /*
-     * checks if there is malicious injection
+     * checks if there is malicious injection 
      */
     public static function checkInjection($sString)
     {

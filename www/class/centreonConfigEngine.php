@@ -41,7 +41,7 @@
 class CentreonConfigEngine
 {
     protected $db;
-
+    
     /**
      * Constructor
      *
@@ -51,7 +51,7 @@ class CentreonConfigEngine
     {
         $this->db = $db;
     }
-
+    
     /**
      * Insert one or multiple broker directives
      *
@@ -63,15 +63,15 @@ class CentreonConfigEngine
     {
         $this->db->query("DELETE FROM cfg_nagios_broker_module
                 WHERE cfg_nagios_id = ".$this->db->escape($serverId));
-
+                    
         foreach ($directives as $value) {
             if ($value != "") {
-                $this->db->query("INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`)
+                $this->db->query("INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) 
                                 VALUES ('". $this->db->escape($value) ."', ". $this->db->escape($serverId) .")");
             }
         }
     }
-
+    
     /**
      * Used by form only
      *

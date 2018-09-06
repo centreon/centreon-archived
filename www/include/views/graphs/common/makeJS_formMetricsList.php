@@ -35,7 +35,7 @@
  * SVN : $Id$
  *
  */
-
+ 
     /*
 	 * Lang file
 	 */
@@ -76,11 +76,11 @@ function display_select_list(xhr, def_id){
     }
 
     for(i=0; i<options.length; i++) {
-        id = o_id.item(i).firstChild.data;
+        id = o_id.item(i).firstChild.data;      
         alias = o_alias.item(i).firstChild.data;
 
         if ( _o == "a" || _o == "c") {
-            var o_elem = document.createElement('option');
+            var o_elem = document.createElement('option');      
             o_elem.value = id;
             o_elem.text = alias;
         }
@@ -99,14 +99,14 @@ function display_select_list(xhr, def_id){
             }
         }
         if ( _o == "a" || _o == "c") {
-            if (navigator.appName == "Microsoft Internet Explorer") {
+            if (navigator.appName == "Microsoft Internet Explorer") {                   
                 c_elem.add(o_elem);
             } else {
                 c_elem.appendChild(o_elem);
             }
         }
-    }
-    var td_elem = document.getElementById(td_id);
+    }           
+    var td_elem = document.getElementById(td_id);       
     if ( td_elem != null ) {
         if ( _o == "w" ) {
             var inHTML = td_elem.innerHTML;
@@ -114,7 +114,7 @@ function display_select_list(xhr, def_id){
             var re = new RegExp(pattern);
             inHTML = inHTML.replace(re, "");
             td_elem.innerHTML = inHTML + service_val;
-            /* init new input element */
+            /* init new input element */    
             var c_elem = document.createElement('input');
             c_elem.type = "hidden";
             if ( def_id != null )
@@ -157,9 +157,9 @@ function update_select_list(host_service_id, def_id){
     }
 
     var xhr = null;
-    if (window.XMLHttpRequest) {
+    if (window.XMLHttpRequest) {     
         xhr = new XMLHttpRequest();
-    } else if (window.ActiveXObject) {
+    } else if (window.ActiveXObject) {        
         xhr = new ActiveXObject("Microsoft.XMLHTTP");
     } else {
         alert("AJAX is not supported");

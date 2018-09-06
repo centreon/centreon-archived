@@ -162,7 +162,7 @@ class CentreonTraps
             $res = $this->db->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
             $row = $res->fetchRow();
             $row["traps_id"] = '';
-
+            
             for ($i = 1; $i <= $nbrDup[$key]; $i++) {
                 $val = null;
                 foreach ($row as $key2 => $value2) {
@@ -182,13 +182,13 @@ class CentreonTraps
                 $res = $this->db->query($rq);
                 $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                 $maxId = $res2->fetchRow();
-                $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id)
-                                (SELECT ".$maxId['MAX(traps_id)'].", service_id
-                                    FROM traps_service_relation
+                $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
+                                (SELECT ".$maxId['MAX(traps_id)'].", service_id 
+                                    FROM traps_service_relation 
                                     WHERE traps_id = ".$this->db->escape($key).")");
-                $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order)
+                $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
                                 (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
-                                    FROM traps_preexec
+                                    FROM traps_preexec 
                                     WHERE trap_id = ".$this->db->escape($key).")");
 
                 $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$key;
@@ -330,7 +330,7 @@ class CentreonTraps
             $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
         }
     }
-
+        
     /**
      * Delete & insert service relations
      *
@@ -338,10 +338,10 @@ class CentreonTraps
      */
     protected function setServiceRelations($trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation
+        $this->db->query("DELETE FROM traps_service_relation 
                 WHERE traps_id = " . $this->db->escape($trapId). "
-                AND NOT EXISTS (SELECT s.service_id
-                    FROM service s
+                AND NOT EXISTS (SELECT s.service_id 
+                    FROM service s 
                     WHERE s.service_register = '0'
                     AND s.service_id = traps_service_relation.service_id)");
         $services = CentreonUtils::mergeWithInitialValues($this->form, 'services');
@@ -364,7 +364,7 @@ class CentreonTraps
             $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
         }
     }
-
+        
     /**
      * Delete & insert service template relations
      *
@@ -372,10 +372,10 @@ class CentreonTraps
      */
     protected function setServiceTemplateRelations($trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation
+        $this->db->query("DELETE FROM traps_service_relation 
                 WHERE traps_id = " . $this->db->escape($trapId). "
-                AND NOT EXISTS (SELECT s.service_id
-                    FROM service s
+                AND NOT EXISTS (SELECT s.service_id 
+                    FROM service s 
                     WHERE s.service_register = '1'
                     AND s.service_id = traps_service_relation.service_id)");
         $serviceTpl = (array)$this->form->getSubmitValue('service_templates');
@@ -393,7 +393,7 @@ class CentreonTraps
             $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
         }
     }
-
+        
     /**
      * Insert Traps
      *
@@ -440,9 +440,9 @@ class CentreonTraps
         }
 
         $rq = "INSERT INTO traps ";
-        $rq .= "(traps_name, traps_oid, traps_args,
-            traps_status, severity_id, traps_submit_result_enable,
-            traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable,
+        $rq .= "(traps_name, traps_oid, traps_args, 
+            traps_status, severity_id, traps_submit_result_enable, 
+            traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
             traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value,
             traps_routing_filter_services, manufacturer_id, traps_log, traps_exec_interval, traps_exec_interval_type,
             traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,
@@ -494,7 +494,7 @@ class CentreonTraps
 
         return ($traps_id["MAX(traps_id)"]);
     }
-
+        
     /**
      * Get pre exec commands from trap_id
      *
@@ -541,7 +541,7 @@ class CentreonTraps
         }
         return $arr;
     }
-
+    
     /**
      *
      * @param integer $field
@@ -588,10 +588,10 @@ class CentreonTraps
                 $parameters['relationObject']['comparator'] = 'traps_id';
                 break;
         }
-
+        
         return $parameters;
     }
-
+    
     /**
      *
      * @param type $values

@@ -166,7 +166,7 @@ if (!$session->numRows()) {
         $DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
         $GraphTemplate = $DBRESULT->fetchRow();
     }
-
+        
     if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)) {
         $DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
         $meta = $DBRESULT_meta->fetchRow();
@@ -180,15 +180,15 @@ if (!$session->numRows()) {
     if (isset($GraphTemplate["base"]) && $GraphTemplate["base"]) {
         $base = "-b ".$GraphTemplate["base"];
     }
-
+        
     if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "") {
         $GraphTemplate["width"] = 500;
     }
-
+        
     if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "") {
         $GraphTemplate["height"] = 120;
     }
-
+        
     if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "") {
         $GraphTemplate["vertical_label"] = "sds";
     }
@@ -280,7 +280,7 @@ if (!$session->numRows()) {
     if (empty($timezone)) {
         $timezone = date_default_timezone_get();
     }
-
+        
     $command_line = "export TZ='".$timezone."' ; ".$command_line;
 
     /*

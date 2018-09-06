@@ -96,7 +96,7 @@ class CentreonPurgeEngine
 
         $this->isPartitioned();
     }
-
+    
     private function readConfig()
     {
         $query = 'SELECT len_storage_mysql,archive_retention,reporting_retention, len_storage_downtimes, len_storage_comments '
@@ -166,13 +166,13 @@ class CentreonPurgeEngine
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) IS NOT NULL ";
         $request .= "AND CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER) < " . $this->tablesToPurge[$table]['retention'] . " ";
         $request .= "AND PARTITION_NAME NOT LIKE 'pmax' ";
-
+        
         $DBRESULT = $this->dbCentstorage->query($request);
         if (PEAR::isError($DBRESULT)) {
             throw new Exception("Error : Cannot get partitions to purge for table "
                 . $table . ", " . $DBRESULT->getDebugInfo() . "\n");
         }
-
+        
         while ($row = $DBRESULT->fetchRow()) {
             $request = "ALTER TABLE " . $table . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
             $DBRESULT2 =& $this->dbCentstorage->query($request);

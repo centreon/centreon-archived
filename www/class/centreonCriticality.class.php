@@ -45,12 +45,12 @@ class CentreonCriticality
      */
     protected $db;
     protected $tree;
-
+    
     public function __construct($db)
     {
         $this->db = $db;
     }
-
+    
     /**
      * Get data of a criticality object
      *
@@ -74,10 +74,10 @@ class CentreonCriticality
     public function getDataForHosts($critId)
     {
         static $data = array();
-
+        
         if (!isset($data[$critId])) {
             $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
-                    FROM hostcategories
+                    FROM hostcategories 
                     WHERE level IS NOT NULL
                     ORDER BY level DESC";
             $res = $this->db->query($sql);
@@ -93,7 +93,7 @@ class CentreonCriticality
         }
         return null;
     }
-
+    
     /**
      * Get data of a criticality object for services
      *
@@ -103,10 +103,10 @@ class CentreonCriticality
     public function getDataForServices($critId)
     {
         static $data = array();
-
+        
         if (!isset($data[$critId])) {
             $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
-                    FROM service_categories
+                    FROM service_categories 
                     WHERE level IS NOT NULL
                     ORDER BY level DESC";
             $res = $this->db->query($sql);
@@ -122,7 +122,7 @@ class CentreonCriticality
         }
         return null;
     }
-
+    
     /**
      * Get list of criticality
      *
@@ -172,7 +172,7 @@ class CentreonCriticality
 
         if (is_null($ids)) {
             $sql = "SELECT cvs.host_id, cvs.value as criticality
-                FROM customvariables cvs
+                FROM customvariables cvs 
                 WHERE cvs.name='CRITICALITY_ID'
                 AND cvs.service_id IS NULL";
             $res = $db->query($sql);
@@ -197,8 +197,8 @@ class CentreonCriticality
         static $ids = null;
 
         if (is_null($ids)) {
-            $sql = "SELECT cvs.service_id, cvs.value as criticality
-                FROM customvariables cvs
+            $sql = "SELECT cvs.service_id, cvs.value as criticality 
+                FROM customvariables cvs 
                 WHERE cvs.name='CRITICALITY_ID'
                 AND cvs.service_id IS NOT NULL";
             $res = $db->query($sql);
@@ -231,7 +231,7 @@ class CentreonCriticality
         $limit = null
     ) {
         $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
-                FROM hostcategories
+                FROM hostcategories 
                 WHERE level IS NOT NULL ";
         if (!is_null($searchString) && $searchString != "") {
             $sql .= " AND hc_name LIKE '%".$this->db->escape($searchString)."%' ";
@@ -253,7 +253,7 @@ class CentreonCriticality
         }
         return $elements;
     }
-
+    
     /**
      * Get list of service criticalities
      *
@@ -272,7 +272,7 @@ class CentreonCriticality
         $limit = null
     ) {
         $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
-                FROM service_categories
+                FROM service_categories 
                 WHERE level IS NOT NULL ";
         if (!is_null($searchString) && $searchString != "") {
             $sql .= " AND sc_name LIKE '%".$this->db->escape($searchString)."%' ";
@@ -318,7 +318,7 @@ class CentreonCriticality
         }
         return 0;
     }
-
+    
     /**
      * Get service criticality
      *
@@ -362,11 +362,11 @@ class CentreonCriticality
     public function getHostTplCriticities($host_id, $cache)
     {
         global $pearDB;
-
+        
         if (!$host_id) {
             return null;
         }
-
+        
         $rq = "SELECT host_tpl_id " .
             "FROM host_template_relation " .
             "WHERE host_host_id = '".$host_id."' " .

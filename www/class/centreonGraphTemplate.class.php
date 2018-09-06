@@ -51,13 +51,13 @@ class CentreonGraphTemplate
      * @var type
      */
     protected $db;
-
+    
     /**
      *
      * @var type
      */
     protected $instanceObj;
-
+    
     /**
      * Constructor
      *
@@ -69,7 +69,7 @@ class CentreonGraphTemplate
         $this->db = $db;
         $this->instanceObj = new CentreonInstance($db);
     }
-
+    
     /**
      *
      * @param array $values
@@ -90,7 +90,7 @@ class CentreonGraphTemplate
         } else {
             $explodedValues .= '""';
         }
-
+        
         $query = "SELECT graph_id, name FROM giv_graphs_template
             WHERE graph_id IN (" . $explodedValues . ") ORDER BY name";
 

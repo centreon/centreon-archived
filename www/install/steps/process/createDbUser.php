@@ -48,7 +48,7 @@ $dbUser = $_SESSION['DB_USER'];
 $dbPass = $_SESSION['DB_PASS'];
 $host = "localhost";
 // if database server is not on localhost...
-if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] &&
+if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS'] && 
     $_SESSION['ADDRESS'] != "127.0.0.1" && $_SESSION['ADDRESS'] != "localhost") {
         $host = $_SERVER['SERVER_ADDR'];
 }

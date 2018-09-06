@@ -83,7 +83,7 @@ class CentreonInstance
             }
         }
     }
-
+    
     public function getInstancesMonitoring($poller_id = array())
     {
         $pollers = array();
@@ -96,10 +96,10 @@ class CentreonInstance
                 $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
             }
         }
-
+        
         return $pollers;
     }
-
+    
 
     /**
      * Get Parameter
@@ -131,7 +131,7 @@ class CentreonInstance
     {
         return $this->instances;
     }
-
+    
     /**
      * Get command data from poller id
      *
@@ -140,7 +140,7 @@ class CentreonInstance
      */
     public function getCommandData($pollerId)
     {
-        $sql = "SELECT c.command_id, c.command_name, c.command_line
+        $sql = "SELECT c.command_id, c.command_name, c.command_line 
             FROM command c, poller_command_relations pcr
             WHERE pcr.poller_id = ?
             AND pcr.command_id = c.command_id
@@ -152,7 +152,7 @@ class CentreonInstance
         }
         return $arr;
     }
-
+    
     /**
      * Return list of commands used by poller
      *
@@ -164,8 +164,8 @@ class CentreonInstance
         $arr = array();
         $i = 0;
         if (!isset($_REQUEST['pollercmd']) && $pollerId) {
-            $sql = "SELECT command_id
-                FROM poller_command_relations
+            $sql = "SELECT command_id 
+                FROM poller_command_relations 
                 WHERE poller_id = ?
                 ORDER BY command_order";
             $res = $this->db->query($sql, array($pollerId));
@@ -181,7 +181,7 @@ class CentreonInstance
         }
         return $arr;
     }
-
+    
     /**
      * Set post-restart commands
      *
@@ -193,14 +193,14 @@ class CentreonInstance
     {
         $this->db->query("DELETE FROM poller_command_relations
                 WHERE poller_id = ".$this->db->escape($pollerId));
-
+            
         $stored = array();
         $i = 1;
         foreach ($commands as $value) {
             if ($value != "" &&
                 !isset($stored[$value])) {
                     $this->db->query("INSERT INTO poller_command_relations
-                        (`poller_id`, `command_id`, `command_order`)
+                        (`poller_id`, `command_id`, `command_order`) 
                         VALUES (" . $this->db->escape($pollerId) . ", " . $this->db->escape($value) . ", " . $i . ")");
                     $stored[$value] = true;
                     $i++;

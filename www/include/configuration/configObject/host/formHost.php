@@ -135,7 +135,7 @@ if (($o == "c" || $o == "w") && $host_id) {
      */
     $host_list = $DBRESULT->fetchRow();
     $host = array_map("myDecode", $host_list);
-
+    
     $cmdId = $host['command_command_id'];
 
     /*
@@ -221,7 +221,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     /*
      * Set Host Category Parents
      */
-    $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id
+    $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
                     FROM hostcategories_relation hcr, hostcategories hc
                     WHERE hcr.hostcategories_hc_id = hc.hc_id
                     AND hc.level IS NULL
@@ -249,7 +249,7 @@ if (($o == "c" || $o == "w") && $host_id) {
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT hc.hc_id
+    $res = $pearDB->query("SELECT hc.hc_id 
                             FROM hostcategories hc, hostcategories_relation hcr
                             WHERE hcr.host_host_id = " . $pearDB->escape($host_id) . "
                             AND hcr.hostcategories_hc_id = hc.hc_id
@@ -260,7 +260,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cr = $res->fetchRow();
         $host['criticality_id'] = $cr['hc_id'];
     }
-
+    
     $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true, "host_name,host_id,command_command_id");
     if (!isset($cmdId)) {
         $cmdId = "";
@@ -478,7 +478,7 @@ $TemplateValues = array();
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */
+ */ 
 unset($_POST['o']);
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
@@ -714,7 +714,7 @@ if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-
+    
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
@@ -1143,8 +1143,8 @@ $tpl->assign('javascript', '
         ');
 $tpl->assign('accessgroups', _('Access groups'));
 
-/*
- * prepare help texts
+/* 
+ * prepare help texts 
  */
 $helptext = "";
 include_once("help.php");

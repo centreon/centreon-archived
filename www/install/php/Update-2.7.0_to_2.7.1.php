@@ -43,7 +43,7 @@ if (isset($pearDB)) {
             . " contact_alias = '".html_entity_decode($row['contact_alias'])."'"
             . " where contact_id = ".$row['contact_id'].";";
         $pearDB->query($queryUpdate);
-    }
+    } 
 }
 
 ?>

@@ -37,7 +37,7 @@ class Zend_Cache_Manager
      * Constant holding reserved name for default Page Cache
      */
     const PAGECACHE = 'page';
-
+    
     /**
      * Constant holding reserved name for default Page Tag Cache
      */
@@ -160,8 +160,8 @@ class Zend_Cache_Manager
             return $this->_caches[$name];
         }
         if (isset($this->_optionTemplates[$name])) {
-            if ($name == self::PAGECACHE
-                && (!isset($this->_optionTemplates[$name]['backend']['options']['tag_cache'])
+            if ($name == self::PAGECACHE 
+                && (!isset($this->_optionTemplates[$name]['backend']['options']['tag_cache']) 
                 || !$this->_optionTemplates[$name]['backend']['options']['tag_cache'] instanceof Zend_Cache_Core)
             ) {
                 $this->_optionTemplates[$name]['backend']['options']['tag_cache']

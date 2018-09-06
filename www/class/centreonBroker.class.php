@@ -65,7 +65,7 @@ class CentreonBroker
     {
         return "broker";
     }
-
+        
     /**
      * Execute script
      *
@@ -77,7 +77,7 @@ class CentreonBroker
     {
       shell_exec("sudo service $script $action");
     }
-
+        
     /**
      * Get Init script
      *
@@ -94,7 +94,7 @@ class CentreonBroker
         }
         return $scriptName;
     }
-
+        
     /**
      * Do action
      *
@@ -110,7 +110,7 @@ class CentreonBroker
             }
         }
     }
-
+        
     /**
      * Magic method
      *

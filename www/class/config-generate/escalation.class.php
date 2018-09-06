@@ -86,7 +86,7 @@ class Escalation extends AbstractObject {
     protected $stmt_hg = null;
     protected $stmt_sg = null;
     protected $stmt_meta = null;
-
+    
     public function __construct() {
         parent::__construct();
         $this->host_instance = Host::getInstance();
@@ -95,78 +95,78 @@ class Escalation extends AbstractObject {
         $this->sg_instance = Servicegroup::getInstance();
         $this->buildCache();
     }
-
+    
     private function getEscalationCache() {
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
                 FROM escalation
         ");
         $stmt->execute();
         $this->escalation_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     escalation_esc_id, contactgroup_cg_id
                 FROM escalation_contactgroup_relation
         ");
         $stmt->execute();
         $this->escalation_linked_cg_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-
+        
         if (count($this->escalation_cache) == 0) {
             $this->has_escalation = 0;
         }
     }
-
+    
     private function getEscalationLinkedCache() {
         if ($this->has_escalation == 0) {
             return 0;
         }
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     host_host_id, escalation_esc_id
                 FROM escalation_host_relation
         ");
         $stmt->execute();
         $this->escalation_linked_host_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     hostgroup_hg_id, escalation_esc_id
                 FROM escalation_hostgroup_relation
         ");
         $stmt->execute();
         $this->escalation_linked_hg_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     servicegroup_sg_id, escalation_esc_id
                 FROM escalation_servicegroup_relation
         ");
         $stmt->execute();
         $this->escalation_linked_sg_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     meta_service_meta_id, escalation_esc_id
                 FROM escalation_meta_service_relation
         ");
         $stmt->execute();
         $this->escalation_linked_meta_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
-
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
                     CONCAT(host_host_id, '_', service_service_id), escalation_esc_id
                 FROM escalation_service_relation
         ");
         $stmt->execute();
         $this->escalation_linked_service_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_COLUMN);
     }
-
+    
     private function buildCache() {
         if ($this->done_cache == 1) {
             return 0;
         }
-
+        
         $this->getEscalationCache();
         $this->getEscalationLinkedCache();
         $this->done_cache = 1;
     }
-
+    
     private function generateSubObjects(&$escalation, $esc_id) {
         $period = Timeperiod::getInstance();
         $cg = Contactgroup::getInstance();
@@ -177,7 +177,7 @@ class Escalation extends AbstractObject {
             $escalation['contact_groups'][] = $cg->generateFromCgId($cg_id);
         }
     }
-
+    
     private function getEscalationFromId($escalation_id) {
         if (isset($this->escalation_cache[$escalation_id])) {
             return $this->escalation_cache[$escalation_id];
@@ -187,7 +187,7 @@ class Escalation extends AbstractObject {
         }
 
         if (is_null($this->stmt_escalation)) {
-            $this->stmt_escalation = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_escalation = $this->backend_instance->db->prepare("SELECT 
                     $this->attributes_select
                 FROM escalation
                 WHERE esc_id = :esc_id
@@ -199,9 +199,9 @@ class Escalation extends AbstractObject {
         if (is_null($this->escalation_cache[$escalation_id])) {
             return null;
         }
-
+        
         if (is_null($this->stmt_cg)) {
-            $this->stmt_cg = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
                     contactgroup_cg_id
                 FROM escalation_contactgroup_relation
                 WHERE escalation_esc_id = :esc_id
@@ -210,14 +210,14 @@ class Escalation extends AbstractObject {
         $this->stmt_cg->bindParam(':esc_id', $escalation_id, PDO::PARAM_INT);
         $this->stmt_cg->execute();
         $this->escalation_linked_cg_cache[$escalation_id] = $this->stmt_cg->fetchAll(PDO::FETCH_COLUMN);
-
+        
         return $this->escalation_cache[$escalation_id];
     }
-
+    
     private function addHost($host_id) {
         if ($this->use_cache == 0) {
             if (is_null($this->stmt_host)) {
-                $this->stmt_host = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_host = $this->backend_instance->db->prepare("SELECT 
                         escalation_esc_id
                     FROM escalation_host_relation
                     WHERE host_host_id = :host_id
@@ -231,14 +231,14 @@ class Escalation extends AbstractObject {
         if (!isset($this->escalation_linked_host_cache[$host_id])) {
             return 0;
         }
-
+        
         foreach ($this->escalation_linked_host_cache[$host_id] as $escalation_id) {
             if (!isset($this->hosts_build[$escalation_id])) {
                 $this->hosts_build[$escalation_id] = array();
             }
             $this->hosts_build[$escalation_id][] = $this->host_instance->getString($host_id, 'host_name');
-
-            if (isset($this->escalation_cache[$escalation_id]['host_inheritance_to_services']) &&
+            
+            if (isset($this->escalation_cache[$escalation_id]['host_inheritance_to_services']) && 
                 $this->escalation_cache[$escalation_id]['host_inheritance_to_services'] == 1) {
                 $services = &$this->service_instance->getGeneratedServices();
                 // host without services
@@ -254,11 +254,11 @@ class Escalation extends AbstractObject {
             }
         }
     }
-
+    
     private function addHostgroup($hg_id, $hostgroup) {
         if ($this->use_cache == 0) {
             if (is_null($this->stmt_hg)) {
-                $this->stmt_hg = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_hg = $this->backend_instance->db->prepare("SELECT 
                         escalation_esc_id
                     FROM escalation_hostgroup_relation
                     WHERE hostgroup_hg_id = :hg_id
@@ -272,12 +272,12 @@ class Escalation extends AbstractObject {
         if (!isset($this->escalation_linked_hg_cache[$hg_id])) {
             return 0;
         }
-
+        
         foreach ($this->escalation_linked_hg_cache[$hg_id] as $escalation_id) {
-            if (isset($this->escalation_cache[$escalation_id]['hostgroup_inheritance_to_services']) &&
+            if (isset($this->escalation_cache[$escalation_id]['hostgroup_inheritance_to_services']) && 
                 $this->escalation_cache[$escalation_id]['hostgroup_inheritance_to_services'] == 1) {
                 $services = &$this->service_instance->getGeneratedServices();
-
+                
                 foreach ($hostgroup['members'] as $host_name) {
                     $host_id = $this->host_instance->getHostIdByHostName($host_name);
                     // host without services
@@ -292,8 +292,8 @@ class Escalation extends AbstractObject {
                     }
                 }
             }
-
-
+            
+            
             if (!isset($this->hg_build[$escalation_id])) {
                 $this->hg_build[$escalation_id] = array();
             }
@@ -303,11 +303,11 @@ class Escalation extends AbstractObject {
             }
         }
     }
-
+    
     private function addService($host_id, $service_id) {
         if ($this->use_cache == 0) {
             if (is_null($this->stmt_service)) {
-                $this->stmt_service = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
                          escalation_esc_id
                     FROM escalation_service_relation
                     WHERE host_host_id = :host_id AND service_service_id = :service_id
@@ -322,7 +322,7 @@ class Escalation extends AbstractObject {
         if (!isset($this->escalation_linked_service_cache[$host_id . '_' . $service_id])) {
             return 0;
         }
-
+        
         foreach ($this->escalation_linked_service_cache[$host_id . '_' . $service_id] as $escalation_id) {
             if (!isset($this->services_build[$escalation_id])) {
                 $this->services_build[$escalation_id] = array($host_id => array());
@@ -330,11 +330,11 @@ class Escalation extends AbstractObject {
             $this->services_build[$escalation_id][$host_id][$service_id] = 1;
         }
     }
-
+    
     private function addServicegroup($sg_id) {
         if ($this->use_cache == 0) {
             if (is_null($this->stmt_sg)) {
-                $this->stmt_sg = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_sg = $this->backend_instance->db->prepare("SELECT 
                         escalation_esc_id
                     FROM escalation_servicegroup_relation
                     WHERE servicegroup_sg_id = :sg_id
@@ -348,7 +348,7 @@ class Escalation extends AbstractObject {
         if (!isset($this->escalation_linked_sg_cache[$sg_id])) {
             return 0;
         }
-
+        
         foreach ($this->escalation_linked_sg_cache[$sg_id] as $escalation_id) {
             if (!isset($this->sg_build[$escalation_id])) {
                 $this->sg_build[$escalation_id] = array();
@@ -359,11 +359,11 @@ class Escalation extends AbstractObject {
             }
         }
     }
-
+    
     private function getEscalationFromMetaId($meta_id) {
         if ($this->use_cache == 0) {
             if (is_null($this->stmt_meta)) {
-                $this->stmt_service = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
                          escalation_esc_id
                     FROM escalation_meta_service_relation
                     WHERE meta_service_meta_id = :meta_id
@@ -377,10 +377,10 @@ class Escalation extends AbstractObject {
         if (!isset($this->escalation_linked_meta_cache[$meta_id])) {
             return array();
         }
-
+        
         return $this->escalation_linked_meta_cache[$meta_id];
     }
-
+    
     private function generateHosts() {
         $this->object_name = 'hostescalation';
         foreach ($this->hosts_build as $escalation_id => $values) {
@@ -392,7 +392,7 @@ class Escalation extends AbstractObject {
             $this->generateObjectInFile($object, 0);
         }
     }
-
+    
     private function generateServices() {
         $this->object_name = 'serviceescalation';
         foreach ($this->services_build as $escalation_id => $hosts) {
@@ -401,7 +401,7 @@ class Escalation extends AbstractObject {
                     $object = $this->getEscalationFromId($escalation_id);
                     $object['host_name'] = array($this->host_instance->getString($host_id, 'host_name'));
                     $object['service_description'] = array($this->service_instance->getString($service_id, 'service_description'));
-                    $object['escalation_options'] = $object['escalation_options_service'];
+                    $object['escalation_options'] = $object['escalation_options_service'];                
                     # Dont care of the id (we set 0)
                     $this->generateSubObjects($object, $escalation_id);
                     $this->generateObjectInFile($object, 0);
@@ -409,11 +409,11 @@ class Escalation extends AbstractObject {
             }
         }
     }
-
+    
     private function generateHostgroups() {
         $this->object_name = 'hostescalation';
         foreach ($this->hg_build as $escalation_id => $values) {
-            $object = $this->getEscalationFromId($escalation_id);
+            $object = $this->getEscalationFromId($escalation_id);            
             # No hosgroup enabled
             if (count($values) == 0) {
                 continue;
@@ -425,7 +425,7 @@ class Escalation extends AbstractObject {
             $this->generateObjectInFile($object, 0);
         }
     }
-
+    
     private function generateServicegroups() {
         $this->object_name = 'serviceescalation';
         foreach ($this->sg_build as $escalation_id => $values) {
@@ -441,7 +441,7 @@ class Escalation extends AbstractObject {
             $this->generateObjectInFile($object, 0);
         }
     }
-
+    
     public function doHostService() {
         $services = &$this->service_instance->getGeneratedServices();
         foreach ($services as $host_id => &$values) {
@@ -449,30 +449,30 @@ class Escalation extends AbstractObject {
             foreach ($values as $service_id) {
                 $this->addService($host_id, $service_id);
             }
-        }
-
+        }        
+        
         $this->generateHosts();
         $this->generateServices();
     }
-
+    
     public function doHostgroup() {
         $hostgroups = &$this->hg_instance->getHostgroups();
-        foreach ($hostgroups as $hg_id => &$value) {
+        foreach ($hostgroups as $hg_id => &$value) {            
             $this->addHostgroup($hg_id, $value);
         }
-
+        
         $this->generateHostgroups();
     }
-
+    
     public function doServicegroup() {
         $servicegroups = &$this->sg_instance->getServicegroups();
-        foreach ($servicegroups as $sg_id => &$value) {
+        foreach ($servicegroups as $sg_id => &$value) {            
             $this->addServicegroup($sg_id);
         }
-
+        
         $this->generateServicegroups();
     }
-
+    
     public function doMetaService() {
         if (!MetaService::getInstance()->hasMetaServices()) {
             return 0;
@@ -484,14 +484,14 @@ class Escalation extends AbstractObject {
                 $object = $this->getEscalationFromId($escalation_id);
                 $object['host_name'] = array('_Module_Meta');
                 $object['service_description'] = array('meta_' . $meta_id);
-                $object['escalation_options'] = $object['escalation_options_service'];
+                $object['escalation_options'] = $object['escalation_options_service'];                
                 # Dont care of the id (we set 0)
                 $this->generateSubObjects($object, $escalation_id);
                 $this->generateObjectInFile($object, 0);
             }
         }
     }
-
+    
     public function generateObjects() {
         if ($this->has_escalation == 0) {
             return 0;
@@ -501,7 +501,7 @@ class Escalation extends AbstractObject {
         $this->doServicegroup();
         $this->doMetaService();
     }
-
+    
     public function reset() {
         $this->hosts_build = array();
         $this->services_build = array();

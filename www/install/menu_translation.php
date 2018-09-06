@@ -33,7 +33,7 @@
  * For more information : contact@centreon.com
  *
  */
-
+ 
 echo _("About");
 echo _("Access Groups");
 echo _("Access List");

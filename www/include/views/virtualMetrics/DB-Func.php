@@ -46,7 +46,7 @@ function _TestRPNInfinityLoop()
     if (isset($form)) {
         $gsvs = $form->getSubmitValues();
     }
-
+    
     if ($gsvs["vmetric_name"] != null && preg_match("/".$gsvs["vmetric_name"]."/i", $gsvs["rpn_function"])) {
         return false;
     } else {
@@ -62,7 +62,7 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     if (isset($form)) {
         $gsvs = $form->getSubmitValues();
     }
-
+    
     $sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
     $sql .= "vmetric_name = '".($vmetric_name == null ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
     $sql .= "AND index_id = '".($index_id == null ? $gsvs["index_id"] : $index_id)."'";
@@ -159,7 +159,7 @@ function insertVirtualMetric()
     $s_id = null;
     $ret = array();
     $ret = $form->getSubmitValues();
-
+    
     $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
     $rq .= "VALUES ( NULL, ";
 
@@ -257,7 +257,7 @@ function disableVirtualMetricInDB($vmetric_id = null, $force = 0)
         return 0;
     }
     global $pearDB;
-
+    
     $v_dis = disableVirtualMetric($vmetric_id, $force);
     if (!count($v_dis)) {
         return 0;
@@ -272,7 +272,7 @@ function &disableVirtualMetric($v_id = null, $force = 0)
 {
     global $pearDB;
     $v_dis = array();
-
+    
     $repA = array("*", "+", "-", "?", "^", "$");
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";

@@ -43,7 +43,7 @@ class CentreonMeta
      * @var type
      */
     protected $db;
-
+    
     /**
      * Constructor
      * @param type $db
@@ -52,7 +52,7 @@ class CentreonMeta
     {
         $this->db = $db;
     }
-
+    
     /**
      * Return host id
      *
@@ -88,7 +88,7 @@ class CentreonMeta
 
         return $hostId;
     }
-
+    
     /**
      * Return service id
      *
@@ -101,7 +101,7 @@ class CentreonMeta
         if (isset($services[$metaId])) {
             return $services[$metaId];
         }
-
+        
         $sql = 'SELECT s.service_id '
             . 'FROM service s '
             . 'WHERE s.service_description = "meta_' . $metaId . '" ';
@@ -141,7 +141,7 @@ class CentreonMeta
 
         return $metaId;
     }
-
+    
     /**
      *
      * @param integer $field
@@ -185,10 +185,10 @@ class CentreonMeta
                 $parameters['relationObject']['comparator'] = 'meta_id';
                 break;
         }
-
+        
         return $parameters;
     }
-
+    
     /**
      *
      * @param type $values

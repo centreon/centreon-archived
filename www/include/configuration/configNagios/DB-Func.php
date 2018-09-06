@@ -225,7 +225,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-
+    
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
@@ -588,7 +588,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     isset($ret['use_check_result_path']['use_check_result_path'])
         && $ret['use_check_result_path']['use_check_result_path'] ?
         $rq .= "'1')" : $rq .= "'0')";
-
+    
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
     $nagios_id = $DBRESULT->fetchRow();
@@ -598,7 +598,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $mainCfg = new CentreonConfigEngine($pearDB);
         $mainCfg->insertBrokerDirectives($nagios_id["MAX(nagios_id)"], $_REQUEST['in_broker']);
     }
-
+    
     /* Manage the case where you have to main.cfg on the same poller */
     if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"]) {
         $DBRESULT = $pearDB->query(
@@ -1146,7 +1146,7 @@ function updateNagios($nagios_id = null)
         $rq .= "external_command_buffer_slots = '"
         . htmlentities($ret["external_command_buffer_slots"], ENT_QUOTES, "UTF-8")."', "
         : $rq .= " external_command_buffer_slots = NULL, ";
-
+    
     isset($ret["cfg_file"]) && $ret["cfg_file"] != null ?
         $rq .= "cfg_file = '"
         . htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."',  "
@@ -1156,7 +1156,7 @@ function updateNagios($nagios_id = null)
     isset($ret['use_check_result_path']['use_check_result_path'])
         && $ret['use_check_result_path']['use_check_result_path'] ?
         $rq .= "use_check_result_path = '1', " : $rq .= "use_check_result_path = '0', ";
-
+    
     $rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
     $rq .= "WHERE nagios_id = '".$nagios_id."'";
     $DBRESULT = $pearDB->query($rq);

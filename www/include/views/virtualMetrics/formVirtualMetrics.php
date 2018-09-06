@@ -78,7 +78,7 @@ $dbindd->free();
 /*
  * End of "database-retrieved" information
  */
-
+ 
 /*
  * Var information to format the element
  */
@@ -108,7 +108,7 @@ if ($o == "a") {
 }
 
 /*
- * Basic information
+ * Basic information 
  * Header
  */
 $form->addElement('header', 'information', _("General Information"));

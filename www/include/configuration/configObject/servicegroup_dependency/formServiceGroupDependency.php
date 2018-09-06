@@ -143,7 +143,7 @@ $redirect->setValue($o);
 
     $init = $form->addElement('hidden', 'initialValues');
     $init->setValue(serialize($initialValues));
-
+    
 /*
  * Form Rules
  */

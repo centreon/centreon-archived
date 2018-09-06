@@ -90,11 +90,11 @@ class Broker extends AbstractObjectXML
         if (!is_null($this->cacheExternalValue)) {
             return ;
         }
-
+        
         $this->cacheExternalValue = array();
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        $stmt = $this->backend_instance->db->prepare("SELECT 
             CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
-                WHERE cf.external IS NOT NULL
+                WHERE cf.external IS NOT NULL 
                    AND cf.cb_field_id = ctfr.cb_field_id
                    AND ctfr.cb_type_id = cttr.cb_type_id
         ");
@@ -107,9 +107,9 @@ class Broker extends AbstractObjectXML
     private function generate($poller_id, $localhost)
     {
         $this->getExternalValues();
-
+        
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
             FROM cfg_centreonbroker
             WHERE ns_nagios_server = :poller_id
@@ -180,7 +180,7 @@ class Broker extends AbstractObjectXML
                         break;
                     }
                 }
-
+                
                 foreach ($value as $subvalue) {
                     if (!isset($subvalue['fieldIndex']) ||
                         $subvalue['fieldIndex'] == "" ||
@@ -201,13 +201,13 @@ class Broker extends AbstractObjectXML
                         } else {
                             $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
                                 $subvalue['config_value'];
-
+                            
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
                                 $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
                                     $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
                             }
-
+                            
                             // Let broker insert in index data in pollers
                             if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
                                 && !$localhost) {
@@ -270,11 +270,11 @@ class Broker extends AbstractObjectXML
     {
         $this->generate($poller['id'], $poller['localhost']);
     }
-
+    
     /*
      * Duplicate code from CentreonConfigCentreonBroker class.
      * Need to remove it when we are going to have pdo system with a class
-     */
+     */ 
     private function getInfoDb($string)
     {
         /*
@@ -337,10 +337,10 @@ class Broker extends AbstractObjectXML
                 $db = $this->backend_instance->db_cs;
                 break;
         }
-
+        
         $stmt = $db->prepare($query);
         $stmt->execute();
-
+        
         $infos = array();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $val = $row[$s_column];
@@ -356,7 +356,7 @@ class Broker extends AbstractObjectXML
         }
         return $infos;
     }
-
+    
     private function rpnCalc($rpn, $val)
     {
         if (!is_numeric($val)) {
@@ -372,7 +372,7 @@ class Broker extends AbstractObjectXML
             return $val;
         }
     }
-
+    
     private function rpnOperation($result, $item)
     {
         if (in_array($item, array('+', '-', '*', '/'))) {

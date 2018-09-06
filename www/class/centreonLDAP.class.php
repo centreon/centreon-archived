@@ -79,19 +79,19 @@ class CentreonLDAP
 
         /* Check if use service form DNS */
         $use_dns_srv = 0;
-
+        
         $stmt = $pearDB->prepare(
             "SELECT `ari_value`  " .
             "FROM `auth_ressource_info` " .
             "WHERE `ari_name` = 'ldap_srv_dns' " .
             "AND ar_id = ?"
         );
-
+        
         $dbresult = $this->db->execute($stmt, array($arId));
         if (PEAR::isError($dbresult)) {
             die("An error occured");
         }
-
+        
         $row = $dbresult->fetchRow();
         $dbresult->free();
         if (isset($row['ari_value'])) {
@@ -114,7 +114,7 @@ class CentreonLDAP
         if ($this->debugPath == '') {
             $this->debugImport = false;
         }
-
+        
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
         if (count($tempSearchTimeout) > 0) {
@@ -129,9 +129,9 @@ class CentreonLDAP
         if ($use_dns_srv != "0") {
             $dns_query = '_ldap._tcp';
             $dbresult = $this->db->query(
-                "SELECT `ari_value`
-                FROM auth_ressource_info
-                WHERE `ari_name` = 'ldap_dns_use_domain'
+                "SELECT `ari_value` 
+                FROM auth_ressource_info 
+                WHERE `ari_name` = 'ldap_dns_use_domain' 
                 AND ar_id = " . $this->db->escape($arId)
             );
             $row = $dbresult->fetchRow();
@@ -169,7 +169,7 @@ class CentreonLDAP
             $dbresult->free();
         }
     }
-
+    
     /**
      *
      * @param int    $arId
@@ -180,19 +180,19 @@ class CentreonLDAP
     {
         // ldap_search_timeout
         $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
-
+        
         if (!empty($filter)) {
             $queryLdapHostParemeters .= " AND `ari_name` = '$filter'";
         }
-
+        
         $resLdapHostParameters = $this->db->query($queryLdapHostParemeters);
-
+        
         $finalLdapHostParameters = array();
-
+        
         while ($rowLdapHostParameters = $resLdapHostParameters->fetchRow()) {
             $finalLdapHostParameters = $rowLdapHostParameters;
         }
-
+        
         return $finalLdapHostParameters;
     }
 
@@ -286,7 +286,7 @@ class CentreonLDAP
     {
         return $this->ds;
     }
-
+    
      /**
      * Transform user, group name for filter
      *
@@ -752,9 +752,9 @@ class CentreonLDAP
         if (isset($this->constuctCache[$id])) {
             return $this->constuctCache[$id];
         }
-        $query = "SELECT ari_name, ari_value
-                  FROM auth_ressource_info
-                  WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version')
+        $query = "SELECT ari_name, ari_value 
+                  FROM auth_ressource_info 
+                  WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
                   AND ar_id = " . CentreonDB::escape($id);
         $dbresult = $this->db->query($query);
         $infos = array();
@@ -861,7 +861,7 @@ class CentreonLdapAdmin
             }
         }
     }
-
+    
     /**
      * Set ldap options
      *
@@ -877,10 +877,10 @@ class CentreonLdapAdmin
         $gopt = $this->getGeneralOptions($arId);
         if (!count($gopt) && isset($options['ar_name']) && isset($options['ar_description'])) {
             $this->db->query(
-                "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable)
-                                   VALUES ('" . $this->db->escape($options['ar_name']) . "',
-                                           '" . $this->db->escape($options['ar_description']) . "',
-                                           'ldap',
+                "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable) 
+                                   VALUES ('" . $this->db->escape($options['ar_name']) . "', 
+                                           '" . $this->db->escape($options['ar_description']) . "', 
+                                           'ldap', 
                                            '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "')"
             );
             $maxArIdSql = "SELECT MAX(ar_id) as last_id
@@ -892,9 +892,9 @@ class CentreonLdapAdmin
             unset($res);
         } else {
             $this->db->query(
-                "UPDATE auth_ressource SET
-                                   ar_name = '" . $this->db->escape($options['ar_name']) . "',
-                                   ar_description = '" . $this->db->escape($options['ar_description']) . "',
+                "UPDATE auth_ressource SET 
+                                   ar_name = '" . $this->db->escape($options['ar_name']) . "', 
+                                   ar_description = '" . $this->db->escape($options['ar_description']) . "', 
                                    ar_enable = '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "'
                                    WHERE ar_id = " . $this->db->escape($arId)
             );
@@ -909,13 +909,13 @@ class CentreonLdapAdmin
                 $value = $value[$key];
             }
             if (isset($gopt[$key])) {
-                $query = "UPDATE `auth_ressource_info`
-                              SET `ari_value` = '" . $this->db->escape($value, false) . "'
-                              WHERE `ari_name` = '" . $this->db->escape($key) . "'
+                $query = "UPDATE `auth_ressource_info` 
+                              SET `ari_value` = '" . $this->db->escape($value, false) . "' 
+                              WHERE `ari_name` = '" . $this->db->escape($key) . "' 
                               AND ar_id = " . $this->db->escape($arId);
             } else {
                 $query = "INSERT INTO `auth_ressource_info`
-                    (`ar_id`, `ari_name`, `ari_value`)
+                    (`ar_id`, `ari_name`, `ari_value`) 
                     VALUES (" . $this->db->escape($arId) . ", '" . $this->db->escape($key) . "', '" .
                     $this->db->escape($value, false) . "')";
             }
@@ -938,7 +938,7 @@ class CentreonLdapAdmin
     public function getGeneralOptions($arId)
     {
         $gopt = array();
-
+        
         $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` WHERE ar_id = ?";
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array($arId));
@@ -983,11 +983,11 @@ class CentreonLdapAdmin
         }
         $use_ssl = isset($params['use_ssl']) ? 1 : 0;
         $use_tls = isset($params['use_tls']) ? 1 : 0;
-        $sql = "UPDATE auth_ressource_host SET
+        $sql = "UPDATE auth_ressource_host SET 
                     host_address = '" . $this->db->escape($params['hostname']) . "',
                     host_port = '" . $this->db->escape($params['port']) . "',
-                    host_order = '" . $this->db->escape($params['order']) . "',
-                    use_ssl = " . $use_ssl . ",
+                    host_order = '" . $this->db->escape($params['order']) . "', 
+                    use_ssl = " . $use_ssl . ", 
                     use_tls = " . $use_tls . "
                     WHERE ldap_host_id = " . $this->db->escape($params['id']) . "
                     AND auth_ressource_id = " . $arId;
@@ -1179,7 +1179,7 @@ class CentreonLdapAdmin
     {
         if (count($configList)) {
             $this->db->query(
-                "DELETE FROM auth_ressource
+                "DELETE FROM auth_ressource 
                 WHERE ar_id IN (" . implode(',', $configList) . ")"
             );
         }
@@ -1196,7 +1196,7 @@ class CentreonLdapAdmin
     {
         if (count($configList)) {
             $this->db->query(
-                "UPDATE auth_ressource
+                "UPDATE auth_ressource 
                                    SET ar_enable = '" . $this->db->escape($status) . "'
                                    WHERE ar_id IN (" . implode(',', $configList) . ")"
             );

@@ -65,7 +65,7 @@ if (isset($_SESSION['monitoring_service_groups'])) {
             "svcOVSG" => _("Details"),
             "svcSumSG" => _("Summary")
         );
-
+        
         $aTypeAffichageLevel2 = array(
             "" => _("All"),
             "pb" => _("Problems"),
@@ -99,7 +99,7 @@ if (isset($_SESSION['monitoring_service_groups'])) {
         $tpl->assign('pollerStr', _('Poller'));
         $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
         $tpl->assign("mon_status_information", _("Status information"));
-
+    
     # Get servicegroups list
         $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
         $servicegroups = array();
@@ -122,18 +122,18 @@ if (isset($_SESSION['monitoring_service_groups'])) {
         }
         $sgSearchSelect .= '</select>';
         $tpl->assign("sgSearchSelect", $sgSearchSelect);
-
-
+    
+   
         $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
         $tpl->assign("order", strtolower($order));
         $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
         $tpl->assign("tab_order", $tab_order);
-
+    
     ##Toolbar select $lang["lgd_more_actions"]
     ?>
     <script type="text/javascript">
         _tm = <?php echo $tM ?>;
-        function setO(_i)
+        function setO(_i) 
         {
             document.forms['form'].elements['cmd'].value = _i;
             document.forms['form'].elements['o1'].selectedIndex = 0;
@@ -162,7 +162,7 @@ if (isset($_SESSION['monitoring_service_groups'])) {
             if (val != '') {
                 _o = _o + "_" + val;
             }
-
+                
             monitoring_refresh();
         }
     </script>
@@ -170,9 +170,9 @@ if (isset($_SESSION['monitoring_service_groups'])) {
 
         $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
         $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-
+        
         $form->setDefaults(array('typeDisplay2' => 'pb'));
-
+        
         $attrs = array(     'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
         $form->addElement('select', 'o1', null, array(  null    =>  _("More actions..."),
                                                     "3"     =>  _("Verification Check"),
@@ -193,7 +193,7 @@ if (isset($_SESSION['monitoring_service_groups'])) {
         $form->setDefaults(array('o1' => null));
         $o1 = $form->getElement('o1');
         $o1->setValue(null);
-
+        
         $attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
         $form->addElement('select', 'o2', null, array(  null    =>  _("More actions..."),
                                                 "3"     =>  _("Verification Check"),

@@ -40,7 +40,7 @@ class CentreonLocale
      * @var type
      */
     protected $db;
-
+    
     /**
      * Constructor
      *

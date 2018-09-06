@@ -53,7 +53,7 @@ function write_command($cmd, $poller)
     } else {
         $destination = "/var/lib/centreon/centcore.cmd";
     }
-
+    
     $cmd = str_replace("`", "&#96;", $cmd);
     $cmd = str_replace("\n", "<br>", $cmd);
     $informations = preg_split("/\;/", $key);
@@ -106,7 +106,7 @@ function schedule_svc_checks($arg, $forced)
     if ($forced == "1") {
         $actions = $centreon->user->access->checkAction("service_schedule_forced_check");
     }
-
+    
     if ($actions == true || $is_admin) {
         $tab_forced = array("0" => "", "1" => "_FORCED");
         $tab_data = preg_split("/\;/", $arg);

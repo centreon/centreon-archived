@@ -197,7 +197,7 @@ function insertHostDependency($ret = array())
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
     $dep_id = $DBRESULT->fetchRow();
-
+    
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
 
@@ -230,7 +230,7 @@ function updateHostDependency($dep_id = null)
     isset($ret["dep_comment"]) && $ret["dep_comment"] != null ? $rq .= "'".CentreonDB::escape($ret["dep_comment"])."' " : $rq .= "NULL ";
     $rq .= "WHERE dep_id = '".$dep_id."'";
     $DBRESULT = $pearDB->query($rq);
-
+    
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("host dependency", $dep_id, CentreonDB::escape($ret["dep_name"]), "c", $fields);
@@ -267,7 +267,7 @@ function updateHostDependencyHostChilds($dep_id = null, $ret = array())
     if (!$dep_id) {
         exit();
     }
-
+    
     $rq = "DELETE FROM dependency_hostChild_relation ";
     $rq .= "WHERE dependency_dep_id = '".$dep_id."'";
     $DBRESULT = $pearDB->query($rq);

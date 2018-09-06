@@ -69,14 +69,14 @@ $nb_arg = 0;
 if (isset($_GET['cmd_line']) && $_GET['cmd_line']) {
     $str = $_GET['cmd_line'];
     $iIdCmd = (int) $_GET['cmdId'];
-
+    
     $oCommande = new CentreonCommand($pearDB);
-
+    
     $macrosHostDesc = $oCommande->matchObject($iIdCmd, $str, '1');
     $macrosServiceDesc = $oCommande->matchObject($iIdCmd, $str, '2');
-
+    
     $nb_arg = count($macrosHostDesc) + count($macrosServiceDesc);
-
+    
     $macros = array_merge($macrosServiceDesc, $macrosHostDesc);
 }
 
@@ -117,7 +117,7 @@ $tpl->compile_check = true;
 $tpl->force_compile = true;
 
 $tpl->assign('nb_arg', $nb_arg);
-
+ 
 $tpl->assign('macros', $macros);
 $tpl->assign('noArgMsg', _("Sorry, your command line does not contain any \$_SERVICE\$ macro or \$_HOST\$ macro."));
 

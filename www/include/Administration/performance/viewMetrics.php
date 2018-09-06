@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 require_once './class/centreonBroker.class.php';
-
+        
 if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])) {
     if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed") {
         $selected = $_POST["select"];
@@ -163,7 +163,7 @@ function setO(_i) {
 
 function on_action_change(id) {
     var selected_id = this.form.elements[id].selectedIndex - 1;
-
+    
     if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
         return;
     }

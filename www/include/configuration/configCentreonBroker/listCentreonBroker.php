@@ -144,9 +144,9 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     /*
      * Number of output
      */
-    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num
-                            FROM cfg_centreonbroker_info
-                            WHERE config_group = 'output'
+    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num 
+                            FROM cfg_centreonbroker_info 
+                            WHERE config_group = 'output' 
                             AND config_id = " . $config['config_id']);
     $row = $res->fetchRow();
     $outputNumber = $row["num"];
@@ -154,9 +154,9 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     /*
      * Number of input
      */
-    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num
-                            FROM cfg_centreonbroker_info
-                            WHERE config_group = 'input'
+    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num 
+                            FROM cfg_centreonbroker_info 
+                            WHERE config_group = 'input' 
                             AND config_id = " .$config['config_id']);
     $row = $res->fetchRow();
     $inputNumber = $row["num"];
@@ -164,9 +164,9 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     /*
      * Number of logger
      */
-    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num
-                            FROM cfg_centreonbroker_info
-                            WHERE config_group = 'logger'
+    $res = $pearDB->query("SELECT COUNT(DISTINCT(config_group_id)) as num 
+                            FROM cfg_centreonbroker_info 
+                            WHERE config_group = 'logger' 
                             AND config_id = " . $config['config_id']);
     $row = $res->fetchRow();
     $loggerNumber = $row["num"];

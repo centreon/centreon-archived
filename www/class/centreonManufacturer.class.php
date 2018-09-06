@@ -43,7 +43,7 @@ class CentreonManufacturer
      * @var type
      */
     protected $db;
-
+    
     /**
      *  Constructor
      *
@@ -53,7 +53,7 @@ class CentreonManufacturer
     {
         $this->db = $db;
     }
-
+    
     /**
      *
      * @param type $values

@@ -445,10 +445,10 @@ foreach ($tab_id as $openid) {
     if ($id == "") {
         continue;
     }
-
+    
     $type = $tab_tmp[0];
-
-
+    
+    
     if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)) {
         $filters = true;
         // Get hosts from hostgroups
@@ -494,19 +494,19 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS ".(!$is_admin ? "DISTINCT" : "")."
-        logs.ctime,
-        logs.host_id,
-        logs.host_name,
-        logs.service_id,
-        logs.service_description,
-        logs.msg_type,
-        logs.notification_cmd,
-        logs.notification_contact,
-        logs.output,
-        logs.retry,
-        logs.status,
-        logs.type,
+$req = "SELECT SQL_CALC_FOUND_ROWS ".(!$is_admin ? "DISTINCT" : "")." 
+        logs.ctime, 
+        logs.host_id, 
+        logs.host_name, 
+        logs.service_id, 
+        logs.service_description, 
+        logs.msg_type, 
+        logs.notification_cmd, 
+        logs.notification_contact, 
+        logs.output, 
+        logs.retry, 
+        logs.status, 
+        logs.type, 
         logs.instance_name
         FROM logs ".$innerJoinEngineLog.
     ((!$is_admin) ?
@@ -539,7 +539,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
             $host_search_sql = " AND logs.host_name LIKE '%".$pearDBO->escape($search_host)."%' ";
         }
     }
-
+    
     /*
      * Add services
      */
@@ -597,7 +597,7 @@ if (isset($req) && $req) {
     }
     $DBRESULT = $pearDBO->query($req .$limitReq);
     $rows = $pearDBO->numberRows();
-
+    
     if (!($DBRESULT->numRows()) && ($num != 0)) {
         if ($export !== "1") {
             $limitReq2 =" LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
@@ -611,27 +611,27 @@ if (isset($req) && $req) {
     }
     $buffer->writeElement("limit", $limit);
     $buffer->endElement();
-
+    
     require_once _CENTREON_PATH_ . "www/include/common/checkPagination.php";
     /*
      * pagination
      */
-
+    
     $pageArr = array();
     $istart = 0;
 
     for ($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--) {
         $istart--;
     }
-
+    
     for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++) {
         $iend++;
     }
-
+    
     for ($i = $istart; $i <= $iend; $i++) {
         $pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
     }
-
+    
     if ($i > 1) {
         foreach ($pageArr as $key => $tab) {
             $buffer->startElement("page");
@@ -647,10 +647,10 @@ if (isset($req) && $req) {
             $buffer->endElement();
         }
     }
-
+    
     $prev = $num - 1;
     $next = $num + 1;
-
+    
     if ($num > 0) {
         $buffer->startElement("first");
         $buffer->writeAttribute("show", "true");
@@ -662,7 +662,7 @@ if (isset($req) && $req) {
         $buffer->text("none");
         $buffer->endElement();
     }
-
+    
     if ($num > 1) {
         $buffer->startElement("prev");
         $buffer->writeAttribute("show", "true");
@@ -674,7 +674,7 @@ if (isset($req) && $req) {
         $buffer->text("none");
         $buffer->endElement();
     }
-
+    
     if ($num < $page_max - 1) {
         $buffer->startElement("next");
         $buffer->writeAttribute("show", "true");
@@ -686,9 +686,9 @@ if (isset($req) && $req) {
         $buffer->text("none");
         $buffer->endElement();
     }
-
+    
     $last = $page_max - 1;
-
+    
     if ($num < $page_max-1) {
         $buffer->startElement("last");
         $buffer->writeAttribute("show", "true");
@@ -700,7 +700,7 @@ if (isset($req) && $req) {
         $buffer->text("none");
         $buffer->endElement();
     }
-
+    
     /*
      * Full Request
      */
@@ -714,7 +714,7 @@ if (isset($req) && $req) {
         }
         $log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
         $log["msg_type"] == 2 || $log["msg_type"] == 3 ? $buffer->writeElement("type", "NOTIF") : $buffer->writeElement("type", $displayType);
-
+        
         /*
          * Color initialisation for services and hosts status
          */
@@ -726,14 +726,14 @@ if (isset($req) && $req) {
                 $color = $tab_color_host[$log["status"]];
             }
         }
-
+        
         /*
          * Variable initialisation to color "INITIAL STATE" on envent logs
          */
         if ($log["output"] == "" && $log["status"] != "") {
             $log["output"] = "INITIAL STATE";
         }
-
+        
         $buffer->startElement("status");
         $buffer->writeAttribute("color", $color);
         $displayStatus = $log["status"];
@@ -744,7 +744,7 @@ if (isset($req) && $req) {
         }
         $buffer->text($displayStatus);
         $buffer->endElement();
-
+        
         if (!strncmp($log["host_name"], "_Module_Meta", strlen("_Module_Meta"))) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
             $DBRESULT2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$matches[1]."'");

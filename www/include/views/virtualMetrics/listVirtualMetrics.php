@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
-
+    
 if (!isset($oreon)) {
     exit;
 }
@@ -77,7 +77,7 @@ $DBRESULT = $pearDB->query($rq);
 if (PEAR::isError($DBRESULT)) {
     print "Mysql Error : ".$DBRESULT->getDebugInfo();
 }
-
+    
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
 /*
@@ -139,7 +139,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 /*
- * Toolbar select
+ * Toolbar select 
  */
 ?>
 <script type="text/javascript">
@@ -157,7 +157,7 @@ $attrs1 = array(
             "else if (this.form.elements['o1'].selectedIndex == 3) {" .
             " 	setO(this.form.elements['o1'].value); submit();} " .
             "");
-
+                  
     $form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
 
 $form->setDefaults(array('o1' => null));

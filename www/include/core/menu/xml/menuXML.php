@@ -68,10 +68,10 @@ if (!$session->numRows()) {
     $buffer = new CentreonXML();
     $buffer->startElement("root");
     $buffer->endElement();
-
+    
     header('Content-Type: text/xml');
     header('Cache-Control: no-cache');
-
+    
     $buffer->output();
 } else {
     $centreon = $_SESSION['centreon'];

@@ -53,7 +53,7 @@ class CentreonXML {
 
     /**
      * Clean string
-     *
+     * 
      * @param string $str
      * @return string
      */
@@ -62,7 +62,7 @@ class CentreonXML {
         $str = preg_replace('/[\x00-\x09\x0B-\x0C\x0E-\x1F\x0D]/', "", $str);
         return $str;
     }
-
+    
     /*
      *  Starts an element that contains other elements
      */
@@ -166,5 +166,5 @@ class CentreonXML {
             print "Can't open file: $filename";
         }
     }
-
+    
 }

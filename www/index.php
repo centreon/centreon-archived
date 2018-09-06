@@ -96,7 +96,7 @@ CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
     $centreon = & $_SESSION["centreon"];
-
+    
     /*
      * Init log class
      */

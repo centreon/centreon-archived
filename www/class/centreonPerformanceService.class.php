@@ -41,19 +41,19 @@ class CentreonPerformanceService
 {
     /**
      *
-     * @var type
+     * @var type 
      */
     protected $dbMon;
-
+    
     /**
      *
-     * @var type
+     * @var type 
      */
     protected $aclObj;
 
 
     /**
-     *
+     * 
      * @param type $dbMon
      * @param type $aclObj
      */
@@ -62,9 +62,9 @@ class CentreonPerformanceService
         $this->dbMon = $dbMon;
         $this->aclObj = $aclObj;
     }
-
+    
     /**
-     *
+     * 
      * @param array $filters
      * @return array
      */
@@ -72,7 +72,7 @@ class CentreonPerformanceService
     {
         $additionnalTables = '';
         $additionnalCondition = '';
-
+        
         if (false === isset($filters['service'])) {
             $serviceDescription = '';
         } else {
@@ -85,7 +85,7 @@ class CentreonPerformanceService
         } else {
             $range = '';
         }
-
+        
         if (isset($filters['hostgroup'])) {
             $additionnalTables .= ',hosts_hostgroups hg ';
             $additionnalCondition .= 'AND (hg.host_id = i.host_id AND hg.hostgroup_id IN (' .
@@ -101,7 +101,7 @@ class CentreonPerformanceService
         }
 
         $virtualServicesCondition = $this->getVirtualServicesCondition($additionnalCondition);
-
+        
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id '
             . 'FROM ( '
             . '( SELECT CONCAT(i.host_name, " - ", i.service_description) as fullname, i.host_id, i.service_id, m.index_id '
@@ -126,12 +126,12 @@ class CentreonPerformanceService
             $serviceCompleteId = $data['host_id'].'-'.$data['service_id'];
             $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
         }
-
+        
         return $serviceList;
     }
-
+    
     /**
-     *
+     * 
      * @param string $additionnalCondition
      * @return string
      */

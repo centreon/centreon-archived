@@ -181,18 +181,18 @@ if ($arId) {
         "WHERE ar_id = ?"
     );
     $res = $pearDB->execute($arStmt1, array($arId));
-
+    
     if (PEAR::isError($res)) {
         die("An error occured");
     }
-
+    
     while ($row = $res->fetchRow()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
     }
     unset($res);
-
+    
     /*
      * Preset values of ldap servers
      */
@@ -203,7 +203,7 @@ if ($arId) {
 }
 
 /*
- * LDAP servers
+ * LDAP servers 
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(

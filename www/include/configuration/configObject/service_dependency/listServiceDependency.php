@@ -38,7 +38,7 @@ if (!isset($oreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
+        
 include("./include/common/autoNumLimit.php");
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
@@ -47,11 +47,11 @@ $aclFrom = "";
 $aclCond = "";
 if (!$oreon->user->admin) {
     $aclFrom = ", $dbmon.centreon_acl acl ";
-    $aclCond = " AND dspr.host_host_id = acl.host_id
-                 AND acl.service_id = dspr.service_service_id
+    $aclCond = " AND dspr.host_host_id = acl.host_id 
+                 AND acl.service_id = dspr.service_service_id 
                  AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
 }
-
+        
 $rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
     . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "

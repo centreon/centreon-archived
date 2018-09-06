@@ -127,7 +127,7 @@ class CentreonServicetemplates extends CentreonService
         }
         return $serviceList;
     }
-
+    
     /**
      * Returns array of Service linked to the template
      *

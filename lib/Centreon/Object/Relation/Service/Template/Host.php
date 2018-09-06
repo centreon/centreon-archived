@@ -138,7 +138,7 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
         $result = $this->getResult($sql, $filterTab);
         return $result;
     }
-
+    
     /**
      * Delete host template / host relation
      * Order has importance

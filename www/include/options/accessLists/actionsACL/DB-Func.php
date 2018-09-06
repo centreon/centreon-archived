@@ -73,7 +73,7 @@ function testActionExistence($name = null)
 function enableActionInDB($acl_action_id = null, $actions = array())
 {
     global $pearDB, $centreon;
-
+    
     if (!$acl_action_id && !count($actions)) {
         return;
     }
@@ -127,7 +127,7 @@ function disableActionInDB($acl_action_id = null, $actions = array())
 function deleteActionInDB($actions = array())
 {
     global $pearDB, $centreon;
-
+    
     foreach ($actions as $key => $value) {
         $DBRESULT2 = $pearDB->query("SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
@@ -190,7 +190,7 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
                     }
 
                     $DBRESULT->free();
-
+                    
                     $centreon->CentreonLogAction->insertLog("action access", $maxId["MAX(acl_action_id)"], $acl_action_name, "a", $fields);
                 }
             }
@@ -206,7 +206,7 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
 function insertActionInDB($ret = array())
 {
     global $form, $centreon;
-
+    
     $acl_action_id = insertAction($ret);
     updateGroupActions($acl_action_id, $ret);
     updateRulesActions($acl_action_id, $ret);

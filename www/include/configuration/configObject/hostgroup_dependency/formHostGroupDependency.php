@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-
+    
 #
 ## Database retrieve information for Dependency
 #
@@ -141,7 +141,7 @@ $redirect->setValue($o);
 
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
-
+    
 /*
  * Form Rules
  */

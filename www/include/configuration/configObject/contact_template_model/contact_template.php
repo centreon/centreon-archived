@@ -73,7 +73,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 }
 
 $contactObj = new CentreonContact($pearDB);
-
+    
 switch ($o) {
     case "mc":
         require_once($path."formContactTemplateModel.php");

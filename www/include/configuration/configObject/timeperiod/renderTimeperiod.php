@@ -105,7 +105,7 @@ var tipDiv;
 jQuery(function() {
     genToolTip();
 });
-
+ 
 /**
  * Set Time period
  */

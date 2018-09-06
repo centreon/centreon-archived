@@ -50,11 +50,11 @@ class Command extends AbstractObject {
         'command_line',
         'connector',
     );
-
-    private function getCommands() {
-        $stmt = $this->backend_instance->db->prepare("SELECT
+    
+    private function getCommands() {        
+        $stmt = $this->backend_instance->db->prepare("SELECT 
               $this->attributes_select
-            FROM command
+            FROM command 
                 LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' AND command.command_activate = '1'
             ");
         $stmt->execute();
@@ -74,13 +74,13 @@ class Command extends AbstractObject {
             $this->mail_bin = '';
         }
     }
-
+    
     public function generateFromCommandId($command_id) {
         $name = null;
         if (is_null($this->commands)) {
             $this->getCommands();
         }
-
+        
         if (!isset($this->commands[$command_id])) {
             return null;
         }

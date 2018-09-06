@@ -78,7 +78,7 @@ require_once "./include/common/common-Func.php";
 
 $serviceObj = new CentreonService($pearDB);
 $lockedElements = $serviceObj->getLockedServiceTemplates();
-
+    
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];

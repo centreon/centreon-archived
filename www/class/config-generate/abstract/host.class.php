@@ -145,7 +145,7 @@ abstract class AbstractHost extends AbstractObject {
     protected $stmt_htpl = null;
     protected $stmt_contact = null;
     protected $stmt_cg = null;
-
+    
     protected function getImages(&$host) {
         $media = Media::getInstance();
         if (!isset($host['icon_image'])) {
@@ -158,14 +158,14 @@ abstract class AbstractHost extends AbstractObject {
             $host['statusmap_image'] = $media->getMediaPathFromId($host['statusmap_image_id']);
         }
     }
-
+    
     protected function getMacros(&$host) {
         if (isset($host['macros'])) {
             return 1;
         }
-
+        
         if (is_null($this->stmt_macro)) {
-            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT
+            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT 
               host_macro_name, host_macro_value
             FROM on_demand_macro_host
             WHERE host_host_id = :host_id
@@ -174,7 +174,7 @@ abstract class AbstractHost extends AbstractObject {
         $this->stmt_macro->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
         $this->stmt_macro->execute();
         $macros = $this->stmt_macro->fetchAll(PDO::FETCH_ASSOC);
-
+        
         $host['macros'] = array();
         foreach ($macros as $macro) {
             $host['macros'][preg_replace('/\$_HOST(.*)\$/', '_$1', $macro['host_macro_name'])] = $macro['host_macro_value'];
@@ -185,36 +185,36 @@ abstract class AbstractHost extends AbstractObject {
         if (!is_null($host['host_snmp_version']) && $host['host_snmp_version'] != 0) {
             $host['macros']['_SNMPVERSION'] = $host['host_snmp_version'];
         }
-
+        
         return 0;
     }
-
+    
     protected function getHostTemplates(&$host) {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
-                $this->stmt_htpl = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_htpl = $this->backend_instance->db->prepare("SELECT 
                     host_tpl_id
                 FROM host_template_relation
                 WHERE host_host_id = :host_id
                 ORDER BY `order` ASC
                 ");
-            }
+            }            
             $this->stmt_htpl->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_htpl->execute();
             $host['htpl'] = $this->stmt_htpl->fetchAll(PDO::FETCH_COLUMN);
         }
-
+        
         $host_template = HostTemplate::getInstance();
         $host['use'] = array();
         foreach ($host['htpl'] as $template_id) {
             $host['use'][] = $host_template->generateFromHostId($template_id);
         }
     }
-
+    
     protected function getContacts(&$host) {
         if (!isset($host['contacts_cache'])) {
             if (is_null($this->stmt_contact)) {
-                $this->stmt_contact = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
                     contact_id
                 FROM contact_host_relation
                 WHERE host_host_id = :host_id
@@ -224,7 +224,7 @@ abstract class AbstractHost extends AbstractObject {
             $this->stmt_contact->execute();
             $host['contacts_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
         }
-
+        
         $contact = Contact::getInstance();
         $contact_result = '';
         $contact_result_append = '';
@@ -235,7 +235,7 @@ abstract class AbstractHost extends AbstractObject {
                 $contact_result_append = ',';
             }
         }
-
+        
         if ($contact_result != '') {
             $host['contacts'] = $contact_result;
             if (!is_null($host['contact_additive_inheritance']) && $host['contact_additive_inheritance'] == 1) {
@@ -243,11 +243,11 @@ abstract class AbstractHost extends AbstractObject {
             }
         }
     }
-
+    
     protected function getContactGroups(&$host) {
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmt_cg)) {
-                $this->stmt_cg = $this->backend_instance->db->prepare("SELECT
+                $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
                     contactgroup_cg_id
                 FROM contactgroup_host_relation
                 WHERE host_host_id = :host_id
@@ -257,7 +257,7 @@ abstract class AbstractHost extends AbstractObject {
             $this->stmt_cg->execute();
             $host['contact_groups_cache'] = $this->stmt_cg->fetchAll(PDO::FETCH_COLUMN);
         }
-
+        
         $cg = Contactgroup::getInstance();
         $cg_result = '';
         $cg_result_append = '';
@@ -268,7 +268,7 @@ abstract class AbstractHost extends AbstractObject {
                 $cg_result_append = ',';
             }
         }
-
+        
         if ($cg_result != '') {
             $host['contact_groups'] = $cg_result;
             if (!is_null($host['cg_additive_inheritance']) && $host['cg_additive_inheritance'] == 1) {
@@ -276,11 +276,11 @@ abstract class AbstractHost extends AbstractObject {
             }
         }
     }
-
+    
     public function isHostTemplate($host_id, $host_tpl_id) {
         $loop = array();
         $stack = array();
-
+        
         $hosts_tpl = HostTemplate::getInstance()->hosts;
         $stack = $this->hosts[$host_id]['htpl'];
         while (($host_id = array_shift($stack))) {
@@ -293,14 +293,14 @@ abstract class AbstractHost extends AbstractObject {
             }
             $stack = array_merge($hosts_tpl[$host_id]['htpl'], $stack);
         }
-
+        
         return 0;
     }
-
+    
     protected function findCommandName($host_id, $command_label) {
         $loop = array();
         $stack = array();
-
+        
         $hosts_tpl = HostTemplate::getInstance()->hosts;
         $stack = $this->hosts[$host_id]['htpl'];
         while (($host_id = array_shift($stack))) {
@@ -313,7 +313,7 @@ abstract class AbstractHost extends AbstractObject {
             }
             $stack = array_merge($hosts_tpl[$host_id]['htpl'], $stack);
         }
-
+        
         return null;
     }
 
@@ -324,11 +324,11 @@ abstract class AbstractHost extends AbstractObject {
             $host['timezone'] = ':' . $timezone;
         }
     }
-
+    
     protected function getHostCommand(&$host, $result_name, $command_id_label, $command_arg_label) {
         $command_name = Command::getInstance()->generateFromCommandId($host[$command_id_label]);
         $command_arg = '';
-
+        
         if (isset($host[$result_name])) {
             return 1;
         }
@@ -347,21 +347,21 @@ abstract class AbstractHost extends AbstractObject {
                 $host[$result_name] = $command_name . $command_arg;
             }
         }
-
+        
         return 0;
     }
-
+    
     protected function getHostCommands(&$host) {
-        $this->getHostCommand($host, 'check_command', 'check_command_id', 'check_command_arg');
+        $this->getHostCommand($host, 'check_command', 'check_command_id', 'check_command_arg');        
         $this->getHostCommand($host, 'event_handler', 'event_handler_id', 'event_handler_arg');
     }
-
+    
     protected function getHostPeriods(&$host) {
         $period = Timeperiod::getInstance();
         $host['check_period'] = $period->generateFromTimeperiodId($host['check_period_id']);
         $host['notification_period'] = $period->generateFromTimeperiodId($host['notification_period_id']);
     }
-
+    
     public function getString($host_id, $attr) {
         if (isset($this->hosts[$host_id][$attr])) {
             return $this->hosts[$host_id][$attr];

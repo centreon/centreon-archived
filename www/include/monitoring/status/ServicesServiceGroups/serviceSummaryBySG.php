@@ -57,19 +57,19 @@ if (!isset($oreon)) {
 if (isset($_GET["host_search"])) {
     $centreon->historySearch[$url] = $_GET["host_search"];
 }
-
+        
         $aTypeAffichageLevel1 = array(
             "svcOVSG" => _("Details"),
             "svcSumSG" => _("Summary")
         );
-
+        
         $aTypeAffichageLevel2 = array(
             "" => _("All"),
             "pb" => _("Problems"),
             "ack_1" => _("Acknowledge"),
             "ack_0" => _("Not Acknowledged"),
         );
-
+    
         /*
 	 * Check search value in Service Group search field
 	 */
@@ -103,8 +103,8 @@ if (isset($_GET["host_search"])) {
         $tpl->assign('pollerStr', _('Poller'));
         $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
         $tpl->assign("mon_status_information", _("Status information"));
-
-
+    
+    
     # Get servicegroups list
         $sgSearchSelect = '<select id="sg_search" name="sg_search"><option value=""></option>';
         $servicegroups = array();
@@ -163,17 +163,17 @@ if (isset($_GET["host_search"])) {
                 if (val != '') {
                     _o = _o + "_" + val;
                 }
-
+                
                 monitoring_refresh();
             }
     </script>
     <?php
 
     $attrs = array(     'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-
+        
         $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
         $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-
+        
     $form->addElement('select', 'o1', null, array(  null    =>  _("More actions..."),
                                                     "3"         =>  _("Verification Check"),
                                                     "4"         =>  _("Verification Check (Forced)"),

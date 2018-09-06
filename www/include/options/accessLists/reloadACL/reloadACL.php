@@ -107,7 +107,7 @@ while ($r = $res->fetchRow()) {
         $session_data[$cpt]["user_id"] = $r["user_id"];
         $session_data[$cpt]["user_alias"] = $rU["contact_name"];
         $session_data[$cpt]["admin"] = $rU["contact_admin"];
-
+        
         $resCP = $pearDB->query("SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
         $rCP = $resCP->fetchRow();
         $session_data[$cpt]["ip_address"] = $r["ip_address"];

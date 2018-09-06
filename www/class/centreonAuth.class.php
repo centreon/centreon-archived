@@ -340,7 +340,7 @@ class CentreonAuth
                         $data = $DBRESULT2->fetchRow();
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
-                }
+                }  
             }
         } else {
             if ($this->debug) {

@@ -71,9 +71,9 @@ if (($o == "c" || $o == "w") && $traps_id) {
     $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
             $trap['severity'] = $trap['severity_id'];
     $DBRESULT->free();
-
+            
     $cdata = CentreonData::getInstance();
-
+    
     /*
      * Preset values of preexec commands
      */
@@ -83,7 +83,7 @@ if (($o == "c" || $o == "w") && $traps_id) {
         ENT_QUOTES
     ));
     $cdata->addJsData('clone-count-preexec', count($preexecArray));
-
+    
     /*
      * Preset values of matching rules
      */
@@ -215,7 +215,7 @@ $attrService1 = array_merge(
     )
 );
 $form->addElement('select2', 'services', _("Linked Services"), array(), $attrService1);
-
+    
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array(
@@ -226,7 +226,7 @@ $attrServicetemplate1 = array_merge(
 $form->addElement('select2', 'service_templates', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 /*
- * Routing
+ * Routing 
  */
 $form->addElement(
     'text',
@@ -311,7 +311,7 @@ $form->addElement(
     'traps_log',
     _("Insert trap's information into database")
 );
-
+        
 $form->addElement(
     'text',
     'traps_output_transform',
@@ -322,23 +322,23 @@ $form->addElement(
 $form->addElement('textarea', 'traps_customcode', _("Custom code"), $attrsTextarea);
 
 $form->addElement('select', 'traps_advanced_treatment_default', _("Advanced matching behavior"), array(0=>_("If no match, submit default status"), 1=>_("If no match, disable submit"), 2=>_("If match, disable submit")), array('id' => 'traps_advanced_treatment'));
-
+    
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID and Host"), '2');
 $form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
-
+    
 $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
 $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
 $form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
-
+    
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("None"), '0');
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
 $downtime[] = HTML_QuickForm::createElement('radio', 'traps_downtime', null, _("History"), '2');
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
-
+    
 /*
- * Pre exec
+ * Pre exec 
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
@@ -350,7 +350,7 @@ $cloneSet[] = $form->addElement(
             "id" => "preexec_#index#"
             )
 );
-
+    
 /*
  * Form Rules
  */

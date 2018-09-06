@@ -211,7 +211,7 @@ if ($numRows > 0) {
                 'host' => array()
             );
         }
-
+        
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]])) {
             $count++;
             if ($tab["icon_image"]) {
@@ -232,10 +232,10 @@ if ($numRows > 0) {
                 'service' => array()
             );
         }
-
+        
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']])) {
              $aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']] = array(
-
+                 
                 "sn" => CentreonUtils::escapeSecure($tab['description']),
                 "snl" => CentreonUtils::escapeSecure(urlencode($tab['description'])),
                 "sc" => $obj->colorService[$tab['state']],
@@ -272,7 +272,7 @@ foreach ($aTab as $key => $element) {
         $obj->XML->endElement();
         $count++;
     }
-
+    
     $obj->XML->endElement();
 }
 

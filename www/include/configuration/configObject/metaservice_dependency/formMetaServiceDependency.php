@@ -64,7 +64,7 @@ if (($o == "c" || $o == "w") && $dep_id) {
 #
 # Meta Service comes from DB -> Store in $metas Array
 $metas = array();
-$DBRESULT = $pearDB->query("SELECT meta_id, meta_name
+$DBRESULT = $pearDB->query("SELECT meta_id, meta_name 
                                 FROM meta_service ".
                                 $acl->queryBuilder('WHERE', 'meta_id', $metastr).
                                " ORDER BY meta_name");
@@ -150,7 +150,7 @@ $form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 $form->addElement('hidden', 'dep_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-
+    
 $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 

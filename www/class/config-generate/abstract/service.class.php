@@ -138,27 +138,27 @@ abstract class AbstractService extends AbstractObject {
     protected $stmt_stpl = null;
     protected $stmt_contact = null;
     protected $stmt_service = null;
-
+    
     protected function getImages(&$service) {
         $media = Media::getInstance();
         if (!isset($service['icon_image'])) {
             $service['icon_image'] = $media->getMediaPathFromId($service['icon_image_id']);
         }
     }
-
+    
     protected function getMacros(&$service) {
         if (isset($service['macros'])) {
             return 1;
         }
-
+        
         $service['macros'] = &Macro::getInstance()->getServiceMacroByServiceId($service['service_id']);
         return 0;
     }
-
-    protected function getServiceTemplates(&$service) {
+    
+    protected function getServiceTemplates(&$service) {        
         $service['use'] = array(ServiceTemplate::getInstance()->generateFromServiceId($service['service_template_model_stm_id']));
     }
-
+    
     protected function getContacts(&$service) {
         if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
             $service['contacts_cache'] = array();
@@ -184,7 +184,7 @@ abstract class AbstractService extends AbstractObject {
             }
         }
     }
-
+    
     protected function getContactGroups(&$service)
     {
         if (isset($service['service_use_only_contacts_from_host']) && $service['service_use_only_contacts_from_host'] == 1) {
@@ -211,10 +211,10 @@ abstract class AbstractService extends AbstractObject {
             }
         }
     }
-
+    
     protected function findCommandName($service_id, $command_label) {
         $loop = array();
-
+        
         $services_tpl = ServiceTemplate::getInstance()->service_cache;
         $service_id = isset($this->service_cache[$service_id]['service_template_model_stm_id']) ? $this->service_cache[$service_id]['service_template_model_stm_id'] : null;
         while (!is_null($service_id)) {
@@ -227,14 +227,14 @@ abstract class AbstractService extends AbstractObject {
             }
             $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id']) ? $services_tpl[$service_id]['service_template_model_stm_id'] : null;
         }
-
+        
         return null;
     }
-
+    
     protected function getServiceCommand(&$service, $result_name, $command_id_label, $command_arg_label) {
         $command_name = Command::getInstance()->generateFromCommandId($service[$command_id_label]);
         $command_arg = '';
-
+        
         if (isset($service[$result_name])) {
             return 1;
         }
@@ -253,21 +253,21 @@ abstract class AbstractService extends AbstractObject {
                 $service[$result_name] = $command_name . $command_arg;
             }
         }
-
+        
         return 0;
     }
-
+    
     protected function getServiceCommands(&$service) {
-        $this->getServiceCommand($service, 'check_command', 'check_command_id', 'check_command_arg');
+        $this->getServiceCommand($service, 'check_command', 'check_command_id', 'check_command_arg');        
         $this->getServiceCommand($service, 'event_handler', 'event_handler_id', 'event_handler_arg');
     }
-
+    
     protected function getServicePeriods(&$service) {
         $period = Timeperiod::getInstance();
         $service['check_period'] = $period->generateFromTimeperiodId($service['check_period_id']);
         $service['notification_period'] = $period->generateFromTimeperiodId($service['notification_period_id']);
     }
-
+    
     public function getString($service_id, $attr) {
         if (isset($this->service_cache[$service_id][$attr])) {
             return $this->service_cache[$service_id][$attr];

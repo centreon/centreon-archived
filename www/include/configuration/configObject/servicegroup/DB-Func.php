@@ -100,7 +100,7 @@ function deleteServiceGroupInDB($serviceGroups = array())
 function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
 {
     global $pearDB, $centreon, $is_admin;
-
+            
     $sgAcl = array();
     foreach ($serviceGroups as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");

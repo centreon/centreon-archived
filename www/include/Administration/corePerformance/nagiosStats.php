@@ -160,7 +160,7 @@ if (!isset($oreon)) {
                         "host_states" => "nagios_hosts_states.rrd",
                         "service_states" => "nagios_services_states.rrd",
                         "cmd_buffer" => "nagios_cmd_buffer.rrd");
-
+    
     $title = array(
             "active_host_check" => _("Host Check Execution Time"),
             "active_host_last" => _("Hosts Actively Checked"),
