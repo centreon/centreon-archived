@@ -33,15 +33,15 @@ try {
           failedNewAll: '0'
         ])
       }
-    },
-    'debian10': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian9'
-        junit 'ut.xml'
-        if (currentBuild.result == 'UNSTABLE')
-          currentBuild.result = 'FAILURE'
-      }
+//    },
+//    'debian9': {
+//      node {
+//        sh 'setup_centreon_build.sh'
+//        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian9'
+//        junit 'ut.xml'
+//        if (currentBuild.result == 'UNSTABLE')
+//          currentBuild.result = 'FAILURE'
+//      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -54,12 +54,12 @@ try {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/18.10/mon-web-package.sh centos7'
       }
-    },
-    'debian10': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian9'
-      }
+//    },
+//    'debian9': {
+//      node {
+//        sh 'setup_centreon_build.sh'
+//        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian9'
+//      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
