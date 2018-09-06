@@ -62,4 +62,4 @@ Architecture
 Le schéma ci-dessous résume le fonctionnement de l'architecture :
 
 .. image :: /images/architecture/bschema.png
-   :align: center 
+   :align: center

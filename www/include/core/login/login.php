@@ -73,19 +73,19 @@ if (isset($msg_error) && $msg_error != '') {
 } elseif (isset($_POST["centreon_token"])) {
     $loginMessages[] = _('Your credentials are incorrect.');
 }
-    
+
 if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
     $loginMessages[] = _('Your session is expired.');
 }
-    
+
 if ($file_install_acces) {
     $loginMessages[] = $error_msg;
 }
-    
+
 if (isset($msg) && $msg) {
     $loginMessages[] = $msg;
 }
-    
+
 /**
  * Adding hidden value
  */
@@ -93,7 +93,7 @@ if (isset($_GET['p'])) {
     $pageElement = $form->addElement('hidden', 'p');
     $pageElement->setValue($_GET['p']);
 }
-    
+
 /**
  * Adding validation rule
  */
@@ -109,7 +109,7 @@ if (isset($freeze) && $freeze) {
 if ($file_install_acces) {
     $submitLogin->freeze();
 }
-    
+
 /*
  * Smarty template Init
  */

@@ -10,9 +10,9 @@ Timeline.GregorianDateLabeller.monthNames["vi"] = [
 Timeline.GregorianDateLabeller.labelIntervalFunctions["vi"] = function(date, intervalUnit) {
     var text;
     var emphasized = false;
-    
+
     var date2 = Timeline.DateTime.removeTimeZoneOffset(date, this._timeZone);
-    
+
     switch(intervalUnit) {
     case Timeline.DateTime.DAY:
     case Timeline.DateTime.WEEK:
@@ -21,6 +21,6 @@ Timeline.GregorianDateLabeller.labelIntervalFunctions["vi"] = function(date, int
     default:
         return this.defaultLabelInterval(date, intervalUnit);
     }
-    
+
     return { text: text, emphasized: emphasized };
 };

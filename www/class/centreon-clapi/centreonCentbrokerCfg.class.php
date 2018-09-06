@@ -378,7 +378,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         if (!isset($args[2])) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        
+
         $cbTypeId = $this->brokerObj->getTypeId($args[2]);
         if (is_null($cbTypeId)) {
             throw new CentreonClapiException(self::UNKNOWNPARAMETER);
@@ -507,7 +507,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             echo $row['cb_type_id'].$this->delim.$row['type_shortname'].$this->delim.$row['type_name']."\n";
         }
     }
-    
+
     /**
      * User help method
      * Get Field list from Type

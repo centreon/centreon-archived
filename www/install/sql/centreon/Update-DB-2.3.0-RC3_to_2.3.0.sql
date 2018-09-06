@@ -24,7 +24,7 @@ UPDATE `cb_type_field_relation` SET `order_display` = '4' WHERE `cb_type_field_r
 UPDATE `cb_type_field_relation` SET `order_display` = '5' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =9;
 UPDATE `cb_type_field_relation` SET `order_display` = '6' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =10;
 
--- 
+--
 -- Insert new field for Centreon Broker correlation
 --
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);

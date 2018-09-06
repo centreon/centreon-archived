@@ -30,11 +30,11 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
 * Dans l'onglet **Données** - Champ **Multiple module broker** vérifiez / ajoutez les configurations entrées suivantes ::
 
    /usr/lib64/centreon-engine/externalcmd.so
-   
+
    /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller_neb.png
-   :align: center 
+   :align: center
 
 Configuration de Centreon Broker
 ================================
@@ -106,7 +106,7 @@ Sur le serveur central :
 ::
 
 	$ ssh-keygen
-	
+
 3. Puis exportez votre clé SSH vers le serveur collecteur distant :
 
 ::

@@ -3,7 +3,7 @@
 
 /**
  * HTML class for a hidden type element
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE: This source file is subject to version 3.01 of the PHP license
@@ -29,7 +29,7 @@ require_once 'HTML/QuickForm/input.php';
 
 /**
  * HTML class for a hidden type element
- * 
+ *
  * @category    HTML
  * @package     HTML_QuickForm
  * @author      Adam Daniel <adaniel1@eesus.jnj.com>
@@ -43,10 +43,10 @@ class HTML_QuickForm_hidden extends HTML_QuickForm_input
 
     /**
      * Class constructor
-     * 
+     *
      * @param     string    $elementName    (optional)Input field name attribute
      * @param     string    $value          (optional)Input field value
-     * @param     mixed     $attributes     (optional)Either a typical HTML attribute string 
+     * @param     mixed     $attributes     (optional)Either a typical HTML attribute string
      *                                      or an associative array
      * @since     1.0
      * @access    public
@@ -58,13 +58,13 @@ class HTML_QuickForm_hidden extends HTML_QuickForm_input
         $this->setType('hidden');
         $this->setValue($value);
     } //end constructor
-        
+
     // }}}
     // {{{ freeze()
 
     /**
      * Freeze the element so that only its value is returned
-     * 
+     *
      * @access    public
      * @return    void
      */
@@ -83,7 +83,7 @@ class HTML_QuickForm_hidden extends HTML_QuickForm_input
     * @param bool $sc1                  unused, for signature compatibility
     * @param bool $sc2                  unused, for signature compatibility
     * @access public
-    * @return void 
+    * @return void
     */
     function accept(&$renderer, $sc1 = false, $sc2 = null)
     {

@@ -229,7 +229,7 @@ ALTER TABLE `extended_host_information` ADD UNIQUE (`host_host_id`);
 UPDATE `topology` set `topology_show` = '0' WHERE `topology_page` = '50105' LIMIT 1;
 
 ALTER TABLE `topology_JS` ADD INDEX ( `id_page` , `o` );
-ALTER TABLE `acl_topology` ADD INDEX ( `acl_topo_id` , `acl_topo_activate` ); 
+ALTER TABLE `acl_topology` ADD INDEX ( `acl_topo_id` , `acl_topo_activate` );
 
 UPDATE `acl_resources` SET `changed` = '1';
 

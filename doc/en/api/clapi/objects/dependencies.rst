@@ -41,7 +41,7 @@ Add
 In order to add a new dependency, use the **ADD** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADD \
-  -v "my new dependency;any description;HOST;dummy-host" 
+  -v "my new dependency;any description;HOST;dummy-host"
 
 
 The required parameters are the following:
@@ -67,7 +67,7 @@ Del
 
 In order to delete a dependency, use the **DEL** action. The dependency name is used for identifying the dependency you would like to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DEL -v "my dependency" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DEL -v "my dependency"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -79,7 +79,7 @@ Setparam
 In order to set a specific parameter for a dependency, use the **SETPARAM** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a setparam \
-  -v "my dependency;name;my new dependency name" 
+  -v "my dependency;name;my new dependency name"
 
 You may change the following parameters:
 
@@ -107,7 +107,7 @@ Listdep
 
 If you want to retrieve the dependency definition of a dependency object, use the **LISTDEP** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a LISTDEP -v "my dependency" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a LISTDEP -v "my dependency"
   parents;children
   HostParent1|HostParent2;HostChild1|HostChild2,ServiceChild2
 
@@ -118,11 +118,11 @@ Addparent and Addchild
 If you want to add a new parent or a new child in a dependency definition, use the **ADDPARENT** or **ADDCHILD** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDPARENT \
-  -v "my dependency;my_parent_host" 
+  -v "my dependency;my_parent_host"
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
-  -v "my dependency;my_child_host" 
+  -v "my dependency;my_child_host"
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a ADDCHILD \
-  -v "my dependency;my_child_host2,my_child_service2" 
+  -v "my dependency;my_child_host2,my_child_service2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -134,11 +134,11 @@ Delparent and Delchild
 In order to delete a parent or a child in a dependency definition, use the **DELPARENT** or **DELCHILD** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELPARENT \
-  -v "my dependency;my_parent_host" 
+  -v "my dependency;my_parent_host"
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELCHILD \
-  -v "my dependency;my_child_host" 
+  -v "my dependency;my_child_host"
   [root@centreon ~]# ./centreon -u admin -p centreon -o DEP -a DELCHILD \
-  -v "my dependency;my_child_host2,my_child_service2" 
+  -v "my dependency;my_child_host2,my_child_service2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.

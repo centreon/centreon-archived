@@ -10,7 +10,7 @@ ALTER TABLE `cfg_cgi` ADD `notes_url_target` VARCHAR(255) CHARACTER SET utf8 COL
 ALTER TABLE `hostgroup`
   DROP `hg_snmp_community`,
   DROP `hg_snmp_version`;
-  
+
 /*!40000 ALTER TABLE `topology` DISABLE KEYS */;
 /*!40000 ALTER TABLE `topology_JS` DISABLE KEYS */;
 SET FOREIGN_KEY_CHECKS = 0;

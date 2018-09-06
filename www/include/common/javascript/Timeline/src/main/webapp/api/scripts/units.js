@@ -50,7 +50,7 @@ Timeline.NativeDateUnit.compare = function(v1, v2) {
     } else {
         n2 = Number(v2);
     }
-    
+
     return n1 - n2;
 };
 

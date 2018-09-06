@@ -5,7 +5,7 @@ Centreon Web 2.8.19
 Enhancements
 ============
 
-* [API] Return error when filtered object does not exist - PR #6074 
+* [API] Return error when filtered object does not exist - PR #6074
 * [API] Add clapi set option - PR #6065
 * [UX] Add new loading css - PR #6066 #6072
 

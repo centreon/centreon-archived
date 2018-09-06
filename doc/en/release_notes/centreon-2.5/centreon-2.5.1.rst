@@ -6,7 +6,7 @@ Centreon 2.5.1
 WARNING
 *******
 
-If you are upgrading from Centreon 2.5.0 make sure to read the following. 
+If you are upgrading from Centreon 2.5.0 make sure to read the following.
 
 .. WARNING::
     If you are upgrading from a version prior to 2.5.0, just skip this notice and follow this procedure instead:
@@ -23,9 +23,9 @@ You are using NDOUtils
 
 If you are using NDOUtils, chances are that you have plenty of duplicate entries in your log table. Follow the procedure in order to re insert the logs:
 
-Copy all the log files from the remote pollers to the local poller in /var/lib/centreon/log/POLLERID/. To know the POLLERID of each of your pollers, 
+Copy all the log files from the remote pollers to the local poller in /var/lib/centreon/log/POLLERID/. To know the POLLERID of each of your pollers,
 execute the following request against the MySQL server (centreon database)::
-  
+
   mysql> SELECT id, name FROM nagios_server;
 
 Then, execute the following script::

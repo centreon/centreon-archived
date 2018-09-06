@@ -47,7 +47,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @return array
@@ -90,7 +90,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             ),
             false
         );
-       
+
 
         $contactgroupList = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
@@ -115,7 +115,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         } else {
             $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
         }
- 
+
         foreach ($ldapCgs as $key => $value) {
             $sTemp = $value;
             if (!$this->unique_key($sTemp, $contactgroupList)) {
@@ -131,7 +131,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             'total' => $aclCgs['total']
         );
     }
-    
+
     protected function unique_key($val, &$array)
     {
 

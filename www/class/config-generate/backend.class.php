@@ -45,7 +45,7 @@ class Backend {
     public $broker_sub = 'broker';
     public $db = null;
     public $db_cs = null;
-    
+
     private $tmp_file = null;
     private $tmp_dir = null;
     private $full_path = null;
@@ -56,12 +56,12 @@ class Backend {
 
     public static function getInstance() {
         if(is_null(self::$_instance)) {
-            self::$_instance = new Backend();  
+            self::$_instance = new Backend();
         }
- 
+
         return self::$_instance;
     }
-    
+
     private function deleteDir($path) {
         if (is_dir($path) === true) {
             $files = array_diff(scandir($path), array('.', '..'));
@@ -76,14 +76,14 @@ class Backend {
 
         return false;
     }
-    
+
     protected function createDirectories($paths) {
         $dir = '';
         $dir_append = '';
         foreach ($paths as $path) {
             $dir .= $dir_append . $path;
             $dir_append .= '/';
-            
+
             if (file_exists($dir)) {
                 if (!is_dir($dir)) {
                     throw new Exception("Generation path '" .  $dir . "' is not a directory.");
@@ -94,14 +94,14 @@ class Backend {
                 }
             }
         }
-        
+
         return $dir;
     }
-    
+
     public function getEngineGeneratePath() {
         return $this->generate_path . '/' . $this->engine_sub;
     }
-    
+
     public function initPath($poller_id, $engine=1) {
         if ($engine == 1) {
             $this->createDirectories(array($this->generate_path, $this->engine_sub));
@@ -113,7 +113,7 @@ class Backend {
         if (is_dir($this->full_path . '/' . $poller_id) && !is_writable($this->full_path . '/' . $poller_id)) {
             throw new Exception("Not writeable directory '" . $this->full_path . '/' . $poller_id . "'");
         }
-        
+
         if (!is_writable($this->full_path)) {
             throw new Exception("Not writeable directory '" . $this->full_path . "'");
         }
@@ -124,27 +124,27 @@ class Backend {
         }
         $this->full_path .= '/' . $this->tmp_dir;
     }
-    
+
     public function getPath() {
         return $this->full_path;
     }
-    
+
     public function movePath($poller_id) {
         $subdir = dirname($this->full_path);
         $this->deleteDir($subdir . '/' . $poller_id);
         unlink($subdir . '/' . $this->tmp_file);
         rename($this->full_path, $subdir . '/' . $poller_id);
     }
-    
+
     public function cleanPath() {
         $subdir = dirname($this->full_path);
         if (is_dir($this->full_path)) {
             $this->deleteDir($this->full_path);
         }
-        
+
         @unlink($subdir . '/' . $this->tmp_file);
     }
-    
+
     public function setUserName($username) {
         $this->whoaim = $username;
     }
@@ -182,7 +182,7 @@ class Backend {
         global $conf_centreon, $centreon_path;
 
         $this->generate_path = _CENTREON_PATH_ . '/filesGeneration';
-                
+
         $mysql_host = $conf_centreon["hostCentreon"];
         $mysql_database = $conf_centreon["db"];
         $mysql_user = $conf_centreon["user"];
@@ -191,7 +191,7 @@ class Backend {
         $this->db = new PDO("mysql:dbname=pdo;host=" . $mysql_host . ";port=" . $mysql_port . ";dbname=" . $mysql_database,
         $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+
         $mysql_host_cs = $conf_centreon["hostCentstorage"];
         $mysql_database_cs = $conf_centreon["dbcstg"];
         $this->db_cs = new PDO("mysql:dbname=pdo;host=" . $mysql_host_cs . ";port=" . $mysql_port . ";dbname=" . $mysql_database_cs,

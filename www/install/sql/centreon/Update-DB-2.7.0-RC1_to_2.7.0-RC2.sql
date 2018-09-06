@@ -1,7 +1,7 @@
 update topology set topology_url_opt ='&o=h_unhandled' where topology_page = 20202;
 update topology set topology_url_opt ='&o=svc_unhandled' where topology_page = 20201;
 
--- Clear BDD with old htmlentities values for " and ' 
+-- Clear BDD with old htmlentities values for " and '
 UPDATE service SET command_command_id_arg = REPLACE(command_command_id_arg, '&quot;', '"');
 UPDATE service SET command_command_id_arg = REPLACE(command_command_id_arg, '&apos;', '\'');
 UPDATE command SET command_line = REPLACE(command_line, '&quot;', '"');

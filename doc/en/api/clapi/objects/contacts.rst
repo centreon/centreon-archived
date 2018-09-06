@@ -35,7 +35,7 @@ Alias           Alias of contact (also login id)
 Email           Email of contact
 
 Pager           Phone number of contact
-      
+
 GUI Access      *1* (can access UI) or *0* (cannot access UI)
 
 Admin           *1* (admin) or *0* (non admin)
@@ -48,7 +48,7 @@ Add
 
 In order to add a contact, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CONTACT -a ADD -v "user;user;user@mail.com;mypassword;1;1;en_US;local"
 
 
 The required parameters are the following:
@@ -81,7 +81,7 @@ Del
 
 In order to delete one contact, use the **DEL** action. The contact name is used for identifying the contact you would like to delete::
 
-  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a del -v "user" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a del -v "user"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -91,8 +91,8 @@ Setparam
 
 If you want to change a specific parameter for a contact, use the **SETPARAM** action::
 
-  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifcmd;command name" 
-  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;svcnotifcmd;command name" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifcmd;command name"
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;svcnotifcmd;command name"
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setParam -v "contact alias;hostnotifperiod;period name"
   [root@centreon core]# ./centreon -u admin -p centreon -o contact -a setparam -v "contact alias;timezone;Europe/Berlin"
 
@@ -175,7 +175,7 @@ Enable
 
 In order to enable a contact, use the **ENABLE** action::
 
-  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a enable -v "test" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a enable -v "test"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -185,7 +185,7 @@ Disable
 
 In order to disable a contact, use the **DISABLE** action::
 
-  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a disable -v "test" 
+  [root@centreon core]# ./centreon -u admin -p centreon -o contact -a disable -v "test"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.

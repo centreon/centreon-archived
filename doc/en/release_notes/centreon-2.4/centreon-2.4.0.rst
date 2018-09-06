@@ -9,13 +9,13 @@ What's new?
 Better integration with Centreon Engine and Centreon Broker
 ===========================================================
 
-The :ref:`installation <centreon_install>` process has been reviewed: 
-it is now possible to specify the monitoring engine (Centreon Engine or Nagios) 
+The :ref:`installation <centreon_install>` process has been reviewed:
+it is now possible to specify the monitoring engine (Centreon Engine or Nagios)
 and the event broker module (Centreon Broker or NDOUtils). All you
 need to do right after a fresh installation is export your configuration files, then reload your
 monitoring engine and the monitoring system should be up and running!
 
-This version offers the possibility to define the :ref:`connectors <centreon-engine:obj_def_connector>` 
+This version offers the possibility to define the :ref:`connectors <centreon-engine:obj_def_connector>`
 for Centreon Engine. Obviously, you do not need to configure these connectors if you are still using Nagios.
 
 It's been said that Centreon Broker can be cumbersome to configure, especially if you are not
@@ -76,11 +76,11 @@ has changed from ``nagios`` to ``centreon``. See
 Plugins
 -------
 
-For better performances, we advise you to use ``check_icmp`` 
+For better performances, we advise you to use ``check_icmp``
 instead of ``check_ping`` if you are in an IPv4 network, that is
 (check_icmp is not yet compatible with IPv6). Switching from ``check_ping`` to
 ``check_icmp`` should be quite simple as the plugins take the same parameters.
-All you have to do is change the check commands: ``check_centreon_ping``, 
+All you have to do is change the check commands: ``check_centreon_ping``,
 ``check_host_alive`` and all the commands that call ``check_ping``.
 
 
@@ -99,7 +99,7 @@ new one as soon as you can.
 Centreon Broker init script
 ---------------------------
 
-If you are using *Centreon Broker*, make sure to fill the *Start script for broker daemon* 
+If you are using *Centreon Broker*, make sure to fill the *Start script for broker daemon*
 parameter in ``Administration`` > ``Options`` > ``Monitoring``. RRD graphs cannot be rebuilt
 if this parameter is omitted!
 
@@ -126,7 +126,7 @@ values of $USERx$ macros can be different from one poller to another.
 Interval length
 ---------------
 
-The ``interval_length`` is now a global parameter that you have to set in ``Administration`` > ``Options`` 
+The ``interval_length`` is now a global parameter that you have to set in ``Administration`` > ``Options``
 > ``Monitoring``, although it should be left at ``60 seconds`` in most cases.
 
 

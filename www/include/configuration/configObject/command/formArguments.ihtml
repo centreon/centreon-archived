@@ -11,15 +11,15 @@
 	 			<img src="./img/icones/16x16/note.gif">&nbsp;&nbsp;{$form.header.information}
 	 		</td>
 	 	</tr>
-		{if $nb_arg}		
-		{foreach  item=args key=key from=$dummyTab}		
+		{if $nb_arg}
+		{foreach  item=args key=key from=$dummyTab}
 		<tr class="{cycle values="list_one,list_two"}">
 			<td class="FormRowField">
 				$ARG{$dummyTab[$key]}$
 			</td>
 			<td class="FormRowValue">
 				<input type="text" id="desc_{$key}" size="90" value="{$defaultDesc[$key]}">
-				<input type="hidden" id="macro_{$key}" value="{$dummyTab[$key]}"> 
+				<input type="hidden" id="macro_{$key}" value="{$dummyTab[$key]}">
 			</td>
 		</tr>
 		{/foreach}
@@ -28,11 +28,11 @@
 		{/if}
 	</table>
 	<div id="validForm">
-		{$form.hidden}		
+		{$form.hidden}
 		{if $nb_arg}
 		<p class="oreonbutton">{$form.submitSaveAdd.html}&nbsp;&nbsp;{$form.close.html}</p>
 		{else}
-		<p class="oreonbutton">{$form.close.html}</p>		
-		{/if}		
-	</div>	
+		<p class="oreonbutton">{$form.close.html}</p>
+		{/if}
+	</div>
 </form>

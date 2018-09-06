@@ -45,9 +45,9 @@
                             {else}
                                 {$labels.disabled}
                             {/if}
-                        </td>			
+                        </td>
 		</tr>
-		{/section}	
+		{/section}
 	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">

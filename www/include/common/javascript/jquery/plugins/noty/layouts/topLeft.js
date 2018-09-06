@@ -3,7 +3,7 @@
 	$.noty.layouts.topLeft = {
 		name: 'topLeft',
 		options: { // overrides options
-			
+
 		},
 		container: {
 			object: '<ul id="noty_topLeft_layout_container" />',

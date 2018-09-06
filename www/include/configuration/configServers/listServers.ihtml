@@ -87,7 +87,7 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColCenter">
-              {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
+              {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""}
               <!-- Link for edit poller monitoring engine configuration -->
               <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
                 <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
@@ -119,7 +119,7 @@
         </tr>
     </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

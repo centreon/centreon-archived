@@ -14,7 +14,7 @@
     </tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+rrdtool_binary">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_version">{$form.rrdtool_version.label}</td><td class="FormRowValue">{$form.rrdtool_version.html}</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.title_title}</h4>
@@ -22,7 +22,7 @@
     </tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_title_font">{$form.rrdtool_title_font.label}</td><td class="FormRowValue">{$form.rrdtool_title_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_title_font_size">{$form.rrdtool_title_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_title_fontsize.html}&nbsp;px</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.unit_title}</h4>
@@ -30,7 +30,7 @@
     </tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_unit_font">{$form.rrdtool_unit_font.label}</td><td class="FormRowValue">{$form.rrdtool_unit_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_unit_font_size">{$form.rrdtool_unit_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_unit_fontsize.html}&nbsp;px</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.axis_title}</h4>
@@ -38,7 +38,7 @@
     </tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_axis_font">{$form.rrdtool_axis_font.label}</td><td class="FormRowValue">{$form.rrdtool_axis_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_axis_font_size">{$form.rrdtool_axis_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_axis_fontsize.html}&nbsp;px</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.legend_title}</h4>
@@ -54,7 +54,7 @@
     </tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font">{$form.rrdtool_watermark_font.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font_size">{$form.rrdtool_watermark_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_fontsize.html}&nbsp;px</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.rrdcached_title}</h4>
@@ -63,7 +63,7 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_enable">{$form.rrdcached_enable.label}</td><td class="FormRowValue">{$form.rrdcached_enable.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_port">{$form.rrdcached_port.label}</td><td class="FormRowValue">{$form.rrdcached_port.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_unix_path">{$form.rrdcached_unix_path.label}</td><td class="FormRowValue">{$form.rrdcached_unix_path.html}</td></tr>
-	
+
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}

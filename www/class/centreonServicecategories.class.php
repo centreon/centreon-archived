@@ -50,7 +50,7 @@ class CentreonServicecategories
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -73,7 +73,7 @@ class CentreonServicecategories
                 $parameters['relationObject']['comparator'] = 'sc_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

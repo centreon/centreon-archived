@@ -31,7 +31,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 jQuery(function() {
     function doClone(){
         jQuery(".clonable").each(function(idx, el) {
@@ -47,8 +47,8 @@ jQuery(function() {
             iniFormsCount: jQuery("#clone-count-" + suffixid).data("clone-count-" + suffixid),
             data: jQuery("#clone-values-" + suffixid).data("clone-values-" + suffixid),
             afterAdd: function(source, clone) {
-                if (typeof clonerefreshListener == 'function') { 
-                    clonerefreshListener(clone); 
+                if (typeof clonerefreshListener == 'function') {
+                    clonerefreshListener(clone);
                 }
             }
          });
@@ -69,9 +69,9 @@ jQuery(function() {
                                 }
                              );
     }
-    
+
     doClone();
-   
+
    function cloneResort(id) {
         jQuery('input[name^="clone_order_'+id+'_"]').each(function(idx, el) {
             jQuery(el).val(idx);

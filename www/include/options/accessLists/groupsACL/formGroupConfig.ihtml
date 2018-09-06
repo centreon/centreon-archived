@@ -20,7 +20,7 @@
           <td class="FormHeader" colspan="2">
             <h3>| {$form.header.title}</h3>
           </td>
-        </tr>	 	
+        </tr>
 	 	<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.information}</h4>

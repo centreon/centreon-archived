@@ -141,8 +141,8 @@ $DBRESULT = $obj->DBC->query($query_svc_status);
 $svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
 $DBRESULT->free();
 
-$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"] 
-    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"] 
+$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"]
+    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"]
     + $svc_stat["PENDING_TOTAL"];
 
 /* ********************************************
@@ -161,7 +161,7 @@ $inactivInstance = "";
 $pollerInError = "";
 
 if ($pollerList != "") {
-    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 
+    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0
                 AND name IN ($pollerList)";
     $DBRESULT = $obj->DBC->query($request);
     while ($data = $DBRESULT->fetchRow()) {

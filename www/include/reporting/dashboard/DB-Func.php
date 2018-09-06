@@ -236,7 +236,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 }
 
 /*
- * Return a table a (which reference is given in parameter) 
+ * Return a table a (which reference is given in parameter)
  * that contains stats on services for a given host defined by $host_id
  */
 function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod)
@@ -282,7 +282,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
@@ -404,7 +404,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
 }
 
 /*
- * Return a table a (which reference is given in parameter) that contains stats 
+ * Return a table a (which reference is given in parameter) that contains stats
  * on services for a given host defined by $host_id and $service_id
  * me must specify the host id because one service can be linked to many hosts
  */
@@ -420,7 +420,7 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
@@ -432,7 +432,7 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         . "sum(MaintenanceTime) as MAINTENANCE_T "
         . "FROM log_archive_service las "
         . "WHERE las.host_id = " . $host_id . " "
-        . $aclCondition . 
+        . $aclCondition .
         " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
         " AND date_end <= " . $end_date . " "
         . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "

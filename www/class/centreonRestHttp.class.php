@@ -182,7 +182,7 @@ class CentreonRestHttp
         /* Return the content */
         return $decodedContent;
     }
-    
+
     /**
      *
      * @param type $url
@@ -192,7 +192,7 @@ class CentreonRestHttp
     {
         if (isset($url) && !empty($url)) {
             $this->proxy = 'tcp://' . $url;
-            
+
             if ($port) {
                 $this->proxy .= ':' . $port;
             }

@@ -2,9 +2,9 @@
 Déployer un service à partir d'un modèle
 ========================================
 
-Dans le précédent guide de démarrage rapide vous avez 
+Dans le précédent guide de démarrage rapide vous avez
 :ref:`ajouté un hôte à partir d'un modèle<add_host_template>`
-à partir du modèle d'hôte **OS-Linux-SNMP**. Ce modèle a permis de créer 
+à partir du modèle d'hôte **OS-Linux-SNMP**. Ce modèle a permis de créer
 automatiquement les services suivants :
 
 * CPU
@@ -38,7 +38,7 @@ Pour ajouter un nouveau service à votre hôte vous devez définir 3 choses :
     Le plus souvent il s'agit des seuils d'alerte pour déclencher la notification.
     Vous pouvez laisser ces valeurs par défaut ou les modifier
 
-Modifier la valeur de la macro **INTERFACENAME** pour saisir le nom de votre 
+Modifier la valeur de la macro **INTERFACENAME** pour saisir le nom de votre
 interface réseau, **eth0** dans	 notre exemple.
 
 .. image:: /_static/images/quick_start/add_svc_template_form.png

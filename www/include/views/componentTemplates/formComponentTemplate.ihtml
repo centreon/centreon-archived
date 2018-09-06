@@ -21,7 +21,7 @@
 			{if $o == "w"}
 				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
 			{/if}
-			
+
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
 			{$form.host_id.html}
@@ -66,7 +66,7 @@
 		{/if}
 		{if $o == "w"}
 			<td id="td_ds_color_line" class="FormRowValue" style="font-size: 11px; font-family: Courier New;">{$form.ds_color_line_read.html}</td>
-		
+
 		{/if}
 	</tr>
 	<tr class="list_one">
@@ -89,7 +89,7 @@
 	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_transparency">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_filling">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.legend}</h4>

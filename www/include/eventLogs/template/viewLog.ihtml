@@ -73,7 +73,7 @@
     	<td>{$form.graph.html}</td>
         </tr>
         </form>
-    </table>	
+    </table>
 </div>
 <div id="logView4xml"></div>
 <div style="display:none; ">

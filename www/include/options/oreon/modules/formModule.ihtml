@@ -42,7 +42,7 @@
  			{if $output4}
  				{$output4}<br />
  			{/if}
- 			 <form {$form1.attributes}>	
+ 			 <form {$form1.attributes}>
 	 		<br />&nbsp;{$form1.install.html}&nbsp{$form1.list.html}<br />
 	 		 {$form1.hidden}
 	 		 </form>
@@ -58,7 +58,7 @@
 	 			 </form>
 	 		</td>
 	 	</tr>
-	 {/if}		 		 	
+	 {/if}
  </table>
 
 
@@ -107,7 +107,7 @@
 		 	<tr class="list_one">
 		 		<td colspan="2" align="center">{$form.upgrade.html}&nbsp{$form.list.html}</td>
 		 	</tr>
-		 {/if}	 		 	
+		 {/if}
 	 </table>
 	 {$form.hidden}
 	</form>

@@ -25,7 +25,7 @@
 	</tr>
   </tbody>
 </table>
-<hidden name="p" value='{$p}'>	
+<hidden name="p" value='{$p}'>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
         <td>
@@ -115,7 +115,7 @@
 </table>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 <input type='hidden' name='o'>
-{$form.hidden}	
+{$form.hidden}
 </form>
 
 {literal}

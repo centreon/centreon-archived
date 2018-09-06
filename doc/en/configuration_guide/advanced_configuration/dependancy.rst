@@ -21,7 +21,7 @@ The dependencies of objects are of two types:
 *********************
 Physical dependencies
 *********************
- 
+
 Physical dependencies consist of taking into account physical links between equipment. This link can only be defined for objects of the “Host” type.
 
 The configuration of a physical dependencies takes place in the **Relations** tab of a configuration sheet of a host (**Configuration ==> Hosts ==> Add**).
@@ -39,10 +39,10 @@ It is possible of define two settings:
 Logical dependencies
 ********************
 
-Logical dependencies consist of installing logical links between multiple objects that may or not be of different types. 
+Logical dependencies consist of installing logical links between multiple objects that may or not be of different types.
 E.g.: a service is in charge of supervising the access to a web page requiring an authentication based on a LDAP. It is logical that if the LDAP server is down, the access to the web page will be difficult or even impossible. In this situation, the notification issued should only be communicated to the LDAP directory and not to the website.
 
-Hosts 
+Hosts
 =====
 
 To configure a logical dependencies:
@@ -50,7 +50,7 @@ To configure a logical dependencies:
 1. Go into the menu: **Configuration ==> Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Hosts**
 3. Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/03hostdependance.png
     :align: center
 
@@ -65,7 +65,7 @@ In this case, we have two types of host that come into play: one or more hosts (
 * The **Dependent Services** list defines the dependent services
 * The **Comments** field can be used to comment on the dependencies
 
-Services 
+Services
 ========
 
 To add a dependencies at the services level:
@@ -73,7 +73,7 @@ To add a dependencies at the services level:
 1. Go into the menu: **Configuration ==> Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Services**
 3. Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/03servicedependance.png
     :align: center
 
@@ -82,14 +82,14 @@ In this case, we have two entities that come into play: the (“master”) servi
 * The **Name** and **Description** fields indicate the name and description of the dependencies
 * The **Parent relationship** field should be ignored if you use the Centreon Engine. If it is enabled, and if the links of dependencies of the master service become unavailable the dependencies in the process of creation is no longer taken into account.
 
-* The **Execution Failure Criteria** field indicates the statuses of the master service(s) preventing the check of the hosts or the dependent services 
+* The **Execution Failure Criteria** field indicates the statuses of the master service(s) preventing the check of the hosts or the dependent services
 * The **Notification Failure Criteria** field indicates the statuses of the master service(s) preventing the sending of notifications to the hosts or the dependent services
 * The **Services** list defines the master service(s)
 * The **Dependent services** list defines the dependent services
 * The **Dependent hosts** list defines the dependent hosts
 * The **Comments** field can be used to comment on the dependencies
 
-Host groups 
+Host groups
 ===========
 
 To add a dependencies at the host groups level:
@@ -100,7 +100,7 @@ To add a dependencies at the host groups level:
 
 .. image:: /images/user/configuration/10advanced_configuration/03hostgroupdependance.png
     :align: center
- 
+
 Two types of host groups: a host group is called a master if it controls the execution and the notification of other (“dependent”) host groups.
 
 * The **Name** and **Description** fields indicate the name and the description of the dependencies
@@ -122,7 +122,7 @@ To add a dependencies at the service groups level:
 
 .. image:: /images/user/configuration/10advanced_configuration/03servicegroupdependance.png
     :align: center
- 
+
 Two types of service group: a service group is called a “master” if it controls the execution and the notification of other (“dependent”) service groups.
 
 * The **Name** and **Description** fields indicate the name and the description of the dependencies
@@ -133,7 +133,7 @@ Two types of service group: a service group is called a “master” if it contr
 * The **Dependent service group names** list defines the group(s) of dependent services
 * The **Comments** field can be used to comment on the dependencies
 
-Meta-services 
+Meta-services
 =============
 
 To add a dependencies at the meta-services level:
@@ -152,6 +152,6 @@ Two types of meta-services: a meta-service is called a “master” if it contro
 * The **Execution Failure Criteria** field Indicates which are the statuses of the meta-master service(s) that will prevent the check of the meta-dependent services
 * The **Notification Failure Criteria** field indicates the statuses of the meta-service(s) preventing the sending of notifications to meta-dependent services
 * The **Meta-service name** list defines the master meta-service(s)
-* The **Dependent meta-service** names list defines the dependent meta-service(s) 
+* The **Dependent meta-service** names list defines the dependent meta-service(s)
 * The **Comments** field can be used to comment on the dependencies
 

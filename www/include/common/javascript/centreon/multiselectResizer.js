@@ -72,13 +72,13 @@ jQuery(function() {
     if (maxWidth < minAllowedWidth) {
         maxWidth = minAllowedWidth;
     }
-                                         
+
     // set max width
     if (maxWidth > maxAllowedWidth) {
         maxWidth = maxAllowedWidth;
     }
-   
-    // resize all boxes 
+
+    // resize all boxes
     jQuery("select[multiple=multiple]").each(function() {
         if(!jQuery(this).width() || jQuery(this).css('visibility') == 'hidden') {
             return;

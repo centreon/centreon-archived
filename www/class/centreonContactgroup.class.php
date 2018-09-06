@@ -209,7 +209,7 @@ class CentreonContactgroup
         $ldapres = $this->db->query($query);
 
         $msg = array();
-        
+
         /*
          * Connect to LDAP Server
          */
@@ -284,7 +284,7 @@ class CentreonContactgroup
         }
         return $msg;
     }
-    
+
     /**
      * Get contact group name from contact group id
      *
@@ -303,7 +303,7 @@ class CentreonContactgroup
             throw Exception('No contact group name found');
         }
     }
-    
+
     /**
      * Verified if ldap contactgroup as not the same name of a Centreon contactgroup
      *
@@ -337,7 +337,7 @@ class CentreonContactgroup
         }
         return true;
     }
-    
+
     /**
      *
      * @param integer $field
@@ -373,7 +373,7 @@ class CentreonContactgroup
                 $parameters['relationObject']['comparator'] = 'cg_cg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

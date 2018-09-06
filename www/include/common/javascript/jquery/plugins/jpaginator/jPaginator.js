@@ -331,7 +331,7 @@
                 for (i = 1; i <= s.nbVisible + 2; i++) {
                     $this.find(".paginator_p_bloc").append($("<a class='paginator_p'></a>"));
                 }
-                // hide over and max buttons if they're useless...    
+                // hide over and max buttons if they're useless...
                 bOver = (s.nbVisible < s.nbPages);
                 if (s.overBtnLeft) {
                     if (bOver)

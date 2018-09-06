@@ -51,7 +51,7 @@ if (isset($_GET['period_form'])) {
 } else {
     $form = "general";
 }
-    
+
     require_once "HTML/QuickForm.php";
 
     $path = "./include/monitoring/recurrentDowntime/";

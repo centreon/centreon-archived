@@ -17,7 +17,7 @@
 				<td>{$form.comment.label}</td>
 				<td>{$form.comment.html}</td>
 			</tr>
-		</table>		
+		</table>
 		<div id="validForm">
 			<p>{$form.action.html}</p>
 			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>

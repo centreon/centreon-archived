@@ -33,7 +33,7 @@ Gestion de l'information :
 Journalisation des actions utilisateur
 --------------------------------------
 
-Si un utilisateur possède les droits de configuration de la supervision (défini dans les accès utilisateur), une entrée dans le journal stockée en base de données et liée à son compte utilisateur sera présente pour chaque modification réalisée : 
+Si un utilisateur possède les droits de configuration de la supervision (défini dans les accès utilisateur), une entrée dans le journal stockée en base de données et liée à son compte utilisateur sera présente pour chaque modification réalisée :
 
 * L'accès aux journaux est disponible via le menu **Administration > Logs** avec possibilité de filtrer par utilisateur.
 * Ces journaux ne peuvent être supprimés qu'en accédant à la base de données SQL et en supprimant tout enregistrement pertinent.

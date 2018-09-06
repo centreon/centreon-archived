@@ -315,7 +315,7 @@ So it is time to improve our Stream Connector:
     end
     return true
   end
-  
+
 
 Did you notice that expression `local file,err = io.open(logFile, 'a')`?
 
@@ -438,7 +438,7 @@ Let's complete our Lua script:
     logFile = conf['logFile']
     broker_log:set_parameters(3, "/var/log/centreon-broker/debug.log")
   end
-  
+
   local function writeIntoFile(output)
     local file,err = io.open(logFile, 'a')
     if file == nil then

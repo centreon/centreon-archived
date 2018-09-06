@@ -61,8 +61,8 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
  */
 $path = "./include/options/accessLists/resourcesACL/";
 
-/* 
- * PHP functions 
+/*
+ * PHP functions
  */
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";

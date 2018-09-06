@@ -6,8 +6,8 @@
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Notifications{/t}</a></li>
         <li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{t}Relations{/t}</a></li>
-        <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>     
-        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>       
+        <li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{t}Data Processing{/t}</a></li>
+        <li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{t}Extended Info{/t}</a></li>
     </ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c" || $o == "mc"}
@@ -112,7 +112,7 @@
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="is_volatile"> {$form.service_is_volatile.label}</td><td class="FormRowValue">{$form.service_is_volatile.html}</td></tr>
     </table>
 </div>
-<div id="tab2" class="tab"> 
+<div id="tab2" class="tab">
     <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
@@ -135,7 +135,7 @@
         {/if}
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
-        {/if} 
+        {/if}
         {if $o == "mc"}
         <tr class="list_one">
             <td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
@@ -173,7 +173,7 @@
             <td class="FormRowField"></td>
             <td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
         </tr>
-        {/if}            
+        {/if}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{t}Notification options{/t}</h4>
@@ -181,7 +181,7 @@
         </tr>
         {if $o == "mc"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td></tr>
-        {/if}       
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}&nbsp;{$time_unit}</td></tr>
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_timeperiod.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td></tr>
@@ -189,11 +189,11 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
         {if $o == "mc"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td><td class="FormRowValue">{$form.mc_mod_notifopts.html}</td></tr>
-        {/if}   
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.service_notifOpts.label}</td><td class="FormRowValue">{$form.service_notifOpts.html}</td></tr>
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_first_notification_delay.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td></tr>
-        {/if}   
+        {/if}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.service_first_notification_delay.label}</td><td class="FormRowValue">{$form.service_first_notification_delay.html}&nbsp;{$time_unit}</td></tr>
         {if $o == "mc"}
         <tr class="list_one">
@@ -247,7 +247,7 @@
             <h3>| {$form.header.title3}</h3>
           </td>
         </tr>
-        
+
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.treatment}</h4>
@@ -260,7 +260,7 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$Freshness_Control_options}</h4>
           </td>
-        </tr>   
+        </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_freshness"> {$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="freshness_threshold"> {$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}&nbsp;{$seconds}</td></tr>
 
@@ -268,7 +268,7 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$Flapping_Options}</h4>
           </td>
-        </tr>       
+        </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
@@ -297,7 +297,7 @@
                 {/if}
             </td>
         </tr>
-        {if $v > "1"}       
+        {if $v > "1"}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_args"> {$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
         {if $o == "a" || $o == "c"}
         &nbsp;<img src="./img/icons/arrow-left.png" class="ico-14" style='cursor: pointer;margin: 0 6px;vertical-align: middle;' alt="*" onClick="set_arg('example2','command_command_id_arg2');"><input type="text" name="example2" disabled>
@@ -320,7 +320,7 @@
           </td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="graph_template"> {$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
-        
+
         {if $o == "mc"}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sc.label}</td><td class="FormRowValue">{$form.mc_mod_sc.html}</td></tr>
         {/if}
@@ -357,7 +357,7 @@
     <p class="oreonbutton">{$form.change.html}</p>
 {/if}
 </div>
-{$form.hidden}  
+{$form.hidden}
 </form>
 {$helptext}
 
@@ -474,18 +474,18 @@ jQuery(function() {
             jQuery("#service_cgs").removeAttr('disabled');
         }
     }
-    
+
     bindInhertance();
     jQuery("input[name='service_use_only_contacts_from_host[service_use_only_contacts_from_host]']").on('click',function() {
         bindInhertance();
     });
 
-    
+
     jQuery('select[name=service_template_model_stm_id], select[name=command_command_id]').on('change',function(event,data) {
         if (typeof data != "undefined" && typeof data.origin != undefined && data.origin == "select2defaultinit") {
             return false;
     }
-    {/literal}{if $o != "mc"}{literal} 
+    {/literal}{if $o != "mc"}{literal}
     jQuery.ajax({
         url: "./include/configuration/configObject/service/refreshMacroAjax.php",
         type: "POST",
@@ -496,7 +496,7 @@ jQuery(function() {
             jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
             sheepIt.removeAllForms();
             for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
-                sheepIt.addForm();  
+                sheepIt.addForm();
             }
 
             sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
@@ -532,7 +532,7 @@ jQuery(function() {
                     if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1") {
                         var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                         var tplValue = tplValueField.val();
-                        
+
                         var tplInputField = jQuery(elem).find("input[name^='macroInput']");
                         var tplInput = tplInputField.val();
 

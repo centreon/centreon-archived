@@ -47,12 +47,12 @@ class MetaTimeperiod extends AbstractObject {
         'friday',
         'saturday',
     );
-    
+
     public function generateObjects() {
         if ($this->checkGenerate(0)) {
             return 0;
         }
-        
+
         $object = array();
         $object['timeperiod_name'] = 'meta_timeperiod';
         $object['alias'] = 'meta_timeperiod';

@@ -2,7 +2,7 @@
 {$styleB}
 <div class="cachediv">
 <FORM id="datareport">
-<INPUT type="hidden" name="id" value="{$id}"><br />	        
+<INPUT type="hidden" name="id" value="{$id}"><br />
 <INPUT type="hidden" name="color_UP" value="{$color.UP}">
 <INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
 <INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
@@ -37,7 +37,7 @@
 	<tr class='list_lvl_3'>
 				<td style='width:300px; padding:5px'>
 					<!-- chart drawing -->
-					{if $name}	
+					{if $name}
 						<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
 					{/if}
 				</td>
@@ -103,7 +103,7 @@
 							<td class="FormHeader" colspan=12>&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$hostTitle}</td>							
+							<td class="ListColHeaderCenter">{$hostTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.UP}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.DOWN}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
@@ -123,7 +123,7 @@
                         </tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>							
+							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>
 							<td class="ListColCenter" {$style.UP_BOTTOM}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
 							<td class="ListColCenter" {$style.UP_BOTTOM} >{$tb.UP_A}</td>
 							<td class="ListColCenter" {$style.DOWN_BOTTOM}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>
@@ -141,7 +141,7 @@
 				<td colspan="3" style=' padding:5px;'>
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 				</td>
-			</tr>		
+			</tr>
 		</td>
 	</tr>
 </table>
@@ -150,7 +150,7 @@
 {literal}
     jQuery("#StartDate").datepicker({
         maxDate: '-1',
-        onSelect : function(data){  
+        onSelect : function(data){
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
             jQuery( "input[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }
@@ -158,7 +158,7 @@
 
     jQuery("#EndDate").datepicker({
         maxDate: '-1',
-        onSelect : function(data){  
+        onSelect : function(data){
             jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
             jQuery( "input[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
         }

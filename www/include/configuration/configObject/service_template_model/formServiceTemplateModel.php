@@ -130,7 +130,7 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set Categories
      */
-    $DBRESULT = $pearDB->query('SELECT DISTINCT scr.sc_id 
+    $DBRESULT = $pearDB->query('SELECT DISTINCT scr.sc_id
                     FROM service_categories_relation scr, service_categories sc
                     WHERE scr.sc_id = sc.sc_id
                     AND sc.level IS NULL
@@ -139,11 +139,11 @@ if (($o == "c" || $o == "w") && $service_id) {
         $service["service_categories"][$i] = $service_category["sc_id"];
     }
     $DBRESULT->free();
-                
+
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT sc.sc_id 
+    $res = $pearDB->query("SELECT sc.sc_id
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id). "
                             AND scr.sc_id = sc.sc_id
@@ -154,8 +154,8 @@ if (($o == "c" || $o == "w") && $service_id) {
         $cr = $res->fetchRow();
         $service['criticality_id'] = $cr['sc_id'];
     }
-    
-    
+
+
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
     if (!isset($cmdId)) {
@@ -375,7 +375,7 @@ $attrHosttemplates = array(
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 #
 ## Form begin
@@ -559,7 +559,7 @@ if ($o == "mc") {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
     $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
-    
+
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
     $contactGroupAdditive[] = HTML_QuickForm::createElement('radio', 'mc_cg_additive_inheritance', null, _("Default"), '2');
@@ -697,7 +697,7 @@ if ($o == "mc") {
     $form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
     $form->setDefaults(array('mc_mod_Pars'=>'0'));
 }
- 
+
 ##
 ## Sort 3 - Data treatment
 ##
@@ -795,7 +795,7 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"e
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
 /*
- * Criticality 
+ * Criticality
  */
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList(null, "level", 'ASC', null, null, true);

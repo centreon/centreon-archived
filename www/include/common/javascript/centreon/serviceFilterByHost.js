@@ -34,7 +34,7 @@
 
 /**
  * Filter services by host
- * 
+ *
  * @param HTMLObject elem
  * @param string serviceMultiSelectName
  */

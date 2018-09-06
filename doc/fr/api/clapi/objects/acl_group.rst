@@ -12,7 +12,7 @@ Show
 
 In order to list available ACL Groups, use the **SHOW** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a show
   id;name;alias;activate
   1;ALL;ALL;1
   [...]
@@ -37,7 +37,7 @@ Add
 
 In order to add an ACL Group, use the **ADD** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a add -v "ACL Group test;my alias" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a add -v "ACL Group test;my alias"
 
 Required fields are:
 
@@ -62,7 +62,7 @@ Setparam
 
 If you want to change a specific parameter of an ACL Group, use the **SETPARAM** action. The Name is used for identifying the ACL Group to update:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setparam -v "ACL Group test;alias;my new alias" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setparam -v "ACL Group test;alias;my new alias"
 
 
 Arguments are composed of the following columns:
@@ -83,9 +83,9 @@ Parameters that you may change are:
 =========== =========================================
 Column	    Description
 =========== =========================================
-name	
+name
 
-alias	
+alias
 
 activate    1 when ACL Group is enabled, 0 otherwise
 =========== =========================================
@@ -97,7 +97,7 @@ Getmenu
 
 If you want to retrieve the Menu Rules that are linked to a specific ACL Group, use the **GETMENU** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getmenu -v "ACL Group test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getmenu -v "ACL Group test"
   id;name
   1;Configuration
   3;Reporting
@@ -118,7 +118,7 @@ Getaction
 
 If you want to retrieve the Action Rules that are linked to a specific ACL Group, use the **GETACTION** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getaction -v "ACL Group test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getaction -v "ACL Group test"
   id;name
   1;Simple action rule
 
@@ -136,7 +136,7 @@ Getresource
 
 If you want to retrieve the Resource Rules that are linked to a specific ACL Group, use the **GETRESOURCE** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getresource -v "ACL Group test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getresource -v "ACL Group test"
   id;name
   1;All Resources
 
@@ -154,14 +154,14 @@ Getcontact and Getcontactgroup
 
 If you want to retrieve the Contacts that are linked to a specific ACL Group, use the **GETCONTACT** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getcontact -v "ACL Group test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getcontact -v "ACL Group test"
   id;name
   1;user1
 
 
 If you want to retrieve the Contact Groups that are linked to a specific ACL Group, use the **GETCONTACTGROUP** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getcontactgroup -v "ACL Group test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a getcontactgroup -v "ACL Group test"
   id;name
   1;usergroup1
 
@@ -179,7 +179,7 @@ Setmenu, Setaction, Setresource, Addmenu, Addaction, Addresource
 
 If you want to link rules to a specific ACL Group, use the following actions: **SETMENU**, **SETACTION**, **SETRESOURCE**, **ADDMENU**, **ADDACTION**, **ADDRESOURCE**::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setmenu -v "ACL Group test;Menu rule 1|Menu rule 2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setmenu -v "ACL Group test;Menu rule 1|Menu rule 2"
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a addresource -v "ACL Group test;All Routers"
 
@@ -225,9 +225,9 @@ Setcontact, Setcontactgroup, Addcontact, Addcontactgroup
 
 If you want to link contacts or contact groups to a specific ACL Group, use the following actions: **SETCONTACT**, **SETCONTACTGROUP**, **ADDCONTACT**, **ADDCONTACTGROUP**::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setcontact -v "ACL Group test;user1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a setcontact -v "ACL Group test;user1"
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a addcontactgroup -v "ACL Group test;usergroup1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a addcontactgroup -v "ACL Group test;usergroup1"
 
 
 Arguments are composed of the following columns:
@@ -255,7 +255,7 @@ Delcontact, Delcontactgroup
 
 If you want to remove rules from a specific ACL Group, use the following actions: **DELCONTACT**, **DELCONTACTGROUP**::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a delcontact -v "ACL Group test;user1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLGROUP -a delcontact -v "ACL Group test;user1"
 
 
 Arguments are composed of the following columns:

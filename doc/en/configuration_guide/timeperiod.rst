@@ -2,7 +2,7 @@
 Time periods
 ============
 
-********** 
+**********
 Definition
 **********
 
@@ -19,7 +19,7 @@ Configuration
 
 The configuration of time periods is done in the menu: **Configuration ==> Users ==> Time periods**.
 
-Basic options 
+Basic options
 =============
 
 * The **Time period name** and **Alias** fields define the name and description of the time period respectively.
@@ -55,7 +55,7 @@ E.g.: An administrator wants to define a time period which covers the times when
 * National holidays and exceptional closure days
 
 To be able to define the national holidays days and the exceptional closure days, it is necessary to use the exceptions.
-To add  an exception, click on the button |navigate_plus|. 
+To add  an exception, click on the button |navigate_plus|.
 For each exceptional day, you will need to define a time period. The table below shows some possible examples :
 
 +-----------------------+-------------------------+-----------------------------------------------------------------+
@@ -79,7 +79,7 @@ For each exceptional day, you will need to define a time period. The table below
 Extended Settings
 =================
 
-In the extended settings, it is possible to **include** or to **exclude** periods in the definition of the object. 
+In the extended settings, it is possible to **include** or to **exclude** periods in the definition of the object.
 
 Example of application: Let us take two time periods:
 

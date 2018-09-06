@@ -106,7 +106,7 @@ function loadXML(url) {
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
 		xmlDoc.send(null);
-		if (this.xmlDoc.readyState == 4) 
+		if (this.xmlDoc.readyState == 4)
         	xmlDoc = xmlDoc.responseXML;
 		}
 	} catch (e) {
@@ -211,7 +211,7 @@ function Transformation() {
         callback = c;
         return this;
     }
-	
+
 	/**
      * Returns the target Element.
      *
@@ -238,19 +238,19 @@ function Transformation() {
 	 *           if (typeof document.all[xmlID] != u && document.all[xmlID].readyState == c &&
 	 *           typeof document.all[xsltID] != u && document.all[xsltID].readyState == c) {
 	 *
-	 * 
+	 *
 	 */
-	
+
 	this.transform = function(target) {
         targetElem = target;
 	    var t = this;
-	
+
 	    if (!browserSupportsXSLT()) {
 	       return;
 	    }
-		
+
 		if (!document.getElementById("centreonMsg_img")) {
-			 if (typeof _setAlign == 'function') {				
+			 if (typeof _setAlign == 'function') {
 				 _setAlign("centreonMsg", "center");
 		         _setTextStyle("centreonMsg", "bold");
 		         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
@@ -258,7 +258,7 @@ function Transformation() {
 		         _setValign("centreonMsg", "bottom");
 			 }
 		}
-		
+
 		var change = function() {
                     if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
                             if (transformed) {
@@ -266,14 +266,14 @@ function Transformation() {
                             }
                             xsltDoc = xsltRequest.responseXML;
                             xmlDoc = xmlRequest.responseXML;
-                            if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
-                                document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
+                            if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {
+                                document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);
                             } else {
                                 var resultDoc;
                                                 var processor = new XSLTProcessor();
                                                 document.getElementById(target).innerHTML = '';
                                                 processor.importStylesheet(xsltDoc);
-                                                resultDoc = processor.transformToFragment(xmlDoc, document);    					
+                                                resultDoc = processor.transformToFragment(xmlDoc, document);
                                                 document.getElementById(target).appendChild(resultDoc);
                             }
                             if (callback) {
@@ -297,13 +297,13 @@ function Transformation() {
                     }
 
 		}
-                
+
                 if(xsltRequest != null){
                     xsltRequest.onreadystatechange = new Function;
                     xsltRequest = null;
                     delete xsltRequest;
                 }
-                
+
                 if(xmlRequest != null){
                     xmlRequest.onreadystatechange = new Function;
                     xmlRequest = null;
@@ -321,14 +321,14 @@ function Transformation() {
 		}
 		xmlRequest.open("GET", xml, true);
 		xmlRequest.onreadystatechange = change;
-		xmlRequest.send(null);		
+		xmlRequest.send(null);
 		if (xsltRequest.readyState != 4) {
                     xsltRequest.open("GET", xslt);
                     xsltRequest.onreadystatechange = change;
                     xsltRequest.send(null);
 		}
 	}
-	
+
 	/**
 	 * Generates a random ID.
 	 *

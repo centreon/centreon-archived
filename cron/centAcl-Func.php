@@ -420,6 +420,6 @@ function getModulesExtensionsPaths($db)
         $extensionsPaths = array_merge($extensionsPaths, glob(_CENTREON_PATH_ . '/www/modules/' . $row['name']
             . '/extensions/acl/'));
     }
-    
+
     return $extensionsPaths;
 }

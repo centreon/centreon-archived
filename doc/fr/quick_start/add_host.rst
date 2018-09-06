@@ -12,7 +12,7 @@ Premièrement vous devez vous :ref:`connectez<centreon_login>` à l'interface
 web Centreon avec un compte administrateur ou un compte disposant des droits
 d'accès pour gérer les objets.
 
-Se rendre dans le menu **Configuration > Hosts > Hosts** et cliquer sur le 
+Se rendre dans le menu **Configuration > Hosts > Hosts** et cliquer sur le
 bouton **Add** :
 
 .. image:: /_static/images/quick_start/add_host_menu.png
@@ -37,7 +37,7 @@ Sauvegarder les modifications en cliquant sur le bouton **Save**.
 .. image:: /_static/images/quick_start/add_host_list.png
     :align: center
 
-L'hôte est maintenant défini dans l'interface Centreon web mais le moteur ne le 
+L'hôte est maintenant défini dans l'interface Centreon web mais le moteur ne le
 connait pas encore !
 
 Vous devez :ref:`générer la configuration, l'exporter et l'envoyer au moteur de supervision<deployconfiguration>`.

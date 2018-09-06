@@ -39,8 +39,8 @@ function set_arg(e, a) {
 	argument.value = example.value;
 }
 
-function setArgument(f, l, a) 
-{   
+function setArgument(f, l, a)
+{
     var mlist    = f.elements[l];
     var argument = f.elements[a];
     var index    = mlist.selectedIndex;
@@ -50,25 +50,25 @@ function setArgument(f, l, a)
                 argument.value = '';
 
         if (index >= 1) {
-            var xhr_object = null; 
+            var xhr_object = null;
 
-            if (window.XMLHttpRequest) // Firefox 
-                xhr_object = new XMLHttpRequest(); 
-            else if (window.ActiveXObject) // Internet Explorer 
-                xhr_object = new ActiveXObject("Microsoft.XMLHTTP"); 
-            else { 
-                    // XMLHttpRequest non supporté par le navigateur 
-                alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
-                return; 
-            } 
+            if (window.XMLHttpRequest) // Firefox
+                xhr_object = new XMLHttpRequest();
+            else if (window.ActiveXObject) // Internet Explorer
+                xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+            else {
+                    // XMLHttpRequest non supporté par le navigateur
+                alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+                return;
+            }
             xhr_object.open("POST", "./include/common/javascript/commandGetArgs/cmdGetExample.php", true);
-            xhr_object.onreadystatechange = function() { 
+            xhr_object.onreadystatechange = function() {
                 if (xhr_object.readyState == 4) {
-                        argument.value = xhr_object.responseText; 
+                        argument.value = xhr_object.responseText;
                 }
-            }	 
-            xhr_object.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
-            xhr_object.send("index=" + mlist.value); 	   	
-        } 
+            }
+            xhr_object.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr_object.send("index=" + mlist.value);
+        }
     }
 }

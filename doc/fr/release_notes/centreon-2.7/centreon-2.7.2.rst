@@ -24,13 +24,13 @@ Features and Bug Fixes
 - Fix some broken relations in web interface
 - Fix Reporting pages for non admin users
 - Fix some elements with the generation of the configuration
-- Fix encoding problems 
+- Fix encoding problems
 - Fix filters in configuration pages
 - Fix Poller duplication
 - Fix various ACL problems
 - Fix some SQL queries
 - Fix export of Meta Services
-- Improve ACL on Custom Views 
+- Improve ACL on Custom Views
 
 Known Bugs
 ==========

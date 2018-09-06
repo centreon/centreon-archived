@@ -195,7 +195,7 @@ if ($numRows > 0) {
         . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
         . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
-    
+
     $DBRESULT = $obj->DBC->query($query2);
 
     $states = array(

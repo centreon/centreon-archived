@@ -69,9 +69,9 @@ CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
- 
+
 ALTER TABLE `traps_matching_properties` ADD INDEX (`trap_id`);
-ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;  
+ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;
 
 
 CREATE TABLE IF NOT EXISTS `timeperiod_include_relations` (
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_poller_relations` (
 ALTER TABLE `acl_resources_poller_relations`
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
-  
+
 ALTER TABLE `acl_topology_relations` ADD COLUMN `access_right` TINYINT NOT NULL DEFAULT 1;
 ALTER TABLE `topology` ADD COLUMN `readonly` ENUM('0', '1') NOT NULL DEFAULT '1';
 UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 60103, 60201, 60202, 60203, 60206, 60209, 60207, 60205, 60204, 602080, 60301, 60302, 60304, 60305, 60708, 60707, 60703, 60401, 60402, 60403, 60404, 60405, 60406, 60407, 60408, 60409, 60410, 60411);
@@ -303,7 +303,7 @@ UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
 
 ALTER TABLE `nagios_server` ADD COLUMN `monitoring_engine` VARCHAR(20) NULL AFTER `init_script`;
 
-UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/nagiosStats.php' WHERE topology_page = '10201' AND topology_parent = '102' AND topology_name = 'Graphs'; 
+UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/nagiosStats.php' WHERE topology_page = '10201' AND topology_parent = '102' AND topology_name = 'Graphs';
 UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/performanceInfo.php' WHERE topology_page = '10203' AND topology_name = 'Performance Info';
 
 UPDATE `informations` SET `value` = '2.2.0-b1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;

@@ -4,10 +4,10 @@
 Configuration simplifiée de Centreon IMP
 ========================================
 
-Qu'est-ce que IMP ? 
+Qu'est-ce que IMP ?
 -------------------
 
-Centreon IMP pour Instant Monitoring Platform, est une solution basée sur 
+Centreon IMP pour Instant Monitoring Platform, est une solution basée sur
 l'association de Centreon 3.4 et de la nouvelle génération de Plugin Packs
 accessible en ligne (acquisition et installation).
 
@@ -22,10 +22,10 @@ nos équipes et font l'objet de mises à jour ou ajouts réguliers, vous permett
 d'améliorer de façon continue vos contrôles.
 
 Les Plugin Packs (pack de configuration), développés par Centreon, reposent sur
-les Centreon Plugins (sondes de supervision) dont l'éventail fonctionnel est un 
-des plus riches du marché : plus de 170 domaines IT sont déjà couverts en 2017, 
-représentant plus de 2000 indicateurs de supervision. Ils vous permettent de 
-déployer votre supervision rapidement et simplement. 
+les Centreon Plugins (sondes de supervision) dont l'éventail fonctionnel est un
+des plus riches du marché : plus de 170 domaines IT sont déjà couverts en 2017,
+représentant plus de 2000 indicateurs de supervision. Ils vous permettent de
+déployer votre supervision rapidement et simplement.
 
 Vous souhaitez utiliser Centreon IMP ? Rien de plus simple. Suivez les instructions
 ci-dessous.
@@ -37,10 +37,10 @@ Prérequis
 
 Pour pouvoir utiliser Centreon IMP, vous devez absolument installer la dernière
 version de Centreon open source, la version 3.4. Cette version intègre la dernière
-version de Centreon Web c'est à dire la version 2.8.x. 
+version de Centreon Web c'est à dire la version 2.8.x.
 
 Centreon 3.4 est installable soit en "fresh install" avec `l'ISO d'installation de Centreon <https://download.centreon.com/>`_
-soit en mettant à jour votre plateforme Centreon déjà installée. Pour ces deux étapes, 
+soit en mettant à jour votre plateforme Centreon déjà installée. Pour ces deux étapes,
 rendez-vous dans les rubriques appropriées de la :ref:`documentation<install_from_packages>`
 
 **2. Avoir une connexion internet**
@@ -51,7 +51,7 @@ procéder à la récupération des Plugin Packs de Centreon IMP via internet pui
 leur installation.
 
 .. note::
-    Si votre serveur Centreon n'a pas accès directement à internet, pensez à 
+    Si votre serveur Centreon n'a pas accès directement à internet, pensez à
     configurer un proxy. Cette fonctionnalité est maintenant disponible depuis
     la version 2.8.2 de Centreon Web. Si vous n'avez pas cette version, pensez
     à mettre à jour votre plate-forme.
@@ -88,7 +88,7 @@ En créant votre compte Centreon IMP sur le site web de Centreon, vous pouvez :
 
 Quels Plugin Packs sont disponibles à chaque niveau ?
 
-- Centreon open source 3.4 - 6 Plugins packs gratuits : 
+- Centreon open source 3.4 - 6 Plugins packs gratuits :
     - Cisco standard (SNMP)
     - Linux (SNMP)
     - MySQL
@@ -100,7 +100,7 @@ Quels Plugin Packs sont disponibles à chaque niveau ?
     - Centreon Poller
     - Centreon Map
     - Centreon MBI
-- Essai gratuit de Centreon IMP avec un compte en ligne - 5 Plugin Packs additionnals : 
+- Essai gratuit de Centreon IMP avec un compte en ligne - 5 Plugin Packs additionnals :
     - DHCP
     - DNS
     - FTP
@@ -155,7 +155,7 @@ compte Centreon IMP dans Centreon.
 .. note::
     Veillez à indiquer une adresse email valide car la création d’un compte
     puis l’accès à l’essai gratuit de Centreon IMP intègre l’envoi automatisé
-    de mails de confirmations/informations. 
+    de mails de confirmations/informations.
 
 .. image:: /_static/images/configuration/website/create_account_05.png
     :width: 1000 px
@@ -192,7 +192,7 @@ Vous êtes maintenant connecté ! En cliquant sur le bouton **Setup** vous allez
 maintenant accéder à l’installation de vos 5 Plugin Packs additionnels gratuits.
 
 .. note::
-    Avec ce compte vous pouvez connecter gratuitement plusieurs plate-forme à la fois pour faire 
+    Avec ce compte vous pouvez connecter gratuitement plusieurs plate-forme à la fois pour faire
     vos tests.
 
 3. Installez vos 5 Plugin Packs additionnels gratuits
@@ -255,8 +255,8 @@ souscrire à l’Offre suivant différentes durées : 1 mois, 6 mois ou 1 an.
 Bien sûr, le tarif est plus attractif pour les durées d’engagements les plus
 longues.
 
-Pour souscrire, rendez-vous sur notre site et sélectionnez `une souscription 
-<https://www.centreon.com/imp-subscribe/>`_ 
+Pour souscrire, rendez-vous sur notre site et sélectionnez `une souscription
+<https://www.centreon.com/imp-subscribe/>`_
 
 Après l’achat de votre souscription Centreon IMP, vous allez activer votre
 compte Centreon IMP dans Centreon. Pour cela, cliquez sur le bouton **Link**.
@@ -273,7 +273,7 @@ Confirmez que c'est réellement ce que vous souhaitez faire.
 
 Vous avez maintenant accès à tous les Plugin Packs de Centreon IMP. Cliquez sur
 le bouton **install** pour accédez au Plugin Pack Manager et procéder à
-l’installation des Plugin Packs de votre choix. 
+l’installation des Plugin Packs de votre choix.
 
 .. image:: /_static/images/configuration/website/link_03.png
     :width: 1000 px
@@ -281,7 +281,7 @@ l’installation des Plugin Packs de votre choix.
 
 Votre abonnement Centreon IMP intègre l’accès aux Plugin Packs, à leur
 installation, à leur mise à jour, l’accès aux nouveaux Plugin Packs
-développés par Centreon et une assistance en ligne. 
+développés par Centreon et une assistance en ligne.
 
 Si vous décidez d’arrêter votre abonnement Centreon IMP, vous ne perdrez pas
 le bénéfice des Plugin Packs installés. Les hôtes et les points de contrôles
@@ -289,14 +289,14 @@ déployés grâce aux Plugin Packs resteront inchangés.
 
 En revanche, vous perdrez l’accès aux mises à jour des Plugin Packs installés,
 l’accès aux nouveaux Plugin Packs ainsi que l’accès à tous les Plugin Packs non
-installés et vous n’aurez plus aucune assistance en ligne. 
+installés et vous n’aurez plus aucune assistance en ligne.
 
 .. note::
-    Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur, 
-    vous serez obligé de passer par le service client. Nous n'avons pas encore intégré à nos outils 
-    en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com. 
+    Si vous décidez de changer de serveur et donc de migrer votre souscription sur un nouveau serveur,
+    vous serez obligé de passer par le service client. Nous n'avons pas encore intégré à nos outils
+    en ligne la possibilité de le faire. Pour cela, contactez imp at centreon dot com.
 
-.. note:: 
+.. note::
     Si vous avez des questions ou des problèmes relatifs à l'installation de IMP, vous pouvez contacter
     nos équipes techniques via l'adresse email suivant : imp at centreon dot com.
 

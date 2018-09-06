@@ -34,8 +34,8 @@
 	 		<td class="ListColCenter">{$d.must_be_rebuild}</td>
 	 		<td class="ListColCenter">{$d.trashed}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
-		</tr> 	
-	 	{assign var='host_name' value=$d.host_name}	
+		</tr>
+	 	{assign var='host_name' value=$d.host_name}
 		{/foreach}
 	</table>
 	<table class="ToolbarTable">
@@ -51,6 +51,6 @@
 			{/php}
 		</tr>
 	</table>
-	<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+	<input type='hidden' id='limit' name='limit' value='{$limit}'>
 	{$form.hidden}
 </form>

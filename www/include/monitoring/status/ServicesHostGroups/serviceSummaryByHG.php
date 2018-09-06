@@ -56,12 +56,12 @@ if (!isset($oreon)) {
 if (isset($_GET["host_search"])) {
     $centreon->historySearch[$url] = $_GET["host_search"];
 }
-        
+
         $aTypeAffichageLevel1 = array(
             "svcOVHG" => _("Details"),
             "svcSumHG" => _("Summary")
         );
-        
+
         $aTypeAffichageLevel2 = array(
             "" => _("All"),
             "pb" => _("Problems"),
@@ -99,10 +99,10 @@ if (isset($_GET["host_search"])) {
         $tpl->assign('hgStr', _('Hostgroup'));
 
         $form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-        
+
         $form->addElement('select', 'typeDisplay', _('Display'), $aTypeAffichageLevel1, array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);"));
         $form->addElement('select', 'typeDisplay2', _('Display '), $aTypeAffichageLevel2, array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);"));
-        
+
         $tpl->assign("order", strtolower($order));
         $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
         $tpl->assign("tab_order", $tab_order);
@@ -118,7 +118,7 @@ if (isset($_GET["host_search"])) {
             function displayingLevel1(val)
             {
                 _o = val;
-                if (_o == 'svcOVHG') { 
+                if (_o == 'svcOVHG') {
                     _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
                     _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
                 } else {

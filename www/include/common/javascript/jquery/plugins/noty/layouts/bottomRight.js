@@ -3,7 +3,7 @@
 	$.noty.layouts.bottomRight = {
 		name: 'bottomRight',
 		options: { // overrides options
-			
+
 		},
 		container: {
 			object: '<ul id="noty_bottomRight_layout_container" />',

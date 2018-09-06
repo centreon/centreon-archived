@@ -6,7 +6,7 @@
  *
  *==================================================
  */
- 
+
 (function() {
     var javascriptFiles = [
         "geochrono.js",
@@ -16,18 +16,18 @@
     ];
     var cssFiles = [
     ];
-    
+
     var localizedJavascriptFiles = [
         "labellers.js"
     ];
     var localizedCssFiles = [
     ];
-    
+
     // ISO-639 language codes, ISO-3166 country codes (2 characters)
     var supportedLocales = [
         "en"        // English
     ];
-    
+
     try {
         var includeJavascriptFile = function(filename) {
             document.write("<script src='" + Timeline.urlPrefix + "ext/geochrono/scripts/" + filename + "' type='text/javascript'></script>");
@@ -35,7 +35,7 @@
         var includeCssFile = function(filename) {
             document.write("<link rel='stylesheet' href='" + Timeline.urlPrefix + "ext/geochrono/styles/" + filename + "' type='text/css'/>");
         }
-        
+
         /*
          *  Include non-localized files
          */
@@ -45,7 +45,7 @@
         for (var i = 0; i < cssFiles.length; i++) {
             includeCssFile(cssFiles[i]);
         }
-        
+
         /*
          *  Include localized files
          */
@@ -63,18 +63,18 @@
             if (tryExactLocale(locale)) {
                 return locale;
             }
-            
+
             var dash = locale.indexOf("-");
             if (dash > 0 && tryExactLocale(locale.substr(0, dash))) {
                 return locale.substr(0, dash);
             }
-            
+
             return null;
         }
-        
+
         tryLocale(Timeline.Platform.serverLocale);
         tryLocale(Timeline.Platform.clientLocale);
-        
+
         for (var l = 0; l < supportedLocales.length; l++) {
             var locale = supportedLocales[l];
             if (loadLocale[locale]) {

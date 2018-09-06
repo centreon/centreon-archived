@@ -14,7 +14,7 @@ Installation
 Etape 1 : Démarrage
 ====================
 
-Afin d'installer Centreon, démarrez votre serveur sur l'image ISO de Centreon 
+Afin d'installer Centreon, démarrez votre serveur sur l'image ISO de Centreon
 en version el7.
 Démarrez avec l'option **Install CentOS 7** :
 
@@ -34,7 +34,7 @@ Choisissez la langue du processus d'installation puis cliquez sur **Done** :
 Etape 3 : Sélection des composants
 ==================================
 
-Cliquez sur le menu **Installation Type** : 
+Cliquez sur le menu **Installation Type** :
 
 .. image :: /images/guide_utilisateur/03_menu_type_install.png
    :align: center

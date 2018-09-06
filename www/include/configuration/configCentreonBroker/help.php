@@ -33,7 +33,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 echo _("Time in seconds to wait before launching failover.");
 echo _("Category filter for flux in output");
 echo _("Trusted CA's certificate.");
@@ -60,7 +60,7 @@ echo _("Path to the correlation file which holds host, services, dependencies an
 echo _("IP address or hostname of the host to connect to (leave blank for listening mode).");
 echo _("Enable or not informational messages logging.");
 echo _("Whether or not Broker should create entries in the index_data table.
- This process should be done by Centreon and this option should only be enabled by advanced 
+ This process should be done by Centreon and this option should only be enabled by advanced
  users knowing what they're doing");
 echo _("Interval in seconds before change status of resources from a disconnected poller");
 echo _("Interval length in seconds.");

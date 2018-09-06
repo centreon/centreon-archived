@@ -18,7 +18,7 @@
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a><input name="p" value="{$p}" type="hidden"></td>
-			
+
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -56,7 +56,7 @@
 		</tr>
 	</table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

@@ -29,7 +29,7 @@
 		<td>
 			{$msg.options} {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 		</td>
-		{ else } 
+		{ else }
 		<td>&nbsp;</td>
 		{ /if }
 		<input name="p" value="{$p}" type="hidden">
@@ -86,7 +86,7 @@
 		<td class="Toolbar_TDSelectAction_Bottom">
 			{$msg.options} {$form.o2.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 		</td>
-		{ else } 
+		{ else }
 		<td>&nbsp;</td>
 		{ /if }
 		<input name="p" value="{$p}" type="hidden">
@@ -96,7 +96,7 @@
 	</tr>
 </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

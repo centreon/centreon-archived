@@ -1,6 +1,6 @@
 /**
  * Generate a status chart
- * 
+ *
  * The arguments
  *
  * * [bindto]{String} (#chart): The DOM element where the chart will be append
@@ -28,7 +28,7 @@
 
 (function (window) {
   var centreonStatusChart = { version: '1.0.0' };
-  
+
   var centreonStatusChartDefault = {
     bindto: '#chart',
     tickFormat: {
@@ -46,7 +46,7 @@
     tooltipAttach: 'bottom',
     data: {}
   };
-  
+
   /**
    * Extend function like jQuery
    */
@@ -60,13 +60,13 @@
         }
       }
     }
-    
+
     return arguments[0];
   }
-  
+
   /**
    * Private constructor
-   * 
+   *
    * @param {Chart} api - Chart public object
    */
   function ChartInternal(api) {
@@ -74,10 +74,10 @@
     $$.d3 = window.d3 ? window.d3 : undefined;
     $$.api = api;
   }
-  
+
   /**
    * Constructor
-   * 
+   *
    * @param {Object} config - Configuration
    */
   function Chart(config) {
@@ -87,7 +87,7 @@
     $$.loadConfig(config);
     $$.init();
   }
-  
+
   ChartInternal.prototype = {
     /**
      * Load the configuration
@@ -103,36 +103,36 @@
      */
     init: function () {
       var $$ = this;
-      
+
       /* Append SVG */
       $$.chartContainer = $$.d3.select($$.config.bindto);
-      
+
       if ($$.chartContainer.size() === 0) {
         console.error('Chart container not found.');
         return;
       }
-      
+
       $$.chartContainer
         .style('position', 'relative')
         .classed('c3', true);
-      
+
       $$.initTooltip();
-      
+
       $$.svg = $$.chartContainer.append('svg')
         .style('overflow', 'hidden');
-        
+
       /* Update width */
       $$.setWidth();
       $$.svg
         .style('height', ($$.config.margin.top + $$.config.margin.bottom + $$.config.itemHeight + 20) + 'px')
         .style('width', $$.width + 'px');
-      
+
       $$.setPeriod();
       $$.setScaleFactor();
-      
+
       $$.chartContainer.datum($$.config.data)
         .call(function () { return $$.update(); });
-      
+
       /* Bind resize */
       $$.resizeTimeout = undefined;
       if (window.attachEvent) {
@@ -154,17 +154,17 @@
     },
     initTooltip: function () {
       var $$ = this;
-      
+
       $$.tooltip = $$.chartContainer.style('postion', 'relative')
         .append('div')
         .classed('cc3-tooltip', true)
         .style('position', 'absolute')
         .style('display', 'none');
-        
+
       $$.tooltip
         .append('div')
         .classed('cc3-tooltip-title', true);
-        
+
       $$.tooltip
         .append('div')
         .classed('cc3-tooltip-body', true)
@@ -175,21 +175,21 @@
      */
     update: function () {
       var $$ = this;
-      
+
       $$.chart = $$.svg.append('g');
-      
+
       /* Prepare xAxis */
       $$.xScale = $$.d3.time.scale()
         .domain([$$.startTime, $$.endTime])
         .range([$$.config.margin.left, $$.width - $$.config.margin.right]);
-        
+
       $$.xAxis = $$.d3.svg.axis()
         .scale($$.xScale)
         .tickFormat($$.config.tickFormat.format);
-      
+
       /* Draw the chart */
       $$.drawData();
-      
+
       /* Add axis to chart */
       $$.gAxis = $$.chart.append('g')
         .attr('class', 'c3-axis c3-axis-x')
@@ -202,13 +202,13 @@
     setWidth: function () {
       var $$ = this;
       var widthParent;
-      
+
       try {
         widthParent = $$.chartContainer.node().getBoundingClientRect()['width'];
       } catch (e) {
         widthParent = $$.chartContainer.node().offsetWidth;
       }
-      
+
       $$.width = widthParent;
     },
     /**
@@ -222,13 +222,13 @@
       var times;
       $$.startTime = null;
       $$.endTime = null;
-      
+
       for (i = 0; i < data.length; i++) {
         times = [];
         if (data[i].hasOwnProperty('times')) {
           times = data[i].times;
         }
-        
+
         for (j = 0; j < times.length; j++) {
           if (times[j].hasOwnProperty('starting_time') &&
             ($$.startTime === null || $$.startTime > times[j].starting_time)) {
@@ -240,7 +240,7 @@
           }
         }
       }
-      
+
       if ($$.startTime === null) {
         $$.startTime = 0;
       }
@@ -253,7 +253,7 @@
      */
     setScaleFactor: function () {
       var $$ = this;
-      
+
       $$.scaleFactor = (1 / ($$.endTime - $$.startTime)) *
         ($$.width - $$.config.margin.left - $$.config.margin.right);
     },
@@ -262,7 +262,7 @@
      */
     getXAxisPosition: function () {
       var $$ = this;
-      
+
       return $$.config.margin.top + $$.config.itemHeight;
     },
     /**
@@ -273,11 +273,11 @@
       var status = $$.config.data.status;
       var comments = [];
       var i;
-      
+
       if ($$.config.data.hasOwnProperty('comments')) {
         comments = $$.config.data.comments;
       }
-      
+
       for (i = 0; i < status.length; i++) {
         /* Add all period for a type of event */
         if (status[i].hasOwnProperty('times')) {
@@ -293,7 +293,7 @@
             .style('fill', function (d) { return $$.getColor(status[i], i); });
         }
       }
-      
+
       /* Add command line */
       $$.chart.selectAll('svg').data(comments)
         .enter()
@@ -312,7 +312,7 @@
     },
     /**
      * Get the start position of a period
-     * 
+     *
      * @param {Object} d - The period data
      * @return {Float} - The x position
      */
@@ -324,25 +324,25 @@
     },
     /**
      * Get the position of a comment
-     * 
+     *
      * @param {Object} d - The comment data
      * @return {Float} - The x position
      */
     getXPosComment: function (d) {
       var $$ = this;
-      
+
       return $$.config.margin.left + (d.time - $$.startTime) * $$.scaleFactor;
     },
     /**
      * Get the color for a period
-     * 
+     *
      * @param {Object} d - The period data
      * @param {Number} i - The index of the period
      * @return {String} - The color for the period
      */
     getColor: function (d, i) {
       var $$ = this;
-      
+
       if (d.color) {
         return d.color;
       }
@@ -350,27 +350,27 @@
     },
     /**
      * Redraw the chart with new data
-     * 
+     *
      * @param {Object} data - The new data
      */
     redraw: function (data) {
       var $$ = this;
-      
+
       $$.config.data = data;
-      
+
       /* Update Axis */
       $$.setPeriod();
       $$.xScale
         .domain([$$.startTime, $$.endTime])
         .range([$$.config.margin.left, $$.width - $$.config.margin.right]);
-      
+
       $$.gAxis.transition().duration(300).call($$.xAxis);
-      
+
       /* Update data */
       $$.svg.selectAll('rect')
         .remove();
       $$.setScaleFactor();
-        
+
       $$.drawData();
     },
     /**
@@ -381,7 +381,7 @@
      */
     tooltipCommentShow: function (data, element) {
       var $$ = this;
-      
+
       $$.tooltip.select('.cc3-tooltip-title')
         .text(
           'Comment by ' + data.author + ' at ' +
@@ -389,12 +389,12 @@
         );
       $$.tooltip.select('.cc3-tooltip-body > pre')
         .text(data.comment);
-        
+
       $$.tooltip.style('display', 'block').style($$.getTooltipPos(element));
     },
     tooltipCommentHide: function() {
       var $$ = this;
-      
+
       $$.tooltip.style('display', 'none');
     },
     /**
@@ -407,7 +407,7 @@
       var $$ = this;
       var pos = $$.d3.mouse(element);
       var sizeTooltip = $$.tooltip.node().getBoundingClientRect();
-      
+
       var top = (pos[1] + 10) + 'px';
       var left = (pos[0] + 20) + 'px';
       if ($$.config.tooltipAttach === 'bottom') {
@@ -416,7 +416,7 @@
       if (pos[0] + sizeTooltip.width > $$.width) {
         left = (pos[0] - sizeTooltip.width - 10) + 'px';
       }
-      
+
       return {
         left: left,
         top: top
@@ -438,16 +438,16 @@
       }, 100);
     }
   };
-  
+
   Chart.prototype = {
     /**
      * Load new data
-     * 
+     *
      * @param {Object} data - The new data
      */
     load: function (data) {
       var $$ = this.internal;
-      
+
       $$.redraw(data);
     },
     /**
@@ -457,20 +457,20 @@
      */
     resize: function (data) {
       var $$ = this.internal;
-      
+
       $$.width = data.width;
       $$.svg.style('width', $$.width + 'px');
-      
+
       $$.redraw($$.config.data);
     }
   };
-  
+
   /**
    * Generate a status chart
    */
   centreonStatusChart.generate = function (config) {
     return new Chart(config);
   };
-  
+
   window.centreonStatusChart = centreonStatusChart;
 })(window);

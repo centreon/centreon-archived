@@ -4,7 +4,7 @@
     console.error('c3js library is not loaded');
     return;
   }
-  
+
   /* Additionnal configuration for zoom on select */
   window.c3.chart.internal.fn.additionalConfig = {
     zoom_select: {
@@ -12,11 +12,11 @@
       onzoom: null
     }
   };
-  
+
   window.c3.chart.internal.fn.beforeInit = function (config) {
     var $$ = this;
     var renderedCallback;
-    
+
     /* Merge configuration */
     if (config.hasOwnProperty('zoom_select')) {
       if (config.zoom_select.hasOwnProperty('enabled')) {
@@ -26,7 +26,7 @@
         $$.config.zoom_select.onzoom = config.zoom_select.onzoom;
       }
     }
-    
+
     /* On rendered */
     if ($$.config.zoom_select.enabled) {
       if (typeof $$.config.onrendered === 'function') {
@@ -44,11 +44,11 @@
       };
     }
   };
-  
+
   window.c3.chart.internal.fn.afterInit = function () {
     var $$ = this;
     var d3 = $$.d3;
-    
+
     if ($$.config.zoom_select.enabled) {
       var brushing = false;
 

@@ -21,7 +21,7 @@ All the commands can be configured in the menu: **Configuration ==> Commands**.
    :align: center
 
 
-**************** 
+****************
 Adding a command
 ****************
 
@@ -31,12 +31,12 @@ Before adding a command:
 
 .. image :: /images/user/configuration/04leftmenu.png
       :align: center
- 
+
 2.      Click on **Add**
 
 .. image :: /images/user/configuration/04command.png
       :align: center
- 
+
 .. Note::
     The configuration fields of a command are the same regardless of the type of command chosen.
 
@@ -48,7 +48,7 @@ Configuration fields
 *       The **Command Type** field allows us to choose the type of command.
 *       The **Command Line** field indicates the application or the script use with the command.
 *       The **Enable shell** box allows us to enable functions that are specific to a shell such as the pipe, etc.
-*       The **Argument Example** and **$HOSTADDRESS$** fields define examples of arguments (each argument starts with a ”!”) and a test IP address respectively. 
+*       The **Argument Example** and **$HOSTADDRESS$** fields define examples of arguments (each argument starts with a ”!”) and a test IP address respectively.
         These fields serve to execute the command line defined above via the web interface by clicking on the blue arrow : |bluearrow|.
 *       The **Describe arguments** button serves to add  a description to arguments of the “$ARGn$” type. This description will be visible when using the command in a host or service form.
 

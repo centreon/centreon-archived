@@ -71,7 +71,7 @@ if ($id && $o == "d" && testModuleExistence($id)) {
         if ($moduleinfo["sql_files"] && file_exists($sql_file_path.$sql_file)) {
             execute_sql_file($sql_file, $sql_file_path);
         }
-        
+
         /*
          * PHP deletion
          */
@@ -80,7 +80,7 @@ if ($id && $o == "d" && testModuleExistence($id)) {
         if ($moduleinfo["php_files"] && file_exists($php_file_path.$php_file)) {
             include_once($php_file_path.$php_file);
         }
-        
+
         /*
          * SESSION deletion
          */
@@ -115,7 +115,7 @@ $i = 0;
 while (false !== ($filename = readdir($handle))) {
     if (is_dir(_CENTREON_PATH_ . "www/modules/" . $filename) && $filename != "." && $filename != "..") {
         $moduleinfo = getModuleInfoInDB($filename, null);
-        
+
         /*
          * Package already installed
          */

@@ -12,7 +12,7 @@ Show
 
 In order to list available ACL Resources, use the **SHOW** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a show
   id;name;alias;comment;activate
   1;All Resources;All Resources;;1
   [...]
@@ -40,7 +40,7 @@ Add
 
 In order to add an ACL Resource, use the **ADD** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a add -v "ACL Resource test;my alias" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a add -v "ACL Resource test;my alias"
 
 Required fields are:
 
@@ -58,7 +58,7 @@ Del
 
 If you want to remove an ACL Resource, use the **DEL** action. The Name is used for identifying the ACL Resource to delete:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a del -v "ACL Resource test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a del -v "ACL Resource test"
 
 
 Setparam
@@ -66,7 +66,7 @@ Setparam
 
 If you want to change a specific parameter of an ACL Resource, use the **SETPARAM** action. The Name is used for identifying the ACL Resource to update:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a setparam -v "ACL Resource test;alias;my new alias" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a setparam -v "ACL Resource test;alias;my new alias"
 
 Arguments are composed of the following columns:
 
@@ -99,11 +99,11 @@ Getaclgroup
 
 If you want to retrieve the ACL Groups that are linked to a specific ACL Resource, use the **GETACLGROUP** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a getaclgroup -v "ACL Resource test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLRESOURCE -a getaclgroup -v "ACL Resource test"
   id;name
   1;ALL
   3;Operators
-  
+
 Arguments are composed of the following columns:
 
 ======= ===================
@@ -149,7 +149,7 @@ delfilter_hostcategory	  Put host category name(s)	     [...] -a delfilter_hostc
 delfilter_servicecategory Put service category name(s)	     [...] -a delfilter_servicecategory -v "ACL Resource Test;System"	   Yes
 ========================= ================================== ===================================================================== ============================
 
-.. note:: 
+.. note::
 	Use delimiter "|" for defining multiple resources.
 
 

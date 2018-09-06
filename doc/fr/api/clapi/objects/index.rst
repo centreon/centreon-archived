@@ -3,7 +3,7 @@ Object management
 =================
 
 .. toctree::
-  
+
    acl
    acl_action
    acl_group

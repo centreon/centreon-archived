@@ -404,7 +404,7 @@ CREATE TABLE `instances` (
   `running` tinyint(1) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
-  `deleted` boolean NOT NULL default false, 
+  `deleted` boolean NOT NULL default false,
   `outdated` boolean NOT NULL default false,
   PRIMARY KEY (`instance_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

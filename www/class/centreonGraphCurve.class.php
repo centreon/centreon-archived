@@ -50,7 +50,7 @@ class CentreonGraphCurve
     {
         $this->db = $pearDB;
     }
-    
+
     /**
      *
      * @param integer $field

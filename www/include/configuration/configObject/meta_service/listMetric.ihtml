@@ -26,7 +26,7 @@
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
-                <input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>           
+                <input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>
             </td>
             <td class="ListColLeft">{$headerMenu_host}</td>
             <td class="ListColLeft">{$headerMenu_service}</td>
@@ -59,7 +59,7 @@
             <input name="p" value="{$p}" type="hidden">
         </tr>
     </table>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

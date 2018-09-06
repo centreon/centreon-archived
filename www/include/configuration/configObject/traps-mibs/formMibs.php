@@ -36,7 +36,7 @@
 if (!isset($centreon)) {
     exit();
 }
-    
+
 /*
  * Debug Flag
  */

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `custom_view_user_relation` (
 	`custom_view_id` INT( 11 ) NOT NULL,
 	`user_id` INT( 11 ) NULL,
 	`usergroup_id` INT( 11 ) NULL,
-	`locked` TINYINT( 6 ) DEFAULT 0,	
+	`locked` TINYINT( 6 ) DEFAULT 0,
 	`is_owner` TINYINT( 6 ) DEFAULT 0,
 	CONSTRAINT `fk_custom_views_user_id`
     FOREIGN KEY (`user_id` )
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS  `widget_models` (
 	`keywords` VARCHAR( 255 ) NULL ,
 	`screenshot` VARCHAR( 255 ) NULL ,
 	`thumbnail` VARCHAR( 255 ) NULL ,
-	`autoRefresh` INT( 11 ) NULL,	
+	`autoRefresh` INT( 11 ) NULL,
 	PRIMARY KEY (  `widget_model_id` )
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS  `widget_models` (
 CREATE TABLE IF NOT EXISTS  `widgets` (
 	`widget_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`widget_model_id` INT( 11 ) NOT NULL,
-	`title` VARCHAR( 255 ) NOT NULL ,	
+	`title` VARCHAR( 255 ) NOT NULL ,
 	CONSTRAINT `fk_wdg_model_id`
 	FOREIGN KEY (`widget_model_id`)
 	REFERENCES `widget_models` (`widget_model_id`)
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS  `widgets` (
 CREATE TABLE IF NOT EXISTS `widget_views` (
 	`widget_view_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`custom_view_id` INT( 11 ) NOT NULL ,
-	`widget_id` INT( 11 ) NOT NULL ,	
-	`widget_order` VARCHAR( 255 ) NOT NULL ,	
+	`widget_id` INT( 11 ) NOT NULL ,
+	`widget_order` VARCHAR( 255 ) NOT NULL ,
 	PRIMARY KEY (  `widget_view_id` ),
 	CONSTRAINT `fk_custom_view_id`
     FOREIGN KEY (`custom_view_id` )
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `widget_views` (
     CONSTRAINT `fk_widget_id`
     FOREIGN KEY (`widget_id` )
     REFERENCES `widgets` (`widget_id` )
-    ON DELETE CASCADE    
+    ON DELETE CASCADE
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `widget_parameters_field_type` (
   `field_type_id` INT ( 11 ) NOT NULL AUTO_INCREMENT ,
   `ft_typename` VARCHAR(50) NOT NULL ,
   `is_connector` TINYINT(6) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`field_type_id`) 
+  PRIMARY KEY (`field_type_id`)
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `widget_parameters` (
 	CONSTRAINT `fk_widget_param_widget_id`
     FOREIGN KEY (`widget_model_id` )
     REFERENCES `widget_models` (`widget_model_id` )
-    ON DELETE CASCADE,    
+    ON DELETE CASCADE,
 	CONSTRAINT `fk_widget_field_type_id`
     FOREIGN KEY (`field_type_id` )
     REFERENCES `widget_parameters_field_type` (`field_type_id` )
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `widget_parameters_range` (
     ON DELETE CASCADE
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
--- 
+--
 -- For LDAP store password option default value
 --
 INSERT INTO `options` (`key`, `value`) VALUES ('ldap_store_password', '1');
@@ -248,11 +248,11 @@ INSERT INTO `options` (`key`, `value`) VALUES ('ldap_store_password', '1');
 CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
   `resource_id` int(11) NOT NULL,
   `instance_id` int(11) NOT NULL,
-  CONSTRAINT `fk_crir_res_id` 
+  CONSTRAINT `fk_crir_res_id`
   FOREIGN KEY (`resource_id`)
   REFERENCES `cfg_resource` (`resource_id`)
   ON DELETE CASCADE,
-  CONSTRAINT `fk_crir_ins_id` 
+  CONSTRAINT `fk_crir_ins_id`
   FOREIGN KEY (`instance_id`)
   REFERENCES `nagios_server` (`id`)
   ON DELETE CASCADE
@@ -261,9 +261,9 @@ CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
 ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
 ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
 
--- 
+--
 -- Clone the active cgi configuration for each active poller instance and link them together
--- 
+--
 INSERT INTO `cfg_cgi`(
     `cfg_cgi`.`cgi_name`,
     `cfg_cgi`.`instance_id`,
@@ -334,9 +334,9 @@ WHERE
 ORDER BY
     `cfg_cgi`.`cgi_id` ASC;
 
--- 
+--
 -- This is a continuation of the last query; It deletes the original cgi configuration entry because now it is orphane (poller)
--- 
+--
 DELETE FROM
     `cfg_cgi`
 WHERE
@@ -480,7 +480,7 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES
 
 --
 -- Add retry interval for input and output in Centreon Broker
--- 
+--
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
 (31, 'retry_interval', 'Retry Interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL);
@@ -585,7 +585,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 (NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 UPDATE `topology` SET `topology_order` = 20 WHERE `topology_page` = 10201;
 
-INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
                                            ('text', 0),
                                            ('boolean', 0),
                                            ('hidden', 0),

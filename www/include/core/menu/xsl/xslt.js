@@ -236,14 +236,14 @@ function MenuTransformation()
      *
      *
      */
-    
+
     this.transform = function (target) {
         var t = this;
-    
+
         if (!browserSupportsXSLT()) {
             return;
         }
-                
+
         if (document.recalc) {
             var xmlID   = randomID();
             var xsltID  = randomID();
@@ -270,12 +270,12 @@ function MenuTransformation()
             xm.onreadystatechange = change;
             xm.id = xmlID;
             xm.src = xml;
-            
+
             var xs = document.createElement('xml');
             xs.onreadystatechange = change;
             xs.id = xsltID;
             xs.src = xslt;
-    
+
             document.body.insertBefore(xm);
             document.body.insertBefore(xs);
         } else {
@@ -283,9 +283,9 @@ function MenuTransformation()
              * legerement plus rapide avec FF
 			 */
             var xmlRequest = GetXmlHttpRequest();
-            
+
             //console.log(xsltRequest);
-    
+
             var change = function () {
                 if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
                     if (transformed) {
@@ -293,11 +293,11 @@ function MenuTransformation()
                     }
                     xsltDoc = xsltRequest.responseXML;
                     xmlDoc = xmlRequest.responseXML;
-    
+
                     var resultDoc;
                     var processor = new XSLTProcessor();
                     document.getElementById(target).innerHTML = '';
-    
+
                     processor.importStylesheet(xsltDoc);
                     resultDoc = processor.transformToFragment(xmlDoc, document);
                     callback(t);
@@ -317,7 +317,7 @@ function MenuTransformation()
             }
         }
     }
-    
+
     /**
      * Generates a random ID.
      *

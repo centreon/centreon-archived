@@ -17,7 +17,7 @@ CHANGELOG
 Bug fixes
 =========
 
-- #5655: Changing Host Templates doesn't delete services 
+- #5655: Changing Host Templates doesn't delete services
 - #5925: Popup Dialogs (Acknowledge, Downtimes etc.) not working with Internet Explorer
 - #6224: Special characters in LDAP are replaced by underscore
 - #6358: It's possible to bypass ACLs on Event Logs page

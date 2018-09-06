@@ -55,9 +55,9 @@ class MetaHost extends AbstractObject {
     protected $attributes_hash = array(
         'macros'
     );
-    
+
     public function getHostIdByHostName($host_name) {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
+        $stmt = $this->backend_instance->db->prepare("SELECT
               host_id
             FROM host
             WHERE host_name = :host_name
@@ -66,12 +66,12 @@ class MetaHost extends AbstractObject {
         $stmt->execute();
         return array_pop($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
-    
+
     public function generateObject($host_id) {
         if ($this->checkGenerate($host_id)) {
             return 0;
         }
-        
+
         $object = array();
         $object['host_name'] = '_Module_Meta';
         $object['alias'] = 'Meta Service Calculate Module For Centreon';
@@ -89,7 +89,7 @@ class MetaHost extends AbstractObject {
         $object['notifications_enabled'] = 0;
         $object['register'] = 1;
         $object['macros'] = array('_HOST_ID' => $host_id);
-        
+
         $this->generateObjectInFile($object, $host_id);
     }
 }

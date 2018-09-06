@@ -2,10 +2,10 @@
 Add a user
 ==========
 
-A Centreon user is both a contact who can be notified of an alert of a host or 
+A Centreon user is both a contact who can be notified of an alert of a host or
 service and someone who can connect to the Centreon web interface.
 
-First :ref:`connect<centreon_login>` to your Centreon web interface with an 
+First :ref:`connect<centreon_login>` to your Centreon web interface with an
 administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration > Users > Contacts / Users** menu and click on **Add** button:
@@ -26,7 +26,7 @@ Mandatory options
 
 On the first tab **General Information** define:
 
-* your **Alias**, use as a login to connect to Centreon web interface 
+* your **Alias**, use as a login to connect to Centreon web interface
 * your **Full Name**
 * your **Email** address
 

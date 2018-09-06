@@ -4,10 +4,10 @@ Algorithme d'affichage : Héritage et surcharge
 Pour éviter une trop grande charge de travail sur les procédures de déploiement,
 cette fonctionnalité permet à l'administrateur de configurer une procédure simple pour les hôtes/services.
 
-Ainsi une procédure peut être spécifiée pour un hôte/service donné mais aussi pour un modèle 
+Ainsi une procédure peut être spécifiée pour un hôte/service donné mais aussi pour un modèle
 d'hôte et de service.
 
-Si une procédure est définie au niveau d'un modèle, tous les enfants du modèle parent bénéficieront 
+Si une procédure est définie au niveau d'un modèle, tous les enfants du modèle parent bénéficieront
 de cette procédure sauf en cas de surcharge.
 Ce système est identique au système de modèle par héritage présent dans Centreon Web.
 

@@ -15,7 +15,7 @@ Pour plus de flexibilité, les procédures peuvent être liées directement sur 
 
 
 .. toctree::
-   
-   prerequisites   
+
+   prerequisites
    wikiaccess
    user/index

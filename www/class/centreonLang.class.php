@@ -43,19 +43,19 @@ class CentreonLang
      * @var string
      */
     protected $charset;
-    
+
     /**
      *
      * @var string
      */
     protected $lang;
-    
+
     /**
      *
      * @var string
      */
     protected $path;
-    
+
     /**
      *
      * @var array
@@ -75,18 +75,18 @@ class CentreonLang
         if (!is_null($centreon) && isset($centreon->user->charset)) {
             $this->charset = $centreon->user->charset;
         }
-        
+
         $this->lang = $this->getBrowserDefaultLanguage() . '.' . $this->charset;
         if (!is_null($centreon) && isset($centreon->user->lang)) {
             if ($centreon->user->lang !== 'browser') {
                 $this->lang = $centreon->user->lang;
             }
         }
-        
+
         $this->path = $centreon_path;
         $this->setCharsetList();
     }
-    
+
     private function parseHttpAcceptHeader()
     {
         $langs = array();
@@ -114,12 +114,12 @@ class CentreonLang
                 arsort($langs, SORT_NUMERIC);
             }
         }
-        
+
         $languageLocales = array_keys($langs);
-        
+
         $current = array_shift($languageLocales);
         $favoriteLanguage = $current;
-        
+
         return $favoriteLanguage;
     }
 
@@ -130,14 +130,14 @@ class CentreonLang
     private function getBrowserDefaultLanguage()
     {
         $currentLocale = '';
-        
+
         if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
             $browserLocale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
             $currentLocale .= Locale::acceptFromHttp($browserLocale);
         } else {
             $currentLocale .= $this->parseHttpAcceptHeader();
         }
-        
+
         return $this->getFullLocale($currentLocale);
     }
 

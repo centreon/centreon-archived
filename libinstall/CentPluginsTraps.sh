@@ -124,7 +124,7 @@ if [ ! "${CENTREONTRAPD_INSTALL_INIT}" ] ; then
 elif [ "${CENTREONTRAPD_INSTALL_INIT}" -eq 1 ] ; then
 	RC="0"
 fi
-if [ "$RC" -eq "0" ] ; then 
+if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentreonTrapd init script installed")"
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	    $TMP_DIR/final/centreontrapd.init.d \
@@ -211,7 +211,7 @@ if [ "$write_snmp_conf" = "1" ]; then
         $TMP_DIR/work/snmptrapd/snmptrapd.conf \
         $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmptrapd.conf"
-    
+
 #    log "INFO" "$(gettext "Install") : snmp.conf"
 #    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 #            $TMP_DIR/work/snmptrapd/snmp.conf \

@@ -1,7 +1,7 @@
 Définition
 ==========
 
-Une procédure est une documentation technique et/ou fonctionnelle qui met à la disposition des exploitants 
+Une procédure est une documentation technique et/ou fonctionnelle qui met à la disposition des exploitants
 un mode opératoire dans le cadre du traitement d'une alerte.
 
 Le contenu d'une procédure peut être d'ordre général ou spécifique:

@@ -31,7 +31,7 @@ Il est possible de définir deux paramètres :
 * Les hôtes parents : signifie que les hôtes sélectionnés sont parents de cet hôte (situé en amont). Si tous les hôtes parents sélectionnés deviennent indisponibles ou injoignables alors l'hôte sera considéré par l’ordonnanceur comme injoignable lui-même.
 * Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés.
 
-.. note:: 
+.. note::
     Tous les parents d’un hôte doivent être dans un état non-OK pour que l’hôte lui-même soit considéré comme injoignable. A partir du moment où au moins un chemin d’accès (liaison de dépendance physique) est toujours joignable alors l’ordonnanceur continuera de surveiller cet hôte.
 
 Dans le cas où des relations de parentés ont été définies entre hôtes supervisés par des ordonnanceurs différents,  il est possible :

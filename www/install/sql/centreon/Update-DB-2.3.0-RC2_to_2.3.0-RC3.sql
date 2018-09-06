@@ -16,7 +16,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 
 --
 -- Update default information for Centreon Broker configuration in poller
--- 
+--
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '/etc/centreon-broker', `centreonbroker_module_path` = '/usr/share/centreon/lib/centreon-broker';
 
 --

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name="form" method='GET'>
 <hidden name="p" value='{$p}'>
 <hidden name="o" value='{$o}'>
@@ -41,7 +41,7 @@
 		<td class="ListColHeaderCenter">{t}Comments{/t}</td>
 		<td class="ListColHeaderCenter" width="60">{t}Persistent{/t}</td>
 	</tr>
-{if $nb_comments_svc} 
+{if $nb_comments_svc}
 	{foreach item=tcs from=$tab_comments_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.comment_type};{$tcs.host_name_link};{$tcs.internal_id}]'></td>

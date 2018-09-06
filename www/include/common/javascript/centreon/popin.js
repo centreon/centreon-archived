@@ -34,7 +34,7 @@
 
 (function ($, window) {
   'use strict';
-  
+
   function CentreonPopin(settings, $elem) {
     var self = this;
     var closeBtn = $('<a class="close" href="#"><img src="./img/icons/circle-cross.png" class="ico-18"></a>');
@@ -46,7 +46,7 @@
     $newElem.addClass('centreon-popin');
     $newElem.hide();
     $elem.wrap($newElem);
-  
+
     self.$elem = $elem.parents('.centreon-popin').detach();
     self.$elem.appendTo('body');
 
@@ -57,7 +57,7 @@
     });
 
     self.initOverlay();
-    
+
     if(self.settings.url !== null){
         $.ajax({
            url : self.settings.url,
@@ -157,7 +157,7 @@
       }
     }
   };
-  
+
   $.fn.centreonPopin = function (options) {
     var args = Array.prototype.splice.call(arguments, 1);
     var settings = $.extend({}, $.fn.centreonPopin.defaults, options);
@@ -174,7 +174,7 @@
     });
     return (methodReturn === undefined) ? $set : methodReturn;
   };
-  
+
   $.fn.centreonPopin.defaults = {
     closeOnDocument: true,
     open: false,

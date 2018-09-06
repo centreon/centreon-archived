@@ -24,9 +24,9 @@ CREATE TABLE `host_template_relation` (
   KEY `host_tpl_id` (`host_tpl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 
+--
 -- Contraintes pour la table `host_template_relation`
--- 
+--
 
 ALTER TABLE `host_template_relation`
   ADD CONSTRAINT `host_template_relation_ibfk_2` FOREIGN KEY (`host_tpl_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -34,9 +34,9 @@ ALTER TABLE `host_template_relation`
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Structure de la table `on_demand_macro_host`
--- 
+--
 
 CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL auto_increment,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `on_demand_macro_host` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Structure de la table `on_demand_macro_service`
 --
 CREATE TABLE `on_demand_macro_service` (
@@ -63,25 +63,25 @@ CREATE TABLE `on_demand_macro_service` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Contraintes pour la table `on_demand_macro_service`
--- 
+--
 ALTER TABLE `on_demand_macro_service`
   ADD CONSTRAINT `on_demand_macro_service_ibfk_1` FOREIGN KEY (`svc_svc_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Contraintes pour la table `on_demand_macro_host`
--- 
+--
 ALTER TABLE `on_demand_macro_host`
   ADD CONSTRAINT `on_demand_macro_host_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Topology
--- 
+--
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(318, 60101, 'a', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(319, 60101, 'c', './include/common/javascript/commandGetArgs/cmdGetExample.js', NULL);
@@ -89,9 +89,9 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Update Centreon version
--- 
+--
 
 UPDATE `informations` SET `value` = '2.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.0-b4' LIMIT 1;
 

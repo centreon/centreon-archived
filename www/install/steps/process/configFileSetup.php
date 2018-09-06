@@ -51,8 +51,8 @@ $patterns = array('/--ADDRESS--/',
                   '/--CONFDB--/',
                   '/--STORAGEDB--/',
                   '/--CENTREONDIR--/',
-                  '/--DBPORT--/', 
-                  '/--INSTANCEMODE--/', 
+                  '/--DBPORT--/',
+                  '/--INSTANCEMODE--/',
                   '/--CENTREON_VARLIB--/');
 
 $replacements = array($host,
@@ -61,8 +61,8 @@ $replacements = array($host,
                       $_SESSION['CONFIGURATION_DB'],
                       $_SESSION['STORAGE_DB'],
                       $_SESSION['INSTALL_DIR_CENTREON'],
-                      $_SESSION['DB_PORT'], 
-                      "central", 
+                      $_SESSION['DB_PORT'],
+                      "central",
                       $_SESSION['CENTREON_VARLIB']);
 
 /**

@@ -16,7 +16,7 @@ The following items will not be exported:
 
 This export feature is ran like this::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt 
+  [root@centreon ~]# ./centreon -u admin -p centreon -e > /tmp/clapi-export.txt
 
 This will generate CLAPI commands and redirect them to the */tmp/clapi-export.txt* file.
 

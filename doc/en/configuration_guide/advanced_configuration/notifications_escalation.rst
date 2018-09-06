@@ -25,7 +25,7 @@ To add an escalation of notification:
 
 1.      Go into the menu: **Configuration** ==> **Notifications** ==> **Escalations**
 2.      Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/04notificationsescalation.png
       :align: center
 

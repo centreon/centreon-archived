@@ -36,7 +36,7 @@ Service State
 Macros
 ======
 
-The **Macros** part serves to add customized macros. 
+The **Macros** part serves to add customized macros.
 The **macro name** and **macro value** fields allow us to define the name and value of the macro. The **Password** box can be used to hide the value of the macro.
 
 To reinitialize to the default value (defined in template) click on |undo|.
@@ -71,7 +71,7 @@ Relations
 * The **Linked with Hosts** list allows us to define the host(s) to which to link this service.
 * The **Linked with Servicegroups** list allows us to link the service to one or more service groups.
 
-SNMP traps 
+SNMP traps
 ==========
 
 The **Service Trap Relation** field allows us to define the SNMP traps that will be able to change the behavior of the service.
@@ -112,7 +112,7 @@ Monitoring engine
 * The **Alt icon** field is the text use if the icon cannot be Displays.
 * The **Severity level** field indicates the criticality level of the service.
 
-Additional information 
+Additional information
 ======================
 
 * The **Status** field allows us to enable or disable the service.

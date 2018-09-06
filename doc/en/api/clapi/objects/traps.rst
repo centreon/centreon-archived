@@ -30,7 +30,7 @@ Add
 
 In order to add a trap, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a add -v "aNewTrap;.1.3.6.1.4.1.11.2.3.9.7.1.0.30" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a add -v "aNewTrap;.1.3.6.1.4.1.11.2.3.9.7.1.0.30"
 
 Required fields are:
 
@@ -48,7 +48,7 @@ Del
 
 If you want to remove a Trap, use the **DEL** action. The Name is used for identifying the Trap to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a del -v "aNewTrap" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a del -v "aNewTrap"
 
 
 Setparam
@@ -56,7 +56,7 @@ Setparam
 
 If you want to change a specific parameter of a Trap, use the **SETPARAM** command. The Name is used for identifying the Trap to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a setparam -v "aNewTrap;vendor;3com" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a setparam -v "aNewTrap;vendor;3com"
 
 Arguments are composed of the following columns:
 
@@ -75,13 +75,13 @@ Parameters that you may change are:
 ========================== ===================================================== =============================================================
 Column	                   Description	                                         Possible values
 ========================== ===================================================== =============================================================
-name	                   Name	
+name	                   Name
 
-comments	           Comments	
+comments	           Comments
 
-output	                   Output	
+output	                   Output
 
-oid	                   OID	
+oid	                   OID
 
 status	                   Status	                                         *ok*, *warning*, *critical*, *unknown* or *0*, *1*, *2*, *3*
 
@@ -89,7 +89,7 @@ vendor	                   Vendor name	                                         A
 
 matching_mode	           Advanced regexp matching mode	                 *1* to enable, *0* to disable
 
-reschedule_svc_enable	   Whether or not will reschedule service check 
+reschedule_svc_enable	   Whether or not will reschedule service check
                            when trap is received	                         *1* to enable, *0* to disable
 
 execution_command	   Command to be executed when trap is received	         A valid Unix command line
@@ -105,7 +105,7 @@ Getmatching
 
 In order to display the list of matching rules defined for a specific trap, use the **GETMATCHING** command::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a getmatching -v "aNewTrap" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a getmatching -v "aNewTrap"
   id;string;regexp;status;order
   8;@OUTPUT@;/test/;UNKNOWN;1
 
@@ -129,18 +129,18 @@ Addmatching
 
 In order to add a matching rule, use the **ADDMATCHING** command::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a addmatching -v "aNewTrap;@OUTPUT@;/test2/;critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a addmatching -v "aNewTrap;@OUTPUT@;/test2/;critical"
 
 Required fields are:
 
 ======= ================================= =============================================================
 Order	Description	                  Possible values
 ======= ================================= =============================================================
-1	Trap name	
+1	Trap name
 
-2	String to match	
+2	String to match
 
-3	Matching Regular Expression	
+3	Matching Regular Expression
 
 4       Status to submit	          *ok*, *warning*, *critical*, *unknown* or *0*, *1*, *2*, *3*
 ======= ================================= =============================================================
@@ -151,7 +151,7 @@ Delmatching
 
 In order to delete a matching rule, use the **DELMATCHING** command::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a delmatching -v "8" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a delmatching -v "8"
 
 Required fields are:
 
@@ -167,7 +167,7 @@ Updatematching
 
 In order to delete a matching rule, use the **UPDATEMATCHING** command::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a updatematching -v "8;status;critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o TRAP -a updatematching -v "8;status;critical"
 
 Arguments are composed of the following columns:
 
@@ -186,11 +186,11 @@ Parameters that you may change are:
 ======== =============================== =================================
 Column	 Description	                 Possible values
 ======== =============================== =================================
-string	 String to match	
+string	 String to match
 
-order	 Priority order	
+order	 Priority order
 
 status	 Status to submit	         *ok*, *warning*, *critical*, *unknown* or *0*, *1*, *2*, *3*
 
-regexp	 Matching Regular Expression	
+regexp	 Matching Regular Expression
 ======== =============================== =================================

@@ -30,7 +30,7 @@ Duplication
 Principle
 =========
 
-Duplication of an object enables it to be copied / cloned to be able to re-use its Attributes for the creation of a new object. 
+Duplication of an object enables it to be copied / cloned to be able to re-use its Attributes for the creation of a new object.
 E.g.: I have 10 identical web servers to supervise:
 
 *	I add the first web server with all the necessary Attributes
@@ -49,7 +49,7 @@ To duplicate a host:
 2.	In the **Options column**, enter the number of duplications that you want to obtain
 
 .. image :: /images/user/configuration/01duplicate.png
-   :align: center 
+   :align: center
 
 3.	In the **More actions...** menu click on **Duplicate**
 
@@ -88,7 +88,7 @@ Enable / disable
 Principle
 =========
 
-The enabling and disenabling of objects enables us to take the object into account or not during configuration generation. 
+The enabling and disenabling of objects enables us to take the object into account or not during configuration generation.
 The main advantage is to be able to keep the configuration of an object without applying it.
 
 Practice

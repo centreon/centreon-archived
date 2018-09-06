@@ -95,18 +95,18 @@
             moduleMessages = module.children;
             myModuleStatusSpan = jQuery('#'+module["name"]);
             myModuleStatusSpan.empty();
-            
+
             if (module["status"] === "critical") {
                 modalBoxId = 'criticalBox_' + module["name"];
                 jQuery('#' + modalBoxId).remove();
                 var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
                 criticalModalBox += 'id="'+ modalBoxId +'"';
                 criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';
-                
-                
+
+
                 myModuleStatusSpan.append('<a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="img_critical_'+ module["name"] +'" src="img/icons/cross.png" class="ico-16" /></a>');
                 statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
-                
+
                 statusMessage = "";
                 solution = "";
                 if (module["message"] instanceof Array) {
@@ -118,7 +118,7 @@
                     statusMessage = module["message"]['ErrorMessage'];
                     solution = module["message"]['Solution']+ '<br /><br />';
                 }
-                
+
                 criticalModalBox += solution;
                 criticalModalBox += '</div>';
                 statusMessage += '<br />Click to check available actions to fix it.';
@@ -144,7 +144,7 @@
                 statusMessage = "Can't check module dependencies";
                 tooltipReferer = '#img_warning_'+ module["name"];
             }
-            
+
             if ((module["customAction"] !== undefined) && (module["customAction"] !== "")) {
                 modalBoxId = 'customActionModalBox_' + module["name"];
                 jQuery('#' + modalBoxId).remove();
@@ -162,7 +162,7 @@
                 jQuery('#' + modalBoxId).dialog( "option", "modal", true );
                 jQuery('#action_'+ module["name"]).prepend(customActionIcon);
             }
-            
+
             jQuery(tooltipReferer).qtip({
                 content: statusMessage,
                 style: {
@@ -182,7 +182,7 @@
             myModuleStatusSpan = null;
         }
     }
-    
+
     CheckModule();
     {/literal}
 </script>

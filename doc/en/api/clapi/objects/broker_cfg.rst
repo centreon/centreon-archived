@@ -13,7 +13,7 @@ Show
 
 In order to list available Centreon Broker CFG, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a show
   config id;config name;instance
   1;Central CFG;Central
   2;Sattelite CFG;Sattelite
@@ -37,7 +37,7 @@ Add
 
 In order to add a Centreon Broker CFG, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a add -v "broker cfg for poller test;Poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a add -v "broker cfg for poller test;Poller test"
 
 
 Required fields are:
@@ -56,7 +56,7 @@ Del
 
 If you want to remove a Centreon Broker CFG, use the **DEL** action. The Name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a del -v "broker cfg for poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a del -v "broker cfg for poller test"
 
 
 Setparam
@@ -64,7 +64,7 @@ Setparam
 
 If you want to change a specific parameter of a Centreon Broker configuration, use the **SETPARAM** action. The configuration name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setparam -v "broker cfg for poller test;name;new broker cfg name" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setparam -v "broker cfg for poller test;name;new broker cfg name"
 
 Arguments are composed of the following columns:
 
@@ -110,7 +110,7 @@ listlogger
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listoutput -v "broker cfg for poller test" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listoutput -v "broker cfg for poller test"
    id;name
    1;Storage
    2;RRD
@@ -135,7 +135,7 @@ In order to get parameters of a specific I/O object, use one of the following co
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getoutput -v "broker cfg for poller test;3" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getoutput -v "broker cfg for poller test;3"
    parameter key;parameter value
    db_host;localhost
    db_name;centreon_storage
@@ -171,8 +171,8 @@ In order to add a new I/O object, use one of the following commands:
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a addlogger -v "broker cfg for poller test;/var/log/centreon-broker/central-module.log;file" 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listlogger -v "broker cfg for poller test" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a addlogger -v "broker cfg for poller test;/var/log/centreon-broker/central-module.log;file"
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a listlogger -v "broker cfg for poller test"
    id;name
    1;/var/log/centreon-broker/central-module.log
 
@@ -200,7 +200,7 @@ In order to remove an I/O object from the Centreon Broker configuration, use one
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a dellogger -v "broker cfg for poller test;1" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a dellogger -v "broker cfg for poller test;1"
 
 The I/O ID is used for identifying the object to delete.
 
@@ -215,7 +215,7 @@ In order to set parameters of an I/O object, use one of the following commands:
 
 Example::
 
-   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setlogger -v "broker cfg for poller test;1;debug;no" 
+   [root@centreon ~]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a setlogger -v "broker cfg for poller test;1;debug;no"
 
 Arguments are composed of the following columns:
 
@@ -238,7 +238,7 @@ You may get help with the following CLAPI commands:
 
 Example::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a gettypelist -v "output" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a gettypelist -v "output"
   type id;short name;name
   27;bam_bi;BI engine (BAM)
   16;sql;Broker SQL Database
@@ -254,7 +254,7 @@ Example::
   30;graphite;Storage - Graphite
   31;influxdb;Storage - InfluxDB
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getfieldlist -v "ipv4" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getfieldlist -v "ipv4"
   field id;short name;name
   3;ca_certificate;Trusted CA's certificate;text
   2;host;Host to connect to;text
@@ -267,11 +267,11 @@ Example::
   6;tls;Enable TLS encryption;radio
 
 .. note::
-  Note that the "protocol" entry is followed by a star. This means that you have to use one of the possible values. 
+  Note that the "protocol" entry is followed by a star. This means that you have to use one of the possible values.
 
 This is how you get the list of possible values of a given field::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getvaluelist -v "protocol" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o CENTBROKERCFG -a getvaluelist -v "protocol"
   possible values
   ndo
 
@@ -285,41 +285,41 @@ input
 ipv4:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
+compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
+                                                                                            This however increase data streaming latency.
+                                                                                            Use with caution.                                            -
 
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
+compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
 category                       Filter category                                              Category filter for flux in input                            -
 
-ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -                                                          
+ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -
 
-host                           Host to connect to                                           IP address or hostname of the host to connect to 
-                                                                                            (leave blank for listening mode).                            -                                                          
+host                           Host to connect to                                           IP address or hostname of the host to connect to
+                                                                                            (leave blank for listening mode).                            -
 
 one_peer_retention_mode        One peer retention                                           This allows the retention to work even                       -
                                                                                             if the socket is listening
 
-port                           Connection port                                              Port to listen on (empty host) or to connect to 
-                                                                                            (with host filled).                                          -                                                          
+port                           Connection port                                              Port to listen on (empty host) or to connect to
+                                                                                            (with host filled).                                          -
 
-private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -                                                          
+private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
-public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -                                                          
+public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -
 
-tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -                                                          
+tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -327,41 +327,41 @@ tls                            Enable TLS encryption                            
 ipv6:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
+compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
                                                                                             This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
+                                                                                            Use with caution.                                            -
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
 category                       Filter category                                              Category filter for flux in input                            -
 
-ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -                                                          
+ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -
 
-host                           Host to connect to                                           IP address or hostname of the host to connect to 
-                                                                                            (leave blank for listening mode).                            -                                                          
+host                           Host to connect to                                           IP address or hostname of the host to connect to
+                                                                                            (leave blank for listening mode).                            -
 
 one_peer_retention_mode        One peer retention                                           This allows the retention to work even                       -
                                                                                             if the socket is listening
 
-port                           Connection port                                              Port to listen on (empty host) or to connect to 
-                                                                                            (with host filled).                                          -                                                          
+port                           Connection port                                              Port to listen on (empty host) or to connect to
+                                                                                            (with host filled).                                          -
 
-private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -                                                          
+private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
-public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -                                                          
+public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -
 
-tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -                                                          
+tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -369,26 +369,26 @@ tls                            Enable TLS encryption                            
 file:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
+compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
                                                                                             This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
+                                                                                            Use with caution.                                            -
 
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
+compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
-max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
+max_size                       Maximum size of file                                         Maximum size in bytes.                                       -
 
-path                           File path                                                    Path to the file.                                            -                                                          
+path                           File path                                                    Path to the file.                                            -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -399,22 +399,22 @@ logger
 file:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-config                         Configuration messages                                       Enable or not configuration messages logging.                -                                                          
+config                         Configuration messages                                       Enable or not configuration messages logging.                -
 
-debug                          Debug messages                                               Enable or not debug messages logging.                        -                                                          
+debug                          Debug messages                                               Enable or not debug messages logging.                        -
 
-error                          Error messages                                               Enable or not error messages logging.                        -                                                          
+error                          Error messages                                               Enable or not error messages logging.                        -
 
-info                           Informational messages                                       Enable or not informational messages logging.                -                                                          
+info                           Informational messages                                       Enable or not informational messages logging.                -
 
-level                          Logging level                                                How much messages must be logged.                            high,low,medium                                            
+level                          Logging level                                                How much messages must be logged.                            high,low,medium
 
-max_size                       Max file size in bytes                                       The maximum size of log file.                                -                                                          
+max_size                       Max file size in bytes                                       The maximum size of log file.                                -
 
-name                           Name of the logger                                           For a file logger this is the path to the file. For a 
-                                                                                            standard logger, one of 'stdout' or 'stderr'.                -                                                          
+name                           Name of the logger                                           For a file logger this is the path to the file. For a
+                                                                                            standard logger, one of 'stdout' or 'stderr'.                -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -422,20 +422,20 @@ name                           Name of the logger                               
 standard:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-config                         Configuration messages                                       Enable or not configuration messages logging.                -                                                          
+config                         Configuration messages                                       Enable or not configuration messages logging.                -
 
-debug                          Debug messages                                               Enable or not debug messages logging.                        -                                                          
+debug                          Debug messages                                               Enable or not debug messages logging.                        -
 
-error                          Error messages                                               Enable or not error messages logging.                        -                                                          
+error                          Error messages                                               Enable or not error messages logging.                        -
 
-info                           Informational messages                                       Enable or not informational messages logging.                -                                                          
+info                           Informational messages                                       Enable or not informational messages logging.                -
 
-level                          Logging level                                                How much messages must be logged.                            high,low,medium                                            
+level                          Logging level                                                How much messages must be logged.                            high,low,medium
 
-name                           Name of the logger                                           For a file logger this is the path to the file. 
-                                                                                            For a standard logger, one of 'stdout' or 'stderr'.          -                                                          
+name                           Name of the logger                                           For a file logger this is the path to the file.
+                                                                                            For a standard logger, one of 'stdout' or 'stderr'.          -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -443,17 +443,17 @@ name                           Name of the logger                               
 syslog:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-config                         Configuration messages                                       Enable or not configuration messages logging.                -                                                          
+config                         Configuration messages                                       Enable or not configuration messages logging.                -
 
-debug                          Debug messages                                               Enable or not debug messages logging.                        -                                                          
+debug                          Debug messages                                               Enable or not debug messages logging.                        -
 
-error                          Error messages                                               Enable or not error messages logging.                        -                                                          
+error                          Error messages                                               Enable or not error messages logging.                        -
 
-info                           Informational messages                                       Enable or not informational messages logging.                -                                                          
+info                           Informational messages                                       Enable or not informational messages logging.                -
 
-level                          Logging level                                                How much messages must be logged.                            high,low,medium                                            
+level                          Logging level                                                How much messages must be logged.                            high,low,medium
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -461,20 +461,20 @@ level                          Logging level                                    
 monitoring:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-config                         Configuration messages                                       Enable or not configuration messages logging.                -                                                          
+config                         Configuration messages                                       Enable or not configuration messages logging.                -
 
-debug                          Debug messages                                               Enable or not debug messages logging.                        -                                                          
+debug                          Debug messages                                               Enable or not debug messages logging.                        -
 
-error                          Error messages                                               Enable or not error messages logging.                        -                                                          
+error                          Error messages                                               Enable or not error messages logging.                        -
 
-info                           Informational messages                                       Enable or not informational messages logging.                -                                                          
+info                           Informational messages                                       Enable or not informational messages logging.                -
 
-level                          Logging level                                                How much messages must be logged.                            high,low,medium                                            
+level                          Logging level                                                How much messages must be logged.                            high,low,medium
 
 name                           Name of the logger                                           For a file logger this is the path to the file.
-                                                                                            For a standard logger, one of 'stdout' or 'stderr'.          -                                                          
+                                                                                            For a standard logger, one of 'stdout' or 'stderr'.          -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -486,43 +486,43 @@ output
 ipv4:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
-                                                                                            This however increase data streaming latency. 
-                                                                                            Use with caution.                                            -                                                          
+compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
+                                                                                            This however increase data streaming latency.
+                                                                                            Use with caution.                                            -
 
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
+compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
 category                       Filter category                                              Category filter for flux in output                           -
 
-ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -                                                          
+ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -
 
-host                           Host to connect to                                           IP address or hostname of the host to connect to 
-                                                                                            (leave blank for listening mode).                            -                                                          
+host                           Host to connect to                                           IP address or hostname of the host to connect to
+                                                                                            (leave blank for listening mode).                            -
 
 one_peer_retention_mode        One peer retention                                           This allows the retention to work even                       -
-                                                                                            if the socket is listening     
+                                                                                            if the socket is listening
 
-port                           Connection port                                              Port to listen on (empty host) or to connect to 
-                                                                                            (with host filled).                                          -                                                          
+port                           Connection port                                              Port to listen on (empty host) or to connect to
+                                                                                            (with host filled).                                          -
 
-private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -                                                          
+private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
-public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -                                                          
+public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -
 
-tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -                                                          
+tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -530,43 +530,43 @@ tls                            Enable TLS encryption                            
 ipv6:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
 compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
                                                                                             This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
+                                                                                            Use with caution.                                            -
 
-compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression). 
+compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
 category                       Filter category                                              Category filter for flux in output                           -
 
-ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -                                                          
+ca_certificate                 Trusted CA's certificate                                     Trusted CA's certificate.                                    -
 
-host                           Host to connect to                                           IP address or hostname of the host to connect to 
-                                                                                            (leave blank for listening mode).                            -                                                          
+host                           Host to connect to                                           IP address or hostname of the host to connect to
+                                                                                            (leave blank for listening mode).                            -
 
 one_peer_retention_mode        One peer retention                                           This allows the retention to work even                       -
                                                                                             if the socket is listening
 
-port                           Connection port                                              Port to listen on (empty host) or to connect to 
-                                                                                            (with host filled).                                          -                                                          
+port                           Connection port                                              Port to listen on (empty host) or to connect to
+                                                                                            (with host filled).                                          -
 
-private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -                                                          
+private_key                    Private key file.                                            Private key file path when TLS encryption is used.           -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
-public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -                                                          
+public_cert                    Public certificate                                           Public certificate file path when TLS encryption is used.    -
 
-tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -                                                          
+tls                            Enable TLS encryption                                        Enable TLS encryption.                                       -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -574,30 +574,30 @@ tls                            Enable TLS encryption                            
 file:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
-buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -                                                          
+buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
-compression                    Compression (zlib)                                           Enable or not data stream compression.                       -                                                          
+compression                    Compression (zlib)                                           Enable or not data stream compression.                       -
 
-compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression. 
+compression_buffer             Compression buffer size                                      The higher the buffer size is, the best compression.
                                                                                             This however increase data streaming latency.
-                                                                                            Use with caution.                                            -                                                          
+                                                                                            Use with caution.                                            -
 
 compression_level              Compression level                                            Ranges from 0 (no compression) to 9 (best compression).
                                                                                             Default is -1 (zlib compression)                             -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
-category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+category                       Filter category                                              Category filter for flux in output.                                 -
 
-max_size                       Maximum size of file                                         Maximum size in bytes.                                       -                                                          
+max_size                       Maximum size of file                                         Maximum size in bytes.                                       -
 
-path                           File path                                                    Path to the file.                                            -                                                          
+path                           File path                                                    Path to the file.                                            -
 
-protocol                       Serialization protocol                                       Serialization protocol.                                      ndo                                                        
+protocol                       Serialization protocol                                       Serialization protocol.                                      ndo
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -605,33 +605,33 @@ protocol                       Serialization protocol                           
 rrd:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
-category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+category                       Filter category                                              Category filter for flux in output.                                 -
 
-metrics_path                   RRD file directory for metrics                               RRD file directory, for example /var/lib/centreon/metrics    -                                                          
+metrics_path                   RRD file directory for metrics                               RRD file directory, for example /var/lib/centreon/metrics    -
 
-path                           Unix socket                                                  The Unix socket used to communicate with rrdcached. 
-                                                                                            This is a global option, go to 
-                                                                                            Administration > Options > RRDTool to modify it.             -                                                          
+path                           Unix socket                                                  The Unix socket used to communicate with rrdcached.
+                                                                                            This is a global option, go to
+                                                                                            Administration > Options > RRDTool to modify it.             -
 
-port                           TCP port                                                     The TCP port used to communicate with rrdcached. 
-                                                                                            This is a global option, go to 
-                                                                                            Administration > Options > RRDTool to modify it.             -                                                          
+port                           TCP port                                                     The TCP port used to communicate with rrdcached.
+                                                                                            This is a global option, go to
+                                                                                            Administration > Options > RRDTool to modify it.             -
 
-status_path                    RRD file directory for statuses                              RRD file directory, for example /var/lib/centreon/status     -                                                          
+status_path                    RRD file directory for statuses                              RRD file directory, for example /var/lib/centreon/status     -
 
-write_metrics                  Enable write_metrics                                         Enable or not write_metrics.                                 -                                                          
+write_metrics                  Enable write_metrics                                         Enable or not write_metrics.                                 -
 
-write_status                   Enable write_status                                          Enable or not write_status.                                  -                                                          
+write_status                   Enable write_status                                          Enable or not write_status.                                  -
 
-store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -                                                          
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -639,44 +639,44 @@ store_in_data_bin              Enable store_in_data_bin                         
 storage:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
-category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+category                       Filter category                                              Category filter for flux in output.                                 -
 
-check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not 
-                                                                                            the replication is up to date before attempting to 
-                                                                                            update data.                                                 -                                                          
+check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not
+                                                                                            the replication is up to date before attempting to
+                                                                                            update data.                                                 -
 
-db_host                        DB host                                                      IP address or hostname of the database server.               -                                                          
+db_host                        DB host                                                      IP address or hostname of the database server.               -
 
-db_name                        DB name                                                      Database name.                                               -                                                          
+db_name                        DB name                                                      Database name.                                               -
 
-db_password                    DB password                                                  Password of database user.                                   -                                                          
+db_password                    DB password                                                  Password of database user.                                   -
 
-db_port                        DB port                                                      Port on which the DB server listens                          -                                                          
+db_port                        DB port                                                      Port on which the DB server listens                          -
 
-db_type                        DB type                                                      Target DBMS.                                                 db2,ibase,mysql,oci,odbc,postgresql,sqlite,tds             
+db_type                        DB type                                                      Target DBMS.                                                 db2,ibase,mysql,oci,odbc,postgresql,sqlite,tds
 
-db_user                        DB user                                                      Database user.                                               -                                                          
+db_user                        DB user                                                      Database user.                                               -
 
-interval                       Interval length                                              Interval length in seconds.                                  -                                                          
+interval                       Interval length                                              Interval length in seconds.                                  -
 
-length                         RRD length                                                   RRD storage duration in seconds.                             -                                                          
+length                         RRD length                                                   RRD storage duration in seconds.                             -
 
-queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -                                                          
+queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -
 
-read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
+read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -
 
-rebuild_check_interval         Rebuild check interval in seconds                            The interval between check if some metrics must be rebuild. 
-                                                                                            The default value is 300s                                    -                                                          
+rebuild_check_interval         Rebuild check interval in seconds                            The interval between check if some metrics must be rebuild.
+                                                                                            The default value is 300s                                    -
 
-store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -                                                          
+store_in_data_bin              Enable store_in_data_bin                                     Enable or not store in performance data in data_bin.                    -
 
 ============================== ============================================================ ============================================================ ===========================================================
 
@@ -684,34 +684,34 @@ store_in_data_bin              Enable store_in_data_bin                         
 sql:
 
 ============================== ============================================================ ============================================================ ===========================================================
-ID                             Label                                                        Description                                                  Possible values                                            
+ID                             Label                                                        Description                                                  Possible values
 ============================== ============================================================ ============================================================ ===========================================================
 buffering_timeout              Buffering timeout                                            Time in seconds to wait before launching failover.           -
 
 failover                       Failover name                                                Name of the output which will act as failover                -
 
-retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -                                                          
+retry_interval                 Retry interval                                               Time in seconds to wait between each connection attempt.     -
 
-category                       Filter category                                              Category filter for flux in output.                                 -                                                          
+category                       Filter category                                              Category filter for flux in output.                                 -
 
-check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not 
-                                                                                            the replication is up to date before attempting to 
-                                                                                            update data.                                                 -                                                          
+check_replication              Replication enabled                                          When enabled, the broker engine will check whether or not
+                                                                                            the replication is up to date before attempting to
+                                                                                            update data.                                                 -
 
-db_host                        DB host                                                      IP address or hostname of the database server.               -                                                          
+db_host                        DB host                                                      IP address or hostname of the database server.               -
 
-db_name                        DB name                                                      Database name.                                               -                                                          
+db_name                        DB name                                                      Database name.                                               -
 
-db_password                    DB password                                                  Password of database user.                                   -                                                          
+db_password                    DB password                                                  Password of database user.                                   -
 
-db_port                        DB port                                                      Port on which the DB server listens                          -                                                          
+db_port                        DB port                                                      Port on which the DB server listens                          -
 
-db_type                        DB type                                                      Target DBMS.                                                 db2,ibase,mysql,oci,odbc,postgresql,sqlite,tds             
+db_type                        DB type                                                      Target DBMS.                                                 db2,ibase,mysql,oci,odbc,postgresql,sqlite,tds
 
-db_user                        DB user                                                      Database user.                                               -                                                          
+db_user                        DB user                                                      Database user.                                               -
 
-queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -                                                          
+queries_per_transaction        Maximum queries per transaction                              The maximum queries per transaction before commit.           -
 
-read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -                                                          
+read_timeout                   Transaction commit timeout                                   The transaction timeout before running commit.               -
 
 ============================== ============================================================ ============================================================ ===========================================================

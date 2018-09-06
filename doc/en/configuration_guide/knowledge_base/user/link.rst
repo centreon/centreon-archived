@@ -10,7 +10,7 @@ link icon:
    :align: center
 
 By clicking on link icon, the user is redirected to the corresponding
-procedure. 
+procedure.
 
 If the link icon is on the left of a host name, the wiki
 page containing the procedure for the host will be displayed.

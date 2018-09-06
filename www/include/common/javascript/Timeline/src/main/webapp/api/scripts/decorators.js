@@ -15,7 +15,7 @@ Timeline.SpanHighlightDecorator = function(params) {
 Timeline.SpanHighlightDecorator.prototype.initialize = function(band, timeline) {
     this._band = band;
     this._timeline = timeline;
-    
+
     this._layerDiv = null;
 };
 
@@ -26,27 +26,27 @@ Timeline.SpanHighlightDecorator.prototype.paint = function() {
     this._layerDiv = this._band.createLayerDiv(10);
     this._layerDiv.setAttribute("name", "span-highlight-decorator"); // for debugging
     this._layerDiv.style.display = "none";
-    
+
     var minDate = this._band.getMinDate();
     var maxDate = this._band.getMaxDate();
-    
-    if (this._startDate.getTime() < maxDate.getTime() && 
+
+    if (this._startDate.getTime() < maxDate.getTime() &&
         this._endDate.getTime() > minDate.getTime()) {
-        
+
         minDate = new Date(Math.max(minDate.getTime(), this._startDate.getTime()));
         maxDate = new Date(Math.min(maxDate.getTime(), this._endDate.getTime()));
-        
+
         var minPixel = this._band.dateToPixelOffset(minDate);
         var maxPixel = this._band.dateToPixelOffset(maxDate);
-        
+
         var doc = this._timeline.getDocument();
-        
+
         var createTable = function() {
             var table = doc.createElement("table");
             table.insertRow(0).insertCell(0);
             return table;
         };
-    
+
         var div = doc.createElement("div");
         div.style.position = "absolute";
         div.style.overflow = "hidden";
@@ -55,7 +55,7 @@ Timeline.SpanHighlightDecorator.prototype.paint = function() {
             Timeline.Graphics.setOpacity(div, this._opacity);
         }
         this._layerDiv.appendChild(div);
-            
+
         var tableStartLabel = createTable();
         tableStartLabel.style.position = "absolute";
         tableStartLabel.style.overflow = "hidden";
@@ -64,7 +64,7 @@ Timeline.SpanHighlightDecorator.prototype.paint = function() {
         tableStartLabel.style.color = this._color;
         tableStartLabel.rows[0].cells[0].innerHTML = this._startLabel;
         this._layerDiv.appendChild(tableStartLabel);
-        
+
         var tableEndLabel = createTable();
         tableEndLabel.style.position = "absolute";
         tableEndLabel.style.overflow = "hidden";
@@ -73,19 +73,19 @@ Timeline.SpanHighlightDecorator.prototype.paint = function() {
         tableEndLabel.style.color = this._color;
         tableEndLabel.rows[0].cells[0].innerHTML = this._endLabel;
         this._layerDiv.appendChild(tableEndLabel);
-        
+
         if (this._timeline.isHorizontal()) {
             div.style.left = minPixel + "px";
             div.style.width = (maxPixel - minPixel) + "px";
             div.style.top = "0px";
             div.style.height = "100%";
-            
+
             tableStartLabel.style.right = (this._band.getTotalViewLength() - minPixel) + "px";
             tableStartLabel.style.width = (this._startLabel.length) + "em";
             tableStartLabel.style.top = "0px";
             tableStartLabel.style.height = "100%";
             tableStartLabel.style.textAlign = "right";
-            
+
             tableEndLabel.style.left = maxPixel + "px";
             tableEndLabel.style.width = (this._endLabel.length) + "em";
             tableEndLabel.style.top = "0px";
@@ -95,12 +95,12 @@ Timeline.SpanHighlightDecorator.prototype.paint = function() {
             div.style.height = (maxPixel - minPixel) + "px";
             div.style.left = "0px";
             div.style.width = "100%";
-            
+
             tableStartLabel.style.bottom = minPixel + "px";
             tableStartLabel.style.height = "1.5px";
             tableStartLabel.style.left = "0px";
             tableStartLabel.style.width = "100%";
-            
+
             tableEndLabel.style.top = maxPixel + "px";
             tableEndLabel.style.height = "1.5px";
             tableEndLabel.style.left = "0px";
@@ -128,7 +128,7 @@ Timeline.PointHighlightDecorator = function(params) {
 Timeline.PointHighlightDecorator.prototype.initialize = function(band, timeline) {
     this._band = band;
     this._timeline = timeline;
-    
+
     this._layerDiv = null;
 };
 
@@ -139,18 +139,18 @@ Timeline.PointHighlightDecorator.prototype.paint = function() {
     this._layerDiv = this._band.createLayerDiv(10);
     this._layerDiv.setAttribute("name", "span-highlight-decorator"); // for debugging
     this._layerDiv.style.display = "none";
-    
+
     var minDate = this._band.getMinDate();
     var maxDate = this._band.getMaxDate();
-    
-    if (this._date.getTime() < maxDate.getTime() && 
+
+    if (this._date.getTime() < maxDate.getTime() &&
         this._date.getTime() > minDate.getTime()) {
-        
+
         var pixel = this._band.dateToPixelOffset(this._date);
         var minPixel = pixel - Math.round(this._width / 2);
-        
+
         var doc = this._timeline.getDocument();
-    
+
         var div = doc.createElement("div");
         div.style.position = "absolute";
         div.style.overflow = "hidden";
@@ -159,7 +159,7 @@ Timeline.PointHighlightDecorator.prototype.paint = function() {
             Timeline.Graphics.setOpacity(div, this._opacity);
         }
         this._layerDiv.appendChild(div);
-            
+
         if (this._timeline.isHorizontal()) {
             div.style.left = minPixel + "px";
             div.style.width = this._width + "px";

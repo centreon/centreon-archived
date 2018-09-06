@@ -291,7 +291,7 @@ switch ($wizard->getValue(1, 'configtype')) {
     case 'central':
         $sName = $central_module_configuration['name'];
         $iExist = $cBroker->isExist($sName);
-        
+
         if ($iExist > 0) {
             $msgErr[] = _("The config name already exists");
             break;
@@ -317,7 +317,7 @@ switch ($wizard->getValue(1, 'configtype')) {
             $msgErr[] = _("The config name already exists") . ": ".$sName;
             break;
         }
-        
+
         if (false === $cBroker->insertConfig($poller_module_configuration)) {
             $msgErr[] = _('Error while inserting poller-module configuration');
             break;

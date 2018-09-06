@@ -26,7 +26,7 @@
                include('./include/common/pagination.php');
             {/php}
         </tr>
-    </table>    
+    </table>
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -44,7 +44,7 @@
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-            <td align="center" width='30'>          
+            <td align="center" width='30'>
                 <table>
                     <tr>
                     <td width="10" height="10" bgcolor="{$elemArr[elem].RowMenu_clrLine}"></td>
@@ -78,6 +78,6 @@
         </tr>
     </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

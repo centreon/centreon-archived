@@ -38,7 +38,7 @@ copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
-mkdir -p $TMP_DIR/{work,final}/bin 
+mkdir -p $TMP_DIR/{work,final}/bin
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
 DISTRIB=""
@@ -126,7 +126,7 @@ if [ ! "${CENTCORE_INSTALL_INIT}" ] ; then
 elif [ "${CENTCORE_INSTALL_INIT}" -eq 1 ] ; then
 	RC="0"
 fi
-if [ "$RC" -eq "0" ] ; then 
+if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMP_DIR/final/centcore.init.d \
@@ -163,7 +163,7 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentCore run level not installed")"
 	fi
-    
+
     # Install centcore perl lib
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
         $TMP_DIR/src/lib/perl/centreon/common/ \

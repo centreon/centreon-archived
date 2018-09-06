@@ -2,9 +2,9 @@ Displayed procedure: template and overload
 ==========================================
 
 To avoid too much workload on the procedure deployment, the functionality
-allows administrator to setup a single procedure for hosts/services. 
+allows administrator to setup a single procedure for hosts/services.
 
-So a procedure can be specified for a given host/service but can be specified as well for a host/service template. 
+So a procedure can be specified for a given host/service but can be specified as well for a host/service template.
 
 If a procedure is defined at template level, all children of the template will have the procedure attached as well unless overloaded by a specific one. The mechanism is identical to template
 system in Centreon with inheritance.

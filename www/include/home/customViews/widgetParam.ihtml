@@ -14,23 +14,23 @@
 		<tr class="list_lvl_1">
 			<td colspan="2">{$elem.header_title}</td>
 		</tr>
-		{/if}		
+		{/if}
 		<tr class="{$rowStyle}">
 			<td>
-				<div>{$form[$paramName].label}</div>					
+				<div>{$form[$paramName].label}</div>
 			</td>
 			<td class="FormRowValue">
 				{if $elem.ft_typename == 'boolean'}
 					<input type='hidden' name='param_{$elem.parameter_id}' value="0"/>
 				{/if}
 				{if $elem.trigger}
-					{$form[$paramNameTrigger].html} / 
+					{$form[$paramNameTrigger].html} /
 				{/if}
-				{$form[$paramName].html}	
-			</td>			
-		</tr>		
+				{$form[$paramName].html}
+			</td>
+		</tr>
 		{/foreach}
-	</tbody>	
+	</tbody>
 </table>
 <div id="validForm">
 	{$form.hidden}

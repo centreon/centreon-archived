@@ -79,7 +79,7 @@ La fenêtre suivante est affichée:
 * **Remote directory** Répertoire distant pour l'export SCP
 
 .. warning::
-    **Temporary directory** ne peut pas être un sous répertoire de **Backup directory**. 
+    **Temporary directory** ne peut pas être un sous répertoire de **Backup directory**.
 
 ******************************************
 Restauration d'un serveur central Centreon

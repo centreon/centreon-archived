@@ -115,7 +115,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                             }
                         } else {
                             try {
-                                $connector->query($query);                        
+                                $connector->query($query);
                             } catch (Exception $e) {
                                 return "$fileName Line $line:".$e->getMessage();
                             }

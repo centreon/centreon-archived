@@ -39,7 +39,7 @@ Add
 
 In order to add an LDAP configuration, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a add -v "my new configuration;my description" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a add -v "my new configuration;my description"
 
 Required fields are:
 
@@ -57,7 +57,7 @@ Del
 
 If you want to remove an LDAP configuration, use the **DEL** action. The Configuration Name is used for identifying the LDAP configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a del -v "my new configuration" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a del -v "my new configuration"
 
 
 
@@ -66,7 +66,7 @@ Setparam
 
 If you want to change a specific parameter of an LDAP configuration, use the **SETPARAM** action. The Configuration Name is used for identifying the LDAP configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAM -v "my new configuration;description;my new desc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o LDAP -a SETPARAM -v "my new configuration;description;my new desc"
 
 
 Parameters use the following order:
@@ -117,7 +117,7 @@ ldap_search_limit          Search size limit
 
 ldap_search_timeout        Timeout delay (in seconds)
 
-ldap_srv_dns               DNS server (only used when 
+ldap_srv_dns               DNS server (only used when
                            ldap_dns_use_domain is set to 1)
 
 ldap_store_password        Store password in database or not (0 or 1)
@@ -168,7 +168,7 @@ Order         Description
 ============= ===============================
 1             Configuration name
 
-2             Server address             
+2             Server address
 
 3             Server port
 

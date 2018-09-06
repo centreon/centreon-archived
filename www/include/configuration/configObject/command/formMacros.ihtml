@@ -29,11 +29,11 @@
         {/if}
 	</table>
         <div id="validForm">
-		{$form.hidden}		
+		{$form.hidden}
 		{if $nb_arg}
 		<p class="oreonbutton">{$form.submitSaveAdd.html}&nbsp;&nbsp;{$form.close.html}</p>
 		{else}
-		<p class="oreonbutton">{$form.close.html}</p>		
-		{/if}		
+		<p class="oreonbutton">{$form.close.html}</p>
+		{/if}
 	</div>
 </form>

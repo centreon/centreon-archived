@@ -20,7 +20,7 @@ Several types of calculation are possible on the metrics retrieved:
 * **Min**: retrieve the minimum of all the performance data
 * **Max**: retrieve the maximum of all the performance data
 
-Types of data sources 
+Types of data sources
 =====================
 
 The result of the calculation is an item of performance data (metric) which generates a performance graph. To trace the result most effectively, it is necessary to select the type of data source (GAUGE by default).
@@ -46,7 +46,7 @@ To add a meta-service:
 
 .. image:: /images/user/configuration/10advanced_configuration/02addmetaservice.png
       :align: center
- 
+
 General information
 ===================
 
@@ -72,7 +72,7 @@ Meta Service status
 * The **Normal Check Interval** field is expressed in minutes. It defines the interval between checks when the status of the meta-service is OK.
 * The **Retry Check Interval** field is expressed in minutes. It defines the checking interval of the Not-OK status of the meta-service.
 
-Notification 
+Notification
 ============
 
 * The **Notification Enabled** field serves to enable the notifications.
@@ -81,7 +81,7 @@ Notification
 * The **Notification Period** field can be used define the period of notification.
 * The **Notification Type** field defines the types of notification sent.
 
-Additional informations 
+Additional informations
 =======================
 
 * The **Graphic Template** list defines the graphic model used by this meta-service.
@@ -95,7 +95,7 @@ If you have chosen the option **Service list**, in the screen containing all the
 
 1. Click on |flechedirection| to select the metrics entering into the calculation of the meta-service. These metrics are called indicators.
 2. Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/02metaservicesindicators.png
    :align: center
 

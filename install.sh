@@ -4,7 +4,7 @@
 ## @Copyright	Copyright 2008, Guillaume Watteeux
 ## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 ## Centreon Install Script
-## Use 
+## Use
 ## <pre>
 ## Usage: bash install.sh [OPTION]
 ## Options:
@@ -15,11 +15,11 @@
 ## </pre>
 #----
 ###################################################################
-# Centreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
-# Developped by : Julien Mathis - Romain Le Merlus 
+# Developped by : Julien Mathis - Romain Le Merlus
 # Contribute	: Guillaume Watteeux - Maximilien Bersoult
 #
 ###################################################################
@@ -32,7 +32,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 #    For information : infos@centreon.com
 ####################################################################
 #
@@ -44,10 +44,10 @@
 #
 #
 # Todo list
-# - upgrade process 
+# - upgrade process
 # -- 1.x --> 2.x
 # -- 2.x --> 2.x+1
-# -- on upgrade, overwrite existing ? backup ? 
+# -- on upgrade, overwrite existing ? backup ?
 
 # Define centreon version
 version="2.8.17"
@@ -69,7 +69,7 @@ function usage() {
 	exit 1
 }
 
-# define where is a centreon source 
+# define where is a centreon source
 BASE_DIR=$(dirname $0)
 ## set directory
 BASE_DIR=$( cd $BASE_DIR; pwd )
@@ -97,7 +97,7 @@ export TEXTDOMAIN
 line="------------------------------------------------------------------------"
 export line
 
-## log default vars 
+## log default vars
 . $INSTALL_VARS_DIR/vars
 
 ## Test if gettext was installed
@@ -109,7 +109,7 @@ for p in $PATH ; do
 	[ -x "$p/gettext" ] && found="1"
 done
 IFS=$OLDIFS
-if [ $found -eq 1 ] ; then 
+if [ $found -eq 1 ] ; then
 	. $INSTALL_DIR/gettext.sh
 else
 	# if not, use my gettext dummy :p
@@ -126,7 +126,7 @@ trap clean_and_exit SIGINT SIGTERM
 ## Define a default log file
 LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 
-## Valid if you are root 
+## Valid if you are root
 if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
 	USERID=$(id -u)
 	if [ "$USERID" != "0" ]; then
@@ -160,11 +160,11 @@ do
 		u )	silent_install="1"
 			inst_upgrade_dir="${OPTARG%/}"
 			cinstall_opts="$cinstall_opts -f"
-			upgrade="1" 
+			upgrade="1"
 			_tmp_install_opts="1"
 			;;
-		v )	cinstall_opts="$cinstall_opts -v" 
-			# need one variable to parse debug log 
+		v )	cinstall_opts="$cinstall_opts -v"
+			# need one variable to parse debug log
 			;;
 		\?|h)	usage ; exit 0 ;;
 		* )	usage ; exit 1 ;;
@@ -219,11 +219,11 @@ binary_fail="0"
 # For the moment, I check if all binary exists in path.
 # After, I must look a solution to use complet path by binary
 for binary in $BINARIES; do
-	if [ ! -e ${binary} ] ; then 
+	if [ ! -e ${binary} ] ; then
 		pathfind "$binary"
 		if [ "$?" -eq 0 ] ; then
 			echo_success "${binary}" "$ok"
-		else 
+		else
 			echo_failure "${binary}" "$fail"
 			log "ERR" "$(gettext "\$binary not found in \$PATH")"
 			binary_fail=1
@@ -240,20 +240,20 @@ if [ "$binary_fail" -eq 1 ] ; then
 fi
 
 # When you exec this script without file, you must valid a GPL licence.
-if [ "$silent_install" -ne 1 ] ; then 
+if [ "$silent_install" -ne 1 ] ; then
 	echo -e "\n$(gettext "You will now read Centreon Licence.\\n\\tPress enter to continue.")"
-	read 
-	tput clear 
+	read
+	tput clear
 	more "$BASE_DIR/LICENSE"
 
-	yes_no_default "$(gettext "Do you accept GPL license ?")" 
-	if [ "$?" -ne 0 ] ; then 
+	yes_no_default "$(gettext "Do you accept GPL license ?")"
+	if [ "$?" -ne 0 ] ; then
 		echo_info "$(gettext "You do not agree to GPL license ? Okay... have a nice day.")"
 		exit 1
 	else
 		log "INFO" "$(gettext "You accepted GPL license")"
 	fi
-else 
+else
 	if [ "$upgrade" -eq 0 ] ; then
 		. $user_install_vars
 	fi
@@ -277,7 +277,7 @@ if [ "$upgrade" -eq 1 ] ; then
 	fi
 fi
 
-if [ "$silent_install" -ne 1 ] ; then 
+if [ "$silent_install" -ne 1 ] ; then
 	echo "$line"
 	echo -e "\t$(gettext "Please choose what you want to install")"
 	echo "$line"
@@ -303,7 +303,7 @@ if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
 fi
 
 ## resquest centreon_www
-if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
+if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_WWW="1"
@@ -314,7 +314,7 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 fi
 
 ## resquest centreon_centcore
-if [ "$PROCESS_CENTCORE" -eq 2 ] ; then 
+if [ "$PROCESS_CENTCORE" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install") : Centreon CentCore"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTCORE="1"
@@ -323,7 +323,7 @@ if [ "$PROCESS_CENTCORE" -eq 2 ] ; then
 fi
 
 ## resquest centreon_plugins
-if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
+if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_PLUGINS="1"
@@ -332,7 +332,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 fi
 
 ## resquest centreon_snmp_traps
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
+if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then
 	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
 	if [ "$?" -eq 0 ] ; then
 		PROCESS_CENTREON_SNMP_TRAPS="1"
@@ -341,7 +341,7 @@ if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then
 fi
 
 ## Start Centreon Web Front install
-if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then 
+if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then
 	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentWeb.conf" ] ; then
 		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentWeb.conf"
 

@@ -27,7 +27,7 @@ Prerequisites
 To use Centreon IMP you need the latest version of Centreon 3.4. This version includes
 Centreon Web 2.8.
 
-You can install Centreon 3.4 using the `ISO of Centreon <https://download.centreon.com/>`_ 
+You can install Centreon 3.4 using the `ISO of Centreon <https://download.centreon.com/>`_
 or by upgrading your Centreon platform.
 Please read :ref:`documentation<install_from_packages>` to install or upgrade your platform.
 
@@ -67,7 +67,7 @@ your monitoring easily and quickly.
 
 What are Plugin Packs available for each level?
 
-- Standard Plugin Packs: 
+- Standard Plugin Packs:
     -  Cisco standard (SNMP)
     - Linux (SNMP)
     - MySQL
@@ -79,7 +79,7 @@ What are Plugin Packs available for each level?
     - Centreon Poller
     - Centreon Map
     - Centreon MBI
-- With Centreon user portal account: 
+- With Centreon user portal account:
     - DHCP
     - DNS
     - FTP
@@ -123,7 +123,7 @@ Your account is now available. You can link your Centreon platform.
     If the **Administration -> Extensions -> Subscription** is not available on your Centreon,
     please go to the **Administration -> Extensions -> Modules** menu and install the following
     modules by clicking on the "install" icon on the right:
-    
+
     * centreon-pp-manager
     * centreon-license-manager
 

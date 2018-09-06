@@ -27,7 +27,7 @@ Exemple : Pour voir toutes les actions faites par l'utilisateur **admin**, rense
 Le tableau ci-dessous définit les colonnes du tableau de résultats :
 
 +----------------------+------------------------------------------------------------------------------------------------------------+
-|   Colonne            |  Description                                                                                               | 
+|   Colonne            |  Description                                                                                               |
 +======================+============================================================================================================+
 | Heures               | Indique la date et l'heure de l'évènement                                                                  |
 +----------------------+------------------------------------------------------------------------------------------------------------+

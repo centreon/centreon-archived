@@ -53,7 +53,7 @@ Add
 
 In order to add a service template, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a add -v "MyTemplate;mytemplate;Ping-LAN" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a add -v "MyTemplate;mytemplate;Ping-LAN"
 
 The required fields are:
 
@@ -76,7 +76,7 @@ Del
 
 In order to remove a service template, use the **DEL** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a del -v "MyTemplate" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a del -v "MyTemplate"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -87,9 +87,9 @@ Setparam
 
 In order to set a specific parameter for a service template, use the **SETPARAM** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;max_check_attempts;10" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;normal_check_interval;2" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;normal_check_interval;http://192.168.1.2/admincp" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;max_check_attempts;10"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;normal_check_interval;2"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setparam -v "MyTemplate;normal_check_interval;http://192.168.1.2/admincp"
 
 The required fields that you have pass in options are:
 
@@ -201,8 +201,8 @@ Addhosttemplate and Sethosttemplate
 
 You may want to tie a service template to an extra host template. In order to do so, use the **ADDHOSTTEMPLATE** or **SETHOSTTEMPLATE** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a sethosttemplate -v "MyTemplate;generic-host-template" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addhosttemplate -v "MyTemplate;Linux-Servers" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a sethosttemplate -v "MyTemplate;generic-host-template"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addhosttemplate -v "MyTemplate;Linux-Servers"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -213,7 +213,7 @@ Delhosttemplate
 
 In order to remove the relation between a host template and a service template, use the **DELHOSTTEMPLATE** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delhosttemplate -v "MyTemplate;Linux-Servers" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delhosttemplate -v "MyTemplate;Linux-Servers"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -224,7 +224,7 @@ Getmacro
 
 In order to view the custom macro list of a service template, use the **GETMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a getmacro -v "MyTemplate" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a getmacro -v "MyTemplate"
   macro name;macro value;description
   $_SERVICETIME$;80;description of macro1
   $_SERVICEPL$;400;description of macro2
@@ -235,8 +235,8 @@ Setmacro
 
 In order to set a macro for a specific service template use the **SETMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;time;80" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;pl;400" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;time;80"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;pl;400"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -247,8 +247,8 @@ Delmacro
 
 In order to remove a macro from a specific service template, use the **DELMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delmacro -v "MyTemplate;time" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delmacro -v "MyTemplate;pl" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delmacro -v "MyTemplate;time"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delmacro -v "MyTemplate;pl"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -259,7 +259,7 @@ Getcontact
 
 In order to view the contact list of a service template, use the **GETCONTACT** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o STPL -a getcontact -v "MyTemplate" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o STPL -a getcontact -v "MyTemplate"
   id;name
   28;Contact_1
   29;Contact_2
@@ -270,8 +270,8 @@ Addcontact and Setcontact
 
 In order to add a new contact to notification contact list, use **ADDCONTACT** or **SETCONTACT** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addcontact -v "MyTemplate;User1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setcontact -v "MyTemplate;User1|User2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addcontact -v "MyTemplate;User1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setcontact -v "MyTemplate;User1|User2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -282,8 +282,8 @@ Delcontact
 
 In order to remove a contact from the notification contact list, use the **DELCONTACT** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontact -v "MyTemplate;User1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontact -v "MyTemplate;User2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontact -v "MyTemplate;User1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontact -v "MyTemplate;User2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -294,7 +294,7 @@ Getcontactgroup
 
 In order to view the contactgroup list of a service template, use the **GETCONTACTGROUP** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o STPL -a getcontactgroup -v "MyTemplate" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o STPL -a getcontactgroup -v "MyTemplate"
   id;name
   28;ContactGroup_1
   29;ContactGroup_2
@@ -305,8 +305,8 @@ Setcontactgroup
 
 In order to add a new contactgroup to notification contactgroup list, use the **ADDCONTACTGROUP** or **SETCONTACTGROUP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addcontactgroup -v "MyTemplate;Group1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setcontactgroup -v "MyTemplate;Group1|Group2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addcontactgroup -v "MyTemplate;Group1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setcontactgroup -v "MyTemplate;Group1|Group2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -317,8 +317,8 @@ Delcontactgroup
 
 In order to remove a contactgroup from the notification contactgroup list, use the **DELCONTACTGROUP** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontactgroup -v "MyTemplate" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontactgroup -v "MyTemplate;Group1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontactgroup -v "MyTemplate"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a delcontactgroup -v "MyTemplate;Group1"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -329,7 +329,7 @@ Gettrap
 
 In order to view the trap list of a service template, use the **GETTRAP** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o "STPL" -a gettrap -v "Ping-LAN" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o "STPL" -a gettrap -v "Ping-LAN"
   id;name
   48;ciscoConfigManEvent
   39;ospfVirtIfTxRetransmit
@@ -339,8 +339,8 @@ Settrap
 
 In order to add a trap to a service template, use the **ADDTRAP** or **SETTRAP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addtrap -v "Ping-LAN;snOspfVirtIfConfigError" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a settrap -v "Ping-LAN;snOspfVirtNbrStateChange|snTrapAccessListDeny" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a addtrap -v "Ping-LAN;snOspfVirtIfConfigError"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a settrap -v "Ping-LAN;snOspfVirtNbrStateChange|snTrapAccessListDeny"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -350,4 +350,4 @@ Deltrap
 
 In order to remove a trap from a service template, use the **DELTRAP** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a deltrap -v "Ping-LAN;snOspfVirtIfConfigError" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a deltrap -v "Ping-LAN;snOspfVirtIfConfigError"

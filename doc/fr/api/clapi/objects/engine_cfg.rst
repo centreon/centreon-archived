@@ -12,7 +12,7 @@ Show
 
 In order to list available Engine conf, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a show
   engine id;engine name;instance;engine comment
   1;Engine CFG Central;Central;Default Engine.cfg
   [...]
@@ -36,7 +36,7 @@ Add
 
 In order to add a Engine conf, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Engine cfg for poller NY;Poller-NY;Just a small comment" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Engine cfg for poller NY;Poller-NY;Just a small comment"
 
 Required fields are:
 
@@ -55,7 +55,7 @@ Del
 
 If you want to remove a Engine conf, use the **DEL** action. The name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Engine cfg for poller NY" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Engine cfg for poller NY"
 
 
 Setparam
@@ -63,7 +63,7 @@ Setparam
 
 If you want to change a specific parameter of a Engine conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Engine cfg for poller NY;cfg_dir;/usr/local/engine/etc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Engine cfg for poller NY;cfg_dir;/usr/local/engine/etc"
 
 Arguments are composed of the following columns:
 
@@ -86,12 +86,12 @@ nagios_name	      Name
 
 instance	 Instance that is linked to engine.cfg
 
-broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
+broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml",
                  you can use a | delimiter for defining multiple broker modules
 
 nagios_activate	 *1* if activated, *0* otherwise
 
-*	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file. 
+*	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file.
                  Because the list is quite long, it is best to refer to the official documentation of Engine
 ================ =============================================================================================================================
 

@@ -228,7 +228,7 @@ Timeline.DefaultEventSource.Event.prototype = {
     getIcon:        function() { return this._icon; },
     getColor:       function() { return this._color; },
     getTextColor:   function() { return this._textColor; },
-    
+
     getProperty:    function(name) { return null; },
     
     fillDescription: function(elmt) {

@@ -57,14 +57,14 @@ Timeline.XmlHttp._createRequest = function() {
                     return new ActiveXObject(programID);
                 };
                 var o = f();
-                
+
                 // We are replacing the Timeline._createXmlHttpRequest
                 // function with this inner function as we've
                 // found out that it works. This is so that we
                 // don't have to do all the testing over again
                 // on subsequent calls.
                 Timeline.XmlHttp._createRequest = f;
-                
+
                 return o;
             } catch (e) {
                 // silent
@@ -77,14 +77,14 @@ Timeline.XmlHttp._createRequest = function() {
                 return new XMLHttpRequest();
             };
             var o = f();
-            
+
             // We are replacing the Timeline._createXmlHttpRequest
             // function with this inner function as we've
             // found out that it works. This is so that we
             // don't have to do all the testing over again
             // on subsequent calls.
             Timeline.XmlHttp._createRequest = f;
-            
+
             return o;
         } catch (e) {
             throw new Error("Failed to create an XMLHttpRequest object");
@@ -99,7 +99,7 @@ Timeline.XmlHttp._createRequest = function() {
  */
 Timeline.XmlHttp.get = function(url, fError, fDone) {
     var xmlhttp = Timeline.XmlHttp._createRequest();
-    
+
     xmlhttp.open("GET", url, true);
     //xmlhttp.overrideMimeType("text/xml");
     xmlhttp.onreadystatechange = function() {
@@ -115,7 +115,7 @@ Timeline.XmlHttp.get = function(url, fError, fDone) {
  */
 Timeline.XmlHttp.post = function(url, body, fError, fDone) {
     var xmlhttp = Timeline.XmlHttp._createRequest();
-    
+
     xmlhttp.open("POST", url, true);
     //xmlhttp.overrideMimeType("text/xml");
     xmlhttp.onreadystatechange = function() {

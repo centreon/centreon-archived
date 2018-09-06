@@ -64,7 +64,7 @@ Timeline.GeochronoUnit.compare = function(v1, v2) {
     } else {
         n2 = Number(v2);
     }
-    
+
     return n2 - n1;
 };
 

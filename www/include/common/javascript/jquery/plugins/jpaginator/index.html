@@ -9,15 +9,15 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/css/stylesheet.css">
 
     <title>jPaginator - Remylab</title>
-    
+
     <link href="jPaginator.css" rel="stylesheet" type="text/css" />
     <link href="test1.css" rel="stylesheet" type="text/css" />
-    
+
     <!--[if lt IE 9]><script type="text/javascript" src="/js/css3-mediaqueries.js"></script><![endif]-->
     <script type="text/javascript" src="/js/jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery-ui-1.8.13.slider.min.js"></script>
     <script type="text/javascript" src="jPaginator-min.js"></script>
-    
+
     <script type="text/javascript">
       function isNumeric(value) {
         if (value == null || !value.toString().match(/^[-]?\d*\.?\d*$/)) return false;
@@ -27,7 +27,7 @@
       $(document).ready(function(){
       	$("#test1").jPaginator({
             nbPages:54,
-            selectedPage:22, 
+            selectedPage:22,
             overBtnLeft:'#test1_o_left',
             overBtnRight:'#test1_o_right',
             maxBtnLeft:'#test1_m_left',
@@ -37,7 +37,7 @@
                 $("#page1").html("demo1 - page : "+num);
             }
       	});
-      
+
       	$("#test2").jPaginator({
             nbPages:42,
             selectedPage:23,
@@ -53,10 +53,10 @@
                 $("#page2").html("demo2 - page : "+num);
             }
       	});
-      
+
       	$("#test3").jPaginator({
             nbPages:9999,
-            widthPx:36,  
+            widthPx:36,
             nbVisible:8,
             overBtnLeft:'#test3_o_left',
             overBtnRight:'#test3_o_right',
@@ -67,11 +67,11 @@
                 $("#page3").html("demo3 - page : "+num);
             }
       	});
-      
+
         // code for the reset button
         $("#resetdemo1").click(function(){
             if ( !isNumeric($("#nbpages1").val()) ) return;
-            
+
             $("#test1").trigger("reset",{
                 selectedPage:null,
                 nbVisible:6,
@@ -81,22 +81,22 @@
             });
             $("#page1").html("demo1");
         });
-      
-      });    
-    </script> 
+
+      });
+    </script>
     <style type="text/css">
         body {
             background: #78C0A8;
         }
         #header_wrap {
-          background: #78C0A8;  
+          background: #78C0A8;
           background: -moz-linear-gradient(top, #0099CC, #78C0A8);
           background: -webkit-linear-gradient(top, #0099CC, #78C0A8);
           background: -ms-linear-gradient(top, #0099CC, #78C0A8);
           background: -o-linear-gradient(top, #0099CC, #78C0A8);
           background: linear-gradient(top, #0099CC, #78C0A8);
         }
-        #footer_wrap {  
+        #footer_wrap {
           background: #78C0A8;
         }
         #main_content_wrap {
@@ -105,8 +105,8 @@
         p.small {
             font-size: 14px;
         }
-        
-        
+
+
         .opt {
             font-size: 16px;
             line-height: 1.4;
@@ -122,7 +122,7 @@
         .opt .right {
             width:60%;  color:blue;
         }
-        
+
         /* example of css if you use over and max buttons */
         .jPaginatorOver {
             float:left;
@@ -141,7 +141,7 @@
             text-align:center;
         }
     </style>
-    
+
     <script type="text/javascript" src="/js/ga.js"></script>
   </head>
 
@@ -157,7 +157,7 @@
 
         </header>
     </div>
-	
+
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
 
@@ -168,7 +168,7 @@
 		    </ul>
 		</nav>
 	    <section id="main_content" class="inner">
-		
+
 			<div style="overflow:hidden; ">
 			<a href="http://teespring.com/the-happiness-algorithm" onClick="_gaq.push(['_trackEvent', 'Ad', 'Click', 'teespring-js']);">
 				<div style="float:right;">
@@ -180,107 +180,107 @@
 				</div>
 			</a>
 			</div>
-	       
+
 	        jPaginator is a jQuery plugin for pagination. It's fun, intuitive, it comes with a slider and you can ask for an unlimited number of pages.
 	        Use it with a unique element, for more details please have a look at <a href="#codedemo1">the code of demo1</a> and the <a href="#options">plugin's options</a>.
 	        Don't forget the CSS page "jPaginator.css".
-	
+
 	        Dependencies : jQuery 1.3.2+, jQuery UI Slider
-	
+
 			<p class='small'>Of course, you can achieve a much better design with some CSS skills, please have a look at <a href="http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/extreme-
-			makeover-jpaginator-css3-edition/" target="_blank">this tutorial</a> by Ian Yates from 
+			makeover-jpaginator-css3-edition/" target="_blank">this tutorial</a> by Ian Yates from
 			<a href="http://webdesign.tutsplus.com/">webdesign.tutsplus.com</a>.</p>
-	
-	
+
+
 	        <h3>Demo 1 : custom css</h3>
-	
+
 	        <p id="page1">demo1</p>
 	        <!-- DEMO 1 -->
 	        <div id="test1" >
-	
+
 	            <!-- optional left control buttons -->
 	            <nav id="test1_m_left"></nav><nav id="test1_o_left"></nav>
-	
+
 	            <div class='paginator_p_wrap'>
 	                <div class='paginator_p_bloc'>
 	                    <!--<a class='paginator_p'></a> // page number : dynamically added -->
 	                </div>
 	            </div>
-	
+
 	            <!-- optional right control buttons -->
 	            <nav id="test1_o_right"></nav><nav id="test1_m_right"></nav>
-	
-	
+
+
 	            <!-- slider -->
 	            <div class='paginator_slider' class='ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
 	                <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
 	            </div>
-	
+
 	        </div>
 	        <input id="nbpages1" type="text" size=1 value="20" maxlength=3/><input id="resetdemo1" type="button" value="Reset options"/> (the slider will disappear
 	        because the reset set nbPages to 20, nbVisible to 6, which mean 20/6 = 4 slides, or minSlidesForSlider = 5...)
-	        
+
 	        <br/>
 	        <h3>Demo 2 : constant speed, no slide</h3>
-	        
+
 	        <p id="page2">demo2</p>
 	        <!-- DEMO 2 -->
 	        <div id="test2" style="position:relative;overflow:hidden;">
-	
+
 	            <!-- optional left control buttons-->
 	            <nav id="test2_m_left" class="jPaginatorMax"></nav><nav id="test2_o_left" class="jPaginatorOver"></nav>
-	
+
 	            <div class='paginator_p_wrap'>
 	                <div class='paginator_p_bloc'>
 	                    <!--<a class='paginator_p'></a> // page number : dynamically added -->
 	                </div>
 	            </div>
-	
+
 	            <!-- optional right control buttons-->
 	            <nav id="test2_o_right" class="jPaginatorOver"></nav><nav id="test2_m_right" class="jPaginatorMax"></nav>
-	
-	
+
+
 	            <!-- slider -->
 	            <div class='paginator_slider' class='ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
 	                <a class='ui-slider-handle ui-state-default ui-corner-all' href='#' ></a>
 	            </div>
-	
+
 	        </div>
-	        
+
 	        <br/>
 	        <h3>Demo 3 : high number of pages, max acceleration</h3>
-	        
+
 	        <p id="page3">demo3</p>
 	        <!-- DEMO 3 -->
 	        <div id="test3">
-	
+
 	            <!-- optional left control buttons-->
 	            <nav id="test3_m_left" class="jPaginatorMax"></nav><nav id="test3_o_left" class="jPaginatorOver"></nav>
-	
+
 	            <div class='paginator_p_wrap'>
 	                <div class='paginator_p_bloc'>
 	                    <!--<a class='paginator_p'></a> // page number : dynamically added -->
 	                </div>
 	            </div>
-	
+
 	            <!-- optional right control buttons-->
 	            <nav id="test3_o_right" class="jPaginatorOver"></nav><nav id="test3_m_right" class="jPaginatorMax"></nav>
-	
-	
+
+
 	            <!-- slider -->
 	            <div class='paginator_slider' class='ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'>
 	                <a class='ui-slider-handle ui-state-default ui-corner-all' href='#'></a>
 	            </div>
-	
+
 	        </div>
-	        
-	        
+
+
 	        <br/><br/>
-	        
+
 	        <!-- PLUGIN'S OPTIONS-->
 	        <a name="options"></a>
 	        <h3>Plugin's options (with default values) :</h3>
-	        
+
 	        <div style="position:relative;overflow:hidden;line-height:26px;">
 	          <div class="opt" style="width:95%;">
 	              <div><div class="left">selectedPage: null,       </div><div class="right">Current page</div></div>
@@ -297,68 +297,68 @@
 	              <div><div class="left">speed: 2,                 </div><div class="right">Animation speed (1 to 5)</div></div>
 	              <div><div class="left">coeffAcceleration: 2,     </div><div class="right">Acceleration speed (1 to 5)</div></div>
 	              <div><div class="left">minSlidesForSlider: 3,    </div><div class="right">Minimum number of slides to display the slider. Ex : if nbPages=32 and nbVisible=10, 32/10  = 4 slides,
-	              so if <i>minSlidesForSlider</i> = 5 then slider won't be displayed.</div></div> 
+	              so if <i>minSlidesForSlider</i> = 5 then slider won't be displayed.</div></div>
 	              <div><div class="left">onPageClicked: function(a,num) {}  </div><div class="right">Function called when a page number is clicked (where a = the root element of the paginator)</div></div>
 	          </div>
 	        </div>
-	        
+
 	        <a name="codedemo1"><h3>Code of demo1</h3></a>
 	        <h5>The Javascript :</h5>
 	<pre>
-	$(<span style=' color: Maroon;'>"#test1"</span>).jPaginator({ 
-	    nbPages:<span style=' color: Maroon;'>54</span>, 
+	$(<span style=' color: Maroon;'>"#test1"</span>).jPaginator({
+	    nbPages:<span style=' color: Maroon;'>54</span>,
 	    selectedPage:<span style=' color: Maroon;'>22</span>,
-	    overBtnLeft:<span style=' color: Maroon;'>'#test1_o_left'</span>, 
-	    overBtnRight:<span style=' color: Maroon;'>'#test1_o_right'</span>, 
-	    maxBtnLeft:<span style=' color: Maroon;'>'#test1_m_left'</span>, 
+	    overBtnLeft:<span style=' color: Maroon;'>'#test1_o_left'</span>,
+	    overBtnRight:<span style=' color: Maroon;'>'#test1_o_right'</span>,
+	    maxBtnLeft:<span style=' color: Maroon;'>'#test1_m_left'</span>,
 	    maxBtnRight:<span style=' color: Maroon;'>'#test1_m_right'</span>,
-	    minSlidesForSlider:<span style=' color: Maroon;'>5</span>, 
-	    onPageClicked: <span style=' color: Blue;'>function</span>(a,num) { 
-	        $(<span style=' color: Maroon;'>"#page1"</span>).html(<span style=' color: Maroon;'>"demo1 - page : "</span>+num); 
+	    minSlidesForSlider:<span style=' color: Maroon;'>5</span>,
+	    onPageClicked: <span style=' color: Blue;'>function</span>(a,num) {
+	        $(<span style=' color: Maroon;'>"#page1"</span>).html(<span style=' color: Maroon;'>"demo1 - page : "</span>+num);
 	    }
-	});  
-	
-	<span style=' color: Green;'>// code for the reset button</span> 
-	$(<span style=' color: Maroon;'>"#resetdemo1"</span>).click(<span style=' color: Blue;'>function</span>(){ 
-	    <span style=' color: Blue;'>if</span> ( !isNumeric($(<span style=' color: Maroon;'>"#nbpages1"</span>).val()) ) <span style=' color: Blue;'>return</span>; 
-	     
-	    $(<span style=' color: Maroon;'>"#test1"</span>).trigger(<span style=' color: Maroon;'>"reset"</span>,{  
-	        selectedPage:<span style=' color: Maroon;'>null</span>, 
-	        nbVisible:<span style=' color: Maroon;'>6</span>, 
+	});
+
+	<span style=' color: Green;'>// code for the reset button</span>
+	$(<span style=' color: Maroon;'>"#resetdemo1"</span>).click(<span style=' color: Blue;'>function</span>(){
+	    <span style=' color: Blue;'>if</span> ( !isNumeric($(<span style=' color: Maroon;'>"#nbpages1"</span>).val()) ) <span style=' color: Blue;'>return</span>;
+
+	    $(<span style=' color: Maroon;'>"#test1"</span>).trigger(<span style=' color: Maroon;'>"reset"</span>,{
+	        selectedPage:<span style=' color: Maroon;'>null</span>,
+	        nbVisible:<span style=' color: Maroon;'>6</span>,
 	        nbPages:$(<span style=' color: Maroon;'>"#nbpages1"</span>).val(),
-	        marginPx:<span style=' color: Maroon;'>8</span>, 
-	        speed:<span style=' color: Maroon;'>1</span> 
-	    }); 
+	        marginPx:<span style=' color: Maroon;'>8</span>,
+	        speed:<span style=' color: Maroon;'>1</span>
+	    });
 	});</pre>
-	            
+
 	        <h5>The HTML :</h5>
 	<pre>
-	&lt;div id=<span style=' color: Maroon;'>"test1"</span>&gt; 
-	
-	    <span style=' color: Green;'>&lt;!-- optional left control buttons --&gt;</span> 
-	    &lt;nav id=<span style=' color: Maroon;'>"test1_m_left"</span>&gt;&lt;/nav&gt;&lt;nav id=<span style=' color: Maroon;'>"test1_o_left"</span>&gt;&lt;/nav&gt; 
-	
-	    &lt;div <span style=' color: Blue;'>class</span>='paginator_p_wrap'&gt; 
-	        &lt;div <span style=' color: Blue;'>class</span>='paginator_p_bloc'&gt; 
-	            <span style=' color: Green;'>&lt;!--&lt;a class='paginator_p'&gt;&lt;/a&gt; // page number : dynamically added --&gt;</span> 
-	        &lt;/div&gt; 
-	    &lt;/div&gt; 
-	
-	    <span style=' color: Green;'>&lt;!-- optional right control buttons --&gt;</span> 
-	    &lt;nav id=<span style=' color: Maroon;'>"test1_o_right"</span>&gt;&lt;/nav&gt;&lt;nav id=<span style=' color: Maroon;'>"test1_m_right"</span>&gt;&lt;/nav&gt; 
-	
-	
-	    <span style=' color: Green;'>&lt;!-- slider --&gt;</span> 
-	    &lt;div <span style=' color: Blue;'>class</span>='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'&gt; 
-	        &lt;a <span style=' color: Blue;'>class</span>='ui-slider-handle ui-state-<span style=' color: Blue;'>default</span> ui-corner-all' href=<span style=' color: Maroon;'>'#'</span>&gt;&lt;/a&gt; 
-	    &lt;/div&gt; 
-	
+	&lt;div id=<span style=' color: Maroon;'>"test1"</span>&gt;
+
+	    <span style=' color: Green;'>&lt;!-- optional left control buttons --&gt;</span>
+	    &lt;nav id=<span style=' color: Maroon;'>"test1_m_left"</span>&gt;&lt;/nav&gt;&lt;nav id=<span style=' color: Maroon;'>"test1_o_left"</span>&gt;&lt;/nav&gt;
+
+	    &lt;div <span style=' color: Blue;'>class</span>='paginator_p_wrap'&gt;
+	        &lt;div <span style=' color: Blue;'>class</span>='paginator_p_bloc'&gt;
+	            <span style=' color: Green;'>&lt;!--&lt;a class='paginator_p'&gt;&lt;/a&gt; // page number : dynamically added --&gt;</span>
+	        &lt;/div&gt;
+	    &lt;/div&gt;
+
+	    <span style=' color: Green;'>&lt;!-- optional right control buttons --&gt;</span>
+	    &lt;nav id=<span style=' color: Maroon;'>"test1_o_right"</span>&gt;&lt;/nav&gt;&lt;nav id=<span style=' color: Maroon;'>"test1_m_right"</span>&gt;&lt;/nav&gt;
+
+
+	    <span style=' color: Green;'>&lt;!-- slider --&gt;</span>
+	    &lt;div <span style=' color: Blue;'>class</span>='paginator_slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all'&gt;
+	        &lt;a <span style=' color: Blue;'>class</span>='ui-slider-handle ui-state-<span style=' color: Blue;'>default</span> ui-corner-all' href=<span style=' color: Maroon;'>'#'</span>&gt;&lt;/a&gt;
+	    &lt;/div&gt;
+
 	&lt;/div&gt;</pre>
 	    </section>
-	    
+
     </div>
-    
-    
+
+
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
@@ -367,7 +367,7 @@
       </footer>
     </div>
 
-    
+
 
   </body>
 </html>

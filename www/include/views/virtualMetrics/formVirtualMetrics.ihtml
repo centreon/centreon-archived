@@ -28,7 +28,7 @@
 		</td>
 	</tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_def_type">{$form.def_type.label}</td><td class="FormRowValue">{$form.def_type.html}</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.function}</h4>

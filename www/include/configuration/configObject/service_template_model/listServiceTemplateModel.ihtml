@@ -66,7 +66,7 @@
 				<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
 				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 			</tr>
-		{/section}	
+		{/section}
 	</table>
 
 	<table class="ToolbarTable ToolbarTR table">
@@ -88,7 +88,7 @@
 
 <input type='hidden' name='o' id='o' value='42'>
 
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

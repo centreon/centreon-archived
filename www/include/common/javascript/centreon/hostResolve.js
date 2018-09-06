@@ -34,7 +34,7 @@
 
  /**
  * Resolves host address
- * 
+ *
  * callback(err, ipAddress){
  *      // Code...
  * }

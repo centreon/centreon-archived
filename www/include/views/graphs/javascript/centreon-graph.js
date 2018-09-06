@@ -288,7 +288,7 @@
      */
     buildMetricData: function (dataRaw) {
       var convertType = {
-        /* 
+        /*
          * line: 'spline',
          * area: 'area-spline'
          */

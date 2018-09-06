@@ -45,7 +45,7 @@ class Zend_Cache_Frontend_Capture extends Zend_Cache_Core
      * @var array
      */
     protected $_tags = array();
-    
+
     protected $_extension = null;
 
     /**

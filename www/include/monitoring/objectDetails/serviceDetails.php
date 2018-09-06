@@ -154,7 +154,7 @@ if (!is_null($host_id)) {
         $tab_status = array();
 
         /*
-         * Get all service information 
+         * Get all service information
          */
         $rq = "SELECT s.service_id, " .
             " s.state AS current_state," .
@@ -195,7 +195,7 @@ if (!is_null($host_id)) {
             " s.action_url, " .
             " i.name as instance_name " .
             " FROM services s, hosts h, instances i " .
-            " WHERE h.host_id = s.host_id " . 
+            " WHERE h.host_id = s.host_id " .
             " AND h.host_id LIKE '" . $pearDB->escape($host_id) . "'" .
             " AND s.service_id LIKE '" . $pearDB->escape($service_id) . "'".
             " AND h.instance_id = i.instance_id " .
@@ -268,12 +268,12 @@ if (!is_null($host_id)) {
         if (isset($host_id) && isset($service_id)) {
             $rq2 = " SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
-                " WHERE h.host_id = " . $pearDBO->escape($host_id) . " 
+                " WHERE h.host_id = " . $pearDBO->escape($host_id) . "
                                       AND h.host_id = s.host_id
-                                      AND s.service_id = " . $pearDBO->escape($service_id) . " 
-                                      AND h.host_id = cmt.host_id 
-                                      AND s.service_id = cmt.service_id 
-                                      AND cmt.expires = 0 
+                                      AND s.service_id = " . $pearDBO->escape($service_id) . "
+                                      AND h.host_id = cmt.host_id
+                                      AND s.service_id = cmt.service_id
+                                      AND cmt.expires = 0
                                       AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                                       ORDER BY cmt.entry_time DESC";
             $DBRESULT = $pearDBO->query($rq2);
@@ -446,10 +446,10 @@ if (!is_null($host_id)) {
          */
         if ($isMetaservice == 'false') {
             $tpl->assign("m_mon_services", _("Service"));
-        } else { 
+        } else {
             $tpl->assign("m_mon_services", _("Meta Service"));
         }
-        
+
         $tpl->assign("m_mon_status_info", _("Status Details"));
         $tpl->assign("m_mon_on_host", _("on host"));
         $tpl->assign("m_mon_services_status", _("Service Status"));
@@ -584,7 +584,7 @@ if (!is_null($host_id)) {
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
-            
+
         /*
          * Hostgroups Display
          */

@@ -12,7 +12,7 @@ Enhancements
 * [API] Get multiple parameters for host - PR #5946
 * [Configuration] Add form to configure Centreon Broker generic stream connectors - PR #6024 #6053 #6052 #6042 (beta)
 * [Documentation] Add new chapter for Centreon ISO el7 installation - PR #6019
-* [Documentation] Describe get parameters for hosts #5783 - PR #5924 
+* [Documentation] Describe get parameters for hosts #5783 - PR #5924
 * [Knowledge-Base] Add option to disable SSL certificate - PR #6027
 
 Bug Fixes
@@ -27,4 +27,4 @@ Bug Fixes
 * [Monitoring] Top Counter with ACL really slow - #5974 PR #5992
 * [Monitoring] Centreon UI freezes when access to "View contact Notification" - #5760 PR #5954
 * [Monitoring] Replace dot character in command line for better display - PR #5945
-* [Monitoring] Fix add downtime on hostgroup or poller with ACL - PR #6023 
+* [Monitoring] Fix add downtime on hostgroup or poller with ACL - PR #6023

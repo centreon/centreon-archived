@@ -71,5 +71,5 @@ Sauvegarder les modifications en cliquant sur le bouton **Save**.
 .. image:: /_static/images/quick_start/add_user_list.png
     :align: center
 
-Suivant la configuration réalisée, votre compte est prêt à recevoir des 
+Suivant la configuration réalisée, votre compte est prêt à recevoir des
 notifications et/ou se connecter à l'interface web Centreon.

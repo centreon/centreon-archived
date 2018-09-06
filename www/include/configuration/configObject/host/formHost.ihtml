@@ -56,7 +56,7 @@
 				<td class="FormRowValue">{$form.host_location.html}</td>
 			</tr>
 			{if $o == "mc"}
-			<tr class="list_two">	
+			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_tplp.label}</td>
 				<td class="FormRowValue">{$form.mc_mod_tplp.html}</td>
 			</tr>
@@ -181,7 +181,7 @@
         <tr class="list_one">
 			<td class="FormRowField"></td>
 			<td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
-        </tr>		
+        </tr>
         {/if}
         {if $o == "mc"}
         <tr class="list_one">
@@ -200,7 +200,7 @@
         <tr class="list_one">
 			<td class="FormRowField"></td>
 			<td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
-        </tr>		
+        </tr>
 		{/if}
 		<tr class="list_lvl_1">
 		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification options{/t}</h4></td>
@@ -343,7 +343,7 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="flap_detection_enabled"> {$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_flap_threshold"> {$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_flap_threshold"> {$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
-	
+
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
       <h4>{$History_Options}</h4>
     </td></tr>
@@ -526,7 +526,7 @@ jQuery(function() {
 
 function setListener(elem){
     elem.on('change',function(event,data){
-        if(typeof data != "undefined" && typeof data.origin !=undefined 
+        if(typeof data != "undefined" && typeof data.origin !=undefined
             && data.origin == "select2defaultinit"){
             return false;
         }
@@ -543,7 +543,7 @@ function clonerefreshListener(el){
     setListener(el.find('select[name^=tpSelect]'));
 }
 
-{/literal}{if $o != "mc"}{literal}    
+{/literal}{if $o != "mc"}{literal}
     function doAjaxLoad(elems){
             jQuery.ajax({
                 url: "./include/configuration/configObject/host/refreshMacroAjax.php",
@@ -556,7 +556,7 @@ function clonerefreshListener(el){
                     jQuery("#clone-values-macro").data("clone-values-macro",json.macros);
                     sheepIt.removeAllForms();
                     for (i = 0; i < jQuery("#clone-count-macro").data("clone-count-macro"); i++) {
-                        sheepIt.addForm();	
+                        sheepIt.addForm();
                     }
 
                     sheepIt.inject(jQuery("#clone-values-macro").data("clone-values-macro"));
@@ -571,7 +571,7 @@ function clonerefreshListener(el){
                            tolerance: "pointer"
                         }
                     );
-                    
+
                     jQuery(".onemacro").each(function(idx,elem){
                         var from = jQuery(elem).find('input[name^=macroFrom]').val();
                         if (from === "direct") {
@@ -584,7 +584,7 @@ function clonerefreshListener(el){
                             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                         }
-                        
+
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                             jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
                         }
@@ -595,7 +595,7 @@ function clonerefreshListener(el){
                             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
                                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                                 var tplValue = tplValueField.val();
-                                
+
                                 var tplInputField = jQuery(elem).find("input[name^='macroInput']");
                                 var tplInput = tplInputField.val();
 
@@ -615,7 +615,7 @@ function clonerefreshListener(el){
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
-                        
+
                         jQuery(elem).find("input[name^='macroValue']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");

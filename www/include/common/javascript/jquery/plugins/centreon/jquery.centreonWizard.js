@@ -106,7 +106,7 @@
                     	$('#c-wiz-step-' + data.step).html(html);
                         $('#c-wiz-step-' + data.step + ' :radio').each(function(idx, el) {
                         	$(el).parent().click(function() {
-                        		$(el).attr('checked', true);			       
+                        		$(el).attr('checked', true);
                         	});
                         });
                         $('#c-wiz-step-' + data.step + ' :checkbox').each(function(idx, el) {

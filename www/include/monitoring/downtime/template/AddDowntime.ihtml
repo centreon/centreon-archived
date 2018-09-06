@@ -1,6 +1,6 @@
 {$form.javascript}{literal}
 <script type="text/javascript">
-function toggleParams(type) 
+function toggleParams(type)
 {
 	if (type == 'host') {
 		Effect.Fade('hostgroup_input', { duration : 0 });
@@ -35,7 +35,7 @@ function toggleParams(type)
 	}
 }
 Event.observe(window, "load", function() {
-	toggleParams('{/literal}{$focus}{literal}'); 
+	toggleParams('{/literal}{$focus}{literal}');
 });
 
 </script>
@@ -139,7 +139,7 @@ Event.observe(window, "load", function() {
 				<td  class="FormRowField" valign='top'>{$form.comment.label}</td>
 				<td  class="FormRowValue">{$form.comment.html}</td>
 			</tr>
-		</table>		
+		</table>
 		<div id="validForm">
 			<p>{$form.action.html}</p>
 			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>

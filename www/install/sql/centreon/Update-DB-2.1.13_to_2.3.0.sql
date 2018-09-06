@@ -71,9 +71,9 @@ CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
- 
+
 ALTER TABLE `traps_matching_properties` ADD INDEX (`trap_id`);
-ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;  
+ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE ;
 
 
 CREATE TABLE IF NOT EXISTS `timeperiod_include_relations` (
@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_poller_relations` (
 ALTER TABLE `acl_resources_poller_relations`
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `acl_resources_poller_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE;
-  
+
 ALTER TABLE `acl_topology_relations` ADD COLUMN `access_right` TINYINT NOT NULL DEFAULT 1;
 ALTER TABLE `topology` ADD COLUMN `readonly` ENUM('0', '1') NOT NULL DEFAULT '1';
 UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 60103, 60201, 60202, 60203, 60206, 60209, 60207, 60205, 60204, 602080, 60301, 60302, 60304, 60305, 60708, 60707, 60703, 60401, 60402, 60403, 60404, 60405, 60406, 60407, 60408, 60409, 60410, 60411);
@@ -305,7 +305,7 @@ UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
 
 ALTER TABLE `nagios_server` ADD COLUMN `monitoring_engine` VARCHAR(20) NULL AFTER `init_script`;
 
-UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/nagiosStats.php' WHERE topology_page = '10201' AND topology_parent = '102' AND topology_name = 'Graphs'; 
+UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/nagiosStats.php' WHERE topology_page = '10201' AND topology_parent = '102' AND topology_name = 'Graphs';
 UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/performanceInfo.php' WHERE topology_page = '10203' AND topology_name = 'Performance Info';
 
 UPDATE topology set topology_url = './include/monitoring/downtime/downtimeService.php' WHERE topology_page = '20218';
@@ -324,7 +324,7 @@ alter table contact add contact_template_id int(11) default null after contact_e
 
 ALTER TABLE `contact` ADD INDEX ( `contact_template_id` );
 
-ALTER TABLE `contact` 
+ALTER TABLE `contact`
 	ADD CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL;
 
 --
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 --
 ALTER TABLE `auth_ressource_info`
   ADD CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE;
-  
+
 -- New ldap options
 INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_ssl', '0');
 INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_tls', '0');
@@ -444,53 +444,53 @@ CREATE TABLE IF NOT EXISTS `downtime_servicegroup_relation` (
 -- Contraintes pour la table `downtime_period`
 --
 ALTER TABLE `downtime_period`
-  ADD CONSTRAINT `downtime_period_ibfk_1` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE; 
-  
+  ADD CONSTRAINT `downtime_period_ibfk_1` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
+
 --
 -- Contraintes pour la table `downtime_host_relation`
 --
 ALTER TABLE `downtime_host_relation`
   ADD CONSTRAINT `downtime_host_relation_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `downtime_host_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
-  
+
 --
 -- Contraintes pour la table `downtime_hostgroup_relation`
 --
 ALTER TABLE `downtime_hostgroup_relation`
   ADD CONSTRAINT `downtime_hostgroup_relation_ibfk_1` FOREIGN KEY (`hg_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `downtime_hostgroup_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
-  
+
 --
 -- Contraintes pour la table `downtime_service_relation`
 --
 ALTER TABLE `downtime_service_relation`
   ADD CONSTRAINT `downtime_service_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `downtime_service_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
-  
+
 --
 -- Contraintes pour la table `downtime_service_relation`
 --
 ALTER TABLE `downtime_servicegroup_relation`
   ADD CONSTRAINT `downtime_servicegroup_relation_ibfk_1` FOREIGN KEY (`sg_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `downtime_servicegroup_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
- 
+
 --
 -- Alter contactgroup for ldap group
 --
  ALTER TABLE `contactgroup` ADD `cg_type` varchar(10) default 'local';
  ALTER TABLE `contactgroup` ADD `cg_ldap_dn` varchar(255) default NULL;
- 
- 
+
+
  ALTER TABLE `contact` ADD `contact_register` TINYINT( 6 ) NOT NULL DEFAULT '0';
- 
+
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Downtimes', NULL, 6, 606, 25, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Downtime Scheduler', './img/icones/16x16/warning.gif', 606, 60600, 40, 1, './include/configuration/configDowntime/downtime.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Ajax forms', NULL, 606, 60601, 40, 1, './include/configuration/configDowntime/ajaxForms.php', NULL, '0', '0', '0', NULL, NULL, NULL);
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'w', './include/common/javascript/changetab.js', 'initChangeTab'); 
- 
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+
 ALTER TABLE nagios_server ADD is_default INT DEFAULT '0' AFTER localhost;
 
 UPDATE topology SET topology_name = 'Monitoring' WHERE topology_page = '5010102' AND topology_name = 'Nagios';
@@ -569,7 +569,7 @@ CREATE TABLE cfg_centreonbroker_info (
 
 ALTER TABLE `cfg_centreonbroker_info`
   ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
-  
+
 -- Add column for Centreon Broker configuration path in pollers
 ALTER TABLE `nagios_server` ADD COLUMN `centreonbroker_cfg_path` VARCHAR(255) AFTER `nagios_perfdata`;
 
@@ -580,11 +580,11 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60106, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60106, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60106, 'w', './include/common/javascript/changetab.js', 'initChangeTab'); 
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60106, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60216, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60216, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60216, 'w', './include/common/javascript/changetab.js', 'initChangeTab'); 
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60216, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 
 DELETE FROM topology WHERE topology_page = '606';
 DELETE FROM topology WHERE topology_parent = '606';
@@ -631,7 +631,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 ALTER TABLE `ods_view_details` CHANGE `metric_id` `metric_id` VARCHAR( 12 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 -- Add column for display warning and critical area in split view graph
-ALTER TABLE `giv_components_template` 
+ALTER TABLE `giv_components_template`
 ADD `ds_color_area_warn` VARCHAR(14) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `ds_color_area` ,
 ADD `ds_color_area_crit` VARCHAR(14) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `ds_color_area_warn`;
 
@@ -1086,7 +1086,7 @@ UPDATE  `cb_field` SET  `fieldtype` =  'password' WHERE  `cb_field_id` = 9;
 
 --
 -- Update default information for Centreon Broker configuration in poller
--- 
+--
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '/etc/centreon-broker', `centreonbroker_module_path` = '/usr/share/centreon/lib/centreon-broker';
 
 --

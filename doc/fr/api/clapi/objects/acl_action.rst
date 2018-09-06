@@ -12,8 +12,8 @@ Show
 ----
 
 In order to list available ACL Actions, use the **SHOW** action::
-  
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a show 
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a show
   id;name;description;activate
   1;Simple User;Simple User;1
   [...]
@@ -37,7 +37,7 @@ Add
 
 In order to add an ACL Action, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a add -v "ACL Action test;my description" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a add -v "ACL Action test;my description"
 
 
 Required fields:
@@ -56,7 +56,7 @@ Del
 
 If you want to remove an ACL Action, use the **DEL** action. The Name is used for identifying the ACL Action to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a del -v "ACL Action test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a del -v "ACL Action test"
 
 
 Setparam
@@ -64,7 +64,7 @@ Setparam
 
 If you want to change a specific parameter of an ACL Action, use the **SETPARAM** action. The Name is used for identifying the ACL Action to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a setparam -v "ACL Action test;description;my new description" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a setparam -v "ACL Action test;description;my new description"
 
 Arguments are composed of the following columns:
 
@@ -84,9 +84,9 @@ Parameters that you may change are the following:
 ============== ==========================================
 Column         Description
 ============== ==========================================
-name           
+name
 
-description    
+description
 
 activate       1 when ACL Action is enabled, 0 otherwise
 ============== ==========================================
@@ -107,7 +107,7 @@ Order          Column description
 
 Example:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a getaclgroup -v "ACL Action test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a getaclgroup -v "ACL Action test"
   id;name
   1;ALL
   3;Operators
@@ -130,17 +130,17 @@ Order          Column description
 
 Example:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a grant -v "ACL Action test;host_acknowledgement|service_acknowledgement" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a grant -v "ACL Action test;host_acknowledgement|service_acknowledgement"
 
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a revoke -v "ACL Action test;host_schedule_downtime|service_schedule_downtime" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a revoke -v "ACL Action test;host_schedule_downtime|service_schedule_downtime"
 
 
 The **`*`** wildcard can be used in order to grant or revoke all actions:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a grant -v "ACL Action test;*" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a grant -v "ACL Action test;*"
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a revoke -v "ACL Action test;*" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLACTION -a revoke -v "ACL Action test;*"
 
 
 Below is the list of actions that you can grant/revoke:

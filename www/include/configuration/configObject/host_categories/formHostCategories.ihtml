@@ -45,7 +45,7 @@
             </td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hc_activate"> {$form.hc_activate.label}</td><td class="FormRowValue">{$form.hc_activate.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hc_comment"> {$form.hc_comment.label}</td><td class="FormRowValue">{$form.hc_comment.html}</td></tr>       
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hc_comment"> {$form.hc_comment.label}</td><td class="FormRowValue">{$form.hc_comment.html}</td></tr>
         {if $o == "a" || $o == "c"}
             <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
         {/if}

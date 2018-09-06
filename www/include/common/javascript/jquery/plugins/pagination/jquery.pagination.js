@@ -1,6 +1,6 @@
 /**
  * This jQuery plugin displays pagination links inside the selected elements.
- * 
+ *
  * This plugin needs at least jQuery 1.4.2
  *
  * @author Gabriel Birke (birke *at* d-scribe *dot* de)
@@ -28,7 +28,7 @@
             return Math.ceil(this.maxentries / this.opts.items_per_page);
         },
         /**
-         * Calculate start and end point of pagination links depending on 
+         * Calculate start and end point of pagination links depending on
          * current_page and num_display_entries.
          * @returns {Array}
          */
@@ -57,7 +57,7 @@
         /**
          * Helper function for generating a single link (or a span tag if it's the current page)
          * @param {Number} page_id The page id for the new item
-         * @param {Number} current_page 
+         * @param {Number} current_page
          * @param {Object} appendopts Options for the new item: text and classes
          * @returns {jQuery} jQuery object containing the link
          */
@@ -82,7 +82,7 @@
             lnk.data('page_id', page_id);
             return lnk;
         },
-        // Generate a range of numeric links 
+        // Generate a range of numeric links
         appendRange: function (container, current_page, start, end, opts) {
             var i;
             for (i = start; i < end; i++) {
@@ -158,7 +158,7 @@
                 renderer, links, current_page;
 
         /**
-         * This is the event handling function for the pagination links. 
+         * This is the event handling function for the pagination links.
          * @param {int} page_id The new page number
          */
         function paginationClickHandler(evt) {
@@ -172,8 +172,8 @@
         }
 
         /**
-         * This is a utility function for the internal event handlers. 
-         * It sets the new current page on the pagination container objects, 
+         * This is a utility function for the internal event handlers.
+         * It sets the new current page on the pagination container objects,
          * generates a new HTMl fragment for the pagination links and calls
          * the callback function.
          */

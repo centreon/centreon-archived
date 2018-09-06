@@ -44,7 +44,7 @@ $title = _('Broker module information');
 
 $selectedBroker = "centreon-broker";;
 
-$contents = " 
+$contents = "
 <form id='form_step".STEP_NUMBER."'>
     <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
@@ -65,15 +65,15 @@ $template->display('content.tpl');
 <script type='text/javascript'>
     var step = <?php echo STEP_NUMBER;?>;
     var broker = '<?php echo $selectedBroker;?>';
-    
+
     jQuery(function() {
        loadParameters(broker);
     });
-    
-    
+
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {
@@ -88,7 +88,7 @@ $template->display('content.tpl');
         });
         return result;
     }
-    
+
     function loadParameters(broker) {
         jQuery("select[name=BROKER_MODULE]").next().html("");
         doProcess(true, './steps/process/loadBrokerParameters.php', { 'broker' : broker }, function(data) {

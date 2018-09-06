@@ -55,7 +55,7 @@ if ($handle = opendir($varPath)) {
 
 $selectedEngine = "centreon-engine";
 
-$contents = " 
+$contents = "
     <form id='form_step".STEP_NUMBER."'>
         <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
@@ -65,7 +65,7 @@ $contents = "
         </thead>
         <tbody id='engineParams'></tbody>
         </table>
-    </form>    
+    </form>
 ";
 
 $template->assign('step', STEP_NUMBER);
@@ -76,14 +76,14 @@ $template->display('content.tpl');
 <script type='text/javascript'>
     var step = <?php echo STEP_NUMBER; ?>;
     var engine = '<?php echo $selectedEngine; ?>';
-    
+
     jQuery(function() {
        loadParameters(engine);
     });
-    
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {
@@ -98,7 +98,7 @@ $template->display('content.tpl');
         });
         return result;
     }
-    
+
     function loadParameters(engine) {
         jQuery("select[name=MONITORING_ENGINE]").next().html("");
         doProcess(true, './steps/process/loadEngineParameters.php', { 'engine' : engine }, function(data) {

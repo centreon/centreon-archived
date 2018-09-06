@@ -36,10 +36,10 @@
 	 		<td class="ListColLvl1_name" colspan="2">
 	 			{$msg}
 	 		</td>
-	 	</tr>	 
+	 	</tr>
 	 </table>
 	 </div>
-	 {/if}	
+	 {/if}
          {$form.hidden}
 </form>
 {$helptext}

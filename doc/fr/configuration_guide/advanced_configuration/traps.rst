@@ -30,7 +30,7 @@ Les traps peuvent ensuite être reliés à des services passifs via l'onglet **R
 Architecture
 ************
 
-Avec Centreon 2.5.x, la gestion des traps SNMP a été revue en profondeur par rapport aux versions précédentes : 
+Avec Centreon 2.5.x, la gestion des traps SNMP a été revue en profondeur par rapport aux versions précédentes :
 
 *   les processus 'snmptt' et 'centtraphandler' ont été fusionnés au sein d'un unique processus 'centreontrapd'.
 *   le processus 'snmptthandler' est remplacé par le processus 'centreontrapdforward'.
@@ -52,8 +52,8 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 Traitement d'un trap par un serveur satellite
 =============================================
 
-Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
-Cette base de données SQLite est automatiquement générée par le serveur Central. 
+Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL.
+Cette base de données SQLite est automatiquement générée par le serveur Central.
 Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements (par défaut il écoute sur le port **UDP 162**).
@@ -179,7 +179,7 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
         log_transaction_timeout => 10,
         log_purge_time => 600
     );
-    
+
     1;
 
 Configuration de la connexion à la base de données
@@ -240,7 +240,7 @@ Au sein de Centreon, les OIDs racines des traps SNMP sont classés par construct
 #. Cliquez sur **Ajouter**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06constructors.png
-   :align: center 
+   :align: center
 
 * Les champs **Nom du constructeur** et **Alias** définissent le nom et l'alias du constructeur
 * Le champ **Description** fournit une indication sur le constructeur
@@ -256,7 +256,7 @@ Il est également possible d'importer des OIDs à partir des MIBs fournies par l
 2. Dans le menu de gauche, cliquez sur **MIBs**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06importmibs.png
-   :align: center 
+   :align: center
 
 * La liste **Constructeur** permet de choisir le constructeur auquel appartient la MIB que vous importez
 * Le champ **Fichier (mib)** permet de charger la MIB
@@ -264,7 +264,7 @@ Il est également possible d'importer des OIDs à partir des MIBs fournies par l
 3. Cliquez sur **Importer**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06importmibssuccess.png
-   :align: center 
+   :align: center
 
 .. note::
    Les dépendances des MIBS que vous importez doivent être présentes dans le dossier **/usr/share/snmp/mibs**.
@@ -340,7 +340,7 @@ Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)**
 *   **Définition de la commande PREEXEC** définit la commande à exécuter.
 
 Voici un exemple d'utilisation avec le trap linkUP :
-Pour un équipement Cisco, $2 == ifDescr contient le numéro de port de l'interface (GigabitEthernet0/1 par exemple). 
+Pour un équipement Cisco, $2 == ifDescr contient le numéro de port de l'interface (GigabitEthernet0/1 par exemple).
 La meilleure description de l'interface est contenue dans le champ SNMP ifAlias.
 
 La commande suivante permet de récupérer cette valeur
@@ -372,7 +372,7 @@ Lors de l'ajout d'une règle de correspondance ou de l'exécution d'une commande
 **Chaine** ou **Commande spéciale**. Ces arguments sont listés dans le tableau ci-dessous :
 
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
-|   Nom de la variable     |   Description                                                                                                                             | 
+|   Nom de la variable     |   Description                                                                                                                             |
 +==========================+===========================================================================================================================================+
 | @{NUMERIC_OID}           | Récupération de la valeur d'un argument via son OID, exemple @{.1.3.6.1.4.1.9.9.43.1.1.1}                                                 |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
@@ -407,7 +407,7 @@ Lors de l'ajout d'une règle de correspondance ou de l'exécution d'une commande
 | @CMDFILE@                | Chemin vers le fichier de commande de CentCore (central) ou de Centreon Engine (collecteur)                                               |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
-De plus, il existe des variables spéciales pouvant être utilisées dans la section **Paramètres de routage** au niveau de la **Commande de routage** si l'option **Activer le routage** est sélectionnée : 
+De plus, il existe des variables spéciales pouvant être utilisées dans la section **Paramètres de routage** au niveau de la **Commande de routage** si l'option **Activer le routage** est sélectionnée :
 
 +----------------------+-------------------------------------------------------------------------------------------------------------+
 |   Nom de la variable |   Description                                                                                               |

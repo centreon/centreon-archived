@@ -393,7 +393,7 @@ if ($o == "w") {
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
 $tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$acl_id, "changeT"=>_("Modify")));
-    
+
     // prepare help texts
 $helptext = "";
 include_once("help.php");
@@ -401,7 +401,7 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 }
 $tpl->assign("helptext", $helptext);
-    
+
 $valid = false;
 if ($form->validate()) {
     $aclObj = $form->getElement('acl_res_id');

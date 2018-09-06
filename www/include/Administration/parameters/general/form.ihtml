@@ -8,7 +8,7 @@
         <h3>| {$form.header.title}</h3>
       </td>
     </tr>
- 	
+
  	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.oreon}</h4>
@@ -16,7 +16,7 @@
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
- 	
+
  	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_max_page_size}</h4>
@@ -29,14 +29,14 @@
       <td class="FormRowField"><img class="helpTooltip" name="tip_select_paginagion_size">{$form.selectPaginationSize.label}</td>
       <td class="FormRowValue">{$form.selectPaginationSize.html}</td>
     </tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_expiration_properties}</h4>
       </td>
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sessions_expiration_time">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_refresh_properties}</h4>
@@ -44,7 +44,7 @@
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
- 	
+
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_global_display}</h4>
@@ -52,7 +52,7 @@
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.global_sort_type.label}</td><td class="FormRowValue">{$form.global_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.global_sort_order.label}</td><td class="FormRowValue">{$form.global_sort_order.html}</td></tr>
-    
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_problem_display}</h4>
@@ -80,7 +80,7 @@
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_display_downtime_chart">{$form.display_downtime_chart.label}</td><td class="FormRowValue">{$form.display_downtime_chart.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_comment_chart">{$form.display_comment_chart.label}</td><td class="FormRowValue">{$form.display_comment_chart.html}</td></tr>
-	
+
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_auth}</h4>
@@ -102,7 +102,7 @@
       </td>
     </tr>
      	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
- 	
+
   	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$support}</h4>
@@ -127,7 +127,7 @@
 
 {literal}
 <script type="text/javascript">
-    
+
 function checkProxyConf() {
     jQuery.ajax({
         type : "POST",

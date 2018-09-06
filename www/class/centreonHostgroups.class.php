@@ -45,13 +45,13 @@ class CentreonHostgroups
      * @var type
      */
     private $DB;
-    
+
     /**
      *
      * @var type
      */
     private $relationCache;
-    
+
     /**
      *
      * @var type
@@ -136,8 +136,8 @@ class CentreonHostgroups
         }
         return "";
     }
-    
-    
+
+
     /**
      * Get Hostgroup Id/Name
      *
@@ -158,7 +158,7 @@ class CentreonHostgroups
         }
         return $arrayReturn;
     }
-    
+
 
     /**
      * Get Hostgroup Id
@@ -250,7 +250,7 @@ class CentreonHostgroups
     {
         $this->dataTree = array();
     }
-    
+
     /**
      *
      * @param integer $field
@@ -277,7 +277,7 @@ class CentreonHostgroups
                 $parameters['relationObject']['comparator'] = 'hostgroup_hg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

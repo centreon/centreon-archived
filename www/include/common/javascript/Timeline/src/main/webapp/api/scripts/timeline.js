@@ -279,7 +279,7 @@ Timeline._Band = function(timeline, bandInfo, index) {
     
     this._locale = ("locale" in bandInfo) ? bandInfo.locale : Timeline.Platform.getDefaultLocale();
     this._timeZone = ("timeZone" in bandInfo) ? bandInfo.timeZone : 0;
-    this._labeller = ("labeller" in bandInfo) ? bandInfo.labeller : 
+    this._labeller = ("labeller" in bandInfo) ? bandInfo.labeller :
         timeline.getUnit().createLabeller(this._locale, this._timeZone);
     
     this._dragging = false;

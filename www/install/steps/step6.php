@@ -47,10 +47,10 @@ require_once 'functions.php';
 $template = getTemplate('./templates');
 $title = _('Database information');
 
-$defaults = array('ADDRESS' => '', 
+$defaults = array('ADDRESS' => '',
                 'DB_PORT' => DEFAULT_PORT,
-                'root_password' => '', 
-                'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
+                'root_password' => '',
+                'CONFIGURATION_DB' => DEFAULT_CONF_NAME,
                 'STORAGE_DB' => DEFAULT_STORAGE_NAME,
                 'DB_USER' => DEFAULT_DB_USER,
                 'DB_PASS' => '',
@@ -61,7 +61,7 @@ foreach ($defaults as $k => $v) {
     }
 }
 $star = "<span style='color:#e00b3d'> *</span>";
-$contents = " 
+$contents = "
     <form id='form_step".STEP_NUMBER."'>
         <table cellpadding='0' cellspacing='0' border='0' width='100%' class='StyleDottedHr' align='center'>
         <thead>
@@ -138,10 +138,10 @@ $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
     var step = <?php echo STEP_NUMBER;?>;
-    
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {

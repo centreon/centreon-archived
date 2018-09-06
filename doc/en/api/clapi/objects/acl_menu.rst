@@ -12,7 +12,7 @@ Show
 
 In order to list available ACL Menus, use the **SHOW** action:::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a show
   id;name;alias;comment;activate
   1;Configuration;Configuration;;1
   2;Monitoring + Home;Monitoring + Home;;1
@@ -60,7 +60,7 @@ Del
 
 If you want to remove an ACL Menu, use the **DEL** action. The Name is used for identifying the ACL Menu to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a del -v "ACL Menu test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a del -v "ACL Menu test"
 
 
 Setparam
@@ -68,7 +68,7 @@ Setparam
 
 If you want to change a specific parameter of an ACL Menu, use the **SETPARAM** action. The Name is used for identifying the ACL Menu to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a setparam -v "ACL Menu test;alias;my new alias" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a setparam -v "ACL Menu test;alias;my new alias"
 
 
 Arguments are composed of the following columns:
@@ -104,7 +104,7 @@ Getaclgroup
 
 If you want to retrieve the ACL Groups that are linked to a specific ACL Menu, use the **GETACLGROUP** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a getaclgroup -v "ACL Menu test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ACLMENU -a getaclgroup -v "ACL Menu test"
   id;name
   1;ALL
   3;Operators

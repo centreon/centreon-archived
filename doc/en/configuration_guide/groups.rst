@@ -20,7 +20,7 @@ To add  a host group:
 #. Click on **Add**
 
 .. image:: /images/user/configuration/07hostgroup.png
-   :align: center 
+   :align: center
 
 * The **Host Group Name** and **Alias** defines the name and the alias of the host group.
 * The **Linked Hosts** list allows us to add hosts in the hostgroup.
@@ -45,7 +45,7 @@ To add a service group:
 #. Click on **Add**
 
 .. image:: /images/user/configuration/07servicegroup.png
-   :align: center 
+   :align: center
 
 * The **Service Group Name** and **Description** fields describes the name and the description of the service group.
 * The **Linked Host Services** list allows us to choose the various services that will be included in this group.
@@ -66,7 +66,7 @@ To add a group of contacts:
 #. Click on **Add**
 
 .. image:: /images/user/configuration/07contactgroup.png
-   :align: center 
+   :align: center
 
 * The **Contact Group Name** and **Alias** fields define the name and the description of the contact group.
 * The **Linked Contacts** list allows us to add contacts to the contact group.

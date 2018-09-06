@@ -8,7 +8,7 @@
         <tr>
             <th colspan="{$nbCol}"><h5>{t}Filters{/t}</h5></th>
         </tr>
-        <tr>        
+        <tr>
             <td><h4>{$search}</h4></td>
             <td><h4>{$sgStr}</h4></td>
             {if $poller_listing}

@@ -218,7 +218,7 @@ foreach (array('o1', 'o2') as $option) {
                 "this.form.elements['".$option."'].selectedIndex = 0");
     $form->addElement('select', $option, null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
     $form->setDefaults(array($option => null));
-    
+
     $o1 = $form->getElement($option);
     $o1->setValue(null);
     $o1->setSelected(null);

@@ -12,7 +12,7 @@ Show
 
 In order to list available Centreon Engine conf, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a show
   id;name;instance;comment
   1;Centreon Engine CFG 1;Central;Default CentreonEngine.cfg
   [...]
@@ -36,7 +36,7 @@ Add
 
 In order to add a Centreon Engine conf, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Centreon Engine cfg for poller NY;Poller-NY;Just a small comment" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a add -v "Centreon Engine cfg for poller NY;Poller-NY;Just a small comment"
 
 Required fields are:
 
@@ -56,7 +56,7 @@ Del
 
 If you want to remove a Centreon Engine conf, use the **DEL** action. The name is used for identifying the configuration to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Centreon Engine cfg for poller NY" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a del -v "Centreon Engine cfg for poller NY"
 
 
 Setparam
@@ -64,7 +64,7 @@ Setparam
 
 If you want to change a specific parameter of a Centreon Engine conf, use the **SETPARAM** action. The name is used for identifying the configuration to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Centreon Engine cfg for poller NY;cfg_dir;/usr/local/nagios/etc" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a setparam -v "Centreon Engine cfg for poller NY;cfg_dir;/usr/local/nagios/etc"
 
 Arguments are composed of the following columns:
 
@@ -87,12 +87,12 @@ nagios_name	         Name
 
 instance	 Instance that is linked to centreon-engine.cfg
 
-broker_module	 example: [...] -v "Engine CFG NY;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
+broker_module	 example: [...] -v "Engine CFG NY;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml",
                  you can use a | delimiter for defining multiple broker modules
 
 nagios_activate	 *1* if activated, *0* otherwise
 
-*	         Centreon CLAPI handles pretty much all the options available in a centreon-engine configuration file. 
+*	         Centreon CLAPI handles pretty much all the options available in a centreon-engine configuration file.
                  Because the list is quite long, it is best to refer to the official documentation of Centreon Engine
 ================ =============================================================================================================================
 

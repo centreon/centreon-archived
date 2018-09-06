@@ -45,7 +45,7 @@
 		<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
 		<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 	</tr>
-	{/section}	
+	{/section}
 </table>
 <table class="ToolbarTable table">
 	<tr class="ToolbarTR">
@@ -65,6 +65,6 @@
 	</tr>
 </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

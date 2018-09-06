@@ -35,12 +35,12 @@ Timeline.GeochronoLabeller.prototype.labelInterval = function(date, intervalUnit
     default:
         return { text: n, emphasized: false };
     }
-    
+
     for (var i = dates.length - 1; i >= 0; i--) {
         if (n <= dates[i].start) {
-            return { 
-                text: names[this._locale][i].name, 
-                emphasized: n == dates[i].start 
+            return {
+                text: names[this._locale][i].name,
+                emphasized: n == dates[i].start
             }
         }
     }

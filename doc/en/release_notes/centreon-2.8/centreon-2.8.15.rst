@@ -5,11 +5,11 @@ Centreon Web 2.8.15
 Important notice
 ================
 
-This version include a fix for the calculation of downtimes with daylight saving 
+This version include a fix for the calculation of downtimes with daylight saving
 time (DST). The downtime end will be calculate with the new hour.
 
-For example, if you put a downtime from 1 AM to 5 AM, the duration of the 
-downtime will be 5 hours if during the DST you get 1 hour more (3 AM come back 
+For example, if you put a downtime from 1 AM to 5 AM, the duration of the
+downtime will be 5 hours if during the DST you get 1 hour more (3 AM come back
 to 2 AM).
 
 Enhancements

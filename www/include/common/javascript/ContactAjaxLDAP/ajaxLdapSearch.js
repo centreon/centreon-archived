@@ -51,7 +51,7 @@ function getXhrM(){
 }
 
 function LdapSearch(){
-    
+
 	var confList = '';
     var ldap_search_filters = '';
 	$$('input[name^=ldapConf]').each(function(el) {
@@ -61,13 +61,13 @@ function LdapSearch(){
 				if (confList != '') {
                     confList += ',';
 				}
-				confList += match[1];                                
+				confList += match[1];
                 var filterVal = $$('input[name^=ldap_search_filter\['+match[1]+'\]]').first().value;
                 if (filterVal) {
                     ldap_search_filters += '&ldap_search_filter['+match[1]+']=';
                     filterVal = encodeURIComponent(filterVal);
                     ldap_search_filters += filterVal;
-                }                                
+                }
 			});
 		}
 	});
@@ -78,7 +78,7 @@ function LdapSearch(){
 
         xhrM.open("POST",_addrSearchM ,true);
         xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-        xhrM.send("confList="+confList+ldap_search_filters);	
+        xhrM.send("confList="+confList+ldap_search_filters);
 
         document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>" ;
 
@@ -166,15 +166,15 @@ function LdapSearch(){
                     if (info.getAttribute('server') != serverName) {
                         var htr = document.createElement('tr');
                         htr.setAttribute('class', 'list_lvl_1');
-                        var htd = document.createElement('td');					
+                        var htd = document.createElement('td');
                         htd.appendChild(document.createTextNode(info.getAttribute('server')));
                         htd.setAttribute('colspan', '8')
                                             htd.setAttribute('style', 'text-align:left');
                         htr.appendChild(htd);
                         _tbody.appendChild(htr);
-                        serverName = info.getAttribute('server');					
+                        serverName = info.getAttribute('server');
                     }
-                
+
                     if (info.getElementsByTagName("dn")[0].getAttribute('isvalid') == 1)
                         var _dn = info.getElementsByTagName("dn")[0].firstChild.nodeValue;
                     else

@@ -33,7 +33,7 @@ In order to list editable settings, use the **SHOW** action::
   perl_library_path;/usr/local/lib
   rrdtool_path_bin;/usr/bin/rrdtool
   snmpttconvertmib_path_bin;/usr/share/centreon/bin/snmpttconvertmib
-  snmptt_unknowntrap_log_file;snmptrapd.log  
+  snmptt_unknowntrap_log_file;snmptrapd.log
 
 
 Setparam
@@ -41,7 +41,7 @@ Setparam
 
 If you want to change a specific parameter of a Vendor, use the **SETPARAM** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a setparam -v ";" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a setparam -v ";"
 
 Arguments are composed of the following columns:
 

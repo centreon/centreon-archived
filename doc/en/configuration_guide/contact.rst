@@ -14,7 +14,7 @@ The contacts in Centreon are used to:
 * Be warned in case of necessity (notification).
 
 To add  a contact, simply go to the menu: **Configuration ==> Users ==> Add**.
- 
+
 .. image :: /images/user/configuration/06useradd.png
    :align: center
 
@@ -39,7 +39,7 @@ General information
 ***********************
 Centreon authentication
 ***********************
- 
+
 * The **Reach Centreon Front-end** field serves to authorize the user to access the Centreon web interface.
 * The **Password** and **Confirm Password** fields contain the user password.
 * The **Default Language** field serves to define the language of the Centreon interface for this user.
@@ -50,7 +50,7 @@ Centreon authentication
 
       http://[IP_DU_SERVER_CENTRAL]/index.php?autologin=1&useralias=[login_user]&token=[value_autologin]
 
-.. note:: 
+.. note::
     The Possibility of automatic connection (auto login) should be enabled in the menu: **Administration ==> Options**.
 
 * The **Authentication Source** field specifies if the connection information comes from an LDAP directory or information stored locally on the server.

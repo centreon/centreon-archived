@@ -76,7 +76,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     -u $CENTREON_USER -g $MONITORINGENGINE_GROUP \
 	-m 755 -p $TMP_DIR/final/plugins \
 	$TMP_DIR/final/plugins/* $PLUGIN_DIR >> $LOG_FILE 2>&1
-	
+
 check_result $? "$(gettext "Installing the plugins")"
 
 ## change right for a specific file

@@ -12,7 +12,7 @@ Timeline.ClassicTheme.create = function(locale) {
     if (locale == null) {
         locale = Timeline.Platform.getDefaultLocale();
     }
-    
+
     var f = Timeline.ClassicTheme.implementations[locale];
     if (f == null) {
         f = Timeline.ClassicTheme._Impl;
@@ -22,7 +22,7 @@ Timeline.ClassicTheme.create = function(locale) {
 
 Timeline.ClassicTheme._Impl = function() {
     this.firstDayOfWeek = 0; // Sunday
-    
+
     this.ether = {
         backgroundColors: [
             "#EEE",
@@ -56,7 +56,7 @@ Timeline.ClassicTheme._Impl = function() {
                 hTopEmphasizedStyler: function(elmt) {
                     elmt.className = "timeline-ether-marker-top-emphasized";
                 },
-                    
+
                 vAlign:     "Right",
                 vRightStyler: function(elmt) {
                     elmt.className = "timeline-ether-marker-right";
@@ -73,7 +73,7 @@ Timeline.ClassicTheme._Impl = function() {
             }
         }
     };
-    
+
     this.event = {
         track: {
             offset:         0.5, // em

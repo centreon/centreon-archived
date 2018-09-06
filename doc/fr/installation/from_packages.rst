@@ -116,7 +116,7 @@ Changer cette option dans /etc/my.cnf NE fonctionnera PAS.
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # service mysqld restart
-   
+
 Lancer les services au démarrage
 --------------------------------
 
@@ -135,7 +135,7 @@ Lancer les commandes suivantes sur le serveur Central.
     # systemctl enable httpd.service
     # systemctl enable snmpd.service
     # systemctl enable mysql.service
-    
+
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande d'activation mysql sur ce dernier.
 

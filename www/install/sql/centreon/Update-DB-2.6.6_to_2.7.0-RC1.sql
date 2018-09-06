@@ -49,7 +49,7 @@ CREATE TABLE `traps_group_relation` (
   CONSTRAINT `traps_group_relation_ibfk_2` FOREIGN KEY (`traps_group_id`) REFERENCES `traps_group` (`traps_group_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO topology (topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_popup, topology_modules) VALUES 
+INSERT INTO topology (topology_name, topology_icone, topology_parent, topology_page, topology_order, topology_group, topology_url, topology_popup, topology_modules) VALUES
 ('Group', './img/icones/16x16/factory.gif', 617, 61705, 25, 1, './include/configuration/configObject/traps-groups/groups.php', '0', '0');
 
 -- Create table for relation between metaservice and contact
@@ -104,7 +104,7 @@ ADD COLUMN stats_activate enum('0','1') DEFAULT '1',
 ADD COLUMN correlation_activate enum('0','1') DEFAULT '0';
 
 
-INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES 
+INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES
                         ('Africa/Abidjan', '-00:00', '-00:00'),
                         ('Africa/Accra', '-00:00', '-00:00'),
                         ('Africa/Addis_Ababa', '+03:00', '+03:00'),
@@ -659,8 +659,8 @@ update `contact` set `contact_location` = (select `value` from `options` where `
 update `host` set `host_location` = (select `value` from `options` where `key` ='gmt')  where host_location IS Null;
 
 
-DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202','2020403', '20210', '202013', 
-'2020401', '2020402','20205', '2020501', '2020502', '2020902', '2020903', '2021001', '2021002', '2021201', '2021202', '2021203', 
+DELETE FROM topology WHERE topology_page IN ('20103', '20105', '20215', '20202','2020403', '20210', '202013',
+'2020401', '2020402','20205', '2020501', '2020502', '2020902', '2020903', '2021001', '2021002', '2021201', '2021202', '2021203',
 '20213','2021301', '2021302', '2020901');
 
 -- Moving Graphs section to Performances
@@ -696,7 +696,7 @@ UPDATE topology SET topology_name = 'Services by Servicegroup', topology_group =
 
 -- Hosts pages
 DELETE FROM topology_JS WHERE id_page = 20102;
-UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30, topology_url_opt = NULL WHERE topology_page = 20102; 
+UPDATE topology SET topology_page = 20202, topology_group = 7, topology_parent = 202, topology_order = 30, topology_url_opt = NULL WHERE topology_page = 20102;
 
 DELETE FROM topology_JS WHERE id_page = 20104;
 UPDATE topology SET topology_page = 20203, topology_group = 7, topology_parent = 202, topology_order = 120 WHERE topology_page = 20104;
@@ -731,7 +731,7 @@ DELETE FROM topology WHERE topology_page = 10203;
 
 -- DELETE topology for Scheduling queue
 DELETE FROM topology_JS WHERE id_page = 20207;
-DELETE FROM topology WHERE topology_page = 20207; 
+DELETE FROM topology WHERE topology_page = 20207;
 DELETE FROM topology WHERE topology_parent = 202 AND topology_group = 33 AND topology_name = 'Monitoring Engine';
 
 -- Rename Monitoring Engine Statistics menu
@@ -754,26 +754,26 @@ SET foreign_key_checks = 1;
 -- Add option for number of groups per page
 INSERT INTO `options` (`key`, `value`) VALUES ('maxGraphPerformances','5');
 
--- Change Options informations 
+-- Change Options informations
 SET foreign_key_checks = 0;
-UPDATE topology SET topology_name = 'Parameters' WHERE topology_page = 501; 
-UPDATE topology SET topology_name = 'Centreon UI', topology_page = 50110, topology_parent = 501 WHERE topology_page = 5010101; 
-UPDATE topology SET topology_page = 50111, topology_parent = 501 WHERE topology_page = 5010102; 
-UPDATE topology SET topology_page = 50112, topology_parent = 501 WHERE topology_page = 5010103; 
+UPDATE topology SET topology_name = 'Parameters' WHERE topology_page = 501;
+UPDATE topology SET topology_name = 'Centreon UI', topology_page = 50110, topology_parent = 501 WHERE topology_page = 5010101;
+UPDATE topology SET topology_page = 50111, topology_parent = 501 WHERE topology_page = 5010102;
+UPDATE topology SET topology_page = 50112, topology_parent = 501 WHERE topology_page = 5010103;
 UPDATE topology_JS set id_page = 50112 WHERE id_page = 5010103;
 UPDATE topology SET topology_page = 50113, topology_parent = 501 WHERE topology_page = 5010105;
-UPDATE topology_JS set id_page = 50113 WHERE id_page = 5010103; 
-UPDATE topology SET topology_page = 50114, topology_parent = 501 WHERE topology_page = 5010106; 
-UPDATE topology SET topology_page = 50115, topology_parent = 501 WHERE topology_page = 5010107; 
-UPDATE topology SET topology_page = 50116, topology_parent = 501 WHERE topology_page = 5010109; 
-UPDATE topology SET topology_page = 50117, topology_parent = 501 WHERE topology_page = 5010110; 
+UPDATE topology_JS set id_page = 50113 WHERE id_page = 5010103;
+UPDATE topology SET topology_page = 50114, topology_parent = 501 WHERE topology_page = 5010106;
+UPDATE topology SET topology_page = 50115, topology_parent = 501 WHERE topology_page = 5010107;
+UPDATE topology SET topology_page = 50116, topology_parent = 501 WHERE topology_page = 5010109;
+UPDATE topology SET topology_page = 50117, topology_parent = 501 WHERE topology_page = 5010110;
 SET foreign_key_checks = 1;
-DELETE FROM topology WHERE topology_page = 50101; 
+DELETE FROM topology WHERE topology_page = 50101;
 
 -- Change Centstorage
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Performance Management',NULL,501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 UPDATE topology SET topology_name = 'Options', topology_page = 50118, topology_parent = 501, topology_order = 200, topology_group = 10 WHERE topology_page = 5010601;
-UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602; 
+UPDATE topology SET topology_name = 'Data', topology_page = 50119, topology_parent = 501, topology_order = 210, topology_group = 10 WHERE topology_page = 5010602;
 DELETE FROM topology WHERE topology_page = 50106;
 
 -- Change Media

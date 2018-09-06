@@ -40,12 +40,12 @@ class Engine extends AbstractObject {
     # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path, lock_file, daemon_dumps_core
     protected $attributes_select = '
         nagios_id,
-        
+
         use_timezone,
-        
+
         cfg_dir,
         cfg_file as cfg_filename,
-        
+
         log_file,
         status_file,
         check_result_path,
@@ -111,7 +111,7 @@ class Engine extends AbstractObject {
         debug_verbosity,
         max_debug_file_size,
         log_pid,
-        
+
         global_host_event_handler as global_host_event_handler_id,
         global_service_event_handler as global_service_event_handler_id,
         ocsp_command as ocsp_command_id,
@@ -120,7 +120,7 @@ class Engine extends AbstractObject {
         service_perfdata_command as service_perfdata_command_id,
         host_perfdata_file_processing_command as host_perfdata_file_processing_command_id,
         service_perfdata_file_processing_command as service_perfdata_file_processing_command_id,
-        
+
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -224,7 +224,7 @@ class Engine extends AbstractObject {
         'debug_verbosity',
         'max_debug_file_size',
         'log_pid', // cengine
-        
+
         'global_host_event_handler',
         'global_service_event_handler',
         'ocsp_command',
@@ -281,19 +281,19 @@ class Engine extends AbstractObject {
     protected $stmt_broker = null;
     protected $stmt_interval_length = null;
     protected $add_cfg_files = array();
-    
+
     private function buildCfgFile($poller_id)
     {
         $this->engine['cfg_dir'] = preg_replace('/\/$/', '', $this->engine['cfg_dir']);
         $this->cfg_file = array(
             'target' => array(
-                'cfg_file' => array(), 
-                'path' => $this->engine['cfg_dir'], 
+                'cfg_file' => array(),
+                'path' => $this->engine['cfg_dir'],
                 'resource_file' => $this->engine['cfg_dir'] . '/resource.cfg'
             ),
             'debug' => array(
-                'cfg_file' => array(), 
-                'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id, 
+                'cfg_file' => array(),
+                'path' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id,
                 'resource_file' => $this->backend_instance->getEngineGeneratePath() . '/' . $poller_id . '/resource.cfg')
             );
         foreach ($this->cfg_file as &$value) {
@@ -320,11 +320,11 @@ class Engine extends AbstractObject {
             }
         }
     }
-    
+
     private function getBrokerModules()
     {
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT
               broker_module
             FROM cfg_nagios_broker_module
             WHERE cfg_nagios_id = :id
@@ -348,11 +348,11 @@ class Engine extends AbstractObject {
         $this->stmt_interval_length->execute();
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
     }
-    
+
     private function generate($poller_id)
     {
         if (is_null($this->stmt_engine)) {
-            $this->stmt_engine = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_engine = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
             FROM cfg_nagios
             WHERE nagios_server_id = :poller_id AND nagios_activate = '1'
@@ -360,18 +360,18 @@ class Engine extends AbstractObject {
         }
         $this->stmt_engine->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt_engine->execute();
-        
+
         $this->engine = array_pop($this->stmt_engine->fetchAll(PDO::FETCH_ASSOC));
         if (is_null($this->engine)) {
             throw new Exception("Cannot get engine configuration for poller id (maybe not activate) '" . $poller_id ."'");
         }
-        
+
         $this->buildCfgFile($poller_id);
         $this->getBrokerModules();
         $this->getIntervalLength();
-        
+
         $object = $this->engine;
-        
+
         # Decode
         if (!is_null($object['illegal_macro_output_chars'])) {
             $object['illegal_macro_output_chars'] = html_entity_decode($object['illegal_macro_output_chars'], ENT_QUOTES);
@@ -395,13 +395,13 @@ class Engine extends AbstractObject {
         $object['service_perfdata_command'] = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
         $object['host_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
         $object['service_perfdata_file_processing_command'] = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
-        
+
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['debug']['resource_file'];
         $this->generateFile($object);
         $this->close_file();
-        
+
         $this->generate_filename = $this->engine['cfg_filename'];
         # Need to reset to go in another file
         $object['cfg_file'] = $this->cfg_file['target']['cfg_file'];
@@ -409,12 +409,12 @@ class Engine extends AbstractObject {
         $this->generateFile($object);
         $this->close_file();
     }
-    
+
     public function generateFromPoller($poller)
     {
         Connector::getInstance()->generateObjects($poller['centreonconnector_path']);
         Resource::getInstance()->generateFromPollerId($poller['id']);
-        
+
         $this->generate($poller['id']);
     }
 

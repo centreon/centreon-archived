@@ -70,16 +70,16 @@ class Generate {
     private $current_poller = null;
     private $installed_modules = null;
     private $module_objects = null;
-    
+
     public function __construct() {
         $this->backend_instance = Backend::getInstance();
     }
-    
+
     private function generateIndexData($localhost = 0) {
         $service_instance = Service::getInstance();
         $host_instance = Host::getInstance();
         $services = &$service_instance->getGeneratedServices();
-        
+
         try {
             $stmt = $this->backend_instance->db_cs->prepare("INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES (:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE host_name=VALUES(host_name), service_description=VALUES(service_description)");
             $this->backend_instance->db_cs->beginTransaction();
@@ -92,7 +92,7 @@ class Generate {
                     $stmt->execute();
                 }
             }
-            
+
             # Meta services
             if ($localhost == 1) {
                 $meta_services = &MetaService::getInstance()->getMetaServices();
@@ -105,7 +105,7 @@ class Generate {
                     $stmt->execute();
                 }
             }
-            
+
             $this->backend_instance->db_cs->commit();
         } catch (Exception $e) {
             $this->backend_instance->db_cs->rollback();
@@ -123,7 +123,7 @@ class Generate {
             throw new Exception("Cannot find poller id '" . $poller_id ."'");
         }
     }
-    
+
     private function getPollerFromName($poller_name) {
         $stmt = $this->backend_instance->db->prepare("SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server WHERE name = :poller_name");
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
@@ -133,7 +133,7 @@ class Generate {
             throw new Exception("Cannot find poller name '" . $poller_name ."'");
         }
     }
-    
+
     public function resetObjectsEngine() {
         Host::getInstance()->reset();
         HostTemplate::getInstance()->reset();
@@ -178,10 +178,10 @@ class Generate {
         $this->generateModuleObjects(2);
         Broker::getInstance()->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
-        
+
         $this->generateIndexData($this->current_poller['localhost']);
     }
-    
+
     public function configPollerFromName($poller_name) {
         try {
             $this->getPollerFromName($poller_name);
@@ -266,7 +266,7 @@ class Generate {
             }
         }
     }
-    
+
     /**
      * Reset the cache and the instance
      */

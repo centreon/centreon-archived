@@ -28,7 +28,7 @@ Add
 
 In order to add a Vendor, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a add -v "DLink;DLink routers" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a add -v "DLink;DLink routers"
 
 Required fields are:
 
@@ -46,14 +46,14 @@ Del
 
 If you want to remove a Vendor, use the **DEL** action. The Name is used for identifying the Vendor to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a del -v "DLink" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a del -v "DLink"
 
 Setparam
 --------
 
 If you want to change a specific parameter of a Vendor, use the **SETPARAM** command. The Name is used for identifying the Vendor to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a setparam -v "3com;name;HP" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a setparam -v "3com;name;HP"
 
 Arguments are composed of the following columns:
 
@@ -86,7 +86,7 @@ Generatetraps
 It is possible to generate new SNMP traps from a given MIB file. In order to do so, use the **GENERATETRAPS** command::
 
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a generatetraps -v "3com;/usr/share/mymibs/3com/A3COM-SWITCHING-SYSTEMS-MIB.mib" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o VENDOR -a generatetraps -v "3com;/usr/share/mymibs/3com/A3COM-SWITCHING-SYSTEMS-MIB.mib"
   [...]
   Done
 

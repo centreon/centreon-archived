@@ -30,7 +30,7 @@
       <td>{$form.statusHost.html}</td>
   		<td><input type='text' name='host_search' id='host_search'></td>
   		<td>{$form.statusFilter.html}</td>
-          {if $criticalityUsed}       
+          {if $criticalityUsed}
           <td>{$form.criticality.html}</td>
           {/if}
   		{if $poller_listing}
@@ -72,6 +72,6 @@
 {/if}
 <input name='cmd' id='cmd' value='42' type='hidden'>
 <input name='o' value='{$o}' type='hidden'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

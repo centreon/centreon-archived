@@ -8,9 +8,9 @@ In order to help you to implement you monitoring easily, this documentation sect
 
 .. toctree::
    :maxdepth: 1
-   
+
    sso
-   
+
 
 If you have experiences that you want to share to the Centreon community, please don't hesitate to push it on GitHub.
 Your howto will be integrated into official Centreon Documentation.

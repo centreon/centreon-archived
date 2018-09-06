@@ -62,7 +62,7 @@ Add
 
 In order to add a service, use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a add -v "Host-Test;ping;Ping-LAN" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a add -v "Host-Test;ping;Ping-LAN"
 
 The required fields are:
 
@@ -86,7 +86,7 @@ Del
 
 In order to remove a service, use the **DEL** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a del -v "test;ping" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a del -v "test;ping"
 
 The required fields are:
 
@@ -107,9 +107,9 @@ Setparam
 
 In order to set a specific paremeter for a particular service, use the **SETPARAM** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;max_check_attempts;10" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;normal_check_interval;2" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;normal_check_interval;10" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;max_check_attempts;10"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;normal_check_interval;2"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setparam -v "test;ping;normal_check_interval;10"
 
 The required fields are:
 
@@ -185,7 +185,7 @@ retain_nonstatus_information	 *1* when non status information is retained, *0* o
 
 event_handler	                 Name of the event handler command
 
-event_handler_arguments	         Arguments that go along with the event handler, 
+event_handler_arguments	         Arguments that go along with the event handler,
                                  prepend each argument with the '!' character
 
 notes	                         Notes
@@ -212,9 +212,9 @@ Addhost and Sethost
 
 You may want to tie a service to an extra host. In order to do so, use the **ADDHOST** or **SETHOST** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a sethost -v "host1;ping;host2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a sethost -v "host1;ping;host2"
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addhost -v "host1;ping;host2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addhost -v "host1;ping;host2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -225,7 +225,7 @@ Delhost
 
 In order to remove the relation between a host and a service, use the **DELHOST** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delhost -v "host1;ping;host2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delhost -v "host1;ping;host2"
 
 The service ping which was originally linked to host1 and host2 is now only linked to host1.
 
@@ -238,7 +238,7 @@ Getmacro
 
 In order to view the custom macro list of a service, use the **GETMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a getmacro -v "host1;ping" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a getmacro -v "host1;ping"
   macro name;macro value;is_password;description
   $_SERVICETIME$;80;0;description of macro
   $_SERVICEPL$;400;0;description of macro
@@ -249,8 +249,8 @@ Setmacro
 
 In order to set a macro for a specific service use the **SETMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setmacro -v "test;ping;time;80;0;description of macro" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setmacro -v "test;ping;pl;400;0;description of macro" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setmacro -v "test;ping;time;80;0;description of macro"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setmacro -v "test;ping;pl;400;0;description of macro"
 
 .. note::
  You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -261,8 +261,8 @@ Delmacro
 
 In order to remove a macro from a specific service use the **DELMACRO** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delmacro -v "test;ping;time" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delmacro -v "test;ping;pl" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delmacro -v "test;ping;time"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delmacro -v "test;ping;pl"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -273,7 +273,7 @@ Setseverity
 
 In order to associate a severity to a service, use the **SETSEVERITY** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setseverity -v "Centreon-Server;ping;Critical" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setseverity -v "Centreon-Server;ping;Critical"
 
 
 Required parameters:
@@ -294,7 +294,7 @@ Unsetseverity
 
 In order to remove the severity from a service, use the **UNSETSEVERITY** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a unsetseverity -v "Centreon-Server;ping" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a unsetseverity -v "Centreon-Server;ping"
 
 
 Required parameters:
@@ -313,7 +313,7 @@ Getcontact
 
 In order to view the contact list of a service, use the **GETCONTACT** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a getcontact -v "Centreon-Server;Ping" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a getcontact -v "Centreon-Server;Ping"
   id;name
   28;Contact_1
   29;Contact_2
@@ -324,7 +324,7 @@ Addcontact and Setcontact
 
 In order to add a new contact to notification contact list, use the **ADDCONTACT** or **SETCONTACT** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addcontact -v "test;ping;User1" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addcontact -v "test;ping;User1"
   [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setcontact -v "test;ping;User1|User2"
 
 .. note::
@@ -336,8 +336,8 @@ Delcontact
 
 In order to remove a contact from the notification contact list, use the **DELCONTACT** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontact -v "test;ping;User1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontact -v "test;ping;User2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontact -v "test;ping;User1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontact -v "test;ping;User2"
 
 .. note::
 
@@ -349,7 +349,7 @@ Getcontactgroup
 
 In order to view the contact group list of a service, use the **GETCONTACTGROUP** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a getcontactgroup -v "Centreon-Server;Ping" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a getcontactgroup -v "Centreon-Server;Ping"
   id;name
   28;ContactGroup_1
   29;ContactGroup_2
@@ -360,8 +360,8 @@ Addcontactgroup and Setcontactgroup
 
 In order to add a new contactgroup to notification contactgroup list, use the **ADDCONTACTGROUP** or **SETCONTACTGROUP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addcontactgroup -v "test;ping;Group1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setcontactgroup -v "test;ping;Group1|Group2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addcontactgroup -v "test;ping;Group1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a setcontactgroup -v "test;ping;Group1|Group2"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -372,8 +372,8 @@ Delcontactgroup
 
 In order to remove a contactgroup from the notification contactgroup list, use **DELCONTACTGROUP** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontactgroup -v "test;ping;Group1" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontactgroup -v "test;ping;Group2" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontactgroup -v "test;ping;Group1"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a delcontactgroup -v "test;ping;Group2"
 
 
 .. note::
@@ -385,7 +385,7 @@ Gettrap
 
 In order to view the trap list of a service, use the **GETTRAP** action::
 
-  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a gettrap -v "Centreon-Server;Ping" 
+  [root@localhost core]# ./centreon -u admin -p centreon -o "SERVICE" -a gettrap -v "Centreon-Server;Ping"
   id;name
   48;ciscoConfigManEvent
   39;ospfVirtIfTxRetransmit
@@ -396,8 +396,8 @@ Addtrap and Settrap
 
 In order to add a new trap, use the **ADDTRAP** or **SETTRAP** actions where *add* will append and *set* will overwrite previous definitions::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addtrap -v "test;ping;snOspfVirtIfConfigError" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a settrap -v "test;ping;snOspfVirtNbrStateChange|snTrapAccessListDeny" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a addtrap -v "test;ping;snOspfVirtIfConfigError"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a settrap -v "test;ping;snOspfVirtNbrStateChange|snTrapAccessListDeny"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
@@ -408,4 +408,4 @@ Deltrap
 
 In order to remove a trap from a service, use the **DELTRAP** command::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a deltrap -v "test;ping;snOspfVirtIfConfigError" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o SERVICE -a deltrap -v "test;ping;snOspfVirtIfConfigError"

@@ -116,7 +116,7 @@ document.onmousemove = position;
 /* Reset trim function in order to be compatible with IE */
 if (typeof String.prototype.trim !== 'function') {
     String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
+        return this.replace(/^\s+|\s+$/g, '');
     }
 }
 
@@ -171,7 +171,7 @@ function resetSelectedCheckboxes()
                 }
             }
         });
-        
+
         $$('input[type="checkbox"]').each(function(el) {
         if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(el.id)]) {
             el.checked = true;
@@ -253,13 +253,13 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    
+
 if ($centreon->user->admin || !count($pollerArray)) {
     $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = 1 AND deleted = 0 ORDER BY name";
 } else {
-    $instanceQuery = "SELECT instance_id, name 
+    $instanceQuery = "SELECT instance_id, name
                       FROM `instances` WHERE running = 1 AND deleted = 0
-                      AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
+                      AND name IN (". $centreon->user->access->getPollerString('NAME') .")
                       ORDER BY name";
 }
     $DBRESULT = $pearDBO->query($instanceQuery);
@@ -323,10 +323,10 @@ if (!$centreon->user->access->admin) {
     unset($data);
 }
 
-        $DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id 
-                                        FROM hostgroups hg, hosts_hostgroups hhg 
-                                        WHERE hg.hostgroup_id = hhg.hostgroup_id 
-                                        AND hg.name NOT LIKE 'meta\_%' 
+        $DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id
+                                        FROM hostgroups hg, hosts_hostgroups hhg
+                                        WHERE hg.hostgroup_id = hhg.hostgroup_id
+                                        AND hg.name NOT LIKE 'meta\_%'
                                      ORDER BY hg.name");
 while ($hostgroups = $DBRESULT->fetchRow()) {
     if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
@@ -870,7 +870,7 @@ var func_displayIMG = function(event) {
     jQuery('.img_volante').css('left', event.pageX + 20);
     jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.img_volante').show();
-        
+
     var chartElem = jQuery('<div></div>')
         .addClass('chart')
         .data('graphType', 'service')

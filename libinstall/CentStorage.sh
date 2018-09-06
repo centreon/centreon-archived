@@ -5,7 +5,7 @@
 ## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 ## Install script for CentStorage
 #----
-# install centreon centstorage  
+# install centreon centstorage
 #################################
 # SVN: $Id$
 
@@ -40,7 +40,7 @@ check_centreon_group
 check_centreon_user
 
 ## Populate temporaty source directory
-copyInTempFile 2>>$LOG_FILE 
+copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"

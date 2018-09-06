@@ -58,11 +58,11 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 /* Path to the configuration dir */
 $path = "./include/configuration/configNagios/";
-    
+
 /* PHP functions */
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
-    
+
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];

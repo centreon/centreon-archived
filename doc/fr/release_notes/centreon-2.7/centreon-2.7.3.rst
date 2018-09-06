@@ -2,7 +2,7 @@
 Centreon 2.7.3
 ##############
 
-Released March 15,2016  
+Released March 15,2016
 
 The 2.7.3 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.3 follow.
 
@@ -23,7 +23,7 @@ Features and Bug Fixes
 - Fix search in Poller configuration page
 - Fix problems when sharing custom views
 - Fix description problem with custom macros containing dash
-- Fix time Interval change isn't being reflected in the polling Engine config 
+- Fix time Interval change isn't being reflected in the polling Engine config
 - Fix Missing GMT and UTC timezone
 - Fix No performance graph for host group service
 - Fix ACL were showing too much objects

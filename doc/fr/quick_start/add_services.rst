@@ -2,7 +2,7 @@
 Ajouter un service
 ==================
 
-Vous venez :ref:`d'ajouter un hôte<add_host>` et vous souhaitez ajouter des 
+Vous venez :ref:`d'ajouter un hôte<add_host>` et vous souhaitez ajouter des
 points de contrôle supplémentaires.
 
 .. note::

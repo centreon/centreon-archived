@@ -24,7 +24,7 @@ Timeline.DateTime.gregorianUnitLengths = [];
     (function() {
         var d = Timeline.DateTime;
         var a = d.gregorianUnitLengths;
-        
+
         a[d.MILLISECOND] = 1;
         a[d.SECOND]      = 1000;
         a[d.MINUTE]      = a[d.SECOND] * 60;
@@ -44,7 +44,7 @@ Timeline.DateTime.parseGregorianDateTime = function(o) {
     } else if (o instanceof Date) {
         return o;
     }
-    
+
     var s = o.toString();
     if (s.length > 0 && s.length < 8) {
         var space = s.indexOf(" ");
@@ -57,13 +57,13 @@ Timeline.DateTime.parseGregorianDateTime = function(o) {
         } else {
             var year = parseInt(s);
         }
-            
+
         var d = new Date(0);
         d.setUTCFullYear(year);
-        
+
         return d;
     }
-    
+
     try {
         return new Date(Date.parse(s));
     } catch (e) {
@@ -76,14 +76,14 @@ Timeline.DateTime.setIso8601Date = function(dateObject, string) {
      *  This function has been adapted from dojo.date, v.0.3.0
      *  http://dojotoolkit.org/.
      */
-     
+
     var regexp = "^([0-9]{4})((-?([0-9]{2})(-?([0-9]{2}))?)|" +
             "(-?([0-9]{3}))|(-?W([0-9]{2})(-?([1-7]))?))?$";
     var d = string.match(new RegExp(regexp));
     if(!d) {
         throw new Error("Invalid date string: " + string);
     }
-    
+
     var year = d[1];
     var month = d[4];
     var date = d[6];
@@ -92,7 +92,7 @@ Timeline.DateTime.setIso8601Date = function(dateObject, string) {
     var dayofweek = (d[12]) ? d[12] : 1;
 
     dateObject.setUTCFullYear(year);
-    if (dayofyear) { 
+    if (dayofyear) {
         dateObject.setUTCMonth(0);
         dateObject.setUTCDate(Number(dayofyear));
     } else if (week) {
@@ -101,22 +101,22 @@ Timeline.DateTime.setIso8601Date = function(dateObject, string) {
         var gd = dateObject.getUTCDay();
         var day =  (gd) ? gd : 7;
         var offset = Number(dayofweek) + (7 * Number(week));
-        
-        if (day <= 4) { 
-            dateObject.setUTCDate(offset + 1 - day); 
-        } else { 
-            dateObject.setUTCDate(offset + 8 - day); 
+
+        if (day <= 4) {
+            dateObject.setUTCDate(offset + 1 - day);
+        } else {
+            dateObject.setUTCDate(offset + 8 - day);
         }
     } else {
-        if (month) { 
+        if (month) {
             dateObject.setUTCDate(1);
-            dateObject.setUTCMonth(month - 1); 
+            dateObject.setUTCMonth(month - 1);
         }
-        if (date) { 
-            dateObject.setUTCDate(date); 
+        if (date) {
+            dateObject.setUTCDate(date);
         }
     }
-    
+
     return dateObject;
 };
 
@@ -125,7 +125,7 @@ Timeline.DateTime.setIso8601Time = function (dateObject, string) {
      *  This function has been adapted from dojo.date, v.0.3.0
      *  http://dojotoolkit.org/.
      */
-     
+
     // first strip timezone info from the end
     var timezone = "Z|(([-+])([0-9]{2})(:?([0-9]{2}))?)$";
     var d = string.match(new RegExp(timezone));
@@ -155,7 +155,7 @@ Timeline.DateTime.setIso8601Time = function (dateObject, string) {
     dateObject.setUTCMinutes(mins);
     dateObject.setUTCSeconds(secs);
     dateObject.setUTCMilliseconds(ms);
-    
+
     return dateObject;
 };
 
@@ -164,12 +164,12 @@ Timeline.DateTime.setIso8601 = function (dateObject, string){
      *  This function has been copied from dojo.date, v.0.3.0
      *  http://dojotoolkit.org/.
      */
-     
+
     var comps = (string.indexOf("T") == -1) ? string.split(" ") : string.split("T");
-    
+
     Timeline.DateTime.setIso8601Date(dateObject, comps[0]);
-    if (comps.length == 2) { 
-        Timeline.DateTime.setIso8601Time(dateObject, comps[1]); 
+    if (comps.length == 2) {
+        Timeline.DateTime.setIso8601Time(dateObject, comps[1]);
     }
     return dateObject;
 };
@@ -183,9 +183,9 @@ Timeline.DateTime.parseIso8601DateTime = function (string) {
 };
 
 Timeline.DateTime.roundDownToInterval = function(date, intervalUnit, timeZone, multiple, firstDayOfWeek) {
-    var timeShift = timeZone * 
+    var timeShift = timeZone *
         Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.HOUR];
-        
+
     var date2 = new Date(date.getTime() + timeShift);
     var clearInDay = function(d) {
         d.setUTCMilliseconds(0);
@@ -198,7 +198,7 @@ Timeline.DateTime.roundDownToInterval = function(date, intervalUnit, timeZone, m
         d.setUTCDate(1);
         d.setUTCMonth(0);
     };
-    
+
     switch(intervalUnit) {
     case Timeline.DateTime.MILLISECOND:
         var x = date2.getUTCMilliseconds();
@@ -206,23 +206,23 @@ Timeline.DateTime.roundDownToInterval = function(date, intervalUnit, timeZone, m
         break;
     case Timeline.DateTime.SECOND:
         date2.setUTCMilliseconds(0);
-        
+
         var x = date2.getUTCSeconds();
         date2.setUTCSeconds(x - (x % multiple));
         break;
     case Timeline.DateTime.MINUTE:
         date2.setUTCMilliseconds(0);
         date2.setUTCSeconds(0);
-        
+
         var x = date2.getUTCMinutes();
-        date2.setTime(date2.getTime() - 
+        date2.setTime(date2.getTime() -
             (x % multiple) * Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.MINUTE]);
         break;
     case Timeline.DateTime.HOUR:
         date2.setUTCMilliseconds(0);
         date2.setUTCSeconds(0);
         date2.setUTCMinutes(0);
-        
+
         var x = date2.getUTCHours();
         date2.setUTCHours(x - (x % multiple));
         break;
@@ -232,19 +232,19 @@ Timeline.DateTime.roundDownToInterval = function(date, intervalUnit, timeZone, m
     case Timeline.DateTime.WEEK:
         clearInDay(date2);
         var d = (date2.getUTCDay() + 7 - firstDayOfWeek) % 7;
-        date2.setTime(date2.getTime() - 
+        date2.setTime(date2.getTime() -
             d * Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.DAY]);
         break;
     case Timeline.DateTime.MONTH:
         clearInDay(date2);
         date2.setUTCDate(1);
-        
+
         var x = date2.getUTCMonth();
         date2.setUTCMonth(x - (x % multiple));
         break;
     case Timeline.DateTime.YEAR:
         clearInYear(date2);
-        
+
         var x = date2.getUTCFullYear();
         date2.setUTCFullYear(x - (x % multiple));
         break;
@@ -261,7 +261,7 @@ Timeline.DateTime.roundDownToInterval = function(date, intervalUnit, timeZone, m
         date2.setUTCFullYear(Math.floor(date2.getUTCFullYear() / 1000) * 1000);
         break;
     }
-    
+
     date.setTime(date2.getTime() - timeShift);
 };
 
@@ -269,7 +269,7 @@ Timeline.DateTime.roundUpToInterval = function(date, intervalUnit, timeZone, mul
     var originalTime = date.getTime();
     Timeline.DateTime.roundDownToInterval(date, intervalUnit, timeZone, multiple, firstDayOfWeek);
     if (date.getTime() < originalTime) {
-        date.setTime(date.getTime() + 
+        date.setTime(date.getTime() +
             Timeline.DateTime.gregorianUnitLengths[intervalUnit] * multiple);
     }
 };
@@ -283,11 +283,11 @@ Timeline.DateTime.incrementByInterval = function(date, intervalUnit) {
         date.setTime(date.getTime() + 1000);
         break;
     case Timeline.DateTime.MINUTE:
-        date.setTime(date.getTime() + 
+        date.setTime(date.getTime() +
             Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.MINUTE]);
         break;
     case Timeline.DateTime.HOUR:
-        date.setTime(date.getTime() + 
+        date.setTime(date.getTime() +
             Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.HOUR]);
         break;
     case Timeline.DateTime.DAY:
@@ -315,7 +315,7 @@ Timeline.DateTime.incrementByInterval = function(date, intervalUnit) {
 };
 
 Timeline.DateTime.removeTimeZoneOffset = function(date, timeZone) {
-    return new Date(date.getTime() + 
+    return new Date(date.getTime() +
         timeZone * Timeline.DateTime.gregorianUnitLengths[Timeline.DateTime.HOUR]);
 };
 

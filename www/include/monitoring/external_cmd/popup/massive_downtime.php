@@ -81,12 +81,12 @@ $form->setDefaults(array("comment" => sprintf(_("Downtime set by %s"), $centreon
 
 $form->addElement('text', 'start', _('Start Time'), array('id'=>'start', 'size'=>10, 'class'=>'datepicker'));
 $form->addElement('text', 'end', _('End Time'), array('id'=>'end', 'size'=>10, 'class'=>'datepicker'));
-    
+
 $form->addElement('text', 'start_time', '', array('id'=>'start_time', 'size' => 5, 'class' => 'timepicker'));
 $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, 'class' => 'timepicker'));
 
 $form->addElement('text','timezone_warning', _("*The timezone used is configured on your user settings"));
-    
+
 $form->setDefaults(
     array(
         "start" => $centreonGMT->getDate("Y/m/d", time()),
@@ -98,8 +98,8 @@ $form->setDefaults(
 /*
 $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
 $host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
-$form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
-$form->setDefaults(array('host_or_centreon_time' => '0'));   
+$form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');
+$form->setDefaults(array('host_or_centreon_time' => '0'));
 */
 $form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 $defaultDuration = 3600;

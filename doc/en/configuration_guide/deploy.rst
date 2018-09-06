@@ -27,7 +27,7 @@ First step
 #. Click on **Export**
 
 .. image:: /images/user/configuration/poller_generate_1.png
-   :align: center 
+   :align: center
 
 Check that no error appears during generation.
 
@@ -42,7 +42,7 @@ Second step
 #. Click on **Export**
 
 .. image:: /images/user/configuration/poller_generate_2.png
-   :align: center 
+   :align: center
 
 .. note::
    The **Post generation command** option can be used to request the execution of the command post-generation set at the configuration of the scheduler.
@@ -57,4 +57,4 @@ Multiple options are available in the configuration generation page:
 #. **Run monitoring engine debug (-v)**: Enables the scheduler to check the generated configuration
 #. **Move Export Files**: Moves the configuration files from the temporary directory to the  scheduler directory
 #. **Restart Monitoring Engine**: Restarts the scheduler to apply the new configuration files
-#. **Post generation command**: Executes the command post-generation set at the configuration of the scheduler level 
+#. **Post generation command**: Executes the command post-generation set at the configuration of the scheduler level

@@ -5,14 +5,14 @@ Commands
 Overview
 --------
 
-Object name: **CMD** 
+Object name: **CMD**
 
 Show
 ----
 
 In order to list available commands, use **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a show 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a show
   id;name;type;line
   1;check-ping;check;$USER1$/check_ping -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$
   2;check_dummy;check;$USER1$/check_dummy -o $ARG1$ -s $ARG2$

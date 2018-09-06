@@ -54,13 +54,13 @@ class Timezone extends AbstractObject {
     }
 
     private function getTimezone()
-    {   
+    {
         if (!is_null($this->aTimezone)) {
             return $this->aTimezone;
         }
 
         $this->aTimezone = array();
-        $stmt = $this->backend_instance->db->prepare("SELECT 
+        $stmt = $this->backend_instance->db->prepare("SELECT
                 timezone_id,
                 timezone_name
             FROM timezone");

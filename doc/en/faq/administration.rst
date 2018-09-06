@@ -29,7 +29,7 @@ There are various things to check when RRDs don't seem to be generated.
 Disk space
 ----------
 
-By default, the graph files (.rrd) are stored in ``/var/lib/centreon/metrics``, 
+By default, the graph files (.rrd) are stored in ``/var/lib/centreon/metrics``,
 it is obviously necessary to have enough space in your filesystem.
 
 
@@ -43,15 +43,15 @@ Process that usually writes in this directory is either ``centstorage`` or ``cbd
 Plugins
 -------
 
-Does your plugin return the correct output? Refer to the 
-:ref:`Plugin API documentation<centreon-engine:centengine_plugin_api>` 
+Does your plugin return the correct output? Refer to the
+:ref:`Plugin API documentation<centreon-engine:centengine_plugin_api>`
 for more information
 
 
 Centreon Broker
 ---------------
 
-Centreon Broker must be configured properly, refer to this 
+Centreon Broker must be configured properly, refer to this
 :ref:`documentation <centreon_broker_wizards>` for more information.
 
 The cbd rrd daemon must be running::
@@ -59,5 +59,5 @@ The cbd rrd daemon must be running::
   $ /etc/init.d/cbd status
    * cbd_central-rrd is running
 
-Make sure to have the *Start script for broker daemon* parameter filled in 
+Make sure to have the *Start script for broker daemon* parameter filled in
 ``Administration`` > ``Options`` > ``Monitoring``.

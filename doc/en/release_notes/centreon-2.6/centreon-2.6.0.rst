@@ -30,7 +30,7 @@ It's now possible with Centreontrapd to :
 - Transform output (to remove pipe for example) ;
 - Skip trap for hosts in downtime ;
 - Add custom code execution ;
-- Put unknown trap in another file. 
+- Put unknown trap in another file.
 
 
 ACL and configuration modification with admin users
@@ -46,7 +46,7 @@ Partial rebuild of events information
 
 It's now possible to partially rebuild events information with eventsRebuild script. You can now use option '-s' when rebuilding and the rebuild will start from this date.
 
-Before, you had to rebuild from the beginning of the related data. 
+Before, you had to rebuild from the beginning of the related data.
 
 
 Criticality inheritance
@@ -67,7 +67,7 @@ CHANGELOG
 
 Bug fixes
 =========
-- #5655: Changing Host Templates doesn't delete services 
+- #5655: Changing Host Templates doesn't delete services
 - #5782: Warning daemon_dumps_core variable ignored
 - #5795: ACL and configuration modification with admin users
 - #5868: Generation of services groups isn't correct for poller

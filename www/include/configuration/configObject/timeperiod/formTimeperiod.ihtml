@@ -3,7 +3,7 @@
 <div class="headerTabContainer">
     <ul id="mainnav">
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
-        <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Time Range Exceptions{/t}</a></li>    
+        <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{t}Time Range Exceptions{/t}</a></li>
     </ul>
     <div id="validFormTop">
     {if $o == "a" || $o == "c"}
@@ -43,11 +43,11 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{t}Advanced settings{/t}</h4>
           </td>
-        </tr>           
+        </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="include"> {$form.tp_include.label}</td><td class="FormRowValue">{$form.tp_include.html}</td></tr>
      </table>
 </div>
-<div id="tab2" class="tab"> 
+<div id="tab2" class="tab">
     <table class="formTable table">
         <tr class="ListHeader">
           <td class="FormHeader" colspan="2">

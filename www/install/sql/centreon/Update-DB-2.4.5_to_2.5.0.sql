@@ -1,5 +1,5 @@
 ALTER TABLE `hostgroup` ADD COLUMN `hg_rrd_retention` INT(11) DEFAULT NULL AFTER `hg_map_icon_image`;
-ALTER TABLE `ods_view_details` ADD INDEX `index_metric_mult` (`index_id`, `metric_id`); 
+ALTER TABLE `ods_view_details` ADD INDEX `index_metric_mult` (`index_id`, `metric_id`);
 ALTER TABLE `cron_operation` ADD COLUMN `pid` INT(11) DEFAULT NULL AFTER `running`;
 ALTER TABLE `traps` ADD COLUMN `traps_timeout` INT(11) DEFAULT NULL AFTER `traps_advanced_treatment`;
 ALTER TABLE `traps` ADD COLUMN `traps_exec_interval` INT(11) DEFAULT NULL AFTER `traps_timeout`;
@@ -68,7 +68,7 @@ ALTER TABLE `host` ADD COLUMN `cg_additive_inheritance` boolean DEFAULT 0 AFTER 
 ALTER TABLE `host` ADD COLUMN `contact_additive_inheritance` boolean DEFAULT 0 AFTER `host_notifications_enabled`;
 
 -- Ticket #3988
-INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`,`topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) 
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`,`topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`)
 VALUES ('Contact Templates','./img/icones/16x16/user1_information.png',603,60306,13,1,'./include/configuration/configObject/contact_template_model/contact_template.php','0','0','1',NULL,NULL,NULL,'0');
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60306, './include/common/javascript/changetab.js', 'initChangeTab');
 
@@ -154,9 +154,9 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,
 ALTER TABLE `nagios_server` ADD COLUMN `description` VARCHAR(50) DEFAULT NULL;
 
 -- Ticket #4201
-DELETE FROM cb_list WHERE cb_field_id = '6'; 
+DELETE FROM cb_list WHERE cb_field_id = '6';
 INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '6', 'no');
-DELETE FROM cb_list WHERE cb_field_id = '25'; 
+DELETE FROM cb_list WHERE cb_field_id = '25';
 INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '25', 'no');
 
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'No', 'no');

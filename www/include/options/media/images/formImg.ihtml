@@ -20,7 +20,7 @@
 				<td class="FormRowField"><img class="helpTooltip" name="img_name"> {$form.img_name.label}</td>
 				<td class="FormRowValue">{$form.img_name.html}</td>
 			</tr>
-		{/if}		
+		{/if}
 		<tr class="list_two">
 			<td class="FormRowField"><img class="helpTooltip" name="img_dir"> {$form.directories.label}</td>
 			<td class="FormRowValue">{$form.directories.html}&nbsp;
@@ -42,7 +42,7 @@
 			<td class="FormRowField">{$form.img_comment.label}</td>
 			<td class="FormRowValue">{$form.img_comment.html}</td>
 		</tr>
-		
+
 		{if $o == "a" || $o == "ci"}
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}

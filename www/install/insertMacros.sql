@@ -1,6 +1,6 @@
--- 
+--
 -- Contenu de la table `nagios_macro`
--- 
+--
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 1, '$HOSTNAME$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( 2, '$_HOSTSNMPCOMMUNITY$');

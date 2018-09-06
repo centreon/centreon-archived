@@ -362,21 +362,21 @@ foreach (array('o1', 'o2') as $option) {
                 "   setO(this.form.elements['$option'].value); submit();} " .
                 "else if (this.form.elements['$option'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
                 "   setO(this.form.elements['$option'].value); submit();} " .
-                "else if (this.form.elements['$option'].selectedIndex == 3 || 
-                        this.form.elements['$option'].selectedIndex == 4 || 
-                        this.form.elements['$option'].selectedIndex == 5 || 
+                "else if (this.form.elements['$option'].selectedIndex == 3 ||
+                        this.form.elements['$option'].selectedIndex == 4 ||
+                        this.form.elements['$option'].selectedIndex == 5 ||
                         this.form.elements['$option'].selectedIndex == 6){" .
                 "   setO(this.form.elements['$option'].value); submit();} " .
                 "this.form.elements['$option'].selectedIndex = 0");
-    $form->addElement('select', $option, null, array(null  =>  _("More actions..."), 
-                                                    "m"  =>  _("Duplicate"), 
-                                                    "d"  =>  _("Delete"), 
-                                                    "mc"  =>  _("Massive Change"), 
-                                                    "ms"  =>  _("Enable"), 
-                                                    "mu"  =>  _("Disable"), 
+    $form->addElement('select', $option, null, array(null  =>  _("More actions..."),
+                                                    "m"  =>  _("Duplicate"),
+                                                    "d"  =>  _("Delete"),
+                                                    "mc"  =>  _("Massive Change"),
+                                                    "ms"  =>  _("Enable"),
+                                                    "mu"  =>  _("Disable"),
                                                     "dp"  =>  _("Deploy Service")), $attrs1);
     $o1 = $form->getElement($option);
-    $o1->setValue(null);    
+    $o1->setValue(null);
 }
 
 $tpl->assign('limit', $limit);

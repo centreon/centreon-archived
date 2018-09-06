@@ -7,4 +7,4 @@ Guide d'utilisateur
     display
     cud
     link
-    bestpractice 
+    bestpractice

@@ -37,12 +37,12 @@
 function testConnectorExistence($name = null)
 {
     global $connectorObj, $form;
-    
+
     if (isset($form)) {
         $id = $form->getSubmitValue('connector_id');
     } else {
         $id = null;
     }
-    
+
     return $connectorObj->isNameAvailable($name, $id);
 }

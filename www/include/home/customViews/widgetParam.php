@@ -68,7 +68,7 @@ if (isset($_REQUEST['view_id']) && $_REQUEST['view_id'] && isset($_REQUEST['widg
 
     $info = $widgetObj->getWidgetDirectory($widgetObj->getWidgetType($widgetId));
     $title .= " [".$info."]";
-    
+
 
     $defaultTab['custom_view_id'] = $viewId;
     $defaultTab['widget_id'] = $widgetId;

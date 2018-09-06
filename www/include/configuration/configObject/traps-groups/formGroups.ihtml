@@ -21,7 +21,7 @@
             </td>
         </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="traps">{$form.traps.label}</td><td class="FormRowValue">{$form.traps.html}</td></tr>	
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="traps">{$form.traps.label}</td><td class="FormRowValue">{$form.traps.html}</td></tr>
 	</table>
 	</div>
 	<div id="validForm">

@@ -33,7 +33,7 @@ Le schéma ci-dessous résume la gestion des notifications au sein de Centreon :
 
 .. image :: /images/guide_exploitation/hnotifications_schema.png
    :align: center
-   
+
 **************************************************
 Les escalades de notifications au sein de Centreon
 **************************************************

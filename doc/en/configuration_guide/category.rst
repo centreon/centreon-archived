@@ -20,7 +20,7 @@ To add a category of hosts:
 
 .. image:: /images/user/configuration/08hostcategory.png
    :align: center
- 
+
 * The **Host Category Name** and **Alias** fields contain respectively the name and the alias of the category of host.
 * The **Linked hosts** list allows us to add hosts to the category.
 * If a host template is added to **Linked host template** list all the hosts which inherit from this Model belong to this category.
@@ -42,9 +42,9 @@ To add a category of services:
 
 .. image:: /images/user/configuration/08servicecategory.png
       :align: center
- 
+
 * The **Name** and **Description** fields define the name and the description of the category of service.
-* if a service template is added to **Service Template Descriptions** list all the services which inherit from this Model belong to this category. 
+* if a service template is added to **Service Template Descriptions** list all the services which inherit from this Model belong to this category.
 * The **Severity type** box signifies that the category of service has a criticality level.
 * The **Level** and **Icon** fields define a criticality level and an associated icon respectively.
 * The **Status** field allows us to enable or disable the category of services.

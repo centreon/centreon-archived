@@ -19,7 +19,7 @@
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$form.header.information}</h4>
           </td>
-        </tr> 	
+        </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_acl_definition">{$form.acl_topo_name.label}</td><td class="FormRowValue">{$form.acl_topo_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_alias">{$form.acl_topo_alias.label}</td><td class="FormRowValue">{$form.acl_topo_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_topo_activate.label}</td><td class="FormRowValue">{$form.acl_topo_activate.html}</td></tr>
@@ -40,7 +40,7 @@
 							<table cellpadding=0 cellspacing=0 border=0 margin=0 padding=0 width="100%" style='padding-bottom:3px;'>
 								<tr style='background-color:#BBBBBB;'>
 								{if $a.childNumber != 0}
-									<td width="400"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">&nbsp;<label for="{$a.id}">{$a.name}</label> : </td> 
+									<td width="400"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">&nbsp;<label for="{$a.id}">{$a.name}</label> : </td>
 								{else}
 									<td width="400"><li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$a.id}">{$a.name}</label> : </td>
 								{/if}
@@ -56,17 +56,17 @@
 								</tr>
 							</table>
 							<ul class="arbo_b" id="{$a.c_id}">
-							{assign var='group' value='0'}					
+							{assign var='group' value='0'}
 							{foreach key=key item=b from=$a.childs}
 							<table cellpadding=0 cellspacing=0 border=0 margin=0 width='100%'>
 							<tr style='background-color:#CCCCCC'>
 								{if $b.childNumber != 0}
 								<td>
-									<li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">&nbsp;<label for="{$b.id}">{$b.name}</label> : 
+									<li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">&nbsp;<label for="{$b.id}">{$b.name}</label> :
 								</td>
 								{else}
 								<td>
-									<li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$b.id}">{$b.name}</label> : 
+									<li><img src='img/icones/1x1/blank.gif' width='16'>&nbsp;<label for="{$b.id}">{$b.name}</label> :
 								</td>
 								{/if}
 								<td style='text-align:right;padding-right:10px;'>

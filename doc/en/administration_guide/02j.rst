@@ -32,7 +32,7 @@ Host groups and service groups are used to group together objects by logical ent
 * Enable viewing the status of a set of objects by selecting in the search filters of a group of objects
 * Search several performance graphs quickly by browsing the object tree structure by group and then by resource
 
-Generally speaking, we try to group together hosts by functional level. E.g.: DELL and HP hosts or Linux, Windows, etc., hosts. 
+Generally speaking, we try to group together hosts by functional level. E.g.: DELL and HP hosts or Linux, Windows, etc., hosts.
 We also try to group services by application jobs. E.g.: Salary management application, ERP Application, etc.
 
 .. note::

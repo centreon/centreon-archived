@@ -8,7 +8,7 @@ Les escalades de notifications
 Définition
 **********
 
-D'une manière générale, en cas de déclenchement d'une alerte, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts). 
+D'une manière générale, en cas de déclenchement d'une alerte, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts).
 De même, il est possible d'envoyer plusieurs notifications suivant un intervalle de temps régulier.
 
 Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées ou de changer le moyen de notification (remplacer les mails par un SMS).
@@ -30,7 +30,7 @@ Pour ajouter une escalade de notification :
 #. Cliquez sur **Ajouter**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/04notificationsescalation.png
-   :align: center 
+   :align: center
 
 * Les champs **Nom d'escalade** et **Alias** permettent de définir un nom et un alias à l'escalade de notifications.
 * Le champ **Première notification** permet de choisir le numéro de la notification à partir de laquelle le groupe de contacts sera averti.

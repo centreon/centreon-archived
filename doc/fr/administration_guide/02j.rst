@@ -16,7 +16,7 @@ Il est également possible de créer des catégories :ref:`d'hôtes <hostcategor
 Les groupes
 ***********
 
-D'une manière générale, les groupes sont des containeurs permettant de regrouper un ensemble d'objet possédant une propriété commune : 
+D'une manière générale, les groupes sont des containeurs permettant de regrouper un ensemble d'objet possédant une propriété commune :
 
 * Même identité matérielle (serveurs Dell, HP, IBM, ...), identité logique (équipements réseau) ou identité géographique (Europe, Asie, Afrique, Amérique du nord, ...)
 * Appartenance à une même application (application CMS, ...) ou à un même secteur d'activité (Gestion de la paie, ...)

@@ -48,7 +48,7 @@ include_once("./include/monitoring/common-Func.php");
 require_once "HTML/QuickForm.php";
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-/* 
+/*
  * Path to the option dir
  */
 $path = "./include/Administration/performance/";

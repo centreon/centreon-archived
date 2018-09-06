@@ -50,7 +50,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (25, 26, 0, 4),
 (25, 27, 0, 5);
 
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`)
 VALUES (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL);
 
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES

@@ -4,9 +4,9 @@
 		<td class="ListColHeaderLeft">{$labels.description}</td>
 		<td class="ListColHeaderLeft">{$labels.version}</td>
 		<td class="ListColHeaderLeft">{$labels.author}</td>
-		<td class="ListColHeaderRight">{$labels.actions}</td>		
+		<td class="ListColHeaderRight">{$labels.actions}</td>
 	</tr>
-	{foreach item=elem from=$widgets}		
+	{foreach item=elem from=$widgets}
 		{cycle values='list_one,list_two' assign=rowStyle}
 		<tr class={$rowStyle}>
 			<td class="ListColLeft">{$elem.title}</td>

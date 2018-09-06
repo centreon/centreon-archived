@@ -3,14 +3,14 @@ Nagios Reader vers Centreon CLAPI
 =================================
 
 **Nagios Reader to Centreon CLAPI** est un projet libre et open source qui permet
-d'analyser une configuration Nagios contenue dans les fichiers CFG et de 
-transformer celle-ci en commandes compatibles Centreon CALPI afin de pouvoir 
+d'analyser une configuration Nagios contenue dans les fichiers CFG et de
+transformer celle-ci en commandes compatibles Centreon CALPI afin de pouvoir
 importer les objets dans l'interface Centreon web.
 
 Prérequis
 =========
 
-Avant toute chose vous devez avoir une plate-forme Centreon installée et prête à 
+Avant toute chose vous devez avoir une plate-forme Centreon installée et prête à
 l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<firststepsces3>`.
 
 Installation
@@ -42,7 +42,7 @@ Puis télécharger le script depuis github sur votre serveur Nagios(R) :
 Utilisation
 ===========
 
-Sur une nouvelle installation de Centreon, le collecteur par défaut est appelé 
+Sur une nouvelle installation de Centreon, le collecteur par défaut est appelé
 "Central". Si le nom de ce dernier est différent, vous devez modifier le script
 pour modifier le nom par défaut à la ligne 65 :
 
@@ -59,7 +59,7 @@ Pour afficher l'aide, exécutez la commande :
   #    Copyright (c) 2005-2015 Centreon                #
   #    Bugs to http://github.com/nagiosToCentreon      #
   ######################################################
-  						    
+
   Usage: nagios_reader_to_centreon_clapi.pl
       -V (--version) Show script version
       -h (--help)    Usage help

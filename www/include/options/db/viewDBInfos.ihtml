@@ -64,7 +64,7 @@
                     <td class="FormRowField">{t}Engine Name{/t}</td>
                     <td class="FormRowValue">{$dataCentreon.engine}</td>
                 </tr>
-                <tr class="list_two">			 		
+                <tr class="list_two">
                     <td class="FormRowField">{t}Version{/t}</td>
                     <td class="FormRowValue">{$dataCentstorage.version}</td>
                 </tr>
@@ -77,7 +77,7 @@
                <tr class="list_lvl_1">
                    <td class="ListColLvl1_name">&nbsp;</td>
                    <td class="ListColLvl1_name">{$conf_centreon.db}</td>
-                   <td class="ListColLvl1_name">{$conf_centreon.dbcstg}</td> 
+                   <td class="ListColLvl1_name">{$conf_centreon.dbcstg}</td>
                </tr>
                <tr class="list_one">
                    <td class="FormRowField">{t}Data size{/t}</td>

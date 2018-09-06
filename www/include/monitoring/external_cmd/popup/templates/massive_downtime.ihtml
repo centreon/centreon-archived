@@ -49,12 +49,12 @@
 			<p>{$form.action.html}</p>
 			<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
-	</div>	
+	</div>
 	{$form.hidden}
 	<input name="o" type="hidden" value="{$o}" />
 	<input name="p" type="hidden" value="{$p}" />
 	<input name="cmd" type="hidden" value="{$cmd}" />
-	{foreach item=it from=$select}	
+	{foreach item=it from=$select}
 		<input name="select[{$it}]" type="hidden" value="1" />
 	{/foreach}
 </form>

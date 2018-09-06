@@ -18,7 +18,7 @@ E.g.: A back-up of the virtual machines is performed every day from 20h00 to mid
 *************************
 Types of Downtime periods
 *************************
- 
+
 There are two types of Downtime periods:
 
 * The **fixed** downtime period: This means that the downtime period takes place during exactly the time period defined.
@@ -33,16 +33,16 @@ To add a recurrent downtime period:
 1. Go into the menu: **Configuration ==> Hosts** (or **Services** depending on the type of object on which the downtime period is to be implemented)
 2. In the left menu, click on **Downtimes**
 3. Click on **Add**
- 
+
 .. image:: /images/user/configuration/10advanced_configuration/05recurrentdowntimes.png
       :align: center
 
-Configuration of Downtime periods 
+Configuration of Downtime periods
 =================================
 
 * The **Name** and **Description** fields serve to give a name and describe the recurrent downtime period.
 * The **Enable** field serves to enable or disable the downtime period.
-* The **Periods** field serves to define one or more periods of recurrent downtime periods. To add a period, click on the symbol. 
+* The **Periods** field serves to define one or more periods of recurrent downtime periods. To add a period, click on the symbol.
 
 It is possible to choose three types of period:
 
@@ -54,7 +54,7 @@ It is possible to choose three types of period:
 * The **Time period** field contains the time period concerned (expressed in HH:MM - HH:MM).
 * The **Downtime type** field defines the type of downtime period desired.
 
-.. note:: 
+.. note::
    It is possible to combine several types of periods within the same downtime period.
 
 Relations

@@ -6,14 +6,14 @@
 		<td id="Tmenu" class="TcTD">
 			<div id="{$Menu3Color}">
 				<div class="menuLeft">
-				{foreach from=$elemArr3 item=curr_id}				
+				{foreach from=$elemArr3 item=curr_id}
 					<div class="title_menu">{if $cpt}<br />{/if}<h4>{$curr_id.title}</h4></div>
 					<div style="margin:0px;padding-top:6px;">
 						<ul>
 						{foreach from=$curr_id.tab item=curr_id2}
 							<li{if $curr_id2.MenuIsOnClick} onclick="{$curr_id2.MenuOnClick}()"{/if} id="menu_{$curr_id2.Menu3ID}">
 							{if $curr_id2.Menu3Popup}
-								<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>											
+								<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>
 							{else}
 								{if $curr_id2.MenuIsOnClick}{$curr_id2.Menu3Name}{else}<a href={$curr_id2.Menu3Url} title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>{/if}
 							{/if}
@@ -53,7 +53,7 @@
 								{$user.alias}
 								{/if}
 		  	             	</li>
-		  	            {/foreach} 
+		  	            {/foreach}
 						</ul>
 					</div>
 				</div>

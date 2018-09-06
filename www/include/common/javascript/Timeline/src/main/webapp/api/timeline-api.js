@@ -16,7 +16,7 @@
  *
  *==================================================
  */
- 
+
 var Timeline = new Object();
 Timeline.Platform = new Object();
 
@@ -31,7 +31,7 @@ Timeline.Platform = new Object();
 (function() {
     var javascriptFiles = [
         "timeline.js",
-        
+
         "util/platform.js",
         "util/debug.js",
         "util/xmlhttp.js",
@@ -39,7 +39,7 @@ Timeline.Platform = new Object();
         "util/graphics.js",
         "util/date-time.js",
         "util/data-structure.js",
-        
+
         "units.js",
         "themes.js",
         "ethers.js",
@@ -55,13 +55,13 @@ Timeline.Platform = new Object();
         "ethers.css",
         "events.css"
     ];
-    
+
     var localizedJavascriptFiles = [
         "labellers.js"
     ];
     var localizedCssFiles = [
     ];
-    
+
     // ISO-639 language codes, ISO-3166 country codes (2 characters)
     var supportedLocales = [
         "en",       // English
@@ -73,11 +73,11 @@ Timeline.Platform = new Object();
         "vi",       // Vietnamese
         "zh"        // Chinese
     ];
-    
+
     try {
         var desiredLocales = [ "en" ];
         var defaultServerLocale = "en";
-        
+
         (function() {
             var heads = document.documentElement.getElementsByTagName("head");
             for (var h = 0; h < heads.length; h++) {
@@ -87,7 +87,7 @@ Timeline.Platform = new Object();
                     var i = url.indexOf("timeline-api.js");
                     if (i >= 0) {
                         Timeline.urlPrefix = url.substr(0, i);
-                        
+
                         // Parse parameters
                         var q = url.indexOf("?");
                         if (q > 0) {
@@ -101,21 +101,21 @@ Timeline.Platform = new Object();
                                 }
                             }
                         }
-                        
+
                         return;
                     }
                 }
             }
             throw new Error("Failed to derive URL prefix for Timeline API code files");
         })();
-        
+
         var includeJavascriptFile = function(filename) {
             document.write("<script src='" + Timeline.urlPrefix + "scripts/" + filename + "' type='text/javascript'></script>");
         };
         var includeCssFile = function(filename) {
             document.write("<link rel='stylesheet' href='" + Timeline.urlPrefix + "styles/" + filename + "' type='text/css'/>");
         }
-        
+
         /*
          *  Include non-localized files
          */
@@ -125,13 +125,13 @@ Timeline.Platform = new Object();
         for (var i = 0; i < cssFiles.length; i++) {
             includeCssFile(cssFiles[i]);
         }
-        
+
         /*
          *  Include localized files
          */
         var loadLocale = [];
         loadLocale[defaultServerLocale] = true;
-        
+
         var tryExactLocale = function(locale) {
             for (var l = 0; l < supportedLocales.length; l++) {
                 if (locale == supportedLocales[l]) {
@@ -145,19 +145,19 @@ Timeline.Platform = new Object();
             if (tryExactLocale(locale)) {
                 return locale;
             }
-            
+
             var dash = locale.indexOf("-");
             if (dash > 0 && tryExactLocale(locale.substr(0, dash))) {
                 return locale.substr(0, dash);
             }
-            
+
             return null;
         }
-        
+
         for (var l = 0; l < desiredLocales.length; l++) {
             tryLocale(desiredLocales[l]);
         }
-        
+
         var defaultClientLocale = defaultServerLocale;
         var defaultClientLocales = ("language" in navigator ? navigator.language : navigator.browserLanguage).split(";");
         for (var l = 0; l < defaultClientLocales.length; l++) {
@@ -167,7 +167,7 @@ Timeline.Platform = new Object();
                 break;
             }
         }
-        
+
         for (var l = 0; l < supportedLocales.length; l++) {
             var locale = supportedLocales[l];
             if (loadLocale[locale]) {
@@ -179,10 +179,10 @@ Timeline.Platform = new Object();
                 }
             }
         }
-        
+
         document.write(
             "<script type='text/javascript'>" +
-                "Timeline.Platform.serverLocale = '" + defaultServerLocale + "';" + 
+                "Timeline.Platform.serverLocale = '" + defaultServerLocale + "';" +
                 "Timeline.Platform.clientLocale = '" + defaultClientLocale + "';" +
             "</script>"
         );

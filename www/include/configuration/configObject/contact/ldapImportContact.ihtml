@@ -12,17 +12,17 @@
 			<td class='FormRowField'>{$ldapServers}</td>
 			<td class='FormRowValue'>{$ldapConfList}</td>
 		</tr>
-                <!-- 		
-                <tr class="list_one"><td class="FormRowField" >{$form.ldap_search_filter.label}</td><td class="FormRowValue">{$form.ldap_search_filter.html}</td></tr>		
+                <!--
+                <tr class="list_one"><td class="FormRowField" >{$form.ldap_search_filter.label}</td><td class="FormRowValue">{$form.ldap_search_filter.html}</td></tr>
                 <tr class="list_two"><td class="FormRowField" >{$ldap_search_filter_help_title}</td><td class="FormRowValue">{$ldap_search_filter_help}</td></tr>
 		<tr class="list_one"><td class="FormRowField" >{$form.ldap_base_dn.label}</td><td class="FormRowValue">{$form.ldap_base_dn.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ldap_search_timeout.label}</td><td class="FormRowValue">{$form.ldap_search_timeout.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.ldap_search_limit.label}</td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.ldap_search_limit.label}</td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
                 -->
 		<tr class="list_two" style="text-align: center;"><td class="FormRowField" colspan="4" style="text-align: center;" >{$form.ldap_search_button.html}</td></tr>
 	</table>
 <form {$form.attributes}>
-	<table class="ListTable">		
+	<table class="ListTable">
 		<tr class="list_lvl_1">
             <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.result}</h4></td>
         </tr>

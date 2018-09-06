@@ -2,7 +2,7 @@
 Deploy services from a template
 ===============================
 
-In a previous quick start you :ref:`added a new host from template<add_host_template>` 
+In a previous quick start you :ref:`added a new host from template<add_host_template>`
 using the **OS-Linux-SNMP** template. This template of host deployed the following services:
 
 * CPU
@@ -13,7 +13,7 @@ using the **OS-Linux-SNMP** template. This template of host deployed the followi
 But some indicators aren't yet monitored because they depend of the server itself,
 for example name of files system, name of network interfaces, etc.
 
-First :ref:`connect<centreon_login>` to your Centreon web interface with an 
+First :ref:`connect<centreon_login>` to your Centreon web interface with an
 administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration > Services > Services by host** menu and click on **Add** button:

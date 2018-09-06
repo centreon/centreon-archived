@@ -45,13 +45,13 @@ class CentreonServicegroups
      * @var type
      */
     private $DB;
-    
+
     /**
      *
      * @var type
      */
     private $relationCache;
-    
+
     /**
      *
      * @var type
@@ -123,8 +123,8 @@ class CentreonServicegroups
 
         return $arrayReturn;
     }
-    
-    
+
+
     /**
      *
      * @param type $field
@@ -165,7 +165,7 @@ class CentreonServicegroups
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
                 break;
         }
-        
+
         return $parameters;
     }
 

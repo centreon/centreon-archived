@@ -495,7 +495,7 @@ Timeline.Geochrono.createBandInfo = function(params) {
     });
     
     var etherPainter = new Timeline.GeochronoEtherPainter({
-        intervalUnit:       params.intervalUnit, 
+        intervalUnit:       params.intervalUnit,
         multiple:           ("multiple" in params) ? params.multiple : 1,
         align:              params.align,
         theme:              theme 

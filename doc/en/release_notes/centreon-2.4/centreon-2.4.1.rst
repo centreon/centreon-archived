@@ -10,9 +10,9 @@ Connectors
 ==========
 
 If you are already using the *Centreon Connectors*, please note that the connector
-path is no longer called with user variable *$USER3$*. It is instead in the 
+path is no longer called with user variable *$USER3$*. It is instead in the
 ``Configuration`` > ``Centreon`` > ``Pollers`` > ``Centreon Connector path``. In that regard,
-be sure to fill this field and update the connector command line in ``Configuration`` > 
+be sure to fill this field and update the connector command line in ``Configuration`` >
 ``Commands`` > ``Connectors`` by removing the *$USER3$* prefix.
 
 i.e::

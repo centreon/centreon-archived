@@ -40,7 +40,7 @@
 		<p>{$form.action.html}</p>
 		<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	</div>
-</div>	
+</div>
 	{$form.hidden}
 	<input name="o" type="hidden" value="hd" />
 </form>
