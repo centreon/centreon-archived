@@ -74,8 +74,13 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL action
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchSG',
+	config.getValue('TimeIndicator', 1) + 'weekly_sg')
 
 //*************************************************create the second service group*************************************************//
 
@@ -108,8 +113,13 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL action
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchSG',
+	config.getValue('TimeIndicator', 1) + 'monthly_sg')
 
 //**************************************************create the third service group*************************************************//
 
@@ -142,8 +152,13 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL action
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchSG',
+	config.getValue('TimeIndicator', 1) + 'specific_date_sg')
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

@@ -74,8 +74,13 @@ WebUI.click(findTestObject('Administration/ACL/ACL action creation/input_action'
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL action
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchACLA',
+	config.getValue('TimeIndicator', 1) + file.getValue(1, 1))
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

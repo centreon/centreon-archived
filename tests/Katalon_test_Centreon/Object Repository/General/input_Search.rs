@@ -7,6 +7,7 @@
    <selectorCollection>
       <entry>
          <key>BASIC</key>
+         <value>//input[@name = 'searchH' and @type = 'text']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>BASIC</selectorMethod>

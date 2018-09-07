@@ -178,6 +178,11 @@ WebUI.click(element)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchDT', 
+	config.getValue('TimeIndicator', 1) + 'Katalon_host_group_specific_date', false)
+
 WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.closeBrowser()

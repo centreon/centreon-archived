@@ -79,6 +79,11 @@ WebUI.acceptAlert()
 //Wait to be sure Edge correctly duplicate the hosts
 WebUI.delay(2)
 
+//******************************************************Verify element created*****************************************************//
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchH',
+	config.getValue('TimeIndicator', 1) + file.getValue('hostName', 2) + '1_1')
+
 WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.closeBrowser()

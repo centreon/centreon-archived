@@ -87,8 +87,10 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
-//Wait to be sure Edge correctly create the new ACL action
-WebUI.waitForPageLoad(3)
+//******************************************************Verify element created*****************************************************//
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchSG',
+	config.getValue('TimeIndicator', 1) + file.getValue('sgName', 1))
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

@@ -4,6 +4,21 @@
    <name>Premiere_automatisation</name>
    <tag></tag>
    <UUID>f9da0dad-297d-42b3-9ab1-4e6c95843728</UUID>
-   <migratedVersion>5.4.0</migratedVersion>
+   <migratedVersion>5.7.0</migratedVersion>
    <pageLoadTimeout>0</pageLoadTimeout>
+   <sourceContent>
+      <sourceFolderList>
+         <sourceFolderConfiguration>
+            <url>Include/scripts/groovy</url>
+         </sourceFolderConfiguration>
+      </sourceFolderList>
+      <systemFolderList>
+         <systemFolderConfiguration>
+            <url>Include/scripts/groovy</url>
+         </systemFolderConfiguration>
+         <systemFolderConfiguration>
+            <url>Include/features</url>
+         </systemFolderConfiguration>
+      </systemFolderList>
+   </sourceContent>
 </Project>

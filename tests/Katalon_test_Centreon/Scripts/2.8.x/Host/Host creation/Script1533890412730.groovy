@@ -131,6 +131,11 @@ for(def line : (1..hostFile.getRowNumbers()))
 	}
 }
 
+//******************************************************Verify element created*****************************************************//
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchH',
+	config.getValue('TimeIndicator', 1) + hostFile.getValue('hostName', 1) + '1')
+
 WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.closeBrowser()

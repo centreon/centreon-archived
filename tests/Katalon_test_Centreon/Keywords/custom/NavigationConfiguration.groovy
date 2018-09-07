@@ -44,7 +44,7 @@ public class NavigationConfiguration {
 		WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
 
 		WebUI.delay(1)
-		
+
 		WebUI.click(findTestObject('Old menu/Configuration/a_Hosts'))
 
 		WebUI.click(findTestObject('Old menu/Configuration/Hosts/a_Host groups'))

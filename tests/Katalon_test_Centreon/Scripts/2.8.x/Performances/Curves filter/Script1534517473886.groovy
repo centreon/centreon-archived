@@ -41,9 +41,12 @@ WebUI.waitForPageLoad(3)
 
 WebUI.click(findTestObject('Monitoring/Performances/button_Dismiss'))
 
-WebUI.click(findTestObject('Monitoring/Performances/ul_Filter by Host'))
-
 def hostFile = TestDataFactory.findTestData('Host data')
+
+WebUI.setText(findTestObject('Monitoring/Performances/input_Chart'),
+	config.getValue('TimeIndicator', 1) + hostFile.getValue('hostName', 1) + '1')
+
+WebUI.click(findTestObject('Monitoring/Performances/ul_Filter by Host'))
 
 def element = WebUI.modifyObjectProperty(findTestObject('General/div'), 'title', 'equals', 
 	config.getValue('TimeIndicator', 1) + hostFile.getValue('hostName', 1) + '1', true)

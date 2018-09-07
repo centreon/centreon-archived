@@ -76,6 +76,11 @@ WebUI.click(findTestObject('General/input_submitA'))
 //Wait to be sure Edge correctly create the new host group
 WebUI.waitForPageLoad(3)
 
+//******************************************************Verify element created*****************************************************//
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchHg',
+	config.getValue('TimeIndicator', 1) + file.getValue('hostGroupName', 1))
+
 WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.closeBrowser()

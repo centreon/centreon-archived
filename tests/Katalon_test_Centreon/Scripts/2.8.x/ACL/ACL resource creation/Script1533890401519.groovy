@@ -43,16 +43,16 @@ WebUI.waitForPageLoad(3)
 WebUI.click(findTestObject('General/a_Add'))
 
 //The Data File 'ACL resource' stores the name and description of the ALC resource
-def file = TestDataFactory.findTestData('ACL resource')
+def aclrFile = TestDataFactory.findTestData('ACL resource')
 
 WebUI.setText(findTestObject('Administration/ACL/ACL resource/input_acl_res_name'),
-	config.getValue('TimeIndicator', 1) + file.getValue('ACLResourceName', 1))
+	config.getValue('TimeIndicator', 1) + aclrFile.getValue('ACLResourceName', 1))
 
 WebUI.setText(findTestObject('Administration/ACL/ACL resource/input_acl_res_alias'),
-	file.getValue('ACLResourceDescription', 1))
+	aclrFile.getValue('ACLResourceDescription', 1))
 
 //The Data File 'ACL group' is used to get the name of the ACL group
-file = TestDataFactory.findTestData('ACL group')
+def file = TestDataFactory.findTestData('ACL group')
 
 //This links a ACL group to the ACL resource
 def element = WebUI.modifyObjectProperty(findTestObject('Administration/ACL/ACL resource/option_aclg'),
@@ -61,6 +61,8 @@ def element = WebUI.modifyObjectProperty(findTestObject('Administration/ACL/ACL 
 WebUI.click(element)
 
 WebUI.click(findTestObject('Administration/ACL/ACL resource/add_acl_group'))
+
+//*******************************************************Hosts Resources tab*******************************************************//
 
 WebUI.click(findTestObject('Administration/ACL/ACL resource/a_Hosts Resources'))
 
@@ -96,6 +98,8 @@ WebUI.click(element)
 
 WebUI.click(findTestObject('Administration/ACL/ACL resource/add_host_group'))
 
+//******************************************************Services Resources tab*****************************************************//
+
 WebUI.click(findTestObject('Administration/ACL/ACL resource/a_Services Resources'))
 
 //The Data File 'Service group' is used to get the name of the service group
@@ -110,6 +114,8 @@ WebUI.click(element)
 WebUI.click(findTestObject('Administration/ACL/ACL resource/add_sg'))
 
 WebUI.waitForPageLoad(3)
+
+//********************************************************Meta Services tab********************************************************//
 
 WebUI.click(findTestObject('Administration/ACL/ACL resource/a_Meta Services'))
 
@@ -128,8 +134,13 @@ WebUI.waitForPageLoad(3)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL resource
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchACLR',
+	config.getValue('TimeIndicator', 1) + aclrFile.getValue('ACLResourceName', 1))
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

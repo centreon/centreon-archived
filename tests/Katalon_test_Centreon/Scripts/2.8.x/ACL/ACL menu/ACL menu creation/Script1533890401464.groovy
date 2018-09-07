@@ -64,8 +64,13 @@ WebUI.click(findTestObject('General/input_add'))
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new ACL menu
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchACLM',
+	config.getValue('TimeIndicator', 1) + file.getValue('ACLMenuName', 1))
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

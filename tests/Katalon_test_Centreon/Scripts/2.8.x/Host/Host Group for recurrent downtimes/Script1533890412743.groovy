@@ -45,7 +45,7 @@ WebUI.click(findTestObject('General/a_Add'))
 def hostFile = TestDataFactory.findTestData('Host data')
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_name'),
-	config.getValue('TimeIndicator', 1) + 'weekly hg')
+	config.getValue('TimeIndicator', 1) + 'weekly_hg')
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_alias'),
 	'hg for rec downtimes 1')
@@ -72,15 +72,20 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new host group
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchHg',
+	config.getValue('TimeIndicator', 1) + 'weekly_hg')
 
 //**************************************************create the second host group***************************************************//
 
 WebUI.click(findTestObject('General/a_Add'))
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_name'),
-	config.getValue('TimeIndicator', 1) + 'monthly hg')
+	config.getValue('TimeIndicator', 1) + 'monthly_hg')
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_alias'),
 	'hg for rec downtimes 2')
@@ -107,15 +112,20 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new host group
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchHg',
+	config.getValue('TimeIndicator', 1) + 'monthly_hg')
 
 //***************************************************create the third host group***************************************************//
 
 WebUI.click(findTestObject('General/a_Add'))
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_name'),
-	config.getValue('TimeIndicator', 1) + 'specific date hg')
+	config.getValue('TimeIndicator', 1) + 'specific_date_hg')
 
 WebUI.setText(findTestObject('Configuration/Host/Host group creation/input_hg_alias'),
 	'hg for rec downtimes 3')
@@ -142,8 +152,13 @@ WebUI.click(host)
 
 WebUI.click(findTestObject('General/input_submitA'))
 
+//******************************************************Verify element created*****************************************************//
+
 //Wait to be sure Edge correctly create the new host group
 WebUI.waitForPageLoad(3)
+
+CustomKeywords.'custom.creationVerified.verifyObjectCreated'('searchHg',
+	config.getValue('TimeIndicator', 1) + 'specific_date_hg')
 
 WebUI.click(findTestObject('Old menu/a_Logout'))
 

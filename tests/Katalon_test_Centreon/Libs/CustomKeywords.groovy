@@ -4,6 +4,24 @@
  */
 
 
+def static "custom.creationVerified.verifyObjectCreated"(
+    	Object searchName	
+     , 	Object objectName	
+     , 	Object isType	) {
+    (new custom.creationVerified()).verifyObjectCreated(
+        	searchName
+         , 	objectName
+         , 	isType)
+}
+
+def static "custom.creationVerified.verifyObjectCreated"(
+    	Object searchName	
+     , 	Object objectName	) {
+    (new custom.creationVerified()).verifyObjectCreated(
+        	searchName
+         , 	objectName)
+}
+
 def static "custom.NavigationMonitoring.accessStatusDetailsServices"() {
     (new custom.NavigationMonitoring()).accessStatusDetailsServices()
 }

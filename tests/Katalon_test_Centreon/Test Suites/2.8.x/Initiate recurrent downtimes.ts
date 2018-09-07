@@ -4,7 +4,7 @@
    <name>Initiate recurrent downtimes</name>
    <tag></tag>
    <isRerun>false</isRerun>
-   <lastRun>2018-09-05T15:48:06</lastRun>
+   <lastRun>2018-09-07T14:30:25</lastRun>
    <mailRecipient></mailRecipient>
    <numberOfRerun>0</numberOfRerun>
    <pageLoadTimeout>30</pageLoadTimeout>
