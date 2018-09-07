@@ -100,7 +100,29 @@ public class NavigationConfiguration {
 
 		WebUI.delay(1)
 
-		WebUI.click(findTestObject('Old menu/Configuration/a_Users'))
+		WebUI.click(findTestObject('Old menu/Configuration/Users/a_Users'))
+	}
+
+	@Keyword
+	public void accessContactGroups(){
+		WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
+
+		WebUI.delay(1)
+
+		WebUI.click(findTestObject('Old menu/Configuration/Users/a_Users'))
+
+		WebUI.click(findTestObject('Old menu/Configuration/Users/a_Contact Groups'))
+	}
+	
+	@Keyword
+	public void accessEscalations(){
+		WebUI.click(findTestObject('Old menu/Configuration/a_Configuration'))
+		
+		WebUI.delay(1)
+		
+		WebUI.click(findTestObject('Old menu/Configuration/a_Notifications'))
+		
+		WebUI.click(findTestObject('Old menu/Configuration/a_Escalations'))
 	}
 
 	@Keyword

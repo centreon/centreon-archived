@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>select_Language</name>
+   <name>a_Users</name>
    <tag></tag>
-   <elementGuidId>d9781aba-a389-4f28-a5a7-cd63ff27177d</elementGuidId>
+   <elementGuidId>112d8e3c-da83-451d-b811-2e762cb6d454</elementGuidId>
    <selectorCollection>
       <entry>
          <key>BASIC</key>
-         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>BASIC</selectorMethod>
@@ -17,13 +16,13 @@
       <matchCondition>equals</matchCondition>
       <name>tag</name>
       <type>Main</type>
-      <value>select</value>
+      <value>a</value>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
-      <name>name</name>
+      <name>text</name>
       <type>Main</type>
-      <value>contact_lang</value>
+      <value>Users</value>
    </webElementProperties>
 </WebElementEntity>

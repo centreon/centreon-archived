@@ -57,39 +57,39 @@ for(def line : (1..userFile.getRowNumbers()))
 	{
 		WebUI.click(findTestObject('General/a_Add'))
 		
-		WebUI.setText(findTestObject('Configuration/User creation/input_contact_alias'),
+		WebUI.setText(findTestObject('Configuration/Users/User creation/input_contact_alias'),
 			config.getValue('TimeIndicator', 1) + userFile.getValue('UserName', line) + userNumber)
 		
-		WebUI.setText(findTestObject('Configuration/User creation/input_contact_name'),
+		WebUI.setText(findTestObject('Configuration/Users/User creation/input_contact_name'),
 			userFile.getValue('UserAlias', line) + userNumber)
 		
-		WebUI.setText(findTestObject('Configuration/User creation/input_contact_email'), userFile.getValue('UserAddress', 1))
+		WebUI.setText(findTestObject('Configuration/Users/User creation/input_contact_email'), userFile.getValue('UserAddress', 1))
 		
 		//This contains the list of host notification options
 		def array = userFile.getValue('HostNotifOptions', line).split(" ")
 		
 		//This goes through the list of host notification options and select them
 		for (def index : (0..array.length - 1)) {
-			def hostTemplate = WebUI.modifyObjectProperty(findTestObject('Configuration/User creation/input_contact_hostNotifOptsd'),
+			def hostTemplate = WebUI.modifyObjectProperty(findTestObject('Configuration/Users/User creation/input_contact_hostNotifOptsd'),
 				'id', 'equals', 'h' + array[index], true)
 			
 			WebUI.click(hostTemplate)
 		}
 		
 		//This select the host notification period
-		WebUI.click(findTestObject('Configuration/User creation/span_Host Notif Peri'))
+		WebUI.click(findTestObject('Configuration/Users/User creation/span_Host Notif Peri'))
 		
-		WebUI.scrollToElement(findTestObject('Configuration/User creation/span_Host Notif Peri'), 3)
+		WebUI.scrollToElement(findTestObject('Configuration/Users/User creation/span_Host Notif Peri'), 3)
 		
-		def hostNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/User creation/div_24x7'),
+		def hostNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/Users/User creation/div_24x7'),
 				'title', 'equals', userFile.getValue('HostNotifPeriod', line), true)
 		
 		WebUI.click(hostNotif)
 		
 		//This select the host notification command
-		WebUI.click(findTestObject('Configuration/User creation/input_Host Notif Comm'))
+		WebUI.click(findTestObject('Configuration/Users/User creation/input_Host Notif Comm'))
 		
-		hostNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/User creation/div_host-notify-by-email'),
+		hostNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/Users/User creation/div_host-notify-by-email'),
 			'title', 'equals', userFile.getValue('HostNotifComm', 1), true)
 		
 		WebUI.click(hostNotif)
@@ -100,37 +100,37 @@ for(def line : (1..userFile.getRowNumbers()))
 		//This goes through the list of service notification status and select them
 		for (def index : (0..array.length - 1)) {
 			def serviceTemplate = WebUI.modifyObjectProperty(
-				findTestObject('Configuration/User creation/input_contact_svNotifOptsw'),
+				findTestObject('Configuration/Users/User creation/input_contact_svNotifOptsw'),
 				'id', 'equals', 's' + array[index], true)
 			
 			WebUI.click(serviceTemplate)
 		}
 		
 		//This select the service notification period
-		WebUI.click(findTestObject('Configuration/User creation/span_Service Notification Peri'))
+		WebUI.click(findTestObject('Configuration/Users/User creation/span_Service Notification Peri'))
 		
-		def serviceNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/User creation/div_24x7'),
+		def serviceNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/Users/User creation/div_24x7'),
 			'title', 'equals', userFile.getValue('ServNotifPeriod', line), true)
 		
 		WebUI.click(serviceNotif)
 		
 		//This select the service notification command
-		WebUI.click(findTestObject('Configuration/User creation/input_Serv Notif Comm'))
+		WebUI.click(findTestObject('Configuration/Users/User creation/input_Serv Notif Comm'))
 		
-		serviceNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/User creation/div_service-notify-by-email'),
+		serviceNotif = WebUI.modifyObjectProperty(findTestObject('Configuration/Users/User creation/div_service-notify-by-email'),
 			'title', 'equals', userFile.getValue('ServNotifComm', line), true)
 		
 		WebUI.click(serviceNotif)
 		
 		//This goes to the Centreon Authentication tab
-		WebUI.click(findTestObject('Configuration/User creation/a_Centreon Authentication'))
+		WebUI.click(findTestObject('Configuration/Users/User creation/a_Centreon Authentication'))
 		
-		WebUI.setText(findTestObject('Configuration/User creation/input_contact_pwd'), userFile.getValue('password', 1))
+		WebUI.setText(findTestObject('Configuration/Users/User creation/input_contact_pwd'), userFile.getValue('password', 1))
 		
-		WebUI.setText(findTestObject('Configuration/User creation/input_contact_pwd2'), userFile.getValue('password', 1))
+		WebUI.setText(findTestObject('Configuration/Users/User creation/input_contact_pwd2'), userFile.getValue('password', 1))
 		
 		//This set the language to english
-		WebUI.selectOptionByValue(findTestObject('Configuration/User creation/select_Language'), 'en_US', true)
+		WebUI.selectOptionByValue(findTestObject('Configuration/Users/User creation/select_Language'), 'en_US', true)
 			
 		WebUI.click(findTestObject('General/input_submitA'))
 		
@@ -151,13 +151,13 @@ def a = WebUI.modifyObjectProperty(findTestObject('General/a'), 'text', 'equals'
 
 WebUI.click(a)
 
-WebUI.click(findTestObject('Configuration/User creation/a_Centreon Authentication'))
+WebUI.click(findTestObject('Configuration/Users/User creation/a_Centreon Authentication'))
 
 //This generate the autologin key
-WebUI.click(findTestObject('Configuration/User creation/input_contact_gen_akey'))
+WebUI.click(findTestObject('Configuration/Users/User creation/input_contact_gen_akey'))
 	
 //The get the new autologin key
-def str = WebUI.getAttribute(findTestObject('Configuration/User creation/input_contact_autologin'), 'value')
+def str = WebUI.getAttribute(findTestObject('Configuration/Users/User creation/input_contact_autologin'), 'value')
 
 def userDir = System.getProperty("user.dir")
 	

@@ -22,15 +22,17 @@ public class creationVerified {
 	@Keyword
 	public void verifyObjectCreated(searchName, objectName, isType = true){
 		def searchField = WebUI.modifyObjectProperty(findTestObject('General/input_Search'), 'name', 'equals', searchName, true)
-		
-		if(!isType) { searchField = WebUI.removeObjectProperty(searchField, 'type') }
-		
+
+		if(!isType) {
+			searchField = WebUI.removeObjectProperty(searchField, 'type')
+		}
+
 		WebUI.setText(searchField, objectName)
-		
+
 		WebUI.click(findTestObject('General/button_Search'))
-		
+
 		def element = WebUI.modifyObjectProperty(findTestObject('General/a'), 'text', 'equals', objectName, true)
-		
+
 		WebUI.verifyElementPresent(element, 3)
 	}
 }

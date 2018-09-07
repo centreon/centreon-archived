@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FolderEntity>
    <description></description>
-   <name>User creation</name>
+   <name>User</name>
    <tag></tag>
-   <folderType>WEBELEMENT</folderType>
+   <folderType>TESTCASE</folderType>
 </FolderEntity>

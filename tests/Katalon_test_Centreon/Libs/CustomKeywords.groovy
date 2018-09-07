@@ -78,6 +78,14 @@ def static "custom.NavigationConfiguration.accessUsers"() {
     (new custom.NavigationConfiguration()).accessUsers()
 }
 
+def static "custom.NavigationConfiguration.accessContactGroups"() {
+    (new custom.NavigationConfiguration()).accessContactGroups()
+}
+
+def static "custom.NavigationConfiguration.accessEscalations"() {
+    (new custom.NavigationConfiguration()).accessEscalations()
+}
+
 def static "custom.NavigationConfiguration.accessPluginPacks"() {
     (new custom.NavigationConfiguration()).accessPluginPacks()
 }

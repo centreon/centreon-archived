@@ -69,7 +69,7 @@
       <guid>9b9cc563-cea1-4cc8-af3d-980088ccd043</guid>
       <isReuseDriver>false</isReuseDriver>
       <isRun>true</isRun>
-      <testCaseId>Test Cases/2.8.x/User creation</testCaseId>
+      <testCaseId>Test Cases/2.8.x/User/User creation</testCaseId>
    </testCaseLink>
    <testCaseLink>
       <guid>682546e6-9fce-4645-a54f-f085bb0a563b</guid>
