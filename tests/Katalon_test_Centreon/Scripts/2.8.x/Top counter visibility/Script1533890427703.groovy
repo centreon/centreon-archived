@@ -59,7 +59,7 @@ WebUI.click(findTestObject('Administration/ACL/ACL action creation/input_Display
 
 WebUI.click(findTestObject('General/input_submitC'))
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.waitForPageLoad(3)
 
@@ -76,11 +76,11 @@ WebUI.click(findTestObject('General/Login/input_submitLogin'))
 
 WebUI.delay(1)
 
-WebUI.verifyElementPresent(findTestObject('Top counter/Top counter_Host'), 3)
+WebUI.verifyElementPresent(findTestObject('Old menu/Top counter services'), 3)
 
-WebUI.verifyElementPresent(findTestObject('Top counter/Top counter_First icon'), 3)
+WebUI.verifyElementPresent(findTestObject('Old menu/Top counter_First icon'), 3)
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //********************************************Second step : top counter without pollers********************************************//
 
@@ -108,7 +108,7 @@ WebUI.click(findTestObject('Administration/ACL/ACL action creation/input_Display
 
 WebUI.click(findTestObject('General/input_submitC'))
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //******************************************************Login as a simple user*****************************************************//
 
@@ -125,11 +125,11 @@ WebUI.waitForPageLoad(3)
 
 WebUI.delay(1)
 
-WebUI.verifyElementPresent(findTestObject('Top counter/Top counter_Host'), 1)
+WebUI.verifyElementPresent(findTestObject('Old menu/Top counter services'), 3)
 
-WebUI.verifyElementNotPresent(findTestObject('Top counter/Top counter_First icon'), 1)
+WebUI.verifyElementNotPresent(findTestObject('Old menu/Top counter_First icon'), 1)
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //*********************************************Third step : pollers without top counter********************************************//
 
@@ -161,7 +161,7 @@ WebUI.click(findTestObject('Administration/ACL/ACL action creation/input_Display
 
 WebUI.click(findTestObject('General/input_submitC'))
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //******************************************************Login as a simple user*****************************************************//
 
@@ -178,11 +178,11 @@ WebUI.waitForPageLoad(3)
 
 WebUI.delay(1)
 
-WebUI.verifyElementNotPresent(findTestObject('Top counter/Top counter_Host'), 1)
+WebUI.verifyElementNotPresent(findTestObject('Old menu/Top counter services'), 3)
 
-WebUI.verifyElementPresent(findTestObject('Top counter/Top counter_First icon'), 1)
+WebUI.verifyElementPresent(findTestObject('Old menu/Top counter_First icon'), 1)
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //***************************************************Fourth step : no top counter**************************************************//
 
@@ -212,7 +212,7 @@ WebUI.click(findTestObject('Administration/ACL/ACL action creation/input_Display
 
 WebUI.click(findTestObject('General/input_submitC'))
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 //******************************************************Login as a simple user*****************************************************//
 
@@ -229,10 +229,10 @@ WebUI.waitForPageLoad(3)
 
 WebUI.delay(1)
 
-WebUI.verifyElementNotPresent(findTestObject('Top counter/Top counter_Host'), 1)
+WebUI.verifyElementNotPresent(findTestObject('Old menu/Top counter services'), 3)
 
-WebUI.verifyElementNotPresent(findTestObject('Top counter/Top counter_First icon'), 1)
+WebUI.verifyElementNotPresent(findTestObject('Old menu/Top counter_First icon'), 1)
 
-WebUI.click(findTestObject('Old menu/span_Logout'))
+WebUI.click(findTestObject('Old menu/a_Logout'))
 
 WebUI.closeBrowser()

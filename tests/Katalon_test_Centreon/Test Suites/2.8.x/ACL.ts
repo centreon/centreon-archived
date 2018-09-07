@@ -56,7 +56,7 @@
    <testCaseLink>
       <guid>e579059f-acfe-46a7-87f6-1048938b1a28</guid>
       <isReuseDriver>false</isReuseDriver>
-      <isRun>false</isRun>
+      <isRun>true</isRun>
       <testCaseId>Test Cases/2.8.x/Top counter visibility</testCaseId>
    </testCaseLink>
 </TestSuiteEntity>
