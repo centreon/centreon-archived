@@ -1,17 +1,13 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class PollerExporter implements ExporterServiceInterface
+class PollerExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'poller';
     const EXPORT_FILE_NAGIOS_SERVER = 'nagios_server.yaml';
     const EXPORT_FILE_CFG_RESOURCE = 'cfg_resource.yaml';
     const EXPORT_FILE_CFG_NAGIOS = 'cfg_nagios.yaml';
@@ -20,26 +16,6 @@ class PollerExporter implements ExporterServiceInterface
     const EXPORT_FILE_CFG_CENTREONBROKER_INFO = 'cfg_centreonbroker_info.yaml';
     const EXPORT_FILE_TIMEZONE = 'timezone.yaml';
     const EXPORT_FILE_POLLER_COMMAND = 'poller_command_relations.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -68,7 +44,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\NagiosServerRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
+            $this->_dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
         })();
 
         (function() use ($pollerIds) {
@@ -76,7 +52,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CfgResourceRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
+            $this->_dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
         })();
 
         (function() use ($pollerIds) {
@@ -84,7 +60,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\PollerCommandRelationsRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
+            $this->_dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
         })();
 
         (function() use ($pollerIds) {
@@ -92,7 +68,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CfgNagiosRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
+            $this->_dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
         })();
 
         (function() use ($pollerIds) {
@@ -100,7 +76,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
+            $this->_dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
         })();
 
         (function() use ($pollerIds) {
@@ -108,7 +84,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CfgCentreonBorkerRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
+            $this->_dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
         })();
 
         (function() use ($pollerIds) {
@@ -116,7 +92,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CfgCentreonBorkerInfoRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
+            $this->_dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
         })();
 
         (function() use ($pollerIds) {
@@ -124,7 +100,7 @@ class PollerExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TimezoneRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($timezone, $this->getFile(static::EXPORT_FILE_TIMEZONE));
+            $this->_dump($timezone, $this->getFile(static::EXPORT_FILE_TIMEZONE));
         })();
     }
 
@@ -152,7 +128,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert nagios server
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('nagios_server', $data);
@@ -162,7 +138,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert cfg resource
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_RESOURCE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $dataRelation = [
@@ -180,7 +156,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert poller commands
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_POLLER_COMMAND);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('poller_command_relations', $data);
@@ -190,7 +166,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert cfg nagios
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_NAGIOS);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('cfg_nagios', $data);
@@ -200,7 +176,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert cfg broker module
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('cfg_nagios_broker_module', $data);
@@ -210,7 +186,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert cfg broker
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('cfg_centreonbroker', $data);
@@ -220,7 +196,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert cfg broker info
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('cfg_centreonbroker_info', $data);
@@ -230,7 +206,7 @@ class PollerExporter implements ExporterServiceInterface
         // insert timezone if missing
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TIMEZONE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $tz = $db
@@ -252,15 +228,5 @@ class PollerExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'poller';
     }
 }

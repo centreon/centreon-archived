@@ -2,18 +2,24 @@
 namespace CentreonRemote\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
+use Centreon\Domain\Repository\InformationsRepository;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Infrastructure\Export\ExportParserYaml;
+use CentreonRemote\Infrastructure\Export\ExportManifest;
 
 class ExportService
 {
-    
+
     const PATH_EXPORTED_DATA = '/var/lib/centreon/remote-data';
 
     /**
      * @var ExporterService
      */
     private $exporter;
+
+    /**
+     * @var String
+     */
+    private $version;
 
     /**
      * Construct
@@ -23,6 +29,14 @@ class ExportService
     public function __construct(ContainerInterface $services)
     {
         $this->exporter = $services->get('centreon_remote.exporter');
+        $version = $services->get('centreon.db-manager')
+            ->getRepository(InformationsRepository::class)
+            ->getOneByKey('version')
+        ;
+        
+        if ($version) {
+            $this->version = $version->getValue();
+        }
     }
 
     /**
@@ -35,13 +49,14 @@ class ExportService
     public function export(ExportCommitment $commitment): void
     {
         $filterExporters = $commitment->getExporters();
-        
+
         // remove export directory if exists
         $exportPath = $commitment->getPath();
         if (is_dir($exportPath)) {
             system('rm -rf ' . escapeshellarg($exportPath));
         }
-        unset($exportPath);
+
+        $manifest = new ExportManifest($commitment, $this->version);
 
         foreach ($this->exporter->all() as $exporterMeta) {
             if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
@@ -50,8 +65,14 @@ class ExportService
 
             $exporter = $exporterMeta['factory']();
             $exporter->setCommitment($commitment);
+            $exporter->setManifest($manifest);
             $exporter->export();
+            
+            // add exporter to manifest
+            $manifest->addExporter($exporterMeta['classname']);
         }
+
+        $manifest->dump();
     }
 
     /**
@@ -81,7 +102,7 @@ class ExportService
             $exporter->setCommitment($commitment);
             $exporter->import();
         }
-        
+
         // backup expot directory
         system('rm -rf ' . escapeshellarg($exportPath));
     }

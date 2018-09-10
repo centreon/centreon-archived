@@ -1,38 +1,14 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class GraphExporter implements ExporterServiceInterface
+class GraphExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'graph';
     const EXPORT_FILE_GRAPH = 'giv_graphs_template.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -69,7 +45,7 @@ class GraphExporter implements ExporterServiceInterface
             ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
         ;
 
-        $this->commitment->getParser()::dump($graphs, $this->getFile(static::EXPORT_FILE_GRAPH));
+        $this->_dump($graphs, $this->getFile(static::EXPORT_FILE_GRAPH));
     }
 
     /**
@@ -96,7 +72,7 @@ class GraphExporter implements ExporterServiceInterface
         // insert graphs
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GRAPH);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('giv_graphs_template', $data);
@@ -108,15 +84,5 @@ class GraphExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'graph';
     }
 }

@@ -1,17 +1,13 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class DowntimeExporter implements ExporterServiceInterface
+class DowntimeExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'downtime';
     const EXPORT_FILE_DOWNTIME = 'downtime.yaml';
     const EXPORT_FILE_PERIOD = 'downtime_period.yaml';
     const EXPORT_FILE_CACHE = 'downtime_cache.yaml';
@@ -19,26 +15,6 @@ class DowntimeExporter implements ExporterServiceInterface
     const EXPORT_FILE_HOST_GROUP_RELATION = 'downtime_hostgroup_relation.yaml';
     const EXPORT_FILE_SERVICE_RELATION = 'downtime_service_relation.yaml';
     const EXPORT_FILE_SERVICE_GROUP_RELATION = 'downtime_servicegroup_relation.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -75,7 +51,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeRepository::class)
                 ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimes, $this->getFile(static::EXPORT_FILE_DOWNTIME));
+            $this->_dump($downtimes, $this->getFile(static::EXPORT_FILE_DOWNTIME));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain, $serviceTemplateChain) {
@@ -83,7 +59,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimePeriodRepository::class)
                 ->export($pollerIds, $hostTemplateChain, $serviceTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimePeriods, $this->getFile(static::EXPORT_FILE_PERIOD));
+            $this->_dump($downtimePeriods, $this->getFile(static::EXPORT_FILE_PERIOD));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -91,7 +67,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeCacheRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimeCaches, $this->getFile(static::EXPORT_FILE_CACHE));
+            $this->_dump($downtimeCaches, $this->getFile(static::EXPORT_FILE_CACHE));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -99,7 +75,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeHostRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimeHostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
+            $this->_dump($downtimeHostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -107,7 +83,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeHostGroupRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimeHostGroupRelation, $this->getFile(static::EXPORT_FILE_HOST_GROUP_RELATION));
+            $this->_dump($downtimeHostGroupRelation, $this->getFile(static::EXPORT_FILE_HOST_GROUP_RELATION));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -115,7 +91,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeServiceRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimeServiceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
+            $this->_dump($downtimeServiceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
         })();
 
         (function() use ($pollerIds, $serviceTemplateChain) {
@@ -123,7 +99,7 @@ class DowntimeExporter implements ExporterServiceInterface
                 ->getRepository(Repository\DowntimeServiceGroupRelationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
             ;
-            $this->commitment->getParser()::dump($downtimeServiceGroupRelation, $this->getFile(static::EXPORT_FILE_SERVICE_GROUP_RELATION));
+            $this->_dump($downtimeServiceGroupRelation, $this->getFile(static::EXPORT_FILE_SERVICE_GROUP_RELATION));
         })();
     }
 
@@ -151,7 +127,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtimes
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_DOWNTIME);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime', $data);
@@ -161,7 +137,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime periods
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_PERIOD);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_period', $data);
@@ -171,7 +147,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime cache
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CACHE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_cache', $data);
@@ -181,7 +157,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime host relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_host_relation', $data);
@@ -191,7 +167,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime host group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST_GROUP_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_hostgroup_relation', $data);
@@ -201,7 +177,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime service relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_service_relation', $data);
@@ -211,7 +187,7 @@ class DowntimeExporter implements ExporterServiceInterface
         // insert downtime service group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE_GROUP_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('downtime_servicegroup_relation', $data);
@@ -223,15 +199,5 @@ class DowntimeExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'downtime';
     }
 }

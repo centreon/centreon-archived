@@ -69,6 +69,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         $pimple['centreon_remote.export'] = function (Container $container): Infrastructure\Service\ExportService {
             $services = [
                 'centreon_remote.exporter',
+                'centreon.db-manager',
             ];
 
             $locator = new ServiceLocator($container, $services);

@@ -1,43 +1,19 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class CommandExporter implements ExporterServiceInterface
+class CommandExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'command';
     const EXPORT_FILE_COMMAND = 'command.yaml';
     const EXPORT_FILE_COMMAND_ARG = 'command_arg_description.yaml';
     const EXPORT_FILE_COMMAND_MACRO = 'on_demand_macro_command.yaml';
     const EXPORT_FILE_CONNECTOR = 'connector.yaml';
     const EXPORT_FILE_CATEGORY = 'command_categories.yaml';
     const EXPORT_FILE_CATEGORY_RELATION = 'command_categories_relation.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -63,7 +39,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CommandRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
+            $this->_dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
         })();
 
         (function() use ($pollerIds) {
@@ -71,7 +47,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CommandArgDescriptionRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
+            $this->_dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
         })();
 
         (function() use ($pollerIds) {
@@ -79,7 +55,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\OnDemandMacroCommandRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
+            $this->_dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
         })();
 
         (function() use ($pollerIds) {
@@ -87,7 +63,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ConnectorRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
+            $this->_dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
         })();
 
         (function() use ($pollerIds) {
@@ -95,7 +71,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CommandCategoryRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
+            $this->_dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
         (function() use ($pollerIds) {
@@ -103,7 +79,7 @@ class CommandExporter implements ExporterServiceInterface
                 ->getRepository(Repository\CommandCategoryRelationRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+            $this->_dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
     }
 
@@ -131,7 +107,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert command
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('command', $data);
@@ -141,7 +117,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert command argument
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND_ARG);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('command_arg_description', $dataRelation);
@@ -151,7 +127,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert command macro
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND_MACRO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('on_demand_macro_command', $data);
@@ -161,7 +137,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert connector
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CONNECTOR);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('connector', $data);
@@ -171,7 +147,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert category
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('command_categories', $data);
@@ -181,7 +157,7 @@ class CommandExporter implements ExporterServiceInterface
         // insert category relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('command_categories_relation', $data);
@@ -193,15 +169,5 @@ class CommandExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'command';
     }
 }

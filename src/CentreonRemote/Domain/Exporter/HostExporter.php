@@ -1,17 +1,13 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class HostExporter implements ExporterServiceInterface
+class HostExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'host';
     const EXPORT_FILE_GROUP = 'hostgroup.yaml';
     const EXPORT_FILE_GROUP_HG_RELATION = 'hostgroup_hg_relation.yaml';
     const EXPORT_FILE_GROUP_RELATION = 'hostgroup_relation.yaml';
@@ -21,26 +17,6 @@ class HostExporter implements ExporterServiceInterface
     const EXPORT_FILE_INFO = 'extended_host_information.yaml';
     const EXPORT_FILE_MACRO = 'on_demand_macro_host.yaml';
     const EXPORT_FILE_TEMPLATE = 'host_template_relation.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -72,7 +48,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
+            $this->_dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -80,7 +56,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostCategoryRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
+            $this->_dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -88,7 +64,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostCategoryRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+            $this->_dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -96,7 +72,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostGroupRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
+            $this->_dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -104,7 +80,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostGroupRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+            $this->_dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -112,7 +88,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostGroupHgRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
+            $this->_dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -120,7 +96,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ExtendedHostInformationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
+            $this->_dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -128,7 +104,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\OnDemandMacroHostRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
+            $this->_dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -136,7 +112,7 @@ class HostExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostTemplateRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($hostTemplates, $this->getFile(static::EXPORT_FILE_TEMPLATE));
+            $this->_dump($hostTemplates, $this->getFile(static::EXPORT_FILE_TEMPLATE));
         })();
     }
 
@@ -164,7 +140,7 @@ class HostExporter implements ExporterServiceInterface
         // insert host
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 if ($data['_nagios_id']) {
@@ -183,7 +159,7 @@ class HostExporter implements ExporterServiceInterface
         // insert groups
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('hostgroup', $data);
@@ -193,7 +169,7 @@ class HostExporter implements ExporterServiceInterface
         // insert group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('hostgroup_relation', $data);
@@ -203,7 +179,7 @@ class HostExporter implements ExporterServiceInterface
         // insert group to group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('hostgroup_hg_relation', $data);
@@ -213,7 +189,7 @@ class HostExporter implements ExporterServiceInterface
         // insert categories
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('hostcategories', $data);
@@ -223,7 +199,7 @@ class HostExporter implements ExporterServiceInterface
         // insert categories
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('hostcategories_relation', $data);
@@ -233,7 +209,7 @@ class HostExporter implements ExporterServiceInterface
         // insert info
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INFO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('extended_host_information', $data);
@@ -243,7 +219,7 @@ class HostExporter implements ExporterServiceInterface
         // insert macro
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MACRO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('on_demand_macro_host', $data);
@@ -253,7 +229,7 @@ class HostExporter implements ExporterServiceInterface
         // insert template
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TEMPLATE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('host_template_relation', $data);
@@ -265,15 +241,5 @@ class HostExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'host';
     }
 }

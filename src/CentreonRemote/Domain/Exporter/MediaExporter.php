@@ -1,42 +1,18 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Entity;
 use Centreon\Domain\Repository;
 
-class MediaExporter implements ExporterServiceInterface
+class MediaExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'media';
     const EXPORT_FILES = 'files';
     const EXPORT_FILE_DIR = 'dirs.yaml';
     const EXPORT_FILE_IMG = 'files.yaml';
     const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -112,8 +88,8 @@ class MediaExporter implements ExporterServiceInterface
             ->export($imgList)
         ;
 
-        $this->commitment->getParser()::dump($dirs, $exportPath . '/' . static::EXPORT_FILE_DIR);
-        $this->commitment->getParser()::dump($imgs, $exportPath . '/' . static::EXPORT_FILE_IMG);
+        $this->_dump($dirs, $exportPath . '/' . static::EXPORT_FILE_DIR);
+        $this->_dump($imgs, $exportPath . '/' . static::EXPORT_FILE_IMG);
     }
 
     /**
@@ -141,7 +117,7 @@ class MediaExporter implements ExporterServiceInterface
 
         // insert directories
         $exportPathDir = $exportPath . '/' . static::EXPORT_FILE_DIR;
-        $dirs = $this->commitment->getParser()::parse($exportPathDir);
+        $dirs = $this->_parse($exportPathDir);
         $dirMap = [];
 
         foreach ($dirs as $data) {
@@ -154,7 +130,7 @@ class MediaExporter implements ExporterServiceInterface
         // insert images
         $exportPathMedia = $exportPath . '/' . static::EXPORT_FILES;
         $exportPathImg = $exportPath . '/' . static::EXPORT_FILE_IMG;
-        $imgs = $this->commitment->getParser()::parse($exportPathImg);
+        $imgs = $this->_parse($exportPathImg);
 
         foreach ($imgs as $data) {
             $imgDirs = explode(',', $data['img_dirs']);
@@ -204,15 +180,5 @@ class MediaExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'media';
     }
 }

@@ -1,17 +1,13 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class ServiceExporter implements ExporterServiceInterface
+class ServiceExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'service';
     const EXPORT_FILE_HOST_RELATION = 'host_service_relation.yaml';
     const EXPORT_FILE_SERVICE = 'service.yaml';
     const EXPORT_FILE_GROUP = 'servicegroup.yaml';
@@ -20,26 +16,6 @@ class ServiceExporter implements ExporterServiceInterface
     const EXPORT_FILE_CATEGORY_RELATION = 'service_categories_relation.yaml';
     const EXPORT_FILE_MACRO = 'on_demand_macro_service.yaml';
     const EXPORT_FILE_INFO = 'extended_service_information.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -71,7 +47,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\HostServiceRelationRepository::class)
                 ->export($pollerIds)
             ;
-            $this->commitment->getParser()::dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
+            $this->_dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -79,7 +55,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ServiceRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
+            $this->_dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -87,7 +63,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ServiceGroupRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
+            $this->_dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -95,7 +71,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ServiceGroupRelationRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+            $this->_dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -103,7 +79,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ServiceCategoryRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
+            $this->_dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -111,7 +87,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ServiceCategoryRelationRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+            $this->_dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -119,7 +95,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\OnDemandMacroServiceRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
+            $this->_dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -127,7 +103,7 @@ class ServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\ExtendedServiceInformationRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
+            $this->_dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();
     }
 
@@ -155,7 +131,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert host relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('host_service_relation', $data);
@@ -165,7 +141,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert host relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('service', $data);
@@ -175,7 +151,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert group
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('servicegroup', $data);
@@ -185,7 +161,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('servicegroup_relation', $data);
@@ -195,7 +171,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert category
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('service_categories', $data);
@@ -205,7 +181,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert category relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('service_categories_relation', $data);
@@ -215,7 +191,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert macro
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MACRO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('on_demand_macro_service', $data);
@@ -225,7 +201,7 @@ class ServiceExporter implements ExporterServiceInterface
         // insert info
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INFO);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('extended_service_information', $data);
@@ -237,15 +213,5 @@ class ServiceExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'service';
     }
 }

@@ -1,39 +1,15 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class MetaServiceExporter implements ExporterServiceInterface
+class MetaServiceExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'meta-service';
     const EXPORT_FILE_META = 'meta_service.yaml';
     const EXPORT_FILE_RELATION = 'meta_service_relation.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -65,7 +41,7 @@ class MetaServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\MetaServiceRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($metaServices, $this->getFile(static::EXPORT_FILE_META));
+            $this->_dump($metaServices, $this->getFile(static::EXPORT_FILE_META));
         })();
 
         (function() use ($pollerIds, $hostTemplateChain) {
@@ -73,7 +49,7 @@ class MetaServiceExporter implements ExporterServiceInterface
                 ->getRepository(Repository\MetaServiceRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
             ;
-            $this->commitment->getParser()::dump($metaServiceRelation, $this->getFile(static::EXPORT_FILE_RELATION));
+            $this->_dump($metaServiceRelation, $this->getFile(static::EXPORT_FILE_RELATION));
         })();
     }
 
@@ -101,7 +77,7 @@ class MetaServiceExporter implements ExporterServiceInterface
         // insert meta services
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_META);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('meta_service', $data);
@@ -111,7 +87,7 @@ class MetaServiceExporter implements ExporterServiceInterface
         // insert meta service relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('meta_service_relation', $data);
@@ -123,15 +99,5 @@ class MetaServiceExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'meta-service';
     }
 }

@@ -2,6 +2,7 @@
 namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportParserYaml;
+use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 final class ExportCommitment
 {
@@ -17,7 +18,7 @@ final class ExportCommitment
     private $path;
 
     /**
-     * @var ExportParserYaml
+     * @var \CentreonRemote\Infrastructure\Export\ExportParserInterface
      */
     private $parser;
 
@@ -36,13 +37,16 @@ final class ExportCommitment
      * 
      * @param int $remote
      * @param int[] $pollers
+     * @param array $meta
+     * @param \CentreonRemote\Infrastructure\Export\ExportParserInterface $parser
      * @param string $path
      * @param array $exporters
      */
-    public function __construct(int $remote = null, array $pollers = null, string $path = null, array $exporters = null)
+    public function __construct(int $remote = null, array $pollers = null, array $meta = null, ExportParserInterface $parser = null, string $path = null, array $exporters = null)
     {
         $this->remote = $remote;
         $this->pollers = $pollers;
+        $this->meta = $meta;
         $this->path = $path;
         $this->exporters = $exporters ?? [];
 
@@ -50,10 +54,10 @@ final class ExportCommitment
             $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $this->remote;
         }
 
-        $this->parser = new ExportParserYaml;
+        $this->parser = $parser ?? new ExportParserYaml;
     }
 
-    public function getRemote(): array
+    public function getRemote(): int
     {
         return $this->remote;
     }
@@ -61,6 +65,11 @@ final class ExportCommitment
     public function getPollers(): array
     {
         return $this->pollers;
+    }
+
+    public function getMeta(): ?array
+    {
+        return $this->meta;
     }
 
     public function getPath(): string
@@ -78,7 +87,7 @@ final class ExportCommitment
         return $this->filePermission;
     }
 
-    public function getParser(): ExportParserYaml
+    public function getParser(): ExportParserInterface
     {
         return $this->parser;
     }

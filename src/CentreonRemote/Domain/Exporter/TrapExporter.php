@@ -1,17 +1,13 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
-use Psr\Container\ContainerInterface;
-use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
-use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\Traits\ExportPathTrait;
+use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-class TrapExporter implements ExporterServiceInterface
+class TrapExporter extends ExporterServiceAbstract
 {
 
-    use ExportPathTrait;
-
+    const NAME = 'trap';
     const EXPORT_FILE_TRAP = 'traps.yaml';
     const EXPORT_FILE_VENDOR = 'traps_vendor.yaml';
     const EXPORT_FILE_SERVICE_RELATION = 'traps_service_relation.yaml';
@@ -19,26 +15,6 @@ class TrapExporter implements ExporterServiceInterface
     const EXPORT_FILE_GROUP_RELATION = 'traps_group_relation.yaml';
     const EXPORT_FILE_MATCHING_PROP = 'traps_matching_properties.yaml';
     const EXPORT_FILE_PREEXEC = 'traps_preexec.yaml';
-
-    /**
-     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
-     */
-    private $db;
-
-    /**
-     * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
-     */
-    private $commitment;
-
-    /**
-     * Construct
-     * 
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->db = $services->get('centreon.db-manager');
-    }
 
     /**
      * Cleanup database
@@ -70,7 +46,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
+            $this->_dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -78,7 +54,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapVendorRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
+            $this->_dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -86,7 +62,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapServiceRelationRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
+            $this->_dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -94,7 +70,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapGroupRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
+            $this->_dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -102,7 +78,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapGroupRelationRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
+            $this->_dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -110,7 +86,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapMatchingPropsRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
+            $this->_dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
         })();
 
         (function() use ($pollerIds, $templateChain) {
@@ -118,7 +94,7 @@ class TrapExporter implements ExporterServiceInterface
                 ->getRepository(Repository\TrapPreexecRepository::class)
                 ->export($pollerIds, $templateChain)
             ;
-            $this->commitment->getParser()::dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
+            $this->_dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
         })();
     }
 
@@ -146,7 +122,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert traps
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TRAP);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps', $data);
@@ -156,7 +132,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert vendors
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_VENDOR);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_vendor', $data);
@@ -166,7 +142,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert service relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_service_relation', $data);
@@ -176,7 +152,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert groups
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_group', $data);
@@ -186,7 +162,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert group relation
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_group_relation', $data);
@@ -196,7 +172,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert properties
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MATCHING_PROP);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_matching_properties', $data);
@@ -206,7 +182,7 @@ class TrapExporter implements ExporterServiceInterface
         // insert pre-executed commands
         (function() use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_PREEXEC);
-            $result = $this->commitment->getParser()::parse($exportPathFile);
+            $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
                 $db->insert('traps_preexec', $data);
@@ -218,15 +194,5 @@ class TrapExporter implements ExporterServiceInterface
 
         // commit transaction
         $db->commit();
-    }
-
-    public function setCommitment(ExportCommitment $commitment): void
-    {
-        $this->commitment = $commitment;
-    }
-
-    public static function getName(): string
-    {
-        return 'trap';
     }
 }
