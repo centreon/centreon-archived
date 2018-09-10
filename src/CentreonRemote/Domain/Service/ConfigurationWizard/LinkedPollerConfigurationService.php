@@ -36,10 +36,18 @@ class LinkedPollerConfigurationService
         $pollerIDs = [];
 
         foreach ($pollers as $poller) {
-            // - in the broker config of the poller set
-            // - ['central-module']['output'] host to this ip?
+            $pollerID = $poller->getId();
+            $configQuery = "SELECT `config_id` FROM `cfg_centreonbroker` WHERE `ns_nagios_server` = :id 
+                        AND `config_filename` LIKE '%-module.xml'";
+            $statement = $this->db->prepare($configQuery);
+            $statement->execute([':id' => $pollerID]);
+            $configID = $statement->fetchColumn();
 
-            $pollerIDs[] = $poller->getId();
+            $updateQuery = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '{$server->getIp()}' 
+                        WHERE `config_id` = {$configID} AND `config_key` = 'host'";
+            $this->db->query($updateQuery);
+
+            $pollerIDs[] = $pollerID;
         }
 
         $this->generateConfiguration($pollerIDs);
