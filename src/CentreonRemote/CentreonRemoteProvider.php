@@ -2,9 +2,14 @@
 
 namespace CentreonRemote;
 
+use Pimple\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use CentreonRemote\Application\Webservice;
+use CentreonRemote\Application\Clapi;
 use CentreonRemote\Application\Webservice\CentreonTaskService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
@@ -13,11 +18,6 @@ use CentreonRemote\Domain\Service\ConfigurationWizard\RemoteConnectionConfigurat
 use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
-use Pimple\ServiceProviderInterface;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
-use CentreonRemote\Application\Webservice;
-use CentreonRemote\Application\Clapi;
 
 class CentreonRemoteProvider implements ServiceProviderInterface
 {
@@ -92,7 +92,19 @@ class CentreonRemoteProvider implements ServiceProviderInterface
         //-----------//
         // Exporters
         //-----------//
+        
+        // Commands
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
 
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\CommandExporter($locator);
+
+            return $service;
+        });
+        
         // Pollers
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
             $services = [
@@ -104,7 +116,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-
+        
         // Hosts
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function() use ($pimple) {
             $services = [
@@ -116,7 +128,19 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
+        
+        // Meta services
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
 
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\MetaServiceExporter($locator);
+
+            return $service;
+        });
+        
         // Services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
             $services = [
@@ -128,7 +152,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-
+        
         // Traps
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function() use ($pimple) {
             $services = [
@@ -137,6 +161,42 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             $locator = new ServiceLocator($pimple, $services);
             $service = new Domain\Exporter\TrapExporter($locator);
+
+            return $service;
+        });
+        
+        // Time periods
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\TimePeriodExporter($locator);
+
+            return $service;
+        });
+        
+        // Downtimes
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\DowntimeExporter($locator);
+
+            return $service;
+        });
+        
+        // Graphs
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function() use ($pimple) {
+            $services = [
+                'centreon.db-manager',
+            ];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Domain\Exporter\GraphExporter($locator);
 
             return $service;
         });

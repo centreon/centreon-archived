@@ -18,6 +18,7 @@ trait ExportPathTrait
         // Create export path
         $exportPath = $this->getPath($exportPath);
 
+        // make directory if missing
         if (!is_dir($exportPath)) {
             mkdir($exportPath, $this->commitment->getFilePermission(), true);
         }

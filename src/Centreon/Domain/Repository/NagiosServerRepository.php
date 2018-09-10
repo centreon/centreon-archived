@@ -10,14 +10,21 @@ class NagiosServerRepository extends ServiceEntityRepository
     /**
      * Export poller's Nagios data
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(array $pollerIds): array
     {
-        $sql = 'SELECT * FROM nagios_server WHERE id = :id';
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
+        $sql = "SELECT * FROM nagios_server WHERE id IN ({$ids})";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];

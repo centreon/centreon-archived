@@ -3,7 +3,7 @@ namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportParserYaml;
 
-class ExportCommitment
+final class ExportCommitment
 {
 
     /**
@@ -34,26 +34,33 @@ class ExportCommitment
     /**
      * Construct
      * 
-     * @param int $poller
+     * @param int $remote
+     * @param int[] $pollers
      * @param string $path
      * @param array $exporters
      */
-    public function __construct(int $poller, string $path = null, array $exporters = null)
+    public function __construct(int $remote = null, array $pollers = null, string $path = null, array $exporters = null)
     {
-        $this->poller = $poller;
+        $this->remote = $remote;
+        $this->pollers = $pollers;
         $this->path = $path;
         $this->exporters = $exporters ?? [];
 
         if ($this->path === null) {
-            $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $poller;
+            $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $this->remote;
         }
 
         $this->parser = new ExportParserYaml;
     }
 
-    public function getPoller(): int
+    public function getRemote(): array
     {
-        return $this->poller;
+        return $this->remote;
+    }
+
+    public function getPollers(): array
+    {
+        return $this->pollers;
     }
 
     public function getPath(): string

@@ -57,14 +57,6 @@ class CentreonProvider implements ServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function(Container $container): \CentreonUser {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-
-            return $_SESSION['centreon']->user;
-        };
-
         $pimple->register(new \CentreonRemote\CentreonRemoteProvider);
 
         // @todo register service here

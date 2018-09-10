@@ -38,22 +38,28 @@ SQL;
     /**
      * Export
      * 
-     * @param int $pollerId
+     * @param int[] $pollerIds
      * @return array
      */
-    public function export(int $pollerId): array
+    public function export(array $pollerIds): array
     {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = join(',', $pollerIds);
+
         $sql = <<<SQL
 SELECT
     tz.*,
     t.nagios_id AS `_nagios_id`
 FROM cfg_nagios AS t
 INNER JOIN timezone AS tz ON tz.timezone_id = t.use_timezone
-WHERE t.nagios_id = :id
+WHERE t.nagios_id IN ({$ids})
 GROUP BY tz.timezone_id
 SQL;
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = [];
