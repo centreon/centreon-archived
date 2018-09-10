@@ -234,14 +234,16 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         // If you want to link pollers to a remote
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
-            //todo: give this data to LinkedPollerConfigurationService
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
             $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+
+            $pollerConfigurationService->setPollersConfigurationWithServer($pollerServers, $remoteServer);
         }
 
         //todo: what do I do with these
         // - $openBrokerFlow?
         // - $manageBrokerConfiguration?
+        // - set informations table key isRemote to yes with the export data
 
         if ($isRemoteConnection) {
             $this->addServerToListOfRemotes($serverIP);

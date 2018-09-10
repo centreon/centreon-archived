@@ -27,17 +27,24 @@ class LinkedPollerConfigurationService
         $this->db = $di['centreon.db-manager']->getAdapter('configuration_db')->getCentreonDBInstance();
     }
 
+    /**
+     * @param PollerServer[] $pollers
+     * @param PollerServer   $server
+     */
     public function setPollersConfigurationWithServer(array $pollers, PollerServer $server)
     {
+        $pollerIDs = [];
+
         foreach ($pollers as $poller) {
             // - in the broker config of the poller set
-            // - ['central-module']['output'] host to this ip
-            // - export xml config of each poller and restart
+            // - ['central-module']['output'] host to this ip?
+
+            $pollerIDs[] = $poller->getId();
         }
 
-        // generateConfiguration
-        // moveConfigurationFiles
-        // restartPoller
+        $this->generateConfiguration($pollerIDs);
+        $this->moveConfigurationFiles($pollerIDs);
+        $this->restartPoller($pollerIDs);
     }
 
     private function generateConfiguration(array $pollerIDs)
@@ -62,11 +69,11 @@ class LinkedPollerConfigurationService
                 $configGenerateObject->configPollerFromId($pollerID, $username);
             }
         } catch(\Exception $e) {
-            //todo
+            throw new \Exception('There was an error generating the configuration for a poller.');
         }
     }
 
-    private function moveConfigurationFiles(array $pollers)
+    private function moveConfigurationFiles(array $pollerIDs)
     {
         $centreon = $_SESSION['centreon'];
         $centreonBrokerPath = _CENTREON_PATH_ . '/filesGeneration/broker/';
@@ -90,7 +97,7 @@ class LinkedPollerConfigurationService
         $localId = getLocalhostId();
 
         foreach ($tabs as $tab) {
-            if (in_array($tab['id'], $pollers)) {
+            if (in_array($tab['id'], $pollerIDs)) {
                 $tabServer[$tab['id']] = [
                     'id'        => $tab['id'],
                     'name'      => $tab['name'],
@@ -114,13 +121,12 @@ class LinkedPollerConfigurationService
                 }
             }
 
-            if (in_array($host['id'], $pollers)) {
+            if (in_array($host['id'], $pollerIDs)) {
                 $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
 
                 passthru("echo 'SENDCFGFILE:{$host['id']}' >> {$centCorePipe}", $return);
 
                 if ($return) {
-                    //todo: error
                     throw new \Exception(_('Could not write into centcore.cmd. Please check file permissions.'));
                 }
 
@@ -128,7 +134,6 @@ class LinkedPollerConfigurationService
                     passthru("echo 'SENDCBCFG:" . $host['id'] . "' >> $centCorePipe", $return);
 
                     if ($return) {
-                        //todo: error
                         throw new \Exception(_('Could not write into centcore.cmd. Please check file permissions.'));
                     }
                 }
@@ -136,9 +141,10 @@ class LinkedPollerConfigurationService
         }
     }
 
-    private function restartPoller(array $pollers)
+    private function restartPoller(array $pollerIDs)
     {
         $centreon = $_SESSION['centreon'];
+        $tabServers = [];
 
         if (defined('_CENTREON_VARLIB_')) {
             $centCorePipe = _CENTREON_VARLIB_ . '/centcore.cmd';
@@ -157,8 +163,8 @@ class LinkedPollerConfigurationService
         $broker->reload();
 
         foreach ($tabs as $tab) {
-            if (in_array($tab['id'], $pollers)) {
-                $poller[$tab['id']] = [
+            if (in_array($tab['id'], $pollerIDs)) {
+                $tabServers[$tab['id']] = [
                     'id'          => $tab['id'],
                     'name'        => $tab['name'],
                     'localhost'   => $tab['localhost'],
@@ -167,7 +173,7 @@ class LinkedPollerConfigurationService
             }
         }
 
-        foreach ($pollers as $poller) {
+        foreach ($tabServers as $poller) {
             if (isset($poller['localhost']) && $poller['localhost'] == 1) {
                 shell_exec("sudo service {$poller['init_script']} restart");
             } else {
@@ -175,7 +181,7 @@ class LinkedPollerConfigurationService
                     fwrite($fh, 'RESTART:' . $poller['id'] . "\n");
                     fclose($fh);
                 } else {
-                    //todo no permissions to open file
+                    throw new \Exception(_('Could not write into centcore.cmd. Please check file permissions.'));
                 }
             }
 
