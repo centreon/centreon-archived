@@ -140,11 +140,6 @@ class RemoteServerFormStepOne extends Component {
                 />
               </div>
             ) : null}
-            <Field
-              name="manage_broker_config"
-              component={CheckboxField}
-              label="Manage automatically Centreon Broker Configuration of selected poller?"
-            />
             <div class="form-buttons">
               <button className="button" type="submit">
                 Next
