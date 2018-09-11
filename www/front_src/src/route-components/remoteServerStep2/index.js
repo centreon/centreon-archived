@@ -36,9 +36,28 @@ class RemoteServerStepTwoRoute extends Component {
     "internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer"
   );
 
+  _spliceOutDefaultPoller = (itemArr) => {
+      for(let i=0 ; i<itemArr.items.length; i++) {
+          if(itemArr.items[i].id === '1')
+              itemArr.items.splice(i, 1);
+      }
+      return itemArr;
+  }
+
+  _filterOutDefaultPoller = (itemArr, clbk) => {
+      clbk(
+        this._spliceOutDefaultPoller(itemArr)
+      )
+  }
+
   getPollers = () => {
     this.pollerListApi.get().then(response => {
-      this.setState({ pollers: response.data });
+      this._filterOutDefaultPoller(
+          response.data,
+          (pollers) => {
+            this.setState({ pollers });
+          }
+          );
     });
   };
 
