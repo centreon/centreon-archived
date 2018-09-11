@@ -21,7 +21,7 @@
 	</tr>
 
 	{foreach from=$modules key=name item=properties}
-	<tr class='list_one'>
+	<tr class='list_one' data-module-name="{$properties.name}">
 		<td class="ListColLeft">
 			<a href="?p={$p}&o=w&name={$properties.name}">{$properties.name}</a>
 		</td>

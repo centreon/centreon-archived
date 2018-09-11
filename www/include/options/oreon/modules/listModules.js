@@ -85,6 +85,11 @@ function displayResults(moduleList)
             jQuery('#action_'+ moduleName).prepend(customActionIcon);
         }
 
+        if (module['licenseExpiration']) {
+            jQuery('tr[data-module-name="' + moduleName + '"] .ListColCenter.isTimestamp')
+                .html(module['licenseExpiration']);
+        }
+
         if (tooltipReferer) {
             jQuery(tooltipReferer).qtip({
                 content: statusMessage,
