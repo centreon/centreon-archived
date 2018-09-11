@@ -55,10 +55,3 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
 <script type="text/javascript" src="./include/options/oreon/modules/listModules.js"></script>
-
-{literal}
-<script>
-    //formatting the tags containing a class isTimestamp
-    formatDateMoment();
-</script>
-{/literal}

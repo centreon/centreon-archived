@@ -10,6 +10,7 @@ function CheckModule()
         },
         success: function (data) {
             displayResults(data);
+            formatDateMoment();
         }
     });
 }
