@@ -10,7 +10,7 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
         $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
         $configCentreonBrokerData = $configCentreonBrokerData($serverID, $this->name);
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
-        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->dbUser, $this->dbPassword);
+        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->name, $this->dbUser, $this->dbPassword);
 
         $brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['broker']);
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);

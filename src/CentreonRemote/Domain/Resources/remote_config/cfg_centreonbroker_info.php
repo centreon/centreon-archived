@@ -33,9 +33,16 @@ $data = [
     ]
 ];
 
-return function ($dbUser, $dbPassword) use ($data, $outputPerfdataData, $outputSQLMasterData) {
+return function ($serverName, $dbUser, $dbPassword) use ($data, $outputPerfdataData, $outputSQLMasterData) {
+    $serverName = strtolower(str_replace(' ', '-', $serverName));
+
     $data['central-broker']['output_prefdata'] = $outputPerfdataData($dbUser, $dbPassword);
     $data['central-broker']['output_sql'] = $outputSQLMasterData($dbUser, $dbPassword);
+    $data['central-broker']['logger'][0]['config_value'] = "/var/log/centreon-broker/broker-{$serverName}.log";
+
+    $data['central-module']['logger'][0]['config_value'] = "/var/log/centreon-broker/module-{$serverName}.log";
+
+    $data['central-rrd']['logger'][0]['config_value'] = "/var/log/centreon-broker/rrd-{$serverName}.log";
 
     return $data;
 };

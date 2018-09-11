@@ -10,7 +10,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
         $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
         $configCentreonBrokerData = $configCentreonBrokerData($serverID, $this->name);
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
-        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData(null, null);
+        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->name, null, null);
 
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
 
