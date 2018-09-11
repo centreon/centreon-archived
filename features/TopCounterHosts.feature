@@ -7,6 +7,7 @@ Feature: Top Counter Host
     Given I am logged in a Centreon server
 
   Scenario: Link to ok hosts
+    Given an OK host
     When I click on the chip "Ok hosts"
     Then I see the list of hosts filtered by status up
 
