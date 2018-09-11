@@ -33,7 +33,7 @@ class ExportService
             ->getRepository(InformationsRepository::class)
             ->getOneByKey('version')
         ;
-        
+
         if ($version) {
             $this->version = $version->getValue();
         }
@@ -67,7 +67,7 @@ class ExportService
             $exporter->setCommitment($commitment);
             $exporter->setManifest($manifest);
             $exporter->export();
-            
+
             // add exporter to manifest
             $manifest->addExporter($exporterMeta['classname']);
         }
@@ -78,11 +78,12 @@ class ExportService
     /**
      * Import
      * 
+     * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
     public function import(ExportCommitment $commitment = null): void
     {
-        $commitment = $commitment ?? new ExportCommitment(null, null, static::PATH_EXPORTED_DATA);
+        $commitment = $commitment ?? new ExportCommitment(null, null, null, null, static::PATH_EXPORTED_DATA);
 
         // check is export directory
         $exportPath = $commitment->getPath();
@@ -91,10 +92,13 @@ class ExportService
             return;
         }
 
-        $filterExporters = $commitment->getExporters();
+        $manifest = new ExportManifest($commitment, $this->version);
+        $manifest->validate();
+
+        $filterExporters = $manifest->get('exporters');
 
         foreach ($this->exporter->all() as $exporterMeta) {
-            if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
+            if (!in_array($exporterMeta['classname'], $filterExporters)) {
                 continue;
             }
 
