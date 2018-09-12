@@ -28,7 +28,7 @@ Fix images for db replication - PR #6432
 Correction of typography - #6447, PR #6453
 Improve Centreon IMP chapter - PR #6485
 Correct link references in IMP chapter - PR #6541
-Incrase Centreon web version number for PDF generation - PR #6540
+Increase Centreon web version number for PDF generation - PR #6540
 Correct build errors - PR #6567
 Global review documentation content - #6560, PR #6510
 
