@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/opt/rh/rh-php71/root/usr/bin/php
 <?php
 /**
  * Copyright 2005-2015 CENTREON
