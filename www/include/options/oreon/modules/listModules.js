@@ -10,6 +10,7 @@ function CheckModule()
         },
         success: function (data) {
             displayResults(data);
+            formatDateMoment();
         }
     });
 }
@@ -83,6 +84,11 @@ function displayResults(moduleList)
             jQuery('#' + modalBoxId).dialog("option", "hide", { effect: 'drop', direction: "down" });
             jQuery('#' + modalBoxId).dialog("option", "modal", true);
             jQuery('#action_'+ moduleName).prepend(customActionIcon);
+        }
+
+        if (module['licenseExpiration']) {
+            jQuery('tr[data-module-name="' + moduleName + '"] .ListColCenter.isTimestamp')
+                .html(module['licenseExpiration']);
         }
 
         if (tooltipReferer) {
