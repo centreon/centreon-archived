@@ -51,10 +51,14 @@ $tpl = initSmartyTpl($path, $tpl);
 function getGetPostValue($str)
 {
     $value = null;
-    if (isset($_GET[$str]) && $_GET[$str]) {
+    if (isset($_GET[$str]) &&
+        $_GET[$str]
+    ) {
         $value = $_GET[$str];
     }
-    if (isset($_POST[$str]) && $_POST[$str]) {
+    if (isset($_POST[$str]) &&
+        $_POST[$str]
+    ) {
         $value = $_POST[$str];
     }
     return urldecode($value);
@@ -66,14 +70,14 @@ $metrics = array();
 if (isset($svc_id) && $svc_id) {
     list($hostId, $svcId) = explode('_', $svc_id);
     /* Get list metrics */
-    $query = 'SELECT m.metric_id, m.metric_name, i.host_name, i.service_description
-        FROM metrics m, index_data i
-        WHERE i.id = m.index_id AND i.service_id = ' . CentreonDB::escape($svcId) .
+    $query = 'SELECT m.metric_id, m.metric_name, i.host_name, i.service_description ' .
+        'FROM metrics m, index_data i ' .
+        'WHERE i.id = m.index_id AND i.service_id = ' . CentreonDB::escape($svcId) .
         ' AND i.host_id = ' . CentreonDB::escape($hostId);
     $res = $pearDBO->query($query);
-    while ($row = $res->fetchRow()) {
+    while ($row = $res->fetch()) {
         $metrics[] = array(
-            'id' => $svc_id . '_' .$row['metric_id'],
+            'id' => $svc_id . '_' . $row['metric_id'],
             'title' => $row['host_name'] . ' - ' . $row['service_description'] . ' : ' . $row['metric_name']
         );
     }
@@ -82,17 +86,21 @@ if (isset($svc_id) && $svc_id) {
 /* Get Period if is in url */
 $period_start = 'undefined';
 $period_end = 'undefined';
-if (isset($_REQUEST['start']) && is_numeric($_REQUEST['start'])) {
+if (isset($_REQUEST['start']) &&
+    is_numeric($_REQUEST['start'])
+) {
     $period_start = $_REQUEST['start'];
 }
-if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
+if (isset($_REQUEST['end']) &&
+    is_numeric($_REQUEST['end'])
+) {
     $period_end = $_REQUEST['end'];
 }
 
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=".$p);
+$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=" . $p);
 
 $periods = array(
     "" => "",
@@ -114,7 +122,15 @@ $periods = array(
     "6M" => _("Last 6 Months"),
     "1y" => _("Last Year")
 );
-$sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"changeInterval()"));
+$sel = $form->addElement(
+    'select',
+    'period',
+    _("Graph Period"),
+    $periods,
+    array(
+        "onchange"=>"changeInterval()"
+    )
+);
 $form->addElement(
     'text',
     'StartDate',
@@ -160,21 +176,47 @@ $form->addElement(
     )
 );
 
-if ($period_start != 'undefined' && $period_end != 'undefined') {
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$form->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$form->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+
+if ($period_start != 'undefined' &&
+    $period_end != 'undefined'
+) {
     $startDay = date('Y-m-d', $period_start);
     $startTime = date('H:i', $period_start);
     $endDay = date('Y-m-d', $period_end);
     $endTime = date('H:i', $period_end);
-    $form->setDefaults(array(
-        'StartDate' => $startDay,
-        'StartTime' => $startTime,
-        'EndDate' => $endDay,
-        'EndTime' => $endTime
-    ));
+    $form->setDefaults(
+        array(
+            'alternativeDateStartDate' => $startDay,
+            'StartTime' => $startTime,
+            'alternativeDateEndDate' => $endDay,
+            'EndTime' => $endTime
+        )
+    );
 } else {
-    $form->setDefaults(array(
-        'period' => '3h'
-    ));
+    $form->setDefaults(
+        array(
+            'period' => '3h'
+        )
+    );
 }
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
