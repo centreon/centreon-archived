@@ -2,10 +2,10 @@
 
 namespace CentreonRemote;
 
-use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonRemote\Application\Webservice;
@@ -19,7 +19,7 @@ use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 
-class CentreonRemoteProvider implements ServiceProviderInterface
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
@@ -220,7 +220,9 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-
-        // @todo register services here
+    }
+    
+    public static function order() : int {
+        return 20;
     }
 }

@@ -1,15 +1,15 @@
 <?php
 namespace Centreon;
 
-use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 
-class CentreonProvider implements ServiceProviderInterface
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
@@ -56,9 +56,9 @@ class CentreonProvider implements ServiceProviderInterface
 
             return $service;
         };
-
-        $pimple->register(new \CentreonRemote\CentreonRemoteProvider);
-
-        // @todo register service here
+    }
+    
+    public static function order() : int {
+        return 1;
     }
 }
