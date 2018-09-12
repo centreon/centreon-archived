@@ -2,6 +2,7 @@
 namespace CentreonRemote\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
+use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
@@ -13,6 +14,11 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
      */
     protected $db;
+
+    /**
+     * @var \CentreonRemote\Infrastructure\Service\ExporterCacheService
+     */
+    protected $cache;
 
     /**
      * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
@@ -27,6 +33,11 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     public function __construct(ContainerInterface $services)
     {
         $this->db = $services->get('centreon.db-manager');
+    }
+
+    public function setCache(ExporterCacheService $cache): void
+    {
+        $this->cache = $cache;
     }
 
     public function setCommitment(ExportCommitment $commitment): void
@@ -96,10 +107,17 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         return $result;
     }
 
+    protected function _getIf(string $key, callable $data)
+    {
+        $result = $this->cache->getIf($key, $data);
+
+        return $result;
+    }
+
     protected function _dump(array $input, string $filename): void
     {
         $this->commitment->getParser()::dump($input, $filename);
-        
+
         $this->manifest->addFile($filename);
     }
 }

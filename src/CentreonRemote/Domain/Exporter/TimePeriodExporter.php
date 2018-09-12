@@ -32,15 +32,19 @@ class TimePeriodExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->db
-            ->getRepository(Repository\HostTemplateRelationRepository::class)
-            ->getChainByPoller($pollerIds)
-        ;
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+            return $this->db
+                    ->getRepository(Repository\HostTemplateRelationRepository::class)
+                    ->getChainByPoller($pollerIds)
+            ;
+        });
 
-        $serviceTemplateChain = $this->db
-            ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerIds)
-        ;
+        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+            return $this->db
+                    ->getRepository(Repository\ServiceRepository::class)
+                    ->getChainByPoller($pollerIds)
+            ;
+        });
 
         $timeperiodList = $this->db
             ->getRepository(Repository\TimePeriodRepository::class)

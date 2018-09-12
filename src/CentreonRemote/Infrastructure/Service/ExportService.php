@@ -12,9 +12,14 @@ class ExportService
     const PATH_EXPORTED_DATA = '/var/lib/centreon/remote-data';
 
     /**
-     * @var ExporterService
+     * @var \CentreonRemote\Infrastructure\Service\ExporterService
      */
     private $exporter;
+
+    /**
+     * @var \CentreonRemote\Infrastructure\Service\ExporterCacheService
+     */
+    private $cache;
 
     /**
      * @var String
@@ -29,6 +34,7 @@ class ExportService
     public function __construct(ContainerInterface $services)
     {
         $this->exporter = $services->get('centreon_remote.exporter');
+        $this->cache = $services->get('centreon_remote.exporter.cache');
         $version = $services->get('centreon.db-manager')
             ->getRepository(InformationsRepository::class)
             ->getOneByKey('version')
@@ -66,12 +72,14 @@ class ExportService
             $exporter = $exporterMeta['factory']();
             $exporter->setCommitment($commitment);
             $exporter->setManifest($manifest);
+            $exporter->setCache($this->cache);
             $exporter->export();
 
             // add exporter to manifest
             $manifest->addExporter($exporterMeta['classname']);
         }
 
+        $this->cache->destroy();
         $manifest->dump();
     }
 

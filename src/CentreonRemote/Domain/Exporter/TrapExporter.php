@@ -35,64 +35,66 @@ class TrapExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $templateChain = $this->db
-            ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerIds)
-        ;
+        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+            return $this->db
+                    ->getRepository(Repository\ServiceRepository::class)
+                    ->getChainByPoller($pollerIds)
+            ;
+        });
 
         // Extract data
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $traps = $this->db
                 ->getRepository(Repository\TrapRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $vendors = $this->db
                 ->getRepository(Repository\TrapVendorRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceRelation = $this->db
                 ->getRepository(Repository\TrapServiceRelationRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $groups = $this->db
                 ->getRepository(Repository\TrapGroupRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $groupRelation = $this->db
                 ->getRepository(Repository\TrapGroupRelationRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $matchingProps = $this->db
                 ->getRepository(Repository\TrapMatchingPropsRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $preexec = $this->db
                 ->getRepository(Repository\TrapPreexecRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
         })();
