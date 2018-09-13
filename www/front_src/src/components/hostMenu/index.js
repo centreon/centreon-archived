@@ -25,90 +25,86 @@ class HostMenu extends Component {
     const { toggled } = this.state;
 
     return (
-      <span class="wrap-middle-icons">
-        <span class="wrap-middle-icon gray">
-          <span class="iconmoon icon-host" onClick={this.toggle.bind(this)}>
-            <div
-              class={"submenu-top host" + (toggled ? " submenu-active" : null)}
-            >
-              <div class="submenu-top-inner">
-                <ul class="submenu-top-items">
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20202&o=h&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span>All hosts</span>
-                      <span class="submenu-top-count">{total}</span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20202&o=h_down&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored red">Down hosts</span>
-                      <span class="submenu-top-count">
-                        {down.unhandled}/{down.total}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20202&o=h_unreachable&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored gray">Unreachable hosts</span>
-                      <span class="submenu-top-count">
-                        {unreachable.unhandled}/{unreachable.total}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20202&o=h_up&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored green">Ok hosts</span>
-                      <span class="submenu-top-count">{ok}</span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20202&o=h_pending&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored blue">
-                        {pending} Pending hosts
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <div class={"wrap-right-hosts" + (toggled ? " submenu-active" : "")}>
+        <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
+          <span class="iconmoon icon-hosts">
+            {pending > 0 ? <span class="custom-icon" /> : null}
           </span>
-          {pending > 0 ? <span class="custom-icon" /> : ""}
+          <span class="wrap-right-icon__name">Hosts</span>
         </span>
-        {down.unhandled > 0 || unreachable.unhandled > 0 ? (
-          <span class="wrap-middle-icon round round-big red">
-            <a class="number" href="#">
-              <span>{numeral(down.unhandled).format("0a")}</span>
-            </a>
-          </span>
-        ) : (
-          <span class="wrap-middle-icon round round-big green">
-            <a class="number" href="#">
-              <span>{numeral(ok.total).format("0a")}</span>
-            </a>
-          </span>
-        )}
 
+        <span class="wrap-middle-icon round round-small red-bordered">
+          <a class="number">
+            <span>{numeral(down.unhandled).format("0a")}</span>
+          </a>
+        </span>
         <span class="wrap-middle-icon round round-small gray-dark">
-          <a class="number" href="#">
+          <a class="number">
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
           </a>
         </span>
-      </span>
+        <span class="wrap-middle-icon round round-big green">
+          <a class="number">
+            <span>{numeral(ok.total).format("0a")}</span>
+          </a>
+        </span>
+
+        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} />
+        <div class="submenu host">
+          <div class="submenu-inner">
+            <ul class="submenu-items list-unstyled">
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20202&o=h&search="}
+                  class="submenu-item-link"
+                >
+                  <span>All hosts</span>
+                  <span class="submenu-count">{total}</span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20202&o=h_down&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored red">Down hosts</span>
+                  <span class="submenu-count">
+                    {down.unhandled}/{down.total}
+                  </span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20202&o=h_unreachable&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored gray">Unreachable hosts</span>
+                  <span class="submenu-count">
+                    {unreachable.unhandled}/{unreachable.total}
+                  </span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20202&o=h_up&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored green">Ok hosts</span>
+                  <span class="submenu-count">{ok}</span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20202&o=h_pending&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored blue">{pending} Pending hosts</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     );
   }
 }

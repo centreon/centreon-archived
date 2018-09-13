@@ -25,121 +25,100 @@ class ServiceStatusMenu extends Component {
     const { toggled } = this.state;
 
     return (
-      <div class="wrap-middle-right">
-        <span class="wrap-middle-icon gray">
-          <span class="iconmoon icon-services" onClick={this.toggle.bind(this)}>
-            <div
-              class={
-                "submenu-top services" + (toggled ? " submenu-active" : null)
-              }
-            >
-              <div class="submenu-top-inner">
-                <ul class="submenu-top-items">
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span>All services</span>
-                      <span class="submenu-top-count">{total}</span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc_critical&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored red">Critical services</span>
-                      <span class="submenu-top-count">
-                        {critical.unhandled}/{critical.total}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc_warning&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored blue">Warning services</span>
-                      <span class="submenu-top-count">
-                        {warning.unhandled}/{warning.total}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc_unknown&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored gray">Unknown services</span>
-                      <span class="submenu-top-count">
-                        {unknown.unhandled}/{unknown.total}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc_ok&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored green">Ok services</span>
-                      <span class="submenu-top-count">{ok}</span>
-                    </a>
-                  </li>
-                  <li class="submenu-top-item">
-                    <a
-                      href={"./main.php?p=20201&o=svc_pending&search="}
-                      class="submenu-top-item-link"
-                    >
-                      <span class="dot-colored blue">
-                        {pending} Pending services
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <div class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
+        <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
+          <span class="iconmoon icon-services">
+            {pending > 0 ? <span class="custom-icon" /> : null}
           </span>
-          {pending > 0 ? <span class="custom-icon" /> : ""}
+          <span class="wrap-right-icon__name">Services</span>
         </span>
-        {critical.unhandled == 0 &&
-        warning.unhandled == 0 &&
-        unknown.unhandled == 0 ? (
-          <span
-            class="wrap-middle-icon round round-big green"
-            aria-label="Ok services"
-          >
-            <a class="number" href="#">
-              <span>{numeral(ok.total).format("0a")}</span>
-            </a>
-          </span>
-        ) : (
-          <span
-            class="wrap-middle-icon round round-big red"
-            aria-label="Critical services"
-          >
-            <a class="number" href="#">
-              <span>{numeral(critical.unhandled).format("0a")}</span>
-            </a>
-          </span>
-        )}
-
-        <span
-          class="wrap-middle-icon round round-small orange"
-          aria-label="Warning services"
-        >
-          <a class="number" href="#">
+        <span class="wrap-middle-icon round round-small red">
+          <a class="number">
+            <span>{numeral(critical.unhandled).format("0a")}</span>
+          </a>
+        </span>
+        <span class="wrap-middle-icon round round-small orange-bordered">
+          <a class="number">
             <span>{numeral(warning.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span
-          class="wrap-middle-icon round round-small gray-light"
-          aria-label="Unknown services"
-        >
-          <a class="number" href="#">
+        <span class="wrap-middle-icon round round-small gray-light">
+          <a class="number">
             <span>{numeral(unknown.unhandled).format("0a")}</span>
           </a>
         </span>
+        <span class="wrap-middle-icon round round-small green">
+          <a class="number">
+            <span>{numeral(ok.total).format("0a")}</span>
+          </a>
+        </span>
+        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} />
+        <div class="submenu services">
+          <div class="submenu-inner">
+            <ul class="submenu-items list-unstyled">
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc&search="}
+                  class="submenu-item-link"
+                >
+                  <span>All services:</span>
+                  <span class="submenu-count">{total}</span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc_critical&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored red">Critical services:</span>
+                  <span class="submenu-count">
+                    {critical.unhandled}/{critical.total}
+                  </span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc_warning&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored orange">Warning services:</span>
+                  <span class="submenu-count">
+                    {warning.unhandled}/{warning.total}
+                  </span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc_unknown&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored gray">Unknown services:</span>
+                  <span class="submenu-count">
+                    {unknown.unhandled}/{unknown.total}
+                  </span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc_ok&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored green">Ok services:</span>
+                  <span class="submenu-count">{ok}</span>
+                </a>
+              </li>
+              <li class="submenu-item">
+                <a
+                  href={"./main.php?p=20201&o=svc_pending&search="}
+                  class="submenu-item-link"
+                >
+                  <span class="dot-colored blue">Pending services:</span>
+                  <span class="submenu-count">{pending}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }

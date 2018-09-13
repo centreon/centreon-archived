@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('./fonts/icomoon.eot');
-  src:  url('./fonts/icomoon.eot') format('embedded-opentype'),
-    url('./fonts/icomoon.ttf') format('truetype'),
-    url('./fonts/icomoon.woff') format('woff'),
-    url('./fonts/icomoon.svg') format('svg');
+  src:  url('../fonts/icomoon.eot');
+  src:  url('../fonts/icomoon.eot') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf') format('truetype'),
+    url('../fonts/icomoon.woff') format('woff'),
+    url('../fonts/icomoon.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,59 +24,89 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-copy:before {
-  content: "\e902";
-  color: #88b917;
-}
-.icon-administration:before {
-  content: "\e900";
-  color: #17387b;
-}
-.icon-configuration:before {
-  content: "\e901";
-  color: #319ed5;
-}
-.icon-host:before {
-  content: "\e904";
-  color: #A7A9AC;
-}
-.icon-host:hover:before {
-  color: #D1D2D4;
-}
-.icon-monitoring:before {
-  content: "\e905";
-  color: #85b446;
-}
-.icon-poller:before {
-  content: "\e906";
-  color: rgb(136, 185, 23);
-}
-.icon-poller.warning:before {
-  content: "\e906";
-  color: #FF9A13;
-}
-.icon-poller.critical:before {
-  content: "\e906";
-  color: #E00B3D;
-}
-.icon-reporting:before {
-  content: "\e907";
-  color: #e4932c;
-}
-.icon-services:before {
-  content: "\e908";
-  color: #A7A9AC;
-}
-.icon-services:hover:before {
-  color: #D1D2D4;
-}
+
 .icon-home:before {
-  content: "\e903";
+  content: "\e904";
+  color: #009f97;
+}
+.icon-home:hover:before {
+  content: "\e904";
+  color: #fff;
+}
+
+.icon-monitoring:before {
+  content: "\e907";
+  color: #134563;
+}
+.icon-monitoring:hover:before {
+  content: "\e907";
+  color: #fff;
+}
+
+.icon-reporting:before {
+  content: "\e909";
+  color: #ffa200;
+}
+.icon-reporting:hover:before {
+  content: "\e909";
+  color: #fff;
+}
+
+.icon-configuration:before {
+  content: "\e902";
   color: #2b9e93;
 }
+.icon-configuration:hover:before {
+  content: "\e902";
+  color: #fff;
+}
+
+.icon-administration:before {
+  content: "\e900";
+  color: #2b2d83;
+}
+.icon-administration:hover:before {
+  content: "\e900";
+  color: #fff;
+}
+
+.icon-poller:before {
+  content: "\e908";
+  color: #fff;
+}
+
+.icon-link:before {
+  content: "\e906";
+  color: #000;
+}
+
+.icon-clock:before {
+  content: "\e901";
+  color: #000;
+}
+
+.icon-database:before {
+  content: "\e903";
+  color: #000;
+}
+
+.icon-hosts:before {
+  content: "\e905";
+  color: #fff;
+}
+
+.icon-services:before {
+  content: "\e90a";
+  color: #fff;
+}
+
+.icon-user:before {
+  content: "\e90b";
+  color: #fff;
+}
+
 .iconmoon {
   display: block;
-  position: relative;
   text-align: center;
   &:before {
     font-size: 24px;
