@@ -36,10 +36,12 @@ class ServiceExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $templateChain = $this->db
-            ->getRepository(Repository\ServiceRepository::class)
-            ->getChainByPoller($pollerIds)
-        ;
+        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+            return $this->db
+                    ->getRepository(Repository\ServiceRepository::class)
+                    ->getChainByPoller($pollerIds)
+            ;
+        });
 
         // Extract data
         (function() use ($pollerIds) {
@@ -50,58 +52,58 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $services = $this->db
                 ->getRepository(Repository\ServiceRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceGroups = $this->db
                 ->getRepository(Repository\ServiceGroupRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceGroupRelation = $this->db
                 ->getRepository(Repository\ServiceGroupRelationRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceCategories = $this->db
                 ->getRepository(Repository\ServiceCategoryRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceCategoryRelation = $this->db
                 ->getRepository(Repository\ServiceCategoryRelationRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroServiceRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
-        (function() use ($pollerIds, $templateChain) {
+        (function() use ($pollerIds, $serviceTemplateChain) {
             $serviceInfo = $this->db
                 ->getRepository(Repository\ExtendedServiceInformationRepository::class)
-                ->export($pollerIds, $templateChain)
+                ->export($pollerIds, $serviceTemplateChain)
             ;
             $this->_dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();

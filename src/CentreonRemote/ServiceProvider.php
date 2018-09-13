@@ -2,15 +2,13 @@
 
 namespace CentreonRemote;
 
-use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
-use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonRemote\Application\Webservice;
 use CentreonRemote\Application\Clapi;
-use CentreonRemote\Application\Webservice\CentreonTaskService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
 use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService;
@@ -19,7 +17,7 @@ use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 
-class CentreonRemoteProvider implements ServiceProviderInterface
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
@@ -68,6 +66,7 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
         $pimple['centreon_remote.export'] = function (Container $container): Infrastructure\Service\ExportService {
             $services = [
+                'centreon_remote.exporter.cache',
                 'centreon_remote.exporter',
                 'centreon.db-manager',
             ];
@@ -75,6 +74,12 @@ class CentreonRemoteProvider implements ServiceProviderInterface
             $locator = new ServiceLocator($container, $services);
 
             $service = new Infrastructure\Service\ExportService($locator);
+
+            return $service;
+        };
+
+        $pimple['centreon_remote.exporter.cache'] = function (Container $container): Infrastructure\Service\ExporterCacheService {
+            $service = new Infrastructure\Service\ExporterCacheService($container);
 
             return $service;
         };
@@ -213,7 +218,9 @@ class CentreonRemoteProvider implements ServiceProviderInterface
 
             return $service;
         });
-
-        // @todo register services here
+    }
+    
+    public static function order() : int {
+        return 20;
     }
 }

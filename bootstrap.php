@@ -93,8 +93,8 @@ $dependencyInjector['finder'] = $dependencyInjector->factory(function ($c) {
     return new \Symfony\Component\Finder\Finder();
 });
 
-// Register Centreon provider
-$dependencyInjector->register(new \Centreon\CentreonProvider);
+// Dynamically register service provider
+\Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);
 
 // Centreon configuration files
 $configFiles = $dependencyInjector['finder']

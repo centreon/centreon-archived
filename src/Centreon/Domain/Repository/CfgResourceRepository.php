@@ -2,8 +2,6 @@
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use Centreon\Domain\Entity\CfgResource;
-use PDO;
 
 class CfgResourceRepository extends ServiceEntityRepository
 {
