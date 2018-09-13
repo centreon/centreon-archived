@@ -2,7 +2,6 @@
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use PDO;
 
 class DowntimePeriodRepository extends ServiceEntityRepository
 {
