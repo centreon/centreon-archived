@@ -55,7 +55,7 @@ foreach ($modules as $module) {
         if (file_exists($checklistDir . 'requirements.php')) {
             require_once $checklistDir . 'requirements.php';
             // Necessary to implement the expiration date column in list modules page
-            if (isset($licenseExpiration)) {
+            if (!empty($licenseExpiration)) {
                 $response[$module]['licenseExpiration'] = $licenseExpiration;
             }
             if ($critical || $warning) {
