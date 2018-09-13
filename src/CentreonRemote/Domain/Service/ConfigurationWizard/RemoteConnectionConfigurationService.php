@@ -12,7 +12,7 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
         $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
         $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->name, $this->dbUser, $this->dbPassword);
 
-        $brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['broker']);
+        $this->brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['broker']);
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
         $rrdID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['rrd']);
 
@@ -22,7 +22,7 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
                     $row['config_value'] = $this->centralIp;
                 }
 
-                $row['config_id'] = $brokerID;
+                $row['config_id'] = $this->brokerID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }
         }

@@ -53,7 +53,7 @@ class PollerConfigurationRequestBridge
 
     public function collectDataFromRequest()
     {
-        $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
+        $isRemoteConnection = (new ServerWizardIdentity)->requestConfigurationIsRemote();
 
         if ($isRemoteConnection) {
             $pollerIDs = $_POST['linked_pollers'] ?? ''; // Poller ids are coming form the request

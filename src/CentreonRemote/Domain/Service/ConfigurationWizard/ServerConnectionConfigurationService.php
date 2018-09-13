@@ -21,6 +21,10 @@ abstract class ServerConnectionConfigurationService
 
     protected $name;
 
+    protected $shouldInsertBamBrokers = false;
+
+    protected $brokerID = null;
+
     protected $resourcesPath = '/Domain/Resources/remote_config/';
 
 
@@ -89,6 +93,10 @@ abstract class ServerConnectionConfigurationService
 
         $this->insertConfigCentreonBroker($serverID);
 
+        if ($this->shouldInsertBamBrokers) {
+            $this->insertBamBrokers();
+        }
+
         $this->getDbAdapter()->commit();
 
         return $serverID;
@@ -144,6 +152,28 @@ abstract class ServerConnectionConfigurationService
         $this->insertWithAdapter('cfg_resource_instance_relations', $pluginResourceData);
     }
 
+    protected function insertBamBrokers()
+    {
+        global $conf_centreon;
+
+        if (!$this->brokerID) {
+            throw new \Exception('Broker ID was not inserted in order to add BAM broker configs to it.');
+        }
+
+        $bamBrokerInfoData = $this->getResource('bam_broker_cfg_info.php');
+        $bamBrokerInfoData = $bamBrokerInfoData($conf_centreon['password']);
+
+        foreach ($bamBrokerInfoData['monitoring'] as $row) {
+            $row['config_id'] = $this->brokerID;
+            $this->insertWithAdapter('cfg_centreonbroker_info', $row);
+        }
+
+        foreach ($bamBrokerInfoData['reporting'] as $row) {
+            $row['config_id'] = $this->brokerID;
+            $this->insertWithAdapter('cfg_centreonbroker_info', $row);
+        }
+    }
+
     protected function insertWithAdapter($table, array $data)
     {
         try {
@@ -154,5 +184,10 @@ abstract class ServerConnectionConfigurationService
         }
 
         return $result;
+    }
+
+    public function shouldInsertBamBrokers()
+    {
+        $this->shouldInsertBamBrokers = true;
     }
 }

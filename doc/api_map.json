@@ -227,6 +227,33 @@
                     }
                 }
             }
+        },
+        "/centreon/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_modules_webservice"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getBamModuleInfo"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with BAM module info"
+                    }
+                }
+            }
         }
     },
     "definitions": {}

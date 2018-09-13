@@ -196,7 +196,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
-        $isRemoteConnection = ServerWizardIdentity::requestConfigurationIsRemote();
+        $serverWizardIdentity = new ServerWizardIdentity;
+        $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
+        $serverHasBamInstalled = false;
         $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
@@ -220,10 +222,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
+            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP);
         }
 
         // Add configuration of the new server in the database
         try {
+            if ($serverHasBamInstalled) {
+                $serverConfigurationService->shouldInsertBamBrokers();
+            }
+
             $serverID = $serverConfigurationService->insert();
         } catch(\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
