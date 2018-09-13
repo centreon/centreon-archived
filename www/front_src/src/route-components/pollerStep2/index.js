@@ -25,14 +25,14 @@ class PollerStepTwoRoute extends Component {
   ];
 
   pollerListApi = axios(
-    "internal.php?object=centreon_configuration_poller&action=list"
+    "internal.php?object=centreon_configuration_remote&action=getRemotesList"
   );
   wizardFormApi = axios(
     "internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer"
   );
 
   getPollers = () => {
-    this.pollerListApi.get().then(response => {
+    this.pollerListApi.post().then(response => {
       this.setState({ pollers: response.data });
     });
   };

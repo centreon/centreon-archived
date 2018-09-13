@@ -8,8 +8,6 @@ import {
   serverNameValidator,
   serverIpAddressValidator,
   centralIpAddressValidator,
-  databaseUserValidator,
-  databasePasswordValidator
 } from "../../../helpers/validators";
 
 class PollerFormStepOne extends Component {
@@ -43,23 +41,6 @@ class PollerFormStepOne extends Component {
               placeholder=""
               label="Centreon Central IP Address:"
             />
-            <Field
-              name="db_user"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label="Database user:"
-            />
-            <Field
-              name="db_password"
-              component={PasswordInputField}
-              label="Database password:"
-            />
-            <Field
-              name="manage_broker_config"
-              component={CheckboxField}
-              label="Centreon must connect to poller to open Broker flow"
-            />
             <div class="form-buttons">
               <button className="button" type="submit">
                 Next
@@ -77,8 +58,6 @@ const validate = server => ({
   server_name: serverNameValidator(server.server_name),
   server_ip: serverIpAddressValidator(server.server_ip),
   centreon_central_ip: centralIpAddressValidator(server.centreon_central_ip),
-  db_user: databaseUserValidator(server.db_user),
-  db_password: databasePasswordValidator(server.db_password)
 });
 
 export default connectForm({

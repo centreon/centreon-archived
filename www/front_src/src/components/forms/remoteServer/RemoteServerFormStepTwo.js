@@ -12,7 +12,7 @@ class RemoteServerFormStepTwo extends Component {
       <div className="form-wrapper">
         <div className="form-inner">
           <div className="form-heading">
-            <h2 className="form-title">Server Configuration</h2>
+            <h2 className="form-title">Select Pollers to link to new Remote Server</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (

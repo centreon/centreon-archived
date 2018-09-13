@@ -1,5 +1,4 @@
-import React from "react";
-/* @jsx h */
+import React, { Component } from "react";
 
 const FieldMsg = ({
   className,

@@ -34,7 +34,7 @@ class RemoteServerStepThreeRoute extends Component {
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
-          formTitle={"Currently installing [step in progress]"}
+          formTitle={"Finalizing Setup:"}
         />
       </div>
     );

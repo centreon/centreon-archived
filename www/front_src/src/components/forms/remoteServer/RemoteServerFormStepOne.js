@@ -76,6 +76,20 @@ class RemoteServerFormStepOne extends Component {
                   label="Server IP Address:"
                 />
                 <Field
+                    name="db_user"
+                    component={InputField}
+                    type="text"
+                    placeholder=""
+                    label="Database user:"
+                />
+                <Field
+                    name="db_password"
+                    component={InputField}
+                    type="password"
+                    placeholder=""
+                    label="Database password:"
+                />
+                <Field
                   name="centreon_central_ip"
                   component={InputField}
                   type="text"

@@ -12,14 +12,14 @@ class PollerFormStepTwo extends Component {
       <div className="form-wrapper">
         <div className="form-inner">
           <div className="form-heading">
-            <h2 className="form-title">Server Configuration</h2>
+            <h2 className="form-title">Connect To Server</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (
               <Field
                 name="linked_remote"
                 component={SelectField}
-                label="Select linked Remote Server:"
+                label="Select Remote Server to manage new poller:"
                 options={[
                   {
                     disabled: true,
@@ -28,7 +28,7 @@ class PollerFormStepTwo extends Component {
                     value: ""
                   }
                 ].concat(
-                  pollers.items.map(c => ({ value: c.id, label: c.text }))
+                  pollers.map(c => ({ value: c.ip, label: c.ip }))
                 )}
               />
             ) : null}
