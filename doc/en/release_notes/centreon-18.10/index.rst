@@ -1,6 +1,6 @@
-#############
+##############
 Centreon 18.10
-#############
+##############
 
 Please find here the release notes dedicated to the last 18.10.x version of Centreon.
 
