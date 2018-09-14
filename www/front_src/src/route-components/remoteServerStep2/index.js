@@ -61,9 +61,9 @@ class RemoteServerStepTwoRoute extends Component {
   };
 
   render() {
-    const { links } = this;
-    const { pollerData } = this.props;
-    const { pollers } = this.state;
+    const { links } = this,
+          { pollerData } = this.props,
+          { pollers } = this.state;
     return (
       <div>
         <ProgressBar links={links} />

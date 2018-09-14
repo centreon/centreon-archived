@@ -8,14 +8,14 @@ class ModuleRoute extends Component {
     if (this.container) {
       const { contentWindow } = this.container;
       if (contentWindow) {
-        const { documentElement } = contentWindow.document;
-        const { match } = this.props;
-        const { id } = match.params;
-        const contentHeight = Math.max(
-          documentElement.clientHeight,
-          documentElement.offsetHeight,
-          documentElement.scrollHeight
-        );
+        const { documentElement } = contentWindow.document,
+              { match } = this.props,
+              { id } = match.params,
+              contentHeight = Math.max(
+                documentElement.clientHeight,
+                documentElement.offsetHeight,
+                documentElement.scrollHeight
+              );
         if (contentHeight !== this.state.contentHeight)
           this.setState({ contentHeight });
       }
@@ -54,9 +54,9 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    const { history } = this.props;
-    const { search } = history.location;
-    const { contentHeight } = this.state;
+    const { history } = this.props,
+          { search } = history.location,
+          { contentHeight } = this.state;
     return (
       <div>
         {search ? (
