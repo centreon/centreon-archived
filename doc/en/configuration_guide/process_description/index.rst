@@ -9,3 +9,6 @@ Main process description
    :glob:
 
    notification
+   dependencies
+   groupscategories
+   managetraps

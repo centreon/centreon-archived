@@ -13,9 +13,6 @@ Administration
    media
    parameters
    logs
-   dependencies
-   groupscategories
-   managetraps
    brokerconf
    backup
    poller/index

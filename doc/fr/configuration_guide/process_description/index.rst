@@ -9,3 +9,6 @@ Description des processus principaux
    :glob:
 
    notification
+   dependencies
+   groupscategories
+   managetraps
