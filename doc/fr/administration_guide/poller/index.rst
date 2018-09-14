@@ -11,3 +11,5 @@ Collecteur de supervision
    01installation
    02configuration
    03wizards
+   brokerconf
+   pollersstats
