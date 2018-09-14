@@ -8,16 +8,16 @@ Administration
    :maxdepth: 2
    :glob:
 
-   02b
-   02c
-   02d
-   02e
-   02f
-   02i
-   02j
-   02k
-   02l
+   acl
+   extensions
+   media
+   parameters
+   logs
+   dependencies
+   groupscategories
+   managetraps
+   brokerconf
    backup
    poller/index
    partitioning/index
-   03stats
+   pollersstats
