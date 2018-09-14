@@ -9,12 +9,10 @@ Administration
    :glob:
 
    acl
+   poller/index
    extensions
    media
    parameters
    logs
-   brokerconf
    backup
-   poller/index
    partitioning/index
-   pollersstats
