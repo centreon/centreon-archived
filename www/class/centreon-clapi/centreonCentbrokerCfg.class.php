@@ -466,7 +466,7 @@ class CentreonCentbrokerCfg extends CentreonObject
      */
     private function delFlow($configId, $tagName, $args)
     {
-        if (!isset($args[1]) || !$args[1]) {
+        if (!isset($args[1]) || $args[1] == '') {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
