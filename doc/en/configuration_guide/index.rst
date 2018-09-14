@@ -20,7 +20,6 @@ Do forget to think about setting up a global strategy of the configuration in or
    models
    imp/index
    advanced_configuration/index
-   poller/index
    deploy
    knowledge_base/index
 

@@ -19,5 +19,6 @@ Administration
    02k
    02l
    backup
+   poller/index
    partitioning/index
    03stats
