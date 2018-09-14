@@ -33,10 +33,9 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+// using bootstrap.php to load the paths and the DB configurations
+require_once __DIR__ . '/../../../../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'vendor/autoload.php';
-require_once $centreon_path . 'bootstrap.php';
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
@@ -52,7 +51,11 @@ $centreon = $_SESSION['centreon'];
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
-if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
+if (!isset($centreon) ||
+    !isset($_GET['o']) ||
+    !isset($_GET['cmd']) ||
+    !isset($_GET['p'])
+) {
     exit();
 }
 $sid = session_id();
