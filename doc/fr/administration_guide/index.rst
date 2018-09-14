@@ -19,4 +19,5 @@ Guide d'administration
    02k
    02l
    backup
+   poller/index
    partitioning/index
