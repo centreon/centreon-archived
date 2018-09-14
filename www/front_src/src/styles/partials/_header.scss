@@ -1,6 +1,5 @@
 .header {
   background-color: #232f39;
-  height: 49px;
   box-sizing: border-box;
   &-icons {
     display: flex;
@@ -14,10 +13,10 @@
         }
         &__name {
           display: block;
-          font-size: 10px;
-          color: #fff;
-          font-family: "Roboto";
-          font-weight: 300;
+          font-size: 1rem;
+          color: $white-color;
+          font-family: $primary-font;
+          font-weight: $font-light;
           text-transform: lowercase;
          }
          &.round {
@@ -56,12 +55,12 @@
     &-middle {
       &-icon {
         &.round {
-          font-size: 14px;
-          font-family: "Roboto";
-          font-weight: 700;
+          font-size: 0.875rem;
+          font-family: $primary-font;
+          font-weight: $font-extra-bold;
           position: relative;
           display: inline-block;
-          color: #fff;
+          color: $white-color;
           text-align: center;
           width: 32px;
           height: 32px;
@@ -73,16 +72,16 @@
             height: 30px;
           }
           .number {
-            font-size: 14px;
-            font-family: "Roboto";
-            font-weight: 700;
+            font-size: 0.875rem;
+            font-family: $primary-font;
+            font-weight: $font-extra-bold;
             position: relative;
             display: block;
             text-decoration: none;
             > span {
               line-height: 32px;
               display: block;
-              color: #fff;
+              color: $white-color;
             }
           }
           &.red-bordered {
@@ -135,14 +134,19 @@
       }
      }
      &-services {
-        position: relative;
-        right: -10px;
        .custom-icon {
         right: 6px;
        }
      }
      &-user {
        padding-right: 20px;
+       .iconmoon {
+         &.icon-user {
+          &:before {
+            font-size: 2rem;
+          }
+         }
+       }
      }
      &-icon {
       &:first-child {
@@ -151,19 +155,19 @@
       }
       &__name {
       display: block;
-      font-size: 10px;
-      color: #fff;
-      font-family: "Roboto";
-      font-weight: 300;
+      font-size: 1rem;
+      color: $white-color;
+      font-family: $primary-font;
+      font-weight: $font-light;
       text-transform: lowercase;
       }
     }
     &-date,
     &-time {
-    font-family: "Roboto";
-      font-weight: 300;
-      color: #ffffff;
-      font-size: 13px;
+      font-family: $primary-font;
+      font-weight: $font-light;
+      color: $white-color;
+      font-size: 0.8125rem;
       display: block;
       text-align: left;
     }
@@ -171,7 +175,7 @@
       margin-bottom: 3px;
     }
     &-time {
-      font-size: 16px;
+      font-size: 1rem;
     }
     &-timestamp {
       display: inline-block;
@@ -204,11 +208,11 @@
       &-link {
         padding: 10px;
         display: block;
-        font-family: "Roboto";
-        font-weight: 300;
-        color: #ffffff;
+        font-family: $primary-font;
+        font-weight: $font-light;
+        color: $white-color;
         text-decoration: none;
-        font-size: 9px;
+        font-size: 0.8rem;
       }
     }
     &-count {
@@ -219,8 +223,8 @@
         display: inline-block;
       }
       .submenu-user-edit {
-        font-family: "Roboto";
-        font-weight: 300;
+        font-family: $primary-font;
+        font-weight: $font-light;
         margin-left: 4px;
         color: #0000ee;
         float: right;
@@ -261,7 +265,7 @@
     position: absolute;
   }
   .toggle-submenu-arrow {
-    background: url("../img/icons/submenu-arrows-stripe.png") no-repeat center center;
+    background: url("./img/icons/submenu-arrows-stripe.png") no-repeat center center;
     display: inline-block;
     width: 28px;
     height: 37px;

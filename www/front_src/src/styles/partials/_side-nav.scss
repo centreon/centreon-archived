@@ -13,6 +13,7 @@
   background: #e0e0e0;
   transition: all 0.3s;
   position: relative;
+  padding-bottom: 50px;
   &.active {
     min-width: 45px;
     max-width: 45px;
@@ -33,12 +34,10 @@
   .sidebar-logo-mini {
     display: none;
     padding: 15px 11px;
-    height: 49px;
     box-sizing: border-box;
   }
   &-logo {
-    padding: 8px 12px;
-    height: 49px;
+    padding: 10px 12px;
     box-sizing: border-box;
     &-image {
       max-width: 100%;
@@ -55,21 +54,15 @@
       transform: translateX(50%);
     }
   }
-  .sidebar-header {
-    strong {
-      display: none;
-      font-size: 1.8em;
-    }
-  }
   .iconmoon {
     text-align: left;
-    font-size: 10px;
+    font-size: 0.625rem;
     color: #242f3b;
     font-weight: 300;
-    padding: 3px 12px;
+    padding: 7px 12px;
     display: block;
     &:hover {
-      color: #ffffff;
+      color: $white-color;
     }
     &:before {
       display: inline-block;
@@ -78,7 +71,7 @@
     }
   }
   .toggle-sidebar {
-    background: url("../img/icons/aside-menu-toggle-arrow.png") no-repeat center center;
+    background: url("./img/icons/aside-menu-toggle-arrow.png") no-repeat center center;
     width: 45px;
     height: 45px;
     display: inline-block;
@@ -99,32 +92,32 @@
 
 a {
   &.download {
-    background: #fff;
+    background: $white-color;
     color: #7386D5;
   }
   &.article {
     background: #6d7fcc;
-    color: #fff;
+    color: $white-color;
     &:hover {
       background: #6d7fcc;
-      color: #fff;
+      color: $white-color;
     }
   }
 }
 .menu {
   &-items {
     &.components {
-      border-top: 1px solid #fff;
+      border-top: 1px solid $white-color;
     }
   }
   &-item {
     &-link {
-      border-bottom: 1px solid #fff;
+      border-bottom: 1px solid $white-color;
       text-align: left;
       text-decoration: none;
       display: block;
       &:hover {
-        color: #fff;
+        color: $white-color;
         background: #638e2d;
       }
       i {
@@ -132,18 +125,19 @@ a {
       }
     }
     &.active > a {
-      color: #fff;
+      color: $white-color;
       background: #638e2d;
       .iconmoon {
-        color: #fff;
+        color: $white-color;
         &:before {
-          color: #fff;
+          color: $white-color;
         }
       }
     }
     &-name {
-      font-family: "Roboto";
-      font-weight: 300;
+      font-family: $primary-font;
+      font-size: 0.75rem;
+      vertical-align: middle;
     }
   }
   
@@ -156,11 +150,11 @@ a {
         border-bottom: 1px solid #f7f7f7;
         text-align: left;
         text-decoration: none;
-        font-size: 10px;
+        font-size: 0.625rem;
         color: rgb(36,47,59);
-        font-family: "Roboto";
-        font-weight: 300;
-        padding: 8px 10px 9px 47px;
+        font-family: $primary-font;
+        font-weight: $font-light;
+        padding: 10px 10px 11px 47px;
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
@@ -168,10 +162,10 @@ a {
     }
     &-title {
       color: #009fdf;
-      font-family: "Roboto";
-      font-weight: 300;
-      font-size: 10px;
-      background-color: #fff;
+      font-family: $primary-font;
+      font-weight: $font-light;
+      font-size: 0.625rem;
+      background-color: $white-color;
       display: block;
       padding: 3px 10px 3px 47px;
       border-bottom: 1px solid #f7f7f7;
@@ -198,7 +192,7 @@ a {
       }
     }
     > .collapsed-level-item-link {
-      background: url("../img/icons/aside-menu-arrows.png") no-repeat;
+      background: url("./img/icons/aside-menu-arrows.png") no-repeat;
       background-position: 26px 5px;
       background-color: #f7f7f7;
     }
@@ -211,14 +205,14 @@ a {
         &.active {
           > .collapsed-level-item-link {
             background-color: #009fdf;
-            color: #ffffff;
+            color: $white-color;
           }
         }
-        background-color: #fff;
+        background-color: $white-color;
         .collapsed-level-item-link {
-          padding: 4px 10px 5px 47px;
+          padding: 8px 10px 8px 47px;
           &:hover {
-            color: #fff;
+            color: $white-color;
             background-color: #0a78a5;
           }
         }
@@ -265,24 +259,6 @@ a {
     }
     .sidebar-header strong {
       display: block;
-    }
-    ul {
-      li a {
-        padding: 20px 10px;
-        span {
-          font-size: 0.85em;
-        }
-        i {
-          margin-right: 0;
-          display: block;
-        }
-      }
-      ul a {
-        padding: 10px;
-      }
-      li a i {
-        font-size: 1.3em;
-      }
     }
     margin-left: 0;
   }

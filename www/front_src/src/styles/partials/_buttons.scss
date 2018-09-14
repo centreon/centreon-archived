@@ -16,7 +16,7 @@
     color: #88b917;
     border: 1px solid #597F00;
     &:hover {
-      color: #fff;
+      color: $white-color;
       background-color: #88b917;
     }
   }
@@ -25,7 +25,7 @@
     border: 1px solid #e00b3d;
     text-transform: initial;
     &:hover {
-      color: #fff;
+      color: $white-color;
       background-color: #e00b3d;
     }
   }
