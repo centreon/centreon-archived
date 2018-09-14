@@ -32,9 +32,8 @@
  * For more information : contact@centreon.com
  */
 
-require_once realpath(dirname(__FILE__) . '/../../../../config/centreon.config.php');
-
-require_once _CENTREON_PATH_ . "/bootstrap.php";
+// using bootstrap.php to load the paths and the DB configurations
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonACL.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonLog.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonUser.class.php';
@@ -74,7 +73,9 @@ $servicesReturn = array();
 function getServiceGraphByHost($host, $isAdmin, $lca)
 {
     $listGraph = array();
-    if ($isAdmin || (!$isAdmin && isset($lca[$host]))) {
+    if ($isAdmin ||
+        (!$isAdmin && isset($lca[$host]))
+    ) {
         $services =  getMyHostServices($host);
         foreach ($services as $svcId => $svcName) {
             $svcGraph = getGraphByService($host, $svcId, $svcName, $isAdmin, $lca);
@@ -99,7 +100,9 @@ function getServiceGraphByHost($host, $isAdmin, $lca)
  */
 function getGraphByService($host, $svcId, $title, $isAdmin, $lca)
 {
-    if (service_has_graph($host, $svcId) && ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))) {
+    if (service_has_graph($host, $svcId) &&
+        ($isAdmin || (!$isAdmin && isset($lca[$host][$svcId])))
+    ) {
         return array(
             'type' => 'service',
             'id' => $host . '_' . $svcId,
