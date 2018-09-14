@@ -111,7 +111,6 @@ $form->addRule('backup_retention', _('Must be a number'), 'numeric');
  */
 $form->addElement('checkbox', 'backup_configuration_files', _("Backup configuration files"));
 $form->addElement('text', 'backup_mysql_conf', _("MySQL configuration file path"), $attrsText);
-$form->addElement('text', 'backup_zend_conf', _("Zend configuration file path"), $attrsText);
 
 /*
  * Export Options

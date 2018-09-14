@@ -48,9 +48,9 @@ class RemoteServerStepOneRoute extends Component {
   };
 
   render() {
-    const { links } = this;
-    const { pollerData } = this.props;
-    const { waitList } = this.state;
+    const { links } = this,
+          { pollerData } = this.props,
+          { waitList } = this.state;
     return (
       <div>
         <ProgressBar links={links} />

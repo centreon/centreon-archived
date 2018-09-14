@@ -182,9 +182,7 @@ class CentreonInstance extends CentreonObject
      */
     public function getInstanceId($name)
     {
-        $this->object->setCache(true);
         $instanceIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
-        $this->object->setCache(false);
         if (!count($instanceIds)) {
             throw new CentreonClapiException("Unknown instance");
         }
@@ -199,9 +197,7 @@ class CentreonInstance extends CentreonObject
      */
     public function getInstanceName($instanceId)
     {
-        $this->object->setCache(true);
         $instanceName = $this->object->getParameters($instanceId, array($this->object->getUniqueLabelField()));
-        $this->object->setCache(false);
         return $instanceName[$this->object->getUniqueLabelField()];
     }
 

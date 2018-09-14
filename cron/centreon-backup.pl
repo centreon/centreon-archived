@@ -46,7 +46,7 @@ use IO::Dir;
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_port $mysql_database_oreon $mysql_database_ods $centreon_config);
 use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
 use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
-use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF $ZEND_CONF);
+use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
 use vars qw($BIN_GZIP $BIN_TAR);
 use vars qw($scp_enabled $scp_user $scp_host $scp_directory);
@@ -152,7 +152,6 @@ $BACKUP_RETENTION = $backupOptions->{'backup_retention'}->{'value'};
 
 $BACKUP_CONFIGURATION_FILES = $backupOptions->{'backup_configuration_files'}->{'value'};
 $MYSQL_CONF = $backupOptions->{'backup_mysql_conf'}->{'value'};
-$ZEND_CONF = $backupOptions->{'backup_zend_conf'}->{'value'};
 
 $BIN_GZIP = "";
 $BIN_TAR = "";
@@ -324,14 +323,6 @@ sub getPHPConfFile() {
     }
 
 	return @tab_php_ini;
-}
-
-sub getZendConfFile() {
-	if ( -e '/etc/php.d/zendoptimizer.ini' ) {
-		return '/etc/php.d/zendoptimizer.ini';
-	} elsif ( -e '/usr/local/Zend/etc/php.ini' ) {
-		return '/usr/local/Zend/etc/php.ini';
-	}
 }
 
 ############################
@@ -592,42 +583,6 @@ sub centralBackup() {
 		`cp -p $file $TEMP_CENTRAL_ETC_DIR/php/$file_dest`;
 		if ($? ne 0) {
 			print STDERR "Unable to copy PHP configuration file\n";
-		}
-	}
-
-	##########################################
-	# Get Zend binary and configuration file #
-	##########################################
-	# Zend ini
-	mkpath($TEMP_CENTRAL_ETC_DIR."/zend", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-	if (!defined($ZEND_CONF)){
-		$ZEND_CONF = getZendConfFile();
-	}
-	`cp -pr $ZEND_CONF $TEMP_CENTRAL_ETC_DIR/zend/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy Zend configuration file\n";
-	}
-
-	# zend binary
-	mkpath($TEMP_CENTRAL_ETC_DIR."/zend_bin", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
 		}
 	}
 

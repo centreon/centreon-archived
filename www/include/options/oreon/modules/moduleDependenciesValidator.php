@@ -33,20 +33,6 @@
  * 
  */
 
-
-// License validator
-function parse_zend_license_file($file)
-{
-    $lines = preg_split('/\n/', file_get_contents($file));
-    $infos = array();
-    foreach ($lines as $line) {
-        if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
-            $infos[$match[1]] = $match[2];
-        }
-    }
-    return $infos;
-}
-    
 /* Load conf */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . '/bootstrap.php';
@@ -65,7 +51,7 @@ foreach ($modules as $module) {
         $checklistDir = $modulesPath . $module . '/checklist/';
         $warning = false;
         $critical = false;
-        
+
         if (file_exists($checklistDir.'requirements.php')) {
             require_once $checklistDir.'requirements.php';
             if ($critical || $warning) {
