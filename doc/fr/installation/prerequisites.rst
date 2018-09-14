@@ -18,10 +18,11 @@ Logiciels
 Système d'exploitation
 ======================
 
-Si vous souhaitez **utiliser Centreon ISO v3.x, le système d'exploitation sera CentOS en version v6**.
+Centreon propose un fichier ISO incluant la distribution CentOS 7 et tous les
+paquets nécessaires à l'installation.
 
-Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6 ou v7** du système puis y 
-installer les rpms disponible dans nos dépôts de téléchargement.
+Si vous préférez utiliser **Red Hat OS** vous devez installer une **version 7**
+du système puis y installer les rpms disponible dans nos dépôts de téléchargement.
 
 Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
 sera plus complexe à partir des fichiers sources de chaque composant.
@@ -50,15 +51,15 @@ Le tableau suivant décrit les dépendances logicielles :
 +----------+------------------+
 | Logiciel | Version          |
 +==========+==================+
-| Apache   | 2.2 & 2.4        |
+| Apache   | 2.4              |
 +----------+------------------+
 | GnuTLS   | >= 2.0           |
 +----------+------------------+
-| Net-SNMP | 5.5              |
+| Net-SNMP | 5.7              |
 +----------+------------------+
-| openssl  | >= 1.0.1e        |
+| openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | >= 5.3.0 & < 5.5 |
+| PHP      | 7.1 & 7.2        |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -71,7 +72,7 @@ Le tableau suivant décrit les dépendances logicielles :
 Sélectionner votre architecture
 *******************************
 
-Le tableau suivant présente les prérequis pour une installation de Centreon v3.x :
+Le tableau suivant présente les prérequis pour une installation de Centreon :
 
 +----------------------+-------------------------+---------------------------+----------------+---------------+
 |  Nombre de services  |  Nombre d'hôtes estimé  |  Nombre de collecteurs    |  Central       |  Collecteur   |
