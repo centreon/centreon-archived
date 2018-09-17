@@ -13,7 +13,7 @@
         }
         &__name {
           display: block;
-          font-size: 1rem;
+          font-size: 0.6875rem;
           color: $white-color;
           font-family: $primary-font;
           font-weight: $font-light;
@@ -155,7 +155,7 @@
       }
       &__name {
       display: block;
-      font-size: 1rem;
+      font-size: 0.6875rem;
       color: $white-color;
       font-family: $primary-font;
       font-weight: $font-light;
@@ -226,7 +226,7 @@
         font-family: $primary-font;
         font-weight: $font-light;
         margin-left: 4px;
-        color: #0000ee;
+        color: $darkblue-centreon-darken;
         float: right;
       }
       .submenu-bookmark-link {

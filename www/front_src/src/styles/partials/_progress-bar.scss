@@ -45,13 +45,13 @@
     color: #cdcdcd;
     box-sizing: border-box;
     &.active {
-      background: #009fdf;
+      background: $lightblue-centreon-primary;
       color: $white-color;
       border: none;
       &.prev {
         background: $white-color;
-        color: #009fdf;
-        border: 1px solid #009fdf
+        color: $lightblue-centreon-primary;
+        border: 1px solid $lightblue-centreon-primary;
       }
     }
   }

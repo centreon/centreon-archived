@@ -14,7 +14,7 @@
   cursor: pointer;
   &-green {
     color: #88b917;
-    border: 1px solid #597F00;
+    border: 1px solid $lime-centreon-darken;
     &:hover {
       color: $white-color;
       background-color: #88b917;

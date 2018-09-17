@@ -33,11 +33,11 @@
   }
   .sidebar-logo-mini {
     display: none;
-    padding: 15px 11px;
+    padding: 12px 11px;
     box-sizing: border-box;
   }
   &-logo {
-    padding: 10px 12px;
+    padding: 7px 12px;
     box-sizing: border-box;
     &-image {
       max-width: 100%;
@@ -161,7 +161,7 @@ a {
       }
     }
     &-title {
-      color: #009fdf;
+      color: $lightblue-centreon-primary;
       font-family: $primary-font;
       font-weight: $font-light;
       font-size: 0.625rem;
@@ -204,7 +204,7 @@ a {
       .collapsed-level-item {
         &.active {
           > .collapsed-level-item-link {
-            background-color: #009fdf;
+            background-color: $lightblue-centreon-primary;
             color: $white-color;
           }
         }
