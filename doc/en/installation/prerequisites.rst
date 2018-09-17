@@ -18,9 +18,9 @@ Softwares
 Operating System
 ================
 
-If you **use Centreon ISO v3.x you can choose between operating system CentOS v6 or CentOS v7**.
+Centreon offers an ISO including CentOS v7 and all packages.
 
-If you prefer to use **Red Hat OS** you must install it in **v6 or v7 version**
+If you prefer to use **Red Hat OS** you must install a **v7 version**
 and use rpms from repository.
 
 Else you can use another GNU/Linux operating system but installation will be
@@ -50,15 +50,15 @@ The following table describes the dependent software:
 +----------+------------------+
 | Software | Version          |
 +==========+==================+
-| Apache   | 2.2 & 2.4        |
+| Apache   | 2.4              |
 +----------+------------------+
 | GnuTLS   | >= 2.0           |
 +----------+------------------+
-| Net-SNMP | 5.5              |
+| Net-SNMP | 5.7              |
 +----------+------------------+
-| openssl  | >= 1.0.1e        |
+| openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | >= 5.3.0 & < 5.5 |
+| PHP      | 7.1 & 7.2        |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -71,7 +71,7 @@ The following table describes the dependent software:
 Select type of architecture
 ***************************
 
-The table below gives the prerequisites for the installation of CES 3.x:
+The table below gives the prerequisites for the installation of Centreon:
 
 +----------------------+-----------------------------+--------------------------+----------------+---------------+
 |  Number of Services  |  Estimated number of hosts  |  Number of pollers       |  Central       |  Poller       |

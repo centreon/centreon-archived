@@ -1,7 +1,6 @@
 ###################
 Centreon Web 2.8.25
 ###################
-=======
 
 Introduction to a new banner to preparate the next releases. This feature must be
 enabled for each user. After the update, users will be asked to activate or not this
