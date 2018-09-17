@@ -1,14 +1,127 @@
-##################
-Configuring Broker
-##################
+#####################################
+Configuration avancée d'un collecteur
+#####################################
+
+---------------------------
+Centreon Broker et pare-feu
+---------------------------
+
+Certaines fois, il n'est pas possible d'initialiser le flux Centreon Broker
+depuis le collecteur (ou Remote Server) vers le serveur Centreon Central ou
+le Remote Server.
+
+Centreon a développé la possibilité d'initialiser le flux depuis le serveur
+Centreon Central vers le collecteur ou du Remote Server vers le collecteur.
+
+Rendez-vous dans le menu **Configuration > Pollers > Broker configuration**
+et cliquez sur la configuration **Centreon Broker SQL** du serveur Centreon
+Central ou du Remote Server.
+
+Rendez-vous dans l'onglet **Input** et ajouter une nouvelle entrée de type
+**TCP - IPv4**.
+
+Saisissez le nom de cette configuration, le port TCP pour le champ **Connection
+port** afin de se connecter au collecteur et l'adresse IP du collecteur pour le
+champ **Host to connect to**, puis cliquez sur **Save** :
+
+.. image:: /_static/images/configuration/one_peer_conf_1.png
+    :align: center
+
+Rendez-vous dans le menu **Configuration > Pollers > Broker configuration**
+et cliquez sur la configuration **Broker module** de votre collecteur.
+
+Rendez-vous dans l'onglet **Output** et modifiez l'entrée **Output 1 -
+IPv4** :
+
+1. Supprimer la valeur pour le champ **Host to connect to**
+2. Contrôlez le port TCP **Connection port**
+3. Activer l'option **One peer retention**
+
+.. image:: /_static/images/configuration/one_peer_conf_2.png
+    :align: center
+
+Cliquez sur **Save**, générer et exporter la configuration des serveurs
+impactés.
+
+-------------------------------------
+Authentification avec Centreon Broker
+-------------------------------------
+
+Si vous souhaitez authentifier les pollers envoyant des données dans votre
+système de monitoring vous pouvez utiliser le mécanisme d’authentification
+intégré à Centreon Broker. Celui-ci est basé sur l’utilisation de certificats
+X.509.
+
+La première étape est de générer un certificat pour l’autorité de certification
+(Certificate Authority, CA) avec OpenSSL. ca.key sera la clé privée (à stocker
+de manière sécurisée), tandis que ca.crt sera la clé publique servant à authentifier
+les connexions entrantes : ::
+
+    $ openssl req -x509 -newkey rsa:2048 -nodes -keyout ca.key -out ca.crt -days 365
+
+Nous pouvons maintenant générer les certificats en utilisant la clé de la CA : ::
+
+    $ openssl req -new -newkey rsa:2048 -nodes -keyout central.key -out central.csr -days 365
+    $ openssl req -new -newkey rsa:2048 -nodes -keyout poller.key -out poller.csr -days 365
+    $ openssl x509 -req -in central.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out central.crt -days 365 -sha256
+    $ openssl x509 -req -in poller.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out poller.crt -days 365 -sha256
+
+Placez *central.key*, *central.crt* et *ca.crt* sur le serveur Centreon
+central (dans **/etc/centreon-broker** par exemple) et *poller.key*,
+*poller.crt* et *ca.crt* sur votre poller.
+
+Nous devons maintenant configurer Centreon Broker pour utiliser ces
+fichiers. Allez dans **Configuration > Pollers > Broker configuration**.
+Pour *central-broker-master*, dans l'onglet *Input*, vous devez remplir les
+paramètres suivants pour *central-broker-master-input*.
+
+- Enable TLS encryption = Yes
+- Private key file = /etc/centreon-broker/central.key
+- Public certificate = /etc/centreon-broker/central.crt
+- Trusted CA's certificate = /etc/centreon-broker/ca.crt
+
+.. image:: /_static/images/configuration/broker_certificates.png
+   :align: center
+
+De manière similaire pour le poller, vous devez modifier les paramètres
+de la connexion TCP dans l'onglet Output.
+
+- Enable TLS encryption = Yes
+- Private key file = /etc/centreon-broker/poller.key
+- Public certificate = /etc/centreon-broker/poller.crt
+- Trusted CA's certificate = /etc/centreon-broker/ca.crt
+
+Régénérez la configuration des pollers affectés par ces changements
+(**Configuration ==> Pollers**) et la mise en place de
+l'authentification est terminée.
+
+---------------------------
+Centreontrapd Configuration
+---------------------------
+
+Collecteur
+##########
+
+Il est nécessaire de modifier la configuration du processus Centreontrapd afin
+d'utiliser la base de données locale SQLite. Référez-vous au chapitre 
+:ref:`configuration_advanced_snmptrapds`.
+
+Remote Server
+#############
+
+La configuration du processus Centreontrapd est identique à celle d'un serveur
+Centreon Central.
+
+----------------------------------
+To go further with Centreon Broker
+----------------------------------
 
 This section aims to help user understand how Centreon Broker works and how
 it should be configured. It references Centreon's best practices and
 describe the various options used by Centreon Broker.
 
-****************
 General Overview
-****************
+################
 
 Centreon Broker is at is core a simple multiplexing engine. It takes events
 from *Inputs* and send them to various *Outputs*. *Inputs* are typically other
@@ -28,9 +141,8 @@ automatically started when Centreon Engine starts and automatically generates
 the events associated to this Centreon Engine. Often, those modules only have
 one *Output* to an instance of Centreon Broker acting as a concentrator.
 
-***********************
 Main Configuration Page
-***********************
+#######################
 
 This section lists all the instances of Centreon Broker configured in your park,
 either in standalone or module mode. Each instance has a name, is associated
@@ -53,9 +165,8 @@ and forward them to the standalone instance of Centreon Broker.
 A poller generally only have an instance of Centreon Broker,
 configured as a module for Centreon Engine.
 
-*********************************
 Broker General Configuration Page
-*********************************
+#################################
 
 This section lists all the general options associated with an instance of
 Centreon Broker.
@@ -109,9 +220,8 @@ Event queue max size
 If 'Statistics' is enabled, on-demand status can be queried manually through
 a file placed in /var/lib/centreon-broker/*name*.stats.
 
-*******************************
 Broker Input Configuration Page
-*******************************
+###############################
 
 This section lists all the *Inputs* activated for this instance of
 Centreon Broker. Centreon Broker can have as many *Inputs* as needed.
@@ -171,9 +281,8 @@ To reiterate, TCP *Input* can either listen on a given port or
 can attempt to initiate a connection if a host is given. This allow flexible
 network topology.
 
-********************************
 Broker Logger Configuration Page
-********************************
+################################
 
 This section lists all the loggers activated for this instance of
 Centreon Broker. Centreon Broker can have as many loggers as needed.
@@ -230,9 +339,8 @@ A maximal logger (every category to 'Yes' and logging level to 'Very detailed')
 is valuable to debug some issues, but be warned that it will generate
 a very large amount of data quickly.
 
-********************************
 Broker Output Configuration Page
-********************************
+################################
 
 This section lists all the *Outputs* activated for this instance of
 Centreon Broker. Centreon Broker can have as many *Outputs* as needed.
@@ -318,7 +426,6 @@ BAM Monitoring  centreon
 BAM Reporting   centreon-storage
 ==============  =================
 
-===========
 TCP Outputs
 ===========
 
@@ -376,7 +483,6 @@ Compression Buffer
   The size of the compression buffer that should be used.
   Best practice is '0' or nothing.
 
-============
 File Outputs
 ============
 
@@ -406,7 +512,6 @@ Compression Buffer
   The size of the compression buffer that should be used.
   Best practice is '0' or nothing.
 
-===========
 RRD Outputs
 ===========
 
@@ -437,7 +542,6 @@ Write metrics
 Write status
   Should RRD status files be written? Default 'yes'.
 
-===============
 Storage Outputs
 ===============
 
@@ -493,7 +597,6 @@ Insert in index data
   This should never be modified unless prompted by Centreon Support or
   explicitely written down into a documentation.
 
-===========
 SQL Outputs
 ===========
 
@@ -544,7 +647,6 @@ Instance timeout
   'unresponding' and all of its hosts and services marked as 'unknown'.
   Default is 300 seconds.
 
-===========
 Lua Outputs
 ===========
 
@@ -567,7 +669,6 @@ Name/Key
 Value
   Value of the metric.
 
-====================
 Dumper Reader/Writer
 ====================
 

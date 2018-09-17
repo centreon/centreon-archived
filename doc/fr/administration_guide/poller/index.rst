@@ -1,13 +1,19 @@
-==========
-Collecteur
-==========
+=======================
+Architecture distribuée
+=======================
+
+Les architectures distribuées Centreon sont décrites dans le chapitre architecture :
+
+* :ref:`Architecture distribuée<archi_poller>`
+* :ref:`Architecture distribuée avec Remote server<archi_remoteserver>`
 
 .. toctree::
    :maxdepth: 2
    :glob:
 
-   01installation
-   02configuration
-   03wizards
-   brokerconf
+   install_poller
+   install_remote_server
+   ssh_key
+   wizard_add_poller
    pollersstats
+   advanced_configuration_broker

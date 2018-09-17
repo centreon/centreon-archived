@@ -1,3 +1,9 @@
+.. _add_manual_poller:
+
+======================================
+Configuration manuelle d'un collecteur
+======================================
+
 Configuration de l'ordonnanceur
 ===============================
 

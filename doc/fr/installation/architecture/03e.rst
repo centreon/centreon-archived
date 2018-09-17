@@ -1,3 +1,5 @@
+.. _archi_remoteserver:
+
 ==========================================
 Architecture distribuée avec Remote Server
 ==========================================

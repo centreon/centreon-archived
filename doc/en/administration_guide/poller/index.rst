@@ -2,15 +2,19 @@
 Distributed architecture
 ========================
 
-This chapter introduces the different Centreon distributed architecture: how to
-add a new poller and pramamter it.
+The Centreon distributed architectures are describe into the architecture chapter:
+
+* :ref:`Distributed architecture<archi_poller>`
+* :ref:`Distributed architecture with Remote server<archi_remoteserver>`
+
 
 .. toctree::
    :maxdepth: 2
    :glob:
 
-   01installation
-   02configuration
-   03wizards
-   brokerconf
+   install_poller
+   install_remote_server
+   ssh_key
+   wizard_add_poller
    pollersstats
+   advanced_configuration_broker
