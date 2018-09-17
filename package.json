@@ -9,7 +9,7 @@
     "test:build": "jest --ci --coverage",
     "centreon-build": "cd ./www/front_src/ && npm install && npm run build && npm prune --production",
     "centreon-new": "cd ./www/front_src/ && npm install && npm run start",
-    "centreon-start": "cd ./www/front_src/ && npm run start"
+    "centreon-start": "cd ./www/ && rm -rf static && rm -rf template && cd ./front_src/ && npm run build && cd ../ && mv static template"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
