@@ -12,8 +12,8 @@
   max-width: 160px;
   background: #e0e0e0;
   transition: all 0.3s;
-  position: relative;
-  padding-bottom: 50px;
+  overflow-y: auto;
+  height: 100vh;
   &.active {
     min-width: 45px;
     max-width: 45px;
@@ -82,6 +82,10 @@
     bottom: 0px;
     right: 0px;
     cursor: pointer;
+  }
+  &-inner {
+    position: relative;
+    padding-bottom: 50px;
   }
 }
 
