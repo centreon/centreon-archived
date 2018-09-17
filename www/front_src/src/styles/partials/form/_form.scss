@@ -19,9 +19,9 @@
       padding-top: 7px;
       .field__msg {
         font-size: 10px;
-        font-weight: 300;
+        font-family: $primary-font;
+        font-weight: $font-light;
         color: #d0021b;
-        font-family: Roboto,sans-serif;
       }
     }
     .css-1aya2g8,
@@ -38,7 +38,7 @@
     }
   }
   &-status {
-    font-family: Roboto,sans-serif;
+    font-family: $primary-font;
     &.valid {
       color: #acd174;
     }
@@ -50,15 +50,15 @@
     color: #d0021b;
     display: block;
     text-align: center;
-    font-family: Roboto,sans-serif;
+    font-family: $primary-font;
   }
   &-group {
     margin-bottom: 15px;
     label {
       font-size: 10px;
-      font-weight: 300;
+      font-family: $primary-font;
+      font-weight: $font-light;
       color: rgb(36,47,58);
-      font-family: Roboto,sans-serif;
       display: block;
       margin-bottom: 5px;
     }
@@ -80,15 +80,16 @@
   }
   &-title {
     font-size: 12px;
+    font-family: $primary-font;
+    font-weight: $font-light;
     color: $lightblue-centreon-primary;
-    font-weight: 300;
-    font-family: Roboto,sans-serif;
+    
   }
   &-text {
     font-size: 10px;
-    font-weight: 300;
+    font-family: $primary-font;
+    font-weight: $font-light;
     color: #242f3a;
-    font-family: Roboto,sans-serif;
     margin: 20px 0;
   }
   &-buttons {
@@ -103,8 +104,8 @@
       text-decoration: none;
       font-size: 10px;
       color: rgb(255,255,255);
-      font-family: "Roboto";
-      font-weight: 300;
+      font-family: $primary-font;
+      font-weight: $font-light;
       padding: 5px 33px;
       text-transform: uppercase;
       &:hover {
@@ -223,8 +224,8 @@
 .error-block {
   font-size: 10px;
   color: rgb(237,28,36);
-  font-family: "Roboto";
-  font-weight: 300;
+  font-family: $primary-font;
+  font-weight: $font-light;
   text-align: center;
   position: relative;
   margin-top: 26px;
@@ -253,6 +254,6 @@ input[type=checkbox]:checked ~.custom-control-label::before {
 .css-10odw4q,
 .css-1492t68,
 .css-10nd86i {
-  font-family: Roboto,sans-serif;
+  font-family: $primary-font;
   font-size: 13px;
 }
