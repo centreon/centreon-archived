@@ -20,7 +20,7 @@ The central Centreon server includes the following items:
 * Broker
 * Databases (MySQL + RRD)
 
-The remote servers include the following items:
+The pollers include the following items:
 
 * Monitoring Engine
 * Broker module to forward collected data to a central broker
@@ -62,21 +62,12 @@ The slave server becomes master.
 
 The failover and the management of components are made by Corosync / Pacemaker system.
 
-Remote monitoring server
-========================
-
-Many components are used to build a remote server:
-
-* A monitoring engine to collect data
-* Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine
-* Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD
-* Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
-
 ************
 Architecture
 ************
 
 The diagram below summarizes the architecture:
 
-.. image:: /images/architecture/dschema.png
+.. image:: /images/architecture/Architecture_redundancy.png
    :align: center
+   :scale: 65%

@@ -1,8 +1,9 @@
-.. _pollers_basic_conf:
+========================
+Distributed architecture
+========================
 
-======
-Poller
-======
+This chapter introduces the different Centreon distributed architecture: how to
+add a new poller and pramamter it.
 
 .. toctree::
    :maxdepth: 2

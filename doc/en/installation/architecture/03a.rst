@@ -34,5 +34,6 @@ Architecture
 
 The diagram below summarizes the architecture:
 
-.. image:: /images/architecture/aschema.png
+.. image:: /images/architecture/Architecture_standalone.png
    :align: center
+   :scale: 65%
