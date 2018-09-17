@@ -142,7 +142,7 @@ class NavigationComponent extends Component {
                 </a>
                 <ul
                   class="collapse collapsed-items list-unstyled"
-                  style={{ display: item.toggled ? "block" : "none" }}
+                  style={{ display: (item.toggled && !active) ? "block" : "none" }}
                 >
                   {item.children
                     ? Object.keys(item.children).map(menuKey => {

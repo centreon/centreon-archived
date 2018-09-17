@@ -32,22 +32,22 @@ class ServiceStatusMenu extends Component {
           </span>
           <span class="wrap-right-icon__name">Services</span>
         </span>
-        <span class="wrap-middle-icon round round-small red">
+        <span class={"wrap-middle-icon round round-small " + (critical.unhandled > 0 ? "red" : "red-bordered")} >
           <a class="number">
             <span>{numeral(critical.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class="wrap-middle-icon round round-small orange-bordered">
+        <span class={"wrap-middle-icon round round-small " + (warning.unhandled > 0 ? "orange" : "orange-bordered")}>
           <a class="number">
             <span>{numeral(warning.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class="wrap-middle-icon round round-small gray-light">
+        <span class={"wrap-middle-icon round round-small " + (unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
           <a class="number">
             <span>{numeral(unknown.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class="wrap-middle-icon round round-small green">
+        <span class={"wrap-middle-icon round round-small " + (ok.total > 0 ? "green" : "green-bordered")}>
           <a class="number">
             <span>{numeral(ok.total).format("0a")}</span>
           </a>

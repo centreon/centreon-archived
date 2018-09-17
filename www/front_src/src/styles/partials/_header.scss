@@ -84,23 +84,35 @@
               color: $white-color;
             }
           }
+          &.red {
+            background-color: #ed1c24;
+          }
           &.red-bordered {
             border: 1px solid #ed1c24;
           }
           &.gray-dark {
             background-color: #818185;
           }
+          &.gray-dark-bordered {
+            border: 1px solid #818185;
+          }
           &.green {
             background-color: #87bd23;
           }
-          &.red {
-            background-color: #ed1c24;
+          &.green-bordered {
+            border: 1px solid #87bd23;
+          }
+          &.orange {
+            background-color: #ff9913;
           }
           &.orange-bordered {
             border: 1px solid #ff9913;
           }
           &.gray-light {
             background-color: #cdcdcd;
+          }
+          &.gray-light-bordered {
+            border: 1px solid #cdcdcd;
           }
         }
       }
@@ -226,7 +238,7 @@
         font-family: $primary-font;
         font-weight: $font-light;
         margin-left: 4px;
-        color: $darkblue-centreon-darken;
+        color: $darkblue-centreon-primary;
         float: right;
       }
       .submenu-bookmark-link {

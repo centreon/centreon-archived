@@ -33,17 +33,17 @@ class HostMenu extends Component {
           <span class="wrap-right-icon__name">Hosts</span>
         </span>
 
-        <span class="wrap-middle-icon round round-small red-bordered">
+        <span class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
           <a class="number">
             <span>{numeral(down.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class="wrap-middle-icon round round-small gray-dark">
+        <span class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
           <a class="number">
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class="wrap-middle-icon round round-big green">
+        <span class={"wrap-middle-icon round round-big "+ (ok.total > 0 ? "green" : "green-bordered")}>
           <a class="number">
             <span>{numeral(ok.total).format("0a")}</span>
           </a>

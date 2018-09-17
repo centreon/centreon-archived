@@ -6,6 +6,7 @@ import { history } from "./store";
 import routes from "./route-maps/classicRoutes.js";
 import ClassicRoute from "./components/router/classicRoute";
 import NavigationComponent from "./components/navigation";
+import "babel-polyfill";
 
 class App extends Component {
   render() {
