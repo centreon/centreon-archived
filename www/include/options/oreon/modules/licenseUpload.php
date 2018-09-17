@@ -50,10 +50,8 @@ if ($licenseModuleName !== $moduleName) {
 
     if (move_uploaded_file($licenseFileInfos['tmp_name'], $destination)) {
         responseUploadJsonFormat("The license has been successfully uploaded");
-    }
-
-    if ($errorStatus) {
-        responseUploadJsonFormat("An error occurred");
+    } else {
+        responseUploadJsonFormat("An error occurred", 404);
     }
 }
 
