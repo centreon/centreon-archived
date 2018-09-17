@@ -2,6 +2,12 @@
 $help = array();
 
 /**
+ * Centreon statistics
+ */
+
+$help['tip_send_statistics'] = dgettext('help', 'Send anonymous usage statistics.');
+
+/**
  * Centreon information
  */
 

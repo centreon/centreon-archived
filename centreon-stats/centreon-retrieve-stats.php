@@ -1,56 +1,67 @@
 <?php
 require 'config.php';
+require './../bootstrap.php';
 
-// Retrieve token and httpcode from authentication API
-retrieveAuthenticationToken($token, $httpCode);
+$sendStatistics = 0;
 
-// If authentication API if alive, add the information
-if ($httpCode == 200) {
-    $alive = 1;
-} // Otherwise printing that instance is not alive in the file, then stop
-else {
-    $data = array(
-        'alive' => 0
-    );
-    writeOnFile($data);
-    return;
+$db = $dependencyInjector['configuration_db'];
+$result = $db->query("SELECT `send_statistics` FROM `options`");
+if ($row = $result->fetch()) {
+    $sendStatistics = $row['send_statistics'];
 }
 
-$ch = curl_init();
-$auth_header[] = 'Content-type: application/json';
-$auth_header[] = 'centreon-auth-token: ' . $token;
+if ($sendStatistics) {
+    // Retrieve token and httpcode from authentication API
+    retrieveAuthenticationToken($token, $httpCode);
 
-// Settings parameters for curl queries
-curl_setopt($ch, CURLOPT_HTTPHEADER, $auth_header);
-curl_setopt($ch, CURLOPT_HEADER, false);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPGET, true);
+    // If authentication API if alive, add the information
+    if ($httpCode == 200) {
+        $alive = 1;
+    } // Otherwise printing that instance is not alive in the file, then stop
+    else {
+        $data = array(
+            'alive' => 0
+        );
+        writeOnFile($data);
+        return;
+    }
 
-// Retrieve UUID
-curl_setopt($ch, CURLOPT_URL, WS_ROUTE . UUID_RESOURCE);
-$UUID = curl_exec($ch);
-$UUID = json_decode($UUID, true);
+    $ch = curl_init();
+    $auth_header[] = 'Content-type: application/json';
+    $auth_header[] = 'centreon-auth-token: ' . $token;
 
-// Retrieve versionning
-curl_setopt($ch, CURLOPT_URL, WS_ROUTE . VERSIONNING_RESOURCE);
-$versions = curl_exec($ch);
-$versions = json_decode($versions, true);
+    // Settings parameters for curl queries
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $auth_header);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
 
-// Retrieve informations
-curl_setopt($ch, CURLOPT_URL, WS_ROUTE . INFOS_RESOURCE);
-$infos = curl_exec($ch);
-$infos = json_decode($infos, true);
+    // Retrieve UUID
+    curl_setopt($ch, CURLOPT_URL, WS_ROUTE . UUID_RESOURCE);
+    $UUID = curl_exec($ch);
+    $UUID = json_decode($UUID, true);
 
-// Construct the object gathering datas
-$data = array(
-    'alive' => $alive,
-    'UUID' => $UUID,
-    'versions' => $versions,
-    'infos' => $infos
-);
-writeOnFile($data);
+    // Retrieve versionning
+    curl_setopt($ch, CURLOPT_URL, WS_ROUTE . VERSIONNING_RESOURCE);
+    $versions = curl_exec($ch);
+    $versions = json_decode($versions, true);
+
+    // Retrieve informations
+    curl_setopt($ch, CURLOPT_URL, WS_ROUTE . INFOS_RESOURCE);
+    $infos = curl_exec($ch);
+    $infos = json_decode($infos, true);
+
+    // Construct the object gathering datas
+    $data = array(
+        'alive' => $alive,
+        'UUID' => $UUID,
+        'versions' => $versions,
+        'infos' => $infos
+    );
+    writeOnFile($data);
+}
 
 /**
  *    Set the token and the httpCode by quering authentication API.
