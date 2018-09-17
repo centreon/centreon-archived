@@ -35,6 +35,7 @@ class NavigationComponent extends Component {
     let { menuItems } = this.state;
     menuItems[index].toggled = menuItems[index].toggled ? false : true;
     this.setState({
+      active:false,
       menuItems
     });
   };
@@ -168,7 +169,7 @@ class NavigationComponent extends Component {
                               </a>
                             ) : (
                               <Link
-                                className="collapsed-level-item-link"
+                                className="collapsed-level-item-link img-none"
                                 to={routeMap.module + "?p=" + menuKey}
                               >
                                 {subItem.label}
