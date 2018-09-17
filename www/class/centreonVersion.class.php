@@ -70,7 +70,7 @@ class CentreonVersion
         $query = 'SELECT i.value FROM informations i ' .
             'WHERE i.key = "version"';
         $result = $this->db->query($query);
-        if ($row = $result->fetchRow()) {
+        if ($row = $result->fetch()) {
             $data['centreon-web'] = $row['value'];
         }
 
@@ -82,10 +82,11 @@ class CentreonVersion
         }
 
         // Get version of the centreon-engine
-        $queryProgram = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances WHERE deleted = 0 ";
+        $queryProgram = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, " .
+            "`name` AS instance_name FROM instances WHERE deleted = 0 ";
         $result = $this->dbStorage->query($queryProgram);
 
-        while ($info = $result->fetchRow()) {
+        while ($info = $result->fetch()) {
             $data['centreon-engine'] = $info["program_version"];
         }
 
@@ -103,7 +104,7 @@ class CentreonVersion
 
         $query = 'SELECT name, mod_release FROM modules_informations';
         $result = $this->db->query($query);
-        while ($row = $result->fetchRow()) {
+        while ($row = $result->fetch()) {
             $data[$row['name']] = $row['mod_release'];
         }
         return $data;
@@ -120,7 +121,7 @@ class CentreonVersion
 
         $query = 'SELECT title, version FROM widget_models';
         $result = $this->db->query($query);
-        while ($row = $result->fetchRow()) {
+        while ($row = $result->fetch()) {
             $data[$row['title']] = $row['version'];
         }
         return $data;
@@ -139,7 +140,7 @@ class CentreonVersion
 
         $query = 'SHOW VARIABLES LIKE "version"';
         $result = $this->db->query($query);
-        if ($row = $result->fetchRow()) {
+        if ($row = $result->fetch()) {
             $data['mysql'] = $row['Value'];
         }
 

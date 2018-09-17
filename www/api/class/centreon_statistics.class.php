@@ -67,7 +67,7 @@ class CentreonStatistics extends CentreonWebService
             "(SELECT COUNT(id) FROM nagios_server WHERE ns_activate = '1') as nb_pollers " .
             "FROM host WHERE host_activate = '1' AND host_register = '1'";
         $dbResult = $this->pearDB->query($query);
-        $data = $dbResult->fetchRow();
+        $data = $dbResult->fetch();
 
         return $data;
     }
@@ -76,6 +76,7 @@ class CentreonStatistics extends CentreonWebService
      * get version of Centreon Web
      *
      * @return array
+     * @throws Exception
      */
     public function getVersion()
     {
