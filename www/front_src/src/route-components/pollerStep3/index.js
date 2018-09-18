@@ -22,9 +22,9 @@ class PollerStepThreeRoute extends Component {
   ];
 
   render() {
-    const { links } = this;
-    const { pollerData } = this.props;
-    const { generateStatus, processingStatus } = this.state;
+    const { links } = this,
+          { pollerData } = this.props,
+          { generateStatus, processingStatus } = this.state;
     return (
       <div>
         <ProgressBar links={links} />

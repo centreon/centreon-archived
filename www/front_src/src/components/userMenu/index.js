@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import numeral from "numeral";
+import Clock from "../clock";
 
 class UserMenu extends Component {
   state = {
@@ -14,7 +15,7 @@ class UserMenu extends Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, clockData } = this.props;
 
     if (!data) {
       return null;
@@ -25,33 +26,29 @@ class UserMenu extends Component {
     const { fullname, username } = data;
 
     return (
-      <div class="wrap-right-icon round round-small white">
-        <span class="icon-profile profile" onClick={this.toggle.bind(this)}>
-          D
-        </span>
-        <div
-          class={"submenu-top profile" + (toggled ? " submenu-active" : null)}
-        >
-          <div class="submenu-top-inner">
-            <ul class="submenu-top-items">
-              <li class="submenu-top-item">
-                <span class="submenu-top-item-link">
-                  <span>{fullname}</span>
-                  <span class="submenu-top-user-type">as {username}</span>
-                  <a
-                    class="submenu-top-user-edit"
-                    href="./main.php?p=50104&o=c"
-                  >
+      <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
+        <Clock clockData={clockData} />
+        <span class="iconmoon icon-user" onClick={this.toggle.bind(this)} />
+        <div class={"submenu profile"}>
+          <div class="submenu-inner">
+            <ul class="submenu-items list-unstyled">
+              <li class="submenu-item">
+                <span class="submenu-item-link">
+                  <span class="submenu-user-name">{fullname}</span>
+                  <span class="submenu-user-type">as {username}</span>
+                  <a class="submenu-user-edit" href="./main.php?p=50104&o=c">
                     Edit profile
                   </a>
                 </span>
               </li>
+              <input class="submenu-bookmark-link" type="text" />
+              <span class="iconmoon icon-copy" />
             </ul>
-            <a href="index.php?disconnect=1">
-              <button class="btn btn-small btn-red" type="button">
-                Sign out
-              </button>
-            </a>
+            <div class="button-wrap">
+              <a href="index.php?disconnect=1">
+                <button class="btn btn-small btn-red">Sign out</button>
+              </a>
+            </div>
           </div>
         </div>
       </div>

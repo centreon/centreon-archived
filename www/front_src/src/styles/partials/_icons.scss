@@ -24,59 +24,89 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-copy:before {
-  content: "\e902";
-  color: #88b917;
+
+.icon-home:before {
+  content: "\e904";
+  color: rgba(0, 159, 152, 1);
 }
+.icon-home:hover:before {
+  content: "\e904";
+  color: rgba(0, 146, 140, 1);
+}
+
+.icon-monitoring:before {
+  content: "\e907";
+  color: rgba(136, 189, 35, 1);
+}
+.icon-monitoring:hover:before {
+  content: "\e907";
+  color: rgba(97, 140, 60, 1);
+}
+
+.icon-reporting:before {
+  content: "\e909";
+  color: rgba(255, 162, 0, 1);
+}
+.icon-reporting:hover:before {
+  content: "\e909";
+  color: rgba(256, 148, 24, 1);
+}
+
+.icon-configuration:before {
+  content: "\e902";
+  color: rgba(0, 159, 233, 1);
+}
+.icon-configuration:hover:before {
+  content: "\e902";
+  color: rgba(15, 145, 199, 1);
+}
+
 .icon-administration:before {
   content: "\e900";
-  color: #17387b;
+  color: rgba(43, 45,132, 1);
 }
-.icon-configuration:before {
-  content: "\e901";
-  color: #319ed5;
+.icon-administration:hover:before {
+  content: "\e900";
+  color: rgba(44, 42,121, 1);
 }
-.icon-host:before {
-  content: "\e904";
-  color: #A7A9AC;
-}
-.icon-host:hover:before {
-  color: #D1D2D4;
-}
-.icon-monitoring:before {
-  content: "\e905";
-  color: #85b446;
-}
+
 .icon-poller:before {
-  content: "\e906";
-  color: rgb(136, 185, 23);
-}
-.icon-poller.warning:before {
-  content: "\e906";
-  color: #FF9A13;
-}
-.icon-poller.critical:before {
-  content: "\e906";
-  color: #E00B3D;
-}
-.icon-reporting:before {
-  content: "\e907";
-  color: #e4932c;
-}
-.icon-services:before {
   content: "\e908";
-  color: #A7A9AC;
+  color: $white-color;
 }
-.icon-services:hover:before {
-  color: #D1D2D4;
+
+.icon-link:before {
+  content: "\e906";
+  color: #232f39;
 }
-.icon-home:before {
+
+.icon-clock:before {
+  content: "\e901";
+  color: #232f39;
+}
+
+.icon-database:before {
   content: "\e903";
-  color: #2b9e93;
+  color: #232f39;
 }
+
+.icon-hosts:before {
+  content: "\e905";
+  color: $white-color;
+}
+
+.icon-services:before {
+  content: "\e90a";
+  color: $white-color;
+}
+
+.icon-user:before {
+  content: "\e90b";
+  color: $white-color;
+}
+
 .iconmoon {
   display: block;
-  position: relative;
   text-align: center;
   &:before {
     font-size: 24px;

@@ -7,16 +7,13 @@ import { connect } from "react-redux";
 import "moment-timezone";
 import Moment from "moment";
 
-import axios from "../../axios";
-
-import logo from "../../img/centreon.png";
-import IconMenu from "../iconMenu";
-import LineMenu from "../lineMenu";
-import PollerMenu from "../pollerMenu";
 import Clock from "../clock";
+
+import axios from "../../axios";
+import PollerMenu from "../pollerMenu";
+import UserMenu from "../userMenu";
 import HostMenu from "../hostMenu";
 import ServiceStatusMenu from "../serviceStatusMenu";
-import UserMenu from "../userMenu";
 
 const instantiateDate = (tz, locale, timestamp) => {
   const currentTime =
@@ -30,7 +27,6 @@ const instantiateDate = (tz, locale, timestamp) => {
 };
 
 class TopHeader extends Component {
-  navService = axios("internal.php?object=centreon_menu&action=menu");
   pollerService = axios(
     "internal.php?object=centreon_topcounter&action=pollersListIssues"
   );
@@ -44,24 +40,14 @@ class TopHeader extends Component {
   clockService = axios("internal.php?object=centreon_topcounter&action=clock");
 
   state = {
-    selectedMenu: {},
     pollerData: {},
     hostsData: {},
     clockData: {},
     servicesStatusData: {},
-    userData: {},
-    menuItems: []
+    userData: {}
   };
 
   refreshInterval;
-
-  transformToArray = (data, callback) => {
-    let result = [];
-    for (var key in data) {
-      result.push(data[key]);
-    }
-    callback(result);
-  };
 
   setClock = () => {
     this.clockService.get().then(({ data }) => {
@@ -80,14 +66,6 @@ class TopHeader extends Component {
   };
 
   UNSAFE_componentWillMount = () => {
-    this.navService.get().then(({ data }) => {
-      this.transformToArray(data, array => {
-        this.setState({
-          menuItems: array,
-          selectedMenu: array[0]
-        });
-      });
-    });
     this.pollerService.get().then(({ data }) => {
       this.setState({
         pollerData: data
@@ -112,16 +90,8 @@ class TopHeader extends Component {
     this.setRefreshInterval();
   };
 
-  switchTopLevelMenu = selectedMenu => {
-    this.setState({
-      selectedMenu
-    });
-  };
-
   render = () => {
     const {
-      menuItems,
-      selectedMenu,
       pollerData,
       clockData,
       hostsData,
@@ -129,40 +99,18 @@ class TopHeader extends Component {
       userData
     } = this.state;
     return (
-      <div>
-        <header class="header mb-3">
-          <div class="header-wrapper">
-            <div class="header-inner">
-              <div class="header-top">
-                <div class="header-top-logo">
-                  <Link to={routeMap.home}>
-                    <img src={logo} width="254" height="57" alt="" />
-                  </Link>
-                </div>
-                <div class="header-top-icons">
-                  <IconMenu
-                    items={menuItems}
-                    selected={selectedMenu}
-                    onSwitch={this.switchTopLevelMenu.bind(this)}
-                  />
-                  <div class="wrap-middle">
-                    <div class="wrap-middle-left">
-                      <PollerMenu data={pollerData} />
-                      <HostMenu data={hostsData} />
-                    </div>
-                    <ServiceStatusMenu data={servicesStatusData} />
-                  </div>
-                  <div class="wrap-right">
-                    <Clock clockData={clockData} />
-                    <UserMenu data={userData} />
-                  </div>
-                </div>
-              </div>
-              <LineMenu menu={selectedMenu} />
-            </div>
+      <header class="header">
+        <div class="header-icons">
+          <div class="wrap wrap-left">
+            <PollerMenu data={pollerData} />
           </div>
-        </header>
-      </div>
+          <div class="wrap wrap-right">
+            <HostMenu data={hostsData} />
+            <ServiceStatusMenu data={servicesStatusData} />
+            <UserMenu data={userData} clockData={clockData} />
+          </div>
+        </div>
+      </header>
     );
   };
 }

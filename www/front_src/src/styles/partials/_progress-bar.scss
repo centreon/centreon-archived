@@ -2,7 +2,7 @@
   padding-bottom: 39px;
   padding-left:24px;
   padding-right:24px;
-  background: #fff;
+  background: $white-color;
   max-width: 890px;
   margin: 0 auto;
   &-items {
@@ -26,7 +26,7 @@
   }
   &-item {
     border-radius: 50%;
-    background: #fff;
+    background: $white-color;
     width: 33px;
     height: 33px;
     z-index: 2;
@@ -39,19 +39,19 @@
     line-height: 33px;
     text-align: center;
     border: 1px solid #cdcdcd;
-    font-family: Roboto,sans-serif;
-    font-size: 12px;
+    font-family: $primary-font;
+    font-weight: $font-light;
+    font-size: 0.75rem;
     color: #cdcdcd;
-    font-weight: 300;
     box-sizing: border-box;
     &.active {
-      background: #009fdf;
-      color: #fff;
+      background: $lightblue-centreon-primary;
+      color: $white-color;
       border: none;
       &.prev {
-        background: #fff;
-        color: #009fdf;
-        border: 1px solid #009fdf
+        background: $white-color;
+        color: $lightblue-centreon-primary;
+        border: 1px solid $lightblue-centreon-primary;
       }
     }
   }
