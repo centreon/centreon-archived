@@ -125,15 +125,70 @@ a {
       display: block;
       &:hover {
         color: $white-color;
-        background: #638e2d;
       }
       i {
         margin-right: 10px;
       }
     }
+
+    &:first-child {
+      > a:hover {
+        background: $turquoise-centreon-darken;
+      }
+      &.active {
+        > a {
+          background: $turquoise-centreon-darken;
+        }
+      }
+    }
+
+    &:nth-child(2) {
+      > a:hover {
+        background: $lime-centreon-darken;
+      }
+      &.active {
+        > a {
+          background: $lime-centreon-darken;
+        }
+      }
+    }
+
+    &:nth-child(3) {
+      > a:hover {
+        background: $orange-centreon-darken;
+      }
+      &.active {
+        > a {
+          background: $orange-centreon-darken;
+        }
+      }
+    }
+
+    &:nth-child(4) {
+      > a:hover {
+        background: $lightblue-centreon-darken;
+      }
+      &.active {
+        > a {
+          background: $lightblue-centreon-darken;
+        }
+      }
+    }
+
+    &:nth-child(5) {
+      > a:hover {
+        background: $darkblue-centreon-darken;
+      }
+      &.active {
+        > a {
+          background: $darkblue-centreon-darken;
+        }
+      }
+    }
+
+
     &.active > a {
       color: $white-color;
-      background: #638e2d;
       .iconmoon {
         color: $white-color;
         &:before {
