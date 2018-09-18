@@ -92,14 +92,14 @@ if (file_exists("./install/setup.php")) {
  */
 
 $staticExists = glob('static/css/*.css');
-$allCssFiles = glob('static/css/*');
-$allJsFiles = glob('static/js/*');
-$indexFile = glob('index.html');
-$allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-$newPath = str_replace('index.php', '',$_SERVER['REQUEST_URI']);
+$newPath = explode('index.php', $_SERVER['REQUEST_URI'])[0];
 
 if (!$staticExists){
     shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+    $allCssFiles = glob('static/css/*');
+    $allJsFiles = glob('static/js/*');
+    $indexFile = glob('index.html');
+    $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
     foreach ($allFiles as $file){
         $fc = file_get_contents($file);
         $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
@@ -111,6 +111,10 @@ if (!$staticExists){
     if ($hashTemplate[1] !== $hashStatic){
         shell_exec('rm -rf ' . getcwd() . '/static ');
         shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+        $allCssFiles = glob('static/css/*');
+        $allJsFiles = glob('static/js/*');
+        $indexFile = glob('index.html');
+        $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
         foreach ($allFiles as $file){
             $fc = file_get_contents($file);
             $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
