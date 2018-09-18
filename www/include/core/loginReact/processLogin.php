@@ -112,14 +112,14 @@ if (isset($_POST["centreon_token"])
                 $minimize = '&min=1';
             }
             if (isset ($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: ./refresh.php?p=' . $_GET["p"] . $minimize);
+                header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: ./refresh.php?p=' . $centreon->user->default_page . $minimize);
+                header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
             } else {
-                header('Location: ./refresh.php');
+                header('Location: ./main.php');
             }
         } else {
-            header("Location: ./refresh.php");
+            header("Location: ./main.php");
         }
         $connect = true;
     } else {
