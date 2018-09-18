@@ -56,11 +56,11 @@
 
         <td align='right'>
         {if ($step-1 && !$blockPreview)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
+        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({ $back });'/>
         {/if}
         <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
         {if !$finish}
-        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
+        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({ $next });'/>
         {else}
         <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
         {/if}

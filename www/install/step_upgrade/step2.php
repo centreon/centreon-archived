@@ -96,6 +96,8 @@ $contents .= "</table>";
 //@todo
 
 $template->assign('step', STEP_NUMBER);
+$template->assign('back', STEP_NUMBER-1);
+$template->assign('next', STEP_NUMBER+1);
 $template->assign('title', $title);
 $template->assign('content', $contents);
 $template->display('content.tpl');

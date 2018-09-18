@@ -31,41 +31,45 @@
  * 
  * For more information : contact@centreon.com
  * 
+ * SVN : $URL$
+ * SVN : $Id$
+ *
  */
 
 session_start();
 define('STEP_NUMBER', 5);
-
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
 $template = getTemplate('templates');
 
-$title = _('Upgrade finished');
+$title = _('Help Centreon');
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory '
-        . $centreon_path . '/installDir and give it the rigths to apache user to write.';
-    $moveable = false;
-} else {
-    $moveable = true;
-    $contents = sprintf(
-        _('Congratulations, you have successfully upgraded to Centreon version <b>%s</b>.'),
-        $_SESSION['CURRENT_VERSION']
-    );
-}
+$content = sprintf("<input value='1' name='send_statistics' type='checkbox'/>");
+$content .= sprintf('Accepter d envoyer les données.');
 
 $template->assign('step', STEP_NUMBER);
+$template->assign('back', STEP_NUMBER-1);
+$template->assign('next', STEP_NUMBER+1);
 $template->assign('title', $title);
-$template->assign('content', $contents);
-$template->assign('finish', 1);
 $template->assign('blockPreview', 1);
+$template->assign('content', $content);
 $template->display('content.tpl');
-
-if ($moveable) {
-    $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
-    @rename(str_replace('step_upgrade', '', getcwd()), $centreon_path . '/installDir/' . $name);
-}
-
-session_destroy();
+?>
+<script type='text/javascript'>
+    /**
+     * Validates info
+     *
+     * @return bool
+     */
+    function validation() {
+        jQuery.ajax({
+            type: 'POST',
+            url: './step_upgrade/process/process_step5.php',
+            data: jQuery('input[name="send_statistics"]').serialize(),
+        }).success(function () {
+            jumpTo(6);
+        });
+        return false;
+    }
+</script>

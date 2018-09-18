@@ -31,55 +31,55 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 
 session_start();
-define('STEP_NUMBER', 1);
+require_once __DIR__ . '/../../../bootstrap.php';
+$db = $dependencyInjector['configuration_db'];
+
+$jump = 1;
+$res = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
+$stat = $res->fetch();
+
+if(!empty($stat['value'])){
+    define('STEP_NUMBER', 5);
+} else {
+    define('STEP_NUMBER', 6);
+}
+
 $_SESSION['step'] = STEP_NUMBER;
 
 require_once '../steps/functions.php';
 $template = getTemplate('templates');
 
-$title = _('Centreon Upgrade');
+$title = _('Upgrade finished');
 
-if (is_file('../install.conf.php')) {
-    $status = 0;
-    $content = sprintf(
-        "<p>%s%s</p>",
-        _('You are about to upgrade Centreon.'),
-        _('The entire process should take around ten minutes.')
-    );
-    $content .= sprintf(
-        "<p>%s</p>",
-        _('It is strongly recommended to make a backup of your databases before going any further.')
-    );
-    require_once '../install.conf.php';
-    setSessionVariables($conf_centreon);
+$centreon_path = realpath(dirname(__FILE__) . '/../../../');
+if (false === is_dir($centreon_path . '/installDir')) {
+    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory '
+        . $centreon_path . '/installDir and give it the rigths to apache user to write.';
+    $moveable = false;
 } else {
-    $status = 1;
-    $content = sprintf("<p class='required'>%s (install.conf.php)</p>", _('Configuration file not found.'));
+    $moveable = true;
+    $contents = sprintf(
+        _('Congratulations, you have successfully upgraded to Centreon version <b>%s</b>.'),
+        $_SESSION['CURRENT_VERSION']
+    );
 }
 
+
+
 $template->assign('step', STEP_NUMBER);
-$template->assign('next', STEP_NUMBER+1);
 $template->assign('title', $title);
-$template->assign('content', $content);
+$template->assign('back', STEP_NUMBER-1);
+$template->assign('content', $contents);
+$template->assign('finish', 1);
+$template->assign('blockPreview', 1);
 $template->display('content.tpl');
-?>
-<script type='text/javascript'>
-    var status = <?php echo $status;?>;
-    /**
-     * Validates info
-     * 
-     * @return bool
-     */
-    function validation() {
-       if (status == 0) {
-        return true;
-       }
-       return false;
-    }
-</script>
+
+if ($moveable) {
+    $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
+    @rename(str_replace('step_upgrade', '', getcwd()), $centreon_path . '/installDir/' . $name);
+}
+
+session_destroy();
