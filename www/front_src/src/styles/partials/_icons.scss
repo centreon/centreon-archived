@@ -31,7 +31,7 @@
 }
 .icon-home:hover:before {
   content: "\e904";
-  color: rgba(0, 146, 140, 1);
+  color: $white-color;
 }
 
 .icon-monitoring:before {
@@ -40,7 +40,7 @@
 }
 .icon-monitoring:hover:before {
   content: "\e907";
-  color: rgba(97, 140, 60, 1);
+  color: $white-color;
 }
 
 .icon-reporting:before {
@@ -49,7 +49,7 @@
 }
 .icon-reporting:hover:before {
   content: "\e909";
-  color: rgba(256, 148, 24, 1);
+  color: $white-color;
 }
 
 .icon-configuration:before {
@@ -58,7 +58,7 @@
 }
 .icon-configuration:hover:before {
   content: "\e902";
-  color: rgba(15, 145, 199, 1);
+  color: $white-color;
 }
 
 .icon-administration:before {
@@ -67,7 +67,7 @@
 }
 .icon-administration:hover:before {
   content: "\e900";
-  color: rgba(44, 42,121, 1);
+  color: $white-color;
 }
 
 .icon-poller:before {
