@@ -66,6 +66,21 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "\n Centreon Remote disabling finished.\n";
     }
 
+    public function import()
+    {
+        echo "Starting Centreon Remote import process: \n";
+        echo "\n Importing...";
+
+        try {
+            $this->getDi()['centreon_remote.export']->import();
+            echo "Success\n";
+        } catch (\Exception $ex) {
+            echo "Fail\n";
+        }
+
+        echo "\n Centreon Remote import finished.\n";
+    }
+
     public function getDi(): Container
     {
         return $this->di;
