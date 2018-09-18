@@ -33,6 +33,9 @@ class NavigationComponent extends Component {
 
   onSwitch = index => {
     let { menuItems } = this.state;
+    for (let i = 0; i < menuItems.length; i++) {
+      menuItems[i].toggled = false;
+    }
     menuItems[index].toggled = menuItems[index].toggled ? false : true;
     this.setState({
       active:false,
