@@ -2,10 +2,11 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use Centreon\Domain\Entity;
 use Centreon\Domain\Repository;
 
-class MediaExporter extends ExporterServiceAbstract
+class MediaExporter extends ExporterServiceAbstract implements ExporterServicePartialInterface
 {
 
     const NAME = 'media';
@@ -94,6 +95,63 @@ class MediaExporter extends ExporterServiceAbstract
 
         $this->_dump($dirs, $exportPath . '/' . static::EXPORT_FILE_DIR);
         $this->_dump($imgs, $exportPath . '/' . static::EXPORT_FILE_IMG);
+    }
+
+    public function exportPartial(): void
+    {
+        $imgList = $this->cache->get('media.list');
+
+        if (!$imgList) {
+            return;
+        }
+
+        // Extract data
+        $imgs = $this->db
+            ->getRepository(Repository\ViewImgRepository::class)
+            ->export($imgList)
+        ;
+
+        $exportPath = $this->commitment->getPath() . '/' . $this->getName();
+        $exportPathMedia = $exportPath . '/' . static::EXPORT_FILES;
+
+        if (!is_dir($exportPathMedia)) {
+            mkdir($exportPathMedia, $this->commitment->getFilePermission(), true);
+        }
+
+        // make copy of media files
+        foreach ($imgs as $img) {
+            $pathSuffix = '/' . ($img['img_dirs'] ? "{$img['img_dirs']}/" : '') .
+                $img['img_path']
+            ;
+            $imgPath = static::MEDIA_PATH . $pathSuffix;
+
+            // prevent reading of non-exists files
+            if (!is_file($imgPath)) {
+                continue;
+            }
+
+            $imgPathExport = $exportPathMedia . $pathSuffix;
+
+            if (is_file($imgPathExport)) {
+                continue;
+            }
+
+            $imgPathExportDir = dirname($imgPathExport);
+
+            if (!is_dir($imgPathExportDir)) {
+                mkdir($imgPathExportDir, $this->commitment->getFilePermission(), true);
+            }
+
+            copy($imgPath, $imgPathExport);
+        }
+
+        $dirs = $this->db
+            ->getRepository(Repository\ViewImgDirRepository::class)
+            ->export($imgList)
+        ;
+
+        $this->_mergeDump($dirs, $this->getFile(static::EXPORT_FILE_DIR), 'dir_id');
+        $this->_mergeDump($imgs, $this->getFile(static::EXPORT_FILE_IMG), 'img_id');
     }
 
     /**

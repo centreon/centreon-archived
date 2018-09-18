@@ -109,4 +109,38 @@ SQL;
 
         return $result;
     }
+
+    /**
+     * Export
+     * 
+     * @param int[] $list
+     * @return array
+     */
+    public function exportList(array $list): array
+    {
+        // prevent SQL exception
+        if (!$list) {
+            return [];
+        }
+
+        $ids = join(',', $list);
+
+        $sql = <<<SQL
+SELECT
+    t.*
+FROM command_categories_relation AS t
+WHERE t.command_command_id IN ({$ids})
+GROUP BY t.cmd_cat_id
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
 }
