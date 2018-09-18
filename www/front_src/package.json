@@ -33,9 +33,9 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "dev": "PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
-    "build": "PUBLIC_URL=\"/centreon/\" webpack --mode production",
-    "start": "PUBLIC_URL=\"/centreon/\" webpack --progress --watch",
+    "dev": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
+    "build": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
+    "start": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
     "build:sass": "node-sass -r --output-style compressed ./src -o ./src",
     "watch:sass": "npm run build:sass && npm run build:sass -- -w",
     "test": "react-scripts test --env=jsdom",
