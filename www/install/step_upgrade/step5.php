@@ -49,8 +49,8 @@ $content = sprintf("<input value='1' name='send_statistics' type='checkbox'/>");
 $content .= sprintf('Accepter d envoyer les données.');
 
 $template->assign('step', STEP_NUMBER);
-$template->assign('back', STEP_NUMBER-1);
-$template->assign('next', STEP_NUMBER+1);
+$template->assign('back', STEP_NUMBER - 1);
+$template->assign('next', STEP_NUMBER + 1);
 $template->assign('title', $title);
 $template->assign('blockPreview', 1);
 $template->assign('content', $content);

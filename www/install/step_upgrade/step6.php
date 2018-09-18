@@ -41,7 +41,7 @@ $jump = 1;
 $res = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 $stat = $res->fetch();
 
-if(!empty($stat['value'])){
+if (!empty($stat['value'])) {
     define('STEP_NUMBER', 5);
 } else {
     define('STEP_NUMBER', 6);
@@ -68,10 +68,9 @@ if (false === is_dir($centreon_path . '/installDir')) {
 }
 
 
-
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
-$template->assign('back', STEP_NUMBER-1);
+$template->assign('back', STEP_NUMBER - 1);
 $template->assign('content', $contents);
 $template->assign('finish', 1);
 $template->assign('blockPreview', 1);

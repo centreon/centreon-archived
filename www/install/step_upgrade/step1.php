@@ -64,22 +64,23 @@ if (is_file('../install.conf.php')) {
 }
 
 $template->assign('step', STEP_NUMBER);
-$template->assign('next', STEP_NUMBER+1);
+$template->assign('next', STEP_NUMBER + 1);
 $template->assign('title', $title);
 $template->assign('content', $content);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
     var status = <?php echo $status;?>;
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {
-       if (status == 0) {
-        return true;
-       }
-       return false;
+        if (status == 0) {
+            return true;
+        }
+        return false;
     }
 </script>
