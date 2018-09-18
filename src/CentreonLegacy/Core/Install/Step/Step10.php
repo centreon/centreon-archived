@@ -33,18 +33,45 @@
  *
  */
 
-session_start();
-require_once __DIR__ . '/../../../../bootstrap.php';
+namespace CentreonLegacy\Core\Install\Step;
 
-$parameters = filter_input_array(INPUT_POST);
-if ((int)$parameters["send_statistics"] == 1) {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
-} else {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+class Step10 extends AbstractStep
+{
+    public function getContent()
+    {
+        $installDir = __DIR__ . '/../../../../../www/install';
+        require_once $installDir . '/steps/functions.php';
+        $template = getTemplate($installDir . '/steps/templates');
+
+        $backupDir = __DIR__ . '/../../../../../installDir';
+        $contents = '';
+        if (!is_dir($backupDir)) {
+            $contents .= '<br>Warning : The installation directory cannot be move. ' .
+                'Please create the directory ' . $backupDir . ' ' .
+                'and give it the rigths to apache user to write.';
+        } else {
+            $contents = $this->getAdvertisement();
+
+        }
+
+        $template->assign('title', _('Installation finished'));
+        $template->assign('step', 10);
+        $template->assign('finish', 1);
+        $template->assign('blockPreview', 1);
+        $template->assign('contents', $contents);
+        return $template->fetch('content.tpl');
+    }
+
+    private function getAdvertisement()
+    {
+        $adContent = '';
+        if ($sock = fsockopen("www.centreon.com", 80, $num, $error, 5)) {
+            $adContent = "http://blog-centreon-wordpress.s3.amazonaws.com/wp-content/uploads/2015/12/custom_view.jpg";
+        } elseif (file_exists("../../img/centreon.png")) {
+            fclose($sock);
+            $adContent = "../../img/centreon.png";
+        }
+
+        return $adContent;
+    }
 }
-
-$db = $dependencyInjector['configuration_db'];
-$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
-$db->query($query);
-
-return;

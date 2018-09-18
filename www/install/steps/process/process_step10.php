@@ -35,16 +35,28 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
+$step = new \CentreonLegacy\Core\Install\Step\Step9($dependencyInjector);
+$version = $step->getVersion();
 
-$parameters = filter_input_array(INPUT_POST);
-if ((int)$parameters["send_statistics"] == 1) {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
-} else {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+$message = '';
+
+try {
+    $backupDir = realpath(__DIR__ . '/../../../../installDir/')
+        . '/install-' . $version . '-' . date('Ymd_His');
+    $installDir = realpath(__DIR__ . '/../..');
+    $dependencyInjector['filesystem']->rename($installDir, $backupDir);
+    if ($dependencyInjector['filesystem']->exists($installDir)) {
+        throw new \Exception('Cannot move directory from ' . $installDir . ' to ' . $backupDir);
+    }
+    $dependencyInjector['filesystem']->remove($backupDir . '/tmp/admin.json');
+    $dependencyInjector['filesystem']->remove($backupDir . '/tmp/database.json');
+    $result = true;
+} catch (\Exception $e) {
+    $result = false;
+    $message = $e->getMessage();
 }
 
-$db = $dependencyInjector['configuration_db'];
-$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
-$db->query($query);
-
-return;
+echo json_encode(array(
+    'result' => $result,
+    'message' => $message
+));
