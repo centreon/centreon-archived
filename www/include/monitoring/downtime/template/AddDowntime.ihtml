@@ -1,4 +1,5 @@
 {$form.javascript}{literal}
+<script src="./include/common/javascript/datepicker/localizedDatepicker.js"></script>
 <script type="text/javascript">
     function toggleParams(type) {
         if (type == 'host') {
@@ -146,3 +147,12 @@
     </div>
     {$form.hidden}
 </form>
+
+{literal}
+
+<script type="text/javascript">
+
+    initDatepicker("datepicker", "mm/dd/yy", "0");
+
+</script>
+{/literal}
