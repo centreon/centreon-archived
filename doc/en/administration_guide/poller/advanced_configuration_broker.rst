@@ -1,3 +1,5 @@
+.. _advance_conf_broker:
+
 ================================
 Advanced configuration of Poller
 ================================

@@ -12,7 +12,7 @@ Central server.
 Using Centreon ISO
 ------------------
 
-Follow the :ref:`Using Centreon ISO el7<_installisoel7>` documentation to install a Centreon
+Follow the :ref:`Using Centreon ISO el7<installisoel7>` documentation to install a Centreon
 Central server. 
 
 Using Centreon packages
