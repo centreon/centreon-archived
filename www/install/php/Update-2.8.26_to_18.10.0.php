@@ -38,7 +38,6 @@
 $query = "SELECT value FROM options WHERE `key`='nagios_path_plugins'";
 $result = $pearDB->query($query);
 $row = $result->fetchRow();
-error_log(print_r($row, true));
 
 // Update to new path if necessary.
 if ($row
