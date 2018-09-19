@@ -35,7 +35,6 @@
 
 namespace CentreonClapi;
 
-require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once "centreonUtils.class.php";
 
 /**

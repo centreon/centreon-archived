@@ -51,15 +51,20 @@ $mediaObj = new CentreonMedia($pearDB);
  */
 $searchFilterQuery = null;
 $mainQueryParameters = [];
-$search = '';
+$search = null;
 
 if (isset($_POST['searchHg'])) {
-    $centreon->host_group_search = $search;
-} elseif (isset($centreon->host_group_search) && $centreon->host_group_search != '') {
-    $search = $centreon->host_group_search;
+    $num = 0;
+    $search = $_POST['searchHg'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchHg'])) {
+    $search = $_GET['searchHg'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-if ($search != '') {
+if ($search) {
     $mainQueryParameters[':search_string'] = "%{$search}%";
     $searchFilterQuery = " (hg_name LIKE :search_string OR hg_alias LIKE :search_string) AND ";
 }
@@ -94,12 +99,12 @@ $rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon
            WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
     " ORDER BY hg_name LIMIT " . $num * $limit . ", $limit";
-$DBRESULT = $pearDB->query($rq);
+$DBRESULT = $pearDB->query($rq, $mainQueryParameters);
 
 /*
  * Pagination
  */
-$rows = $DBRESULT->rowCount();
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 $search = tidySearchKey($search, $advanced_search);
@@ -205,7 +210,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(

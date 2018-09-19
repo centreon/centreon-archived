@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!@PHP_BIN@
 <?php
 $help = "NAME
     export-mysql-indexes - MySQL indexes export tool

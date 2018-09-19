@@ -42,11 +42,21 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchTool = null;
-$search = "";
-if (isset($_POST['searchSC']) && $_POST['searchSC']) {
+$SearchTool = '';
+$search = null;
+
+if (isset($_POST['searchSC'])) {
     $search = $_POST['searchSC'];
-    $SearchTool = "WHERE (sc_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchSC'])) {
+    $search = $_GET['searchSC'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchTool .= "WHERE (sc_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR sc_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
 
@@ -60,12 +70,14 @@ if (!$oreon->user->admin && $scString != "''") {
     $aclCond .= $acl->queryBuilder($clause, "sc_id", $scString);
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool $aclCond");
+/*
+ * Services Categories Lists
+ */
+$query = "SELECT SQL_CALC_FOUND_ROWS * FROM service_categories $SearchTool $aclCond " .
+    "ORDER BY sc_name LIMIT " . $num * $limit . ", " . $limit;
+$DBRESULT = $pearDB->query($query);
 
-$tmp = $DBRESULT->fetchRow();
-$DBRESULT->closeCursor();
-$rows = $tmp["COUNT(*)"];
-
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include("./include/common/checkPagination.php");
 
 /*
@@ -87,14 +99,6 @@ $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_linked_svc", _("Number of linked services"));
 $tpl->assign("headerMenu_sc_type", _("Type"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * Services Categories Lists
- */
-$DBRESULT = $pearDB->query("SELECT *
-                                FROM service_categories $SearchTool $aclCond
-                                ORDER BY sc_name
-                                LIMIT " . $num * $limit . ", " . $limit);
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -154,11 +158,11 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign('msg', array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add")));
 
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</SCRIPT>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -230,4 +234,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceCategories.ihtml");
-?>

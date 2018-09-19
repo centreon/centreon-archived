@@ -103,7 +103,7 @@ Advanced
 ********
 
 That's great, you know how to install a module! As an empty module is
-not really usefull, put your imagination at work. Knowing that you can
+not really useful, put your imagination at work. Knowing that you can
 do almost everything, it should not be too complicated :-).
 
 Connecting to the database

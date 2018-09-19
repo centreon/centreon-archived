@@ -12,9 +12,10 @@ working condition your Centreon platform. Templates of monitoring ready to use i
 procedure that allow to start your monitoring less than 30 minutes after the installation of your
 Centreon platform.
 
-Centreon Plugins' project offer a large range of functionality and is one of the richest in the
-market: +170 environments is around 2000 monitoring indicators which allow to deploy your monitoring
-easily and quickly.
+The Plugin Packs (configuration pack), developed by Centreon, are based on the
+Centreon Plugins (monitoring probes), offer a large range of functionality and
+is one of the richest in the market: +170 environments for almost 2000 monitoring
+indicators which allow to deploy your monitoring easily and quickly.
 
 Want to use IMP? Please follow the instructions below.
 
@@ -28,7 +29,7 @@ Centreon Web 2.8.
 
 You can install Centreon 3.4 using the `ISO of Centreon <https://download.centreon.com/>`_ 
 or by upgrading your Centreon platform.
-Please read documentation to install or upgrade your platform.
+Please read :ref:`documentation<install_from_packages>` to install or upgrade your platform.
 
 **2. An Internet access**
 
@@ -52,17 +53,17 @@ you will have access to 5 more Plugin Packs. By subscribing to Centreon IMP offe
 have access to +170 Plugin Packs is around 2000 monitoring indicators which allow to deploy
 your monitoring easily and quickly.
 
-+---------------+-----------------+----------------+-------------------+
-|               | Without Account | Simple Account | With subscription |
-+===============+=================+================+===================+
-| 6 base Packs  |        x        |        x       |         x         |
-+---------------+-----------------+----------------+-------------------+
-| 5 added Packs |                 |        x       |         x         |
-+---------------+-----------------+----------------+-------------------+
-| +150 Packs    |                 |                |         x         |
-+---------------+-----------------+----------------+-------------------+
-|         total |    6 packs      |      11 packs  |     +170 Packs    |
-+---------------+-----------------+----------------+-------------------+
++---------------+-----------------+-----------------+-------------------+
+|               | Without Account | Simple Account  | With subscription |
++===============+=================+=================+===================+
+| 6 base Packs  |        x        |        x        |         x         |
++---------------+-----------------+-----------------+-------------------+
+| 5 added Packs |                 |        x        |         x         |
++---------------+-----------------+-----------------+-------------------+
+| +150 Packs    |                 |                 |         x         |
++---------------+-----------------+-----------------+-------------------+
+|         total | 6 Plugin Packs  | 11 Plugin Packs | +170 Plugin Packs |
++---------------+-----------------+-----------------+-------------------+
 
 What are Plugin Packs available for each level?
 
@@ -87,8 +88,8 @@ What are Plugin Packs available for each level?
 - With IMP subscription: `All the packs in the catalog <https://documentation-fr.centreon.com/docs/plugins-packs/en/latest/catalog.html>`_.
 
 .. note::
-    Yes 11 is different than 6 but we prefer to do not count Centreon Plugin Packs
-    to monitor your Centreon platform.
+    Yes 11 is different from 6 but we prefer not to count the Centreon Plugin
+    Packs that are only useful to monitor your Centreon platform.
 
 To connect your Centreon platform to Centreon user portal, please follow instructions below:
 
@@ -184,7 +185,11 @@ Don't forget that each pack use a plugin to work. Each monitoring procedure will
 install the plugin needed.
 
 .. note::
-    Install plugins on each poller required. Otherwise your supervision will not work.
+    Install plugins on each poller is required. Otherwise your supervision will
+    not work. Indeed, only the Centreon Plugins of the first 11 Plugin Packs
+    have been installed by default on your Centreon servers. It is essential
+    to follow the deployment procedure of each Plugin Pack by clicking on the
+    "?" Icon.
 
 4. Get your subscription!
 -------------------------

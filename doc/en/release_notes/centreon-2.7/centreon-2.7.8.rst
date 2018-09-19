@@ -20,4 +20,4 @@ Features and Bug Fixes
 ======================
 
 - Fix: Improve graph rest API
-- Fix: Two "update mode" lines for service groups in Massive change causing annoying behaviour
+- Fix: Two "update mode" lines for service groups in Massive change causing annoying behavior

@@ -268,7 +268,7 @@ Known issues
 
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.8) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
-* Scales in peformance graphs display too many steps
+* Scales in performance graphs display too many steps
 * PHP Warning issues when user access to performance graphs menu in Centreon Web
 * When you zoom on a graph the zoom is applied for all graphs
 * You can't cancel zoom

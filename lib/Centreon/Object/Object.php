@@ -33,8 +33,6 @@
  *
  */
 
-require_once "Centreon/Cache/Manager/Manager.php";
-
 /**
  * Abstract Centreon Object class
  *
@@ -46,16 +44,6 @@ abstract class Centreon_Object
      * Database Connector
      */
     protected $db;
-
-    /**
-     * Database Cache
-     */
-    protected $cache;
-
-    /**
-     * Use cache or not
-     */
-    protected $useCache;
 
     /**
      * Table name of the object
@@ -80,12 +68,10 @@ abstract class Centreon_Object
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         $this->db = $dependencyInjector['configuration_db'];
-        $this->cache = Centreon_Cache_Manager::factory('centreonObjects', 60, '/tmp/');
-        $this->useCache = false;
     }
 
     /**
-     * Get result from sql query or from cache
+     * Get result from sql query
      *
      * @param string $sqlQuery
      * @param array $sqlParams
@@ -94,14 +80,9 @@ abstract class Centreon_Object
      */
     protected function getResult($sqlQuery, $sqlParams = array(), $fetchMethod = "fetchAll")
     {
-        $cacheFileName = Centreon_Cache_Manager::getCacheFileName($sqlQuery, $sqlParams);
-        if (($this->useCache === false) || ($result = $this->cache->load($cacheFileName)) === false) {
-            $res = $this->db->query($sqlQuery, $sqlParams);
-            $result = $res->{$fetchMethod}();
-            if ($this->useCache === true) {
-                $this->cache->save($result, $cacheFileName);
-            }
-        }
+        $res = $this->db->query($sqlQuery, $sqlParams);
+        $result = $res->{$fetchMethod}();
+
         return $result;
     }
 
@@ -380,16 +361,5 @@ abstract class Centreon_Object
     public function getTableName()
     {
         return $this->table;
-    }
-
-    /**
-     * Set Cache
-     *
-     * @param bool $value
-     * @return void
-     */
-    public function setCache($value)
-    {
-        $this->useCache = $value;
     }
 }

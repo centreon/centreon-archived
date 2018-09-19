@@ -118,6 +118,8 @@ try {
     }
     $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
     $DBRESULT = $pearDB->query($query);
+    $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
     $selection = array();
     while ($data = $DBRESULT->fetchRow()) {
         $data["service_description"] = str_replace("#S#", "/", $data["service_description"]);
@@ -126,10 +128,6 @@ try {
     }
     $DBRESULT->closeCursor();
     unset($data);
-
-    $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
-    $row = $res->fetchRow();
-    $rows = $row['numrows'];
 
     /*
      * Create Diff

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,7 +38,6 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-
 include_once "./include/common/autoNumLimit.php";
 
 if ($type) {
@@ -47,47 +46,52 @@ if ($type) {
     $type_str = "";
 }
 
-$search = '';
+$search = null;
 if (isset($_POST['searchC'])) {
     $search = $_POST['searchC'];
-    $oreon->command_search = $search;
+    $centreon->historySearch[$url] = $search;
     if ($type_str) {
         $type_str = " AND " . $type_str;
     }
-    $req = "SELECT COUNT(*) FROM `command` " .
-        "WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' $type_str";
-} else {
-    if (isset($oreon->command_search)) {
-        $search = $oreon->command_search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+    if ($type_str) {
+        $type_str = " AND " . $type_str;
     }
-    if (isset($search) && $search) {
-        $req = "SELECT COUNT(*) FROM `command` " .
-            "WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
-    } elseif ($type) {
-        $req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
-    } else {
-        $req = "SELECT COUNT(*) FROM `command`";
-    }
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
     if ($type_str) {
         $type_str = " AND " . $type_str;
     }
 }
 
-$DBRESULT = $pearDB->query($req);
+$search = tidySearchKey($search, $advanced_search);
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+//List of elements - Depends on different criteria
+if (isset($search) && $search) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+        "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+} elseif ($type) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
+        "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
+} else {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+        "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+}
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include_once "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
-
+//Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
@@ -100,25 +104,6 @@ $tpl->assign("headerMenu_type", _("Type"));
 $tpl->assign("headerMenu_huse", _("Host Uses"));
 $tpl->assign("headerMenu_suse", _("Services Uses"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-/*
- * List of elements - Depends on different criteria
- */
-if (isset($search) && $search) {
-    $rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
-} elseif ($type) {
-    $rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "WHERE `command_type` = '" . $type . "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type`, `command_activate` FROM `command` " .
-        "ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
-}
-
-$search = tidySearchKey($search, $advanced_search);
-
-$DBRESULT = $pearDB->query($rq);
 
 $form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 

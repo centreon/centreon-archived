@@ -19,7 +19,7 @@ CHANGELOG
 Features and Bug Fixes
 ======================
 
-- Fix Recurent downtimes starting at 00:00
+- Fix Recurrent downtimes starting at 00:00
 - Fix search in Poller configuration page
 - Fix problems when sharing custom views
 - Fix description problem with custom macros containing dash
@@ -36,6 +36,6 @@ Features and Bug Fixes
 - Fix UI doesn't display the good limit of pagination
 - Fix Some French translations were missing
 - Enh Improve listing possibilities in Widget configuration (Pollers and categories)
-- Enh Usuability of select2
+- Enh Usability of select2
 - Enh Possibility to reload several pollers in one time
 - Enh Add an API to send External Commands

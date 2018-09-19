@@ -20,8 +20,8 @@ KB
 * Fix access downtime page for users with ACL - #4952, #5025, PR #5093
 * Centreon > Services - Services listed twice - #5158, PR #5010
 * Custom views - problem with multiselect users when sharing View - #5029, PR #5074
-* Massive change  - impossible to add servive group - #5132
-* Fix URL decode probelm with character '+' in object's name - #5128, PR #4883
+* Massive change  - impossible to add service group - #5132
+* Fix URL decode problem with character '+' in object's name - #5128, PR #4883
 * Fix CLAPI import
 * Poller status still working when the poller is disabled - #5126, PR #5133
 

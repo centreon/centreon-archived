@@ -327,32 +327,18 @@ if ($o == "c" || $o == "a") {
             }
         }
 
-        function popup_color_picker(t, name) {
-            var width = 318;
-            var height = 314;
-            var hcolor = '000000';
-            var i_elem = document.getElementsByName(t + '_color').item(0);
-            if (i_elem != null) {
-                var bckcolor = i_elem.style.backgroundColor;
-                var exp = new RegExp('rgb', 'g');
-                if (exp.test(bckcolor)) {
-                    exp = new RegExp('[0-9]+', 'g');
-                    var tab_rgb = bckcolor.match(exp);
-                    hcolor = dechex(parseInt(tab_rgb[0])) + dechex(parseInt(tab_rgb[1])) + dechex(parseInt(tab_rgb[2]));
-                } else {
-                    hcolor = bckcolor.substr(1, 6);
-                }
-            }
-            Modalbox.show('./include/common/javascript/color_picker_mb.php?name=' + name, {
-                title: "<?php echo _('Pick a color') ?>",
-                width: width,
-                height: height,
-                afterLoad: function () {
-                    cp_init(t, hcolor);
-                }
-            });
+        function popup_color_picker(t,name)
+        {
+            var width = 400;
+            var height = 300;
+            window.open('./include/common/javascript/color_picker.php?n=' + t + '&name=' + name,
+                'cp',
+                'resizable=no, location=no, width=' + width + ', height=' + height +
+                ', menubar=no, status=yes, scrollbars=no, menubar=no'
+            );
         }
-    </script><?php
+    </script>
+    <?php
 }
 $tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&compo_id=" . $compo_id, "changeT" => _("Modify")));
 

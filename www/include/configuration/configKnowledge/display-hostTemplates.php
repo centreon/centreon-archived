@@ -117,9 +117,7 @@ try {
     $query .= " ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
     $DBRESULT = $pearDB->query($query);
 
-    $res = $pearDB->query("SELECT FOUND_ROWS() as numrows");
-    $row = $res->fetchRow();
-    $rows = $row['numrows'];
+    $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $selection = array();
     while ($data = $DBRESULT->fetchRow()) {

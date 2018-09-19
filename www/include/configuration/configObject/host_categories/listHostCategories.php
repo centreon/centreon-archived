@@ -43,20 +43,22 @@ include("./include/common/autoNumLimit.php");
 /*
  * Search
  */
-if (isset($_POST["searchH"])) {
-    $search = $_POST["searchH"];
-    $_POST["search"] = $_POST["searchH"];
+
+$search = "";
+$SearchTool = null;
+$search = null;
+if (isset($_POST['searchH'])) {
+    $num = 0;
+    $search = $_POST['searchH'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchH'])) {
+    $search = $_GET['searchH'];
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
-} else {
-    $search = null;
 }
 
-$SearchTool = null;
-$search = "";
-if (isset($_POST['searchH']) && $_POST['searchH']) {
-    $search = $_POST['searchH'];
+if ($search) {
     $SearchTool = " WHERE (hc_name LIKE '%" . $pearDB->escape($search) . "%' OR hc_alias LIKE '%" .
         $pearDB->escape($search) . "%')";
 }
@@ -66,11 +68,15 @@ if (!$centreon->user->admin && $hcString != "''") {
     $hcFilter = $acl->queryBuilder(is_null($SearchTool) ? 'WHERE' : 'AND', 'hc_id', $hcString);
 }
 
-$request = "SELECT COUNT(*) FROM hostcategories $SearchTool $hcFilter";
+/*
+ * Hostgroup list
+ */
+$query = "SELECT SQL_CALC_FOUND_ROWS hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories " .
+    $SearchTool . $hcFilter . "ORDER BY hc_name LIMIT " . $num * $limit . ", $limit";
+$DBRESULT = $pearDB->query($query);
 
-$DBRESULT = $pearDB->query($request);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$search = tidySearchKey($search, $advanced_search);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -95,14 +101,6 @@ $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Hostgroup list
- */
-$query = "SELECT hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories $SearchTool $hcFilter " .
-    "ORDER BY hc_name LIMIT " . $num * $limit . ", $limit";
-$DBRESULT = $pearDB->query($query);
-
-$search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /*

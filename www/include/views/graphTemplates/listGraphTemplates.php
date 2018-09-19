@@ -40,21 +40,32 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $SearchTool = null;
-$search = '';
-if (isset($_POST['searchGT']) && $_POST['searchGT']) {
+$search = null;
+
+if (isset($_POST['searchGT'])) {
     $search = $_POST['searchGT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchGT'])) {
+    $search = $_GET['searchGT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $SearchTool = " WHERE name LIKE :search";
     $queryValues['search'] = '%' . $search . '%';
 }
 
-$stmt = $pearDB->prepare("SELECT COUNT(*) FROM giv_graphs_template" . $SearchTool);
+$rq = 'SELECT SQL_CALC_FOUND_ROWS graph_id, name, default_tpl1, vertical_label, base, split_component FROM ' .
+    'giv_graphs_template gg ' . $SearchTool . ' ORDER BY name LIMIT ' . $num * $limit . ', ' . $limit;
+$stmt = $pearDB->prepare($rq);
 foreach ($queryValues as $key => $value) {
     $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
 }
 $stmt->execute();
 
-$tmp = $stmt->fetch();
-$rows = $tmp["COUNT(*)"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -74,10 +85,6 @@ $tpl->assign("headerMenu_base", _("Base"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 #List
-$rq = "SELECT graph_id, name, default_tpl1, vertical_label, base, split_component " .
-    "FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
-$res = $pearDB->query($rq);
-
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /*
  * Different style between each lines
@@ -87,7 +94,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $graph = $res->fetchRow(); $i++) {
+for ($i = 0; $graph = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $graph['graph_id'] . "]");
     $moptions = "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" .

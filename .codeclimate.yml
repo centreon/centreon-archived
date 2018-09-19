@@ -27,6 +27,5 @@ exclude_paths:
 - logrotate/**/*
 - snmptrapd/**/*
 - varinstall/**/*
-- lib/Zend/**/*
 - www/lib/HTML/**/*
 - www/install/**/*

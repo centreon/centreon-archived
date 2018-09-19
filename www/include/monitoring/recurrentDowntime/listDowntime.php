@@ -43,10 +43,18 @@ include("./include/common/autoNumLimit.php");
 
 /* Search clause */
 $search = '';
-if (isset($_POST['searchDT']) && $_POST['searchDT']) {
+
+if (isset($_POST['searchDT'])) {
     $search = $_POST['searchDT'];
-    $downtime->setSearch($search);
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
+
+$downtime->setSearch($search);
 
 /*
  *  Smarty template Init

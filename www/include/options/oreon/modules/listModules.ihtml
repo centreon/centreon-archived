@@ -21,7 +21,7 @@
 	</tr>
 
 	{foreach from=$modules key=name item=properties}
-	<tr class='list_one'>
+	<tr class='list_one' data-module-name="{$properties.name}">
 		<td class="ListColLeft">
 			<a href="?p={$p}&o=w&name={$properties.name}">{$properties.name}</a>
 		</td>
@@ -55,10 +55,3 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
 <script type="text/javascript" src="./include/options/oreon/modules/listModules.js"></script>
-
-{literal}
-<script>
-    //formatting the tags containing a class isTimestamp
-    formatDateMoment();
-</script>
-{/literal}

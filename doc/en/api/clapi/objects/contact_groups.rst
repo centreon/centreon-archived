@@ -13,7 +13,7 @@ In order to list available contact groups, use the **SHOW** action::
 
   [root@centreon core]# ./centreon -u admin -p centreon -o CG -a show
   id;name;alias;members
-  Guest;Guests Group;gest-user1,guest-user2
+  Guest;Guests Group;guest-user1,guest-user2
   Supervisors;Centreon supervisors;Admin
   
 Columns are the following:

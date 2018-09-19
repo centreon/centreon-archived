@@ -36,13 +36,13 @@ Example with partitioning-data_bin.xml
 Explanation
 -----------
 
-Centreon Partitioning offers to create daily partitions. For that, your table has to have a unix timestamp column (time in seconds since 1970).
+Centreon Partitioning offers to create daily partitions. For that, your table has to have a Unix timestamp column (time in seconds since 1970).
 The meaning of XML attributes/values:
 
  - attributes 'name' and 'schema': table name and database name respectively
- - tag 'column': column name with the unix timestamp
+ - tag 'column': column name with the Unix timestamp
  - tag 'type': only "date" value
- - tag 'duration': only "daily" (futur version could have: "weekly", "monthly")
- - tag 'timezone': your server timezone (you can have the timezone value in file '/etc/sysconfig/clock' for centos)
+ - tag 'duration': only "daily" (future version could have: "weekly", "monthly")
+ - tag 'timezone': your server timezone (you can have the timezone value in file '/etc/sysconfig/clock' for CentOS)
  - tag 'retention': number of days keeping
  - tag 'retentionforward': number of partition created by advance (useful for range partitioning)

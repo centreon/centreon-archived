@@ -53,7 +53,7 @@ class License extends Module
     }
 
     /**
-     * Parsing a Zend license file
+     * Parsing a license file
      *
      * @return array
      */
@@ -78,17 +78,6 @@ class License extends Module
      */
     public function getLicenseExpiration($licenseFile)
     {
-        if (function_exists('zend_loader_enabled') && file_exists($licenseFile)) {
-            if (zend_loader_file_encoded($licenseFile)) {
-                $zend_info = zend_loader_file_licensed($licenseFile);
-            } else {
-                $zend_info = $this->parseLicenseFile($licenseFile);
-            }
-            $licenseExpiration = strtotime($zend_info['Expires']);
-        } else {
-            $licenseExpiration = _("N/A");
-        }
-
-        return $licenseExpiration;
+        return _("N/A");
     }
 }

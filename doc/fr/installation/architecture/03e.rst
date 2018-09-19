@@ -57,7 +57,7 @@ Le serveur central master fonctionne normalement :
 * Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l'autre sur le slave)
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
-Une réplication MySQL bidirectionnelle permet de conserver la configuration de Centreon, les informations de supervision ainsi que les données de performances entre les deux serveurs centraux.
+Une réplication MySQL permet de conserver la configuration de Centreon, les informations de supervision ainsi que les données de performances entre les deux serveurs centraux.
 
 Le serveur slave lui est uniquement chargé de générer les fichiers RRD.
 

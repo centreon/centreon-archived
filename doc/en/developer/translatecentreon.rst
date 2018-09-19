@@ -81,7 +81,7 @@ Restart Apache::
 
     $ sudo service httpd restart
 
-Connect to your Centreon web interface, edit your profil and select new language:
+Connect to your Centreon web interface, edit your profile and select new language:
 
 .. image::  /images/developer/change_language.png
     :align: center

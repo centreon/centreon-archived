@@ -7,9 +7,26 @@ class TopCounterHostsContext extends CentreonContext
 {
 
     /**
+     * @Given an OK host
+     */
+    public function anOkHost()
+    {
+
+        $listPage = new HostConfigurationListingPage($this);
+        $page = $listPage->inspect('Centreon-Server');
+        $page->setProperties(array(
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
+        ));
+        $page->save();
+        $this->restartAllPollers();
+        $this->submitHostResult('Centreon-Server', 0, 'acceptance');
+    }
+    
+    /**
      * @Given a non-OK host
      */
-    public function aNokHost()
+    public function aNoOkHost()
     {
 
         $listPage = new HostConfigurationListingPage($this);

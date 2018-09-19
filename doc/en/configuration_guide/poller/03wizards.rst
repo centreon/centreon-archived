@@ -5,6 +5,7 @@ Centreon Broker configuration via wizard
 ========================================
 
 You can create configurations of Centreon Broker via the wizard, to do this:
+
 #. Go to the menu **Configuration ==> Pollers ==> Centreon-Broker ==> Configuration**
 #. Click on Add with wizard
 
@@ -32,7 +33,7 @@ Configuration of central server
    :align: center
 
 ********************************************************
-Configuration of a poller for a distributed architecture 
+Configuration of a poller for a distributed architecture
 ********************************************************
 
 .. warning::

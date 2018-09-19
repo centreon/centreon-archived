@@ -5050,10 +5050,6 @@ msgstr "Sauvegarder les fichiers de configuration"
 msgid "MySQL configuration file path"
 msgstr "Chemin d'accès au fichier de configuration MySQL"
 
-#: centreon-web/www/include/Administration/parameters/backup/formBackup.php:117
-msgid "Zend configuration file path"
-msgstr "Chemin d'accès au fichier de configuration Zend"
-
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:125
 msgid "SCP export enabled"
 msgstr "Activer l'export SCP"
@@ -6726,48 +6722,6 @@ msgstr "Fichier PHP inclus"
 #: centreon-web/www/include/options/oreon/modules/formModule.php:174
 msgid "Unable to install module"
 msgstr "Impossible d'installer le module"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:118
-msgid "The license has been successfully installed"
-msgstr "La licence a été installée avec succès"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:120
-msgid "An error occurred"
-msgstr "Une erreur est survenue"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:123
-msgid "Sorry your license is not valid\n"
-msgstr "Désolé, votre licence n'est pas valide \n"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:125
-msgid "Your license is not valid for this product"
-msgstr "Votre licence n'est pas valide pour ce produit"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:129
-msgid "Your license doesn't match any Zend ID of your machine"
-msgstr "Votre licence ne correspond à aucun Zend ID de ce serveur"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:133
-msgid "Your license doesn't include any Administrator"
-msgstr "Votre licence n'inclue aucun \"Administrateur\""
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:137
-msgid "Your license has expired"
-msgstr "Votre licence a expiré"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:142
-msgid ""
-"License upload has failed.\n"
-"Destination directory doesn't exist or your webserver's user don't have the "
-"right to access it"
-msgstr ""
-"Échec de la mise à jour de la licence.\n"
-"Le répertoire de destination n'existe pas ou les droits d'accès sont "
-"incorrects"
-
-#: centreon-web/www/include/options/oreon/modules/licenseUpload.php:145
-msgid "The given license file is not valid"
-msgstr "Le fichier de licence n'est pas valide"
 
 #: centreon-web/www/include/options/oreon/modules/listModules.php:221
 #: centreon-web/www/include/options/oreon/modules/listModules.php:222

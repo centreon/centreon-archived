@@ -16,9 +16,9 @@ Bug Fixes
 
 * [ACL] Undefined variable host id PR #5891
 * [ACL] Use correct id for acl host relation PR #5896
-* [Chart] Graphs in IE streched #5081
+* [Chart] Graphs in IE stretched #5081
 * [Configuration] Fix macro password visibility PR #5873
-* [Configuration] Host search not saved when activate/desactivate a host #5711 PR #5827
+* [Configuration] Host search not saved when activate/deactivate a host #5711 PR #5827
 * [Documentation] Correct API documentation for host/service relation #5854
 * [Documentation] Improve documentation install using ISO #5772 PR #5851 
 * [Install] Script install.sh - Could not create user #5785 PR #5890

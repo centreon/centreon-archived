@@ -4,7 +4,7 @@ Categories
 
 Categories are used to define ACLs on the hosts and the services. The aim is to be able to classify the hosts or the services within a category.
 
-Centreon 2.4 includes a new functionality called “Severity”. As from version 2.5, the levels of criticality are linked to a category, they have become a type of category. A criticality level is an indicator for defining the criticality of a host or a service. The aim is to be able to handle the problems of hosts or services by order of priority. By this system, it is thus possible to filter the objects in the “Supervision” views by criticality.
+Centreon 2.4 includes a new functionality called “Severity”. As from version 2.5, the levels of criticality are linked to a category, they have become a type of category. A criticality level is an indicator for defining the criticality of a host or a service. The aim is to be able to handle the problems of hosts or services by order of priority. By this system, it is thus possible to filter the objects in the “Supervision” views by critically.
 
 .. _hostcategory:
 

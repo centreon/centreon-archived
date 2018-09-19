@@ -40,23 +40,28 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 include_once("./class/centreonUtils.class.php");
 
-$search = '';
-if (isset($_POST['searchM']) && $_POST['searchM']) {
+$search = null;
+if (isset($_POST['searchM'])) {
     $search = $_POST['searchM'];
-    $res = $pearDB->query(
-        "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
-        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') "
-        . "AND img_img_id = img_id AND dir_dir_parent_id = dir_id"
-    );
-} else {
-    $res = $pearDB->query(
-        "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id"
-    );
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchM'])) {
+    $search = $_GET['searchM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
-$tmp = $res->fetchRow();
-$rows = $tmp["COUNT(*)"];
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM view_img_dir "
+    . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
+    . "LEFT JOIN view_img ON img_img_id = img_id ";
+if ($search) {
+    $rq .= "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
+        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') ";
+}
+$rq .= "ORDER BY dir_alias, img_name LIMIT " . $num * $limit . ", " . $limit;
+
+$res = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -73,25 +78,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Directory"));
 $tpl->assign("headerMenu_img", _("Image"));
 $tpl->assign("headerMenu_comment", _("Comment"));
-
-if ($search) {
-    $rq =
-        "SELECT * FROM view_img_dir "
-        . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
-        . "LEFT JOIN view_img ON img_img_id = img_id "
-        . "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
-        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') "
-        . "ORDER BY dir_alias, img_name "
-        . "LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq =
-        "SELECT * FROM view_img_dir "
-        . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
-        . "LEFT JOIN view_img ON img_img_id = img_id "
-        . "ORDER BY dir_alias, img_name "
-        . "LIMIT " . $num * $limit . ", " . $limit;
-}
-$res = $pearDB->query($rq);
 
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 

@@ -4,9 +4,6 @@
 Using Centreon ISO el7
 ======================
 
-.. note::
-   Installation from Centreon el6 ISO is available :ref:`here<installisoel6>`
-
 ************
 Installation
 ************
@@ -70,7 +67,7 @@ Select the hard disk drive and the **I will configure partitioning** option, the
    :align: center
    :scale: 65%
 
-Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**: 
+Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**:
 
 .. image :: /images/user/07_partitioning_filesystem.png
    :align: center
@@ -184,14 +181,14 @@ Configuration
 Via the web interface
 =====================
 
-Log into web interface via : http://[SERVER_IP]/centreon.
-The End of installation wizard of Centreon is displayed, click on **Next**.
+Log into Centreon web interface via the url : http://[SERVER_IP]/centreon.
+The Centreon setup wizard is displayed, click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
    :scale: 85%
 
-The End of installation wizard of Centreon checks the availability of the modules, click on **Next**.
+The Centreon setup wizard checks the availability of the modules, click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
@@ -209,7 +206,7 @@ Click on **Next**.
    :align: center
    :scale: 85%
 
-Define the data concerning the admin user, click on **Next**.
+Provide information related to the admin user, click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
@@ -221,46 +218,54 @@ By default, the ‘localhost’ server is defined and the root password is empty
    :align: center
    :scale: 85%
 
-If the following error message appears: **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.** Perform the following operation:
+.. note::
+    If the **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
+    error message appears, please perform the following operations:
+    
+    1. Log-on to the ‘root’ user on your server
+    
+    2. Modify this file::
+    
+        /etc/my.cnf
+    
+    3. Add these lines to the file::
+    
+        [mysqld]
+        innodb_file_per_table=1
+    
+    4. Restart mysql service::
 
-1. Log-on to the ‘root’ user on your server
+        # systemctl restart mysql
+    
+    5. Click on **Refresh**
 
-2. Modify this file
-
-::
-
-  /etc/my.cnf
-
-3. Add these lines to the file
-
-.. raw:: latex
-
-::
-
-  [mysqld]
-  innodb_file_per_table=1
-
-4. Restart mysql service
-
-::
-
-  service mysql restart
-
-5. Click on **Refresh**
-
-The End of installation wizard configures the databases, click on **Next**.
+The Centreon setup wizard configures the databases, click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
    :scale: 85%
 
-The installation is finished, click on Finish.
+At this point, you will be able to install the modules provided with Centreon.
 
-At this stage, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
+Click on **Install**
+
+.. image :: /images/user/module_installationa.png
+   :align: center
+   :scale: 85%
+
+Once installation is performed, click on **Next**
+
+.. image :: /images/user/module_installationb.png
+   :align: center
+   :scale: 85%
+
+At this point, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
 
 .. image :: /images/user/aendinstall.png
    :align: center
    :scale: 85%
+
+The installation is finished, click on **Finish**.
 
 You can now log in.
 
@@ -273,25 +278,37 @@ Start monitoring
 
 To start the monitoring engine :
 
- 1. On the web interface, go to **Configuration** ==> **Monitoring engines**
- 2. Leave the default options and click on **Export**
- 3. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 4. Check **Move Export Files** and **Restart Monitoring Engine**
- 5. Click on **Export** again
- 6. Log into the ‘root’ user on your server
- 7. Start Centreon Broker
+ 1. On the web interface, go to **Configuration** ==> **Pollers**
+ 2. Leave the default options and click on **Export configuration**
+ 3. Select **Central** poller from the box input **Pollers**
+ 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
+ 5. Check **Move Export Files** and **Restart Monitoring Engine** with option method **Restart** selected
+ 6. Click on **Export** again
+ 7. Log into the ‘root’ user on your server
+ 8. Verify if services **cbd**, **centengine** and **centcore** is running
+
+  ::
+
+    service cbd status
+    service centengine status
+    service centcore status
+
+ If they are not running, start them
+
+ * Start Centreon Broker
 
   ::
 
     service cbd start
 
- 8. Start Centreon Engine
+
+ * Start Centreon Engine
 
   ::
 
     service centengine start
 
- 9. Start centcore
+ * Start centcore
 
   ::
 
@@ -310,7 +327,7 @@ Centreon web interface is made up of several menus, each menu has a specific fun
 
 |
 
-* The **Home** menu enables access to the first home screen after logging in. It summarises the general status of the supervision.
+* The **Home** menu enables access to the first home screen after logging in. It summarizes the general status of the supervision.
 * The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
 * The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
 * The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
@@ -332,42 +349,29 @@ most common services of your network.
 Centreon IMP needs the technical components: Centreon License Manager
 and Centreon Plugin Pack Manager to work.
 
-Install packages
-================
-
-When using Centreon ISO, the installation of Centreon Plugin Pack Manager is very
-easy. You'll see that Centreon License Manager will be installed too
-as a dependency.
-
-::
-
-   $ yum install centreon-pp-manager
-
 Web install
 ===========
 
-Once the packages are installed, you need to enable the module in Centreon.
-So go to the Administration -> Extensions -> Modules page.
+If you didn't installed those module during the installation process, go to the
+**Administration > Extensions > Modules** menu.
 
-.. image:: /_static/images/installation/ppm_1.png
+Click on **Install/Upgrade all** and validate the action.
+
+.. image:: /_static/images/installation/install_imp_1.png
    :align: center
 
-Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+Once the instalaltion is finish, click on **Back**.
+The modules are now installed.
 
-.. image:: /_static/images/installation/ppm_2.png
+.. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Then install Centreon Plugin Pack Manager itself.
-
-.. image:: /_static/images/installation/ppm_3.png
-   :align: center
-
-You're now ready to go to Administration -> Extensions -> Plugin packs -> Setup.
-You'll find there 6 free Plugin Packs to get you started. 5 more are
+You're now ready to go to Configuration -> Plugin packs -> Manager.
+You'll find there 10 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
 
-.. image:: /_static/images/installation/ppm_4.png
+.. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
 You can continue to configure your monitoring with Centreon IMP by

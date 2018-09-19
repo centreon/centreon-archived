@@ -37,7 +37,7 @@ Permissions
 -----------
 
 Can the .rrd files be written in the ``/var/lib/centreon/metrics`` directory?
-Process that usally writes in this directory is either ``centstorage`` or ``cbd``.
+Process that usually writes in this directory is either ``centstorage`` or ``cbd``.
 
 
 Plugins

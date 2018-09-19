@@ -48,23 +48,34 @@ if (!$oreon->user->admin) {
     $aclCond = " AND hostgroup_hg_id IN ($hgstring) ";
 }
 
-$rq = "SELECT COUNT(*) FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_hostgroupParent_relation dhgpr 
-                    WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-             OR    (SELECT DISTINCT COUNT(*) 
-                    FROM dependency_hostgroupChild_relation dhgpr 
-                    WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-
-$search = '';
-if (isset($_POST['searchHGD']) && $_POST['searchHGD']) {
+$search = null;
+if (isset($_POST['searchHGD'])) {
     $search = $_POST['searchHGD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchHGD'])) {
+    $search = $_GET['searchHGD'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+/*
+ * List dependancies
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS dep_id, dep_name, dep_description FROM dependency dep " .
+    "WHERE ((SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr " .
+    "WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0  OR (SELECT DISTINCT COUNT(*) " .
+    "FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
+
+if ($search) {
     $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) . "%' OR dep_description LIKE '%" .
         CentreonDB::escape($search) . "%')";
 }
+
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -84,25 +95,6 @@ $tpl->assign('mode_access', $lvl_access);
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Alias"));
 $tpl->assign("headerMenu_options", _("Options"));
-
-
-/*
- * List dependancies
- */
-$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-$rq .= " WHERE ((SELECT DISTINCT COUNT(*) 
-                    FROM dependency_hostgroupParent_relation dhgpr 
-                    WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
-             OR    (SELECT DISTINCT COUNT(*) 
-                    FROM dependency_hostgroupChild_relation dhgpr 
-                    WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0)";
-
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) . "%' OR dep_description LIKE '%" .
-        CentreonDB::escape($search) . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
 
 $search = tidySearchKey($search, $advanced_search);
 

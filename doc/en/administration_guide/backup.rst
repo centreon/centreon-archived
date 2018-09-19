@@ -40,7 +40,7 @@ Backup format :
 Configuration files backup
 --------------------------
 
-All configuration files of central server can be saved : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker)
+All configuration files of central server can be saved : MySQL, Apache, PHP, SNMP, centreon, centreon-broker)
 
 Backup format :
 
@@ -72,7 +72,6 @@ The following window is displayed:
 * **Backup retention** Retention for backups (in days)
 * **Backup configuration files** Enable backup of configuration files
 * **MySQL configuration file path** Path for MySQL configuration file
-* **Zend configuration file path** Path for Zend configuration file
 * **SCP export enabled** Enable SCP export of backups
 * **Remote user** Remote user for SCP export
 * **Remote host** Remote host for SCP export

@@ -4,7 +4,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    sh './centreon-build/jobs/web/18.9/mon-web-source.sh'
+    sh './centreon-build/jobs/web/18.10/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -16,15 +16,10 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh centos7'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
+        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh centos7'
+        junit 'ut.xml,jest-test-results.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
@@ -37,21 +32,15 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
-        junit 'jest-test-results.xml'
       }
     },
     'debian9': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-unittest.sh debian9'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'PHPUnitJunitHudsonTestType', pattern: 'ut.xml']]
-        ])
+        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian9'
+        junit 'ut.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -63,13 +52,13 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-package.sh centos7'
+        sh './centreon-build/jobs/web/18.10/mon-web-package.sh centos7'
       }
     },
     'debian9': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-package.sh debian9'
+        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian9'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -81,7 +70,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-bundle.sh centos7'
+        sh './centreon-build/jobs/web/18.10/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -93,15 +82,10 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-acceptance.sh centos7 @critical'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-        ])
+        sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 @critical'
+        junit 'xunit-reports/**/*.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     }
@@ -115,15 +99,10 @@ try {
       parallel 'centos7': {
         node {
           sh 'setup_centreon_build.sh'
-          sh './centreon-build/jobs/web/18.9/mon-web-acceptance.sh centos7 ~@critical'
-          step([
-            $class: 'XUnitBuilder',
-            thresholds: [
-              [$class: 'FailedThreshold', failureThreshold: '0'],
-              [$class: 'SkippedThreshold', failureThreshold: '0']
-            ],
-            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-          ])
+          sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 ~@critical'
+          junit 'xunit-reports/**/*.xml'
+          if (currentBuild.result == 'UNSTABLE')
+            currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
         }
       }
@@ -135,7 +114,7 @@ try {
     stage('Delivery') {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.9/mon-web-delivery.sh'
+        sh './centreon-build/jobs/web/18.10/mon-web-delivery.sh'
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure.');
@@ -147,7 +126,7 @@ try {
     build job: 'centreon-license-manager/master', wait: false
     build job: 'centreon-pp-manager/master', wait: false
     build job: 'centreon-bam/master', wait: false
-    build job: 'des-mbi-bundle-centos7', wait: false
+    build job: 'centreon-bi-server/master', wait: false
   }
 } catch(e) {
   if (env.BRANCH_NAME == 'master') {

@@ -39,11 +39,21 @@ if (!isset($centreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchN']) && $_POST['searchN']) {
+$SearchTool = '';
+$search = null;
+
+if (isset($_POST['searchN'])) {
     $search = $_POST['searchN'];
-    $SearchTool = " WHERE nagios_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchN'])) {
+    $search = $_GET['searchN'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchTool .= " WHERE nagios_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ";
 }
 
 $aclCond = "";
@@ -56,11 +66,6 @@ if (!$centreon->user->admin && count($allowedMainConf)) {
     $aclCond .= "nagios_id IN (" . implode(',', array_keys($allowedMainConf)) . ") ";
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool $aclCond");
-
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
-
 /*
  * nagios servers comes from DB
  */
@@ -70,6 +75,12 @@ while ($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
 $DBRESULT->closeCursor();
+
+$query = 'SELECT SQL_CALC_FOUND_ROWS nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id ' .
+    'FROM cfg_nagios ' . $SearchTool . $aclCond . ' ORDER BY nagios_name LIMIT ' . $num * $limit . ', ' . $limit;
+$DBRESULT = $pearDB->query($query);
+
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -96,10 +107,6 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Nagios list
  */
 
-$DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id
-                            FROM cfg_nagios $SearchTool $aclCond
-                            ORDER BY nagios_name
-                            LIMIT " . $num * $limit . ", " . $limit);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 

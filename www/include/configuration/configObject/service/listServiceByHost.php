@@ -58,35 +58,71 @@ while ($ehi = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 $template = null;
-if (isset($_POST["template"])) {
-    $template = $_POST["template"];
-} elseif (isset($_GET["template"])) {
-    $template = $_GET["template"];
-}
-
-if (isset($_POST["hostgroups"])) {
-    $hostgroups = $_POST["hostgroups"];
-    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} elseif (isset($_GET["hostgroups"])) {
-    $hostgroups = $_GET["hostgroups"];
-    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} elseif (isset($_SESSION['configuration_default_hostgroups'])) {
-    $hostgroups = $_SESSION['configuration_default_hostgroups'];
-} else {
-    $hostgroups = null;
-}
-
+$hostgroups = null;
 $hostStatus = 0;
-if (!is_null($template)) {
-    if (isset($_POST["statusHostFilter"]) || isset($_GET["statusHostFilter"])) {
-        $hostStatus = 1;
-    } else {
-        $hostStatus = 0;
-    }
-} elseif (isset($_SESSION["status_host_filter"])) {
-    $hostStatus = $_SESSION["status_host_filter"];
+$status = -1;
+$searchH = null;
+$searchH_SQL = '';
+$searchS = null;
+$searchS_SQL = '';
+
+if (isset($_POST["status"])) {
+    $status = $_POST["status"];
+} elseif (isset($_GET["status"])) {
+    $status = $_GET["status"];
 }
-$_SESSION["status_host_filter"] = $hostStatus;
+
+if (isset($_POST['Search'])) {
+    $centreon->historySearch[$url] = array();
+    $template = $_POST["template"];
+    $centreon->historySearch[$url]["template"] = $template;
+    $status = $_POST["status"];
+    $centreon->historySearch[$url]["status"] = $status;
+    $searchH = $_POST["searchH"];
+    $centreon->historySearch[$url]["searchH"] = $searchH;
+    $searchS = $_POST["searchS"];
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
+    $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
+} elseif (isset($_GET['Search'])) {
+    $centreon->historySearch[$url] = array();
+    $template = $_GET['template'];
+    $centreon->historySearch[$url]['template'] = $template;
+    $status = $_GET["status"];
+    $centreon->historySearch[$url]["status"] = $status;
+    $searchH = $_GET["searchH"];
+    $centreon->historySearch[$url]["searchH"] = $searchH;
+    $searchS = $_GET["searchS"];
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
+    $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
+} else {
+    if (isset($centreon->historySearch[$url]['template'])) {
+        $template = $centreon->historySearch[$url]['template'];
+    }
+    if (isset($centreon->historySearch[$url]["status"])) {
+        $status = $centreon->historySearch[$url]["status"];
+    }
+    if (isset($centreon->historySearch[$url]["searchH"])) {
+        $searchH = $centreon->historySearch[$url]["searchH"];
+    }
+    if (isset($centreon->historySearch[$url]["searchS"])) {
+        $searchS = $centreon->historySearch[$url]["searchS"];
+    }
+    if (isset($centreon->historySearch[$url]["hostStatus"])) {
+        $hostStatus = $centreon->historySearch[$url]["hostStatus"];
+    }
+}
+
+if ($searchH) {
+    $searchH_SQL .= "AND (host.host_name LIKE '%" . $pearDB->escape($searchH) .
+        "%' OR host_alias LIKE '%" . $pearDB->escape($searchH) . "%' OR host_address LIKE '%" .
+        $pearDB->escape($searchH) . "%')";
+}
+if ($searchS) {
+    $searchS_SQL .= "AND (sv.service_alias LIKE '%" . $pearDB->escape($searchS) .
+        "%' OR sv.service_description LIKE '%" . $pearDB->escape($searchS) . "%')";
+}
 
 /*
  * Host Status Filter
@@ -98,13 +134,6 @@ if ($hostStatus == 1) {
     $sqlFilterCase2 = "";
 }
 
-if (isset($_POST["status"])) {
-    $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
-    $status = $_GET["status"];
-} else {
-    $status = -1;
-}
 
 /*
  * Get Service Template List
@@ -124,9 +153,10 @@ $DBRESULT->closeCursor();
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter .= "<option value='0'" .
+    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
@@ -142,52 +172,6 @@ require_once "./class/centreonHost.class.php";
  */
 $host_method = new CentreonHost($pearDB);
 $service_method = new CentreonService($pearDB);
-
-$searchH = '';
-$searchH_SQL = '';
-$searchH_GET = '';
-$tmp_search_h = '';
-
-if (isset($_GET['search_h'])) {
-    $tmp_search_h = $_GET['search_h'];
-    $centreon->svc_host_search = $tmp_search_h;
-}
-if (isset($_POST["searchH"])) {
-    $tmp_search_h = $_POST["searchH"];
-    $centreon->svc_host_search = $tmp_search_h;
-} elseif (isset($centreon->svc_host_search) && $centreon->svc_host_search != '') {
-    $tmp_search_h = $centreon->svc_host_search;
-}
-
-if ($tmp_search_h != '') {
-    $searchH = $tmp_search_h;
-    $searchH_GET = $tmp_search_h;
-    $searchH_SQL = "AND (host.host_name LIKE '%" . $pearDB->escape($tmp_search_h) .
-        "%' OR host_alias LIKE '%" . $pearDB->escape($tmp_search_h) . "%' OR host_address LIKE '%" .
-        $pearDB->escape($tmp_search_h) . "%')";
-}
-
-$searchS = '';
-$searchS_SQL = '';
-$searchS_GET = '';
-$tmp_search_s = '';
-
-if (isset($_GET['search_s'])) {
-    $tmp_search_s = $_GET['search_s'];
-    $centreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($_POST["searchS"])) {
-    $tmp_search_s = $_POST["searchS"];
-    $centreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($centreon->svc_svc_search)) {
-    $tmp_search_s = $centreon->svc_svc_search;
-}
-
-if ($tmp_search_s != '') {
-    $searchS = $tmp_search_s;
-    $searchS_GET = $tmp_search_s;
-    $searchS_SQL = "AND (sv.service_alias LIKE '%" . $pearDB->escape($tmp_search_s) .
-        "%' OR sv.service_description LIKE '%" . $pearDB->escape($tmp_search_s) . "%')";
-}
 
 include("./include/common/autoNumLimit.php");
 
@@ -276,9 +260,7 @@ $fgHost = array("value" => null, "print" => null);
 $interval_length = $centreon->optGen['interval_length'];
 
 for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-    /*
-	 * Get Number of Hosts linked to this one.
-	 */
+    //Get Number of Hosts linked to this one.
     $request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'";
     $BDRESULT2 = $pearDB->query($request);
     $data = $BDRESULT2->fetchRow();
@@ -309,11 +291,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" " .
         "value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $service['service_id'] . "]' />";
 
-    /*
-	 * If the description of our Service is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
-
+    /*If the description of our Service is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
     } else {
