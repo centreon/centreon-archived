@@ -202,7 +202,14 @@ if ($acl_page == 1 || $acl_page == 2) {
  */
 include_once "./include/core/header/htmlHeader.php";
 
+?>
+<div id="centreonMsg"></div>
 
+<script type='text/javascript'>
+    //saving the user locale
+    localStorage.setItem('locale', '{$myLocale}');
+</script>
+<?php
 if (!$centreon->user->showDiv("header")) {
     ?>
     <script type="text/javascript">
