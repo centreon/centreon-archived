@@ -7,9 +7,8 @@
         </thead>
         <tbody>
         <tr>
+            <td class='formValue'><input value='1' name='send_statistics' type="checkbox" checked/></td>
             <td class='formlabel'>{t}Accepter d envoyer les données{/t}</td>
-
-            <td class='formValue'><input value='1' name='send_statistics' type="checkbox" {if $parameters}checked{/if}/></td>
         </tr>
         </tbody>
     </table>

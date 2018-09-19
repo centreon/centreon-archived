@@ -106,16 +106,4 @@ abstract class AbstractStep implements StepInterface
     {
         return $this->getConfiguration(__DIR__ . "/../../../../../www/install/tmp/version.json", '1.0.0');
     }
-
-    public function getStatisticsOption()
-    {
-        $option = 0;
-        $db = $this->dependencyInjector['configuration_db'];
-        $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
-        $optionValue = $result->fetch();
-        if (!empty($optionValue)) {
-            $option = $optionValue['value'];
-        }
-        return $option;
-    }
 }

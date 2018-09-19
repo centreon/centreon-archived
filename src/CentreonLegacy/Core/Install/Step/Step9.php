@@ -43,12 +43,8 @@ class Step9 extends AbstractStep
         require_once $installDir . '/steps/functions.php';
         $template = getTemplate($installDir . '/steps/templates');
 
-        $parameters = $this->getStatisticsOption();
-
-
         $template->assign('title', _('Help centreon'));
         $template->assign('step', 9);
-        $template->assign('parameters', $parameters);
         return $template->fetch('content.tpl');
     }
 }

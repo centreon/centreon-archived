@@ -45,7 +45,7 @@ $template = getTemplate('templates');
 
 $title = _('Help Centreon');
 
-$content = sprintf("<input value='1' name='send_statistics' type='checkbox'/>");
+$content = sprintf("<input value='1' name='send_statistics' type='checkbox' checked/>");
 $content .= sprintf('Accepter d envoyer les données.');
 
 $template->assign('step', STEP_NUMBER);
