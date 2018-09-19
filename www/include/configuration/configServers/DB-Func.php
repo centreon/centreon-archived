@@ -124,14 +124,14 @@ function deleteServerInDB($server = array())
     global $pearDB, $pearDBO, $centreon;
 
     foreach ($server as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
+        $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT2->fetchRow();
 
         $pearDB->query("DELETE FROM `nagios_server` WHERE id = '" . $key . "'");
         $pearDBO->query("UPDATE `instances` SET deleted = '1' WHERE instance_id = '" . $key . "'");
         deleteCentreonBrokerByPollerId($key);
 
-        $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "d");
+        $centreon->CentreonLogAction->insertLog("poller", $key, $row['name'], "d");
     }
 }
 
