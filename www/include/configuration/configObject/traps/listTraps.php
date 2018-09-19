@@ -117,7 +117,7 @@ $style = "one";
  */
 $elemArr = array();
 for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
-    $trap = array_map(array("CentreonUtils", "escapeSecure"), $trap);
+    $trap = array_map(array("CentreonUtils", "escapeAll"), $trap);
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $trap['traps_id'] . "]");
     $moptions .= "&nbsp;&nbsp;&nbsp;";
@@ -131,13 +131,17 @@ for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => myDecode($trap["traps_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&traps_id=" . $trap['traps_id'],
-        "RowMenu_desc" => myDecode(substr($trap["traps_oid"], 0, 40)),
-        "RowMenu_status" =>
-            isset($tabStatus[$trap["traps_status"]]) ? $tabStatus[$trap["traps_status"]] : $tabStatus[3],
-        "RowMenu_args" => myDecode($trap["traps_args"]),
-        "RowMenu_manufacturer" => myDecode($mnftr["alias"]),
+        "RowMenu_name" => $trap["traps_name"],
+        "RowMenu_link" => "?p=$p&o=c&traps_id={$trap['traps_id']}",
+        "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
+        "RowMenu_status" => isset($tabStatus[$trap["traps_status"]])
+            ? $tabStatus[$trap["traps_status"]]
+            : $tabStatus[3],
+        "RowMenu_args" => $trap["traps_args"],
+        "RowMenu_manufacturer" => CentreonUtils::escapeSecure(
+            $mnftr["alias"],
+            CentreonUtils::ESCAPE_ALL
+        ),
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";
