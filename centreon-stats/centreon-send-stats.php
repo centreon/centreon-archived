@@ -32,7 +32,9 @@ if ($sendStatistics) {
     $files = scandir(STATS_PATH);
     $aggregation = array(
         'nb_hosts' => 0,
+        'nb_hg' => 0,
         'nb_services' => 0,
+        'nb_sg' => 0,
         'nb_pollers' => 0,
     );
     $types = array_keys($aggregation);
