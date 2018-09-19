@@ -35,7 +35,9 @@ if ($sendStatistics) {
         'nb_hg' => 0,
         'nb_services' => 0,
         'nb_sg' => 0,
+        'nb_remotes' => 0,
         'nb_pollers' => 0,
+        'nb_central' => 0,
     );
     $types = array_keys($aggregation);
 

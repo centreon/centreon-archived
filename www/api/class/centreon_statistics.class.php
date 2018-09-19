@@ -61,15 +61,19 @@ class CentreonStatistics extends CentreonWebService
      */
     public function getPlatformInfo()
     {
-        $query = "SELECT COUNT(host_id) as nb_hosts, " .
-            "(SELECT COUNT(hg_id) FROM hostgroup " .
-            "WHERE hg_activate = '1') as nb_hg, " .
-            "(SELECT COUNT(service_id) FROM service " .
-            "WHERE service_activate = '1' AND service_register = '1') as nb_services, " .
-            "(SELECT COUNT(sg_id) FROM servicegroup " .
-            "WHERE sg_activate = '1') as nb_sg, " .
-            "(SELECT COUNT(id) FROM nagios_server WHERE ns_activate = '1') as nb_pollers " .
-            "FROM host WHERE host_activate = '1' AND host_register = '1'";
+
+        $query = "SELECT COUNT(h.host_id) as nb_hosts, " .
+            "(SELECT COUNT(hg.hg_id) FROM hostgroup hg " .
+            "WHERE hg.hg_activate = '1') as nb_hg, " .
+            "(SELECT COUNT(s.service_id) FROM service s " .
+            "WHERE s.service_activate = '1' AND s.service_register = '1') as nb_services, " .
+            "(SELECT COUNT(sg.sg_id) FROM servicegroup sg " .
+            "WHERE sg.sg_activate = '1') as nb_sg, " .
+            "@nb_remotes:=(SELECT COUNT(ns.id) FROM nagios_server ns, remote_servers rs WHERE ns.ns_activate = '1' " .
+            "AND rs.ip = ns.ns_ip_address) as nb_remotes , " .
+            "((SELECT COUNT(ns2.id) FROM nagios_server ns2 WHERE ns2.ns_activate = '1')-@nb_remotes-1) as nb_pollers," .
+            " '1' as nb_central " .
+            "FROM host h WHERE h.host_activate = '1' AND h.host_register = '1'";
         $dbResult = $this->pearDB->query($query);
         $data = $dbResult->fetch();
 
