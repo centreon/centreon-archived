@@ -1,3 +1,5 @@
+.. _advance_conf_broker:
+
 #####################################
 Configuration avancée d'un collecteur
 #####################################
@@ -112,9 +114,12 @@ Remote Server
 La configuration du processus Centreontrapd est identique à celle d'un serveur
 Centreon Central.
 
-----------------------------------
-To go further with Centreon Broker
-----------------------------------
+-----------------------------------------
+Pour aller plus loin avec Centreon Broker
+-----------------------------------------
+
+.. note::
+    Cette section est uniquement disponible en langue anglaise.
 
 This section aims to help user understand how Centreon Broker works and how
 it should be configured. It references Centreon's best practices and

@@ -13,7 +13,7 @@ Pour visualiser les statistiques de fonctionnement de Centreon Broker, rendez-vo
 dans le menu **Administration > Platform Status > Broker Statistics**, puis
 sélectionnez votre serveur :
 
-.. image:: /_static/images/adminstration/pollersstats//03statsbroker.png
+.. image:: /_static/images/adminstration/pollersstats/03statsbroker.png
    :align: center
 
 *****************
@@ -24,5 +24,5 @@ Il est également possible de visualiser les performance des moteurs de colllect
 via le menu **Administration > Platform Status > Engine Statistics** en sélectionnant
 le serveur désiré :
 
-.. image:: /_static/images/adminstration/pollersstats//03graphperf.png
+.. image:: /_static/images/adminstration/pollersstats/03graphperf.png
    :align: center

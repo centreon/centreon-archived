@@ -1,5 +1,3 @@
-.. _exploitationguide:
-
 ######################
 Guide d'administration
 ######################
