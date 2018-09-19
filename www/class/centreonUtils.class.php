@@ -39,7 +39,18 @@ require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 
 class CentreonUtils
 {
-
+    /**
+     * Remove all <script> data
+     */
+    const ESCAPE_LEGACY_METHOD = 0;
+    /**
+     * Convert all html markups into HTML entities except links
+     */
+    const ESCAPE_ALL_EXCEPT_LINK = 1;
+    /**
+     * Convert all html markups into HTML entities
+     */
+    const ESCAPE_ALL = 2;
 
     /**
      * Converts Object into Array
@@ -299,16 +310,101 @@ class CentreonUtils
     }
 
     /**
-     * Escape a string for present javascript injection
+     * Converted a HTML string according to the selected method
      *
-     * @param string $string The string to escape
-     * @return string
+     * @param string $stringToEscape String to escape
+     * @param int $escapeMethod Escape method (default: ESCAPE_LEGACY_METHOD)
+     * @return string Escaped string
+     * @see CentreonUtils::ESCAPE_LEGACY_METHOD
+     * @see CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+     * @see CentreonUtils::ESCAPE_ALL
      */
-    public static function escapeSecure($string)
+    public static function escapeSecure(
+        $stringToEscape,
+        $escapeMethod = self::ESCAPE_LEGACY_METHOD
+    ) {
+        switch ($escapeMethod) {
+            case self::ESCAPE_LEGACY_METHOD:
+                return preg_replace("/<script.*?\/script>/s", "", $stringToEscape);
+            case self::ESCAPE_ALL_EXCEPT_LINK:
+                return self::escapeAllExceptLink($stringToEscape);
+            case self::ESCAPE_ALL:
+                return self::escapeAll($stringToEscape);
+        }
+    }
+    
+    /**
+     * Convert all html markups into HTML entities
+     *
+     * @param type $stringToEscape String to escape
+     * @return string Converted string
+     */
+    public static function escapeAll($stringToEscape)
     {
-        /* Remove script tags */
-        $string = preg_replace("/<script.*?\/script>/s", "", $string);
-
-        return $string;
+        return htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
+    }
+    
+    /**
+     * Convert all html markups into HTML entities except links
+     *
+     * @param string $stringToEscape
+     * @return string Converted string (except links)
+     */
+    public static function escapeAllExceptLink($stringToEscape)
+    {
+        $linkToken = '{{__LINKx__}}';
+        $index = 0;
+        $linksFounded = array();
+        while ($occurence = self::getHtmlMarkups('a', $stringToEscape)) {
+            $linksFounded[$index] = $occurence['tag'];
+            $linkTag = str_replace('x', $index, $linkToken);
+            $stringToEscape = substr_replace(
+                $stringToEscape,
+                $linkTag,
+                $occurence['start'],
+                $occurence['length']
+            );
+            $index++;
+        }
+        
+        $escapedString = htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
+        
+        for ($index = 0; $index < count($linksFounded); $index++) {
+            $linkTag = str_replace('x', $index, $linkToken);
+            $escapedString = str_replace($linkTag, $linksFounded[$index], $escapedString);
+        }
+        
+        return $escapedString;
+    }
+    
+    /**
+     * Return all occurences of a html markup found in html string
+     *
+     * @param string $markup HTML markup to find
+     * @param string $html HTML to analyse
+     * @return array (('tag'=>..; 'start' =>..., 'length'=>...), ...)
+     */
+    public static function getHtmlMarkups($markup, $html)
+    {
+        $occurrences = false;
+        $start = 0;
+        if (($start = stripos($html, "<$markup", $start)) !== false &&
+            ($end = stripos($html, "</$markup>", $end + strlen("</$markup>")))
+        ) {
+            if (!is_array($occurrences[$markup])) {
+                $occurrences[$markup] = array();
+            }
+            $occurrences =
+                array(
+                    'tag' => substr(
+                        $html,
+                        $start,
+                        $end + strlen("</$markup>") - $start
+                    ),
+                    'start' => $start,
+                    'length' => $end + strlen("</$markup>") - $start
+                );
+        }
+        return $occurrences;
     }
 }
