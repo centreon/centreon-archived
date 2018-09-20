@@ -193,7 +193,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
             "description" => "",
             "nagios_bin" => $monitoring_engines["nagios_bin"],
             "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
-            "monitoring_engine"  => $centreon->optGen["monitoring_engine"],
+            "monitoring_engine"  => $centreon->optGen["monitoring_engine"] ?? '',
             "init_script" => $monitoring_engines["init_script"],
             "ns_activate" => '1',
             "is_default"  =>  '0',

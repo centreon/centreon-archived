@@ -53,6 +53,7 @@ class NotifyMasterService
             ];
         }
 
+        $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
         $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
         $applicationKey = $repository->getOneByKey('appKey');
         $version = $repository->getOneByKey('version');
@@ -70,7 +71,7 @@ class NotifyMasterService
                 'version' => $version->getValue(),
             ];
             $curl = new Curl();
-            $curl->post($ip, $curlData);
+            $curl->post($url, $curlData);
 
             if ($curl->error) {
                 switch ($curl->error_code) {
@@ -89,18 +90,18 @@ class NotifyMasterService
                 }
 
                 return [
-                    'status'=>'fail',
-                    'details'=>$details
+                    'status' => 'fail',
+                    'details' => $details
                 ];
             }
         } catch (\ErrorException $e) {
             return [
-                'status'=> self::FAIL,
-                'details'=> self::UNKNOWN_ERROR
+                'status' => self::FAIL,
+                'details' => self::UNKNOWN_ERROR
             ];
         }
 
-        return ['status'=>self::SUCCESS];
+        return ['status' => self::SUCCESS];
     }
 
     private function getDi(): Container

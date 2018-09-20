@@ -16,6 +16,10 @@ class DowntimeRepository extends ServiceEntityRepository
      */
     public function export(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
     {
+        if (!$pollerIds) {
+            return [];
+        }
+
         $sqlFilter = static::getFilterSql($pollerIds, $hostTemplateChain, $serviceTemplateChain);
         $sql = <<<SQL
 SELECT

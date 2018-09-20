@@ -15,6 +15,10 @@ class ViewImgRepository extends ServiceEntityRepository
     public function export(array $imgList = null): array
     {
         $list = join(',', $imgList ?? []);
+        
+        if (!$list) {
+            return [];
+        }
 
         $sql = <<<SQL
 SELECT

@@ -1,6 +1,7 @@
 <?php
 namespace CentreonRemote\Domain\Exporter;
 
+use CentreonRemote\Domain\Service\PollerDefaultsOverwriteService;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
@@ -38,12 +39,21 @@ class PollerExporter extends ExporterServiceAbstract
         // create path
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
+        $overwritePollerService = new PollerDefaultsOverwriteService;
 
-        (function() use ($pollerIds) {
+        $overwritePollerService->setPollerID($this->commitment->getRemote());
+
+        //TODO replace existing data
+        // cfg_nagios_broker
+        // cfg_resource_instance_relations
+        // cfg_centreonbroker
+        // cfg_centreonbroker_info
+
+        (function() use ($pollerIds, $overwritePollerService) {
             $nagiosServer = $this->db
                 ->getRepository(Repository\NagiosServerRepository::class)
-                ->export($pollerIds)
-            ;
+                ->export($pollerIds);
+            $nagiosServer = $overwritePollerService->setNagiosServer($nagiosServer);
             $this->_dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
         })();
 
@@ -63,11 +73,11 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
         })();
 
-        (function() use ($pollerIds) {
+        (function() use ($pollerIds, $overwritePollerService) {
             $cfgNagios = $this->db
                 ->getRepository(Repository\CfgNagiosRepository::class)
-                ->export($pollerIds)
-            ;
+                ->export($pollerIds);
+            $cfgNagios = $overwritePollerService->setCfgNagios($cfgNagios);
             $this->_dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
         })();
 
