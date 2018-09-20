@@ -13,8 +13,9 @@ const AUTH_URL = 'http://127.0.0.1/centreon/api/index.php?action=authenticate';
 const WS_ROUTE = 'http://127.0.0.1/centreon/api/index.php?object=centreon_statistics&action=';
 
 // webservices
-const INFOS_RESOURCE = 'PlatformInfo';
+const INFOS_RESOURCE = 'platformInfo';
 const VERSIONNING_RESOURCE = 'version';
+const INFO_TIMEZONE = 'platformTimezone';
 const UUID_RESOURCE = 'CentreonUUID';
 
 // Url where the stats are sent.

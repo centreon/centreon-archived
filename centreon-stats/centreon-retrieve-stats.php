@@ -54,12 +54,18 @@ if ($sendStatistics) {
     $infos = curl_exec($ch);
     $infos = json_decode($infos, true);
 
+    // Retrieve zone
+    curl_setopt($ch, CURLOPT_URL, WS_ROUTE . INFO_TIMEZONE);
+    $timez = curl_exec($ch);
+    $timez = json_decode($timez, true);
+
     // Construct the object gathering datas
     $data = array(
         'alive' => $alive,
         'UUID' => $UUID,
         'versions' => $versions,
-        'infos' => $infos
+        'infos' => $infos,
+        'timezone' => $timez
     );
     writeOnFile($data);
 }
