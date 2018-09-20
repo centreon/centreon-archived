@@ -1,13 +1,13 @@
 <?php
+require_once dirname(__FILE__) . '/../bootstrap.php';
 require 'config.php';
-require './../bootstrap.php';
 
 $sendStatistics = 0;
 
 $db = $dependencyInjector['configuration_db'];
-$result = $db->query("SELECT `send_statistics` FROM `options`");
+$result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
-    $sendStatistics = $row['send_statistics'];
+    $sendStatistics = $row['value'];
 }
 
 // Our goal is to fill a json structure like the following:
@@ -76,25 +76,6 @@ if ($sendStatistics) {
                 continue;
             }
 
-            if (isset($json['infos'])) {
-                $info = $json['infos'];
-                foreach ($types as $type) {
-                    if (isset($info[$type])) {
-                        $aggregation[$type] += $info[$type];
-                    }
-                }
-            }
-
-            if (isset($json['versions'])) {
-                $versionning = $json['versions'];
-                foreach ($versionning as $k => $v) {
-                    $meta = &$retval['meta'];
-                    foreach ($v as $k1 => $value) {
-                        $meta["$k:$k1"] = $value;
-                    }
-                }
-            }
-
             if (isset($json['UUID']) && isset($json['UUID']['CentreonUUID'])) {
                 $UUID = $json['UUID']['CentreonUUID'];
             } else {
@@ -105,39 +86,13 @@ if ($sendStatistics) {
     }
 
     if ($total != 0) {
-        if ($total_up != 0) {
-            foreach ($types as $type) {
-                $aggregation[$type] /= $total_up;
-                $retval['jwtToken'] = $UUID;
-                $retval['metrics'][] = array(
-                    'host' => $UUID,
-                    'what' => $type,
-                    'unit' => '',
-                    'result' => $aggregation[$type],
-                    'mtype' => 'gauge',
-                    'timestamp' => $timestamp
-                );
-            }
-        }
-
-        $retval['metrics'][] = array(
-            'host' => $UUID,
-            'what' => 'alive',
-            'unit' => '%',
-            'result' => $alive * 100 / $total,
-            'mtype' => 'gauge',
-            'timestamp' => $timestamp
-        );
-
         // Open connection
         $ch = curl_init();
-
-        $stats_url = CENTREON_STATS_URL . '/instances/' . $UUID . '/metrics';
         // Set the url
-        curl_setopt($ch, CURLOPT_URL, $stats_url);
+        curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($retval));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($json));
 
         if (curl_exec($ch) === false) {
             die('ERROR: centreon-send-stats.php --- ' . curl_error($ch));
