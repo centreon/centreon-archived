@@ -201,7 +201,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
 
-        //$_POST = json_decode(file_get_contents('php://input'), true);
+        $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
         $serverWizardIdentity = new ServerWizardIdentity;
@@ -247,6 +247,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationBridge->setServerID($serverID);
         $pollerConfigurationBridge->collectDataFromRequest();
         $taskId = null;
+
         // If you want to link pollers to a remote
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
@@ -276,7 +277,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         //todo: update return based on success/fail
 
-        return ['success' => true, 'task_id'=> $taskId];
+        return ['success' => true, 'task_id' => $taskId];
     }
 
     /**

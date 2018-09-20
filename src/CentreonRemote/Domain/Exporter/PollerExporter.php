@@ -44,10 +44,7 @@ class PollerExporter extends ExporterServiceAbstract
         $overwritePollerService->setPollerID($this->commitment->getRemote());
 
         //TODO replace existing data
-        // cfg_nagios_broker
         // cfg_resource_instance_relations
-        // cfg_centreonbroker
-        // cfg_centreonbroker_info
 
         (function() use ($pollerIds, $overwritePollerService) {
             $nagiosServer = $this->db
@@ -81,27 +78,27 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
         })();
 
-        (function() use ($pollerIds) {
+        (function() use ($pollerIds, $overwritePollerService) {
             $cfgNagiosBrokerModule = $this->db
                 ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
-                ->export($pollerIds)
-            ;
+                ->export($pollerIds);
+            $cfgNagiosBrokerModule = $overwritePollerService->setCfgNagiosBroker($cfgNagiosBrokerModule);
             $this->_dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
         })();
 
-        (function() use ($pollerIds) {
+        (function() use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBroker = $this->db
                 ->getRepository(Repository\CfgCentreonBorkerRepository::class)
-                ->export($pollerIds)
-            ;
+                ->export($pollerIds);
+            $cfgCentreonBroker = $overwritePollerService->setCfgCentreonBroker($cfgCentreonBroker);
             $this->_dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
         })();
 
-        (function() use ($pollerIds) {
+        (function() use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBrokerInfo = $this->db
                 ->getRepository(Repository\CfgCentreonBorkerInfoRepository::class)
-                ->export($pollerIds)
-            ;
+                ->export($pollerIds);
+            $cfgCentreonBrokerInfo = $overwritePollerService->setCfgCentreonBrokerInfo($cfgCentreonBrokerInfo);
             $this->_dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
         })();
 
