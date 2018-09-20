@@ -10,7 +10,12 @@ if ($row = $result->fetch()) {
     $sendStatistics = $row['value'];
 }
 
-if ($sendStatistics) {
+$result = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    (int)$isRemote = $row['value'];
+}
+
+if ($sendStatistics && !$isRemote) {
     $files = scandir(STATS_PATH);
     $total_up = 0;
     $total = 0;
