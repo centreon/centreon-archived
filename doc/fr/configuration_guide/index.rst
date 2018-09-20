@@ -20,7 +20,7 @@ Pensez à mettre en place une stratégie de globalisation de la configuration af
    models
    imp/index
    advanced_configuration/index
-   poller/index
+   process_description/index
    deploy
    knowledge_base/index
 
