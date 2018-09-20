@@ -1,7 +1,7 @@
 <?php
 /*
-* Copyright 2005-2015 Centreon
-* Centreon is developped by : Julien Mathis and Romain Le Merlus under
+* Copyright 2005-2018 Centreon
+* Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -83,10 +83,14 @@ $defaultGraphs = array();
 function getGetPostValue($str)
 {
     $value = null;
-    if (isset($_GET[$str]) && $_GET[$str]) {
+    if (isset($_GET[$str]) &&
+        $_GET[$str]
+    ) {
         $value = $_GET[$str];
     }
-    if (isset($_POST[$str]) && $_POST[$str]) {
+    if (isset($_POST[$str]) &&
+        $_POST[$str]
+    ) {
         $value = $_POST[$str];
     }
     return rawurldecode($value);
@@ -103,13 +107,15 @@ $centreonPerformanceServiceGraphObj = new CentreonPerformanceService($pearDBO, $
 $svc_id = getGetPostValue("svc_id");
 
 $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerformances' LIMIT 1");
-$data = $DBRESULT->fetchRow();
+$data = $DBRESULT->fetch();
 $graphsPerPage = $data['value'];
 if (empty($graphsPerPage)) {
     $graphsPerPage = '18';
 }
 
-if (isset($svc_id) && $svc_id) {
+if (isset($svc_id) &&
+    $svc_id
+) {
     $tab_svcs = explode(",", $svc_id);
     foreach ($tab_svcs as $svc) {
         $graphId = null;
@@ -137,7 +143,10 @@ if (isset($svc_id) && $svc_id) {
             $defaultGraphs = array_merge($defaultGraphs, $serviceList);
         }
 
-        if (!is_null($graphId) && !is_null($graphTitle) && $graphTitle != '') {
+        if (!is_null($graphId) &&
+            !is_null($graphTitle) &&
+            $graphTitle != ''
+        ) {
             $defaultGraphs[] = array(
                 'id' => $graphId,
                 'text' => $graphTitle
@@ -149,18 +158,27 @@ if (isset($svc_id) && $svc_id) {
 /* Get Period if is in url */
 $period_start = 'undefined';
 $period_end = 'undefined';
-if (isset($_REQUEST['start']) && is_numeric($_REQUEST['start'])) {
+if (isset($_REQUEST['start']) &&
+    is_numeric($_REQUEST['start'])
+) {
     $period_start = $_REQUEST['start'];
 }
-if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
+
+if (isset($_REQUEST['end']) &&
+    is_numeric($_REQUEST['end'])
+) {
     $period_end = $_REQUEST['end'];
 }
 
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=".$p);
-$form->addElement('header', 'title', _("Choose the source to graph"));
+$form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=" . $p);
+$form->addElement(
+    'header',
+    'title',
+    _("Choose the source to graph")
+);
 
 $periods = array(
     "" => "",
@@ -182,7 +200,15 @@ $periods = array(
     "6M" => _("Last 6 Months"),
     "1y" => _("Last Year")
 );
-$sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"changeInterval()"));
+$sel = $form->addElement(
+    'select',
+    'period',
+    _("Graph Period"),
+    $periods,
+    array(
+        "onchange"=>"changeInterval()"
+    )
+);
 $form->addElement(
     'text',
     'StartDate',
@@ -227,23 +253,58 @@ $form->addElement(
         "onchange" => "changePeriod()"
     )
 );
-$form->addElement('button', 'graph', _("Apply Period"), array("onclick"=>"apply_period()", "class"=>"btc bt_success"));
 
-if ($period_start != 'undefined' && $period_end != 'undefined') {
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$form->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$form->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+
+$form->addElement(
+    'button',
+    'graph',
+    _("Apply Period"),
+    array(
+        "onclick"=>"apply_period()",
+        "class"=>"btc bt_success"
+    )
+);
+
+if ($period_start != 'undefined' &&
+    $period_end != 'undefined'
+) {
     $startDay = date('Y-m-d', $period_start);
     $startTime = date('H:i', $period_start);
     $endDay = date('Y-m-d', $period_end);
     $endTime = date('H:i', $period_end);
-    $form->setDefaults(array(
-        'StartDate' => $startDay,
-        'StartTime' => $startTime,
-        'EndDate' => $endDay,
-        'EndTime' => $endTime
-    ));
+    $form->setDefaults(
+        array(
+            'alternativeDateEndDate' => $startDay,
+            'StartTime' => $startTime,
+            'alternativeDateStartDate' => $endDay,
+            'EndTime' => $endTime
+        )
+    );
 } else {
-    $form->setDefaults(array(
-        'period' => '3h'
-    ));
+    $form->setDefaults(
+        array(
+            'period' => '3h'
+        )
+    );
 }
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

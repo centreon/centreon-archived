@@ -375,8 +375,10 @@ if (isset($_GET["acknowledge"])) {
             else {
                 var fixed = 0;
             }
-            var start = document.getElementById('start').value + ' ' + document.getElementById('start_time').value;
-            var end = document.getElementById('end').value + ' ' + document.getElementById('end_time').value;
+            var start = jQuery(document).find('[name="alternativeDateStart"]').val() + ' '
+                + document.getElementById('start_time').value;
+            var end = jQuery(document).find('[name="alternativeDateEnd"]').val() + ' '
+                + document.getElementById('end_time').value;
             var author = document.getElementById('author').value;
             var duration = document.getElementById('duration').value;
             var duration_scale = document.getElementById('duration_scale').value;

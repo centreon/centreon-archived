@@ -4,9 +4,6 @@
 A partir de Centreon ISO el7
 ============================
 
-.. note::
-   L'installation à partir de l'image ISO el6 est décrite :ref:`ici<installisoel6>`
-
 ************
 Installation
 ************
@@ -224,33 +221,24 @@ Cliquez sur **Next**.
    :align: center
    :scale: 65%
 
-Si le message d'erreur suivant apparaît :
-
-**Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
-
-Effectuez les opérations ci-dessous :
-
-1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2. Editez le fichier suivant
-
-::
-
-   /etc/my.cnf
-
-3. Ajoutez la ligne suivante au fichier
-
-::
-
-   [mysqld]
-   innodb_file_per_table=1
-
-4. Redémarrez le service mysql
-
-::
-
-   # systemctl restart mysql
-
-5. Cliquez sur **Refresh**
+.. note::
+    Si le message d'erreur suivant apparaît **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**,
+    Effectuez les opérations ci-dessous :
+    
+    1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+    
+    2. Editez le fichier suivant **/etc/my.cnf**
+    
+    3. Ajoutez la ligne suivante au fichier : ::
+    
+        [mysqld]
+        innodb_file_per_table=1
+    
+    4. Redémarrez le service mysql: ::
+    
+        # systemctl restart mysql
+    
+    5. Cliquez sur **Refresh**
 
 L'assistant de configuration configure les bases de données.
 
@@ -264,11 +252,15 @@ L'assistant de configuration propose ensuite d'installer les modules présents s
 
 Cliquez sur **Install**.
 
-.. image :: /images/guide_utilisateur/module_installation.png
+.. image :: /images/guide_utilisateur/module_installationa.png
    :align: center
    :scale: 65%
 
 Une fois les modules installés, cliquez sur **Next**.
+
+.. image :: /images/guide_utilisateur/module_installationb.png
+   :align: center
+   :scale: 65%
 
 À cette étape une publicité permet de connaitre les dernières nouveautés
 de Centreon. Si votre plate-forme est connectée à Internet vous disposez
@@ -370,45 +362,31 @@ plupart des services de votre réseau.
 Centreon IMP nécessite les composants techniques Centreon License
 Manager et Centreon Plugin Pack Manager pour fonctionner.
 
-Installation système
-====================
-
-En utilisant Centreon ISO, l'installation des paquets est très simple. Vous
-noterez que Centreon Plugin Pack Manager installe également Centreon
-License Manager en tant que dépendance.
-
-::
-
-   # yum install centreon-pp-manager
-
-
 Installation web
 ================
 
-Une fois les paquets installés, il est nécessaire d'activer les modules
-dans Centreon. Rendez-vous à la page Administration -> Extensions -> Modules.
+Si vous n'avez pas installé les modules durant l'instalaltion de Centreon,
+Rendez-vous au menu **Administration > Extensions > Modules**.
 
-.. image:: /_static/images/installation/ppm_1.png
+Clicquez sur le bouton **Install/Upgrade all** et validez l'action :
+
+.. image:: /_static/images/installation/install_imp_1.png
    :align: center
 
-Installez tout d'abord Centreon License Manager.
+Une fois l'instalaltion terminée, cliquez sur **Back**.
+Les modules sont maintenant installés :
 
-.. image:: /_static/images/installation/ppm_2.png
+.. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Puis installez Centreon Plugin Pack Manager.
-
-.. image:: /_static/images/installation/ppm_3.png
-   :align: center
-
-Vous pouvez maintenant vous rendre à la page Administration -> Extensions
--> Plugin packs -> Setup. Vous y trouverez vos six premiers Plugin Packs
+Vous pouvez maintenant vous rendre au menu **Configuration > Extensions
+-> Plugin Packs**. Vous y trouverez vos six premiers Plugin Packs
 gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
 sont débloqués après vous être inscrit et plus de 150 sont disponibles
 si vous souscrivez à l'offre IMP (plus d'informations sur
 `notre site web <https://www.centreon.com>`_).
 
-.. image:: /_static/images/installation/ppm_4.png
+.. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
 Vous pouvez continuer à configurer votre supervision en utilisant

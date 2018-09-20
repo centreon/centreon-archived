@@ -8,7 +8,7 @@ Nouveau ! :ref:`Comment gagner du temps avec Centreon IMP ? <impconfiguration>`
 Sommaire :
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    a_propos
    release_notes/index
@@ -28,6 +28,5 @@ Sommaire :
 Ressources en ligne supplémentaires :
 
 * `Demo <http://demo.centreon.com>`_
-* `Captures d'écran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
 

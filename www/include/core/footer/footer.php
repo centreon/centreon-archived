@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,13 +57,13 @@ if (!$min) {
                     print round($now, 3) . " " . _("seconds"); ?>
                 </td>
                 <td align='center' class='copyRight'>
-                <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
-                <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> |
-                <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> |
-                <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a> |
-                <a href="https://centreon.github.io" title='Give us your feedback' target='_blank'>Slack</a>
-                    <?php if (isset($centreon->optGen["centreon_support_email"]) && $centreon->optGen["centreon_support_email"] != "") { ?>
-                | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
+                    <a href='https://documentation.centreon.com' title='{$Documentation}' target='_blank'><?php echo _("Documentation"); ?></a> |
+                    <a href="https://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> |
+                    <a href="https://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon</a> |
+                    <a href="https://github.com/centreon/centreon.git" title='Follow and Fork us on Github' target='_blank'>Github Project</a> |
+                    <a href="https://centreon.github.io" title='Give us your feedback' target='_blank'>Slack</a>
+                    <?php if (!empty($centreon->optGen["centreon_support_email"])) { ?> |
+                        <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a>
                     <?php } ?>
                 </td>
                 <td>Copyright &copy; 2005 - <?php echo date("Y"); ?></td>
@@ -74,94 +74,96 @@ if (!$min) {
 }
 ?>
 
-    <script type="text/javascript">
+<script type="text/javascript">
+    // Centreon ToolTips
+    var centreonTooltip = new CentreonToolTip();
+    centreonTooltip.setTitle('<?php echo _("Help"); ?>');
+    centreonTooltip.render();
 
-        // Centreon ToolTips
-        var centreonTooltip = new CentreonToolTip();
-        centreonTooltip.setTitle('<?php echo _("Help"); ?>');
-        centreonTooltip.render();
-
-        function myToggleAll(duration, toggle) {
-            if (toggle) {
-                //var i = document.getElementsByTagName("html")[0];
-                var i = document.documentElement;
-                if (
-                    document.fullscreenElement ||
-                    document.webkitFullscreenElement ||
-                    document.mozFullScreenElement ||
-                    document.msFullscreenElement
-                ) {
-                    jQuery(
-                      "#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, " +
-                      "#footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen"
-                    ).removeClass('tohide');
-                    jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen.png");
-                    jQuery('#contener').css({
-                        'height': 'calc(100% - 170px)'
-                    });
-                    jQuery('#Tcontener').css({
-                        'margin-bottom': '0px'
-                    });
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
-                } else {
-                    jQuery(
-                      "#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor," +
-                      " #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen"
-                    ).addClass('tohide');
-                    jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen_off.png");
-                    jQuery('#contener').css({
-                        'height': '100%'
-                    });
-                    jQuery('#Tcontener').css({
-                        'margin-bottom': '0px'
-                    });
-                    // go full-screen
-                    if (i.requestFullscreen) {
-                        i.requestFullscreen();
-                    } else if (i.webkitRequestFullscreen) {
-                        i.webkitRequestFullscreen();
-                    } else if (i.mozRequestFullScreen) {
-                        i.mozRequestFullScreen();
-                    } else if (i.msRequestFullscreen) {
-                        i.msRequestFullscreen();
-                    }
-                }
-            }
-        }
-
-        document.addEventListener('webkitfullscreenchange', exitHandler, false);
-        document.addEventListener('mozfullscreenchange', exitHandler, false);
-        document.addEventListener('fullscreenchange', exitHandler, false);
-        document.addEventListener('MSFullscreenChange', exitHandler, false);
-
-        function exitHandler() {
-            var state = document.fullScreen ||
-                document.mozFullScreen ||
-                document.webkitIsFullScreen ||
-                document.msFullscreenElement;
-            var event = state ? 'FullscreenOn' : 'FullscreenOff';
-            if (event === 'FullscreenOff') {
-                jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen.png");
+    function myToggleAll(duration, toggle) {
+        if (toggle) {
+            //var i = document.getElementsByTagName("html")[0];
+            var i = document.documentElement;
+            if (
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            ) {
                 jQuery(
                   "#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, " +
                   "#footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen"
                 ).removeClass('tohide');
+                jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen.png");
+                jQuery('#contener').css({
+                    'height': 'calc(100% - 170px)'
+                });
+                jQuery('#Tcontener').css({
+                    'margin-bottom': '0px'
+                });
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            } else {
+                jQuery(
+                  "#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor," +
+                  " #footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen"
+                ).addClass('tohide');
+                jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen_off.png");
+                jQuery('#contener').css({
+                    'height': '100%'
+                });
+                jQuery('#Tcontener').css({
+                    'margin-bottom': '0px'
+                });
+                // go full-screen
+                if (i.requestFullscreen) {
+                    i.requestFullscreen();
+                } else if (i.webkitRequestFullscreen) {
+                    i.webkitRequestFullscreen();
+                } else if (i.mozRequestFullScreen) {
+                    i.mozRequestFullScreen();
+                } else if (i.msRequestFullscreen) {
+                    i.msRequestFullscreen();
+                }
             }
         }
+    }
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
 
-    </script>
+    function exitHandler() {
+        var state = document.fullScreen ||
+            document.mozFullScreen ||
+            document.webkitIsFullScreen ||
+            document.msFullscreenElement;
+        var event = state ? 'FullscreenOn' : 'FullscreenOff';
+        if (event === 'FullscreenOff') {
+            jQuery("#fullscreenIcon").attr("src", "./img/icons/fullscreen.png");
+            jQuery(
+              "#actionBar, .pathWayBracket, .imgPathWay, .pathWay, hr, #QuickSearch, #menu1_bgcolor, " +
+              "#footer, #menu_1, #Tmenu , #menu_2, #menu_3, #header, .toHideInFullscreen"
+            ).removeClass('tohide');
+        }
+    }
+
+</script>
 <?php
 
 if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
-    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])) {
+    (isset($_SESSION['fullScreen']) &&
+        isset($_SESSION['fullScreen']['value']) &&
+        $_SESSION['fullScreen']['value']
+    )
+) {
     ?>
     <script type="text/javascript">
         myToggleAll(0, false);
@@ -184,106 +186,107 @@ foreach ($jsdata as $k => $val) {
 
 ?>
 
-    <script type='text/javascript'>
-        jQuery(function() {
-            initWholePage();
+<script type='text/javascript'>
+    jQuery(function() {
+        initWholePage();
 
-            // convert URIs to links
-            jQuery(".containsURI").each(function() {
-                jQuery(this).linkify();
-            });
+        // convert URIs to links
+        jQuery(".containsURI").each(function() {
+            jQuery(this).linkify();
         });
+    });
 
-        /*
-         * Init whole page
-         */
-        function initWholePage() {
-            setQuickSearchPosition();
-            jQuery().centreon_notify({
-                sid: "<?php echo session_id();?>",
-                refresh_rate: <?php echo($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
-            });
-        }
-
-/*
- * set quick search position
- */
-function setQuickSearchPosition() {
-    if (jQuery('QuickSearch')) {
-        if (jQuery('header').is(':visible')) {
-            jQuery('QuickSearch').css({ top: '86px' });
-        } else {
-            jQuery('QuickSearch').css({ top: '3px' });
-        }
+    /*
+     * Init whole page
+     */
+    function initWholePage() {
+        setQuickSearchPosition();
+        jQuery().centreon_notify({
+            sid: "<?php echo session_id();?>",
+            refresh_rate: <?php echo($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
+        });
     }
-    jQuery(".timepicker").timepicker();
-    jQuery(".datepicker").datepicker();
-}
-<?php
-$featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
-if (count($featureToAsk) === 1) {
-?>
-var testingFeature = jQuery('<div/>')
-    .html(
-        '<h3>Feature testing</h3>' +
-        '<div style="margin: 2px;">Would you like to activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
-        '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
-        '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
-        '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
-        'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
-        '<div style="margin: 2px; font-weight: bold;">Legacy version: </div>' +
-        '<div style="margin: 2px;">You can switch back to the legacy version in my account page. ' +
-        '<div style="margin-top: 8px; text-align: center;">' +
-            '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
-            '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
-        '</div>'
-    )
-    .css('position', 'relative');
 
-function validateFeature(name, version, enabled) {
-    jQuery.ajax({
-        url: './api/internal.php?object=centreon_featuretesting&action=enabled',
-        type: 'POST',
-        data: JSON.stringify({
-            name: name,
-            version: version,
-            enabled: enabled
-        }),
-        dataType: 'json',
-        success: function () {
-            location.reload()
-        }
-    })
-}
-
-            function featureEnable() {
-              validateFeature(
-                "<?php echo $featureToAsk[0]['name']; ?>",
-                "<?php echo $featureToAsk[0]['version']; ?>",
-                true
-              );
-              testingFeature.centreonPopin("close");
+    /*
+     * set quick search position
+     */
+    function setQuickSearchPosition() {
+        if (jQuery('QuickSearch')) {
+            if (jQuery('header').is(':visible')) {
+                jQuery('QuickSearch').css({ top: '86px' });
+            } else {
+                jQuery('QuickSearch').css({ top: '3px' });
             }
-
-            function featureDisable() {
-              validateFeature(
-                "<?php echo $featureToAsk[0]['name']; ?>",
-                "<?php echo $featureToAsk[0]['version']; ?>",
-                true
-              );
-              testingFeature.centreonPopin("close");
-            }
-
-            testingFeature.centreonPopin({
-                isModal: true,
-                open: true
-            })
-        <?php
         }
+        jQuery(".timepicker").timepicker();
+        jQuery(".datepicker").datepicker();
+    }
+
+    <?php
+    $featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
+    if (count($featureToAsk) === 1) {
         ?>
-    </script>
-    </body>
-    </html>
+        var testingFeature = jQuery('<div/>')
+            .html(
+                '<h3>Feature testing</h3>' +
+                '<div style="margin: 2px;">Would you like to activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+                '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
+                '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
+                '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
+                  'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
+                '<div style="margin: 2px; font-weight: bold;">Legacy version: </div>' +
+                '<div style="margin: 2px;">You can switch back to the legacy version in my account page. ' +
+                '<div style="margin-top: 8px; text-align: center;">' +
+                    '<button class="btc bt_success" onclick="featureEnable()" id="btcActivateFf" >Activate</button>' +
+                    '&nbsp;<button class="btc bt_default" onclick="featureDisable()" id="btcDisableFf">No</button>' +
+                '</div>'
+            )
+            .css('position', 'relative');
+
+        function validateFeature(name, version, enabled) {
+            jQuery.ajax({
+                url: './api/internal.php?object=centreon_featuretesting&action=enabled',
+                type: 'POST',
+                data: JSON.stringify({
+                    name: name,
+                    version: version,
+                    enabled: enabled
+                }),
+                dataType: 'json',
+                success: function () {
+                    location.reload()
+                }
+            })
+        }
+
+        function featureEnable() {
+            validateFeature(
+            "<?php echo $featureToAsk[0]['name']; ?>",
+            "<?php echo $featureToAsk[0]['version']; ?>",
+            true
+            );
+            testingFeature.centreonPopin("close");
+        }
+
+        function featureDisable() {
+            validateFeature(
+            "<?php echo $featureToAsk[0]['name']; ?>",
+            "<?php echo $featureToAsk[0]['version']; ?>",
+            true
+            );
+            testingFeature.centreonPopin("close");
+        }
+
+        testingFeature.centreonPopin({
+            isModal: true,
+            open: true
+        });
+        <?php
+    }
+?>
+</script>
+</body>
+</html>
 <?php
 
 /*

@@ -30,9 +30,10 @@ class AutologinContext extends CentreonContext
         $this->currentPage->setProperties([
             'autologin_key' => 'toto'
         ]);
-
         $this->currentPage->save();
         $this->iAmLoggedOut();
+        
+        
     }
 
     /**
@@ -55,12 +56,12 @@ class AutologinContext extends CentreonContext
      */
     public function theUserEntersATopologyAndArrivesAtTheLinkedPage()
     {
-        $this->visit('main.php?p=601&autologin=1&useralias=admin&token=toto');
+        $this->visit('main.php?p=60101&autologin=1&useralias=admin&token=toto');
 
         $page = $this->getSession()->getPage();
         $this->spin(
             function ($context) use ($page) {
-                return $page->has('css', 'a[href="main.php?p=601"]');
+                return $page->has('css', 'a[href="main.php?p=60101"]');
             }
         );
     }

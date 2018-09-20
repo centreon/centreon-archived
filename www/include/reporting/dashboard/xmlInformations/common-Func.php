@@ -61,25 +61,25 @@ function fillBuffer($statesTab, $row, $color)
     $totalTime = 0;
     $sumTime = 0;
     foreach ($statesTab as $key => $value) {
-        if (isset($row[$value."TimeScheduled"])) {
-            $statTab[$value."_T"] = $row[$value."TimeScheduled"];
-            $totalTime += $row[$value."TimeScheduled"];
+        if (isset($row[$value . "TimeScheduled"])) {
+            $statTab[$value . "_T"] = $row[$value . "TimeScheduled"];
+            $totalTime += $row[$value . "TimeScheduled"];
         } else {
-            $statTab[$value."_T"] = 0;
+            $statTab[$value . "_T"] = 0;
         }
         if (isset($row[$value."nbEvent"])) {
-            $statTab[$value."_A"] = $row[$value."nbEvent"];
+            $statTab[$value . "_A"] = $row[$value."nbEvent"];
         } else {
-            $statTab[$value."_A"] = 0;
+            $statTab[$value . "_A"] = 0;
         }
     }
     $date_start = $row["date_start"];
     $date_end = $row["date_end"];
     foreach ($statesTab as $key => $value) {
         if ($totalTime) {
-            $statTab[$value."_MP"] = round(($statTab[$value."_T"] / ($totalTime) * 100), 2);
+            $statTab[$value . "_MP"] = round(($statTab[$value."_T"] / ($totalTime) * 100), 2);
         } else {
-            $statTab[$value."_MP"] = 0;
+            $statTab[$value . "_MP"] = 0;
         }
     }
 
@@ -90,16 +90,17 @@ function fillBuffer($statesTab, $row, $color)
     $Duration = _("Duration");
     $Alert = _("Alert");
     $detailPopup = '{table class=bulleDashtab}';
-    $detailPopup .= '{tr}{td class=bulleDashleft colspan=3}'.$Day.': '.
-        date("d/m/Y", $date_start) .' --  '.$Duration.': '.
-        CentreonDuration::toString($totalTime).'{/td}{td class=bulleDashleft }'.$Alert.'{/td}{/tr}';
+    $detailPopup .= '{tr}{td class=bulleDashleft colspan=3}' . $Day .
+        ': {span class ="isTimestamp isDate"}';
+    $detailPopup .= $date_start . '{/span} --  ' . $Duration . ': '.
+        CentreonDuration::toString($totalTime) . '{/td}{td class=bulleDashleft }' . $Alert . '{/td}{/tr}';
     foreach ($statesTab as $key => $value) {
-        $detailPopup .= '	{tr}' .
-                        '		{td class=bulleDashleft style="background:'.$color[$value].';"  }'._($value).':{/td}' .
-                        '		{td class=bulleDash}'. CentreonDuration::toString($statTab[$value."_T"]) .'{/td}' .
-                        '		{td class=bulleDash}'.$statTab[$value."_MP"].'%{/td}'.
-                        '		{td class=bulleDash}'.$statTab[$value."_A"].'{/td}';
-        $detailPopup .= '	{/tr}';
+        $detailPopup .= '{tr}' .
+                        '{td class=bulleDashleft style="background:' . $color[$value] . ';"  }' . _($value) . ':{/td}' .
+                        '{td class=bulleDash}' . CentreonDuration::toString($statTab[$value . "_T"]) . '{/td}' .
+                        '{td class=bulleDash}' . $statTab[$value . "_MP"] . '%{/td}'.
+                        '{td class=bulleDash}' . $statTab[$value . "_A"] . '{/td}';
+        $detailPopup .= '{/tr}';
     }
     $detailPopup .= '{/table}';
 
@@ -112,14 +113,14 @@ function fillBuffer($statesTab, $row, $color)
             $year = date("Y", $date_start);
             $month = date("m", $date_start);
             $start = mktime(0, 0, 0, $month, $day, $year);
-            $start += ($statTab[$value."_T"]/100*2);
+            $start += ($statTab[$value . "_T"]/100*2);
             $end = $start + ($statTab[$value."_T"]/100*96);
             $buffer->startElement("event");
             $buffer->writeAttribute("start", createDateTimelineFormat($start) . " GMT");
-            $buffer->writeAttribute("end", createDateTimelineFormat($end). " GMT");
+            $buffer->writeAttribute("end", createDateTimelineFormat($end) . " GMT");
             $buffer->writeAttribute("color", $color[$value]);
             $buffer->writeAttribute("isDuration", "true");
-            $buffer->writeAttribute("title", $statTab[$value."_MP"] . "%");
+            $buffer->writeAttribute("title", $statTab[$value . "_MP"] . "%");
             $buffer->text($detailPopup, false);
             $buffer->endElement();
         }
