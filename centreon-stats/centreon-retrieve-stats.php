@@ -1,13 +1,14 @@
 <?php
+require_once dirname(__FILE__) . '/../bootstrap.php';
 require 'config.php';
-require './../bootstrap.php';
 
 $sendStatistics = 0;
 
 $db = $dependencyInjector['configuration_db'];
-$result = $db->query("SELECT `send_statistics` FROM `options`");
+$result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
+
 if ($row = $result->fetch()) {
-    $sendStatistics = $row['send_statistics'];
+    $sendStatistics = $row['value'];
 }
 
 if ($sendStatistics) {
