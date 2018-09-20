@@ -72,7 +72,7 @@ const Components = {
   },
   'Monitoring': {
     component: MonitoringIcon,
-    viewBox: '0 0 600 600'
+    viewBox: '6 156 600 600'
   },
   'Reporting': {
     component: ReportingIcon,
