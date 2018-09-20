@@ -43,9 +43,9 @@ class HostMenu extends Component {
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class={"wrap-middle-icon round round-big "+ (ok.total > 0 ? "green" : "green-bordered")}>
+        <span class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
-            <span>{numeral(ok.total).format("0a")}</span>
+            <span>{numeral(ok).format("0a")}</span>
           </a>
         </span>
 
@@ -58,7 +58,7 @@ class HostMenu extends Component {
                   href={"./main.php?p=20202&o=h&search="}
                   class="submenu-item-link"
                 >
-                  <span>All hosts</span>
+                  <span>All</span>
                   <span class="submenu-count">{total}</span>
                 </a>
               </li>
@@ -67,7 +67,7 @@ class HostMenu extends Component {
                   href={"./main.php?p=20202&o=h_down&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored red">Down hosts</span>
+                  <span class="dot-colored red">Down</span>
                   <span class="submenu-count">
                     {down.unhandled}/{down.total}
                   </span>
@@ -78,7 +78,7 @@ class HostMenu extends Component {
                   href={"./main.php?p=20202&o=h_unreachable&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored gray">Unreachable hosts</span>
+                  <span class="dot-colored gray">Unreachable</span>
                   <span class="submenu-count">
                     {unreachable.unhandled}/{unreachable.total}
                   </span>
@@ -89,7 +89,7 @@ class HostMenu extends Component {
                   href={"./main.php?p=20202&o=h_up&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored green">Ok hosts</span>
+                  <span class="dot-colored green">Ok</span>
                   <span class="submenu-count">{ok}</span>
                 </a>
               </li>

@@ -38,7 +38,7 @@ class NavigationComponent extends Component {
     }
     menuItems[index].toggled = menuItems[index].toggled ? false : true;
     this.setState({
-      active:false,
+      active: true,
       menuItems
     });
   };
@@ -77,9 +77,7 @@ class NavigationComponent extends Component {
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
-    menuItems[index].children[key]["collapsed"] = menuItems[index].children[
-      key
-    ]["collapsed"]
+    menuItems[index].children[key]["collapsed"] = menuItems[index].children[key]["collapsed"]
       ? false
       : true;
     this.setState({
@@ -147,7 +145,7 @@ class NavigationComponent extends Component {
                   </a>
                   <ul
                     class="collapse collapsed-items list-unstyled"
-                    style={{ display: (item.toggled && !active) ? "block" : "none" }}
+                    style={{ display: (item.toggled && active) ? "block" : "none" }}
                   >
                     {item.children
                       ? Object.keys(item.children).map(menuKey => {
@@ -182,12 +180,17 @@ class NavigationComponent extends Component {
 
                               <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                                 {Object.keys(subItem.children).length > 0
-                                  ? Object.keys(subItem.children).map(
+                                  ? 
+                                  Object.keys(subItem.children).map(
                                       (key, idx) => (
                                         <div>
-                                          <span class="collapsed-level-title">
-                                            {key}:{" "}
-                                          </span>
+                                          {
+                                          Object.keys(subItem.children).length > 1 ? 
+                                            <span class="collapsed-level-title">
+                                              {key}:{" "}
+                                            </span> 
+                                          : null
+                                          }
                                           {Object.keys(subItem.children[key]).map(
                                             (subKey, idx) => {
                                               if (pageId == subKey) {
@@ -244,10 +247,12 @@ class NavigationComponent extends Component {
               );
             })}
           </ul>
-          <span
-            class="toggle-sidebar"
-            onClick={this.toggleNavigation.bind(this)}
-          />
+          <div class="toggle-sidebar-wrap">
+            <span
+              class="toggle-sidebar-icon"
+              onClick={this.toggleNavigation.bind(this)}
+            />
+          </div>
         </div>
       </nav>
     );
