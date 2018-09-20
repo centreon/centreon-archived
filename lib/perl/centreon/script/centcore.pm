@@ -558,8 +558,8 @@ sub sendExportFile($){
         return;
     }
 
-    if ( -e $self->{centreonDir}  . "/filesGeneration/export/".$id) {
-        $self->{logger}->writeLogInfo("Export directory is empty for poller $id.");
+    unless ( -e $self->{centreonDir}  . "filesGeneration/export/".$id) {
+        $self->{logger}->writeLogInfo("Export directory is empty for poller $self->{centreonDir}filesGeneration/export/$id.");
         return;
     }
 
