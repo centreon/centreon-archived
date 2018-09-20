@@ -14,7 +14,7 @@ if ($row = $result->fetch()) {
 if ($sendStatistics) {
     // Retrieve token and httpcode from authentication API
     retrieveAuthenticationToken($token, $httpCode);
-
+    $time = time();
     // If authentication API if alive, add the information
     if ($httpCode == 200) {
         $alive = 1;
@@ -23,7 +23,7 @@ if ($sendStatistics) {
         $data = array(
             'alive' => 0
         );
-        writeOnFile($data);
+        writeOnFile($data, $time);
         return;
     }
 
@@ -62,12 +62,13 @@ if ($sendStatistics) {
     // Construct the object gathering datas
     $data = array(
         'alive' => $alive,
+        'timestamp' => $time,
         'UUID' => $UUID,
         'versions' => $versions,
         'infos' => $infos,
         'timezone' => $timez
     );
-    writeOnFile($data);
+    writeOnFile($data, $time);
 }
 
 /**
@@ -107,8 +108,8 @@ function retrieveAuthenticationToken(&$token, &$httpCode)
 /**
  *    Write the data on a json file.
  */
-function writeOnFile(&$data)
+function writeOnFile(&$data, $time)
 {
-    $filePath = STATS_PATH . '/' . STATS_PREFIX . time() . ".json";
+    $filePath = STATS_PATH . '/' . STATS_PREFIX . $time . ".json";
     file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT));
 }
