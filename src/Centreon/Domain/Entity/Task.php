@@ -38,6 +38,11 @@ class Task implements EntityInterface
     private $createdAt;
 
     /**
+     * @var int
+     */
+    private $parent_id;
+
+    /**
      * @var \DateTime
      */
     private $completedAt;
@@ -118,28 +123,48 @@ class Task implements EntityInterface
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getParams(): array
+    public function getParams(): string
     {
         return $this->params;
     }
 
     /**
-     * @param array $params
+     * @param string $params
      */
-    public function setParams(array $params): void
+    public function setParams(string $params): void
     {
         $this->params = $params;
     }
 
+    /**
+     * @return int
+     */
+    public function getParentId(): int
+    {
+        return $this->parent_id;
+    }
+
+    /**
+     * @param int $parent_id
+     */
+    public function setParentId(int $parent_id): void
+    {
+        $this->parent_id = $parent_id;
+    }
 
     /**
      * convert parameters to array
      */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        return [
+            'params' => $this->getParams(),
+            'status' => $this->getStatus(),
+            'type' => $this->getType(),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s')
+        ];
     }
 
     /**

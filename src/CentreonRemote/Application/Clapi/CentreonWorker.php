@@ -9,6 +9,7 @@ use Centreon\Domain\Repository\OptionsRepository;
 use Pimple\Container;
 use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use ReflectionClass;
+use Centreon\Domain\Entity\Task;
 
 class CentreonWorker implements CentreonClapiServiceInterface
 {
@@ -39,7 +40,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
      */
     public function processQueue()
     {
-        echo "Checking for pending export tasks: ";
+        echo "Checking for pending export tasks: \n";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
 
@@ -47,7 +48,16 @@ class CentreonWorker implements CentreonClapiServiceInterface
         {
             echo "None found\n";
         } else {
-            // process export
+            foreach ($tasks as $task) {
+                $params = unserialize($task->getParams());
+                $commitment = new CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
+                try {
+                    $this->getDi()['centreon_remote.export']->export($commitment);
+                } catch (\Exception $e) {
+                //todo error handling
+                }
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+            }
         }
 
         echo "\n Checking for pending import tasks: ";
@@ -58,7 +68,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
         {
             echo "None found\n";
         } else {
-            // process import
+            foreach ($tasks as $task) {
+                try {
+                    $this->getDi()['centreon_remote.export']->import();
+                } catch (\Exception $e) {
+                    //todo error handling
+                }
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+            }
+
         }
 
         echo "\n Worker cycle completed.\n";

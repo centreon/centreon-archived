@@ -83,7 +83,6 @@ class TaskService
         switch ($type) {
             case Task::TYPE_EXPORT:
                 $newTask->setType(Task::TYPE_EXPORT);
-                $newTask->setCreatedAt(new \DateTime());
                 $newTask->setStatus(Task::STATE_PENDING);
                 $newTask->setParams(serialize($params));
                 $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
@@ -93,7 +92,6 @@ class TaskService
                 break;
             case Task::TYPE_IMPORT:
                 $newTask->setType(Task::TYPE_IMPORT);
-                $newTask->setCreatedAt(new \DateTime());
                 $newTask->setStatus(Task::STATE_PENDING);
                 $newTask->setParams(serialize($params));
                 $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
@@ -104,8 +102,7 @@ class TaskService
             default:
                 return false;
         }
-
-        return ($result && $cmdWritten) ? true : false;
+        return ($result && $cmdWritten) ? $result : false;
     }
 
     /**
@@ -116,6 +113,17 @@ class TaskService
     public function getStatus(string $taskId)
     {
         $task = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        return $task ? $task->getStatus() : null;
+    }
+
+    /**
+     * Get Existing Task status by parent
+     * @param int $parentId
+     * @return null
+     */
+    public function getStatusByParent(int $parentId)
+    {
+        $task = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneByParentId($parentId);
         return $task ? $task->getStatus() : null;
     }
 

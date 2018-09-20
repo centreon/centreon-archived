@@ -25,7 +25,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     /**
      * @SWG\Post(
      *   path="/centreon/api/internal.php",
-     *   operationId="postGetTaskStatus",
+     *   operationId="getTaskStatus",
      *   @SWG\Parameter(
      *       in="query",
      *       name="object",
@@ -63,10 +63,61 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postGetTaskStatus()
     {
-        $task_id = isset($_POST['task_id']);
+        $task_id = (isset($_POST['task_id'])) ? $_POST['task_id'] : null;
 
         if ($task_id){
             $result = $this->getDi()['centreon.taskservice']->getStatus($task_id);
+        }
+
+        return json_encode(['success' => true, 'status'=> $result]);
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/centreon/api/external.php",
+     *   operationId="getTaskStatusByParent",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_task_service",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="getTaskStatusByParent",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="parent_id",
+     *       type="string",
+     *       description="Id of the task you want to get status of",
+     *       required=true,
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON"
+     *   )
+     * )
+     *
+     * Get Status of task by parent
+     *
+     * @return string
+     *
+     * @throws \RestBadRequestException
+     */
+    public function postGetTaskStatusByParent()
+    {
+        $parent_id = (isset($_POST['parent_id'])) ? $_POST['parent_id'] : null;
+        $result = '';
+
+        if ($parent_id){
+            $result = $this->getDi()['centreon.taskservice']->getStatusByParent($parent_id);
         }
 
         return json_encode(['success' => true, 'status'=> $result]);

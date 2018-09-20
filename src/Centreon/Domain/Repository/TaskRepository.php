@@ -25,6 +25,23 @@ class TaskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find one by parent id
+     * @param integer $id
+     * @return Task|null
+     */
+    public function findOneByParentId($id)
+    {
+        $sql = 'SELECT * FROM task WHERE `parent_id` = :id LIMIT 1';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Task::class);
+        $result = $stmt->fetch();
+
+        return $result ?: null;
+    }
+
+    /**
      * find all pending export tasks
      */
     public function findExportTasks()
@@ -33,7 +50,21 @@ class TaskRepository extends ServiceEntityRepository
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_CLASS, Task::class);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
+
+        return $result ?: null;
+    }
+
+    /**
+     * find all pending import tasks
+     */
+    public function findImportTasks()
+    {
+        $sql = 'SELECT * FROM task WHERE `type` = "import" AND `status` = "pending"';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Task::class);
+        $result = $stmt->fetchAll();
 
         return $result ?: null;
     }
