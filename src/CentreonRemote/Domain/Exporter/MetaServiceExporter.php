@@ -2,9 +2,10 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use Centreon\Domain\Repository;
 
-class MetaServiceExporter extends ExporterServiceAbstract
+class MetaServiceExporter extends ExporterServiceAbstract implements ExporterServicePartialInterface
 {
 
     const NAME = 'meta-service';
@@ -52,6 +53,24 @@ class MetaServiceExporter extends ExporterServiceAbstract
                 ->export($pollerIds, $hostTemplateChain)
             ;
             $this->_dump($metaServiceRelation, $this->getFile(static::EXPORT_FILE_RELATION));
+        })();
+    }
+
+    public function exportPartial(): void
+    {
+        $metaList = $this->cache->get('meta.list');
+
+        if (!$metaList) {
+            return;
+        }
+
+        // Extract data
+        (function() use ($metaList) {
+            $data = $this->db
+                ->getRepository(Repository\MetaServiceRepository::class)
+                ->exportList($metaList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_META), 'meta_id');
         })();
     }
 

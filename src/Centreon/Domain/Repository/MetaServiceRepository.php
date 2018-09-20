@@ -66,6 +66,41 @@ SQL;
         return $result;
     }
 
+    /**
+     * Export
+     * 
+     * @param int[] $list
+     * @return array
+     */
+    public function exportList(array $list): array
+    {
+        // prevent SQL exception
+        if (!$list) {
+            return [];
+        }
+
+        $ids = join(',', $list);
+
+        $sql = <<<SQL
+SELECT
+    t.*
+FROM meta_service AS t
+WHERE t.meta_id IN ({$ids})
+GROUP BY t.meta_id
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
     public function truncate()
     {
         $sql = <<<SQL

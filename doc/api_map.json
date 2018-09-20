@@ -131,6 +131,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "server_type",
+                        "in": "formData",
+                        "description": "type of server - remote or poller",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "linked_pollers",
                         "in": "formData",
                         "description": "pollers to link with the new remote",

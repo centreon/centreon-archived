@@ -22,7 +22,7 @@ class CfgNagiosRepository extends ServiceEntityRepository
         $ids = join(',', $pollerIds);
 
         $sql = <<<SQL
-SELECT * FROM cfg_nagios WHERE nagios_id IN ({$ids})
+SELECT * FROM cfg_nagios WHERE nagios_server_id IN ({$ids})
 SQL;
 
         $stmt = $this->db->prepare($sql);

@@ -5,6 +5,8 @@ use Psr\Container\ContainerInterface;
 use Centreon\Domain\Repository\InformationsRepository;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
+use ReflectionClass;
 
 class ExportService
 {
@@ -63,6 +65,8 @@ class ExportService
         }
 
         $manifest = new ExportManifest($commitment, $this->version);
+        $partials = [];
+        $interface = ExporterServicePartialInterface::class;
 
         foreach ($this->exporter->all() as $exporterMeta) {
             if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
@@ -75,8 +79,21 @@ class ExportService
             $exporter->setCache($this->cache);
             $exporter->export();
 
+            $hasInterface = (new ReflectionClass($exporter))
+                ->implementsInterface($interface)
+            ;
+
+            if ($hasInterface) {
+                $partials[] = $exporter;
+            }
+
             // add exporter to manifest
             $manifest->addExporter($exporterMeta['classname']);
+        }
+
+        // export partial data
+        foreach ($partials as $partial) {
+            $partial->exportPartial();
         }
 
         $this->cache->destroy();

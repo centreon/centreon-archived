@@ -35,3 +35,13 @@ DELETE FROM topology WHERE topology_page = '102';
 
 -- Remove Zend support
 DELETE FROM `options` WHERE `key` = 'backup_zend_conf';
+
+-- Create tasks table
+CREATE TABLE IF NOT EXISTS `task` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `type` VARCHAR(40) NOT NULL,
+  `status` VARCHAR(40) NOT NULL,
+  `parent_id` INT(11) NULL,
+  `params` BLOB NULL,
+  `created_at` TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -167,6 +167,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="server_type",
+     *       type="string",
+     *       description="type of server - remote or poller",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -193,6 +200,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postLinkCentreonRemoteServer()
     {
+
         $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
@@ -238,13 +246,23 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $pollerConfigurationBridge->setServerID($serverID);
         $pollerConfigurationBridge->collectDataFromRequest();
+        $taskId = null;
 
         // If you want to link pollers to a remote
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
             $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
-
             $pollerConfigurationService->setPollersConfigurationWithServer($pollerServers, $remoteServer);
+
+            /**
+             * Create Export Task
+             */
+            $params = [];
+            foreach ($pollerServers as $poller){
+                $params['pollers'][] = $poller->getId();
+            }
+            $params['server'] = $remoteServer->getId();
+            $taskId = $this->createExportTask($params);
         }
 
         //todo: what do I do with these
@@ -258,9 +276,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         }
 
         //todo: update return based on success/fail
-        // $this->createExportTask($serverIP);
 
-        return ['success' => true];
+        return ['success' => true, 'task_id' => $taskId];
     }
 
     /**
@@ -337,13 +354,12 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
     /**
      * Create New Task for export
-     * @var $toIps array
+     * @var $params array
      * @return bool
      */
-    private function createExportTask($toIps)
+    private function createExportTask($params)
     {
-        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('ips'=>$toIps));
-
+        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params'=>$params));
         return $result;
     }
 }

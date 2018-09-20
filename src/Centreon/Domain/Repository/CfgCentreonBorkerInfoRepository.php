@@ -26,7 +26,6 @@ SELECT t.*
 FROM cfg_centreonbroker_info AS t
 INNER JOIN cfg_centreonbroker AS cci ON cci.config_id = t.config_id
 WHERE cci.ns_nagios_server IN ({$ids})
-GROUP BY t.config_id
 SQL;
 
         $stmt = $this->db->prepare($sql);

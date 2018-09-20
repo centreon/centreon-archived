@@ -108,4 +108,41 @@ SQL;
 
         return $result;
     }
+
+    /**
+     * Export
+     * 
+     * @param int[] $list
+     * @return array
+     */
+    public function exportList(array $list): array
+    {
+        // prevent SQL exception
+        if (!$list) {
+            return [];
+        }
+
+        $ids = join(',', $list);
+
+        $sql = <<<SQL
+SELECT
+    c.*
+FROM command AS t
+INNER JOIN connector AS c ON c.id = t.connector_id
+WHERE
+    t.command_id IN ({$ids})
+GROUP BY c.id
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
 }

@@ -34,6 +34,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon.webservice']->add(Webservice\CentreonModulesWebservice::class);
 
         $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
+        $pimple['centreon.clapi']->add(Clapi\CentreonWorker::class);
 
         $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
             $service = new NotifyMasterService($pimple);

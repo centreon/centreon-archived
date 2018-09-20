@@ -2,9 +2,10 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use Centreon\Domain\Repository;
 
-class GraphExporter extends ExporterServiceAbstract
+class GraphExporter extends ExporterServiceAbstract implements ExporterServicePartialInterface
 {
 
     const NAME = 'graph';
@@ -50,6 +51,23 @@ class GraphExporter extends ExporterServiceAbstract
         ;
 
         $this->_dump($graphs, $this->getFile(static::EXPORT_FILE_GRAPH));
+    }
+
+    public function exportPartial(): void
+    {
+        $graphList = $this->cache->get('graph.list');
+
+        if (!$graphList) {
+            return;
+        }
+
+        // Extract data
+        $graphs = $this->db
+            ->getRepository(Repository\GivGraphTemplateRepository::class)
+            ->exportList($graphList)
+        ;
+
+        $this->_mergeDump($graphs, $this->getFile(static::EXPORT_FILE_GRAPH), 'graph_id');
     }
 
     /**
