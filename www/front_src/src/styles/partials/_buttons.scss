@@ -29,4 +29,18 @@
       background-color: #e00b3d;
     }
   }
+  &.logout {
+    width: 67px;
+    height: 31px;
+    border-radius: 16px;
+    border: 1px solid #cdcdcd;
+    outline: none;
+    color: rgb(188,189,192);
+    font-size: .625rem;
+    min-height: auto;
+    &:hover {
+      background-color: rgba(205, 205, 205, 1);
+      color: rgb(0,9,22);
+    }
+  }
 }

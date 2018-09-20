@@ -55,17 +55,19 @@
     &-middle {
       &-icon {
         &.round {
-          font-size: 0.875rem;
+          font-size: .875rem;
+          padding: 0px 5px;
           font-family: $primary-font;
           font-weight: $font-extra-bold;
           position: relative;
-          display: inline-block;
           color: $white-color;
+          overflow: hidden;
           text-align: center;
-          width: 32px;
+          min-width: 32px;
           height: 32px;
-          border-radius: 50%;
+          border-radius: 50px;
           margin: 0 6px;
+          box-sizing: border-box;
           &-big {
             border-radius: 15px;
             width: 47px;
@@ -76,11 +78,9 @@
             font-family: $primary-font;
             font-weight: $font-extra-bold;
             position: relative;
-            display: block;
             text-decoration: none;
             > span {
-              line-height: 32px;
-              display: block;
+              line-height: 33px;
               color: $white-color;
             }
           }
@@ -88,31 +88,46 @@
             background-color: #ed1c24;
           }
           &.red-bordered {
-            border: 1px solid #ed1c24;
+            border: 2px solid #ed1c24;
+            span {
+              line-height: 30px;
+            }
           }
           &.gray-dark {
             background-color: #818185;
           }
           &.gray-dark-bordered {
-            border: 1px solid #818185;
+            border: 2px solid #818185;
+            span {
+              line-height: 30px;
+            }
           }
           &.green {
             background-color: #87bd23;
           }
           &.green-bordered {
-            border: 1px solid #87bd23;
+            border: 2px solid #87bd23;
+            span {
+              line-height: 30px;
+            }
           }
           &.orange {
             background-color: #ff9913;
           }
           &.orange-bordered {
-            border: 1px solid #ff9913;
+            border: 2px solid #ff9913;
+            span {
+              line-height: 30px;
+            }
           }
           &.gray-light {
             background-color: #cdcdcd;
           }
           &.gray-light-bordered {
-            border: 1px solid #cdcdcd;
+            border: 2px solid #cdcdcd;
+            span {
+              line-height: 30px;
+            }
           }
         }
       }
@@ -238,8 +253,46 @@
         font-family: $primary-font;
         font-weight: $font-light;
         margin-left: 4px;
-        color: $darkblue-centreon-primary;
+        color: $white-color;
         float: right;
+      }
+      .submenu-user-button {
+        font-size: .625rem;
+        color: #ffa225;
+        font-family: $primary-font;
+        font-weight: $font-light;
+        text-align: left;
+        height: 31px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 161, 37, 1);
+        background-color: transparent;
+        margin: 15px 0;
+        margin: 0 auto;
+        width: 100%;
+        display: block;
+        max-width: 151px;
+        outline: none;
+        position: relative;
+        padding: 0 30px 0 15px;
+        &:hover {
+          color: rgb(0,9,22);
+          background-color: rgba(255, 161, 37, 1);
+          .btn-logout-icon {
+            background-color: rgba(0, 9, 21, 1);
+          }
+        }
+      }
+      .btn-logout-icon {
+        -webkit-mask: url('./img/icons/icon-copy.svg');
+        mask: url('./img/icons/icon-copy.svg') ;
+        -webkit-mask-size: cover;
+        mask-size: cover;
+        background-color: rgba(255, 161, 37, 1);
+        width: 19px;
+        height: 19px;
+        position: absolute;
+        right: 15px;
+        top: 5px;
       }
       .submenu-bookmark-link {
         margin: 14px 9px 13px;
@@ -250,15 +303,11 @@
         outline: none;
         box-sizing: border-box;
       }
-      .submenu-item-link {
-        border-bottom: 1px solid #d1d2d4;
-      }
       .submenu-user-name {
         display: block;
         margin-bottom: 10px;
       }
       .button-wrap {
-        border-top: 1px solid #d1d2d4;
         padding-right: 9px;
         .btn {
           margin-top: 10px;

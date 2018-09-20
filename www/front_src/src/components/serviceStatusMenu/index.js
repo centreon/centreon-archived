@@ -47,9 +47,9 @@ class ServiceStatusMenu extends Component {
             <span>{numeral(unknown.unhandled).format("0a")}</span>
           </a>
         </span>
-        <span class={"wrap-middle-icon round round-small " + (ok.total > 0 ? "green" : "green-bordered")}>
+        <span class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
-            <span>{numeral(ok.total).format("0a")}</span>
+            <span>{numeral(ok).format("0a")}</span>
           </a>
         </span>
         <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} />
