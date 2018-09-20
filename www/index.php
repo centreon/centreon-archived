@@ -87,6 +87,42 @@ if (file_exists("./install/setup.php")) {
     $file_install_acces = 1;
 }
 
+/**
+ * Install frontend assets if needed
+ */
+
+$staticExists = glob('static/css/*.css');
+$newPath = explode('index.php', $_SERVER['REQUEST_URI'])[0];
+
+if (!$staticExists){
+    shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+    $allCssFiles = glob('static/css/*');
+    $allJsFiles = glob('static/js/*');
+    $indexFile = glob('index.html');
+    $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
+    foreach ($allFiles as $file){
+        $fc = file_get_contents($file);
+        $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
+        file_put_contents($file, $newCont);
+    }
+} else {
+    $hashStatic = explode('static/css/main.',$staticExists[0]);
+    $hashTemplate = explode('template/css/main.', (glob('template/css/*.css'))[0]);
+    if ($hashTemplate[1] !== $hashStatic){
+        shell_exec('rm -rf ' . getcwd() . '/static ');
+        shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+        $allCssFiles = glob('static/css/*');
+        $allJsFiles = glob('static/js/*');
+        $indexFile = glob('index.html');
+        $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
+        foreach ($allFiles as $file){
+            $fc = file_get_contents($file);
+            $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
+            file_put_contents($file, $newCont);
+        }
+    }
+}
+
 /*
  * Set PHP Session Expiration time
  */
@@ -127,5 +163,5 @@ if (isset($_SESSION["centreon"])) {
 if (version_compare(phpversion(), '5.3') < 0) {
     echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
-    include_once("./include/core/login/login.php");
+    include_once("./include/core/loginReact/login.php");
 }

@@ -348,7 +348,11 @@ function updateRulesActions($acl_action_id, $ret = array())
  */
 function listActions()
 {
+    global $dependencyInjector;
+
     $actions = array();
+    $informationsService = $dependencyInjector['centreon_remote.informations_service'];
+    $serverIsMaster = $informationsService->serverIsMaster();
 
     # Global Functionnality access
     $actions[] = "poller_listing";
@@ -356,33 +360,41 @@ function listActions()
     $actions[] = "top_counter";
 
     # Services Actions
-    $actions[] = "service_checks";
-    $actions[] = "service_notifications";
+    if ($serverIsMaster) {
+        $actions[] = "service_checks";
+        $actions[] = "service_notifications";
+    }
     $actions[] = "service_acknowledgement";
     $actions[] = "service_disacknowledgement";
     $actions[] = "service_schedule_check";
     $actions[] = "service_schedule_forced_check";
     $actions[] = "service_schedule_downtime";
     $actions[] = "service_comment";
-    $actions[] = "service_event_handler";
-    $actions[] = "service_flap_detection";
-    $actions[] = "service_passive_checks";
+    if ($serverIsMaster) {
+        $actions[] = "service_event_handler";
+        $actions[] = "service_flap_detection";
+        $actions[] = "service_passive_checks";
+    }
     $actions[] = "service_submit_result";
     $actions[] = "service_display_command";
 
     # Hosts Actions
-    $actions[] = "host_checks";
-    $actions[] = "host_notifications";
+    if ($serverIsMaster) {
+        $actions[] = "host_checks";
+        $actions[] = "host_notifications";
+    }
     $actions[] = "host_acknowledgement";
     $actions[] = "host_disacknowledgement";
     $actions[] = "host_schedule_check";
     $actions[] = "host_schedule_forced_check";
     $actions[] = "host_schedule_downtime";
     $actions[] = "host_comment";
-    $actions[] = "host_event_handler";
-    $actions[] = "host_flap_detection";
-    $actions[] = "host_checks_for_services";
-    $actions[] = "host_notifications_for_services";
+    if ($serverIsMaster) {
+        $actions[] = "host_event_handler";
+        $actions[] = "host_flap_detection";
+        $actions[] = "host_checks_for_services";
+        $actions[] = "host_notifications_for_services";
+    }
     $actions[] = "host_submit_result";
 
     # Global Nagios External Commands

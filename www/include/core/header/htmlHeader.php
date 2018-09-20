@@ -206,3 +206,4 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
     <script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>
 <?php } ?>
+<div style="display:none" id="header"></div>

@@ -512,9 +512,9 @@ try {
                 if ($DBRESULT3->rowCount()) {
                     while ($h = $DBRESULT3->fetchRow()) {
 
-                        if (!isset($sgElem[$h["host_name"]])) {
-                            $sgElem[$h["host_name"]] = array();
-                            $tmpH[$h['host_id']] = $h['host_name'];
+                        if (!isset($sgElem[$h["host_id"]])) {
+                            $sgElem[$h["host_id"]] = array();
+                            $tmpH[$h['host_id']] = $h['host_id'];
                         }
                         $sgElem[$h["host_id"]][$h["service_id"]] = $h["host_id"] . "," . $h["service_id"];
                     }

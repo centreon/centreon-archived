@@ -110,6 +110,11 @@ while ($info = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
+$query = 'SELECT ip FROM remote_servers';
+$DBRESULT = $pearDB->query($query);
+$remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
+$DBRESULT->closeCursor();
+
 /*
  * Smarty template Init
  */
@@ -125,12 +130,12 @@ $tpl->assign('mode_access', $lvl_access);
  */
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_ip_address", _("IP Address"));
-$tpl->assign("headerMenu_localisation", _("Localhost"));
+$tpl->assign("headerMenu_type", _("Server type"));
 $tpl->assign("headerMenu_is_running", _("Is running ?"));
 $tpl->assign("headerMenu_hasChanged", _("Conf Changed"));
 $tpl->assign("headerMenu_pid", _("PID"));
 $tpl->assign("headerMenu_version", _("Version"));
-$tpl->assign("headerMenu_startTime", _("Start time"));
+$tpl->assign("headerMenu_uptime", _("Uptime"));
 $tpl->assign("headerMenu_lastUpdateTime", _("Last Update"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_default", _("Default"));
@@ -194,6 +199,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     * Manage flag for changes
     */
     $confChangedMessage = _("N/A");
+    $hasChanged = 0;
     if ($config["ns_activate"]) {
         $hasChanged = checkChangeState(
             $config['id'],
@@ -222,41 +228,53 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $cfg_id = -1;
     }
 
-    $elemArr[$i] = array(
-        "MenuClass" => "list_" . $style,
-        "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => $config["name"],
-        "RowMenu_ip_address" => $config["ns_ip_address"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&server_id=" . $config['id'],
-        "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
-        "RowMenu_is_running" => (isset($nagiosInfo[$config["id"]]["is_currently_running"])
-            && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
-        "RowMenu_is_runningFlag" => $nagiosInfo[$config["id"]]["is_currently_running"],
-        "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
-        "RowMenu_hasChanged" => $confChangedMessage,
-        "RowMenu_hasChangedFlag" => $hasChanged,
-        "RowMenu_version" => (isset($nagiosInfo[$config["id"]]["version"])
-            ? $nagiosInfo[$config["id"]]["version"]
-            : _("N/A")),
-        "RowMenu_startTime" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
-            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
-            ? $nagiosInfo[$config["id"]]["program_start_time"]
-            : "-",
-        "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["id"]]["last_alive"]) &&
-            $nagiosInfo[$config["id"]]["last_alive"])
-            ? $nagiosInfo[$config["id"]]["last_alive"]
-            : "-",
-        "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
-        "RowMenu_pid" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
-            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
-            ? $nagiosInfo[$config["id"]]["process_id"]
-            : "-",
-        "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
-        "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_statusVal" => $config["ns_activate"],
-        "RowMenu_cfg_id" => ($cfg_id == -1) ? "" : $cfg_id['nagios_id'],
-        "RowMenu_options" => $moptions
-    );
+    $uptime = '-';
+    $isRunning = (isset($nagiosInfo[$config['id']]['is_currently_running']) &&
+        $nagiosInfo[$config['id']]['is_currently_running'] == 1) ?
+        _('Yes') :
+        _('No');
+    $version = (isset($nagiosInfo[$config['id']]['version'])) ?
+        $nagiosInfo[$config['id']]['version'] :
+        _('N/A');
+    $updateTime = (isset($nagiosInfo[$config['id']]['last_alive']) &&
+        $nagiosInfo[$config['id']]['last_alive'])
+        ? $nagiosInfo[$config['id']]['last_alive']
+        : '-';
+    $serverType = $config['localhost'] ? _('Central') : 'Distant Poller';
+    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs) ? 'Remote Server' : $serverType;
+
+    if (
+        isset($nagiosInfo[$config['id']]['is_currently_running']) &&
+        $nagiosInfo[$config['id']]['is_currently_running'] == 1
+    ) {
+        $now = new DateTime;
+        $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
+        $interval = date_diff($now, $startDate);
+        $uptime = $interval->format('%a days %h hours %i minutes %s seconds');
+    }
+
+    $elemArr[$i] = [
+        'MenuClass'                  => "list_{$style}",
+        'RowMenu_select'             => $selectedElements->toHtml(),
+        'RowMenu_name'               => $config['name'],
+        'RowMenu_ip_address'         => $config['ns_ip_address'],
+        'RowMenu_link'               => "?p={$p}&o=c&server_id={$config['id']}",
+        'RowMenu_type'               => $serverType,
+        'RowMenu_is_running'         => $isRunning,
+        'RowMenu_is_runningFlag'     => $nagiosInfo[$config['id']]['is_currently_running'],
+        'RowMenu_is_default'         => $config['is_default'] ? _('Yes') : _('No'),
+        'RowMenu_hasChanged'         => $confChangedMessage,
+        'RowMenu_hasChangedFlag'     => $hasChanged,
+        'RowMenu_version'            => $version,
+        'RowMenu_uptime'             => $uptime,
+        'RowMenu_lastUpdateTime'     => $updateTime,
+        'RowMenu_lastUpdateTimeFlag' => $lastUpdateTimeFlag,
+        'RowMenu_status'             => $config['ns_activate'] ? _('Enabled') : _('Disabled'),
+        'RowMenu_badge'              => $config['ns_activate'] ? 'service_ok' : 'service_critical',
+        'RowMenu_statusVal'          => $config['ns_activate'],
+        'RowMenu_cfg_id'             => ($cfg_id == -1) ? '' : $cfg_id['nagios_id'],
+        'RowMenu_options'            => $moptions
+    ];
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);

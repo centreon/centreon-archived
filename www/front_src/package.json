@@ -1,0 +1,44 @@
+{
+  "name": "centreon-react",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.3",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "class-name": "^0.1.3",
+    "cross-env": "^5.2.0",
+    "loaders.css": "^0.1.2",
+    "moment-timezone": "^0.5.21",
+    "numeral": "^2.0.6",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-helmet": "^5.2.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.8",
+    "react-scripts": "2.0.0-next.a671462c",
+    "react-select": "^2.0.0",
+    "redux": "^4.0.0",
+    "redux-form": "^7.4.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "dev": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
+    "build": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
+    "start": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
+    "build:sass": "node-sass -r --output-style compressed ./src -o ./src",
+    "watch:sass": "npm run build:sass && npm run build:sass -- -w",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

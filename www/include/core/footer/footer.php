@@ -38,6 +38,7 @@ if (!isset($centreon)) {
 }
 
 require_once("./class/centreonData.class.php");
+include_once("./include/core/menu/templates/webpack.tpl");
 
 if (!$min) {
     ?>

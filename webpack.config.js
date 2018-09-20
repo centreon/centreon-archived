@@ -10,7 +10,10 @@ let pathsToClean = [
 ]
 
 module.exports = {
-  entry: './www/index.js',
+  entry: {
+    index: './www/index.js',
+    another: './www/include/configuration/configWizard/js/index.js'
+  },
   output: {
     filename: '[name].[chunkhash].js',
     publicPath: './include/core/menu/templates/',
@@ -19,8 +22,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(pathsToClean),
     new HtmlWebpackPlugin({
-      filename: 'react-header.tpl',
-      template: path.resolve(__dirname, './www/header.html'),
+      filename: 'webpack.tpl',
+      template: path.resolve(__dirname, './www/webpack.html'),
       title: 'Caching'
     }),
     new ExtractTextPlugin({

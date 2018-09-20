@@ -541,6 +541,45 @@ sub sendConfigFile($){
 }
 
 ##################################################
+# Send export files to a remote server 
+#
+sub sendExportFile($){
+    my $self = shift;
+    # Init Values
+    my $id = $_[0];
+    my ($lerror, $stdout, $cmd);
+
+    my $cfg_dir = $self->getNagiosConfigurationField($id, "cfg_dir");
+    my $server_info = $self->getServerConfig($id);
+    my $port = checkSSHPort($server_info->{ssh_port});
+
+    if (!defined($cfg_dir) || $cfg_dir =~ //) {
+        $self->{logger}->writeLogError("Engine configuration file is empty for poller $id. Please check nagios.cfg file.");
+        return;
+    }
+
+    unless ( -e $self->{centreonDir}  . "filesGeneration/export/".$id) {
+        $self->{logger}->writeLogInfo("Export directory is empty for poller $self->{centreonDir}filesGeneration/export/$id.");
+        return;
+    }
+
+    my $origin = $self->{centreonDir} . "/filesGeneration/export/".$id."/*";
+    my $dest = $server_info->{'ns_ip_address'}.":/var/lib/centreon/remote-data/";
+
+    # Send data with SCP
+    $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
+    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
+    
+    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
+                                                                  logger => $self->{logger},
+                                                                  timeout => 300
+                                                                  );
+    
+    $self->{logger}->writeLogInfo("Result : $stdout");
+    $self->{logger}->writeLogInfo("End: Send export files on poller $id");
+}
+
+##################################################
 # Function for initialize Nagios :
 # Parameters :
 #   - start
@@ -770,6 +809,8 @@ sub parseRequest($){
         $self->initEngine($1, "stop");
     } elsif ($action =~ /^SENDCFGFILE\:([0-9]*)/){
         $self->sendConfigFile($1);
+    } elsif ($action =~ /^SENDEXPORTFILE\:([0-9]*)/){
+        $self->sendExportFile($1);
     } elsif ($action =~ /^TEST\:([0-9]*)/){
         # Experimental
         $self->testConfig($1);

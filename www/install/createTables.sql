@@ -2008,6 +2008,7 @@ CREATE TABLE `topology` (
   `topology_style_id` varchar(255) DEFAULT NULL,
   `topology_OnClick` varchar(255) DEFAULT NULL,
   `readonly` enum('0','1') NOT NULL DEFAULT '1',
+  `is_react` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`topology_id`),
   KEY `topology_page` (`topology_page`),
   KEY `topology_parent` (`topology_parent`),
@@ -2364,6 +2365,28 @@ CREATE TABLE IF NOT EXISTS contact_feature (
   PRIMARY KEY (contact_id, feature, feature_version),
   FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- Create remote servers table for keeping track of remote instances
+CREATE TABLE IF NOT EXISTS `remote_servers` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `ip` VARCHAR(16) NOT NULL,
+  `app_key` VARCHAR(40) NOT NULL,
+  `version` VARCHAR(16) NOT NULL,
+  `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL,
+  `connected_at` TIMESTAMP NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- Create tasks table
+CREATE TABLE IF NOT EXISTS `task` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `type` VARCHAR(40) NOT NULL,
+  `status` VARCHAR(40) NOT NULL,
+  `parent_id` INT(11) NULL,
+  `params` BLOB NULL,
+  `created_at` TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

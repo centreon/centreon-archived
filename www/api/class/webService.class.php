@@ -33,7 +33,9 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+if (!(class_exists('centreonDB') || class_exists('\\centreonDB')) && defined('_CENTREON_PATH_')) {
+    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+}
 
 class CentreonWebService
 {
@@ -134,7 +136,7 @@ class CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if ($isInternal || $user->admin) {
+        if ($isInternal || ($user && $user->admin)) {
             return true;
         }
 
@@ -293,12 +295,21 @@ class CentreonWebService
             glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
         );
 
-        $webService = self::webservicePath($object);
+        $isService = $dependencyInjector['centreon.webservice']->has($object);
 
-        /* Initialize the webservice */
-        require_once($webService['path']);
-        
-        $wsObj = new $webService['class']();
+        if ($isService === true) {
+            $webService = [
+                'class' => $dependencyInjector['centreon.webservice']->get($object)
+            ];
+            $wsObj = new $webService['class'];
+            $wsObj->setDi($dependencyInjector);
+        } else {
+            $webService = self::webservicePath($object);
+
+            /* Initialize the webservice */
+            require_once($webService['path']);
+            $wsObj = new $webService['class'];
+        }
 
         if ($wsObj instanceof CentreonWebServiceDiInterface) {
             $wsObj->finalConstruct($dependencyInjector);

@@ -1,0 +1,332 @@
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.sidebar {
+  min-width: 160px;
+  max-width: 160px;
+  background: #e0e0e0;
+  transition: all 0.3s;
+  overflow-y: auto;
+  height: 100vh;
+  &.active {
+    min-width: 45px;
+    max-width: 45px;
+    text-align: center;
+    .sidebar-logo {
+      display: none;
+    }
+    .sidebar-logo-mini {
+      display: block;
+    }
+    .menu-item-name {
+      display: none;
+    }
+    .collapsed-items {
+      display: none;
+    }
+    .toggle-sidebar {
+      transform: rotateY(180deg)
+    }
+  }
+  .sidebar-logo-mini {
+    display: none;
+    padding: 12px 11px;
+    box-sizing: border-box;
+  }
+  &-logo {
+    padding: 7px 12px;
+    box-sizing: border-box;
+    &-image {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  &.active {
+    .dropdown-toggle::after {
+      top: auto;
+      bottom: 10px;
+      right: 50%;
+      -webkit-transform: translateX(50%);
+      -ms-transform: translateX(50%);
+      transform: translateX(50%);
+    }
+  }
+  .iconmoon {
+    text-align: left;
+    font-size: 0.625rem;
+    color: #242f3b;
+    font-weight: 300;
+    padding: 7px 12px;
+    display: block;
+    &:hover {
+      color: $white-color;
+    }
+    &:before {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  }
+  .toggle-sidebar {
+    background: url("./img/icons/aside-menu-toggle-arrow.png") no-repeat center center;
+    width: 45px;
+    height: 45px;
+    display: inline-block;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    cursor: pointer;
+  }
+  &-inner {
+    position: relative;
+    padding-bottom: 50px;
+  }
+}
+
+.dropdown-toggle::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+a {
+  &.download {
+    background: $white-color;
+    color: #7386D5;
+  }
+  &.article {
+    background: #6d7fcc;
+    color: $white-color;
+    &:hover {
+      background: #6d7fcc;
+      color: $white-color;
+    }
+  }
+}
+.menu {
+  &-items {
+    &.components {
+      border-top: 1px solid $white-color;
+    }
+  }
+  &-item {
+    &-link {
+      border-bottom: 1px solid $white-color;
+      text-align: left;
+      text-decoration: none;
+      display: block;
+      &:hover {
+        color: $white-color;
+      }
+      i {
+        margin-right: 10px;
+      }
+    }
+
+    &:first-child {
+      &.active {
+        > a {
+          background: $turquoise-centreon-primary;
+        }
+      }
+      > a:hover {
+        background: $turquoise-centreon-darken;
+      }
+    }
+
+    &:nth-child(2) {
+      &.active {
+        > a {
+          background: $lime-centreon-primary;
+        }
+      }
+      > a:hover {
+        background: $lime-centreon-darken;
+      }
+    }
+
+    &:nth-child(3) {
+      &.active {
+        > a {
+          background: $orange-centreon-primary;
+        }
+      }
+      > a:hover {
+        background: $orange-centreon-darken;
+      }
+    }
+
+    &:nth-child(4) {
+      &.active {
+        > a {
+          background: $lightblue-centreon-primary;
+        }
+      }
+      > a:hover {
+        background: $lightblue-centreon-darken;
+      }
+    }
+
+    &:nth-child(5) {
+      &.active {
+        > a {
+          background: $darkblue-centreon-primary;
+        }
+      }
+      > a:hover {
+        background: $darkblue-centreon-darken;
+      }
+    }
+
+    &.active > a {
+      color: $white-color;
+      .iconmoon {
+        color: $white-color;
+        &:before {
+          color: $white-color;
+        }
+      }
+    }
+    &-name {
+      font-family: $primary-font;
+      font-size: 0.75rem;
+      vertical-align: middle;
+    }
+  }
+}
+.collapse {
+  .collapsed-level {
+    &-item {
+      background-color: #f7f6f6;
+      &-link {
+        border-bottom: 1px solid #f7f7f7;
+        text-align: left;
+        text-decoration: none;
+        font-size: 0.625rem;
+        color: rgb(36,47,59);
+        font-family: $primary-font;
+        font-weight: $font-light;
+        padding: 10px 10px 11px 47px;
+        display: block;
+        letter-spacing: -0.4px;
+        cursor: pointer;
+      }
+    }
+    &-title {
+      color: $lightblue-centreon-primary;
+      font-family: $primary-font;
+      font-weight: $font-light;
+      font-size: 0.625rem;
+      background-color: $white-color;
+      display: block;
+      padding: 3px 10px 3px 47px;
+      border-bottom: 1px solid #f7f7f7;
+    }
+  }
+  .collapsed-item {
+    .first-level {
+      display: none;
+    }
+    .second-level {
+      display: none;
+    }
+    &.active {
+      .first-level {
+        display: block;
+      }
+      > .collapsed-level-item-link {
+        background-position: 26px -41px;
+      }
+    }
+    &.active {
+      .second-level {
+        display: block;
+      }
+    }
+    > .collapsed-level-item-link {
+      background: url("./img/icons/aside-menu-arrows.png") no-repeat;
+      background-position: 26px 5px;
+      background-color: #f7f7f7;
+      &.img-none {
+        background: none;
+        background-color: #f7f7f7;
+      }
+    }
+  }
+}
+.collapsed-level {
+  &-items {
+    &.first-level {
+      .collapsed-level-item {
+        &.active {
+          > .collapsed-level-item-link {
+            background-color: $lightblue-centreon-primary;
+            color: $white-color;
+          }
+        }
+        background-color: $white-color;
+        .collapsed-level-item-link {
+          padding: 8px 10px 8px 47px;
+          &:hover {
+            color: $white-color;
+            background-color: #0a78a5;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+  width: 100%;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+  #sidebar {
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+    margin-left: -80px;
+  }
+  .dropdown-toggle::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+  }
+  #sidebar {
+    &.active {
+      margin-left: 0;
+    }
+    .sidebar-header h3, .CTAs {
+      display: none;
+    }
+    .sidebar-header strong {
+      display: block;
+    }
+    margin-left: 0;
+  }
+  #sidebarCollapse span {
+    display: none;
+  }
+}

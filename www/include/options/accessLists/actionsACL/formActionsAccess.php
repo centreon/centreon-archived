@@ -37,6 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
+
 /*
  * Database retrieve information for Modify a present "Action Access"
  */
@@ -102,33 +105,41 @@ $form->addElement('text', 'acl_action_name', _("Action Name"), $attrsText);
 $form->addElement('text', 'acl_action_description', _("Description"), $attrsText);
 
 // Services
-$form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
-$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
+if ($serverIsMaster) {
+    $form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
+    $form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
+}
 $form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge a service"));
 $form->addElement('checkbox', 'service_disacknowledgement', _("Disacknowledge a service"));
 $form->addElement('checkbox', 'service_schedule_check', _("Re-schedule the next check for a service"));
 $form->addElement('checkbox', 'service_schedule_forced_check', _("Re-schedule the next check for a service (Forced)"));
 $form->addElement('checkbox', 'service_schedule_downtime', _("Schedule downtime for a service"));
 $form->addElement('checkbox', 'service_comment', _("Add/Delete a comment for a service"));
-$form->addElement('checkbox', 'service_event_handler', _("Enable/Disable Event Handler for a service"));
-$form->addElement('checkbox', 'service_flap_detection', _("Enable/Disable Flap Detection of a service"));
-$form->addElement('checkbox', 'service_passive_checks', _("Enable/Disable passive checks of a service"));
+if ($serverIsMaster) {
+    $form->addElement('checkbox', 'service_event_handler', _("Enable/Disable Event Handler for a service"));
+    $form->addElement('checkbox', 'service_flap_detection', _("Enable/Disable Flap Detection of a service"));
+    $form->addElement('checkbox', 'service_passive_checks', _("Enable/Disable passive checks of a service"));
+}
 $form->addElement('checkbox', 'service_submit_result', _("Submit result for a service"));
 $form->addElement('checkbox', 'service_display_command', _("Display executed command by monitoring engine"));
 
 // Hosts
-$form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));
-$form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
+if ($serverIsMaster) {
+    $form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));
+    $form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
+}
 $form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge a host"));
 $form->addElement('checkbox', 'host_disacknowledgement', _("Disaknowledge a host"));
 $form->addElement('checkbox', 'host_schedule_check', _("Schedule the check for a host"));
 $form->addElement('checkbox', 'host_schedule_forced_check', _("Schedule the check for a host (Forced)"));
 $form->addElement('checkbox', 'host_schedule_downtime', _("Schedule downtime for a host"));
 $form->addElement('checkbox', 'host_comment', _("Add/Delete a comment for a host"));
-$form->addElement('checkbox', 'host_event_handler', _("Enable/Disable Event Handler for a host"));
-$form->addElement('checkbox', 'host_flap_detection', _("Enable/Disable Flap Detection for a host"));
-$form->addElement('checkbox', 'host_notifications_for_services', _("Enable/Disable Notifications services of a host"));
-$form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disable Checks services of a host"));
+if ($serverIsMaster) {
+    $form->addElement('checkbox', 'host_event_handler', _("Enable/Disable Event Handler for a host"));
+    $form->addElement('checkbox', 'host_flap_detection', _("Enable/Disable Flap Detection for a host"));
+    $form->addElement('checkbox', 'host_notifications_for_services', _("Enable/Disable Notifications services of a host"));
+    $form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disable Checks services of a host"));
+}
 $form->addElement('checkbox', 'host_submit_result', _("Submit result for a host"));
 
 // Global Nagios External Commands
@@ -249,7 +260,8 @@ include_once("help.php");
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
-$tpl->assign("helptext", $helptext);
+$tpl->assign('helptext', $helptext);
+$tpl->assign('serverIsMaster', $serverIsMaster);
 
 $action = $form->getSubmitValue("action");
 if ($valid) {

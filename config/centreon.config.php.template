@@ -18,7 +18,7 @@ foreach ($constants as $name => $value) {
 }
 
 if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
-    require_once _CENTREON_ETC_ . '/centreon.conf.php';
+    require _CENTREON_ETC_ . '/centreon.conf.php';
 
     if (!defined('hostCentreon')) {
         define('hostCentreon', $conf_centreon['hostCentreon']);

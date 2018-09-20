@@ -1,0 +1,19 @@
+@import "partials/typography";
+@import "partials/variables";
+@import "partials/icons";
+@import "partials/header";
+@import "partials/side-nav";
+@import "partials/buttons";
+@import "partials/form/form";
+@import "partials/progress-bar";
+@import "partials/helpers";
+@import "partials/mixins";
+@import "partials/loader";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}

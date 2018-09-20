@@ -27,21 +27,27 @@
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.3",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
-        "pimple/pimple": "~3.0",
-        "symfony/filesystem": "~2.6",
-        "symfony/finder": "~2.6",
+        "pimple/pimple": "^3.2",
+        "symfony/filesystem": "^4.1",
+        "symfony/finder": "^4.1",
+        "symfony/yaml": "~3.0",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6"
+        "smarty/smarty": "~2.6",
+        "curl/curl" : "^1.5"
     },
     "autoload": {
         "psr-4": {
-            "CentreonLegacy\\": "src/CentreonLegacy/"
+            "CentreonLegacy\\": "src/CentreonLegacy/",
+            "CentreonRemote\\": "src/CentreonRemote/",
+            "CentreonBam\\": "src/CentreonBam/",
+            "Centreon\\": "src/Centreon/"
         },
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
+            "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
