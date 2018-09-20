@@ -3,11 +3,12 @@ require_once dirname(__FILE__) . '/../bootstrap.php';
 require 'config.php';
 
 $sendStatistics = 0;
+$isRemote = 0;
 
 $db = $dependencyInjector['configuration_db'];
 $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
-    $sendStatistics = $row['value'];
+    (int)$sendStatistics = $row['value'];
 }
 
 $result = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
