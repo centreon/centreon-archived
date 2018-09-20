@@ -12,7 +12,6 @@ return [
         'cache_directory'        => '@centreonbroker_varlib@',
         'command_file'           => '@centreonbroker_varlib@/command.sock',
         'daemon'                 => 1,
-
     ],
     [
         'config_id'              => 2,
