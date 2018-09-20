@@ -568,7 +568,7 @@ sub sendExportFile($){
 
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
-    $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
+    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
     
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
