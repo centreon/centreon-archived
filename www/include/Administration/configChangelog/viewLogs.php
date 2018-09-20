@@ -39,24 +39,30 @@ if (!isset($centreon)) {
 
 require_once("./include/common/autoNumLimit.php");
 
-function searchUserName($user_name)
+/**
+ * Search a contact by username or alias
+ *
+ * @global CentreonDB $pearDB
+ * @param string $username Username to search
+ * @return int[] Returns a contact ids list
+ */
+function searchUserName($username)
 {
     global $pearDB;
-    $str = "";
-
-    $DBRES = $pearDB->query("SELECT contact_id FROM contact
-        WHERE contact_name LIKE '%" . $pearDB->escape($user_name) . "%'
-            OR contact_alias LIKE '%" . $pearDB->escape($user_name) . "%'");
-    while ($row = $DBRES->fetchRow()) {
-        if ($str != "") {
-            $str .= ", ";
+    
+    $contactIds = [];
+    $prepareContact = $pearDB->prepare(
+        "SELECT contact_id FROM contact "
+        . "WHERE contact_name LIKE '%:username%'
+            OR contact_alias LIKE '%:username%'"
+    );
+    $prepareContact->bindValue(':useranme', $username, \PDO::PARAM_STR);
+    if ($prepareContact->execute()) {
+        while ($contact = $prepareContact->fetch(\PDO::FETCH_ASSOC)) {
+            $contactIds[] = (int) $contact['contact_id'];
         }
-        $str .= "'" . $row['contact_id'] . "'";
     }
-    if ($str == "") {
-        $str = "''";
-    }
-    return $str;
+    return $contactIds;
 }
 
 /*
@@ -76,9 +82,12 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $contactList = array();
-$DBRES = $pearDB->query("SELECT contact_id, contact_name, contact_alias FROM contact");
+$DBRES = $pearDB->query(
+    "SELECT contact_id, contact_name, contact_alias FROM contact"
+);
 while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] = $row["contact_name"] . " (" . $row["contact_alias"] . ")";
+    $contactList[$row["contact_id"]] =
+        $row["contact_name"] . " (" . $row["contact_alias"] . ")";
 }
 
 $searchO = null;
@@ -113,12 +122,16 @@ if (isset($_POST['SearchB'])) {
     }
 }
 
+/**
+ * XSS secure
+ */
+$otype = (int) $otype;
+
 //Init QuickForm
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 //Init Smarty
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path, new Smarty());
 
 $tabAction = array();
 $tabAction["a"] = _("Added");
@@ -149,95 +162,171 @@ $tpl->assign("objTypeLabel", _("Object type : "));
 $tpl->assign("objNameLabel", _("Object name : "));
 $tpl->assign("noModifLabel", _("No modification was made."));
 
-$objects_type_tab = array();
 $objects_type_tab = $centreon->CentreonLogAction->listObjecttype();
 sort($objects_type_tab);
 $options = "";
 foreach ($objects_type_tab as $key => $name) {
     $name = _("$name");
-    $options .= "<option value='$key' " . (($otype == $key) ? 'selected' : "") . ">$name</option>";
+    $options .= "<option value='$key' "
+        . (($otype == $key) ? 'selected' : "")
+        . ">$name</option>";
 }
 
 $tpl->assign("obj_type", $options);
 
-$query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action_log_date, action_type, " .
-    "log_contact_id, action_log_id FROM log_action";
-
-$where_flag = 1;
-if ($searchO) {
-    if ($where_flag) {
-        $query .= " WHERE ";
-        $where_flag = 0;
-    } else {
-        $query .= " AND ";
+$logQuery = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, "
+    . "action_log_date, action_type, log_contact_id, action_log_id "
+    . "FROM log_action";
+$query = $logQuery;
+if (!empty($searchO) || !empty($searchU) || $otype != 0) {
+    $logQuery .= ' WHERE ';
+    $hasMultipleSubRequest = false;
+    
+    $valuesToBind = [];
+    if (!empty($searchO)) {
+        $logQuery .= "object_name LIKE :object_name ";
+        $valuesToBind[':object_name'] = "%$searchO%";
+        $hasMultipleSubRequest = true;
     }
-    $query .= " object_name LIKE '%" . $pearDB->escape($searchO) . "%' ";
-}
-
-if ($searchU) {
-    if ($where_flag) {
-        $query .= " WHERE ";
-        $where_flag = 0;
-    } else {
-        $query .= " AND ";
-    }
-    $query .= " log_contact_id IN (" . searchUserName($searchU) . ") ";
-}
-
-if (!is_null($otype)) {
-    if ($otype != 0) {
-        if ($where_flag) {
-            $query .= " WHERE ";
-            $where_flag = 0;
-        } else {
-            $query .= " AND ";
+    if (!empty($searchU)) {
+        $contactIds = searchUserName($searchU);
+        if (empty($contactIds)) {
+            $contactIds[] = -1;
         }
-        $query .= " object_type = '" . $objects_type_tab[$otype] . "' ";
+        if ($hasMultipleSubRequest) {
+            $logQuery .= ' AND ';
+        }
+        $logQuery .= " log_contact_id IN (" . implode(',', $contactIds) . ") ";
+        $hasMultipleSubRequest = true;
+    }
+    if (!is_null($otype) && $otype != 0) {
+        if ($hasMultipleSubRequest) {
+            $logQuery .= ' AND ';
+        }
+        $logQuery .= " object_type = :object_type";
+        $valuesToBind[':object_type'] = $objects_type_tab[$otype];
     }
 }
-$query .= " ORDER BY action_log_date DESC LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDBO->query($query);
+$logQuery .= " ORDER BY action_log_date DESC LIMIT :from, :nbr_element";
+$prepareSelect = $pearDBO->prepare($logQuery);
+foreach ($valuesToBind as $label => $value) {
+    $prepareSelect->bindValue($label, $value, \PDO::PARAM_STR);
+}
+$prepareSelect->bindValue(':from', $num * $limit, \PDO::PARAM_INT);
+$prepareSelect->bindValue(':nbr_element', $limit, \PDO::PARAM_INT);
 
-/* Get rows number */
-$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+$rows = 0;
+
 include("./include/common/checkPagination.php");
 
 $elemArray = array();
-while ($res = $DBRESULT->fetchRow()) {
-    if ($res['object_id']) {
-        $objectName = str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]);
+if ($prepareSelect->execute()) {
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+    while ($res = $prepareSelect->fetch(\PDO::FETCH_ASSOC)) {
+        if ($res['object_id']) {
+            $objectName = myDecode($res["object_name"]);
+            $objectName = stripslashes($objectName);
+            $objectName = str_replace(
+                array('#S#', '#BS#'),
+                array("/", "\\"),
+                $objectName
+            );
+            $objectName = CentreonUtils::escapeSecure(
+                $objectName,
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            );
 
-        if ($res['object_type'] == "service") {
-            $tmp = $centreon->CentreonLogAction->getHostId($res['object_id']);
-            if ($tmp != -1) {
-                if (isset($tmp['h'])) {
-                    $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = explode(',', $tmp2["h"]);
-                    if (count($tabHost) == 1) {
-                        $host_name = $centreon->CentreonLogAction->getHostName($tmp2["h"]);
-                    } elseif (count($tabHost) > 1) {
-                        $hosts = array();
-                        foreach ($tabHost as $key => $value) {
-                            $hosts[] = $centreon->CentreonLogAction->getHostName($value);
+            if ($res['object_type'] == "service") {
+                $tmp = $centreon->CentreonLogAction->getHostId($res['object_id']);
+                if ($tmp != -1) {
+                    if (isset($tmp['h'])) {
+                        $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
+                        $tabHost = explode(',', $tmp2["h"]);
+                        if (count($tabHost) == 1) {
+                            $host_name = CentreonUtils::escapeSecure(
+                                $centreon->CentreonLogAction->getHostName($tmp2["h"]),
+                                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+                            );
+                        } elseif (count($tabHost) > 1) {
+                            $hosts = array();
+                            foreach ($tabHost as $key => $value) {
+                                $hosts[] = $centreon->CentreonLogAction->getHostName($value);
+                            }
                         }
-                    }
-                } elseif (isset($tmp['hg'])) {
-                    $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
-                    $tabHost = explode(',', $tmp2["hg"]);
-                    if (count($tabHost) == 1) {
-                        $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
-                    } elseif (count($tabHost) > 1) {
-                        $hostgroups = array();
-                        foreach ($tabHost as $key => $value) {
-                            $hostgroups[] = $centreon->CentreonLogAction->getHostGroupName($value);
+                    } elseif (isset($tmp['hg'])) {
+                        $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
+                        $tabHost = explode(',', $tmp2["hg"]);
+                        if (count($tabHost) == 1) {
+                            $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
+                        } elseif (count($tabHost) > 1) {
+                            $hostgroups = array();
+                            foreach ($tabHost as $key => $value) {
+                                $hostgroups[] = $centreon->CentreonLogAction->getHostGroupName($value);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if ($res['object_type'] == "service") {
-            if (isset($host_name) && $host_name != '') {
+            if ($res['object_type'] == "service") {
+                if (isset($host_name) && $host_name != '') {
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $contactList[$res['log_contact_id']],
+                        "change" => $tabAction[$res['action_type']],
+                        "host" => $host_name,
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
+                } elseif (isset($hosts) && count($hosts) != 1) {
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $contactList[$res['log_contact_id']],
+                        "change" => $tabAction[$res['action_type']],
+                        "hosts" => $hosts,
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
+                } elseif (isset($hg_name) && $hg_name != '') {
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $contactList[$res['log_contact_id']],
+                        "change" => $tabAction[$res['action_type']],
+                        "hostgroup" => $hg_name,
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
+                } elseif (isset($hostgroups) && count($hostgroups) != 1) {
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $contactList[$res['log_contact_id']],
+                        "change" => $tabAction[$res['action_type']],
+                        "hostgroups" => $hostgroups,
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
+                }
+                unset($host_name);
+                unset($hg_name);
+                unset($hosts);
+                unset($hostgroups);
+            } else {
                 $elemArray[] = array(
                     "date" => $res['action_log_date'],
                     "type" => $res['object_type'],
@@ -247,68 +336,13 @@ while ($res = $DBRESULT->fetchRow()) {
                     "modification_type" => $tabAction[$res['action_type']],
                     "author" => $contactList[$res['log_contact_id']],
                     "change" => $tabAction[$res['action_type']],
-                    "host" => $host_name,
-                    "badge" => $badge[$tabAction[$res['action_type']]]
-                );
-            } elseif (isset($hosts) && count($hosts) != 1) {
-                $elemArray[] = array(
-                    "date" => $res['action_log_date'],
-                    "type" => $res['object_type'],
-                    "object_name" => $objectName,
-                    "action_log_id" => $res['action_log_id'],
-                    "object_id" => $res['object_id'],
-                    "modification_type" => $tabAction[$res['action_type']],
-                    "author" => $contactList[$res['log_contact_id']],
-                    "change" => $tabAction[$res['action_type']],
-                    "hosts" => $hosts,
-                    "badge" => $badge[$tabAction[$res['action_type']]]
-                );
-            } elseif (isset($hg_name) && $hg_name != '') {
-                $elemArray[] = array(
-                    "date" => $res['action_log_date'],
-                    "type" => $res['object_type'],
-                    "object_name" => $objectName,
-                    "action_log_id" => $res['action_log_id'],
-                    "object_id" => $res['object_id'],
-                    "modification_type" => $tabAction[$res['action_type']],
-                    "author" => $contactList[$res['log_contact_id']],
-                    "change" => $tabAction[$res['action_type']],
-                    "hostgroup" => $hg_name,
-                    "badge" => $badge[$tabAction[$res['action_type']]]
-                );
-            } elseif (isset($hostgroups) && count($hostgroups) != 1) {
-                $elemArray[] = array(
-                    "date" => $res['action_log_date'],
-                    "type" => $res['object_type'],
-                    "object_name" => $objectName,
-                    "action_log_id" => $res['action_log_id'],
-                    "object_id" => $res['object_id'],
-                    "modification_type" => $tabAction[$res['action_type']],
-                    "author" => $contactList[$res['log_contact_id']],
-                    "change" => $tabAction[$res['action_type']],
-                    "hostgroups" => $hostgroups,
                     "badge" => $badge[$tabAction[$res['action_type']]]
                 );
             }
-            unset($host_name);
-            unset($hg_name);
-            unset($hosts);
-            unset($hostgroups);
-        } else {
-            $elemArray[] = array(
-                "date" => $res['action_log_date'],
-                "type" => $res['object_type'],
-                "object_name" => $objectName,
-                "action_log_id" => $res['action_log_id'],
-                "object_id" => $res['object_id'],
-                "modification_type" => $tabAction[$res['action_type']],
-                "author" => $contactList[$res['log_contact_id']],
-                "change" => $tabAction[$res['action_type']],
-                "badge" => $badge[$tabAction[$res['action_type']]]
-            );
         }
     }
 }
+
 
 /*
  * Apply a template definition
@@ -339,13 +373,21 @@ $tpl->assign('p', $p);
 $tpl->assign('elemArray', $elemArray);
 
 
-if (isset($_POST['searchO']) || isset($_POST['searchU']) || isset($_POST['otype']) || !isset($_GET['object_id'])) {
+if (isset($_POST['searchO'])
+    || isset($_POST['searchU'])
+    || isset($_POST['otype'])
+    || !isset($_GET['object_id'])
+) {
     $tpl->display("viewLogs.ihtml");
 } else {
-    $listAction = array();
-    $listAction = $centreon->CentreonLogAction->listAction($_GET['object_id'], $_GET['object_type']);
-    $listModification = array();
-    $listModification = $centreon->CentreonLogAction->listModification($_GET['object_id'], $_GET['object_type']);
+    $listAction = $centreon->CentreonLogAction->listAction(
+        (int) $_GET['object_id'],
+        $_GET['object_type']
+    );
+    $listModification = $centreon->CentreonLogAction->listModification(
+        (int) $_GET['object_id'],
+        $_GET['object_type']
+    );
 
     if (isset($listAction)) {
         $tpl->assign("action", $listAction);
