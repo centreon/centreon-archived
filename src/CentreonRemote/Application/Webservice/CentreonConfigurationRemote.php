@@ -167,13 +167,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
-     *       name="server_type",
-     *       type="string",
-     *       description="type of server - remote or poller",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -201,7 +194,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
 
-        //$_POST = json_decode(file_get_contents('php://input'), true);
+        $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
         $serverWizardIdentity = new ServerWizardIdentity;
