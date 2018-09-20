@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'nagios_id'                                   => 1,
     'nagios_name'                                 => 'Centreon Engine Central',
     'log_file'                                    => '@monitoring_varlog@/centengine.log',
     'cfg_dir'                                     => '@monitoring_etc@',

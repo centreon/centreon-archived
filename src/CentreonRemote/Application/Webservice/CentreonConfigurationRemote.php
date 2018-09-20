@@ -167,6 +167,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="server_type",
+     *       type="string",
+     *       description="type of server - remote or poller",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -240,6 +247,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationBridge->setServerID($serverID);
         $pollerConfigurationBridge->collectDataFromRequest();
         $taskId = null;
+
         // If you want to link pollers to a remote
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
@@ -269,7 +277,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         //todo: update return based on success/fail
 
-        return ['success' => true, 'task_id'=> $taskId];
+        return ['success' => true, 'task_id' => $taskId];
     }
 
     /**

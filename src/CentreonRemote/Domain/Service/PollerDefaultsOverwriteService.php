@@ -31,21 +31,23 @@ class PollerDefaultsOverwriteService
      */
     private function findPollerAndSetResourceData(array $data, $columnName, $resourceName)
     {
-        // Find the remote poller resource in the array by the column name and pollerID
-        $pollersArray = array_filter($data, function ($pollerData) use ($columnName) {
-            return $pollerData[$columnName] == $this->pollerID;
+        // Remove remote poller resources in the array by the column name and pollerID
+        $data = array_filter($data, function ($pollerData) use ($columnName) {
+            return $pollerData[$columnName] != $this->pollerID;
         });
 
-        // The remote poller data is set to this $key in the array of pollers
-        $key = key($pollersArray);
+        // Get default data for the specified resource
+        $defaultData = $this->getResource($resourceName);
 
-        // Overwrite the data of the remote poller with default data of the specified resource
-        $data[$key] = $this->getResource($resourceName);
+        // Make the data multidimensional array if its not, so it can be merged
+        $dataToMerge = is_array($defaultData[key($defaultData)]) ? $defaultData : [$defaultData];
 
         // Set the correct pollerID in the column name which is FK to the poller
-        $data[$key][$columnName] = $this->pollerID;
+        foreach ($dataToMerge as $key => $arrayData) {
+            $dataToMerge[$key][$columnName] = $this->pollerID;
+        }
 
-        return $data;
+        return array_merge($dataToMerge, $data);
     }
 
     public function setNagiosServer(array $data)
@@ -56,5 +58,15 @@ class PollerDefaultsOverwriteService
     public function setCfgNagios(array $data)
     {
         return $this->findPollerAndSetResourceData($data, 'nagios_server_id', 'cfg_nagios.php');
+    }
+
+    public function setCfgNagiosBroker(array $data)
+    {
+        return $this->findPollerAndSetResourceData($data, 'cfg_nagios_id', 'cfg_nagios_broker_module.php');
+    }
+
+    public function setCfgCentreonBroker(array $data)
+    {
+        return $this->findPollerAndSetResourceData($data, 'ns_nagios_server', 'cfg_centreonbroker.php');
     }
 }
