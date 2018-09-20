@@ -2,9 +2,10 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use Centreon\Domain\Repository;
 
-class TimePeriodExporter extends ExporterServiceAbstract
+class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServicePartialInterface
 {
 
     const NAME = 'time-period';
@@ -82,6 +83,48 @@ class TimePeriodExporter extends ExporterServiceAbstract
                 ->export($timeperiodList)
             ;
             $this->_dump($timePeriodExcludes, $this->getFile(static::EXPORT_FILE_EXCLUDE));
+        })();
+    }
+
+    public function exportPartial(): void
+    {
+        $timeperiodList = $this->cache->get('timeperiod.list');
+
+        if (!$timeperiodList) {
+            return;
+        }
+
+        // Extract data
+        (function() use ($timeperiodList) {
+            $timePeriods = $this->db
+                ->getRepository(Repository\TimePeriodRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->_mergeDump($timePeriods, $this->getFile(static::EXPORT_FILE_TIMEPERIOD), 'tp_id');
+        })();
+
+        (function() use ($timeperiodList) {
+            $timePeriodExceptions = $this->db
+                ->getRepository(Repository\TimePeriodExceptionRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->_mergeDump($timePeriodExceptions, $this->getFile(static::EXPORT_FILE_EXCEPTION), 'exception_id');
+        })();
+
+        (function() use ($timeperiodList) {
+            $timePeriodIncludes = $this->db
+                ->getRepository(Repository\TimePeriodIncludeRelationRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->_mergeDump($timePeriodIncludes, $this->getFile(static::EXPORT_FILE_INCLUDE), 'include_id');
+        })();
+
+        (function() use ($timeperiodList) {
+            $timePeriodExcludes = $this->db
+                ->getRepository(Repository\TimePeriodExcludeRelationRepository::class)
+                ->export($timeperiodList)
+            ;
+            $this->_mergeDump($timePeriodExcludes, $this->getFile(static::EXPORT_FILE_EXCLUDE), 'exclude_id');
         })();
     }
 

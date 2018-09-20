@@ -78,6 +78,40 @@ SQL;
         return $result;
     }
 
+    /**
+     * Export list
+     * 
+     * @param int[] $list
+     * @return array
+     */
+    public function exportList(array $list): array
+    {
+        // prevent SQL exception
+        if (!$list) {
+            return [];
+        }
+
+        $ids = join(',', $list);
+
+        $sql = <<<SQL
+SELECT
+    t.*
+FROM giv_graphs_template AS t
+WHERE t.graph_id IN ({$ids})
+GROUP BY t.graph_id
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
     public function truncate()
     {
         $sql = <<<SQL

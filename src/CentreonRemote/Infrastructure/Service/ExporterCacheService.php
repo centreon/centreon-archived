@@ -39,6 +39,21 @@ class ExporterCacheService
     }
 
     /**
+     * Merge
+     * 
+     * @param string $key
+     * @param mixed $data
+     */
+    public function merge(string $key, $data): void
+    {
+        if (!$this->has($key)) {
+            $this->set($key, $data);
+        } else {
+            $this->data[$key] = array_merge($data, $this->data[$key]);
+        }
+    }
+
+    /**
      * @param string $key
      * @return bool
      */
@@ -57,7 +72,7 @@ class ExporterCacheService
      */
     public function get(string $key)
     {
-        if ($this->has($key)) {
+        if (!$this->has($key)) {
             return null;
         }
 

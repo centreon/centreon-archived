@@ -120,4 +120,26 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
         $this->manifest->addFile($filename);
     }
+
+    protected function _mergeDump(array $input, string $filename, $uniqueId = 'id')
+    {
+        $data = $this->_parse($filename);
+
+        if ($data) {
+            foreach ($data as $row) {
+                $id = $row[$uniqueId];
+                
+                foreach ($input as $_key => $_row) {
+                    $_id = $_row[$uniqueId];
+                    if ($id === $_id) {
+                        unset($input[$_key]);
+                    }
+                }
+            }
+            
+            $input = array_merge($data, $input);
+        }
+
+        $this->_dump($input, $filename);
+    }
 }

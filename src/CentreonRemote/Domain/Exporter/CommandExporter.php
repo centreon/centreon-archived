@@ -2,9 +2,10 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
+use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use Centreon\Domain\Repository;
 
-class CommandExporter extends ExporterServiceAbstract
+class CommandExporter extends ExporterServiceAbstract implements ExporterServicePartialInterface
 {
 
     const NAME = 'command';
@@ -80,6 +81,63 @@ class CommandExporter extends ExporterServiceAbstract
                 ->export($pollerIds)
             ;
             $this->_dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
+        })();
+    }
+
+    public function exportPartial(): void
+    {
+        $commandList = $this->cache->get('command.list');
+
+        if (!$commandList) {
+            return;
+        }
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\CommandRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND), 'command_id');
+        })();
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\CommandArgDescriptionRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND_ARG), 'cmd_id');
+        })();
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\OnDemandMacroCommandRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO), 'command_macro_id');
+        })();
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\ConnectorRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_CONNECTOR), 'id');
+        })();
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\CommandCategoryRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_CATEGORY), 'cmd_category_id');
+        })();
+
+        (function() use ($commandList) {
+            $data = $this->db
+                ->getRepository(Repository\CommandCategoryRelationRepository::class)
+                ->exportList($commandList)
+            ;
+            $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION), 'cmd_cat_id');
         })();
     }
 
