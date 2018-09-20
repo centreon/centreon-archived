@@ -1,14 +1,16 @@
 {
-  "main.css": "/static/css/main.885d60f1.chunk.css",
-  "main.js": "/static/js/main.ca96b80e.chunk.js",
-  "main.js.map": "/static/js/main.ca96b80e.chunk.js.map",
-  "vendors.js": "/static/js/vendors.5e01bfc4.chunk.js",
-  "vendors.js.map": "/static/js/vendors.5e01bfc4.chunk.js.map",
-  "runtime~main.js": "/static/js/runtime~main.004f827c.js",
-  "runtime~main.js.map": "/static/js/runtime~main.004f827c.js.map",
-  "static/media/icomoon.eot": "/static/media/icomoon.43838ab6.eot",
-  "static/media/icomoon.woff": "/static/media/icomoon.2f6e8e51.woff",
-  "static/media/icomoon.svg": "/static/media/icomoon.c79780a8.svg",
-  "static/media/icomoon.ttf": "/static/media/icomoon.a8034a1d.ttf",
-  "index.html": "/index.html"
+  "main.css": "/_CENTREON_PATH_PLACEHOLDER_/static/css/main.cbd42593.chunk.css",
+  "main.js": "/_CENTREON_PATH_PLACEHOLDER_/static/js/main.1164aeaf.chunk.js",
+  "main.js.map": "/_CENTREON_PATH_PLACEHOLDER_/static/js/main.1164aeaf.chunk.js.map",
+  "vendors.css": "/_CENTREON_PATH_PLACEHOLDER_/static/css/vendors.d3f77dda.chunk.css",
+  "vendors.js": "/_CENTREON_PATH_PLACEHOLDER_/static/js/vendors.225c5f4d.chunk.js",
+  "vendors.js.map": "/_CENTREON_PATH_PLACEHOLDER_/static/js/vendors.225c5f4d.chunk.js.map",
+  "runtime~main.js": "/_CENTREON_PATH_PLACEHOLDER_/static/js/runtime~main.db71a444.js",
+  "runtime~main.js.map": "/_CENTREON_PATH_PLACEHOLDER_/static/js/runtime~main.db71a444.js.map",
+  "static/media/icomoon.eot": "/_CENTREON_PATH_PLACEHOLDER_/static/media/icomoon.bb11bacb.eot",
+  "static/media/icomoon.woff": "/_CENTREON_PATH_PLACEHOLDER_/static/media/icomoon.90926bdf.woff",
+  "static/media/icomoon.svg": "/_CENTREON_PATH_PLACEHOLDER_/static/media/icomoon.16bce574.svg",
+  "static/media/centreon-logo-mini.svg": "/_CENTREON_PATH_PLACEHOLDER_/static/media/centreon-logo-mini.9312ac32.svg",
+  "static/media/icomoon.ttf": "/_CENTREON_PATH_PLACEHOLDER_/static/media/icomoon.d0ce9c24.ttf",
+  "index.html": "/_CENTREON_PATH_PLACEHOLDER_/index.html"
 }
