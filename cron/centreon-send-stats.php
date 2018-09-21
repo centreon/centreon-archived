@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../bootstrap.php';
-require '../config/config-statistics.php';
+require_once dirname(__FILE__) . '/../config/config-statistics.php';
 
 $sendStatistics = 0;
 $isRemote = 0;
