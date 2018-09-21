@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 class Footer extends Component {
-  render = () => {
+  render() {
     return (
       <footer class="footer">
         <div class="footer-wrap">
@@ -12,19 +12,19 @@ class Footer extends Component {
           <div class="footer-wrap-middle">
             <ul class="list-unstyled footer-list">
               <li class="footer-list-item">
-                <Link to="https://documentation.centreon.com/" target="_blank">Documentation</Link>
+                <a href="https://documentation.centreon.com/" target="_blank">Documentation</a>
               </li>
               <li class="footer-list-item">
-                <Link to="https://support.centreon.com" target="_blank">Centreon Support</Link>
+                <a href="https://support.centreon.com" target="_blank">Centreon Support</a>
               </li>
               <li class="footer-list-item">
-                <Link to="https://www.centreon.com" target="_blank">Centreon</Link>
+                <a href="https://www.centreon.com" target="_blank">Centreon</a>
               </li>
               <li class="footer-list-item">
-                <Link to="https://github.com/centreon/centreon.git" target="_blank">Github Project</Link>
+                <a href="https://github.com/centreon/centreon.git" target="_blank">Github Project</a>
               </li>
               <li class="footer-list-item">
-                <Link to="https://centreon.github.io" target="_blank">Slack</Link>
+                <a href="https://centreon.github.io" target="_blank">Slack</a>
               </li>
             </ul>
           </div>
