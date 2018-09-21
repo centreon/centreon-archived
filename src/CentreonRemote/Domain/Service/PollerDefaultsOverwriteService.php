@@ -88,4 +88,9 @@ class PollerDefaultsOverwriteService
 
         return array_merge($defaultData, $data);
     }
+
+    public function setCfgResource(array $data)
+    {
+        return $this->findPollerAndSetResourceData($data, '_instance_id', 'cfg_resource.php');
+    }
 }
