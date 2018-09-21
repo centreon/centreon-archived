@@ -1,0 +1,50 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 45px;
+  right: 0;
+  padding: 0 100px 0 20px;
+  box-sizing: border-box;
+  background-color: #232f39;
+  height: 30px;
+  transition: all .2s;
+  &-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    span {
+      color: $white-color;
+      font-family: $primary-font;
+      font-weight: $font-light;
+      font-size: 0.75rem;
+    }
+  }
+  &-list {
+    &-item {
+      display: inline-block;
+      padding-right: 40px;
+      position: relative;
+      font-family: $primary-font;
+      font-size: 0.75rem;
+      &:after {
+        position: absolute;
+        right: 20px;
+        content: "|";
+        color: $white-color;
+      }
+      a {
+        text-decoration: none;
+        color: $white-color;
+      }
+      &:last-child {
+        &:after {
+          content: none;
+        }
+      }
+    }
+  }
+}
+.sidebar.active + #content .footer {
+  left: 160px;
+}

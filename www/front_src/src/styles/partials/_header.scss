@@ -68,6 +68,7 @@
           border-radius: 50px;
           margin: 0 6px;
           box-sizing: border-box;
+          text-decoration: none;
           &-big {
             border-radius: 15px;
             width: 47px;
@@ -129,6 +130,22 @@
               line-height: 30px;
             }
           }
+          &.blue {
+            background-color: #2ad1d4;
+            .number {
+              > span {
+                line-height: 33px;
+              }
+            }
+          }
+          &.blue-bordered {
+            border: 2px solid #2ad1d4;
+            .number {
+              > span {
+                line-height: 31px;
+              }
+            }
+          }
         }
       }
     }
@@ -153,9 +170,6 @@
        .round {
         margin: 0 4px;
        }
-       .toggle-submenu-arrow {
-         right: -5px;
-       }
        > span:nth-child(2) {
         margin-left: 18px;
       }
@@ -179,6 +193,7 @@
       &:first-child {
         text-align: center;
         position: relative;
+        margin-right: 10px;
       }
       &__name {
       display: block;
@@ -370,7 +385,7 @@
     }
     &.gray {
       &:before {
-        background-color: #cdcdcd;
+        background-color: #818185;
       }
     }
     &.green {

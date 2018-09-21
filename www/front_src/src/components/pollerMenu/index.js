@@ -2,29 +2,18 @@ import React, { Component } from "react";
 
 const getPollerStatusIcon = issues => {
   let result = (
-    <span class="wrap-left-icon round green">
-      <span class="iconmoon icon-database" />
-    </span>
+    <React.Fragment>
+      <span class="wrap-left-icon round green">
+        <span class="iconmoon icon-database" />
+      </span>
+      <span class="wrap-left-icon round orange">
+        <span class="iconmoon icon-clock" />
+      </span>
+      <span class="wrap-left-icon round red">
+        <span class="iconmoon icon-link " />
+      </span>
+    </React.Fragment>
   );
-
-  if (issues && issues.length != 0) {
-    for (let key in issues) {
-      if (issues[key].warning) {
-        result = (
-          <span class="wrap-left-icon round orange">
-            <span class="iconmoon icon-clock" />
-          </span>
-        );
-      }
-      if (issues[key].critical) {
-        result = (
-          <span class="wrap-left-icon round red">
-            <span class="iconmoon icon-link " />
-          </span>
-        );
-      }
-    }
-  }
 
   return result;
 };

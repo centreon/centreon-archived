@@ -7,6 +7,7 @@ import routes from "./route-maps/classicRoutes.js";
 import ClassicRoute from "./components/router/classicRoute";
 import NavigationComponent from "./components/navigation";
 import "babel-polyfill";
+import Footer from "./components/footer";
 
 class App extends Component {
   render() {
@@ -28,6 +29,7 @@ class App extends Component {
                 ))}
               </Switch>
             </div>
+            <Footer />
           </div>
         </div>
       </ConnectedRouter>

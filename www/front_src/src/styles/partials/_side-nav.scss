@@ -13,8 +13,6 @@
   text-align: center;
   background: #e0e0e0;
   transition: all 0.2s;
-  overflow-y: auto;
-  height: 100vh;
   .sidebar-logo {
     display: none;
   }
@@ -114,7 +112,8 @@
   }
   &-inner {
     position: relative;
-    padding-bottom: 30px;
+    overflow-y: auto;
+    max-height: 100vh;
   }
 }
 
@@ -144,6 +143,7 @@ a {
   &-items {
     &.components {
       border-top: 1px solid $white-color;
+      padding-bottom: 30px;
     }
   }
   &-item {
@@ -393,6 +393,7 @@ a {
   width: 100%;
   min-height: 100vh;
   transition: all 0.3s;
+  position: relative;
 }
 
 /* ---------------------------------------------------
