@@ -47,4 +47,8 @@ $db = $dependencyInjector['configuration_db'];
 $db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
 $db->query($query);
 
-return;
+$name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
+$completeName = $centreon_path . '/installDir/' . $name;
+@rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
+
+session_destroy();

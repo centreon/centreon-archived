@@ -64,7 +64,6 @@ if (is_file('../install.conf.php')) {
 }
 
 $template->assign('step', STEP_NUMBER);
-$template->assign('next', STEP_NUMBER + 1);
 $template->assign('title', $title);
 $template->assign('content', $content);
 $template->display('content.tpl');

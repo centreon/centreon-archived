@@ -43,12 +43,13 @@ $_SESSION['step'] = STEP_NUMBER;
 require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once '../steps/functions.php';
 $template = getTemplate('templates');
-require_once __DIR__ . '/../../../bootstrap.php';
 
-$db = $dependencyInjector['configuration_db'];
+include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+
+$db = new CentreonDB();
 
 $res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-$row = $res->fetch();
+$row = $res->fetchRow();
 $current = $row['value'];
 $_SESSION['CURRENT_VERSION'] = $current;
 
@@ -87,20 +88,8 @@ if ($handle = opendir('../sql/centreon')) {
     }
     closedir($handle);
 }
-
-$jump = 1;
-
-$res = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
-$stat = $res->fetch();
-
-if (!empty($stat['value'])) {
-    $jump += 1;
-}
-
-$template->assign('title', $title);
 $template->assign('step', STEP_NUMBER);
-$template->assign('back', STEP_NUMBER - 1);
-$template->assign('next', STEP_NUMBER + $jump);
+$template->assign('title', $title);
 $template->assign('content', $contents);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
