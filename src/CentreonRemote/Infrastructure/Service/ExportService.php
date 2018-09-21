@@ -2,7 +2,8 @@
 namespace CentreonRemote\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
-use Centreon\Domain\Repository\InformationsRepository;
+use Centreon\Domain\Repository;
+use Centreon\Domain\Repository\Interfaces\AclResourceRefreshInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
@@ -24,6 +25,16 @@ class ExportService
     private $cache;
 
     /**
+     * @var \CentreonClapi\CentreonACL
+     */
+    private $acl;
+
+    /**
+     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
+     */
+    private $db;
+
+    /**
      * @var String
      */
     private $version;
@@ -37,8 +48,11 @@ class ExportService
     {
         $this->exporter = $services->get('centreon_remote.exporter');
         $this->cache = $services->get('centreon_remote.exporter.cache');
-        $version = $services->get('centreon.db-manager')
-            ->getRepository(InformationsRepository::class)
+        $this->acl = $services->get('centreon.acl');
+        $this->db = $services->get('centreon.db-manager');
+
+        $version = $this->db
+            ->getRepository(Repository\InformationsRepository::class)
             ->getOneByKey('version')
         ;
 
@@ -132,7 +146,37 @@ class ExportService
             $exporter->import();
         }
 
+        // cleanup ACL removed data
+        $this->_refreshAcl();
+
         // backup expot directory
         system('rm -rf ' . escapeshellarg($exportPath));
+    }
+
+    private function _refreshAcl(): void
+    {
+        // cleanup resource table from deleted entities
+        $resourceList = [
+            Repository\AclResourcesHcRelationsRepository::class,
+            Repository\AclResourcesHgRelationsRepository::class,
+            Repository\AclResourcesHostexRelationsRepository::class,
+            Repository\AclResourcesHostRelationsRepository::class,
+            Repository\AclResourcesMetaRelationsRepository::class,
+            Repository\AclResourcesPollerRelationsRepository::class,
+            Repository\AclResourcesScRelationsRepository::class,
+            Repository\AclResourcesServiceRelationsRepository::class,
+            Repository\AclResourcesSgRelationsRepository::class,
+        ];
+
+        foreach ($resourceList as $resource) {
+            $repository = $this->db->getRepository($resource);
+
+            if ($repository instanceof AclResourceRefreshInterface) {
+                $repository->refresh();
+            }
+        }
+
+        // refresh ACL
+        $this->acl->reload(true);
     }
 }
