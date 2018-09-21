@@ -17,7 +17,16 @@
                         <tbody>
                         <tr>
                             <td class='formValue'><input value='1' name='send_statistics' type="checkbox" checked/></td>
-                            <td class='formlabel'>{t}Accepter d envoyer les données{/t}</td>
+                            <td class='formlabel'>
+                                <p style="text-align:justify">I agree to participate to the Centreon Customer Experience
+                                    Improvement Program whereby anonymous information about the usage of this server
+                                    may be sent to Centreon. This information will solely be used to improve the
+                                    software user experience. I will be able to opt-out at anytime.
+                                    Refer to
+                                    <a href="http://ceip.centreon.com/">ceip.centreon.com</a>
+                                    for further details.
+                                </p>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
