@@ -29,23 +29,17 @@ class LinkedPollerConfigurationService
 
     /**
      * @param PollerServer[] $pollers
-     * @param PollerServer   $server
+     * @param PollerServer   $remote
      */
-    public function setPollersConfigurationWithServer(array $pollers, PollerServer $server)
+    public function setPollersConfigurationWithServer(array $pollers, PollerServer $remote)
     {
         $pollerIDs = [];
 
         foreach ($pollers as $poller) {
             $pollerID = $poller->getId();
-            $configQuery = "SELECT `config_id` FROM `cfg_centreonbroker` WHERE `ns_nagios_server` = :id 
-                        AND `config_filename` LIKE '%-module.xml'";
-            $statement = $this->db->prepare($configQuery);
-            $statement->execute([':id' => $pollerID]);
-            $configID = $statement->fetchColumn();
 
-            $updateQuery = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '{$server->getIp()}' 
-                        WHERE `config_id` = {$configID} AND `config_key` = 'host'";
-            $this->db->query($updateQuery);
+            $this->setBrokerOutputOfPoller($pollerID, $remote);
+            $this->setPollerRelationToRemote($pollerID, $remote);
 
             $pollerIDs[] = $pollerID;
         }
@@ -53,6 +47,27 @@ class LinkedPollerConfigurationService
         $this->generateConfiguration($pollerIDs);
         $this->moveConfigurationFiles($pollerIDs);
         $this->restartPoller($pollerIDs);
+    }
+
+    private function setBrokerOutputOfPoller($pollerID, PollerServer $remote)
+    {
+        $configQuery = "SELECT `config_id` FROM `cfg_centreonbroker` WHERE `ns_nagios_server` = :id 
+                        AND `config_filename` LIKE '%-module.xml'";
+        $statement = $this->db->prepare($configQuery);
+        $statement->execute([':id' => $pollerID]);
+        $configID = $statement->fetchColumn();
+
+        $updateQuery = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '{$remote->getIp()}' 
+                        WHERE `config_id` = {$configID} AND `config_key` = 'host'";
+        $this->db->query($updateQuery);
+    }
+
+    private function setPollerRelationToRemote($pollerID, PollerServer $remote)
+    {
+        $query = "UPDATE `nagios_server` SET `remote_id` = '{$remote->getId()}' 
+                        WHERE `id` = :id";
+        $statement = $this->db->prepare($query);
+        $statement->execute([':id' => $pollerID]);
     }
 
     private function generateConfiguration(array $pollerIDs)

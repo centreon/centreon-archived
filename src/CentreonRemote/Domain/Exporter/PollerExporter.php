@@ -55,7 +55,7 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgResource = $this->db
                 ->getRepository(Repository\CfgResourceRepository::class)
                 ->export($pollerIds);
-            // $cfgResource = $overwritePollerService->setCfgResource($cfgResource);
+            $cfgResource = $overwritePollerService->setCfgResource($cfgResource);
             $this->_dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
         })();
 
