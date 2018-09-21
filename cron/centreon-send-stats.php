@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../bootstrap.php';
+require_once dirname(__FILE__) . '/../www/class/centreonRestHttp.class.php';
 require_once dirname(__FILE__) . '/../config/config-statistics.php';
 
 $sendStatistics = 0;
@@ -17,7 +18,7 @@ if ($row = $result->fetch()) {
 }
 
 if ($sendStatistics && !$isRemote) {
-
+    $http = new CentreonRestHttp();
     // Retrieve token and httpcode from authentication API
     retrieveAuthenticationToken($token, $httpCode);
     $timestamp = time();
@@ -74,20 +75,8 @@ if ($sendStatistics && !$isRemote) {
         'timezone' => $timez
     );
 
-    $data = json_encode($data, JSON_PRETTY_PRINT);
-
-    // Open connection
-    $ch = curl_init();
-    // Set the url
-    curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-    curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    if (curl_exec($ch) === false) {
-        \error_log($timestamp .' : centreon-send-stats.php --- ' . curl_error($ch));
-    }
-    curl_close($ch);
+    $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
+    echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
 }
 
 /**
