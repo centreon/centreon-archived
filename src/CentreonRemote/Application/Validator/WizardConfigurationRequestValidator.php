@@ -26,7 +26,7 @@ class WizardConfigurationRequestValidator
     private function validateServerGeneralFields()
     {
         if (!isset($_POST['server_name']) || !$_POST['server_name']) {
-            throw new \RestBadRequestException(' \'server_name\' in the request.');
+            throw new \RestBadRequestException('You need to send \'server_name\' in the request.');
         }
 
         if (!isset($_POST['server_ip']) || !$_POST['server_ip']) {
