@@ -57,8 +57,34 @@ class TopHeader extends Component {
     });
   };
 
+  _updateMenuData = () => {
+      this.pollerService.get().then(({ data }) => {
+          this.setState({
+              pollerData: data
+          });
+      });
+      this.hostsService.get().then(({ data }) => {
+          this.setState({
+              hostsData: data
+          });
+      });
+      this.servicesStatusService.get().then(({ data }) => {
+          this.setState({
+              servicesStatusData: data
+          });
+      });
+      this.userService.get().then(({ data }) => {
+          this.setState({
+              userData: data
+          });
+      });
+  };
+
   setRefreshInterval = () => {
-    this.refreshInterval = setInterval(this.setClock, 15000);
+    this.refreshInterval = setInterval(()=> {
+        this.setClock();
+        this._updateMenuData();
+    }, 15000);
   };
 
   componentWillUnmount = () => {
@@ -66,26 +92,7 @@ class TopHeader extends Component {
   };
 
   UNSAFE_componentWillMount = () => {
-    this.pollerService.get().then(({ data }) => {
-      this.setState({
-        pollerData: data
-      });
-    });
-    this.hostsService.get().then(({ data }) => {
-      this.setState({
-        hostsData: data
-      });
-    });
-    this.servicesStatusService.get().then(({ data }) => {
-      this.setState({
-        servicesStatusData: data
-      });
-    });
-    this.userService.get().then(({ data }) => {
-      this.setState({
-        userData: data
-      });
-    });
+    this._updateMenuData();
     this.setClock();
     this.setRefreshInterval();
   };
