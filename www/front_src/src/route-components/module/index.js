@@ -61,6 +61,7 @@ class ModuleRoute extends Component {
       <div>
         {search ? (
           <iframe
+            id="main-content"
             frameBorder="0"
             onLoad={this.onLoad}
             ref={container => {
