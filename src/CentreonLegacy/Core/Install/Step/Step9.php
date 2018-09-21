@@ -43,8 +43,19 @@ class Step9 extends AbstractStep
         require_once $installDir . '/steps/functions.php';
         $template = getTemplate($installDir . '/steps/templates');
 
-        $template->assign('title', _('Help centreon'));
+        $backupDir = __DIR__ . '/../../../../../installDir';
+        $contents = '';
+        if (!is_dir($backupDir)) {
+            $contents .= '<br>Warning : The installation directory cannot be move. ' .
+                'Please create the directory ' . $backupDir . ' ' .
+                'and give it the rigths to apache user to write.';
+        }
+
+        $template->assign('title', _('Installation finished'));
         $template->assign('step', 9);
+        $template->assign('finish', 1);
+        $template->assign('blockPreview', 1);
+        $template->assign('contents', $contents);
         return $template->fetch('content.tpl');
     }
 }
