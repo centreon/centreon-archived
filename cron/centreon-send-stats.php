@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../bootstrap.php';
-require 'config.php';
+require '../config/config-statistics.php';
 
 $sendStatistics = 0;
 $isRemote = 0;
@@ -16,20 +16,15 @@ if ($row = $result->fetch()) {
     (int)$isRemote = $row['value'];
 }
 
-
 if ($sendStatistics && !$isRemote) {
+
     // Retrieve token and httpcode from authentication API
     retrieveAuthenticationToken($token, $httpCode);
-    $time = time();
+    $timestamp = time();
+
     // If authentication API if alive, add the information
-    if ($httpCode == 200) {
-        $alive = 1;
-    } // Otherwise printing that instance is not alive in the file, then stop
-    else {
-        $data = array(
-            'alive' => 0
-        );
-        writeOnFile($data, $time);
+    if ($httpCode != 200) {
+        echo $timestamp . " : No live information given.";
         return;
     }
 
@@ -50,6 +45,11 @@ if ($sendStatistics && !$isRemote) {
     $UUID = curl_exec($ch);
     $UUID = json_decode($UUID, true);
 
+    if (empty($UUID)) {
+        \error_log($timestamp . " : No UUID specified");
+        return;
+    }
+
     // Retrieve versionning
     curl_setopt($ch, CURLOPT_URL, WS_ROUTE . VERSIONNING_RESOURCE);
     $versions = curl_exec($ch);
@@ -67,14 +67,27 @@ if ($sendStatistics && !$isRemote) {
 
     // Construct the object gathering datas
     $data = array(
-        'alive' => $alive,
-        'timestamp' => $time,
+        'timestamp' => $timestamp,
         'UUID' => $UUID,
         'versions' => $versions,
         'infos' => $infos,
         'timezone' => $timez
     );
-    writeOnFile($data, $time);
+
+    $data = json_encode($data, JSON_PRETTY_PRINT);
+
+    // Open connection
+    $ch = curl_init();
+    // Set the url
+    curl_setopt($ch, CURLOPT_URL, CENTREON_STATS_URL);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    if (curl_exec($ch) === false) {
+        \error_log($timestamp .' : centreon-send-stats.php --- ' . curl_error($ch));
+    }
+    curl_close($ch);
 }
 
 /**
@@ -109,13 +122,4 @@ function retrieveAuthenticationToken(&$token, &$httpCode)
     /* Token retrieval, then use token to request */
     $authenticationResult = json_decode($authenticationResult, true);
     $token = $authenticationResult[$tokenFieldLabel];
-}
-
-/**
- *    Write the data on a json file.
- */
-function writeOnFile(&$data, $time)
-{
-    $filePath = STATS_PATH . '/' . STATS_PREFIX . $time . ".json";
-    file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT));
 }
