@@ -57,7 +57,7 @@ class TopHeader extends Component {
     });
   };
 
-  _updateMenuData = () => {
+  _updateHeaderData = () => {
       this.pollerService.get().then(({ data }) => {
           this.setState({
               pollerData: data
@@ -83,7 +83,7 @@ class TopHeader extends Component {
   setRefreshInterval = () => {
     this.refreshInterval = setInterval(()=> {
         this.setClock();
-        this._updateMenuData();
+        this._updateHeaderData();
     }, 15000);
   };
 
@@ -92,7 +92,7 @@ class TopHeader extends Component {
   };
 
   UNSAFE_componentWillMount = () => {
-    this._updateMenuData();
+    this._updateHeaderData();
     this.setClock();
     this.setRefreshInterval();
   };
