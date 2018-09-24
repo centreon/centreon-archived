@@ -33,14 +33,21 @@
  *
  */
 
-require_once dirname(__FILE__) . "/webService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGMT.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonVersion.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
-class CentreonStatistics extends CentreonWebService
+class CentreonStatistics
 {
+    /**
+     * CentreonStatistics constructor.
+     */
+    public function __construct()
+    {
+        $this->dbConfig = new centreonDB();
+    }
+
     /**
      * get Centreon UUID
      *
@@ -48,7 +55,7 @@ class CentreonStatistics extends CentreonWebService
      */
     public function getCentreonUUID()
     {
-        $centreonUUID = new CentreonUUID($this->pearDB);
+        $centreonUUID = new CentreonUUID($this->dbConfig);
         return array(
             'CentreonUUID' => $centreonUUID->getUUID()
         );
@@ -74,7 +81,7 @@ class CentreonStatistics extends CentreonWebService
             "((SELECT COUNT(ns2.id) FROM nagios_server ns2 WHERE ns2.ns_activate = '1')-@nb_remotes-1) as nb_pollers," .
             " '1' as nb_central " .
             "FROM host h WHERE h.host_activate = '1' AND h.host_register = '1'";
-        $dbResult = $this->pearDB->query($query);
+        $dbResult = $this->dbConfig->query($query);
         $data = $dbResult->fetch();
 
         return $data;
@@ -89,7 +96,7 @@ class CentreonStatistics extends CentreonWebService
     public function getVersion()
     {
         $dbStorage = new CentreonDB("centstorage");
-        $centreonVersion = new CentreonVersion($this->pearDB, $dbStorage);
+        $centreonVersion = new CentreonVersion($this->dbConfig, $dbStorage);
         return array(
             'core' => $centreonVersion->getCore(),
             'modules' => $centreonVersion->getModules(),
@@ -105,7 +112,7 @@ class CentreonStatistics extends CentreonWebService
      */
     public function getPlatformTimezone()
     {
-        $oTimezone = new CentreonGMT($this->pearDB);
+        $oTimezone = new CentreonGMT($this->dbConfig);
         $defaultTimezone = $oTimezone->getCentreonTimezone();
         $timezoneById = $oTimezone->getList();
 
