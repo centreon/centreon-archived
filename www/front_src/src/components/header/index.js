@@ -61,6 +61,9 @@ class TopHeader extends Component {
     this.refreshInterval = setInterval(this.setClock, 15000);
   };
 
+
+
+
   componentWillUnmount = () => {
     clearInterval(this.refreshInterval);
   };

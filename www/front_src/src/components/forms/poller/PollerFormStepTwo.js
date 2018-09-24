@@ -12,14 +12,14 @@ class PollerFormStepTwo extends Component {
       <div className="form-wrapper">
         <div className="form-inner">
           <div className="form-heading">
-            <h2 className="form-title">Connect To Server</h2>
+            <h2 className="form-title">Attach poller to a server</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (
               <Field
                 name="linked_remote"
                 component={SelectField}
-                label="Select Remote Server to manage new poller:"
+                label="Select:"
                 options={[
                   {
                     disabled: true,
@@ -35,7 +35,7 @@ class PollerFormStepTwo extends Component {
             <Field
               name="manage_broker_config"
               component={CheckboxField}
-              label="Centreon must connect to poller to open Broker flow"
+              label="Advanced: reverse Centreon Broker communication flow"
             />
             <div class="form-buttons">
               <button className="button" type="submit">

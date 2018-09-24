@@ -24,7 +24,7 @@ const ServerConfigurationWizardForm = ({
     <div className="form-inner">
       <div className="form-heading">
         <h2 className="form-title">Server Configuration Wizard</h2>
-        <p className="form-text">Choose a configuration type:</p>
+        <p className="form-text">Choose a server type:</p>
       </div>
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
