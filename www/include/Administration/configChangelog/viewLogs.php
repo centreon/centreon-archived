@@ -53,10 +53,11 @@ function searchUserName($username)
     $contactIds = [];
     $prepareContact = $pearDB->prepare(
         "SELECT contact_id FROM contact "
-        . "WHERE contact_name LIKE '%:username%'
-            OR contact_alias LIKE '%:username%'"
+        . "WHERE contact_name LIKE :contact_name "
+        . "OR contact_alias LIKE :contact_alias"
     );
-    $prepareContact->bindValue(':useranme', $username, \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_name', "%$username%", \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_alias', "%$username%", \PDO::PARAM_STR);
     if ($prepareContact->execute()) {
         while ($contact = $prepareContact->fetch(\PDO::FETCH_ASSOC)) {
             $contactIds[] = (int) $contact['contact_id'];
