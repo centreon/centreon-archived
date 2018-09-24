@@ -19,6 +19,7 @@ const getPollerStatusIcon = issues => {
 };
 
 class PollerMenu extends Component {
+  
   state = {
     toggled: false
   };

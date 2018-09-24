@@ -15,8 +15,7 @@
           display: block;
           font-size: 0.6875rem;
           color: $white-color;
-          font-family: $primary-font;
-          font-weight: $font-light;
+          font-family: $primary-font-light;
           text-transform: lowercase;
          }
          &.round {
@@ -57,8 +56,7 @@
         &.round {
           font-size: .875rem;
           padding: 0px 5px;
-          font-family: $primary-font;
-          font-weight: $font-extra-bold;
+          font-family: $primary-font-bold;
           position: relative;
           color: $white-color;
           overflow: hidden;
@@ -76,8 +74,7 @@
           }
           .number {
             font-size: 0.875rem;
-            font-family: $primary-font;
-            font-weight: $font-extra-bold;
+            font-family: $primary-font-bold;
             position: relative;
             text-decoration: none;
             > span {
@@ -199,15 +196,13 @@
       display: block;
       font-size: 0.6875rem;
       color: $white-color;
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       text-transform: lowercase;
       }
     }
     &-date,
     &-time {
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       color: $white-color;
       font-size: 0.8125rem;
       display: block;
@@ -250,8 +245,7 @@
       &-link {
         padding: 10px;
         display: block;
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         color: $white-color;
         text-decoration: none;
         font-size: 0.8rem;
@@ -265,8 +259,7 @@
         display: inline-block;
       }
       .submenu-user-edit {
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         margin-left: 4px;
         color: $white-color;
         float: right;
@@ -274,8 +267,7 @@
       .submenu-user-button {
         font-size: .625rem;
         color: #ffa225;
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         text-align: left;
         height: 31px;
         border-radius: 16px;

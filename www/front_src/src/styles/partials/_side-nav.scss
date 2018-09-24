@@ -297,7 +297,7 @@ a {
       }
     }
     &-name {
-      font-family: $primary-font;
+      font-family: $primary-font-regular;
       font-size: 0.75rem;
       vertical-align: middle;
       position: absolute;
@@ -317,8 +317,7 @@ a {
         text-decoration: none;
         font-size: 0.625rem;
         color: rgb(36,47,59);
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         padding: 10px 10px 11px 47px;
         display: block;
         letter-spacing: -0.4px;
@@ -327,8 +326,7 @@ a {
     }
     &-title {
       color: $lightblue-centreon-primary;
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       font-size: 0.625rem;
       background-color: $white-color;
       display: block;

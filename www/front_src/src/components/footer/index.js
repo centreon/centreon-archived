@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 class Footer extends Component {
   render() {
@@ -7,7 +6,7 @@ class Footer extends Component {
       <footer class="footer">
         <div class="footer-wrap">
           <div class="footer-wrap-left">
-            <span>Generated in 0.392 seconds</span>
+            
           </div>
           <div class="footer-wrap-middle">
             <ul class="list-unstyled footer-list">
