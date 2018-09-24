@@ -77,6 +77,7 @@
             font-family: $primary-font-bold;
             position: relative;
             text-decoration: none;
+            display: block;
             > span {
               line-height: 33px;
               color: $white-color;
