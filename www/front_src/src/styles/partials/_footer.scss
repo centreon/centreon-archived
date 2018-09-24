@@ -37,6 +37,7 @@
         color: $white-color;
       }
       &:last-child {
+        padding: 0;
         &:after {
           content: none;
         }

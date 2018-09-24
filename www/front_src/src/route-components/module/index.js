@@ -58,7 +58,7 @@ class ModuleRoute extends Component {
           { search } = history.location,
           { contentHeight } = this.state;
     return (
-      <div>
+      <React.Fragment>
         {search ? (
           <iframe
             frameBorder="0"
@@ -73,7 +73,7 @@ class ModuleRoute extends Component {
         ) : (
           <Redirect to={"/_CENTREON_PATH_PLACEHOLDER_/main.php?p=1"} />
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

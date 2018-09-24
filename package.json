@@ -61,6 +61,7 @@
     "prop-types": "^15.6.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-favicon": "0.0.14",
     "react-full-screen": "^0.2.3",
     "react-moment": "^0.7.0",
     "react-popper": "^0.10.4",
