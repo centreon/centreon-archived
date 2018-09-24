@@ -41,12 +41,12 @@ class UserMenu extends Component {
                   </a>
                 </span>
               </li>
-              <input class="submenu-bookmark-link" type="text" />
+              <button class="submenu-user-button">Copy autologin link <span class="btn-logout-icon"></span></button>
               <span class="iconmoon icon-copy" />
             </ul>
             <div class="button-wrap">
               <a href="index.php?disconnect=1">
-                <button class="btn btn-small btn-red">Sign out</button>
+                <button class="btn btn-small logout">Log out</button>
               </a>
             </div>
           </div>

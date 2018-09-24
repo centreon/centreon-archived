@@ -32,14 +32,14 @@ class PollerFormStepOne extends Component {
               component={InputField}
               type="text"
               placeholder=""
-              label="Server IP Address:"
+              label="Server IP address:"
             />
             <Field
               name="centreon_central_ip"
               component={InputField}
               type="text"
               placeholder=""
-              label="Centreon Central IP Address:"
+              label="Centreon Central server IP address, as seen by this server:"
             />
             <div class="form-buttons">
               <button className="button" type="submit">

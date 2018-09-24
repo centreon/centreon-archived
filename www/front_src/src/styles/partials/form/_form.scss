@@ -19,8 +19,7 @@
       padding-top: 7px;
       .field__msg {
         font-size: 10px;
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         color: #d0021b;
       }
     }
@@ -38,7 +37,7 @@
     }
   }
   &-status {
-    font-family: $primary-font;
+    font-family: $primary-font-regular;
     &.valid {
       color: #acd174;
     }
@@ -50,14 +49,13 @@
     color: #d0021b;
     display: block;
     text-align: center;
-    font-family: $primary-font;
+    font-family: $primary-font-regular;
   }
   &-group {
     margin-bottom: 15px;
     label {
       font-size: 10px;
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       color: rgb(36,47,58);
       display: block;
       margin-bottom: 5px;
@@ -80,15 +78,13 @@
   }
   &-title {
     font-size: 12px;
-    font-family: $primary-font;
-    font-weight: $font-light;
+    font-family: $primary-font-light;
     color: $lightblue-centreon-primary;
     
   }
   &-text {
     font-size: 10px;
-    font-family: $primary-font;
-    font-weight: $font-light;
+    font-family: $primary-font-light;
     color: #242f3a;
     margin: 20px 0;
   }
@@ -104,8 +100,7 @@
       text-decoration: none;
       font-size: 10px;
       color: rgb(255,255,255);
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       padding: 5px 33px;
       text-transform: uppercase;
       &:hover {
@@ -224,8 +219,7 @@
 .error-block {
   font-size: 10px;
   color: rgb(237,28,36);
-  font-family: $primary-font;
-  font-weight: $font-light;
+  font-family: $primary-font-light;
   text-align: center;
   position: relative;
   margin-top: 26px;
@@ -254,6 +248,6 @@ input[type=checkbox]:checked ~.custom-control-label::before {
 .css-10odw4q,
 .css-1492t68,
 .css-10nd86i {
-  font-family: $primary-font;
+  font-family: $primary-font-regular;
   font-size: 13px;
 }
