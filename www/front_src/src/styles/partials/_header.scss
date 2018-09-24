@@ -77,7 +77,6 @@
             font-family: $primary-font-bold;
             position: relative;
             text-decoration: none;
-            display: block;
             > span {
               line-height: 33px;
               color: $white-color;
@@ -140,7 +139,7 @@
             border: 2px solid #2ad1d4;
             .number {
               > span {
-                line-height: 31px;
+                line-height: 30px;
               }
             }
           }
@@ -208,9 +207,6 @@
       font-size: 0.8125rem;
       display: block;
       text-align: left;
-    }
-    &-date {
-      margin-bottom: 3px;
     }
     &-time {
       font-size: 1rem;

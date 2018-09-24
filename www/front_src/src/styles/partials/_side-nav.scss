@@ -72,13 +72,17 @@
     }
   }
   .sidebar-logo-mini {
-    padding: 12px 11px;
+    padding: 16px 11px;
     box-sizing: border-box;
+    height: 51px;
   }
   &-logo {
-    padding: 7px 12px;
+    padding: 10px 12px;
     box-sizing: border-box;
-    height: 49px;
+    height: 51px;
+    a {
+      display: block;
+    }
     &-image {
       max-width: 100%;
       height: auto;
@@ -113,6 +117,7 @@
   &-inner {
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 100vh;
   }
 }
