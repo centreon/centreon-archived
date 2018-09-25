@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 
 import routeMap from "../../route-maps";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import {Link} from "react-router-dom";
+import {connect} from "react-redux";
 
 import "moment-timezone";
 import Moment from "moment";
@@ -50,15 +50,41 @@ class TopHeader extends Component {
   refreshInterval;
 
   setClock = () => {
-    this.clockService.get().then(({ data }) => {
+    this.clockService.get().then(({data}) => {
       this.setState({
         clockData: instantiateDate(data.timezone, data.locale, data.time)
       });
     });
   };
 
+  _updateHeaderData = () => {
+    this.pollerService.get().then(({data}) => {
+      this.setState({
+        pollerData: data
+      });
+    });
+    this.hostsService.get().then(({data}) => {
+      this.setState({
+        hostsData: data
+      });
+    });
+    this.servicesStatusService.get().then(({data}) => {
+      this.setState({
+        servicesStatusData: data
+      });
+    });
+    this.userService.get().then(({data}) => {
+      this.setState({
+        userData: data
+      });
+    });
+  };
+
   setRefreshInterval = () => {
-    this.refreshInterval = setInterval(this.setClock, 15000);
+    this.refreshInterval = setInterval(() => {
+      this.setClock();
+      this._updateHeaderData();
+    }, 15000);
   };
 
   componentWillUnmount = () => {
@@ -66,26 +92,7 @@ class TopHeader extends Component {
   };
 
   UNSAFE_componentWillMount = () => {
-    this.pollerService.get().then(({ data }) => {
-      this.setState({
-        pollerData: data
-      });
-    });
-    this.hostsService.get().then(({ data }) => {
-      this.setState({
-        hostsData: data
-      });
-    });
-    this.servicesStatusService.get().then(({ data }) => {
-      this.setState({
-        servicesStatusData: data
-      });
-    });
-    this.userService.get().then(({ data }) => {
-      this.setState({
-        userData: data
-      });
-    });
+    this._updateHeaderData();
     this.setClock();
     this.setRefreshInterval();
   };
@@ -102,16 +109,17 @@ class TopHeader extends Component {
       <header class="header">
         <div class="header-icons">
           <div class="wrap wrap-left">
-            <PollerMenu data={pollerData} />
+            <PollerMenu data={pollerData}/>
           </div>
           <div class="wrap wrap-right">
-            <HostMenu data={hostsData} />
-            <ServiceStatusMenu data={servicesStatusData} />
-            <UserMenu data={userData} clockData={clockData} />
+            <HostMenu data={hostsData}/>
+            <ServiceStatusMenu data={servicesStatusData}/>
+            <UserMenu data={userData} clockData={clockData}/>
           </div>
         </div>
       </header>
     );
   };
 }
+
 export default connect(null, null)(TopHeader);

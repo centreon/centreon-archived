@@ -51,7 +51,10 @@ class CentreonUtils
      * Convert all html tags into HTML entities
      */
     const ESCAPE_ALL = 2;
-    
+
+    /**
+     * Defines all self-closing html tags allowed
+     */
     public static $selfclosingHtmlTagsAllowed = ['br', 'hr'];
     
     /**

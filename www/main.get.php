@@ -207,7 +207,7 @@ include_once "./include/core/header/htmlHeader.php";
 
 <script type='text/javascript'>
     //saving the user locale
-    localStorage.setItem('locale', '{$myLocale}');
+    localStorage.setItem('locale', '<?php echo $centreon->user->get_lang() ?>');
 </script>
 <?php
 if (!$centreon->user->showDiv("header")) {

@@ -12,7 +12,7 @@ class RemoteServerFormStepTwo extends Component {
       <div className="form-wrapper">
         <div className="form-inner">
           <div className="form-heading">
-            <h2 className="form-title">Select Pollers to link to new Remote Server</h2>
+            <h2 className="form-title">Select pollers to be attached to this new Remote Server</h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (
@@ -25,11 +25,11 @@ class RemoteServerFormStepTwo extends Component {
                 }))}
               />
             ) : null}
-            <Field
+            {/* <Field
               name="manage_broker_config"
               component={CheckboxField}
               label="Manage automatically Centreon Broker Configuration of selected poller?"
-            />
+            /> */}
             <div class="form-buttons">
               <button className="button" type="submit">
                 Apply

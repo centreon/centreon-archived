@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 import numeral from "numeral";
+import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 class HostMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
   state = {
     toggled: false
   };
@@ -12,6 +21,36 @@ class HostMenu extends Component {
       toggled: !toggled
     });
   };
+
+   ///outside click
+
+   componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  /**
+   * Set the wrapper ref
+   */
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  /**
+   * Alert if clicked on outside of element
+   */
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.setState({
+        toggled: false
+      });
+    }
+  }
+  ////end outside click
+
 
   render() {
     const { data } = this.props;
@@ -33,73 +72,79 @@ class HostMenu extends Component {
           <span class="wrap-right-icon__name">Hosts</span>
         </span>
 
-        <span class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
+        <Link to="./main.php?p=20202&o=h_down&search=" class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
           <a class="number">
             <span>{numeral(down.unhandled).format("0a")}</span>
           </a>
-        </span>
-        <span class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
+        </Link>
+        <Link to="./main.php?p=20202&o=h_unreachable&search=" class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
           <a class="number">
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
           </a>
-        </span>
-        <span class={"wrap-middle-icon round round-big "+ (ok.total > 0 ? "green" : "green-bordered")}>
+        </Link>
+        <Link to="./main.php?p=20202&o=h_up&search=" class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
-            <span>{numeral(ok.total).format("0a")}</span>
+            <span>{numeral(ok).format("0a")}</span>
           </a>
-        </span>
+        </Link>
+        <Link to="./main.php?p=20202&o=h_pending&search=" class={"wrap-middle-icon round round-small "+ (pending > 0 ? "blue" : "blue-bordered")}>
+          <a class="number">
+            <span>{numeral(pending).format("0a")}</span>
+          </a>
+        </Link>
 
-        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} />
+        <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
         <div class="submenu host">
           <div class="submenu-inner">
             <ul class="submenu-items list-unstyled">
               <li class="submenu-item">
-                <a
-                  href={"./main.php?p=20202&o=h&search="}
+                <Link
+                  to={"./main.php?p=20202&o=h&search="}
                   class="submenu-item-link"
                 >
-                  <span>All hosts</span>
+                  <span>All</span>
                   <span class="submenu-count">{total}</span>
-                </a>
+                </Link>
               </li>
               <li class="submenu-item">
-                <a
-                  href={"./main.php?p=20202&o=h_down&search="}
+                <Link
+                  to={"./main.php?p=20202&o=h_down&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored red">Down hosts</span>
+                  <span class="dot-colored red">Down</span>
                   <span class="submenu-count">
                     {down.unhandled}/{down.total}
                   </span>
-                </a>
+                </Link>
               </li>
               <li class="submenu-item">
-                <a
-                  href={"./main.php?p=20202&o=h_unreachable&search="}
+                <Link
+                  to={"./main.php?p=20202&o=h_unreachable&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored gray">Unreachable hosts</span>
+                  <span class="dot-colored gray">Unreachable</span>
                   <span class="submenu-count">
                     {unreachable.unhandled}/{unreachable.total}
                   </span>
-                </a>
+                </Link>
               </li>
               <li class="submenu-item">
-                <a
-                  href={"./main.php?p=20202&o=h_up&search="}
+                <Link
+                  to={"./main.php?p=20202&o=h_up&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored green">Ok hosts</span>
+                  <span class="dot-colored green">Ok</span>
                   <span class="submenu-count">{ok}</span>
-                </a>
+                </Link>
               </li>
               <li class="submenu-item">
-                <a
-                  href={"./main.php?p=20202&o=h_pending&search="}
+                <Link
+                  to={"./main.php?p=20202&o=h_pending&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored blue">{pending} Pending hosts</span>
-                </a>
+                  <span class="dot-colored blue">Pending</span>
+                  <span class="submenu-count">{pending}</span>
+                </Link>
               </li>
             </ul>
           </div>
@@ -110,3 +155,6 @@ class HostMenu extends Component {
 }
 
 export default HostMenu;
+HostMenu.propTypes = {
+  children: PropTypes.element.isRequired,
+};

@@ -7,6 +7,8 @@ class PollerDefaultsOverwriteService
 
     private $pollerID = null;
 
+    private $brokerConfigIDs = [];
+
     private $resourcesPath = '/Domain/Resources/default_config/';
 
     /**
@@ -67,6 +69,28 @@ class PollerDefaultsOverwriteService
 
     public function setCfgCentreonBroker(array $data)
     {
+        $configsOfRemote = array_filter($data, function ($pollerData) {
+            return $pollerData['ns_nagios_server'] == $this->pollerID;
+        });
+        $this->brokerConfigIDs = array_column($configsOfRemote, 'config_id');
+
         return $this->findPollerAndSetResourceData($data, 'ns_nagios_server', 'cfg_centreonbroker.php');
+    }
+
+    public function setCfgCentreonBrokerInfo(array $data)
+    {
+        // Remove broker config info which is related to the broker module of the remote poller
+        $data = array_filter($data, function ($pollerData) {
+            return !in_array($pollerData['config_id'], $this->brokerConfigIDs);
+        });
+
+        $defaultData = $this->getResource('cfg_centreonbroker_info.php');
+
+        return array_merge($defaultData, $data);
+    }
+
+    public function setCfgResource(array $data)
+    {
+        return $this->findPollerAndSetResourceData($data, '_instance_id', 'cfg_resource.php');
     }
 }

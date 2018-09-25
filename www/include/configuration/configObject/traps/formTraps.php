@@ -60,13 +60,11 @@ function myReplace()
 }
 
 $trap = array();
-$mnftr = array(null => null);
-$mnftr_id = -1;
 $initialValues = array();
 $hServices = array();
 
-if (($o == "c" || $o == "w") && $traps_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '" . $traps_id . "' LIMIT 1");
+if (($o == TRAP_MODIFY || $o == TRAP_WATCH) && is_int($trapsId)) {
+    $DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '$trapsId' LIMIT 1");
     # Set base value
     $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
     $trap['severity'] = $trap['severity_id'];
@@ -77,7 +75,7 @@ if (($o == "c" || $o == "w") && $traps_id) {
     /*
      * Preset values of preexec commands
      */
-    $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
+    $preexecArray = $trapObj->getPreexecFromTrapId($trapsId);
     $cdata->addJsData('clone-values-preexec', htmlspecialchars(
         json_encode($preexecArray),
         ENT_QUOTES
@@ -87,19 +85,13 @@ if (($o == "c" || $o == "w") && $traps_id) {
     /*
      * Preset values of matching rules
      */
-    $mrulesArray = $trapObj->getMatchingRulesFromTrapId($traps_id);
+    $mrulesArray = $trapObj->getMatchingRulesFromTrapId($trapsId);
     $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
         json_encode($mrulesArray),
         ENT_QUOTES
     ));
     $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 }
-
-$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
-while ($rmnftr = $DBRESULT->fetchRow()) {
-    $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
-}
-$DBRESULT->closeCursor();
 
 $attrsText = array("size" => "50");
 $attrsLongText = array("size" => "120");
@@ -137,24 +129,12 @@ $attrServicetemplates = array(
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $trapObj->setForm($form);
-if ($o == "a") {
+if ($o == TRAP_ADD) {
     $form->addElement('header', 'title', _("Add a Trap definition"));
-} elseif ($o == "c") {
+} elseif ($o == TRAP_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Trap definition"));
-} elseif ($o == "w") {
+} elseif ($o == TRAP_WATCH) {
     $form->addElement('header', 'title', _("View a Trap definition"));
-}
-
-/**
- * Initializes nbOfInitialRows
- */
-$query = "SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '" . $traps_id . "' ";
-$res = $pearDB->query($query);
-if ($res->rowCount()) {
-    $row = $res->fetchRow();
-    $nbOfInitialRows = $row['MAX(tmo_order)'];
-} else {
-    $nbOfInitialRows = 0;
 }
 
 /*
@@ -163,7 +143,7 @@ if ($res->rowCount()) {
 $form->addElement('text', 'traps_name', _("Trap name"), $attrsText);
 
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
-    '&action=defaultValues&target=traps&field=manufacturer_id&id=' . $traps_id;
+    '&action=defaultValues&target=traps&field=manufacturer_id&id=' . $trapsId;
 $attrManufacturer1 = array_merge(
     $attrManufacturer,
     array('defaultDatasetRoute' => $route)
@@ -232,13 +212,13 @@ $attrService1 = array_merge(
     $attrServices,
     array(
         'defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_service&action=defaultValues' .
-            '&target=traps&field=services&id=' . $traps_id
+            '&target=traps&field=services&id=' . $trapsId
     )
 );
 $form->addElement('select2', 'services', _("Linked Services"), array(), $attrService1);
 
 $query = './api/internal.php?object=centreon_configuration_servicetemplate&action=defaultValues' .
-    '&target=traps&field=service_templates&id=' . $traps_id;
+    '&target=traps&field=service_templates&id=' . $trapsId;
 $attrServicetemplate1 = array_merge(
     $attrServicetemplates,
     array(
@@ -248,7 +228,7 @@ $attrServicetemplate1 = array_merge(
 $form->addElement('select2', 'service_templates', _("Linked Service Templates"), array(), $attrServicetemplate1);
 
 /*
- * Routing 
+ * Routing
  */
 $form->addElement(
     'text',
@@ -370,7 +350,7 @@ $downtime[] = $form->createElement('radio', 'traps_downtime', null, _("History")
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
 
 /*
- * Pre exec 
+ * Pre exec
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
@@ -418,24 +398,24 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w") {
+if ($o == TRAP_WATCH) {
     # Just watch a Command information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&traps_id=" . $traps_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&traps_id=" . $trapsId . "'")
         );
     }
     $form->setDefaults($trap);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == TRAP_MODIFY) {
     # Modify a Command information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($trap);
-} elseif ($o == "a") {
+} elseif ($o == TRAP_ADD) {
     # Add a Command information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
