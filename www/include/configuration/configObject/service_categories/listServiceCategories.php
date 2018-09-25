@@ -122,11 +122,11 @@ for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $sc['sc_id'] . "]");
 
     if ($sc["sc_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=s&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }

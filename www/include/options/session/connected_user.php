@@ -87,7 +87,7 @@ for ($cpt = 0; $r = $res->fetchRow(); $cpt++) {
         $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
     }
     if ($centreon->user->admin) {
-        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] .
+        $session_data[$cpt]["actions"] = "<a href='?p=$p&o=k&session=" . $r['session_id'] .
             "'><img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
             "' title='" . _("Kick User") . "'></a>";
     } else {

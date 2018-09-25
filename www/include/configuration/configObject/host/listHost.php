@@ -310,12 +310,12 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $selectedElements = $form->addElement('checkbox', "select[" . $host['host_id'] . "]");
 
         if ($host["host_activate"]) {
-            $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
+            $moptions = "<a href='?p=$p&host_id={$host['host_id']}"
             . "&o=u&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/disabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Disabled") . "'></a>";
         } else {
-            $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
+            $moptions = "<a href='?p=$p&host_id={$host['host_id']}"
             . "&o=s&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/enabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Enabled") . "'></a>";
@@ -345,10 +345,10 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
             $firstTpl = 1;
             foreach ($tplArr as $key => $value) {
                 if ($firstTpl) {
-                    $tplStr .= "<a href='main.php?p=60103&o=c&host_id=$key'>$value</a>";
+                    $tplStr .= "<a href='?p=60103&o=c&host_id=$key'>$value</a>";
                     $firstTpl = 0;
                 } else {
-                    $tplStr .= "&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=$key'>$value</a>";
+                    $tplStr .= "&nbsp;|&nbsp;<a href='?p=60103&o=c&host_id=$key'>$value</a>";
                 }
             }
         }

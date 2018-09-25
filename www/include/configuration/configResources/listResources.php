@@ -117,11 +117,11 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resource['resource_id'] . "]");
     $moptions = "";
     if ($resource["resource_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=u&limit=" .
+        $moptions .= "<a href='?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=u&limit=" .
             $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=s&limit=" .
+        $moptions .= "<a href='?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=s&limit=" .
             $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }

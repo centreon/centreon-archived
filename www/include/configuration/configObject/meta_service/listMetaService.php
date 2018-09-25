@@ -121,7 +121,7 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $ms['meta_id'] . "]");
     if ($ms["meta_select_mode"] == 1) {
-        $moptions = "<a href='main.php?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=ci&search=" .
+        $moptions = "<a href='?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=ci&search=" .
             $search . "'><img src='img/icons/redirect.png' class='ico-16' border='0' alt='" .
             _("View") . "'></a>&nbsp;&nbsp;";
     } else {
@@ -129,11 +129,11 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
     }
 
     if ($ms["meta_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=s&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }

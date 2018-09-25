@@ -123,11 +123,11 @@ for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $nagios['nagios_id'] . "]");
     if ($nagios["nagios_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14' border='0' " .
             "alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=s&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&nagios_id=" . $nagios['nagios_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
             "class='ico-14' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
