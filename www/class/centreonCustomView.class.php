@@ -265,7 +265,7 @@ class CentreonCustomView
     {
         if (!isset($this->currentView)) {
             if (isset($_REQUEST['currentView'])) {
-                $this->currentView = $_REQUEST['currentView'];
+                $this->currentView = (int) $_REQUEST['currentView'];
             } else {
                 $views = $this->getCustomViews();
                 $i = 0;

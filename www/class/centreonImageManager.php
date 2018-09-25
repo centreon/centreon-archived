@@ -94,17 +94,18 @@ class CentreonImageManager extends centreonFileManager
      * @param $imgName
      * @return bool
      */
-    public function update(
-        $imgId,
-        $imgName
-    ) {
+    public function update($imgId, $imgName)
+    {
         if (!$imgId || empty($imgName)) {
             return false;
         }
 
-        $query = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation " .
-            "WHERE img_id = :imgId AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-        $stmt = $this->dbConfig->prepare($query);
+        $stmt = $this->dbConfig->prepare(
+            "SELECT dir_id, dir_alias, img_path, img_comment "
+            . "FROM view_img, view_img_dir, view_img_dir_relation "
+            . "WHERE img_id = :imgId AND img_id = img_img_id "
+            . "AND dir_dir_parent_id = dir_id"
+        );
         $stmt->bindParam(':imgId', $imgId);
         $stmt->execute();
 
@@ -114,16 +115,20 @@ class CentreonImageManager extends centreonFileManager
         if (!empty($this->originalFile) && !empty($this->tmpFile)) {
             $this->deleteImg($this->mediaPath . $img_info["dir_alias"] . '/' . $img_info["img_path"]);
             $this->upload(false);
-            $query = "UPDATE view_img SET img_path  = :path WHERE img_id = :imgId";
-            $stmt = $this->dbConfig->prepare($query);
+            
+            $stmt = $this->dbConfig->prepare(
+                "UPDATE view_img SET img_path  = :path WHERE img_id = :imgId"
+            );
             $stmt->bindParam(':path', $this->newFile);
             $stmt->bindParam(':imgId', $imgId);
             $stmt->execute();
         }
 
         // update image info
-        $query = "UPDATE view_img SET img_name  = :imgName, img_comment = :imgComment WHERE img_id = :imgId";
-        $stmt = $this->dbConfig->prepare($query);
+        $stmt = $this->dbConfig->prepare(
+            "UPDATE view_img SET img_name  = :imgName, "
+            . "img_comment = :imgComment WHERE img_id = :imgId"
+        );
         $stmt->bindParam(':imgName', $this->secureName($imgName));
         $stmt->bindParam(':imgComment', $this->comment);
         $stmt->bindParam(':imgId', $imgId);
@@ -133,15 +138,19 @@ class CentreonImageManager extends centreonFileManager
         //check directory
         if (!($dirId = $this->checkDirectoryExistence())) {
             $dirId = $this->insertDirectory();
-        } elseif ($img_info['dir_alias'] != $this->destinationDir) {
+        }
+        // Create directory if not exist
+        if ($img_info['dir_alias'] != $this->destinationDir) {
             $old = $this->mediaPath . $img_info['dir_alias'] . '/' . $img_info["img_path"];
             $new = $this->mediaPath . $this->destinationDir . '/' . $img_info["img_path"];
             $this->moveImage($old, $new);
         }
 
         //update relation
-        $query = "UPDATE view_img_dir_relation SET dir_dir_parent_id  = :dirId WHERE img_img_id = :imgId";
-        $stmt = $this->dbConfig->prepare($query);
+        $stmt = $this->dbConfig->prepare(
+            "UPDATE view_img_dir_relation SET dir_dir_parent_id  = :dirId "
+            . "WHERE img_img_id = :imgId"
+        );
         $stmt->bindParam(':dirId', $dirId);
         $stmt->bindParam(':imgId', $imgId);
         $stmt->execute();
@@ -152,9 +161,8 @@ class CentreonImageManager extends centreonFileManager
     /**
      * @param $fullPath
      */
-    protected function deleteImg(
-        $fullPath
-    ) {
+    protected function deleteImg($fullPath)
+    {
         unlink($fullPath);
     }
 
@@ -182,29 +190,29 @@ class CentreonImageManager extends centreonFileManager
     protected function insertDirectory()
     {
         touch($this->destinationPath . "/index.html");
-        $query = "INSERT INTO view_img_dir (dir_name, dir_alias) VALUES (:dirName, :dirAlias)";
-        $stmt = $this->dbConfig->prepare($query);
-        $stmt->bindParam(':dirName', $this->destinationDir);
-        $stmt->bindParam(':dirAlias', $this->destinationDir);
-        $stmt->execute();
 
-        $stmt = $this->dbConfig->query("SELECT MAX(dir_id) FROM view_img_dir");
-        $dirId = $stmt->fetch();
-        $stmt->closeCursor();
-        return ($dirId["MAX(dir_id)"]);
+        $stmt = $this->dbConfig->prepare(
+            "INSERT INTO view_img_dir (dir_name, dir_alias) "
+            . "VALUES (:dirName, :dirAlias)"
+        );
+        $stmt->bindParam(':dirName', $this->destinationDir, \PDO::PARAM_STR);
+        $stmt->bindParam(':dirAlias', $this->destinationDir, \PDO::PARAM_STR);
+        if ($stmt->execute()) {
+            return $this->dbConfig->lastInsertId();
+        }
+        return null;
     }
 
     /**
      * @param $dirId
      */
-    protected function updateDirectory(
-        $dirId
-    ) {
+    protected function updateDirectory($dirId)
+    {
         $query = "UPDATE view_img_dir SET dir_name = :dirName, dir_alias = :dirAlias WHERE dir_id = :dirId";
         $stmt = $this->dbConfig->prepare($query);
-        $stmt->bindParam(':dirName', $this->destinationDir);
-        $stmt->bindParam(':dirAlias', $this->destinationDir);
-        $stmt->bindParam(':dirId', $dirId);
+        $stmt->bindParam(':dirName', $this->destinationDir, \PDO::PARAM_STR);
+        $stmt->bindParam(':dirAlias', $this->destinationDir, \PDO::PARAM_STR);
+        $stmt->bindParam(':dirId', $dirId, \PDO::PARAM_INT);
         $stmt->execute();
     }
 
@@ -217,34 +225,33 @@ class CentreonImageManager extends centreonFileManager
             $dirId = $this->insertDirectory();
         }
 
-        $query = "INSERT INTO view_img (img_name, img_path, img_comment) VALUES (:imgName, :imgPath, :dirComment)";
-        $stmt = $this->dbConfig->prepare($query);
-        $stmt->bindParam(':imgName', $this->fileName);
-        $stmt->bindParam(':imgPath', $this->newFile);
-        $stmt->bindParam(':dirComment', $this->comment);
+        $stmt = $this->dbConfig->prepare(
+            "INSERT INTO view_img (img_name, img_path, img_comment) "
+            . "VALUES (:imgName, :imgPath, :dirComment)"
+        );
+        $stmt->bindParam(':imgName', $this->fileName, \PDO::PARAM_STR);
+        $stmt->bindParam(':imgPath', $this->newFile, \PDO::PARAM_STR);
+        $stmt->bindParam(':dirComment', $this->comment, \PDO::PARAM_STR);
         $stmt->execute();
+        $imgId = $this->dbConfig->lastInsertId();
 
-        $stmt = $this->dbConfig->query("SELECT MAX(img_id) FROM view_img");
-        $imgId = $stmt->fetch();
-        $imgId = $imgId["MAX(img_id)"];
-
-        $query = "INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) VALUES (:dirId, :imgId)";
-        $stmt = $this->dbConfig->prepare($query);
-        $stmt->bindParam(':dirId', $dirId);
-        $stmt->bindParam(':imgId', $imgId);
+        $stmt = $this->dbConfig->prepare(
+            "INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) "
+            . "VALUES (:dirId, :imgId)"
+        );
+        $stmt->bindParam(':dirId', $dirId, \PDO::PARAM_INT);
+        $stmt->bindParam(':imgId', $imgId, \PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
-        return ($imgId);
+        return $imgId;
     }
 
     /**
      * @param $old
      * @param $new
      */
-    protected function moveImage(
-        $old,
-        $new
-    ) {
+    protected function moveImage($old, $new)
+    {
         copy($old, $new);
         $this->deleteImg($old);
     }

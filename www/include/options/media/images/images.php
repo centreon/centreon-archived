@@ -40,18 +40,29 @@ if (!isset($oreon)) {
     exit();
 }
 
-isset($_GET["img_id"]) ? $imgG = $_GET["img_id"] : $imgG = null;
-isset($_POST["img_id"]) ? $imgP = $_POST["img_id"] : $imgP = null;
-$imgG ? $img_id = $imgG : $img_id = $imgP;
+define('IMAGE_ADD', 'a');
+define('IMAGE_WATCH', 'w');
+define('IMAGE_MODIFY', 'ci');
+define('IMAGE_MODIFY_DIRECTORY', 'cd');
+define('IMAGE_MOVE', 'm');
+define('IMAGE_DELETE', 'd');
+define('IMAGE_SYNC_DIR', 'sd');
 
-isset($_GET["dir_id"]) ? $dirG = $_GET["dir_id"] : $dirG = null;
-isset($_POST["dir_id"]) ? $dirP = $_POST["dir_id"] : $dirP = null;
-$dirG ? $dir_id = $dirG : $dir_id = $dirP;
+$imageId = filter_var(
+    $_GET["img_id"] ?? $_POST["img_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
 
+$directoryId = filter_var(
+    $_GET["dir_id"] ?? $_POST["dir_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+// If one data are not correctly typed in array, it will be set to false
+$selectIds = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? array(),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Path to the cities dir
@@ -65,27 +76,31 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "a": #Add a img
+    case IMAGE_ADD:
         require_once($path."formImg.php");
         break;
-    case "w": #Watch a img
+    case IMAGE_WATCH:
+        if (is_int($imageId)) {
+            require_once($path."formImg.php");
+        }
+        break;
+    case IMAGE_MODIFY:
         require_once($path."formImg.php");
         break;
-    case "ci": #Modify a img
-        require_once($path."formImg.php");
-        break;
-    case "cd": #Modify a dir
+    case IMAGE_MODIFY_DIRECTORY:
         require_once($path."formDirectory.php");
         break;
-    case "m": #Move files to a dir
+    case IMAGE_MOVE:
         require_once($path."formDirectory.php");
         break;
-    case "d":
-        deleteMultImg(isset($select) ? $select : array());
-        deleteMultDirectory(isset($select) ? $select : array());
+    case IMAGE_DELETE:
+        if (!in_array(false, $selectIds)) {
+            deleteMultImg($selectIds);
+            deleteMultDirectory($selectIds);
+        }
         require_once($path."listImg.php");
         break;
-    case "sd":
+    case IMAGE_SYNC_DIR:
         require_once($path."syncDir.php");
         break;
     default:
