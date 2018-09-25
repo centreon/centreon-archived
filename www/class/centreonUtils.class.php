@@ -44,14 +44,19 @@ class CentreonUtils
      */
     const ESCAPE_LEGACY_METHOD = 0;
     /**
-     * Convert all html markups into HTML entities except links
+     * Convert all html tags into HTML entities except links
      */
     const ESCAPE_ALL_EXCEPT_LINK = 1;
     /**
-     * Convert all html markups into HTML entities
+     * Convert all html tags into HTML entities
      */
     const ESCAPE_ALL = 2;
 
+    /**
+     * Defines all self-closing html tags allowed
+     */
+    public static $selfclosingHtmlTagsAllowed = ['br', 'hr'];
+    
     /**
      * Converts Object into Array
      *
@@ -334,7 +339,7 @@ class CentreonUtils
     }
     
     /**
-     * Convert all html markups into HTML entities
+     * Convert all html tags into HTML entities
      *
      * @param type $stringToEscape String to escape
      * @return string Converted string
@@ -345,64 +350,113 @@ class CentreonUtils
     }
     
     /**
-     * Convert all html markups into HTML entities except links
+     * Convert all HTML tags into HTML entities except those defined in parameter
      *
-     * @param string $stringToEscape
-     * @return string Converted string (except links)
+     * @param string $stringToEscape String (HTML) to escape
+     * @param string[] $tagsNotToEscape List of tags not to escape
+     * @return string HTML escaped
      */
-    public static function escapeAllExceptLink($stringToEscape)
-    {
-        $linkToken = '{{__LINKx__}}';
-        $index = 0;
-        $linksFounded = array();
-        while ($occurence = self::getHtmlMarkups('a', $stringToEscape)) {
-            $linksFounded[$index] = $occurence['tag'];
-            $linkTag = str_replace('x', $index, $linkToken);
-            $stringToEscape = substr_replace(
-                $stringToEscape,
-                $linkTag,
-                $occurence['start'],
-                $occurence['length']
-            );
-            $index++;
+    public static function escapeAllExceptSelectedTags(
+        $stringToEscape,
+        $tagsNotToEscape = []
+    ) {
+        if (!is_array($tagsNotToEscape)) {
+            // Do nothing if the tag list is empty
+            return $stringToEscape;
+        }
+
+        $tagOccurences = [];
+        /**
+         * Before to escape HTML, we will search and replace all HTML tags
+         * allowed by specific tags to avoid they are processed
+         */
+        for ($indexTag = 0; $indexTag < count($tagsNotToEscape); $indexTag++) {
+            $linkToken = "{{__TAG{$indexTag}x__}}";
+            $currentTag = $tagsNotToEscape[$indexTag];
+            if (!in_array($currentTag, self::$selfclosingHtmlTagsAllowed)) {
+                // The current tag is not self-closing tag allowed
+                $index = 0;
+                $tagsFound = array();
+                
+                // Specific process for not self-closing HTML tags
+                while ($occurence = self::getHtmlTags($currentTag, $stringToEscape)) {
+                    $tagsFound[$index] = $occurence['tag'];
+                    $linkTag = str_replace('x', $index, $linkToken);
+                    $stringToEscape = substr_replace(
+                        $stringToEscape,
+                        $linkTag,
+                        $occurence['start'],
+                        $occurence['length']
+                    );
+                    $index++;
+                }
+            } else {
+                $linkToken = '{{__' . strtoupper($currentTag) . '__}}';
+                // Specific process for self-closing tag
+                $stringToEscape = preg_replace(
+                    '~< *(' . $currentTag . ')+ *\/?>~im',
+                    $linkToken,
+                    $stringToEscape
+                );
+                $tagsFound = ["<$currentTag/>"];
+            }
+            $tagOccurences[$linkToken] = $tagsFound;
         }
         
         $escapedString = htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
         
-        for ($index = 0; $index < count($linksFounded); $index++) {
-            $linkTag = str_replace('x', $index, $linkToken);
-            $escapedString = str_replace($linkTag, $linksFounded[$index], $escapedString);
+        /**
+         * After we escaped all unauthorized HTML tags, we will search and
+         * replace all previous specifics tags by their original tag
+         */
+        foreach ($tagOccurences as $linkToken => $tagsFound) {
+            for ($indexTag = 0; $indexTag < count($tagsFound); $indexTag++) {
+                $linkTag = str_replace('x', $indexTag, $linkToken);
+                $escapedString = str_replace($linkTag, $tagsFound[$indexTag], $escapedString);
+            }
         }
         
         return $escapedString;
     }
     
     /**
-     * Return all occurences of a html markup found in html string
+     * Convert all html tags into HTML entities except links (<a>...</a>)
      *
-     * @param string $markup HTML markup to find
-     * @param string $html HTML to analyse
-     * @return array (('tag'=>..; 'start' =>..., 'length'=>...), ...)
+     * @param string $stringToEscape String (HTML) to escape
+     * @return string HTML escaped (except links)
      */
-    public static function getHtmlMarkups($markup, $html)
+    public static function escapeAllExceptLink($stringToEscape)
+    {
+        return self::escapeAllExceptSelectedTags($stringToEscape, ['a']);
+    }
+    
+    /**
+     * Return all occurences of a html tag found in html string
+     *
+     * @param string $tag HTML tag to find
+     * @param string $html HTML to analyse
+     * @return array (('tag'=> html tag; 'start' => start position of tag,
+     * 'length'=> length between start and end of tag), ...)
+     */
+    public static function getHtmlTags($tag, $html)
     {
         $occurrences = false;
         $start = 0;
-        if (($start = stripos($html, "<$markup", $start)) !== false &&
-            ($end = stripos($html, "</$markup>", $end + strlen("</$markup>")))
+        if (($start = stripos($html, "<$tag", $start)) !== false &&
+            ($end = stripos($html, "</$tag>", $end + strlen("</$tag>")))
         ) {
-            if (!is_array($occurrences[$markup])) {
-                $occurrences[$markup] = array();
+            if (!is_array($occurrences[$tag])) {
+                $occurrences[$tag] = array();
             }
             $occurrences =
                 array(
                     'tag' => substr(
                         $html,
                         $start,
-                        $end + strlen("</$markup>") - $start
+                        $end + strlen("</$tag>") - $start
                     ),
                     'start' => $start,
-                    'length' => $end + strlen("</$markup>") - $start
+                    'length' => $end + strlen("</$tag>") - $start
                 );
         }
         return $occurrences;
