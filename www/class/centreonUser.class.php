@@ -237,9 +237,7 @@ class CentreonUser
 
         // Get locale from browser
         if ($lang === 'browser') {
-            $browserLocale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-            $currentLocale .= \Locale::acceptFromHttp($browserLocale);
-            $lang = $currentLocale;
+            $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
         }
 
         return $lang;
