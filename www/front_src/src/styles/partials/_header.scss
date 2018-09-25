@@ -274,10 +274,11 @@
         margin: 15px 0;
         margin: 0 auto;
         display: block;
-        max-width: 151px;
+        width: 165px;
         outline: none;
         position: relative;
-        padding: 0 30px 0 15px;
+        padding: 0 42px 0 15px;
+        box-sizing: border-box;
         &:hover {
           color: rgb(0,9,22);
           background-color: rgba(255, 161, 37, 1);
