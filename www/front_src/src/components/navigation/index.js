@@ -71,17 +71,21 @@ class NavigationComponent extends Component {
       : true;
     this.setState({
       initiallyCollapsed: true,
-      menuItems: menuItems
+      menuItems
     });
   };
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
-    menuItems[index].children[key]["collapsed"] = menuItems[index].children[key]["collapsed"]
-      ? false
-      : true;
+    if(menuItems[index].children[key]["collapsed"]) {
+      menuItems[index].children[key]["collapsed"] = false;
+    } else {
+      Object.keys(menuItems[index].children).forEach(subKey => {
+        menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
+      });
+    }
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
@@ -92,7 +96,7 @@ class NavigationComponent extends Component {
     }
     menuItems[index].active = true;
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
