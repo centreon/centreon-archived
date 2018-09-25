@@ -111,7 +111,7 @@ class Menu
             $query .= $this->acl;
         }
 
-        $query .= ' ORDER BY LENGTH(topology_page), topology_order';
+        $query .= ' ORDER BY topology_parent, topology_order, topology_page';
         $stmt = $this->db->prepare($query);
 
         $stmt->execute();
@@ -145,7 +145,8 @@ class Menu
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
                     $active = true;
                 }
-                $menu['p' . $matches[1]]['children'][$row['topology_page']] = [
+                // Add '_' to prevent json list to be reordered by the browser
+                $menu['p' . $matches[1]]['children']['_' . $row['topology_page']] = [
                     'label'    => $row['topology_name'],
                     'url'      => $row['topology_url'],
                     'active'   => $active,
@@ -157,7 +158,8 @@ class Menu
                 if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
                     $active = true;
                 }
-                $levelTwo = $matches[1] . $matches[2];
+                // Add '_' to prevent json list to be reordered by the browser
+                $levelTwo = '_' . $matches[1] . $matches[2];
                 $levelThree = [
                     'label'    => $row['topology_name'],
                     'url'      => $row['topology_url'],
