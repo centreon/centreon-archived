@@ -107,7 +107,7 @@ function forwardAction(confirmMsg, action, data)
                 success: function(response) {
                     var result = response.getElementsByTagName('result');
                     if (typeof(result) != 'undefined') {
-                        window.location = './main.php?p='+p;
+                        window.location = '?p='+p;
                     }
                 }
             });

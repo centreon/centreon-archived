@@ -73,7 +73,7 @@
 					</xsl:element>
 				</xsl:if>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
+				  	<xsl:attribute name="href">?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
 					<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 				    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 					<xsl:if test="//i/o = 'h_unhandled' or //i/o = 'hpb'">
@@ -167,7 +167,7 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
-				<xsl:attribute name="href">./main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
+				<xsl:attribute name="href">?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/></xsl:attribute>
 				<xsl:element name="img">
 					<xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
 					<xsl:attribute name="class">ico-18</xsl:attribute>

@@ -242,11 +242,11 @@ if (isset($stats)) {
                 $obj->XML->writeElement("spc", $obj->colorService[4]);
                 $obj->XML->writeElement(
                     "hgurl",
-                    CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
+                    CentreonUtils::escapeSecure("?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
                 );
                 $obj->XML->writeElement(
                     "hgurlhost",
-                    "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
+                    "?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
                 );
                 $obj->XML->endElement();
             }
