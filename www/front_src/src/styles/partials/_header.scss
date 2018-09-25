@@ -262,17 +262,17 @@
         float: right;
       }
       .submenu-user-button {
-        font-size: .625rem;
+        font-size: .8rem;
         color: #ffa225;
+        text-decoration: none;
         font-family: $primary-font-light;
         text-align: left;
-        height: 31px;
+        line-height: 31px;
         border-radius: 16px;
         border: 1px solid rgba(255, 161, 37, 1);
         background-color: transparent;
         margin: 15px 0;
         margin: 0 auto;
-        width: 100%;
         display: block;
         max-width: 151px;
         outline: none;
