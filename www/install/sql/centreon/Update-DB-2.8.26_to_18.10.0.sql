@@ -50,5 +50,5 @@ CREATE TABLE IF NOT EXISTS `task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Update the "About" menu
-UPDATE topology SET topology_url = './include/Administration/about/about.php' WHERE topology_page = 506 AND topology_parent = 5;
+UPDATE topology SET topology_url = './include/Administration/about/about.php', topology_modules = '0', topology_popup = '0' WHERE topology_page = 506 AND topology_parent = 5;
 DELETE FROM topology WHERE topology_parent = 506;
