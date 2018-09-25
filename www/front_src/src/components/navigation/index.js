@@ -103,7 +103,7 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems, selectedMenu, initiallyCollapsed } = this.state;
+    const { active, menuItems, initiallyCollapsed } = this.state;
     const pageId = this.props.location.search.split("=")[1];
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -180,15 +180,15 @@ class NavigationComponent extends Component {
 
                               <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                                 {Object.keys(subItem.children).length > 0
-                                  ? 
+                                  ?
                                   Object.keys(subItem.children).map(
                                       (key, idx) => (
                                         <div>
                                           {
-                                          Object.keys(subItem.children).length > 1 ? 
+                                          Object.keys(subItem.children).length > 1 ?
                                             <span class="collapsed-level-title">
                                               {key}:{" "}
-                                            </span> 
+                                            </span>
                                           : null
                                           }
                                           {Object.keys(subItem.children[key]).map(

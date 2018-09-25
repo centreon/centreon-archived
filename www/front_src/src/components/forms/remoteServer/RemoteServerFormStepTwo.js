@@ -1,13 +1,10 @@
 import React, { Component } from "react";
-import { Field, reduxForm as connectForm } from "redux-form";
-import CheckboxField from "../../form-fields/CheckboxField";
+import { reduxForm as connectForm } from "redux-form";
 import MultiSelect from "../../form-fields/MultiSelect";
-
-import { selectRemoteServerValidator } from "../../../helpers/validators";
 
 class RemoteServerFormStepTwo extends Component {
   render() {
-    const { error, handleSubmit, onSubmit, submitting, pollers } = this.props;
+    const { error, handleSubmit, onSubmit, pollers } = this.props;
     return (
       <div className="form-wrapper">
         <div className="form-inner">

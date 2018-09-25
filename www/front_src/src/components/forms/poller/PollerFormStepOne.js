@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Field, reduxForm as connectForm } from "redux-form";
 import InputField from "../../form-fields/InputField";
-import CheckboxField from "../../form-fields/CheckboxField";
-import PasswordInputField from "../../form-fields/PasswordInputField";
 
 import {
   serverNameValidator,
@@ -12,7 +10,7 @@ import {
 
 class PollerFormStepOne extends Component {
   render() {
-    const { error, handleSubmit, onSubmit, submitting } = this.props;
+    const { error, handleSubmit, onSubmit } = this.props;
     return (
       <div className="form-wrapper">
         <div className="form-inner">
