@@ -163,6 +163,7 @@ class Task implements EntityInterface
             'params' => $this->getParams(),
             'status' => $this->getStatus(),
             'type' => $this->getType(),
+            'parent_id' => $this->getParentId(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s')
         ];
     }
