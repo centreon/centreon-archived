@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -356,7 +355,7 @@ $TemplateValues = array();
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
@@ -1095,8 +1094,8 @@ if ($o != "mc") {
      */
     $form->registerRule('testModule', 'callback', 'testHostName');
     $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
-    $form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
-    $form->registerRule('exist', 'callback', 'testHostExistence');
+    $form->registerRule('existTemplate', 'callback', 'hasHostTemplateNeverUsed');
+    $form->registerRule('exist', 'callback', 'hasHostNameNeverUsed');
     $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
@@ -1186,8 +1185,8 @@ $tpl->assign('javascript', '
         ');
 $tpl->assign('accessgroups', _('Access groups'));
 
-/* 
- * prepare help texts 
+/*
+ * prepare help texts
  */
 $helptext = "";
 include_once("help.php");

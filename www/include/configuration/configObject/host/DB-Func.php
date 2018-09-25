@@ -44,41 +44,61 @@ require_once _CENTREON_PATH_ . 'www/class/centreonACL.class.php';
 /**
  * Quickform rule that checks whether or not monitoring server can be set
  *
- * @return bool
+ * @global CentreonDB $pearDB
+ * @global HTML_QuickFormCustom $form
+ * @param int $instanceId
+ * @return boolean
  */
 function testPollerDep($instanceId)
 {
     global $pearDB, $form;
 
     $hostId = $form->getSubmitValue('host_id');
-    $hostParents = $form->getSubmitValue('host_parents');
-
-    if (!$hostId || (!isset($hostParents))) {
+    $hostParents = filter_var_array(
+        $form->getSubmitValue('host_parents'),
+        FILTER_VALIDATE_INT
+    );
+    
+    if (!$hostId || is_null($hostParents)) {
         return true;
     }
+    
+    $request = "SELECT COUNT(*) as total "
+        . "FROM host_hostparent_relation hhr, ns_host_relation nhr "
+        . "WHERE hhr.host_parent_hp_id = nhr.host_host_id "
+        . "AND hhr.host_host_id = :host_id "
+        . "AND nhr.nagios_server_id != :server_id";
 
-    $query = "SELECT COUNT(*) as nb
-                      FROM host_hostparent_relation hhr, ns_host_relation nhr
-                      WHERE hhr.host_parent_hp_id = nhr.host_host_id
-                      AND hhr.host_host_id = " . $pearDB->escape($hostId) . "
-                      AND nhr.nagios_server_id != " . $pearDB->escape($instanceId);
-
-    if (isset($hostParents)) {
-        $query .= " AND host_parent_hp_id IN (" . implode(',', $hostParents) . ")";
+    $fieldsToBind = [];
+    if (!in_array(false, $hostParents)) {
+        for ($index = 0; $index < count($hostParents); $index++) {
+            $fieldsToBind[':parent_' . $index] = $hostParents[$index];
+        }
+        $request .= " AND host_parent_hp_id IN (" .
+            implode(',', array_keys($fieldsToBind)) . ")";
     }
-
-    $res = $pearDB->query($query);
-    $row = $res->fetchRow();
-    if ($row['nb']) {
-        return false;
+    
+    $prepare = $pearDB->prepare($request);
+    $prepare->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+    $prepare->bindValue(':server_id', $instanceId, \PDO::PARAM_INT);
+    
+    foreach ($fieldsToBind as $field => $hostParentId) {
+        $prepare->bindValue($field, $hostParentId, \PDO::PARAM_INT);
     }
+    
+    if ($prepare->execute()) {
+        $result = $prepare->fetch(\PDO::FETCH_ASSOC);
+        return ((int) $result['total']) == 0;
+    }
+    
     return true;
 }
 
 /**
  * Quickform rule that checks whether or not reserved macro are used
  *
- * @return bool
+ * @global CentreonDB $pearDB
+ * @return boolean
  */
 function hostMacHandler()
 {
@@ -88,71 +108,63 @@ function hostMacHandler()
         return true;
     }
 
-    $macArray = $_POST['macroInput'];
-    $macTab = array();
-    foreach ($macArray as $value) {
-        $macTab[] = "'\$_HOST" . strtoupper($value) . "\$'";
+    $fieldsToBind = [];
+    for ($index = 0; $index < count($_POST['macroInput']); $index++) {
+        $fieldsToBind[':macro_' . $index] =
+            "'\$_HOST" . strtoupper($_POST['macroInput'][$index]) . "\$'";
     }
 
-    if (count($macTab)) {
-        $sql = "SELECT count(*) as nb FROM nagios_macro WHERE macro_name IN (" . implode(',', $macTab) . ")";
-        $res = $pearDB->query($sql);
-        $row = $res->fetchRow();
-        if (isset($row['nb']) && $row['nb']) {
-            return false;
-        }
+    $request =
+        "SELECT count(*) as total FROM nagios_macro WHERE macro_name IN (" .
+        implode(',', array_keys($fieldsToBind)) . ")";
+    
+    $prepare = $pearDB->prepare($request);
+    foreach ($fieldsToBind as $field => $macroName) {
+        $prepare->bindValue($field, $macroName, \PDO::PARAM_STR);
+    }
+    
+    if ($prepare->execute()) {
+        $result = $prepare->fetch(\PDO::FETCH_ASSOC);
+        return ((int) $result['total']) == 0;
     }
     return true;
 }
 
-function hostExists($name = null)
-{
-    global $pearDB, $centreon;
-
-    $DBRESULT = $pearDB->query("SELECT host_host_id 
-                              FROM ns_host_relation 
-                              WHERE host_host_id = '" . getMyHostID(trim($centreon->checkIllegalChar($name))) . "'");
-    if ($DBRESULT->rowCount() >= 1) {
-        return true;
-    }
-    return false;
-}
-
-function hostTemplateExists($name = null)
-{
-    global $pearDB, $centreon;
-
-    $DBRESULT = $pearDB->query("SELECT host_id 
-                                FROM `host`
-                                WHERE host_name = '" . $centreon->checkIllegalChar($name) . "'");
-    if ($DBRESULT->rowCount() >= 1) {
-        return true;
-    }
-    return false;
-}
-
-function testHostExistence($name = null)
+/**
+ * Indicates if the host name has already been used
+ *
+ * @global CentreonDB $pearDB
+ * @global HTML_QuickFormCustom $form
+ * @global Centreon $centreon
+ * @param string $name Name to check
+ * @return boolean Return false if the host name has already been used
+ */
+function hasHostNameNeverUsed($name = null)
 {
     global $pearDB, $form, $centreon;
 
     $id = null;
     if (isset($form)) {
-        $id = $form->getSubmitValue('host_id');
-        ;
+        $id = (int) $form->getSubmitValue('host_id');
     }
-    $DBRESULT = $pearDB->query("SELECT host_name, host_id 
-                              FROM host 
-                              WHERE host_name = '" . CentreonDB::escape($centreon->checkIllegalChar($name)) . "' 
-                              AND host_register = '1'");
-    $host = $DBRESULT->fetchRow();
-
-    /*
-     * Modif case
-     */
-
-    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
+    
+    $prepare = $pearDB->prepare(
+        "SELECT host_name, host_id FROM host "
+        . "WHERE host_name = :host_name AND host_register = '1'"
+    );
+    $hostName = CentreonDB::escape($centreon->checkIllegalChar($name));
+    
+    $prepare->bindValue(':host_name', $hostName, \PDO::PARAM_STR);
+    $prepare->execute();
+    $result = $prepare->fetch(\PDO::FETCH_ASSOC);
+    $totals = $prepare->rowCount();
+    
+    if ($totals >= 1 && ($result["host_id"] == $id)) {
+        /**
+         * In case of modification
+         */
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
+    } elseif ($totals >= 1 && ($result["host_id"] != $id)) {
         return false;
     } else {
         return true;
@@ -167,30 +179,41 @@ function testHostName($name = null)
     return true;
 }
 
-function testHostTplExistence($name = null)
+/**
+ * Indicates if the host template has already been used
+ *
+ * @global CentreonDB $pearDB
+ * @global HTML_QuickFormCustom $form
+ * @param string $name Name to check
+ * @return boolean Return false if the host template has already been used
+ */
+function hasHostTemplateNeverUsed($name = null)
 {
     global $pearDB, $form;
 
     $id = null;
     if (isset($form)) {
-        $id = $form->getSubmitValue('host_id');
-    };
-    $DBRESULT = $pearDB->query("SELECT host_name, host_id 
-                                FROM host 
-                                WHERE host_name = '" . CentreonDB::escape($name) . "' 
-                                AND host_register = '0'");
-    $host = $DBRESULT->fetchRow();
+        $id = (int) $form->getSubmitValue('host_id');
+    }
+    
+    $prepare = $pearDB->prepare(
+        "SELECT host_name, host_id FROM host "
+        . "WHERE host_name = :host_name AND host_register = '0'"
+    );
+    $prepare->bindValue(':host_name', $name, \PDO::PARAM_STR);
+    $prepare->execute();
+    $total = $prepare->rowCount();
+    $result = $prepare->fetch(\PDO::FETCH_ASSOC);
 
-    /*
-     * Modif case
-     */
-
-    if ($DBRESULT->rowCount() >= 1 && $host["host_id"] == $id) {
+    if ($total >= 1 && $result["host_id"] == $id) {
+        /**
+         * In case of modification
+         */
         return true;
-    } /*
-     * Duplicate entry
-     */
-    elseif ($DBRESULT->rowCount() >= 1 && $host["host_id"] != $id) {
+    } elseif ($total >= 1 && $result["host_id"] != $id) {
+        /**
+         * In case of duplicate
+         */
         return false;
     } else {
         return true;
@@ -334,7 +357,9 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "host_name" ? ($host_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
+                $val
+                    ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                 if ($key2 != "host_id") {
                     $fields[$key2] = $value2;
                 }
@@ -342,7 +367,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_name"] = $host_name;
                 }
             }
-            if (testHostExistence($host_name)) {
+            if (hasHostNameNeverUsed($host_name)) {
                 $val ? $rq = "INSERT INTO host VALUES (" . $val . ")" : $rq = null;
                 $DBRESULT = $pearDB->query($rq);
                 $DBRESULT = $pearDB->query("SELECT MAX(host_id) FROM host");
@@ -459,18 +484,22 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                      */
                     $DBRESULT = $pearDB->query("SELECT * 
                                                 FROM extended_host_information 
-                                                WHERE host_host_id = '" . $key . "'");
+                                                WHERE host_host_id = '" . intval($key) . "'");
                     while ($ehi = $DBRESULT->fetchRow()) {
                         $val = null;
                         $ehi["host_host_id"] = $maxId["MAX(host_id)"];
                         $ehi["ehi_id"] = null;
                         foreach ($ehi as $key2 => $value2) {
-                            $val ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
+                            $val
+                                ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'"): ", NULL")
+                                : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                             if ($key2 != "ehi_id") {
                                 $fields[$key2] = $value2;
                             }
                         }
-                        $val ? $rq = "INSERT INTO extended_host_information VALUES (" . $val . ")" : $rq = null;
+                        $val
+                            ? $rq = "INSERT INTO extended_host_information VALUES (" . $val . ")"
+                            : $rq = null;
                         $DBRESULT2 = $pearDB->query($rq);
                     }
 
@@ -545,7 +574,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                 "type" => 'HOST',
                 'id' => $maxId["MAX(host_id)"],
                 "action" => "DUP",
-                "duplicate_host" => $key
+                "duplicate_host" => intval($key)
             ));
         }
     }
@@ -1082,7 +1111,13 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
     return ($host_id["MAX(host_id)"]);
 }
 
-function insertHostExtInfos($host_id = null, $ret)
+/**
+ * @global HTML_QuickFormCustom $form
+ * @global CentreonDB $pearDB
+ * @param int $host_id
+ * @param array $ret
+ */
+function insertHostExtInfos($host_id, $ret)
 {
     global $form, $pearDB;
 
@@ -1090,7 +1125,7 @@ function insertHostExtInfos($host_id = null, $ret)
         return;
     }
 
-    if (!count($ret)) {
+    if (empty($ret)) {
         $ret = $form->getSubmitValues();
     }
 
@@ -2559,7 +2594,7 @@ function createHostTemplateService($host_id = null, $htm_id = null)
 
     /*
      * If we select a host template model,
-     * 	we create the services linked to this host template model
+     * we create the services linked to this host template model
      */
     $ret = $form->getSubmitValues();
     if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"]) {
