@@ -48,3 +48,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `params` BLOB NULL,
   `created_at` TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Update the "About" menu
+UPDATE topology SET topology_url = './include/Administration/about/about.php' WHERE topology_page = 506 AND topology_parent = 5;
+DELETE FROM topology WHERE topology_parent = 506;
