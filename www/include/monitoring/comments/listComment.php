@@ -140,7 +140,10 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-    $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
+    $tab_comments_svc[$i]['data'] = CentreonUtils::escapeAllExceptSelectedTags(
+        $tab_comments_svc[$i]['data'],
+        ['a', 'br', 'hr']
+    );
     if ($data['service_description'] != '') {
         $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
