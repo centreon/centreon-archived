@@ -33,29 +33,22 @@
  *
  */
 
-namespace CentreonLegacy\Core\Install\Step;
+session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 
-class Step9 extends AbstractStep
-{
-    public function getContent()
-    {
-        $installDir = __DIR__ . '/../../../../../www/install';
-        require_once $installDir . '/steps/functions.php';
-        $template = getTemplate($installDir . '/steps/templates');
-
-        $backupDir = __DIR__ . '/../../../../../installDir';
-        $contents = '';
-        if (!is_dir($backupDir)) {
-            $contents .= '<br>Warning : The installation directory cannot be move. ' .
-                'Please create the directory ' . $backupDir . ' ' .
-                'and give it the rigths to apache user to write.';
-        }
-
-        $template->assign('title', _('Installation finished'));
-        $template->assign('step', 9);
-        $template->assign('finish', 1);
-        $template->assign('blockPreview', 1);
-        $template->assign('contents', $contents);
-        return $template->fetch('content.tpl');
-    }
+$parameters = filter_input_array(INPUT_POST);
+if ((int)$parameters["send_statistics"] == 1) {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
+} else {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
 }
+
+$db = $dependencyInjector['configuration_db'];
+$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
+$db->query($query);
+
+$name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
+$completeName = $centreon_path . '/installDir/' . $name;
+@rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
+
+session_destroy();

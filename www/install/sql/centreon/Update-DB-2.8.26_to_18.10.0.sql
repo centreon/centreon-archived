@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
 -- Add column to topology table to mark which pages are with React
 ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`;
 
+-- Change informations lengths
+ALTER TABLE `informations` MODIFY COLUMN `value` varchar (255) NULL;
+
 -- Move "Graphs" & "Broker Statistics" as "Server status" sub menu
 UPDATE topology SET topology_parent = '505' WHERE topology_page = '10205';
 UPDATE topology SET topology_page = '50501' WHERE topology_page = '10205' and topology_parent = '505';

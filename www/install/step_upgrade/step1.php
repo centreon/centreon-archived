@@ -70,15 +70,16 @@ $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
     var status = <?php echo $status;?>;
+
     /**
      * Validates info
-     * 
+     *
      * @return bool
      */
     function validation() {
-       if (status == 0) {
-        return true;
-       }
-       return false;
+        if (status == 0) {
+            return true;
+        }
+        return false;
     }
 </script>

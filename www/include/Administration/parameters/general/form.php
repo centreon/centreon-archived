@@ -45,7 +45,8 @@ $transcoKey = array(
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
     'display_downtime_chart' => 'yes',
-    'display_comment_chart' => 'yes'
+    'display_comment_chart' => 'yes',
+    'send_statistics' => 'yes'
 );
 
 $DBRESULT = $pearDB->query("SELECT * FROM `options`");
@@ -144,6 +145,12 @@ $form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nb
 $options2[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 
+/*
+ * statistics options
+ */
+$stat = array();
+$stat[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup($stat, 'send_statistics', _("Send anonymous statistics"), '&nbsp;&nbsp;');
 
 /*
  * Proxy options

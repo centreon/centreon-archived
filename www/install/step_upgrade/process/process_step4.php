@@ -35,7 +35,7 @@
 
 session_start();
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once '../../steps/functions.php';
 
 $current = $_POST['current'];
@@ -55,9 +55,9 @@ try {
 /**
  * Upgrade storage sql
  */
-$storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
+$storageSql = '../../sql/centstorage/Update-CSTG-' . $current . '_to_' . $next . '.sql';
 if (is_file($storageSql)) {
-    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
+    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-' . $current . '_to_' . $next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
     }
@@ -66,7 +66,7 @@ if (is_file($storageSql)) {
 /**
  * Pre upgrade PHP
  */
-$prePhp = '../../php/Update-'.$current.'_to_'.$next.'.php';
+$prePhp = '../../php/Update-' . $current . '_to_' . $next . '.php';
 if (is_file($prePhp)) {
     try {
         include_once $prePhp;
@@ -78,9 +78,9 @@ if (is_file($prePhp)) {
 /**
  * Upgrade configuration sql
  */
-$confSql = '../../sql/centreon/Update-DB-'.$current.'_to_'.$next.'.sql';
+$confSql = '../../sql/centreon/Update-DB-' . $current . '_to_' . $next . '.sql';
 if (is_file($confSql)) {
-    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
+    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-' . $current . '_to_' . $next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
     }
@@ -89,7 +89,7 @@ if (is_file($confSql)) {
 /**
  * Post upgrade PHP
  */
-$postPhp = '../../php/Update-'.$current.'_to_'.$next.'.post.php';
+$postPhp = '../../php/Update-' . $current . '_to_' . $next . '.post.php';
 if (is_file($postPhp)) {
     try {
         include_once $postPhp;
@@ -104,7 +104,7 @@ $current = $row['value'];
 $next = '';
 if ($handle = opendir('../../sql/centreon')) {
     while (false !== ($file = readdir($handle))) {
-        if (preg_match('/Update-DB-'.preg_quote($current).'_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
+        if (preg_match('/Update-DB-' . preg_quote($current) . '_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
             $next = $matches[1];
         }
     }
