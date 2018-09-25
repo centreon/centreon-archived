@@ -26,7 +26,7 @@
  * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If yo
+ * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com

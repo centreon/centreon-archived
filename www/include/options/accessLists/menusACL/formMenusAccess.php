@@ -324,31 +324,28 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
-try {
-    if ($form->validate()) {
-        $aclObj = $form->getElement('acl_topo_id');
-        if ($form->getSubmitValue("submitA")) {
-            $aclObj->setValue(insertLCAInDB());
-        } elseif ($form->getSubmitValue("submitC")) {
-            updateLCAInDB($aclObj->getValue());
-        }
+
+if ($form->validate()) {
+    $aclObj = $form->getElement('acl_topo_id');
+    if ($form->getSubmitValue("submitA")) {
+        $aclObj->setValue(insertLCAInDB());
+    } elseif ($form->getSubmitValue("submitC")) {
+        updateLCAInDB($aclObj->getValue());
+    }
+    require_once("listsMenusAccess.php");
+} else {
+    $action = $form->getSubmitValue("action");
+    if ($valid && $action["action"]) {
         require_once("listsMenusAccess.php");
     } else {
-        $action = $form->getSubmitValue("action");
-        if ($valid && $action["action"]) {
-            require_once("listsMenusAccess.php");
-        } else {
-            // Apply a template definition
-            $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-            $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-            $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-            $form->accept($renderer);
-            $tpl->assign('form', $renderer->toArray());
-            $tpl->assign('o', $o);
-            $tpl->assign('acl_topos2', $acl_topos2);
-            $tpl->display("formMenusAccess.ihtml");
-        }
+        // Apply a template definition
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+        $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+        $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+        $form->accept($renderer);
+        $tpl->assign('form', $renderer->toArray());
+        $tpl->assign('o', $o);
+        $tpl->assign('acl_topos2', $acl_topos2);
+        $tpl->display("formMenusAccess.ihtml");
     }
-} catch (\Exception $ex) {
-    echo $ex->getMessage();
 }
