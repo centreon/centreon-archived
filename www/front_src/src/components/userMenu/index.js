@@ -50,10 +50,10 @@ class UserMenu extends Component {
                   </a>
                 </span>
               </li>
-              <CopyToClipboard onCopy={this.onCopy} text={this.state.value}>
+              <CopyToClipboard onCopy={this.onCopy} text={toggled.value}>
                 <React.Fragment>
-                  <button class="submenu-user-button">Copy autologin link <span class="btn-logout-icon"></span></button>
-                  <span className={'iconmoon' + this.state.copied ?'icon-copied' : 'icon-copy'} />
+                  <button class="submenu-user-button">Copy autologin link <span className={toggled.copied ?'icon-copied btn-logout-icon' : 'icon-copy btn-logout-icon' }></span></button>
+                  <span  />
                 </React.Fragment>
 
                 </CopyToClipboard>
