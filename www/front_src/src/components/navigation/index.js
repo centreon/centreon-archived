@@ -71,17 +71,21 @@ class NavigationComponent extends Component {
       : true;
     this.setState({
       initiallyCollapsed: true,
-      menuItems: menuItems
+      menuItems
     });
   };
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
-    menuItems[index].children[key]["collapsed"] = menuItems[index].children[key]["collapsed"]
-      ? false
-      : true;
+    if(menuItems[index].children[key]["collapsed"]) {
+      menuItems[index].children[key]["collapsed"] = false;
+    } else {
+      Object.keys(menuItems[index].children).forEach(subKey => {
+        menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
+      });
+    }
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
@@ -92,7 +96,7 @@ class NavigationComponent extends Component {
     }
     menuItems[index].active = true;
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
@@ -180,15 +184,15 @@ class NavigationComponent extends Component {
 
                               <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                                 {Object.keys(subItem.children).length > 0
-                                  ?
+                                  ? 
                                   Object.keys(subItem.children).map(
-                                      key => (
+                                      (key, idx) => (
                                         <div>
                                           {
-                                          Object.keys(subItem.children).length > 1 ?
+                                          Object.keys(subItem.children).length > 1 ? 
                                             <span class="collapsed-level-title">
                                               {key}:{" "}
-                                            </span>
+                                            </span> 
                                           : null
                                           }
                                           {Object.keys(subItem.children[key]).map(

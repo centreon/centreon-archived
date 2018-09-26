@@ -99,7 +99,6 @@ class ServiceStatusMenu extends Component {
           </a>
         </Link>
         <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
-
         <div class="submenu services">
           <div class="submenu-inner">
             <ul class="submenu-items list-unstyled">

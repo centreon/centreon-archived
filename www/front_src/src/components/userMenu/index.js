@@ -1,16 +1,27 @@
 import React, { Component } from "react";
+import numeral from "numeral";
+import {CopyToClipboard}  from 'react-copy-to-clipboard';
 import Clock from "../clock";
 
 class UserMenu extends Component {
   state = {
-    toggled: false
+    toggled: false,
+    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939', 
+    copied: false
   };
+
 
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
       toggled: !toggled
     });
+  };
+
+
+  onCopy = () => {
+    console.log('click on copy');
+    this.setState({copied: true});
   };
 
   render() {
@@ -20,9 +31,8 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled } = this.state;
-
-    const { fullname, username } = data;
+    const { toggled } = this.state,
+          { fullname, username } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -40,8 +50,13 @@ class UserMenu extends Component {
                   </a>
                 </span>
               </li>
-              <button class="submenu-user-button">Copy autologin link <span class="btn-logout-icon"></span></button>
-              <span class="iconmoon icon-copy" />
+              <CopyToClipboard onCopy={this.onCopy} text={toggled.value}>
+                <React.Fragment>
+                  <button class="submenu-user-button">Copy autologin link <span className={toggled.copied ?'icon-copied btn-logout-icon' : 'icon-copy btn-logout-icon' }></span></button>
+                  <span  />
+                </React.Fragment>
+
+                </CopyToClipboard>
             </ul>
             <div class="button-wrap">
               <a href="index.php?disconnect=1">
