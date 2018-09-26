@@ -180,19 +180,23 @@ class NavigationComponent extends Component {
 
                               <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                                 {Object.keys(subItem.children).length > 0
-                                  ? 
+                                  ?
                                   Object.keys(subItem.children).map(
-                                      (key, idx) => (
+                                      key => (
                                         <div>
                                           {
-                                          Object.keys(subItem.children).length > 1 ? 
+                                          Object.keys(subItem.children).length > 1 ?
                                             <span class="collapsed-level-title">
                                               {key}:{" "}
-                                            </span> 
+                                            </span>
                                           : null
                                           }
                                           {Object.keys(subItem.children[key]).map(
-                                            (subKey, idx) => {
+                                            subKey => {
+                                              // manage url options (e.g. &o=c)
+                                              const urlOptions = subItem.children[key][subKey].options !== null
+                                                ? subItem.children[key][subKey].options
+                                                : ''
                                               if (pageId == subKey) {
                                                 if (!initiallyCollapsed) {
                                                   this.collapseInitialSubMenu(
@@ -218,7 +222,8 @@ class NavigationComponent extends Component {
                                                       this,
                                                       routeMap.module +
                                                         "?p=" +
-                                                        subKey,
+                                                        subKey +
+                                                        urlOptions,
                                                       index
                                                     )}
                                                     className="collapsed-level-item-link"
