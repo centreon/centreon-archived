@@ -5,9 +5,7 @@ class Footer extends Component {
     return (
       <footer class="footer">
         <div class="footer-wrap">
-          <div class="footer-wrap-left">
-            
-          </div>
+          <div class="footer-wrap-left"></div>
           <div class="footer-wrap-middle">
             <ul class="list-unstyled footer-list">
               <li class="footer-list-item">

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import WizardFormInstallingStatus from "../../components/wizardFormInstallingStatus";
 import ProgressBar from "../../components/progressBar";
 import routeMap from "../../route-maps";
-import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
 
 import { connect } from "react-redux";
 class RemoteServerStepThreeRoute extends Component {

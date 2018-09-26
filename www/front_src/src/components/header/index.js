@@ -1,13 +1,9 @@
 import React, {Component} from "react";
 
-import routeMap from "../../route-maps";
-import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
 import "moment-timezone";
 import Moment from "moment";
-
-import Clock from "../clock";
 
 import axios from "../../axios";
 import PollerMenu from "../pollerMenu";

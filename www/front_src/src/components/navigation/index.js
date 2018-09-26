@@ -103,7 +103,7 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems, selectedMenu, initiallyCollapsed } = this.state;
+    const { active, menuItems, initiallyCollapsed } = this.state;
     const pageId = this.props.location.search.split("=")[1];
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">

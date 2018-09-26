@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import numeral from "numeral";
 import Clock from "../clock";
 
 class UserMenu extends Component {
