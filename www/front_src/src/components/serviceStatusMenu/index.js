@@ -7,8 +7,8 @@ class ServiceStatusMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
+    // this.setWrapperRef = this.setWrapperRef.bind(this);
+    // this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
 
@@ -24,34 +24,34 @@ class ServiceStatusMenu extends Component {
 
   };
 
-  ///outside click
+  // ///outside click
 
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
+  // componentDidMount() {
+  //   document.addEventListener('mousedown', this.handleClickOutside);
+  // }
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
+  // componentWillUnmount() {
+  //   document.removeEventListener('mousedown', this.handleClickOutside);
+  // }
 
-  /**
-   * Set the wrapper ref
-   */
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
+  // /**
+  //  * Set the wrapper ref
+  //  */
+  // setWrapperRef(node) {
+  //   this.wrapperRef = node;
+  // }
 
-  /**
-   * Alert if clicked on outside of element
-   */
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.setState({
-        toggled: false
-      });
-    }
-  }
-  ////end outside click
+  // /**
+  //  * Alert if clicked on outside of element
+  //  */
+  // handleClickOutside(event) {
+  //   if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+  //     this.setState({
+  //       toggled: false
+  //     });
+  //   }
+  // }
+  // ////end outside click
  
 
   render() {
@@ -91,11 +91,6 @@ class ServiceStatusMenu extends Component {
         <Link to="./main.php?p=20201&o=svc_ok&search=" class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
             <span>{numeral(ok).format("0a")}</span>
-          </a>
-        </Link>
-        <Link to="./main.php?p=20201&o=svc_pending&search=" class={"wrap-middle-icon round round-small " + (pending > 0 ? "blue" : "blue-bordered")}>
-          <a class="number">
-            <span>{numeral(pending).format("0a")}</span>
           </a>
         </Link>
         <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
@@ -138,7 +133,7 @@ class ServiceStatusMenu extends Component {
                   to={"./main.php?p=20201&o=svc_unknown&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored gray">Unknown services:</span>
+                  <span class="dot-colored gray-light">Unknown services:</span>
                   <span class="submenu-count">
                     {unknown.unhandled}/{unknown.total}
                   </span>
