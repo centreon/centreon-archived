@@ -50,5 +50,5 @@ CREATE TABLE IF NOT EXISTS `task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Update the "About" menu
-DELETE FROM topology WHERE topology_name = 'About';
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (111,'About',5,506,15,1,'./include/Administration/about/about.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
+UPDATE topology SET topology_url = './include/Administration/about/about.php', topology_modules = '0', topology_popup = '0' WHERE topology_page = 506 AND topology_parent = 5;
+DELETE FROM topology WHERE topology_parent = 506;
