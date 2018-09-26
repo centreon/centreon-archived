@@ -145,7 +145,7 @@ class Menu
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
                     $active = true;
                 }
-                // Add '_' to prevent json list to be reordered by the browser
+                // Add prefix '_' to prevent json list to be reordered by the browser and to keep menu in order
                 $menu['p' . $matches[1]]['children']['_' . $row['topology_page']] = [
                     'label'    => $row['topology_name'],
                     'url'      => $row['topology_url'],
@@ -158,7 +158,7 @@ class Menu
                 if (!is_null($currentLevelThree) && $currentLevelThree == $row['topology_page']) {
                     $active = true;
                 }
-                // Add '_' to prevent json list to be reordered by the browser
+                // Add prefix '_' to prevent json list to be reordered by the browser and to keep menu in order
                 $levelTwo = '_' . $matches[1] . $matches[2];
                 $levelThree = [
                     'label'    => $row['topology_name'],
@@ -173,6 +173,7 @@ class Menu
                         [$levelTwo]['children']
                         [$groups[$levelTwo][$row['topology_group']]][$row['topology_page']] = $levelThree;
                 } else {
+                    // Add prefix '_' to prevent json list to be reordered by the browser and to keep menu in order
                     $menu
                         ['p' . $matches[1]]['children']
                         [$levelTwo]['children']
