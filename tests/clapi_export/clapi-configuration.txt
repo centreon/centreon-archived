@@ -78,7 +78,6 @@ ACLMENU;GRANTRW;test_access-group;0;Administration;Logs;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Logs;Visualisation;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Sessions;
 ACLMENU;GRANTRW;test_access-group;0;Administration;About;
-ACLMENU;GRANTRW;test_access-group;0;Administration;About;About;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Broker Statistics;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Engine Statistics;
 ACLMENU;GRANTRW;test_access-group;0;Administration;
