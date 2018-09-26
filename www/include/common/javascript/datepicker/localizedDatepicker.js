@@ -33,14 +33,13 @@
 */
 
 /**
- * Used for initializing datepicker with an alternative format field
+ * Used to initialize datepicker with an alternative format field
  *
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
  * @param defaultDate string : datepicker parameter of the setDate
  */
 function initDatepicker(className, altFormat, defaultDate) {
-
     if ("undefined" == className) {
         className = "datepicker";
     }
@@ -53,7 +52,35 @@ function initDatepicker(className, altFormat, defaultDate) {
         defaultDate = "0";
     }
 
-    /* Getting user's localization and loading corresponding library */
+    setUserFormat();
+
+    // initializing datepicker and the hidden alternate format field
+    jQuery("." + className).each(function () {
+        // finding the alternative field
+        var altName = jQuery(this).attr("name");
+        if ("undefined" != jQuery(this).attr("name")) {
+            var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
+            jQuery(this).datepicker({
+                altField: alternativeField,
+                altFormat: altFormat,
+                onSelect: function (date) {
+                    alternativeField.val
+                }
+            })
+        } else {
+            alert("Fatal : attribute name not found for the class " + className);
+            jQuery(this).datepicker()
+        }
+    }).datepicker("setDate", defaultDate);
+}
+
+/**
+ * Used to get the user's localization, load the corresponding library and set the regional setting
+ *
+ * @param none
+ */
+function setUserFormat() {
+    // Getting the local storage attribute
     var userLanguage = localStorage.getItem('locale').substring(0, 2);
     if ("en" != userLanguage &&
         "undefined" != userLanguage
@@ -62,23 +89,10 @@ function initDatepicker(className, altFormat, defaultDate) {
             .attr('src', './include/common/javascript/datepicker/datepicker-' + userLanguage + '.js')
             .appendTo('body');
         setTimeout(function () {
+            // checking if the localized library was launched
             if ("undefined" !=  typeof(jQuery.datepicker.regional[userLanguage])) {
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional[userLanguage]);
             }
         })
     }
-
-    /* initializing datepicker and the hidden alternate format field */
-    jQuery("." + className).each(function () {
-        /* finding the alternative field */
-        var altName = jQuery(this).attr("name");
-        var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
-        jQuery(this).datepicker({
-            altField: alternativeField,
-            altFormat: altFormat,
-            onSelect: function (date) {
-                alternativeField.val
-            }
-        })
-    }).datepicker("setDate", defaultDate);
 }
