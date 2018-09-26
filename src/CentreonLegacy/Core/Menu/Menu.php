@@ -102,7 +102,8 @@ class Menu
     {
         $groups = $this->getGroups();
 
-        $query = 'SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react '
+        $query = 'SELECT topology_name, topology_page, topology_url, topology_url_opt, '
+            . 'topology_group, topology_order, topology_parent, is_react '
             . 'FROM topology '
             . 'WHERE topology_show = "1" '
             . 'AND topology_page IS NOT NULL';
@@ -111,7 +112,7 @@ class Menu
             $query .= $this->acl;
         }
 
-        $query .= ' ORDER BY LENGTH(topology_page), topology_order';
+        $query .= ' ORDER BY topology_parent, topology_group, topology_order, topology_page';
         $stmt = $this->db->prepare($query);
 
         $stmt->execute();
@@ -145,7 +146,12 @@ class Menu
                 if (!is_null($currentLevelTwo) && $currentLevelTwo == $row['topology_page']) {
                     $active = true;
                 }
-                $menu['p' . $matches[1]]['children'][$row['topology_page']] = [
+                /**
+                 * Add prefix '_' to prevent json list to be reordered by
+                 * the browser and to keep menu in order.
+                 * This prefix will be remove by front-end.
+                 */
+                $menu['p' . $matches[1]]['children']['_' . $row['topology_page']] = [
                     'label'    => $row['topology_name'],
                     'url'      => $row['topology_url'],
                     'active'   => $active,
@@ -166,15 +172,25 @@ class Menu
                     'is_react' => $row['is_react']
                 ];
                 if (!is_null($row['topology_group']) && isset($groups[$levelTwo][$row['topology_group']])) {
+                    /**
+                     * Add prefix '_' to prevent json list to be reordered by
+                     * the browser and to keep menu in order.
+                     * This prefix will be remove by front-end.
+                     */
                     $menu
                         ['p' . $matches[1]]['children']
-                        [$levelTwo]['children']
-                        [$groups[$levelTwo][$row['topology_group']]][$row['topology_page']] = $levelThree;
+                        ['_' . $levelTwo]['children']
+                        [$groups[$levelTwo][$row['topology_group']]]['_' . $row['topology_page']] = $levelThree;
                 } else {
+                    /**
+                     * Add prefix '_' to prevent json list to be reordered by
+                     * the browser and to keep menu in order.
+                     * This prefix will be remove by front-end.
+                     */
                     $menu
                         ['p' . $matches[1]]['children']
-                        [$levelTwo]['children']
-                        ['main'][$row['topology_page']] = $levelThree;
+                        ['_' . $levelTwo]['children']
+                        ['main']['_' . $row['topology_page']] = $levelThree;
                 }
             }
         }
@@ -213,7 +229,7 @@ class Menu
      */
     public function getColor($pageId)
     {
-        switch($pageId) {
+        switch ($pageId) {
             case '1':
                 $color = '#2B9E93';
                 break;
