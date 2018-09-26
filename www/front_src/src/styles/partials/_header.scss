@@ -320,6 +320,23 @@
         }
       }
     }
+    &-top-item {
+      &.errors-running {
+        .submenu-top-item-link,
+        .submenu-top-count {
+          display: block;
+          padding: 10px;
+          font-family: $primary-font-light;
+          color: $white-color;
+          font-size: .8rem;
+          padding-left: 15px;
+        }
+        .submenu-top-count {
+          padding: 0;
+          float: right;
+        }
+      }
+    }
   }
   .custom-icon {
     top: 17px;
