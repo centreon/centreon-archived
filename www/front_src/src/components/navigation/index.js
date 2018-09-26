@@ -8,14 +8,21 @@ import axios from "../../axios";
 
 import routeMap from "../../route-maps/index";
 class NavigationComponent extends Component {
-  navService = axios("internal.php?object=centreon_menu&action=menu");
 
-  state = {
-    active: false,
-    initiallyCollapsed: false,
-    selectedMenu: {},
-    menuItems: []
-  };
+  constructor(props) {
+    super(props);
+    this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+
+  
+  }
+
+  navService = axios("internal.php?object=centreon_menu&action=menu");
+    state = {
+      active: false,
+      initiallyCollapsed: false,
+      selectedMenu: {},
+      menuItems: []
+    };
 
   switchTopLevelMenu = selectedMenu => {
     this.setState({
@@ -42,6 +49,11 @@ class NavigationComponent extends Component {
       menuItems
     });
   };
+
+  handleDoubleClickItem(event) {
+  	alert('I got double-clicked!');
+  }
+
 
   UNSAFE_componentWillMount = () => {
     this.navService.get().then(({ data }) => {
@@ -139,6 +151,7 @@ class NavigationComponent extends Component {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
+                    onDoubleClick={this.handleDoubleClickItem}
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
