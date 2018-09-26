@@ -141,7 +141,7 @@ class Task implements EntityInterface
     /**
      * @return int
      */
-    public function getParentId(): int
+    public function getParentId(): ?int
     {
         return $this->parent_id;
     }
@@ -149,7 +149,7 @@ class Task implements EntityInterface
     /**
      * @param int $parent_id
      */
-    public function setParentId(int $parent_id): void
+    public function setParentId(?int $parent_id): void
     {
         $this->parent_id = $parent_id;
     }
