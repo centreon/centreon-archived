@@ -38,8 +38,10 @@
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
  * @param defaultDate string : datepicker parameter of the setDate
+ * @param idName string : tag id of the displayed field
+ * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
-function initDatepicker(className, altFormat, defaultDate) {
+function initDatepicker(className, altFormat, defaultDate, idName, timestampToSet) {
     if ("undefined" == className) {
         className = "datepicker";
     }
@@ -54,28 +56,43 @@ function initDatepicker(className, altFormat, defaultDate) {
 
     setUserFormat();
 
-    // initializing datepicker and the hidden alternate format field
-    jQuery("." + className).each(function () {
-        // finding the alternative field
-        var altName = jQuery(this).attr("name");
-        if ("undefined" != jQuery(this).attr("name")) {
-            var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
-            jQuery(this).datepicker({
-                altField: alternativeField,
-                altFormat: altFormat,
-                onSelect: function (date) {
-                    alternativeField.val
-                }
-            })
-        } else {
-            alert("Fatal : attribute name not found for the class " + className);
-            jQuery(this).datepicker()
-        }
-    }).datepicker("setDate", defaultDate);
+
+    if ("undefined" == idName || "undefined" == timestampToSet) {
+        // initializing all the displayed and the hidden datepickers
+        jQuery("." + className).each(function () {
+            // finding all the alternative field
+            var altName = jQuery(this).attr("name");
+            if ("undefined" != jQuery(this).attr("name")) {
+                var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
+                jQuery(this).datepicker({
+                    //formatting the hidden fields using a specific format
+                    altField: alternativeField,
+                    altFormat: altFormat,
+                    onSelect: function (date) {
+                        alternativeField.val
+                    }
+                })
+            } else {
+                alert("Fatal : attribute name not found for the class " + className);
+                jQuery(this).datepicker()
+            }
+        }).datepicker("setDate", defaultDate);
+    } else {
+        // setting the displayed and hidden fields with a timestamp value sent from the backend
+        var alternativeField = "input[name=alternativeDate" + idName + "]";
+        var dateToSet = new Date(timestampToSet);
+        jQuery("#" + idName).datepicker({
+            altField: alternativeField,
+            altFormat: altFormat,
+            onSelect: function (date) {
+                alternativeField.val
+            }
+        }).datepicker('setDate', dateToSet);
+    }
 }
 
 /**
- * Used to get the user's localization, load the corresponding library and set the regional setting
+ * Getting the user's localization, loading the corresponding library and setting the regional settings
  *
  * @param none
  */
