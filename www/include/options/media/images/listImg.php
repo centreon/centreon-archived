@@ -42,11 +42,15 @@ include_once("./class/centreonUtils.class.php");
 
 $search = null;
 if (isset($_POST['searchM'])) {
-    $search = $_POST['searchM'];
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url] = CentreonUtils::escapeSecure(
+        $_POST['searchM'],
+        CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+    );
 } elseif (isset($_GET['searchM'])) {
-    $search = $_GET['searchM'];
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url] = CentreonUtils::escapeSecure(
+        $_GET['searchM'],
+        CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+    );
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 }
@@ -68,8 +72,7 @@ include("./include/common/checkPagination.php");
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path, new Smarty());
 
 /*
  * start header menu
@@ -92,8 +95,14 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         $rowOpt = array(
             "RowMenu_select" => $selectedDirElem->toHtml(),
             "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
-            "RowMenu_dir" => $elem["dir_name"],
-            "RowMenu_dir_cmnt" => $elem["dir_comment"],
+            "RowMenu_dir" => CentreonUtils::escapeSecure(
+                $elem["dir_name"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
+            "RowMenu_dir_cmnt" => CentreonUtils::escapeSecure(
+                $elem["dir_comment"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
             "RowMenu_empty" => _("Empty directory"),
             "counter" => 0
         );
@@ -106,20 +115,29 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         } else {
             $searchOpt = "";
         }
-        $selectedImgElem = $form->addElement('checkbox', "select[" . $elem['dir_id'] . "-" . $elem['img_id'] . "]");
+        $selectedImgElem = $form->addElement(
+            'checkbox',
+            "select[" . $elem['dir_id'] . "-" . $elem['img_id'] . "]"
+        );
         $rowOpt = array(
             "RowMenu_select" => $selectedImgElem->toHtml(),
-            "RowMenu_ImgLink" => "?p=" . $p . "&o=ci&img_id=" . $elem['img_id'],
-            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
-            "RowMenu_dir" => $elem["dir_name"],
+            "RowMenu_ImgLink" => "?p=$p&o=ci&img_id={$elem['img_id']}",
+            "RowMenu_DirLink" => "?p=$p&o=cd&dir_id={$elem['dir_id']}",
+            "RowMenu_dir" => CentreonUtils::escapeSecure(
+                $elem["dir_name"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
             "RowMenu_img" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["dir_alias"] . "/" . $elem["img_path"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["dir_alias"] . "/" . $elem["img_path"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             ),
             "RowMenu_name" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             ),
             "RowMenu_comment" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             )
         );
         $elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
@@ -182,7 +200,11 @@ $tpl->assign(
 
     </SCRIPT>
 <?php
-$actions = array(null => _("More actions"), "d" => _("Delete"), "m" => _("Move images"));
+$actions = array(
+    null => _("More actions"),
+    IMAGE_DELETE => _("Delete"),
+    IMAGE_MOVE => _("Move images")
+);
 $form->addElement('select', 'o1', null, $actions, array('onchange' => "javascript:submitO('o1');"));
 $form->addElement('select', 'o2', null, $actions, array('onchange' => "javascript:submitO('o2');"));
 $form->setDefaults(array('o1' => null));

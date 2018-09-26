@@ -1,13 +1,13 @@
 {$form.javascript}
 {$styleB}
 <div class="cachediv">
-	<FORM id="datareport">
-		<INPUT type="hidden" name="host_id" value="{$host_id}"><br />	        
-		<INPUT type="hidden" name="color_UP" value="{$color.UP}">
-		<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
-		<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
-		<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
-	</FORM>
+	<form id="datareport">
+		<input type="hidden" name="host_id" value="{$host_id}"><br />
+		<input type="hidden" name="color_UP" value="{$color.UP}">
+		<input type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+		<input type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+		<input type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
+	</form>
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
@@ -21,11 +21,11 @@
 		</td>
 		<td style='padding:5px;vertical-align:top;'>
 			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
-			<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
+				<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
 					{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
-					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
-							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-							{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;{$formPeriod.alternativeDateStartDate.html}
+					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html} {$formPeriod.alternativeDateEndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}
 			</form>
 		</td>
@@ -35,10 +35,10 @@
 	</tr>
 	<tr class='list_lvl_3'>
 		<td style="width:300px;" >
-					<!-- chart drawing -->
-					{if $name}	
-						<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
-					{/if}
+			<!-- chart drawing -->
+			{if $name}
+				<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
+			{/if}
 		</td>
 		<!-- host statistics -->
 		<td colspan="2" style='padding: 5px;'>
@@ -101,98 +101,86 @@
 			</table>
 		</td>
 	</tr>
-			<tr>
-				<td colspan="3" style=' padding:5px;'>
-					<table class="ListTable">
-						<tr class='ListHeader'>
-							<td class="FormHeader" colspan="11">&nbsp;{$svcTitle}</td>
-						</tr>
-						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$serviceTitle}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
-							<td class="ListColHeaderCenter">{$MaintenanceTitle}</td>
-							<td class="ListColHeaderCenter">{$PendingTitle}</td>
-						</tr>
-						 <tr class='list_lvl_1'>
-                            <td class="ListColHeaderCenter"></td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">{$Alert}</td>
-                            <td class="ListColHeaderCenter">%</td>
-                            <td class="ListColHeaderCenter">%</td>
-                   		</tr>
-						{foreach item=tb from=$components}
-						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="main.php?p=30702&period={$get_period}&start={$get_date_start}&end={$get_date_end}&host_id={$host_id}&item={$tb.ID}">{$tb.DESCRIPTION}</a></td>
-							<td {$style_ok}>{$tb.OK_TP}% ({$tb.OK_MP}%)</td>
-							<td {$style_ok_alert} >{$tb.OK_A}</td>
-							<td {$style_warning}>{$tb.WARNING_TP}% ({$tb.WARNING_MP}%)</td>
-							<td {$style_warning_alert} style="width:30px;">{$tb.WARNING_A}</td>
-							<td {$style_critical}>{$tb.CRITICAL_TP}% ({$tb.CRITICAL_MP}%)</td>
-							<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICAL_A}</td>
-							<td {$style_unknown}>{$tb.UNKNOWN_TP}% ({$tb.UNKNOWN_MP}%)</td>
-							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWN_A}</td>
-							<td {$style_maintenance}>{$tb.MAINTENANCE_TP}%</td>
-							<td {$style_pending}>{$tb.UNDETERMINED_TP}%</td>
-						</tr>
-						{/foreach}
-						<tr class="list_lvl_2">
-							<td class="ListColHeaderCenter">{$averageTilte}</td>
-							<td class='ListColHeaderCenter'{$style_ok}>{$components_avg.OK_TP}% ({$components_avg.OK_MP}%)</td>
-							<td class='ListColHeaderCenter'{$style_ok_alert}>{$components_avg.OK_A}</td>
-							<td class='ListColHeaderCenter'{$style_warning}>{$components_avg.WARNING_TP}% ({$components_avg.WARNING_MP}%)</td>
-							<td class='ListColHeaderCenter'{$style_warning_alert}>{$components_avg.WARNING_A}</td>
-							<td class='ListColHeaderCenter'{$style_critical}>{$components_avg.CRITICAL_TP}% ({$components_avg.CRITICAL_MP}%)</td>
-							<td class='ListColHeaderCenter'{$style_critical_alert}>{$components_avg.CRITICAL_A}</td>
-							<td class='ListColHeaderCenter'{$style_unknown}>{$components_avg.UNKNOWN_TP}% ({$components_avg.UNKNOWN_MP}%)</td>
-							<td class='ListColHeaderCenter'{$style_unknown_alert}>{$components_avg.UNKNOWN_A}</td>
-							<td class='ListColHeaderCenter'{$style_maintenance}>{$components_avg.MAINTENANCE_TP}%</td>
-							<td class='ListColHeaderCenter'{$style_pending}>{$components_avg.UNDETERMINED_TP}%</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="3" style=' padding:5px;'>
-					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
-				</td>
-			</tr>			
+	<tr>
+		<td colspan="3" style=' padding:5px;'>
+			<table class="ListTable">
+				<tr class='ListHeader'>
+					<td class="FormHeader" colspan="11">&nbsp;{$svcTitle}</td>
+				</tr>
+				<tr class='list_lvl_1'>
+					<td class="ListColHeaderCenter">{$serviceTitle}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
+					<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
+					<td class="ListColHeaderCenter">{$MaintenanceTitle}</td>
+					<td class="ListColHeaderCenter">{$PendingTitle}</td>
+				</tr>
+				<tr class='list_lvl_1'>
+					<td class="ListColHeaderCenter"></td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">{$Alert}</td>
+					<td class="ListColHeaderCenter">%</td>
+					<td class="ListColHeaderCenter">%</td>
+				</tr>
+				{foreach item=tb from=$components}
+				<tr class={cycle values="list_two, list_one"}>
+					<td class="ListColHeaderLeft"><a href="?p=30702&period={$get_period}&start={$get_date_start}&end={$get_date_end}&host_id={$host_id}&item={$tb.ID}">{$tb.DESCRIPTION}</a></td>
+					<td {$style_ok}>{$tb.OK_TP}% ({$tb.OK_MP}%)</td>
+					<td {$style_ok_alert} >{$tb.OK_A}</td>
+					<td {$style_warning}>{$tb.WARNING_TP}% ({$tb.WARNING_MP}%)</td>
+					<td {$style_warning_alert} style="width:30px;">{$tb.WARNING_A}</td>
+					<td {$style_critical}>{$tb.CRITICAL_TP}% ({$tb.CRITICAL_MP}%)</td>
+					<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICAL_A}</td>
+					<td {$style_unknown}>{$tb.UNKNOWN_TP}% ({$tb.UNKNOWN_MP}%)</td>
+					<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWN_A}</td>
+					<td {$style_maintenance}>{$tb.MAINTENANCE_TP}%</td>
+					<td {$style_pending}>{$tb.UNDETERMINED_TP}%</td>
+				</tr>
+				{/foreach}
+				<tr class="list_lvl_2">
+					<td class="ListColHeaderCenter">{$averageTilte}</td>
+					<td class='ListColHeaderCenter'{$style_ok}>{$components_avg.OK_TP}% ({$components_avg.OK_MP}%)</td>
+					<td class='ListColHeaderCenter'{$style_ok_alert}>{$components_avg.OK_A}</td>
+					<td class='ListColHeaderCenter'{$style_warning}>{$components_avg.WARNING_TP}% ({$components_avg.WARNING_MP}%)</td>
+					<td class='ListColHeaderCenter'{$style_warning_alert}>{$components_avg.WARNING_A}</td>
+					<td class='ListColHeaderCenter'{$style_critical}>{$components_avg.CRITICAL_TP}% ({$components_avg.CRITICAL_MP}%)</td>
+					<td class='ListColHeaderCenter'{$style_critical_alert}>{$components_avg.CRITICAL_A}</td>
+					<td class='ListColHeaderCenter'{$style_unknown}>{$components_avg.UNKNOWN_TP}% ({$components_avg.UNKNOWN_MP}%)</td>
+					<td class='ListColHeaderCenter'{$style_unknown_alert}>{$components_avg.UNKNOWN_A}</td>
+					<td class='ListColHeaderCenter'{$style_maintenance}>{$components_avg.MAINTENANCE_TP}%</td>
+					<td class='ListColHeaderCenter'{$style_pending}>{$components_avg.UNDETERMINED_TP}%</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style=' padding:5px;'>
+			<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
+		</td>
+	</tr>
 </table>
 {$host_up}
 {$host_down}
 {$host_unreachable}
+{$form.hidden}
 
 {literal}
 <script>
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
 
-    jQuery("#StartDate").datepicker({
-        maxDate: '-1',
-        onSelect : function(data){  
-            jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
-            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
-        }
-    });
+    /* initializing datepicker and the alternative format field */
+    initDatepicker("datepicker", "mm/dd/yy", null);
 
-    jQuery("#EndDate").datepicker({
-        maxDate: '-1',
-        onSelect : function(data){  
-            jQuery( "select[name='period'] > option[value='']" ).prop('selected', true);
-            jQuery( "input:[value='custom'][name='period_choice'][type='radio']").prop('checked', true);
-        }
-    });
-
-    jQuery( "select[name='period']" ).click(function() {
-        jQuery( "input:[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
+    jQuery("select[name='period']").click(function() {
+        jQuery("input[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
     });
 
     jQuery(function () {
@@ -222,5 +210,5 @@
            }
         });
     });
-{/literal}
 </script>
+{/literal}

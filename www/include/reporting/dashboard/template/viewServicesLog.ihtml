@@ -1,32 +1,34 @@
 {$form.javascript}
 {$styleB}
 <div class="cachediv">
-<FORM id="datareport">
-	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
-	<INPUT type="hidden" name="color_OK" value="{$color.OK}">
-	<INPUT type="hidden" name="color_WARNING" value="{$color.WARNING}">
-	<INPUT type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
-	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
-	<INPUT type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
-</FORM>
+	<form id="datareport">
+		<input type="hidden" name="hostID" value="{$hostID}"><br />
+		<input type="hidden" name="color_OK" value="{$color.OK}">
+		<input type="hidden" name="color_WARNING" value="{$color.WARNING}">
+		<input type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
+		<input type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
+		<input type="hidden" name="color_UNDETERMINED" value="{$color.UNDETERMINED}" >
+	</form>
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
-			<form {$formService.attributes} style="margin:0px;padding:0px;">
-				&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$host_name}" name="host_name" disabled>
+			<form {$formService.attributes} style="margin:0px;padding:0px;">&nbsp;
+				{$hostTitle}&nbsp;:&nbsp;&nbsp;
+				<input type=text value="{$host_name}" name="host_name" disabled>
 				<b>{$formItem.item.label}:</b>&nbsp;&nbsp;{$formItem.item.html}
-				{$formItem.hidden}
-				&nbsp;&nbsp;&nbsp;{$from} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end} </span> - {$infosTitle}
+				{$formItem.hidden}&nbsp;&nbsp;&nbsp;
+				{$from}<span class="isTimestamp isDate">{$date_start} </span>
+				{$to} <span class="isTimestamp isDate"> {$date_end} </span> - {$infosTitle}
 			</form>
 		</td>
 		<td style='padding:5px;vertical-align:top;'>
 			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
 			<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
-					{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
-					<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
-							{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-							{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+				{$periodTitle} : {$formPeriod.period.html}{$formPeriod.hidden}{$periodORlabel}
+				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
+					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;{$formPeriod.alternativeDateStartDate.html}
+					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html} {$formPeriod.alternativeDateEndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}
 			</form>
 		</td>
@@ -37,16 +39,16 @@
 	<tr class='list_lvl_3'>
 		<td colspan=2>
 			<table style='width:100%'>
-			<tr>
-				<td style='width:300px; padding:5px'>
-					<div id="chart"></div>
-				</td>
-				<td style='vertical-align:top;padding:5px;'>
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td colspan=5>&nbsp;{$resumeTitle}</td>
-					</tr>
-					<!-- headers -->
+				<tr>
+					<td style='width:300px; padding:5px'>
+						<div id="chart"></div>
+					</td>
+					<td style='vertical-align:top;padding:5px;'>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td colspan=5>&nbsp;{$resumeTitle}</td>
+						</tr>
+						<!-- headers -->
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$stateLabel}</td>
 							<td class="ListColHeaderCenter">{$durationLabel}</td>
@@ -105,7 +107,7 @@
 							<td class='ListColRight'></td>
 							<td class='ListColRight'>{$totalAlert}</td>
 						</tr>
-				</table>
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -117,15 +119,20 @@
 		</td>
 	</tr>
 </table>
+{$form.hidden}
 
 {literal}
 <script>
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
 
-    jQuery("#StartDate,#EndDate").datepicker({
-        maxDate: '-1'
+    /* initializing datepicker and the alternative format field */
+    initDatepicker("datepicker", "mm/dd/yy", null);
+
+    jQuery("select[name='period']").click(function() {
+        jQuery("input[value='preset'][name='period_choice'][type='radio']").prop('checked', true);
     });
+
     jQuery(function () {
         c3.generate({
             bindto: d3.select('#chart'),

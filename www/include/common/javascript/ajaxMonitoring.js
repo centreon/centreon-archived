@@ -400,7 +400,7 @@ var _p = 20201;
  */
 
 	var _linkaction_graph = document.createElement("a");
-  	_linkaction_graph.href = './main.php?p=40207&host_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
+  	_linkaction_graph.href = '?p=40207&host_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
 	_linkaction_graph.appendChild(_img6);
 
 	_case_actions.appendChild(_linkaction_graph);
@@ -425,7 +425,7 @@ var _p = 20201;
 	{
 		var _text_host_name = document.createTextNode(_host_name+' ');
 		var _linkhost_name = document.createElement("a");
-  		_linkhost_name.href = './main.php?p=201&o=hd&host_name=' + _host_name;
+  		_linkhost_name.href = '?p=201&o=hd&host_name=' + _host_name;
 		_linkhost_name.appendChild(_text_host_name);
 		_case_host_name.appendChild(_linkhost_name);
 
@@ -458,7 +458,7 @@ var _p = 20201;
 	var _text_service_description = document.createTextNode(_service_description);
 	var _text_service_description2 = document.createTextNode(_service_description);
 	var _linkservice = document.createElement("a");
-  	_linkservice.href = './main.php?p=202&o=svcd&host_name=' + _host_name + '&service_description=' +_service_description;
+  	_linkservice.href = '?p=202&o=svcd&host_name=' + _host_name + '&service_description=' +_service_description;
 	_linkservice.appendChild(_text_service_description);
 
 	var _divservice = document.createElement("div");

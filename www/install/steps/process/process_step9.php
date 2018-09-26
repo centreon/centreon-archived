@@ -38,8 +38,18 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 $step = new \CentreonLegacy\Core\Install\Step\Step9($dependencyInjector);
 $version = $step->getVersion();
 
-$message = '';
+$parameters = filter_input_array(INPUT_POST);
+if ((int)$parameters["send_statistics"] == 1) {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
+} else {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+}
 
+$db = $dependencyInjector['configuration_db'];
+$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
+$db->query($query);
+
+$message = '';
 try {
     $backupDir = realpath(__DIR__ . '/../../../../installDir/')
         . '/install-' . $version . '-' . date('Ymd_His');

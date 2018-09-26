@@ -4,9 +4,6 @@
 Using Centreon ISO el7
 ======================
 
-.. note::
-   Installation from Centreon el6 ISO is available :ref:`here<installisoel6>`
-
 ************
 Installation
 ************
@@ -221,36 +218,26 @@ By default, the ‘localhost’ server is defined and the root password is empty
    :align: center
    :scale: 85%
 
-If the following error message appears:
+.. note::
+    If the **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
+    error message appears, please perform the following operations:
+    
+    1. Log-on to the ‘root’ user on your server
+    
+    2. Modify this file::
+    
+        /etc/my.cnf
+    
+    3. Add these lines to the file::
+    
+        [mysqld]
+        innodb_file_per_table=1
+    
+    4. Restart mysql service::
 
-**Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
-
-Perform the following operations:
-
-1. Log-on to the ‘root’ user on your server
-
-2. Modify this file
-
-::
-
-  /etc/my.cnf
-
-3. Add these lines to the file
-
-.. raw:: latex
-
-::
-
-  [mysqld]
-  innodb_file_per_table=1
-
-4. Restart mysql service
-
-::
-
-  systemctl restart mysql
-
-5. Click on **Refresh**
+        # systemctl restart mysql
+    
+    5. Click on **Refresh**
 
 The Centreon setup wizard configures the databases, click on **Next**.
 
@@ -262,11 +249,15 @@ At this point, you will be able to install the modules provided with Centreon.
 
 Click on **Install**
 
-.. image :: /images/user/module_installation.png
+.. image :: /images/user/module_installationa.png
    :align: center
    :scale: 85%
 
 Once installation is performed, click on **Next**
+
+.. image :: /images/user/module_installationb.png
+   :align: center
+   :scale: 85%
 
 At this point, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
 
@@ -358,34 +349,21 @@ most common services of your network.
 Centreon IMP needs the technical components: Centreon License Manager
 and Centreon Plugin Pack Manager to work.
 
-Install packages
-================
-
-When using Centreon ISO, the installation of Centreon Plugin Pack Manager is very
-easy. You'll see that Centreon License Manager will be installed too
-as a dependency.
-
-::
-
-   $ yum install centreon-pp-manager
-
 Web install
 ===========
 
-Once the packages are installed, you need to enable the module in Centreon.
-So go to the Administration -> Extensions -> Modules page.
+If you didn't installed those module during the installation process, go to the
+**Administration > Extensions > Modules** menu.
 
-.. image:: /_static/images/installation/ppm_1.png
+Click on **Install/Upgrade all** and validate the action.
+
+.. image:: /_static/images/installation/install_imp_1.png
    :align: center
 
-Install Centreon License Manager (dependency of Centreon Plugin Pack Manager) first.
+Once the instalaltion is finish, click on **Back**.
+The modules are now installed.
 
-.. image:: /_static/images/installation/ppm_2.png
-   :align: center
-
-Then install Centreon Plugin Pack Manager itself.
-
-.. image:: /_static/images/installation/ppm_3.png
+.. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
 You're now ready to go to Configuration -> Plugin packs -> Manager.
@@ -393,7 +371,7 @@ You'll find there 10 free Plugin Packs to get you started. 5 more are
 available after free registration and 150+ if you subscribe to the IMP
 offer (more information on `our website <https://www.centreon.com>`_).
 
-.. image:: /_static/images/installation/ppm_4.png
+.. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
 You can continue to configure your monitoring with Centreon IMP by

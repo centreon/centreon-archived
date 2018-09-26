@@ -10,6 +10,7 @@ function CheckModule()
         },
         success: function (data) {
             displayResults(data);
+            formatDateMoment();
         }
     });
 }
@@ -29,7 +30,7 @@ function displayResults(moduleList)
             jQuery('#action' + moduleName + '[href*="o=u"]').remove();
             var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
             criticalModalBox += 'id="'+ modalBoxId +'"';
-            criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';
+            criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module in error : ' + moduleName + '">';
 
             myModuleStatusSpan.append('<a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="img_critical_'+ moduleName +'" src="img/icons/cross.png" class="ico-16" /></a>');
             statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
@@ -83,6 +84,11 @@ function displayResults(moduleList)
             jQuery('#' + modalBoxId).dialog("option", "hide", { effect: 'drop', direction: "down" });
             jQuery('#' + modalBoxId).dialog("option", "modal", true);
             jQuery('#action_'+ moduleName).prepend(customActionIcon);
+        }
+
+        if (module['licenseExpiration']) {
+            jQuery('tr[data-module-name="' + moduleName + '"] .ListColCenter.isTimestamp')
+                .html(module['licenseExpiration']);
         }
 
         if (tooltipReferer) {

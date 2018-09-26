@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,14 +63,55 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
  *
  */
 
-$form = new HTML_QuickFormCustom('formItem', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
 $items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
-$select = $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
+$select = $form->addElement(
+    'select',
+    'item',
+    _("Host Group"),
+    $items,
+    array(
+        "onChange" =>"this.form.submit();"
+    )
+);
 
-$form->addElement('hidden', 'period', $period);
-$form->addElement('hidden', 'StartDate', $get_date_start);
-$form->addElement('hidden', 'EndDate', $get_date_end);
+$form->addElement(
+    'hidden',
+    'period',
+    $period
+);
+$form->addElement(
+    'hidden',
+    'StartDate',
+    $get_date_start
+);
+$form->addElement(
+    'hidden',
+    'EndDate',
+    $get_date_end
+);
+
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
@@ -92,7 +133,7 @@ if (isset($id) && $id != "NULL") {
     /*
      * Getting periods values
      */
-    $dates = getPeriodToReport();
+    $dates = getPeriodToReport("alternate");
     $start_date = $dates[0];
     $end_date = $dates[1];
 
@@ -161,18 +202,18 @@ if (isset($id) && $id != "NULL") {
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?hostgroup="
-        .$id."&start=".$start_date."&end=".$end_date
+        . $id . "&start=" . $start_date . "&end=" . $end_date
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
     /*
      * Status colors
      */
-    $color = substr($colors["up"], 1).
-            ':'.substr($colors["down"], 1).
-            ':'.substr($colors["unreachable"], 1).
-            ':'.substr($colors["maintenance"], 1).
-            ':'.substr($colors["undetermined"], 1);
+    $color = substr($colors["up"], 1) .
+            ':' . substr($colors["down"], 1) .
+            ':' . substr($colors["unreachable"], 1) .
+            ':' . substr($colors["maintenance"], 1) .
+            ':' . substr($colors["undetermined"], 1);
 
     /*
      * Ajax timeline

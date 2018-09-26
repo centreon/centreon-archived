@@ -170,6 +170,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     ?>
     <script src="./include/common/javascript/centreon/dateMoment.js" type="text/javascript"></script>
     <script src="./include/common/javascript/centreon/centreon-localStorage.js" type="text/javascript"></script>
+    <script src="./include/common/javascript/datepicker/localizedDatepicker.js"></script>
     <script type='text/javascript'>
         jQuery(function () {
             <?php

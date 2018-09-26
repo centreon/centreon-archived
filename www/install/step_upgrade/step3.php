@@ -52,7 +52,7 @@ if (is_file('../RELEASENOTES.html')) {
     if (file_exists('../RELEASENOTES')) {
         $releasenotesContent = file_get_contents('../RELEASENOTES');
     }
-    $contents = "<textarea cols='100' rows='30' readonly>".$releasenotesContent."</textarea>";
+    $contents = "<textarea cols='100' rows='30' readonly>" . $releasenotesContent . "</textarea>";
 }
 
 $template->assign('step', STEP_NUMBER);
@@ -62,30 +62,30 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-var step3_s = 10;
-var step3_t;
+    var step3_s = 10;
+    var step3_t;
 
-jQuery(function() {
-    jQuery('#releasenotes').load('RELEASENOTES.html');
-    jQuery('#next').attr('disabled', 'disabled');
-    timeout_button();
-});
+    jQuery(function () {
+        jQuery('#releasenotes').load('RELEASENOTES.html');
+        jQuery('#next').attr('disabled', 'disabled');
+        timeout_button();
+    });
 
-function timeout_button() {
-    if (step3_t) {
-        clearTimeout(step3_t);
+    function timeout_button() {
+        if (step3_t) {
+            clearTimeout(step3_t);
+        }
+        jQuery("#next").val("Next (" + step3_s + ")");
+        step3_s--;
+        if (step3_s == 0) {
+            jQuery("#next").val("Next");
+            jQuery("#next").removeAttr('disabled');
+        } else {
+            step3_t = setTimeout('timeout_button()', 1000);
+        }
     }
-    jQuery("#next").val("Next (" + step3_s  + ")");
-    step3_s--;
-    if (step3_s == 0) {
-        jQuery("#next").val("Next");
-        jQuery("#next").removeAttr('disabled');
-    } else {
-        step3_t = setTimeout('timeout_button()', 1000);
-    }
-}
 
-function validation() {
-    return true;
-}
+    function validation() {
+        return true;
+    }
 </script>

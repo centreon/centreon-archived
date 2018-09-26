@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!@PHP_BIN@
 <?php
 require_once realpath(dirname(__FILE__) . "/../config/centreon.config.php");
 

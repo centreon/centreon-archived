@@ -116,8 +116,7 @@ class LdapManualImportContext extends CentreonContext
      */
     public function hesLoggedByDefaultOnHomePage()
     {
-        $value = $this->assertFind('css', 'div#logli a[class="red"]')->getText();
-        if ($value != 'Logout') {
+        if (!$this->assertFind('css', '#tfooter')) {
             throw new Exception('The user is not logged in');
         }
     }

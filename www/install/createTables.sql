@@ -1599,7 +1599,7 @@ CREATE TABLE `hostgroup_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `informations` (
   `key` varchar(25) DEFAULT NULL,
-  `value` varchar(25) DEFAULT NULL
+  `value` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

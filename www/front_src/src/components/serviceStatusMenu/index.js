@@ -1,8 +1,17 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import numeral from "numeral";
 import { Link } from "react-router-dom";
 
 class ServiceStatusMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+
   state = {
     toggled: false
   };
@@ -12,7 +21,38 @@ class ServiceStatusMenu extends Component {
     this.setState({
       toggled: !toggled
     });
+
   };
+
+  ///outside click
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  /**
+   * Set the wrapper ref
+   */
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  /**
+   * Alert if clicked on outside of element
+   */
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.setState({
+        toggled: false
+      });
+    }
+  }
+  ////end outside click
+ 
 
   render() {
     const { data } = this.props;
@@ -26,7 +66,7 @@ class ServiceStatusMenu extends Component {
     const { toggled } = this.state;
 
     return (
-      <div class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
+      <div  class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
         <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
           <span class="iconmoon icon-services">
             {pending > 0 ? <span class="custom-icon" /> : null}
@@ -58,7 +98,7 @@ class ServiceStatusMenu extends Component {
             <span>{numeral(pending).format("0a")}</span>
           </a>
         </Link>
-        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} />
+        <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
         <div class="submenu services">
           <div class="submenu-inner">
             <ul class="submenu-items list-unstyled">
@@ -130,4 +170,11 @@ class ServiceStatusMenu extends Component {
   }
 }
 
+
+
 export default ServiceStatusMenu;
+
+ServiceStatusMenu.propTypes = {
+  children: PropTypes.element.isRequired,
+};
+

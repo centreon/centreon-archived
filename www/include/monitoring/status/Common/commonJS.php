@@ -41,6 +41,28 @@ if (!isset($default_poller)) {
     include_once "./include/monitoring/status/Common/default_poller.php";
 }
 
+$searchHistory = CentreonUtils::escapeSecure(
+    ($centreon->historySearch[$url] ?? '')
+);
+
+$historySearchService = CentreonUtils::escapeSecure(
+    ($centreon->historySearchService[$url] ?? '')
+);
+
+if(!isset($search_host) || empty($search_host)) {
+    $search_host = $searchHistory;
+}
+
+if(!isset($search_sg) || empty($search_sg)) {
+    $search_sg = $searchHistory;
+}
+
+if(!isset($search_output) || empty($search_output)) {
+    $search_output = CentreonUtils::escapeSecure(
+        ($centreon->historySearchOutput[$url] ?? '')
+    );
+}
+
 ?>
 // Dynamique
 var _sid='<?php echo $sid?>';
@@ -51,14 +73,10 @@ var _search_type_host='<?php echo $search_type_host?>';
 var _search_type_service='<?php echo $search_type_service?>';
 <?php } ?>
 
-var _search = '<?php global $url ;
-echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
-var _host_search = '<?php global $url ;
-echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _sg_search = '<?php global $url ;
-echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _output_search = '<?php global $url ;
-echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
+var _search = '<?= $search ?? $historySearchService; ?>';
+var _host_search = '<?= $search_host ?>';
+var _sg_search = '<?= $search_sg ?>';
+var _output_search = '<?= $search_output ?>';
 
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';

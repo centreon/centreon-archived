@@ -44,6 +44,8 @@ include("./include/common/autoNumLimit.php");
 $search_service = null;
 $host_name = null;
 $search_output = null;
+$view_all = 0;
+$view_downtime_cycle = 0;
 
 if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url] = array();
@@ -192,7 +194,10 @@ $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
-    $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
+    
+    $tab_downtime_svc[$i]['comment_data'] =
+        CentreonUtils::escapeAllExceptSelectedTags($data['comment_data']);
+    
     $tab_downtime_svc[$i]['scheduled_start_time'] = $tab_downtime_svc[$i]["scheduled_start_time"] . " ";
     $tab_downtime_svc[$i]['scheduled_end_time'] = $tab_downtime_svc[$i]["scheduled_end_time"] . " ";
 
@@ -267,7 +272,7 @@ $tpl->assign("nb_downtime_svc", count($tab_downtime_svc));
 $tpl->assign("dtm_service_downtime", _("Services Downtimes"));
 $tpl->assign("secondes", _("s"));
 $tpl->assign("view_host_dtm", _("View downtimes of hosts"));
-$tpl->assign("host_dtm_link", "./main.php?p=" . $p . "&o=vh");
+$tpl->assign("host_dtm_link", "?p=" . $p . "&o=vh");
 $tpl->assign("cancel", _("Cancel"));
 $tpl->assign("limit", $limit);
 

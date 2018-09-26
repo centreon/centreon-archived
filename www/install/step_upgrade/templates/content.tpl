@@ -1,7 +1,7 @@
 <table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
     <tr class="install-header">
         <th class="logo-wrapper">
-            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0" /></a>
+            <a href="http://www.centreon.com" target="_blank"><img src="../img/centreon.png" alt="Centreon" border="0"/></a>
         </th>
         <th class="step-wrapper">
             <h3><span>{$step}</span> {$title}</h3>
@@ -15,29 +15,6 @@
                     <td>{$content}</td>
                 </tr>
             </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" id="installPub">
-            {if isset($finish) && $finish == 1}
-                <script type="text/javascript">
-                    {literal}
-                    function pubcallback(html) {
-                        jQuery("#installPub").html(html);
-                    }
-
-                    jQuery(document).ready(function() {
-                        jQuery.ajax({
-                            url: 'https://advertising.centreon.com/centreon-2.8.1/pub.json',
-                            type: 'GET',
-                            dataType: 'jsonp',
-                            crossDomain: true
-                        });
-                    });
-
-                    {/literal}
-                </script>
-            {/if}
         </td>
     </tr>
 
@@ -55,15 +32,17 @@
         </td>
 
         <td align='right'>
-        {if ($step-1 && !$blockPreview)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
-        {/if}
-        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
-        {if !$finish}
-        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
-        {else}
-        <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='javascript:self.location="../main.php"'/>
-        {/if}
+            {if ($step-1 && !$blockPreview)}
+                <input class='btc bt_info' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
+            {/if}
+            <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
+            {if !$finish}
+                <input class='btc bt_info' type='button' id='next' value='Next'
+                       onClick='if (validation() == true) jumpTo({$step+1});'/>
+            {else}
+                <input class='btc bt_success' type='button' id='finish' value='Finish'
+                       onClick='validation();' />
+            {/if}
         </td>
     </tr>
 </table>

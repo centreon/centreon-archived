@@ -102,7 +102,7 @@ if (empty($filters['search']) && isset($centreon->historySearchService[$url])) {
     $centreon->historySearchService[$url] = $filters['search'];
 }
 
-if (empty($filters['output_search']) && isset($centreon->historySearchSOutput[$url])) {
+if (empty($filters['output_search']) && isset($centreon->historySearchOutput[$url])) {
     $filters['output_search'] = $centreon->historySearchOutput[$url];
 } else {
     $centreon->historySearchOutput[$url] = $filters['output_search'];

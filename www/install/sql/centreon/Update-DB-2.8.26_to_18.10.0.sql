@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '18.9.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.25' LIMIT 1;
+UPDATE `informations` SET `value` = '18.10.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.26' LIMIT 1;
 
 -- Create remote servers table for keeping track of remote instances
 CREATE TABLE IF NOT EXISTS `remote_servers` (
@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
 
 -- Add column to topology table to mark which pages are with React
 ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`;
+
+-- Change informations lengths
+ALTER TABLE `informations` MODIFY COLUMN `value` varchar (255) NULL;
 
 -- Move "Graphs" & "Broker Statistics" as "Server status" sub menu
 UPDATE topology SET topology_parent = '505' WHERE topology_page = '10205';
@@ -45,3 +48,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `params` BLOB NULL,
   `created_at` TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Update the "About" menu
+DELETE FROM topology WHERE topology_name = 'About';
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (111,'About',5,506,15,1,'./include/Administration/about/about.php',NULL,'0','0','1',NULL,NULL,NULL,'1');

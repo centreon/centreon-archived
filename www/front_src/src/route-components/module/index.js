@@ -10,7 +10,6 @@ class ModuleRoute extends Component {
       if (contentWindow) {
         const { documentElement } = contentWindow.document,
               { match } = this.props,
-              { id } = match.params,
               contentHeight = Math.max(
                 documentElement.clientHeight,
                 documentElement.offsetHeight,
@@ -35,7 +34,7 @@ class ModuleRoute extends Component {
     }
   };
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     this.setState({ contentHeight: 100 }, () => {
       setInterval(this.handleResize, 2000);
     });
@@ -61,6 +60,8 @@ class ModuleRoute extends Component {
       <React.Fragment>
         {search ? (
           <iframe
+            id="main-content"
+            title="Main Content"
             frameBorder="0"
             onLoad={this.onLoad}
             ref={container => {

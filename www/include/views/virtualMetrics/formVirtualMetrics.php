@@ -44,12 +44,11 @@ if (!isset($oreon)) {
  * Database retrieve information
  */
 $vmetric = array();
-if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
-    $vmetric_id = $_POST['vmetric_id'];
-    $o = "c";
-}
-if (($o == "c" || $o == "w") && $vmetric_id) {
-    $query = "SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '" . $vmetric_id . "' LIMIT 1";
+
+if (($o == METRIC_MODIFY || $o == METRIC_WATCH)
+    && is_int($vmetricId)
+) {
+    $query = "SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = $vmetricId LIMIT 1";
     $p_qy = $pearDB->query($query);
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
@@ -92,7 +91,7 @@ $attrsTextarea = array("rows" => "4", "cols" => "60");
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
-    '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetric_id;
+    '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
@@ -105,16 +104,16 @@ $attrServices = array(
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == METRIC_ADD) {
     $form->addElement('header', 'ftitle', _("Add a Virtual Metric"));
-} elseif ($o == "c") {
+} elseif ($o == METRIC_MODIFY) {
     $form->addElement('header', 'ftitle', _("Modify a Virtual Metric"));
-} elseif ($o == "w") {
+} elseif ($o == METRIC_WATCH) {
     $form->addElement('header', 'ftitle', _("View a Virtual Metric"));
 }
 
 /*
- * Basic information 
+ * Basic information
  * Header
  */
 $form->addElement('header', 'information', _("General Information"));
@@ -164,9 +163,9 @@ $form->addRule('rpn_function', _("Required Field"), 'required');
 $form->addRule('host_id', _("Required service"), 'required');
 
 
-$form->registerRule('existName', 'callback', 'NameTestExistence');
+$form->registerRule('existName', 'callback', 'hasVirtualNameNeverUsed');
 $form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
-$form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName');
+$form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName', $vmetric['index_id']);
 $form->addRule(
     'rpn_function',
     _("Can't Use This Virtual Metric '" . (isset($_POST["vmetric_name"])
@@ -185,25 +184,26 @@ $form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required field
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o == "w") {
+if ($o == METRIC_WATCH) {
     // Just watch
     $form->addElement(
         "button",
         "change",
         _("Modify"),
-        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&vmetric_id=" . $vmetric_id . "'")
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&vmetric_id=" . $vmetricId . "'")
     );
     $form->setDefaults($vmetric);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == METRIC_MODIFY) {
     // Modify
+    $hostId = $vmetric["host_id"] ?? null;
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array(
-        "onClick" => "javascript:resetLists(" . (isset($vmetric["host_id"]) ? $vmetric["host_id"] : null) . "," . $vmetric["index_id"] . ");",
+        "onClick" => "javascript:resetLists($hostId,{$vmetric["index_id"]});",
         "class" => "btc bt_default"
     ));
     $form->setDefaults($vmetric);
-} elseif ($o == "a") {
+} elseif ($o == METRIC_ADD) {
     // Add
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
@@ -214,7 +214,7 @@ if ($o == "w") {
     );
 }
 
-if ($o == "c" || $o == "a") {
+if ($o == METRIC_MODIFY || $o == METRIC_ADD) {
     ?>
     <script type='text/javascript'>
         function insertValueQuery() {
@@ -255,7 +255,7 @@ if ($o == "c" || $o == "a") {
     </script>
     <?php
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetric_id, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetricId, "changeT" => _("Modify")));
 
 $tpl->assign("sort1", _("Properties"));
 $tpl->assign("sort2", _("Graphs"));
@@ -270,15 +270,15 @@ $tpl->assign("helptext", $helptext);
 $valid = false;
 if ($form->validate()) {
     $vmetricObj = $form->getElement('vmetric_id');
-    if ($o == "a") {
-        $vmetric_id = insertVirtualMetricInDB();
-        $vmetricObj->setValue($vmetric_id);
+    if ($o == METRIC_ADD) {
+        $vmetricId = insertVirtualMetricInDB();
+        $vmetricObj->setValue($vmetricId);
         try {
-            enableVirtualMetricInDB($vmetric_id);
+            enableVirtualMetricInDB($vmetricId);
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
-    } elseif ($o == "c") {
+    } elseif ($o == METRIC_MODIFY) {
         try {
             updateVirtualMetricInDB($vmetricObj->getValue());
         } catch (Exception $e) {
@@ -286,7 +286,7 @@ if ($form->validate()) {
         }
     }
     if (!isset($error)) {
-        $o = "w";
+        $o = METRIC_WATCH;
         $form->addElement(
             "button",
             "change",
@@ -315,11 +315,11 @@ if ($valid) {
 }
 $vdef = 1; /* Display VDEF too */
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-if ($o == "c" || $o == "w") {
+if ($o == METRIC_MODIFY || $o == METRIC_WATCH) {
     isset($_POST["host_id"]) && $_POST["host_id"] != null
         ? $host_service_id = $_POST["host_id"]
         : $host_service_id = $vmetric["host_id"];
-} elseif ($o == "a") {
+} elseif ($o == METRIC_ADD) {
     isset($_POST["host_id"]) && $_POST["host_id"] != null
         ? $host_service_id = $_POST["host_id"]
         : $host_service_id = 0;

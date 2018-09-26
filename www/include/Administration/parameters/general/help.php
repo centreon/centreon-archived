@@ -2,6 +2,18 @@
 $help = array();
 
 /**
+ * Centreon statistics
+ */
+$help['tip_send_statistics'] = dgettext(
+    'help',
+    'I agree to participate to the Centreon Customer Experience Improvement Program whereby anonymous information ' .
+    'about the usage of this server may be sent to Centreon. This information will solely be used to improve the ' .
+    'software user experience. I will be able to opt-out at anytime. Refer to ' .
+    '<a style="text-decoration: underline" href="http://ceip.centreon.com/">ceip.centreon.com</a> ' .
+    ' for further details.'
+);
+
+/**
  * Centreon information
  */
 
@@ -19,7 +31,6 @@ $help['tip_limit_per_page_for_monitoring'] = dgettext(
 );
 $help['tip_graph_per_page_for_performances'] = dgettext('help', 'Number of performance graphs displayed per page.');
 $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements loaded in async select.');
-
 
 
 /**

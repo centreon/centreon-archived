@@ -1,4 +1,5 @@
 {$form.javascript}{literal}
+<script src="./include/common/javascript/datepicker/localizedDatepicker.js"></script>
 <script type="text/javascript">
     function toggleParams(type) {
         if (type == 'host') {
@@ -123,11 +124,13 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField">{$form.start.label}</td>
-            <td class="FormRowValue">{$form.start.html}&nbsp;{$form.start_time.html}</td>
+            <td class="FormRowValue">{$form.start.html}&nbsp;{$form.alternativeDateStart.html}&nbsp;{$form.start_time.html}
+                </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">{$form.end.label}</td>
-            <td class="FormRowValue">{$form.end.html}&nbsp;{$form.end_time.html}</td>
+            <td class="FormRowValue">{$form.end.html}&nbsp;{$form.alternativeDateEnd.html}&nbsp;{$form.end_time.html}
+                </td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField">{$form.with_services.label}</td>
@@ -144,3 +147,12 @@
     </div>
     {$form.hidden}
 </form>
+
+{literal}
+
+<script type="text/javascript">
+
+    initDatepicker("datepicker", "mm/dd/yy", "0");
+
+</script>
+{/literal}

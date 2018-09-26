@@ -747,7 +747,7 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	my $plugins_dir = "/usr/lib/nagios/plugins";
+	my $plugins_dir = "/usr/lib64/nagios/plugins";
 	if ($plugins_dir ne "") {
 		`cp -pr $plugins_dir/* $TEMP_DIR/plugins/`;
 		if ($? != 0) {

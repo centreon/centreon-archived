@@ -207,7 +207,7 @@ include_once "./include/core/header/htmlHeader.php";
 
 <script type='text/javascript'>
     //saving the user locale
-    localStorage.setItem('locale', '{$myLocale}');
+    localStorage.setItem('locale', '<?php echo $centreon->user->get_lang() ?>');
 </script>
 <?php
 if (!$centreon->user->showDiv("header")) {
@@ -269,8 +269,6 @@ if (!isset($centreon->historyPage)) {
  */
 $inputArguments = array(
     'num' => FILTER_SANITIZE_NUMBER_INT,
-    'search' => FILTER_SANITIZE_STRING,
-    'search_service' => FILTER_SANITIZE_STRING,
     'limit' => FILTER_SANITIZE_NUMBER_INT
 );
 $inputGet = filter_input_array(
@@ -301,24 +299,6 @@ if (isset($url) && $url) {
                     $centreon->historyPage[$url] = $inputPost[$argumentName];
                 } else {
                     $centreon->historyPage[$url] = 0;
-                }
-                break;
-            case 'search':
-                if (!is_null($inputGet[$argumentName])) {
-                    $centreon->historySearch[$url] = $inputGet[$argumentName];
-                } elseif (!is_null($inputPost[$argumentName])) {
-                    $centreon->historySearch[$url] = $inputPost[$argumentName];
-                } else {
-                    $centreon->historySearch[$url] = '';
-                }
-                break;
-            case 'search_service':
-                if (!is_null($inputGet[$argumentName])) {
-                    $centreon->historySearchService[$url] = $inputGet[$argumentName];
-                } elseif (!is_null($inputPost[$argumentName])) {
-                    $centreon->historySearchService[$url] = $inputPost[$argumentName];
-                } else {
-                    $centreon->historySearchService[$url] = '';
                 }
                 break;
             default:

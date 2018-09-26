@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!@PHP_BIN@
 <?php
 /*
  * Centreon is developped with GPL Licence 2.0 :

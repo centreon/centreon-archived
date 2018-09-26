@@ -107,7 +107,7 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems, selectedMenu, initiallyCollapsed } = this.state;
+    const { active, menuItems, initiallyCollapsed } = this.state;
     const pageId = this.props.location.search.split("=")[1];
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -196,7 +196,11 @@ class NavigationComponent extends Component {
                                           : null
                                           }
                                           {Object.keys(subItem.children[key]).map(
-                                            (subKey, idx) => {
+                                            subKey => {
+                                              // manage url options (e.g. &o=c)
+                                              const urlOptions = subItem.children[key][subKey].options !== null
+                                                ? subItem.children[key][subKey].options
+                                                : ''
                                               if (pageId == subKey) {
                                                 if (!initiallyCollapsed) {
                                                   this.collapseInitialSubMenu(
@@ -222,7 +226,8 @@ class NavigationComponent extends Component {
                                                       this,
                                                       routeMap.module +
                                                         "?p=" +
-                                                        subKey,
+                                                        subKey +
+                                                        urlOptions,
                                                       index
                                                     )}
                                                     className="collapsed-level-item-link"
