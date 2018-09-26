@@ -3,11 +3,9 @@ import { Field, reduxForm as connectForm } from "redux-form";
 import SelectField from "../../form-fields/SelectField";
 import CheckboxField from "../../form-fields/CheckboxField";
 
-import { selectRemoteServerValidator } from "../../../helpers/validators";
-
 class PollerFormStepTwo extends Component {
   render() {
-    const { error, handleSubmit, onSubmit, submitting, pollers } = this.props;
+    const { error, handleSubmit, onSubmit, pollers } = this.props;
     return (
       <div className="form-wrapper">
         <div className="form-inner">

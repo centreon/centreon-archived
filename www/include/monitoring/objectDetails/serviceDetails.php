@@ -60,7 +60,7 @@ $GroupListofUser = $centreon->user->access->getAccessGroups();
 $allActions = false;
 /*
  * Get list of actions allowed for user
-	 */
+ */
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
@@ -169,7 +169,7 @@ if (!is_null($host_id)) {
         $tab_status = array();
 
         /*
-         * Get all service information 
+         * Get all service information
          */
         $rq = "SELECT s.service_id, " .
             " s.state AS current_state," .
@@ -308,7 +308,11 @@ if (!is_null($host_id)) {
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = $data['host_name'];
                 $tabCommentServices[$i]['service_description'] = $data['service_description'];
-                $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
+                $tabCommentServices[$i]['comment_data'] =
+                    CentreonUtils::escapeAllExceptSelectedTags(
+                        $data['comment_data'],
+                        array('a', 'hr', 'br')
+                    );
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->closeCursor();
@@ -657,7 +661,7 @@ if (!is_null($host_id)) {
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
-        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils", "escapeSecure"), $tabCommentServices));
+        $tpl->assign("tab_comments_svc", $tabCommentServices);
         $tpl->assign("host_id", $host_id);
         $tpl->assign("service_id", $service_id);
         $centreonGraph = new CentreonGraph($centreon->user->user_id, null, 0, null);

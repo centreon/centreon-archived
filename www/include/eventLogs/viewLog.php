@@ -506,7 +506,7 @@ if ($engine == 'false') {
         }
 
         if (window.history.pushState) {
-            window.history.pushState("", "", "main.php?p=20302&engine=true" + urlargs);
+            window.history.pushState("", "", "?p=20302&engine=true" + urlargs);
         }
         controlTimePeriod();
         var proc = new Transformation();
@@ -818,7 +818,7 @@ if ($engine == 'false') {
                         return false;
                     }
                     if (window.history.pushState) {
-                        window.history.pushState("", "", "main.php?p=20301" + urlargs);
+                        window.history.pushState("", "", "?p=20301" + urlargs);
                     }
                     document.getElementById('openid').innerHTML = args;
                     logs(args, '', false);

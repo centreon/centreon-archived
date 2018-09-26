@@ -111,11 +111,11 @@ $elemArr = array();
 for ($i = 0; $vmetric = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $vmetric['vmetric_id'] . "]");
     if ($vmetric["vmetric_activate"]) {
-        $moptions = "<a href='main.php?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=u&limit=" . $limit .
+        $moptions = "<a href='?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions = "<a href='main.php?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=s&limit=" . $limit .
+        $moptions = "<a href='?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border = '0' alt = '" . _("Enabled") . "' ></a > ";
     }

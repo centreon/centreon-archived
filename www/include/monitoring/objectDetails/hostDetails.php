@@ -366,6 +366,14 @@ if (!$is_admin && !$haveAccess) {
             $tabCommentHosts[$i] = $data;
             $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
         }
+        // We escaped all unauthorized HTML tags for comments
+        foreach ($tabCommentHosts as $index => $commentHost) {
+            $tabCommentHosts[$index]['comment_data'] =
+                CentreonUtils::escapeAllExceptSelectedTags(
+                    $commentHost['comment_data'],
+                    ['a', 'hr', 'br']
+                );
+        }
         $DBRESULT->closeCursor();
         unset($data);
 
@@ -605,7 +613,13 @@ if (!$is_admin && !$haveAccess) {
 
 
         if (isset($tabCommentHosts)) {
-            $tpl->assign("tab_comments_host", array_map(array("CentreonUtils", "escapeSecure"), $tabCommentHosts));
+            $tpl->assign(
+                "tab_comments_host",
+                array_map(
+                    array("CentreonUtils", "escapeSecure"),
+                    $tabCommentHosts
+                )
+            );
         }
         $tpl->assign("host_data", $host_status[$host_name]);
 

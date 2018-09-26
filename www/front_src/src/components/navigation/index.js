@@ -71,17 +71,21 @@ class NavigationComponent extends Component {
       : true;
     this.setState({
       initiallyCollapsed: true,
-      menuItems: menuItems
+      menuItems
     });
   };
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
-    menuItems[index].children[key]["collapsed"] = menuItems[index].children[key]["collapsed"]
-      ? false
-      : true;
+    if(menuItems[index].children[key]["collapsed"]) {
+      menuItems[index].children[key]["collapsed"] = false;
+    } else {
+      Object.keys(menuItems[index].children).forEach(subKey => {
+        menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
+      });
+    }
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
@@ -92,7 +96,7 @@ class NavigationComponent extends Component {
     }
     menuItems[index].active = true;
     this.setState({
-      menuItems: menuItems
+      menuItems
     });
   };
 
@@ -103,7 +107,7 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems, selectedMenu, initiallyCollapsed } = this.state;
+    const { active, menuItems, initiallyCollapsed } = this.state;
     const pageId = this.props.location.search.split("=")[1];
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -192,7 +196,11 @@ class NavigationComponent extends Component {
                                           : null
                                           }
                                           {Object.keys(subItem.children[key]).map(
-                                            (subKey, idx) => {
+                                            subKey => {
+                                              // manage url options (e.g. &o=c)
+                                              const urlOptions = subItem.children[key][subKey].options !== null
+                                                ? subItem.children[key][subKey].options
+                                                : ''
                                               if (pageId == subKey) {
                                                 if (!initiallyCollapsed) {
                                                   this.collapseInitialSubMenu(
@@ -218,7 +226,8 @@ class NavigationComponent extends Component {
                                                       this,
                                                       routeMap.module +
                                                         "?p=" +
-                                                        subKey,
+                                                        subKey +
+                                                        urlOptions,
                                                       index
                                                     )}
                                                     className="collapsed-level-item-link"

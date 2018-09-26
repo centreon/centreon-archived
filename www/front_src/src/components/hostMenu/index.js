@@ -59,7 +59,7 @@ class HostMenu extends Component {
       return null;
     }
 
-    const { down, warning, unreachable, ok, pending, total, url } = data;
+    const { down, unreachable, ok, pending, total } = data;
 
     const { toggled } = this.state;
 

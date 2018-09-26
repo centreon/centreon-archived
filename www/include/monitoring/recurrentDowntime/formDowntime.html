@@ -41,7 +41,7 @@ function addPeriods() {
     var ulTabs = jQuery("#ul_tabs");
 
     ulTabs.after("<div id=\"p_" + periods + "\"></div>");
-    jQuery("#p_" + periods).load('./main.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods);
+    jQuery("#p_" + periods).load('./main.get.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods);
 
     var href = "#p_"+periods;
     var title = '{/literal}{$period}{literal} ' + periods;

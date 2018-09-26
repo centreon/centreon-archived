@@ -245,7 +245,7 @@ for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
         }
     }
     $index_data["metrics_name"] = $metric;
-    $index_data["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=" . $index_data["id"] . "'>" .
+    $index_data["service_description"] = "<a href='?p=50119&o=msvc&index_id=" . $index_data["id"] . "'>" .
         $index_data["service_description"] . "</a>";
 
     $index_data["storage_type"] = $storage_type[$index_data["storage_type"]];

@@ -52,10 +52,6 @@ const SelectField = ({
     "",
     true
   ];
-  const modClassName = modifiers
-    .map(m => `field--${m}`)
-    .concat(className)
-    .join(" ");
 
   return (
     <div className="form-group select" style={styleOverride}>
