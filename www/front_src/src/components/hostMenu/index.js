@@ -7,8 +7,8 @@ class HostMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
+    // this.setWrapperRef = this.setWrapperRef.bind(this);
+    // this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   state = {
@@ -22,34 +22,34 @@ class HostMenu extends Component {
     });
   };
 
-   ///outside click
+  //  ///outside click
 
-   componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
+  //  componentDidMount() {
+  //   document.addEventListener('mousedown', this.handleClickOutside);
+  // }
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
+  // componentWillUnmount() {
+  //   document.removeEventListener('mousedown', this.handleClickOutside);
+  // }
 
-  /**
-   * Set the wrapper ref
-   */
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
+  // /**
+  //  * Set the wrapper ref
+  //  */
+  // setWrapperRef(node) {
+  //   this.wrapperRef = node;
+  // }
 
-  /**
-   * Alert if clicked on outside of element
-   */
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.setState({
-        toggled: false
-      });
-    }
-  }
-  ////end outside click
+  // /**
+  //  * Alert if clicked on outside of element
+  //  */
+  // handleClickOutside(event) {
+  //   if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+  //     this.setState({
+  //       toggled: false
+  //     });
+  //   }
+  // }
+  // ////end outside click
 
 
   render() {
@@ -87,13 +87,8 @@ class HostMenu extends Component {
             <span>{numeral(ok).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20202&o=h_pending&search=" class={"wrap-middle-icon round round-small "+ (pending > 0 ? "blue" : "blue-bordered")}>
-          <a class="number">
-            <span>{numeral(pending).format("0a")}</span>
-          </a>
-        </Link>
 
-        <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
+        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
         <div class="submenu host">
           <div class="submenu-inner">
             <ul class="submenu-items list-unstyled">

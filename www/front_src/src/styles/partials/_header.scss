@@ -378,6 +378,11 @@
         background-color: #818185;
       }
     }
+    &.gray-light {
+      &:before {
+        background-color: #cdcdcd;
+      }
+    }
     &.green {
       &:before {
         background-color: #87bd23;
