@@ -298,6 +298,10 @@
         position: absolute;
         right: 15px;
         top: 5px;
+        &.icon-copied {
+          -webkit-mask: url('./img/icons/icon-copied.svg');
+          mask: url('./img/icons/icon-copied.svg');
+        }
       }
       .submenu-bookmark-link {
         margin: 14px 9px 13px;

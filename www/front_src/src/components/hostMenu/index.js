@@ -4,12 +4,6 @@ import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class HostMenu extends Component {
-  constructor(props) {
-    super(props);
-
-    // this.setWrapperRef = this.setWrapperRef.bind(this);
-    // this.handleClickOutside = this.handleClickOutside.bind(this);
-  }
 
   state = {
     toggled: false
@@ -22,44 +16,28 @@ class HostMenu extends Component {
     });
   };
 
-  //  ///outside click
-
-  //  componentDidMount() {
-  //   document.addEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // componentWillUnmount() {
-  //   document.removeEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // /**
-  //  * Set the wrapper ref
-  //  */
-  // setWrapperRef(node) {
-  //   this.wrapperRef = node;
-  // }
-
-  // /**
-  //  * Alert if clicked on outside of element
-  //  */
-  // handleClickOutside(event) {
-  //   if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-  //     this.setState({
-  //       toggled: false
-  //     });
-  //   }
-  // }
-  // ////end outside click
-
-
   render() {
-    const { data } = this.props;
+    let data = this.props.data;
 
-    if (!data || !data.total) {
-      return null;
+    if(!data || !data.total){
+      data = {
+        down: {
+          total: null,
+          unhandled: null
+        },
+        unreachable: {
+          total: null,
+          unhandled: null
+        },
+        ok: null,
+        pending: null,
+        total: 0,
+      }
     }
 
-    const { down, unreachable, ok, pending, total } = data;
+    let { down, unreachable, ok, pending, total } = data;
+
+    
 
     const { toggled } = this.state;
 
@@ -98,7 +76,7 @@ class HostMenu extends Component {
                   class="submenu-item-link"
                 >
                   <span>All</span>
-                  <span class="submenu-count">{total}</span>
+                  <span class="submenu-count">{numeral(total).format("0a")}</span>
                 </Link>
               </li>
               <li class="submenu-item">
@@ -108,7 +86,7 @@ class HostMenu extends Component {
                 >
                   <span class="dot-colored red">Down</span>
                   <span class="submenu-count">
-                    {down.unhandled}/{down.total}
+                    {numeral(down.unhandled).format("0a")}/{numeral(down.total).format("0a")}
                   </span>
                 </Link>
               </li>
@@ -119,7 +97,7 @@ class HostMenu extends Component {
                 >
                   <span class="dot-colored gray">Unreachable</span>
                   <span class="submenu-count">
-                    {unreachable.unhandled}/{unreachable.total}
+                    {numeral(unreachable.unhandled).format("0a")}/{numeral(unreachable.total).format("0a")}
                   </span>
                 </Link>
               </li>
@@ -129,7 +107,7 @@ class HostMenu extends Component {
                   class="submenu-item-link"
                 >
                   <span class="dot-colored green">Ok</span>
-                  <span class="submenu-count">{ok}</span>
+                  <span class="submenu-count">{numeral(ok).format("0a")}</span>
                 </Link>
               </li>
               <li class="submenu-item">
@@ -138,7 +116,7 @@ class HostMenu extends Component {
                   class="submenu-item-link"
                 >
                   <span class="dot-colored blue">Pending</span>
-                  <span class="submenu-count">{pending}</span>
+                  <span class="submenu-count">{numeral(pending).format("0a")}</span>
                 </Link>
               </li>
             </ul>

@@ -178,7 +178,7 @@ class NavigationComponent extends Component {
                               ) : (
                                 <Link
                                   className="collapsed-level-item-link img-none"
-                                  to={routeMap.module + "?p=" + menuKey.slice(1)}
+                                  to={routeMap.module + "?p=" + menuKey.slice(1) + (subItem.options ? subItem.options : '')}
                                 >
                                   {subItem.label}
                                 </Link>
@@ -199,7 +199,6 @@ class NavigationComponent extends Component {
                                           }
                                           {Object.keys(subItem.children[key]).map(
                                             subKey => {
-                                              // manage url options (e.g. &o=c)
                                               const urlOptions = subItem.children[key][subKey].options !== null
                                                 ? subItem.children[key][subKey].options
                                                 : ''

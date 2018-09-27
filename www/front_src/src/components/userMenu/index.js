@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import numeral from "numeral";
-import {CopyToClipboard}  from 'react-copy-to-clipboard';
 import Clock from "../clock";
 
 class UserMenu extends Component {
   state = {
     toggled: false,
-    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939', 
+    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
     copied: false
   };
 
@@ -20,8 +19,10 @@ class UserMenu extends Component {
 
 
   onCopy = () => {
-    console.log('click on copy');
-    this.setState({copied: true});
+    let autoLoginInput = document.getElementById("autologin-input");
+    autoLoginInput.select();
+    document.execCommand('copy');
+    this.setState({ copied: true });
   };
 
   render() {
@@ -31,8 +32,8 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled } = this.state,
-          { fullname, username } = data;
+    const { toggled, copied, value } = this.state,
+      { fullname, username } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -50,13 +51,17 @@ class UserMenu extends Component {
                   </a>
                 </span>
               </li>
-              <CopyToClipboard onCopy={this.onCopy} text={toggled.value}>
-                <React.Fragment>
-                  <button class="submenu-user-button">Copy autologin link <span className={toggled.copied ?'icon-copied btn-logout-icon' : 'icon-copy btn-logout-icon' }></span></button>
-                  <span  />
-                </React.Fragment>
-
-               </CopyToClipboard>
+              <React.Fragment>
+                <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                <textarea id="autologin-input" style={
+                  {
+                    width: 0,
+                    height: 0,
+                    position: 'fixed',
+                    top: -100
+                  }
+                }>{value}</textarea>
+              </React.Fragment>
             </ul>
             <div class="button-wrap">
               <a href="index.php?disconnect=1">

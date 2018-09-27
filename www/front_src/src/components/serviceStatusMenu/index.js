@@ -4,13 +4,6 @@ import numeral from "numeral";
 import { Link } from "react-router-dom";
 
 class ServiceStatusMenu extends Component {
-  constructor(props) {
-    super(props);
-
-    // this.setWrapperRef = this.setWrapperRef.bind(this);
-    // this.handleClickOutside = this.handleClickOutside.bind(this);
-  }
-
 
   state = {
     toggled: false
@@ -24,44 +17,30 @@ class ServiceStatusMenu extends Component {
 
   };
 
-  // ///outside click
-
-  // componentDidMount() {
-  //   document.addEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // componentWillUnmount() {
-  //   document.removeEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // /**
-  //  * Set the wrapper ref
-  //  */
-  // setWrapperRef(node) {
-  //   this.wrapperRef = node;
-  // }
-
-  // /**
-  //  * Alert if clicked on outside of element
-  //  */
-  // handleClickOutside(event) {
-  //   if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-  //     this.setState({
-  //       toggled: false
-  //     });
-  //   }
-  // }
-  // ////end outside click
- 
-
   render() {
-    const { data } = this.props;
-
-    if (!data || !data.total) {
-      return null;
+    let data = this.props.data;
+    
+    if(!data || !data.total){
+      data = {
+        warning: {
+          total: null,
+          unhandled: null
+        },
+        critical: {
+          total: null,
+          unhandled: null
+        },
+        unknown: {
+          total: null,
+          unhandled: null
+        },
+        ok: null,
+        pending: null,
+        total: 0,
+      }
     }
 
-    const { critical, ok, pending, total, unknown, warning } = data;
+    let { critical, ok, pending, total, unknown, warning } = data;
 
     const { toggled } = this.state;
 

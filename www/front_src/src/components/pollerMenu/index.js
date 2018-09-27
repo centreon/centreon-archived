@@ -1,17 +1,31 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 
+const getIssueClass = (issues, key) => {
+  return (issues && issues.length != 0) ?
+  ((issues[key]) ?
+    ((issues[key].warning) ?
+      'orange'
+      : ((issues[key].critical)
+        ? 'red'
+        : 'green'))
+    : 'green')
+  : 'green';
+}
+
 const getPollerStatusIcon = issues => {
+
+  let databaseClass = getIssueClass(issues, 'database');
+
+  let latencyClass = getIssueClass(issues, 'latency');
+
   let result = (
     <React.Fragment>
-      <span class="wrap-left-icon round green">
+      <span class={`wrap-left-icon round ${databaseClass}`}>
         <span class="iconmoon icon-database" />
       </span>
-      <span class="wrap-left-icon round orange">
+      <span class={`wrap-left-icon round ${latencyClass}`}>
         <span class="iconmoon icon-clock" />
-      </span>
-      <span class="wrap-left-icon round red">
-        <span class="iconmoon icon-link " />
       </span>
     </React.Fragment>
   );
@@ -24,52 +38,12 @@ class PollerMenu extends Component {
     toggled: false
   };
 
-  constructor(props) {
-    super(props);
-
-    // this.setWrapperRef = this.setWrapperRef.bind(this);
-    // this.handleClickOutside = this.handleClickOutside.bind(this);
-
-    this.state = {
-      toggled: false
-    };
-  }
-
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
       toggled: !toggled
     });
   };
-
-  //  ///outside click
-
-  // componentDidMount() {
-  //   document.addEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // componentWillUnmount() {
-  //   document.removeEventListener('mousedown', this.handleClickOutside);
-  // }
-
-  // /**
-  //  * Set the wrapper ref
-  //  */
-  // setWrapperRef(node) {
-  //   this.wrapperRef = node;
-  // }
-
-  // /**
-  //  * Alert if clicked on outside of element
-  //  */
-  // handleClickOutside(event) {
-  //   if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-  //     this.setState({
-  //       toggled: false
-  //     });
-  //   }
-  // }
-  // ////end outside click
 
   render() {
     const { data } = this.props;
@@ -101,46 +75,46 @@ class PollerMenu extends Component {
               </li>
               {issues
                 ? Object.keys(issues).map((issue, index) => {
-                    let message = "";
+                  let message = "";
 
-                    if (issue === "database") {
-                      message = "Database updates not active";
-                    } else if (issue === "stability") {
-                      message = "Pollers not running";
-                    } else if (issue === "latency") {
-                      message = "Latency detected";
-                    }
+                  if (issue === "database") {
+                    message = "Database updates not active";
+                  } else if (issue === "stability") {
+                    message = "Pollers not running";
+                  } else if (issue === "latency") {
+                    message = "Latency detected";
+                  }
 
-                    return (
-                      <li class="submenu-top-item">
-                        <span class="submenu-top-item-link">
-                          {message}
-                          <span class="submenu-top-count">
-                            {issues[issue].total ? issues[issue].total : "..."}
-                          </span>
+                  return (
+                    <li class="submenu-top-item">
+                      <span class="submenu-top-item-link">
+                        {message}
+                        <span class="submenu-top-count">
+                          {issues[issue].total ? issues[issue].total : "..."}
                         </span>
-                        {Object.keys(issues[issue]).map((elem, index) => {
-                          if (issues[issue][elem].poller) {
-                            const pollers = issues[issue][elem].poller;
-                            return pollers.map((poller, i) => {
-                              const color =
-                                elem === "critical" ? "red" : "blue";
-                              return (
-                                <a
-                                  class="submenu-top-item-link"
-                                  style={{ padding: "0px 16px 17px" }}
-                                >
-                                  <span class={"dot-colored " + color}>
-                                    {poller.name}
-                                  </span>
-                                </a>
-                              );
-                            });
-                          } else return null;
-                        })}
-                      </li>
-                    );
-                  })
+                      </span>
+                      {Object.keys(issues[issue]).map((elem, index) => {
+                        if (issues[issue][elem].poller) {
+                          const pollers = issues[issue][elem].poller;
+                          return pollers.map((poller, i) => {
+                            const color =
+                              elem === "critical" ? "red" : "blue";
+                            return (
+                              <a
+                                class="submenu-top-item-link"
+                                style={{ padding: "0px 16px 17px" }}
+                              >
+                                <span class={"dot-colored " + color}>
+                                  {poller.name}
+                                </span>
+                              </a>
+                            );
+                          });
+                        } else return null;
+                      })}
+                    </li>
+                  );
+                })
                 : null}
               <a href={"./main.php?p=609"}>
                 <button class="btn btn-big btn-green submenu-top-button">
