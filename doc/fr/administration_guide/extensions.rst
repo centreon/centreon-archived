@@ -17,14 +17,16 @@ Les modules sont regroupés en 3 types :
 
 Pour installer un module :
 
-1. Installez le module à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/modules** sur le serveur Central)
-2. Rendez-vous dans le menu **Administration** ==> **Extensions**
+#. Installez le module à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/modules** sur le serveur Central)
+#. Rendez-vous dans le menu **Administration > Extensions > Modules**
 
 .. image :: /images/guide_exploitation/cextensions.png
    :align: center
 
-3. Cliquez sur l'icône |install| pour lancer l'installation du module
-4. Cliquez maintenant sur **Installer** pour installer le module
+Vous avez alors deux choix :
+
+* Installer un module en cliquant sur le bouton |install|,
+* Ou cliquez sur le bouton **Install/Upgrade all** pour installer tous les modules en même temps.
 
 Le tableau ci-dessous résume les différentes colonnes de la page :
 
@@ -66,10 +68,16 @@ Les widgets permettent de construire de véritables vues personnalisées, abord�
 
 Pour installer un widget :
 
-#. Installez le widget à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/modules** sur le serveur Central)
-#. Rendez-vous dans le menu **Administration** ==> **Extensions**
-#. Dans le menu de gauche, cliquez sur **Configuration** en dessous de **Widgets**
-#. Cliquez sur l'icône |install| pour lancer l'installation du widget
+#. Installez le widget à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/widgets** sur le serveur Central)
+#. Rendez-vous dans le menu **Administration > Extensions > Widgets**
+
+.. image :: /images/guide_exploitation/cwidgets.png
+   :align: center
+
+Vous avez alors deux choix :
+
+* Installer un widget en cliquant sur le bouton |install|,
+* Ou cliquez sur le bouton **Install/Upgrade all** pour installer tous les widgets en même temps.
 
 Le tableau ci-dessous résume les différentes colonnes de la page :
 
@@ -93,9 +101,7 @@ Le tableau ci-dessous résume les différentes colonnes de la page :
 |                         | Pour mettre à jour un widget, cliquer sur l'icône |update| puis suivre le processus                        |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
-.. |enabled|    image:: /images/enabled.png
-.. |disabled|    image:: /images/enabled.png
-.. |install|    image:: /images/install.png
-.. |delete|    image:: /images/delete.png
-.. |configure|    image:: /images/configure.png
-.. |update|    image:: /images/guide_exploitation/cupdate.png
+.. |install|    image:: /images/guide_exploitation/generate_conf.png
+.. |delete|    image:: /images/guide_exploitation/delete.png
+.. |configure|    image:: /images/guide_exploitation/wrench.gif
+.. |update|    image:: /images/guide_exploitation/upgrade.png

@@ -18,13 +18,15 @@ There are 3 kinds of modules:
 To install a module:
 
 1. Install the module from the associated documentation (most often in the directory: **/usr/share/centreon/www/modules** on the central server)
-2. Go into the menu: **Administration** ==> **Extensions**
+2. Go into the menu: **Administration > Extensions > Modules**
 
 .. image :: /images/guide_exploitation/cextensions.png
    :align: center
 
-3. Click on the |install| icon to start installation of the module
-4. Click now on Install to install the module
+Vous have two choices:
+
+* Click on the |install| icon to start installation of one module,
+* Click on **Install/Update all** button to install all modules.
 
 The table below summarizes the columns of the page:
 
@@ -67,9 +69,15 @@ Widgets enable us to construct customized views, dealt with in the chapter cover
 To install a widget:
 
 #. Install the widget from the associated documentation (most commonly in the directory entitled: **/usr/share/centreon/www/widgets** on the central server)
-#. Go into the menu: **Administration** ==> **Extensions**
-#. In the left menu, click on **Setup** under **Widgets**
-#. Click on |install| to start the installation of the widget
+#. Go into the menu: **Administration > Extensions > Widgets**
+
+.. image :: /images/guide_exploitation/cwidgets.png
+   :align: center
+
+Vous have two choices:
+
+* Click on the |install| icon to start installation of one widget,
+* Click on **Install/Update all** button to install all widgets.
 
 The table below summarizes the columns of the page:
 
@@ -93,9 +101,7 @@ The table below summarizes the columns of the page:
 |                         | To update a widget, click on |update| and then follow the process                                          |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
-.. |enabled|    image:: /images/enabled.png
-.. |disabled|    image:: /images/enabled.png
-.. |install|    image:: /images/install.png
-.. |delete|    image:: /images/garbage_empty.png
-.. |configure|    image:: /images/configure.png
-.. |update|    image:: /images/guide_exploitation/cupdate.png
+.. |install|    image:: /images/guide_exploitation/generate_conf.png
+.. |delete|    image:: /images/guide_exploitation/delete.png
+.. |configure|    image:: /images/guide_exploitation/wrench.gif
+.. |update|    image:: /images/guide_exploitation/upgrade.png
