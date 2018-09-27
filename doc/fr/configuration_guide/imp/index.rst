@@ -52,10 +52,7 @@ leur installation.
 
 .. note::
     Si votre serveur Centreon n'a pas accès directement à internet, pensez à 
-    configurer un proxy. Cette fonctionnalité est maintenant disponible depuis
-    la version 2.8.2 de Centreon Web. Si vous n'avez pas cette version, pensez
-    à mettre à jour votre plate-forme.
-
+    configurer un :ref:`proxy<impproxy>`.
 
 Accédez aux Plugin Packs de Centreon IMP
 ----------------------------------------
