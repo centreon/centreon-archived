@@ -250,7 +250,25 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $now = new DateTime;
         $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
         $interval = date_diff($now, $startDate);
-        $uptime = $interval->format('%a days %h hours %i minutes %s seconds');
+        if (
+            intval($interval->format('%a')) >= 2 
+        ) {
+            $uptime = $interval->format('%a days');
+        } elseif (
+            intval($interval->format('%a')) == 1
+        ) {
+            $uptime = $interval->format('%a days %i minutes');
+        } elseif (
+            intval($interval->format('%a')) < 1 && intval($interval->format('%h')) >= 1
+        ) {
+            $uptime = $interval->format('%h hours %i minutes');
+        } elseif (
+            intval($interval->format('%h')) < 1
+        ) {
+            $uptime = $interval->format('%i minutes %s seconds');
+        } else {
+            $uptime = $interval->format('%a days %h hours %i minutes %s seconds');
+        }
     }
 
     $elemArr[$i] = [
