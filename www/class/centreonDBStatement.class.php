@@ -39,12 +39,24 @@ require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 class CentreonDBStatement extends \PDOStatement
 {
     public $dbh;
-
     public $fetchAll;
 
-    protected function __construct($dbh)
+    /**
+     * @var CentreonLog
+     */
+    private $log;
+    
+    /**
+     *
+     * @var bool
+     */
+    private $debug;
+
+    protected function __construct($dbh, CentreonLog $log = null, $debug = null)
     {
         $this->dbh = $dbh;
+        $this->log = $log;
+        $this->debug = $debug ? true : false;
         $this->fetchAll = null;
     }
 
@@ -80,6 +92,19 @@ class CentreonDBStatement extends \PDOStatement
     public function execute($parameters = null)
     {
         $this->fetchAll = null;
-        return parent::execute($parameters);
+
+        try {
+            $result = parent::execute($parameters);
+        } catch (\PDOException $e) {
+            if ($this->debug) {
+                $string = str_replace("`", "", $this->queryString);
+                $string = str_replace('*', "\*", $string);
+                $this->log->insertLog(2, " QUERY : " . $string . ", " . json_encode($parameters));
+            }
+
+            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
+        }
+
+        return $result;
     }
 }

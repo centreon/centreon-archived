@@ -75,7 +75,7 @@ class CentreonDB extends \PDO
      *                       otherwise it will throw an Exception
      * @throws Exception
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = true)
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -91,9 +91,17 @@ class CentreonDB extends \PDO
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
 
+            $this->debug = 0;
+            if (false === $silent) {
+                $this->debug = 1;
+            }
+
             $this->options = array(
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_STATEMENT_CLASS => array('CentreonDBStatement', array($this)),
+                PDO::ATTR_STATEMENT_CLASS => [
+                    CentreonDBStatement::class,
+                    [$this, $this->log, $this->debug],
+                ],
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             );
@@ -132,11 +140,6 @@ class CentreonDB extends \PDO
             $this->requestExecuted = 0;
             $this->requestSuccessful = 0;
             $this->lineRead = 0;
-
-            $this->debug = 0;
-            if (false === $silent) {
-                $this->debug = 1;
-            }
 
             parent::__construct(
                 $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
@@ -248,16 +251,19 @@ class CentreonDB extends \PDO
                 $sth = $this->prepare($queryString);
                 $sth->execute($parameters);
             }
-            $this->queryNumber++;
-            $this->successQueryNumber++;
         } catch (\PDOException $e) {
-            if ($this->debug) {
+            // skip if we use CentreonDBStatement::execute method
+            if ($this->debug && is_null($parameters)) {
                 $string = str_replace("`", "", $queryString);
                 $string = str_replace('*', "\*", $string);
                 $this->log->insertLog(2, " QUERY : " . $string);
             }
-            throw new \PDOException($e->getMessage(), $e->getCode());
+
+            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
         }
+
+        $this->queryNumber++;
+        $this->successQueryNumber++;
 
         return $sth;
     }
@@ -282,7 +288,7 @@ class CentreonDB extends \PDO
             if ($this->debug) {
                 $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
             }
-            throw new \PDOException($e->getMessage(), $e->getCode());
+            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
         }
 
         return $rows;
