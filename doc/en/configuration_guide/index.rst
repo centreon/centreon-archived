@@ -22,6 +22,5 @@ Do forget to think about setting up a global strategy of the configuration in or
    advanced_configuration/index
    process_description/index
    deploy
-   knowledge_base/index
 
 Once setup is finished, supervision will allow you to get informations on the health status of your IT systems. For having more information regarding the operation interface, please refer to the exploitation guide.
