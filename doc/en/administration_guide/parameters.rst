@@ -117,7 +117,7 @@ This part can be used to configure the connection to LDAP directories.
 
 To add a new directory:
 
-#. Go into the menu: **Administration** ==> **Options** ==> **LDAP**
+#. Go into the menu: **Administration > Options > LDAP**
 #. Click on **Add**
 
 .. image :: /images/guide_exploitation/eldap.png
@@ -179,7 +179,7 @@ RRDTool
 
 This part can be used to configure the RRDTool graphs generation engine and the sizes of the typefaces used for their presentation.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **RRDTool**
+#. Go into the menu: **Administration > Parameters > RRDTool**
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
@@ -199,7 +199,7 @@ Debug
 
 This part can be used to configure the enabling of the logging of activity on Centreon processes.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Debug**
+#. Go into the menu: **Administration > Parameters > Debug**
 
 .. image :: /images/guide_exploitation/edebug.png
    :align: center
