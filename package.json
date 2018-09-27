@@ -7,7 +7,7 @@
     "build": "webpack --mode production",
     "test": "jest --watch --colors",
     "test:build": "jest --ci --coverage",
-    "centreon-build": "cd ./www/ && rm -rf static && rm -rf template && cd ./front_src/ && npm install && npm run build && npm prune --production && cd ../ && mv static template",
+    "centreon-build": "npm run build:sass && cd ./www/ && rm -rf static && rm -rf template && cd ./front_src/ && npm install && npm run build && npm prune --production && cd ../ && mv static template",
     "centreon-new": "cd ./www/ && rm -rf static && rm -rf template && cd ./front_src/ && npm install && npm run build && cd ../ && mv static template",
     "centreon-start": "cd ./www/ && rm -rf static && rm -rf template && cd ./front_src/ && npm run build && cd ../ && mv static template",
     "watch:sass": "cd ./www/front_src && npm run build:sass && npm run build:sass -- -w",
