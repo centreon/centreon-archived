@@ -338,7 +338,7 @@ sub startWorker($) {
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
 
-    my $cmdexec = "/opt/remi/php72/root/usr/bin/php $self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -s -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
+    my $cmdexec = "php $self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -s -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
 
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
      return undef;
@@ -354,7 +354,7 @@ sub checkSSHPort($) {
     if (defined($value) && $value) {
         $port = $value;
     } else {
-        $port = 22;
+        $port = 22;gt
     }
     return $port;
 }
