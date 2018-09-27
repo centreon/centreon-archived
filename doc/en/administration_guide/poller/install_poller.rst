@@ -20,6 +20,20 @@ Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
 Using Centreon packages
 -----------------------
 
+SELinux should be disabled. In order to do this, you have to edit the file
+*/etc/selinux/config* and replace "enforcing" by "disabled"::
+
+    SELINUX=disabled
+
+.. note::
+    After saving the file, please reboot your operating system to apply the
+    changes.
+
+A quick check of SELinux status::
+
+    $ getenforce
+    Disabled
+
 To install Centreon software from the repository, you should first install
 centreon-release package which will provide the repository file.
 
