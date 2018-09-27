@@ -327,8 +327,6 @@ sub startWorker($) {
     my $self = shift;
         $self->{logger}->writeLogError("Starting test");
     my ($lerror, $stdout, $cmd_line);
-
-    my $path = '/centreon/';
     my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `contact` WHERE `contact_admin` = '1' AND `contact_activate` = '1' LIMIT 1");
     if ($status == -1){
         $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
