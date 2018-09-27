@@ -235,3 +235,5 @@ updates and additions. The Plugin Packs you have been using will not be uninstal
 .. note::
     If you have some difficulties to use IMP you can contact your technical team using
     imp at centreon dot com email.
+
+If you have any question, please read the `Centreon IMP FAQ <https://www.centreon.com/en/faq/faq-centreon-imp/>`_
