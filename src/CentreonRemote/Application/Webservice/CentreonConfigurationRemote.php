@@ -200,7 +200,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postLinkCentreonRemoteServer()
     {
-
         $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
         $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);

@@ -7,7 +7,8 @@ const routeMap = {
   remoteServerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/4",
   pollerStep1: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/5",
   pollerStep2: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/6",
-  pollerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/7"
+  pollerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/7",
+  pollerList: "/_CENTREON_PATH_PLACEHOLDER_/main.php?p=60901"
 };
 
 export default routeMap;

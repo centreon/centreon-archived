@@ -52,7 +52,7 @@ Centreon Broker
 ---------------
 
 Centreon Broker must be configured properly, refer to this 
-:ref:`documentation <centreon_broker_wizards>` for more information.
+:ref:`documentation <advance_conf_broker>` for more information.
 
 The cbd rrd daemon must be running::
 

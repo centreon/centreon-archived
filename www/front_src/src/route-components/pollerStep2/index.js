@@ -44,11 +44,16 @@ class PollerStepTwoRoute extends Component {
   handleSubmit = data => {
     const { history, pollerData, setPollerWizard } = this.props;
     let postData = { ...data, ...pollerData };
+    postData.server_type = 'poller';
     return this.wizardFormApi
       .post("", postData)
       .then(response => {
         setPollerWizard({ submitStatus: response.data.success });
-        history.push(routeMap.pollerStep3);
+        if (pollerData.linked_remote){
+          history.push(routeMap.pollerStep3);
+        } else {
+          history.push(routeMap.pollerList);
+        }
       })
       .catch(err => {
         throw new SubmissionError({ _error: new Error(err.response.data) });

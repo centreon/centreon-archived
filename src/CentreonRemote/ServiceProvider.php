@@ -71,6 +71,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 'centreon_remote.exporter.cache',
                 'centreon_remote.exporter',
                 'centreon.db-manager',
+                'centreon.acl',
             ];
 
             $locator = new ServiceLocator($container, $services);

@@ -2,28 +2,33 @@
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use Centreon\Domain\Entity\CfgResourceInstanceRelations;
 use PDO;
 
 class CfgResourceInstanceRelationsRepository extends ServiceEntityRepository
 {
 
     /**
-     * Export options
+     * Export
      * 
-     * @return \Centreon\Domain\Entity\CfgResourceInstanceRelations[]
+     * @param int[] $pollerIds
+     * @return array
      */
-    public function export(): array
+    public function export(array $pollerIds): array
     {
-        $sql = <<<SQL
-SELECT
-    crir.resource_id AS `resourceId`,
-    crir.instance_id AS `instanceId`
-FROM cfg_resource_instance_relations AS `crir`
-SQL;
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = implode(',', $pollerIds);
+
+        $sql = "SELECT t.* "
+            . "FROM cfg_resource_instance_relations AS t "
+            . "WHERE t.instance_id IN ({$ids})"
+        ;
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, CfgResourceInstanceRelations::class);
 
         $result = [];
 

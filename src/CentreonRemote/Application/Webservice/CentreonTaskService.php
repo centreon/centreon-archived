@@ -2,12 +2,8 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
-use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
-use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
-use CentreonRemote\Domain\Value\ServerWizardIdentity;
+use Exception;
 
 class CentreonTaskService extends CentreonWebServiceAbstract
 {
@@ -124,6 +120,90 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     }
 
     /**
+     * @SWG\Post(
+     *   path="/centreon/api/external.php",
+     *   operationId="addImportTaskWithParent",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_task_service",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="getTaskStatusByParent",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="parent_id",
+     *       type="string",
+     *       description="the id of the task you want to attach subtask",
+     *       required=true,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
+     *       name="params",
+     *       type="string",
+     *       description="serialize data for task must contain list of pollers and server address",
+     *       required=true,
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON"
+     *   )
+     * )
+     *
+     * Add new import task with parent ID
+     *
+     * @return string
+     *
+     * @throws \RestBadRequestException
+     */
+    public function postAddImportTaskWithParent()
+    {
+        $parent_id = (isset($_POST['parent_id'])) ? intval($_POST['parent_id']) : null;
+        $params = (isset($_POST['params'])) ? $_POST['params'] : '';
+
+        // try to unserialize params string to array
+        if (!$params = unserialize($params)) {
+            $params = [];
+        }
+
+        // input data validation
+        try {
+            if (!$parent_id) {
+                throw new Exception('Missing parent_id parameter');
+            } elseif (!$params) {
+                throw new Exception('Missing params parameter');
+            } elseif (!array_key_exists('pollers', $params)) {
+                throw new Exception('Missing pollers list in params');
+            } elseif (!array_key_exists('pollers', $params)) {
+                throw new Exception('Missing pollers list in params');
+            } elseif (!array_key_exists('server', $params)) {
+                throw new Exception('Missing server ID in params');
+            }
+        } catch (\Exception $ex) {
+            return json_encode([
+                    'success' => false,
+                    'status' => $ex->getMessage(),
+                ]);
+        }
+
+        // add new task
+        $result = $this->getDi()['centreon.taskservice']
+            ->addTask(Task::TYPE_IMPORT, $params, $parent_id)
+        ;
+
+        return json_encode(['success' => true, 'status'=> $result]);
+    }
+
+    /**
      * Authorize to access to the action
      *
      * @param string $action The action name
@@ -134,10 +214,6 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
-            return true;
-        }
-
-        return $user && $user->hasAccessRestApiConfiguration();
+        return true;
     }
 }
