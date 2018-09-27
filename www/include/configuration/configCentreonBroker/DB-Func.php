@@ -207,16 +207,21 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
 
         # Convert values radio button
         foreach ($values as $group => $groups) {
-            foreach ($groups as $gid => $infos) {
-                if (isset($infos['blockId'])) {
-                    list($tagId, $typeId) = explode('_', $infos['blockId']);
-                    $fieldtype = $cbObj->getFieldtypes($typeId);
-                } else {
-                    $fieldtype = array();
-                }
-                foreach ($infos as $key => $value) {
-                    if (isset($fieldtype[$key]) && $fieldtype[$key] == 'radio') {
-                        $values[$group][$gid][$key] = array($key => $value);
+            if (is_array($groups)) {
+                foreach ($groups as $gid => $infos) {
+                    if (isset($infos['blockId'])) {
+                        list($tagId, $typeId) = explode('_', $infos['blockId']);
+                        $fieldtype = $cbObj->getFieldtypes($typeId);
+                    } else {
+                        $fieldtype = array();
+                    }
+
+                    if (is_array($infos)) {
+                        foreach ($infos as $key => $value) {
+                            if (isset($fieldtype[$key]) && $fieldtype[$key] == 'radio') {
+                                $values[$group][$gid][$key] = array($key => $value);
+                            }
+                        }
                     }
                 }
             }

@@ -92,7 +92,7 @@ try {
     $appID = $data["id"];
     $beginTime = time();
 
-    if (count($data) == 0) {
+    if (!$data || count($data) == 0) {
         try {
             $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
             $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");

@@ -617,6 +617,18 @@ class CentreonConfigCentreonBroker
     public function insertConfig($values)
     {
         $objMain = new CentreonMainCfg();
+        $writeTimestamps = isset($values['write_timestamp']['write_timestamp']) ?
+            $this->db->escape($values['write_timestamp']['write_timestamp']) :
+            '1';
+        $writeThread = isset($values['write_thread_id']['write_thread_id']) ?
+            $this->db->escape($values['write_thread_id']['write_thread_id']) :
+            '1';
+        $statsActivate = isset($values['stats_activate']['stats_activate']) ?
+            $this->db->escape($values['stats_activate']['stats_activate']) :
+            '1';
+        $commandFile = isset($values['command_file']['command_file']) ?
+            $this->db->escape($values['command_file']['command_file']) :
+            '';
 
         /*
          * Insert the Centreon Broker configuration
@@ -631,12 +643,12 @@ class CentreonConfigCentreonBroker
                 " . $this->db->escape($values['ns_nagios_server']) . ",
                 '" . $this->db->escape($values['activate']['activate']) . "',
                 '" . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
-                '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
-                '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
-                '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
+                '" . $writeTimestamps . "',
+                '" . $writeThread . "',
+                '" . $statsActivate . "',
                 '" . $this->db->escape($values['cache_directory']) . "',
                 ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
-                '" . $this->db->escape($values['command_file']) . "' "
+                '" . $commandFile . "' "
                 . ")";
         try {
             $this->db->query($query);

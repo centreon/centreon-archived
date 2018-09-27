@@ -35,7 +35,11 @@
 
 ini_set("display_errors", "Off");
 
+use Centreon\Domain\Entity\Task;
+
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+
+require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
@@ -67,7 +71,36 @@ if (!isset($_POST['poller'])) {
  * List of error from php
  */
 global $generatePhpErrors;
+global $dependencyInjector;
+
 $generatePhpErrors = array();
+$pollers = explode(',', $_POST['poller']);
+
+// Add task to export files of there is a remote
+$idBindString = str_repeat('?,', count($pollers));
+$idBindString = rtrim($idBindString, ',');
+$queryPollers = "SELECT ns.id, ns.ns_ip_address as ip FROM nagios_server as ns
+    JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
+    WHERE ns.id IN({$idBindString})";
+
+$remotesStatement = $pearDB->query($queryPollers, $pollers);
+$remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
+
+if (!empty($remotesResults)) {
+    foreach ($remotesResults as $remote) {
+        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['id']}";
+        $linkedStatement = $pearDB->query($queryLinked);
+        $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($linkedResults)) {
+            $exportParams = [
+                'server'  => $remote['id'],
+                'pollers' => array_column($linkedResults, 'id'),
+            ];
+            $dependencyInjector['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
+        }
+    }
+}
 
 /**
  * The error handler for get error from PHP
@@ -97,8 +130,6 @@ function log_error($errno, $errstr, $errfile, $errline)
 }
 
 try {
-    $pollers = explode(',', $_POST['poller']);
-
     $ret = array();
     $ret['host'] = $pollers;
 

@@ -56,7 +56,7 @@ class UserMenu extends Component {
                   <span  />
                 </React.Fragment>
 
-                </CopyToClipboard>
+               </CopyToClipboard>
             </ul>
             <div class="button-wrap">
               <a href="index.php?disconnect=1">
