@@ -352,7 +352,7 @@ sub checkSSHPort($) {
     if (defined($value) && $value) {
         $port = $value;
     } else {
-        $port = 22;gt
+        $port = 22;
     }
     return $port;
 }
