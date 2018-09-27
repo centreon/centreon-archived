@@ -77,6 +77,7 @@ class NavigationComponent extends Component {
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
+
     if(menuItems[index].children[key]["collapsed"]) {
       menuItems[index].children[key]["collapsed"] = false;
     } else {
@@ -84,6 +85,7 @@ class NavigationComponent extends Component {
         menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
       });
     }
+
     this.setState({
       menuItems
     });

@@ -25,7 +25,7 @@ class CfgNagiosBrokerModuleRepository extends ServiceEntityRepository
 SELECT t.*
 FROM cfg_nagios_broker_module AS t
 INNER JOIN cfg_nagios AS cn ON cn.nagios_id = t.cfg_nagios_id
-WHERE cn.nagios_id IN ({$ids})
+WHERE cn.nagios_server_id IN ({$ids})
 GROUP BY t.bk_mod_id
 SQL;
 

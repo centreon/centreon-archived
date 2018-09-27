@@ -42,13 +42,13 @@ class RemoteServerStepTwoRoute extends Component {
               itemArr.items.splice(i, 1);
       }
       return itemArr;
-  }
+  };
 
   _filterOutDefaultPoller = (itemArr, clbk) => {
       clbk(
         this._spliceOutDefaultPoller(itemArr)
       )
-  }
+  };
 
   getPollers = () => {
     this.pollerListApi.get().then(response => {
@@ -68,11 +68,16 @@ class RemoteServerStepTwoRoute extends Component {
   handleSubmit = data => {
     const { history, pollerData, setPollerWizard } = this.props;
     let postData = { ...data, ...pollerData };
+    postData.server_type = 'remote';
     return this.wizardFormApi
       .post("", postData)
       .then(response => {
-        setPollerWizard({ submitStatus: response.data.success });
-        history.push(routeMap.remoteServerStep3);
+          if (response.data.success && response.data.task_id){
+              setPollerWizard({ submitStatus: response.data.success, taskId: response.data.task_id });
+              history.push(routeMap.remoteServerStep3);
+          } else {
+              history.push(routeMap.pollerList);
+          }
       })
       .catch(err => {
         throw new SubmissionError({ _error: new Error(err.response.data) });

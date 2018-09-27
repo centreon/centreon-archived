@@ -37,9 +37,8 @@ Your Centreon central monitoring server must have an access to Internet. This ac
 allows to get the list of available Plugin Packs and to install those on your platform.
 
 .. note::
-    If your server doesn't have a direct access to Internet, you can configure a proxy
-    to access to Internet. The proxy configuration is available since Centreon web 2.8.2
-    version. If you don't have this version, please perform an upgrade of your platform.
+    If your server doesn't have a direct access to Internet, you can configure a :ref:`proxy<impproxy>`
+    to access to Internet.
 
 Link your Centreon platform to Centreon IMP
 -------------------------------------------

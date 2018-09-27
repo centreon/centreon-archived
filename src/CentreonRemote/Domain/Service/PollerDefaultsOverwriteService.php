@@ -9,6 +9,8 @@ class PollerDefaultsOverwriteService
 
     private $brokerConfigIDs = [];
 
+    private $nagiosConfigIDs = [];
+
     private $resourcesPath = '/Domain/Resources/default_config/';
 
     /**
@@ -59,12 +61,24 @@ class PollerDefaultsOverwriteService
 
     public function setCfgNagios(array $data)
     {
+        $configsOfRemote = array_filter($data, function ($pollerData) {
+            return $pollerData['nagios_server_id'] == $this->pollerID;
+        });
+        $this->nagiosConfigIDs = array_column($configsOfRemote, 'nagios_id');
+
         return $this->findPollerAndSetResourceData($data, 'nagios_server_id', 'cfg_nagios.php');
     }
 
     public function setCfgNagiosBroker(array $data)
     {
-        return $this->findPollerAndSetResourceData($data, 'cfg_nagios_id', 'cfg_nagios_broker_module.php');
+        // Remove nagios config info which is related to the broker module of the remote poller
+        $data = array_filter($data, function ($pollerData) {
+            return !in_array($pollerData['cfg_nagios_id'], $this->nagiosConfigIDs);
+        });
+
+        $defaultData = $this->getResource('cfg_nagios_broker_module.php');
+
+        return array_merge($defaultData, $data);
     }
 
     public function setCfgCentreonBroker(array $data)

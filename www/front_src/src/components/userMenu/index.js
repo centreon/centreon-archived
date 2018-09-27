@@ -62,7 +62,6 @@ class UserMenu extends Component {
                   }
                 }>{value}</textarea>
               </React.Fragment>
-
             </ul>
             <div class="button-wrap">
               <a href="index.php?disconnect=1">

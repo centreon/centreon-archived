@@ -87,8 +87,6 @@ abstract class ServerConnectionConfigurationService
 
         $this->insertConfigNagios($serverID);
 
-        $this->insertConfigNagiosBroker($serverID);
-
         $this->insertConfigResources($serverID);
 
         $this->insertConfigCentreonBroker($serverID);
@@ -112,19 +110,15 @@ abstract class ServerConnectionConfigurationService
     protected function insertConfigNagios($serverID)
     {
         $configNagiosData = $this->getResource('cfg_nagios.php');
+        $configID = $this->insertWithAdapter('cfg_nagios', $configNagiosData($this->name, $serverID));
 
-        return $this->insertWithAdapter('cfg_nagios', $configNagiosData($this->name, $serverID));
-    }
-
-    protected function insertConfigNagiosBroker($serverID)
-    {
         $configNagiosBrokerData = $this->getResource('cfg_nagios_broker_module.php');
-        $data = $configNagiosBrokerData($serverID, $this->name);
+        $configBroker = $configNagiosBrokerData($configID, $this->name);
 
-        $configBrokerFirstID = $this->insertWithAdapter('cfg_nagios_broker_module', $data[0]);
-        $configBrokerSecondID = $this->insertWithAdapter('cfg_nagios_broker_module', $data[1]);
+        $this->insertWithAdapter('cfg_nagios_broker_module', $configBroker[0]);
+        $this->insertWithAdapter('cfg_nagios_broker_module', $configBroker[1]);
 
-        return $configBrokerFirstID && $configBrokerSecondID;
+        return $configID;
     }
 
     protected function insertConfigResources($serverID)
