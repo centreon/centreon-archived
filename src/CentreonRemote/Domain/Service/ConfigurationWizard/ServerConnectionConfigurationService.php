@@ -174,7 +174,6 @@ abstract class ServerConnectionConfigurationService
             $result = $this->getDbAdapter()->insert($table, $data);
         } catch(\Exception $e) {
             $this->getDbAdapter()->rollBack();
-            error_log('MESSSSSSSS: ' . $e->getMessage());//TODO
             throw new \Exception("Error inserting remote configuration. Rolling back. Table name: {$table}.");
         }
 

@@ -20,7 +20,7 @@ class CfgResourceInstanceRelationsRepository extends ServiceEntityRepository
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = implode(',', $pollerIds);
 
         $sql = "SELECT t.* "
             . "FROM cfg_resource_instance_relations AS t "
