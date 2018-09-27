@@ -56,8 +56,13 @@ Centreon Broker must be configured properly, refer to this
 
 The cbd rrd daemon must be running::
 
-  $ /etc/init.d/cbd status
-   * cbd_central-rrd is running
-
-Make sure to have the *Start script for broker daemon* parameter filled in 
-``Administration`` > ``Options`` > ``Monitoring``.
+    # systemctl status cbd
+    ● cbd.service - Centreon Broker watchdog
+       Loaded: loaded (/etc/systemd/system/cbd.service; enabled; vendor preset: disabled)
+       Active: active (running) since mer. 2018-07-18 17:46:03 CEST; 2 months 9 days ago
+      Process: 21410 ExecReload=/bin/kill -HUP $MAINPID (code=exited, status=0/SUCCESS)
+     Main PID: 9537 (cbwd)
+       CGroup: /system.slice/cbd.service
+               ├─9537 /usr/sbin/cbwd /etc/centreon-broker/watchdog.xml
+               ├─9539 /usr/sbin/cbd /etc/centreon-broker/central-rrd.xml
+               └─9540 /usr/sbin/cbd /etc/centreon-broker/central-broker.xml
