@@ -497,7 +497,7 @@ sub checkRotation($$$$$) {
 ##################################################
 # Send config files to a remote server 
 #
-sub sendConfigFile($){
+sub sendExportFile($){
     my $self = shift;
     # Init Values
     my $id = $_[0];
@@ -512,55 +512,25 @@ sub sendConfigFile($){
         return;
     }
 
-    my $origin = $self->{centreonDir} . "/filesGeneration/engine/".$id."/*";
-    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+    unless ( -e $self->{centreonDir}  . "filesGeneration/export/".$id) {
+        $self->{logger}->writeLogInfo("Export directory is empty for poller $self->{centreonDir}filesGeneration/export/$id.");
+        return;
+    }
+
+    my $origin = $self->{centreonDir} . "/filesGeneration/export/".$id."/*";
+    my $dest = $server_info->{'ns_ip_address'}.":/var/lib/centreon/remote-data/";
 
     # Send data with SCP
-    $self->{logger}->writeLogInfo("Start: Send config files on poller $id");
-    $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
-    
+    $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
+    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
+
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
                                                                   timeout => 300
                                                                   );
-    
+
     $self->{logger}->writeLogInfo("Result : $stdout");
-    $self->{logger}->writeLogInfo("End: Send config files on poller $id");
-
-    # Send configuration for Centreon Broker
-    if ( -e $self->{centreonDir}  . "/filesGeneration/broker/".$id) {
-        # Check availability of broker files.
-        my $count = 0;
-        opendir(my $dh, $self->{centreonDir} . "/filesGeneration/broker/".$id);
-        while(readdir $dh) {
-            $count++;
-        }
-        closedir $dh;
-
-        if ($count > 2) {
-            $self->{logger}->writeLogDebug("Start: Send Centreon Broker config files on poller $id");
-
-            if ($server_info->{localhost} == 0) {
-                $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                $origin = $self->{centreonDir} . "/filesGeneration/broker/".$id."/*.*";
-                $dest = $server_info->{ns_ip_address}.":$cfg_dir";
-                $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
-                ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                      logger => $self->{logger},
-                                                                      timeout => 300
-                                                                      );
-                $self->{logger}->writeLogInfo("Result : $stdout");
-            } else {
-                $cmd = "cp $origin $cfg_dir 2>&1";
-                ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                      logger => $self->{logger},
-                                                                      timeout => 60
-                                                                      );
-                $self->{logger}->writeLogInfo("Result : $stdout");
-            }
-            $self->{logger}->writeLogDebug("End: Send Centreon Broker config files on poller $id");
-        }
-    }
+    $self->{logger}->writeLogInfo("End: Send export files on poller $id");
 }
 
 ##################################################
@@ -591,7 +561,7 @@ sub sendExportFile($){
 
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
-    $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
+    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
     
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
