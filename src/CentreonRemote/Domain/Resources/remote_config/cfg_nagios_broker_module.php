@@ -1,7 +1,7 @@
 <?php
 
 return function ($configID, $pollerName) {
-    $pollerName = str_replace(' ', '_', $pollerName);
+    $pollerName = strtolower(str_replace(' ', '_', $pollerName));
 
     return [
         [
