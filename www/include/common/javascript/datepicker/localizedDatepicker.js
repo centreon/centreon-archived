@@ -42,22 +42,14 @@
  * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
 function initDatepicker(className, altFormat, defaultDate, idName, timestampToSet) {
-    if ("undefined" == className) {
-        className = "datepicker";
-    }
-
-    if ("undefined" == altFormat) {
-        altFormat = "mm/dd/yy";
-    }
-
-    if ("undefined" == defaultDate) {
-        defaultDate = "0";
-    }
+    className = className || "datepicker";
+    altFormat =  altFormat || "mm/dd/yy";
+    defaultDate = defaultDate || "O";
 
     setUserFormat();
 
 
-    if ("undefined" == idName || "undefined" == timestampToSet) {
+    if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
         // initializing all the displayed and the hidden datepickers
         jQuery("." + className).each(function () {
             // finding all the alternative field
