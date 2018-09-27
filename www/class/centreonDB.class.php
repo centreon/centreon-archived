@@ -75,7 +75,7 @@ class CentreonDB extends \PDO
      *                       otherwise it will throw an Exception
      * @throws Exception
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = true)
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
