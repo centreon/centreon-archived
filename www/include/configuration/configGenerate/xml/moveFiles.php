@@ -76,16 +76,10 @@ global $dependencyInjector;
 $generatePhpErrors = array();
 $pollers = explode(',', $_POST['poller']);
 
-$idBindString = '';
-$ipsClause = '';
-
-foreach ($pollers as $id) {
-    $idBindString .= "?,";
-}
-
 // Add task to export files of there is a remote
+$idBindString = str_repeat('?,', count($pollers));
 $idBindString = rtrim($idBindString, ',');
-$queryPollers = "SELECT ns.id as remote_id, ns.ns_ip_address as ip FROM nagios_server as ns
+$queryPollers = "SELECT ns.id, ns.ns_ip_address as ip FROM nagios_server as ns
     JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
     WHERE ns.id IN({$idBindString})";
 
@@ -94,13 +88,13 @@ $remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($remotesResults)) {
     foreach ($remotesResults as $remote) {
-        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['remote_id']}";
+        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['id']}";
         $linkedStatement = $pearDB->query($queryLinked);
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($linkedResults)) {
             $exportParams = [
-                'server'  => $remote['remote_id'],
+                'server'  => $remote['id'],
                 'pollers' => array_column($linkedResults, 'id'),
             ];
             $dependencyInjector['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);

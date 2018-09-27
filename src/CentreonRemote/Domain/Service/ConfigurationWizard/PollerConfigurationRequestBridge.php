@@ -69,16 +69,11 @@ class PollerConfigurationRequestBridge
 
     private function getPollersToLink(array $pollerIDs)
     {
-        $idBindString = '';
-
         if (empty($pollerIDs)) {
             return [];
         }
 
-        foreach ($pollerIDs as $key => $id) {
-            $idBindString .= "?,";
-        }
-
+        $idBindString = str_repeat('?,', count($pollerIDs));
         $idBindString = rtrim($idBindString, ',');
         $queryPollers = "SELECT id, ns_ip_address as ip FROM nagios_server WHERE id IN({$idBindString})";
 
