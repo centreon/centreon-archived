@@ -145,8 +145,9 @@ doit être exécutée : ::
 
 Cliquer :ref:`ici <installation_web_ces>` pour finaliser le processus d'installation.
 
+***********************
 Installer un collecteur
------------------------
+***********************
 
 Ce chapitre décrit l'installation d'un collecteur.
 
