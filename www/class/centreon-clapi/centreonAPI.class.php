@@ -486,9 +486,10 @@ class CentreonAPI
      * Check user access and password
      *
      * @param boolean $useSha1
+     * @param boolean $isWorker
      * @return return bool 1 if user can login
      */
-    public function checkUser($useSha1 = false)
+    public function checkUser($useSha1 = false, $isWorker = false)
     {
         if (!isset($this->login) || $this->login == "") {
             print "ERROR: Can not connect to centreon without login.\n";
@@ -508,6 +509,11 @@ class CentreonAPI
         } else {
             $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
         }
+
+        if ($isWorker) {
+            $pass = 'md5__' . $this->password;
+        }
+
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
                  WHERE contact_alias = '" . $this->login . "'
@@ -515,6 +521,7 @@ class CentreonAPI
                  AND contact_oreon = '1'");
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
+
             if ($row['contact_admin'] == 1) {
                 $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
                 if (!$algo) {
