@@ -297,5 +297,5 @@ installés et vous n’aurez plus aucune assistance en ligne.
     Si vous avez des questions ou des problèmes relatifs à l'installation de IMP, vous pouvez contacter
     nos équipes techniques via l'adresse email suivant : imp at centreon dot com.
 
-Si vous avez des questions n’hésitez pas à consulter notre `FAQ Centreon IMP <https://www.centreon.com/faq/>`_
+Si vous avez des questions n’hésitez pas à consulter notre `FAQ Centreon IMP <https://www.centreon.com/faq/faq-centreon-imp/>`_
 
