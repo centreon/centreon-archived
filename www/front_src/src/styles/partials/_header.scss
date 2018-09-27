@@ -218,7 +218,7 @@
     }
   }
   .submenu-top-button {
-    margin: 10px 16px;
+    margin: 10px 15px;
   }
 }
   .submenu {
@@ -415,4 +415,8 @@
       }
      }
   }
+}
+.FullScreen {
+  height: 100%;
+  background-color: $white-color;
 }
