@@ -145,26 +145,9 @@ doit être exécutée : ::
 
 Cliquer :ref:`ici <installation_web_ces>` pour finaliser le processus d'installation.
 
-***********************
-Installer un collecteur
-***********************
+************************
+Architecture distribuée
+************************
 
-Ce chapitre décrit l'installation d'un collecteur.
-
-Exécutez la commande : ::
-
-    # yum install centreon-poller-centreon-engine
-
-La communication entre le serveur central et un collecteur se fait via SSH.
-
-Vous devez échanger les clés SSH entre les serveurs.
-
-Si vous n'avez pas de clé SSH privées sur le serveur central pour l'utilisateur
-'centreon' : ::
-
-    # su - centreon
-    $ ssh-keygen -t rsa
-
-Vous devez copier cette clé sur le collecteur : ::
-
-    $ ssh-copy-id centreon@your_poller_ip
+Rendez-vous au chapitre :ref:`Administration<distributed_archi>` pour installer
+de nouveaux collecteurs et Remote Servers

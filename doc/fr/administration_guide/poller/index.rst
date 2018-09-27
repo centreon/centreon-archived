@@ -1,3 +1,5 @@
+.. _distributed_archi:
+
 =======================
 Architecture distribuée
 =======================
