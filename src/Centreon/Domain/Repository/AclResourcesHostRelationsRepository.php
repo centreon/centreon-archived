@@ -12,7 +12,7 @@ class AclResourcesHostRelationsRepository extends ServiceEntityRepository implem
      */
     public function refresh(): void
     {
-        $sql = "DELETE FROM acl_resources_host_relations"
+        $sql = "DELETE FROM acl_resources_host_relations "
             . "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)";
 
         $stmt = $this->db->prepare($sql);
