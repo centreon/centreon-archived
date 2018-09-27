@@ -44,7 +44,7 @@
 function initDatepicker(className, altFormat, defaultDate, idName, timestampToSet) {
     className = className || "datepicker";
     altFormat =  altFormat || "mm/dd/yy";
-    defaultDate = defaultDate || "O";
+    defaultDate = defaultDate || "0";
 
     setUserFormat();
 
