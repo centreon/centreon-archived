@@ -68,6 +68,7 @@ $shortopts .= "V"; /* Version */
 $shortopts .= "a:"; /* Action */
 $shortopts .= "i:"; /* Import Massive data */
 $shortopts .= "e"; /* Export all configuration */
+$shortopts .= "w"; /* Used only for starting centreon worker process */
 
 $longopts = array(
     "select:",
@@ -137,6 +138,26 @@ if (isset($options["h"])) {
 if (isset($options["V"])) {
     $api->printVersion();
     exit(0);
+}
+
+if (isset($options["w"]) && $options['o'] == "CentreonWorker" && !empty($options["u"] && !empty($options["p"]))){
+
+    $api->setLogin($options["u"]);
+    $api->setPassword($options["p"]);
+    $api->checkUser($useSha1, true);
+
+    try {
+        $api->launchAction();
+    } catch (\CentreonClapi\CentreonClapiException $e) {
+        print $e->getMessage();
+        $api->setReturnCode(1);
+    } catch (Exception $e) {
+        if (isset($debug) && $debug) {
+            print $e->getMessage() . "\n";
+        }
+        print "Please check that your parameters are valid";
+        $api->setReturnCode(1);
+    }
 }
 
 /**

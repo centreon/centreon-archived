@@ -10,7 +10,6 @@ class ModuleRoute extends Component {
       if (contentWindow) {
         const { documentElement } = contentWindow.document,
               { match } = this.props,
-              { id } = match.params,
               contentHeight = Math.max(
                 documentElement.clientHeight,
                 documentElement.offsetHeight,
@@ -35,7 +34,7 @@ class ModuleRoute extends Component {
     }
   };
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     this.setState({ contentHeight: 100 }, () => {
       setInterval(this.handleResize, 2000);
     });
@@ -58,10 +57,11 @@ class ModuleRoute extends Component {
           { search } = history.location,
           { contentHeight } = this.state;
     return (
-      <div>
+      <React.Fragment>
         {search ? (
           <iframe
             id="main-content"
+            title="Main Content"
             frameBorder="0"
             onLoad={this.onLoad}
             ref={container => {
@@ -74,7 +74,7 @@ class ModuleRoute extends Component {
         ) : (
           <Redirect to={"/_CENTREON_PATH_PLACEHOLDER_/main.php?p=1"} />
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

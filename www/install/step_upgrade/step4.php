@@ -58,8 +58,8 @@ $contents = _('<p>Currently upgrading database... please do not interrupt this p
 $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
                 <thead>
                     <tr>
-                        <th>"._('Step')."</th>
-                        <th>"._('Status')."</th>
+                        <th>" . _('Step') . "</th>
+                        <th>" . _('Status') . "</th>
                     </tr>
                 </thead>
                 <tbody id='step_contents'>
@@ -68,7 +68,7 @@ $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' clas
 
 $troubleshootTxt1 = _('You seem to be having trouble with your upgrade.');
 $troubleshootTxt2 = _('You may refer to the line that causes problem in order to find out more about the issue.');
-$troubleshootTxt3 = sprintf(_('The SQL files are located in %s'), _CENTREON_PATH_.'www/install/sql/');
+$troubleshootTxt3 = sprintf(_('The SQL files are located in %s'), _CENTREON_PATH_ . 'www/install/sql/');
 $troubleshootTxt4 = _('But do not edit the SQL files unless you know what you are doing.'
     . 'Refresh this page when the problem is fixed.');
 $contents .= sprintf(
@@ -82,7 +82,7 @@ $contents .= sprintf(
 $next = '';
 if ($handle = opendir('../sql/centreon')) {
     while (false !== ($file = readdir($handle))) {
-        if (preg_match('/Update-DB-'.preg_quote($current).'_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
+        if (preg_match('/Update-DB-' . preg_quote($current) . '_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
             $next = $matches[1];
         }
     }
@@ -95,73 +95,73 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-var step = <?php echo STEP_NUMBER;?>;
-var mycurrent;
-var mynext;
-var result = false;
+    var step = <?php echo STEP_NUMBER;?>;
+    var mycurrent;
+    var mynext;
+    var result = false;
 
-jQuery(function(){
-   mycurrent = '<?php echo $current;?>';
-   mynext = '<?php echo $next;?>';
-   if (mycurrent != '' && mynext != '') {
-       jQuery("input[type=button]").hide();
-       nextStep(mycurrent, mynext);
-   } else {
-       result = true;
-   }
-});
+    jQuery(function () {
+        mycurrent = '<?php echo $current;?>';
+        mynext = '<?php echo $next;?>';
+        if (mycurrent != '' && mynext != '') {
+            jQuery("input[type=button]").hide();
+            nextStep(mycurrent, mynext);
+        } else {
+            result = true;
+        }
+    });
 
-/**
- * Go to next upgrade script
- *
- * @param string current
- * @param string next
- * @return void
- */
-function nextStep(current, next) {
-    jQuery('#step_contents').append('<tr>');
-    jQuery('#step_contents').append('<td>'+current+' to '+next+'</td>');
-    jQuery('#step_contents').append('<td style="font-weight: bold;" name="'
-        +replaceDot(current)+'"><img src="../img/misc/ajax-loader.gif"></td>');
-    jQuery('#step_contents').append('</tr>');
-    doProcess(
-        true,
-        './step_upgrade/process/process_step'+step+'.php'
-        , {'current':current,'next':next},
-        function(response) {
-            var data = jQuery.parseJSON(response);
-            jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
-            if (data['result'] == "0") {
-                jQuery('#troubleshoot').hide();
-                if (data['next']) {
-                    nextStep(data['current'], data['next']);
+    /**
+     * Go to next upgrade script
+     *
+     * @param string current
+     * @param string next
+     * @return void
+     */
+    function nextStep(current, next) {
+        jQuery('#step_contents').append('<tr>');
+        jQuery('#step_contents').append('<td>' + current + ' to ' + next + '</td>');
+        jQuery('#step_contents').append('<td style="font-weight: bold;" name="'
+            + replaceDot(current) + '"><img src="../img/misc/ajax-loader.gif"></td>');
+        jQuery('#step_contents').append('</tr>');
+        doProcess(
+            true,
+            './step_upgrade/process/process_step' + step + '.php'
+            , {'current': current, 'next': next},
+            function (response) {
+                var data = jQuery.parseJSON(response);
+                jQuery('td[name=' + replaceDot(current) + ']').html(data['msg']);
+                if (data['result'] == "0") {
+                    jQuery('#troubleshoot').hide();
+                    if (data['next']) {
+                        nextStep(data['current'], data['next']);
+                    } else {
+                        jQuery('#next').show();
+                        result = true;
+                    }
                 } else {
-                    jQuery('#next').show();
-                    result = true;
+                    jQuery('#troubleshoot').show();
+                    jQuery('#refresh').show();
                 }
-            } else {
-                jQuery('#troubleshoot').show();
-                jQuery('#refresh').show();
-            }
-        });
-}
+            });
+    }
 
-/**
- * Replace dot with dash characters
- * 
- * @param string str
- * @return void
- */
-function replaceDot(str) {
-    return str.replace(/\./g, '-');
-}
+    /**
+     * Replace dot with dash characters
+     *
+     * @param string str
+     * @return void
+     */
+    function replaceDot(str) {
+        return str.replace(/\./g, '-');
+    }
 
-/**
- * Validates info
- * 
- * @return bool
- */
-function validation() {
-    return result;
-}
+    /**
+     * Validates info
+     *
+     * @return bool
+     */
+    function validation() {
+        return result;
+    }
 </script>

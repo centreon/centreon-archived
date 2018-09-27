@@ -180,7 +180,7 @@ for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
 if ($rows != 0) {
     for ($i = $istart; $i <= $iend; $i++) {
 
-        $urlPage = "./main.php?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
+        $urlPage = "?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
             "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
@@ -202,7 +202,7 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("./main.php?p=" . $p . "&num=$prev&limit=" . $limit . "&poller=" . $poller .
+            ("?p=" . $p . "&num=$prev&limit=" . $limit . "&poller=" . $poller .
                 "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -210,7 +210,7 @@ if ($rows != 0) {
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("./main.php?p=" . $p . "&num=$next&limit=" . $limit . "&poller=" . $poller .
+            ("?p=" . $p . "&num=$next&limit=" . $limit . "&poller=" . $poller .
                 "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -225,14 +225,14 @@ if ($rows != 0) {
     if ($page_max > 5 && $num != 0) {
         $tpl->assign(
             'firstPage',
-            ("./main.php?p=" . $p . "&num=0&limit=" . $limit . "&poller=" . $poller .
+            ("?p=" . $p . "&num=0&limit=" . $limit . "&poller=" . $poller .
                 "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
     if ($page_max > 5 && $num != ($pageNumber - 1)) {
         $tpl->assign(
             'lastPage',
-            ("./main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit .
+            ("?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit .
                 "&template=$template&poller=" . $poller . "&search=" . $search .
                 "&type=" . $type . "&o=" . $o . $url_var)
         );

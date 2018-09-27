@@ -54,8 +54,10 @@ $labels['version'] = _('Version');
 $labels['author'] = _('Author');
 $labels['actions'] = _('Actions');
 
-$tpl->assign('hasWidgetsForInstallation', $widgetInfoObj->hasWidgetsForInstallation());
-$tpl->assign('hasWidgetsForUpgrade', $widgetInfoObj->hasWidgetsForUpgrade());
+$tpl->assign('canUpgradeOrInstallWidgets', (
+    $widgetInfoObj->hasWidgetsForInstallation() ||
+    $widgetInfoObj->hasWidgetsForUpgrade()
+));
 $tpl->assign('widgets', $widgets);
 $tpl->assign('labels', $labels);
 $tpl->display('list.ihtml');
@@ -107,7 +109,7 @@ function forwardAction(confirmMsg, action, data)
                 success: function(response) {
                     var result = response.getElementsByTagName('result');
                     if (typeof(result) != 'undefined') {
-                        window.location = './main.php?p='+p;
+                        window.location = '?p='+p;
                     }
                 }
             });

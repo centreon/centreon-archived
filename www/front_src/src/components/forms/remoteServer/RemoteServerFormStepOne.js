@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Field, reduxForm as connectForm } from "redux-form";
 import InputField from "../../form-fields/InputField";
-import CheckboxField from "../../form-fields/CheckboxField";
 import SelectField from "../../form-fields/SelectField";
 import RadioField from "../../form-fields/PreselectedRadioField";
 
@@ -33,7 +32,7 @@ class RemoteServerFormStepOne extends Component {
     });
   };
 
-  componentWillReceiveProps = nextProps => {
+  UNSAFE_componentWillReceiveProps = nextProps => {
     const { waitList } = nextProps;
     const { initialized } = this.state;
     if (waitList && !initialized) {
@@ -43,7 +42,7 @@ class RemoteServerFormStepOne extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, submitting, waitList } = this.props;
+    const { error, handleSubmit, onSubmit, waitList } = this.props;
     const { inputTypeManual } = this.state;
     return (
       <div className="form-wrapper">

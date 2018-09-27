@@ -177,11 +177,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         array('id' => 'poller_' . $config['id'])
     );
     if ($config["ns_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
+        $moptions .= "<a href='?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>";
     }

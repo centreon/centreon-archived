@@ -1,9 +1,10 @@
-{if $hasWidgetsForInstallation}
-    <img class="installAllBtn ico-16 margin_right" src="./img/icons/generate_conf.png" style="cursor: pointer;" title="Install all widgets">
-{/if}
-
-{if $hasWidgetsForUpgrade}
-    <img class="upgradeAllBtn ico-16" src="./img/icons/upgrade.png" style="cursor: pointer;" title="Upgrade all widgets">
+{if $canUpgradeOrInstallWidgets}
+    <br>
+        <a href="javascript:;" class="btc bt_success installAllBtn">
+            Install/Upgrade all
+        </a>
+    <br>
+    <br>
 {/if}
 
 <table class="ListTable">

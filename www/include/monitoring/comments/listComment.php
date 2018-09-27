@@ -140,7 +140,10 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
     $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
-    $tab_comments_svc[$i]['data'] = htmlentities($tab_comments_svc[$i]['data']);
+    $tab_comments_svc[$i]['data'] = CentreonUtils::escapeAllExceptSelectedTags(
+        $tab_comments_svc[$i]['data'],
+        ['a', 'br', 'hr']
+    );
     if ($data['service_description'] != '') {
         $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
@@ -175,7 +178,7 @@ $tpl->assign("tab_comments_svc", $tab_comments_svc);
 $tpl->assign("nb_comments_svc", count($tab_comments_svc));
 $tpl->assign("no_svc_comments", _("No Comment for services."));
 $tpl->assign("cmt_service_comment", _("Services Comments"));
-$tpl->assign("host_comment_link", "./main.php?p=" . $p . "&o=vh");
+$tpl->assign("host_comment_link", "?p=" . $p . "&o=vh");
 $tpl->assign("view_host_comments", _("View comments of hosts"));
 $tpl->assign("delete", _("Delete"));
 $tpl->assign("search", $search_service);

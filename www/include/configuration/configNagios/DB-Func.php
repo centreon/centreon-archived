@@ -832,13 +832,13 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
 
     if (isset($ret["host_perfdata_file_template"]) && $ret["host_perfdata_file_template"] != null) {
-        $rq .= "'" . $pearDB->quote($ret["host_perfdata_file_template"]) . "',  ";
+        $rq .= $pearDB->quote($ret["host_perfdata_file_template"]) . ",  ";
     } else {
         $rq .= "NULL, ";
     }
 
     if (isset($ret["service_perfdata_file_template"]) && $ret["service_perfdata_file_template"] != null) {
-        $rq .= "'" . $pearDB->quote($ret["service_perfdata_file_template"]) . "',  ";
+        $rq .= $pearDB->quote($ret["service_perfdata_file_template"]) . ",  ";
     } else {
         $rq .= "NULL, ";
     }
@@ -950,13 +950,13 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
 
     if (isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null) {
-        $rq .= "'" . $pearDB->quote($ret["illegal_object_name_chars"]) . "',  ";
+        $rq .= $pearDB->quote($ret["illegal_object_name_chars"]) . ",  ";
     } else {
         $rq .= "NULL, ";
     }
 
     if (isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null) {
-        $rq .= "'" . $pearDB->quote($ret["illegal_macro_output_chars"]) . "',  ";
+        $rq .= $pearDB->quote($ret["illegal_macro_output_chars"]) . ",  ";
     } else {
         $rq .= "NULL, ";
     }
@@ -1778,13 +1778,13 @@ function updateNagios($nagios_id = null)
     }
 
     if (isset($ret["host_perfdata_file_template"]) && $ret["host_perfdata_file_template"] != null) {
-        $rq .= "host_perfdata_file_template = '" . $pearDB->quote($ret["host_perfdata_file_template"]) . "',  ";
+        $rq .= "host_perfdata_file_template = " . $pearDB->quote($ret["host_perfdata_file_template"]) . ",  ";
     } else {
         $rq .= "host_perfdata_file_template = NULL, ";
     }
 
     if (isset($ret["service_perfdata_file_template"]) && $ret["service_perfdata_file_template"] != null) {
-        $rq .= "service_perfdata_file_template = '" . $pearDB->quote($ret["service_perfdata_file_template"]) . "',  ";
+        $rq .= "service_perfdata_file_template = " . $pearDB->quote($ret["service_perfdata_file_template"]) . ",  ";
     } else {
         $rq .= "service_perfdata_file_template = NULL, ";
     }
@@ -1920,13 +1920,13 @@ function updateNagios($nagios_id = null)
     }
 
     if (isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null) {
-        $rq .= "illegal_object_name_chars = '" . $pearDB->quote($ret["illegal_object_name_chars"]) . "',  ";
+        $rq .= "illegal_object_name_chars = " . $pearDB->quote($ret["illegal_object_name_chars"]) . ",  ";
     } else {
         $rq .= "illegal_object_name_chars = NULL, ";
     }
 
     if (isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != null) {
-        $rq .= "illegal_macro_output_chars = '" . $pearDB->quote($ret["illegal_macro_output_chars"]) . "',  ";
+        $rq .= "illegal_macro_output_chars = " . $pearDB->quote($ret["illegal_macro_output_chars"]) . ",  ";
     } else {
         $rq .= "illegal_macro_output_chars = NULL, ";
     }

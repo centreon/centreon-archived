@@ -50,9 +50,9 @@ $requiredLib = explode("\n", file_get_contents('../var/phplib'));
  */
 $contents = "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>";
 $contents .= "<tr>
-                <th>"._('Module name')."</th>
-                <th>"._('File')."</th>
-                <th>"._('Status')."</th>
+                <th>" . _('Module name') . "</th>
+                <th>" . _('File') . "</th>
+                <th>" . _('Status') . "</th>
              </tr>";
 $allClear = 1;
 foreach ($requiredLib as $line) {
@@ -61,13 +61,13 @@ foreach ($requiredLib as $line) {
     }
     $contents .= "<tr>";
     list($name, $lib) = explode(":", $line);
-    $contents .= "<td>".$name."</td>";
-    $contents .= "<td>".$lib."</td>";
+    $contents .= "<td>" . $name . "</td>";
+    $contents .= "<td>" . $lib . "</td>";
     $contents .= "<td>";
     if (extension_loaded($lib)) {
-        $libMessage = '<span style="color:#88b917; font-weight:bold;">'._('Loaded').'</span>';
+        $libMessage = '<span style="color:#88b917; font-weight:bold;">' . _('Loaded') . '</span>';
     } else {
-        $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not loaded').'</span>';
+        $libMessage = '<span style="color:#e00b3d; font-weight:bold;">' . _('Not loaded') . '</span>';
         $allClear = 0;
     }
     $contents .= $libMessage;
@@ -79,10 +79,10 @@ foreach ($requiredLib as $line) {
 if (!ini_get('date.timezone')) {
     $contents .= "<tr>";
     $contents .= "<td>Timezone</td>";
-    $contents .= "<td>"._("Set the default timezone in php.ini file") ."</td>";
+    $contents .= "<td>" . _("Set the default timezone in php.ini file") . "</td>";
     $contents .= "<td>";
 
-    $libMessage = '<span style="color:#e00b3d; font-weight:bold;">'._('Not initialized').'</span>';
+    $libMessage = '<span style="color:#e00b3d; font-weight:bold;">' . _('Not initialized') . '</span>';
     $allClear = 0;
     $contents .= $libMessage;
     $contents .= "</td>";
@@ -91,7 +91,7 @@ if (!ini_get('date.timezone')) {
 $contents .= "</table>";
 
 /*
- * PEAR Libraries 
+ * PEAR Libraries
  */
 //@todo
 
@@ -101,16 +101,16 @@ $template->assign('content', $contents);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-    var allClear = <?php echo $allClear; ?> 
-    /**
-     * Validates info
-     * 
-     * @return bool
-     */
-    function validation() {
-       if (!allClear) {
-           return false;
-       }
-       return true; 
-    }
+    var allClear = <?php echo $allClear; ?>
+        /**
+         * Validates info
+         *
+         * @return bool
+         */
+        function validation() {
+            if (!allClear) {
+                return false;
+            }
+            return true;
+        }
 </script>

@@ -13,8 +13,6 @@
   text-align: center;
   background: #e0e0e0;
   transition: all 0.2s;
-  overflow-y: auto;
-  height: 100vh;
   .sidebar-logo {
     display: none;
   }
@@ -74,13 +72,17 @@
     }
   }
   .sidebar-logo-mini {
-    padding: 12px 11px;
+    padding: 16px 11px;
     box-sizing: border-box;
+    height: 51px;
   }
   &-logo {
-    padding: 7px 12px;
+    padding: 10px 12px;
     box-sizing: border-box;
-    height: 49px;
+    height: 51px;
+    a {
+      display: block;
+    }
     &-image {
       max-width: 100%;
       height: auto;
@@ -114,7 +116,9 @@
   }
   &-inner {
     position: relative;
-    padding-bottom: 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100vh;
   }
 }
 
@@ -144,6 +148,7 @@ a {
   &-items {
     &.components {
       border-top: 1px solid $white-color;
+      padding-bottom: 30px;
     }
   }
   &-item {
@@ -297,7 +302,7 @@ a {
       }
     }
     &-name {
-      font-family: $primary-font;
+      font-family: $primary-font-regular;
       font-size: 0.75rem;
       vertical-align: middle;
       position: absolute;
@@ -317,8 +322,7 @@ a {
         text-decoration: none;
         font-size: 0.625rem;
         color: rgb(36,47,59);
-        font-family: $primary-font;
-        font-weight: $font-light;
+        font-family: $primary-font-light;
         padding: 10px 10px 11px 47px;
         display: block;
         letter-spacing: -0.4px;
@@ -327,8 +331,7 @@ a {
     }
     &-title {
       color: $lightblue-centreon-primary;
-      font-family: $primary-font;
-      font-weight: $font-light;
+      font-family: $primary-font-light;
       font-size: 0.625rem;
       background-color: $white-color;
       display: block;
@@ -393,6 +396,8 @@ a {
   width: 100%;
   min-height: 100vh;
   transition: all 0.3s;
+  position: relative;
+  padding-bottom: 50px;
 }
 
 /* ---------------------------------------------------

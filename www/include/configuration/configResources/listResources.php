@@ -117,11 +117,11 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resource['resource_id'] . "]");
     $moptions = "";
     if ($resource["resource_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=u&limit=" .
+        $moptions .= "<a href='?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=u&limit=" .
             $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=s&limit=" .
+        $moptions .= "<a href='?p=" . $p . "&resource_id=" . $resource['resource_id'] . "&o=s&limit=" .
             $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
@@ -133,14 +133,27 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
         "order" => isset($tabResources[1]) ? $tabResources[1] : null,
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => CentreonUtils::escapeSecure($resource["resource_name"]),
+        "RowMenu_name" => CentreonUtils::escapeSecure(
+            $resource["resource_name"],
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
         "RowMenu_link" => "?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
-        "RowMenu_values" => substr($resource["resource_line"], 0, 40),
-        "RowMenu_comment" => CentreonUtils::escapeSecure(substr(html_entity_decode(
-            $resource["resource_comment"],
-            ENT_QUOTES,
-            "UTF-8"
-        ), 0, 40)),
+        "RowMenu_values" => CentreonUtils::escapeSecure(
+            substr($resource["resource_line"], 0, 40),
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
+        "RowMenu_comment" => CentreonUtils::escapeSecure(
+            substr(
+                html_entity_decode(
+                    $resource["resource_comment"],
+                    ENT_QUOTES,
+                    "UTF-8"
+                ),
+                0,
+                40
+            ),
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
         "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
         "RowMenu_status" => $resource["resource_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $resource["resource_activate"] ? "service_ok" : "service_critical",

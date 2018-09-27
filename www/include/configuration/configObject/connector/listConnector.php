@@ -98,12 +98,12 @@ try {
         if ($result) {
             if ($lvl_access == "w") {
                 if ($result['enabled']) {
-                    $moptions = "<a href='main.php?p="
+                    $moptions = "<a href='?p="
                         . $p . "&id=" . $result['id'] . "&o=u&limit=" . $limit . "&num="
                         . $num . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
                         . _("Disabled") . "'></a>&nbsp;&nbsp;";
                 } else {
-                    $moptions = "<a href='main.php?p="
+                    $moptions = "<a href='?p="
                         . $p . "&id=" . $result['id'] . "&o=s&limit=" . $limit . "&num="
                         . $num . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
                         . _("Enabled") . "'></a>&nbsp;&nbsp;";

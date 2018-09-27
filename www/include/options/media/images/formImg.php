@@ -46,23 +46,24 @@ if (!isset($centreon)) {
  * Database retrieve information
  */
 $img = array("img_path" => null);
-if ($o == "ci" || $o == "w") {
-    $res = $pearDB->query("SELECT * FROM view_img WHERE img_id = '" . $img_id . "' LIMIT 1");
+if ($o == IMAGE_MODIFY || $o == IMAGE_WATCH) {
+    $result = $pearDB->query("SELECT * FROM view_img WHERE img_id = $imageId LIMIT 1");
+    
     # Set base value
-    $img = array_map("myDecode", $res->fetchRow());
+    $img = array_map("myDecode", $result->fetchRow());
 
     # Set Directories
-    $q = "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img";
-    $q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
-    $q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
-    $q .= "  WHERE img_id = '" . $img_id . "' LIMIT 1";
-    $DBRESULT = $pearDB->query($q);
+    $DBRESULT = $pearDB->query(
+        "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img "
+        . "JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id "
+        . "JOIN view_img_dir ON dir_id = dir_dir_parent_id "
+        . "WHERE img_id = $imageId LIMIT 1"
+    );
     $dir = $DBRESULT->fetchRow();
-    $img_path = "./img/media/" . $dir["dir_alias"] . "/" . $dir["img_path"];
+    $img_path = "./img/media/{$dir["dir_alias"]}/{$dir["img_path"]}";
     $img["directories"] = $dir["dir_name"];
     $DBRESULT->closeCursor();
 }
-
 
 /*
  * Get Directories
@@ -83,7 +84,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "80");
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == IMAGE_ADD) {
     $form->addElement('header', 'title', _("Add Image(s)"));
     $form->addElement(
         'autocomplete',
@@ -97,11 +98,20 @@ if ($o == "a") {
         'list_dir',
         "",
         $dir_list_sel,
-        array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
+        array(
+            'onchange' => 'document.getElementById("directories").value = this.options[this.selectedIndex].text;'
+        )
     );
     $form->addElement('file', 'filename', _("Image or archive"));
-    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-} elseif ($o == "ci") {
+    $subA = $form->addElement(
+        'submit',
+        'submitA',
+        _("Save"),
+        array(
+            "class" => "btc bt_success"
+        )
+    );
+} elseif ($o == IMAGE_MODIFY) {
     $form->addElement('header', 'title', _("Modify Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement(
@@ -116,25 +126,40 @@ if ($o == "a") {
         'list_dir',
         "",
         $dir_list_sel,
-        array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;')
+        array(
+            'onchange' => 'document.getElementById("directories").value = this.options[this.selectedIndex].text;'
+        )
     );
     $list_dir->setSelected($dir['dir_id']);
     $form->addElement('file', 'filename', _("Image"));
-    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
+    $subC = $form->addElement(
+        'submit',
+        'submitC',
+        _("Save"),
+        array(
+            "class" => "btc bt_success"
+        )
+    );
     $form->setDefaults($img);
     $form->addRule('img_name', _("Compulsory image name"), 'required');
-} elseif ($o == "w") {
+} elseif ($o == IMAGE_WATCH) {
     $form->addElement('header', 'title', _("View Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement('text', 'img_path', $img_path, null);
-    $form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
+    $form->addElement(
+        'autocomplete',
+        'directories',
+        _("Directory"),
+        $dir_ids,
+        array('id', 'directories')
+    );
     $form->addElement('file', 'filename', _("Image"));
     $form->addElement(
         "button",
         "change",
         _("Modify"),
         array(
-            "onClick" => "javascript:window.location.href='?p=" . $p . "&o=ci&img_id=" . $img_id . "'"
+            "onClick" => "javascript:window.location.href='?p=$p&o=ci&img_id=$imageId'"
         ),
         array("class" => "btc bt_success")
     );
@@ -145,7 +170,7 @@ $form->addElement(
     "cancel",
     _("Cancel"),
     array(
-        "onClick" => "javascript:window.location.href='?p=" . $p . "'"
+        "onClick" => "javascript:window.location.href='?p=$p'"
     ),
     array("class" => "btc bt_default")
 );
@@ -172,15 +197,14 @@ $form->setRequiredNote(_("Required Field"));
 /*
  * watch/view
  */
-if ($o == "w") {
+if ($o == IMAGE_WATCH) {
     $form->freeze();
 }
 
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path, new Smarty());
 
 $tpl->assign(
     "helpattr",
@@ -196,7 +220,8 @@ $tpl->assign(
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
+    $helptext .= '<span style="display:none" id="help:'
+        . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -205,7 +230,13 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
-    $oImageUploader = new CentreonImageManager($dependencyInjector, $_FILES, './img/media/', $imgPath, $imgComment);
+    $oImageUploader = new CentreonImageManager(
+        $dependencyInjector,
+        $_FILES,
+        './img/media/',
+        $imgPath,
+        $imgComment
+    );
     if ($form->getSubmitValue("submitA")) {
         $valid = $oImageUploader->upload();
     } elseif ($form->getSubmitValue("submitC")) {

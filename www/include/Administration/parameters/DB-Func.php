@@ -665,7 +665,13 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != null
             ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL"
     );
-        
+    updateOption(
+        $pearDB,
+        "send_statistics",
+        isset($ret["send_statistics"]["yes"]) && $ret["send_statistics"]["yes"] != null
+            ? htmlentities($ret["send_statistics"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+
     $centreon->initOptGen($pearDB);
 }
 

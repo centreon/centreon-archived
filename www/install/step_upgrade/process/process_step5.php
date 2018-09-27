@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2015 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,19 +31,24 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-/*
- * Generate random key for application key
- */
-$uniqueKey = md5(uniqid(rand(), TRUE));
+session_start();
+require_once __DIR__ . '/../../../../bootstrap.php';
 
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
-$pearDBO->query($query);
+$parameters = filter_input_array(INPUT_POST);
+if ((int)$parameters["send_statistics"] == 1) {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
+} else {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+}
 
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
-$pearDBO->query($query);
+$db = $dependencyInjector['configuration_db'];
+$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
+$db->query($query);
 
-$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isCentral', 'no')";
-$pearDBO->query($query);
+$name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
+$completeName = $centreon_path . '/installDir/' . $name;
+@rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
+
+session_destroy();

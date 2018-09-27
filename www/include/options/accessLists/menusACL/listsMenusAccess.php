@@ -97,11 +97,11 @@ $elemArr = array();
 for ($i = 0; $topo = $dbResult->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_topo_id'] . "]");
     if ($topo["acl_topo_activate"]) {
-        $moptions = "<a href='main.php?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=u&limit=" . $limit .
+        $moptions = "<a href='?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=s&limit=" . $limit .
+        $moptions = "<a href='?p=" . $p . "&acl_topo_id=" . $topo['acl_topo_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
@@ -118,9 +118,15 @@ for ($i = 0; $topo = $dbResult->fetchRow(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => $topo["acl_topo_name"],
+        "RowMenu_name" => CentreonUtils::escapeSecure(
+            $topo["acl_topo_name"],
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
         "RowMenu_link" => "?p=" . $p . "&o=c&acl_topo_id=" . $topo['acl_topo_id'],
-        "RowMenu_alias" => myDecode($topo["acl_topo_alias"]),
+        "RowMenu_alias" => CentreonUtils::escapeSecure(
+            $topo["acl_topo_alias"],
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
         "RowMenu_status" => $topo["acl_topo_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $topo["acl_topo_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions

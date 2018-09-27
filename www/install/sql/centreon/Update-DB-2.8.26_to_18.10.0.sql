@@ -1,5 +1,5 @@
 -- Change version of Centreon
-UPDATE `informations` SET `value` = '18.9.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.25' LIMIT 1;
+UPDATE `informations` SET `value` = '18.10.0' WHERE CONVERT( `informations`.`key` USING utf8 ) = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.8.26' LIMIT 1;
 
 -- Create remote servers table for keeping track of remote instances
 CREATE TABLE IF NOT EXISTS `remote_servers` (
@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
 
 -- Add column to topology table to mark which pages are with React
 ALTER TABLE `topology` ADD COLUMN `is_react` ENUM('0', '1') NOT NULL DEFAULT '0' AFTER `readonly`;
+
+-- Change informations lengths
+ALTER TABLE `informations` MODIFY COLUMN `value` varchar (255) NULL;
 
 -- Move "Graphs" & "Broker Statistics" as "Server status" sub menu
 UPDATE topology SET topology_parent = '505' WHERE topology_page = '10205';
@@ -49,3 +52,7 @@ CREATE TABLE IF NOT EXISTS `task` (
 -- Add column to nagios_server table for remote-poller relation
 ALTER TABLE `nagios_server` ADD COLUMN `remote_id` int(11) NULL AFTER `centreonbroker_logs_path`;
 ALTER TABLE `nagios_server` ADD CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Update the "About" menu
+UPDATE topology SET topology_url = './include/Administration/about/about.php', topology_modules = '0', topology_popup = '0' WHERE topology_page = 506 AND topology_parent = 5;
+DELETE FROM topology WHERE topology_parent = 506;

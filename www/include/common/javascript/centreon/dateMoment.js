@@ -35,7 +35,6 @@
 
 // use of moment() to format dates for each occurence
 function formatDateMoment() {
-
     // get locale and GMT preferences from localStorage
     var userTimezone = localStorage.getItem('realTimezone');
     var userLocale = localStorage.getItem('locale');
@@ -48,7 +47,7 @@ function formatDateMoment() {
         //forcing a numeric timestamp
         var currentDate = parseInt(myElement.text()) * 1000;
 
-        //checking the choosen format
+        //checking the chosen format
         if (!isNaN(currentDate)) {
             if (myElement.hasClass("isTime")) {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LTS'));

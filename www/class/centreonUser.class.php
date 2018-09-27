@@ -233,7 +233,14 @@ class CentreonUser
      */
     public function get_lang()
     {
-        return $this->lang;
+        $lang = $this->lang;
+
+        // Get locale from browser
+        if ($lang === 'browser') {
+            $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        }
+
+        return $lang;
     }
 
     /**

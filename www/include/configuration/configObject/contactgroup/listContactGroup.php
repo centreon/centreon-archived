@@ -108,11 +108,11 @@ $elemArr = array();
 foreach ($cgs as $cg) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cg['cg_id'] . "]");
     if ($cg["cg_activate"]) {
-        $moptions = "<a href='main.php?p=" . $p . "&cg_id=" . $cg['cg_id'] . "&o=u&limit=" . $limit . "&num=" . $num .
+        $moptions = "<a href='?p=" . $p . "&cg_id=" . $cg['cg_id'] . "&o=u&limit=" . $limit . "&num=" . $num .
             "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' " .
             "alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='main.php?p=" . $p . "&cg_id=" . $cg['cg_id'] . "&o=s&limit=" . $limit .
+        $moptions = "<a href='?p=" . $p . "&cg_id=" . $cg['cg_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right'" .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
