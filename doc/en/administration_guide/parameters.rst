@@ -12,7 +12,7 @@ Centreon UI
 
 This part covers the configuration of the general options of the Centreon web interface.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Centreon UI**
+#. Go into the menu: **Administration > Parameters >Centreon UI**
 
 The following window is displayed:
 
@@ -30,9 +30,6 @@ The following window is displayed:
 * **Refresh Interval for monitoring** field, expressed in seconds, indicates the refreshment interval for the objects on the monitoring page
 * **Sort problems by** field is used to choose how to sort the incidents in the **Monitoring** menu
 * **Order sort problems** field indicates the display order for incidents, by rising or falling order of gravity
-* **Proxy protocol** fields defines the type of proxy to use (TCP, HTTP, HTTPS)
-* **Proxy URL** fields defines the URL/IP to access to the proxy
-* **Proxy port** fields defines the port to access to the proxy
 * **Display downtime and acknowledgment on chart** allows to display downtime and acknowledgment on chart
 * **Display comment on chart** allows to display comment from service on chart
 * **Enable Autologin** box authorizes the users to log into the web interface via the autologin mechanism
@@ -40,15 +37,39 @@ The following window is displayed:
 * **Enable SSO authentication** box enables SSO authentication
 * **SSO mode** field indicates if the authentication should take place only by SSO or using local authentication as well (Mixed). The mixed mode requires trusted client addresses.
 * **SSO trusted client addresses** field indicates which are hte IP/DNS of the trusted clients (corresponding to the reverse proxy) for SSO. The trusted clients are separated by comas.
+* **SSO blacklist client addresses** field indicates which are hte IP/DNS rejected.
 * **SSO login header** field indicates the variables of the header that will be used as a login / pseudo (i.e HTTP_AUTH_USER).
+* **SSO pattern matching login** field indicates the pattern to search for in the username.
+* **SSO pattern replace login** field indicates the replace string.
 * **Timezone** field indicates timezone of your monitoring server.
 * **Centreon Support Email** field indicates the e-mail address of the **Customer’s service support centre** for the Centreon platform. This e-mail address will be displayed at the bottom of the page on the link **Centreon Support**
 
-.. note::
-    If your proxy is CNTLM, use "TCP", "localhost" and your port in Centreon web configuration.
-
 .. warning::
     SSO feature has only to be enabled in a secured and dedicated environment for SSO. Direct access to Centreon UI from users have to be disabled.
+
+.. _impproxy:
+
+Proxy configuration
+-------------------
+
+The proxy configuration is mandatory to use CEntreon IMP offer.
+
+Define needed information:
+
+* **Proxy URL**
+* **Proxy port**
+* **Proxy user**
+* **Proxy password**
+
+.. image:: /_static/images/adminstration/proxy_configuration.png
+    :align: center
+
+Once you defined settings, test your configuration by clicking on the 
+**Text Proxy Configuration** button. If your configuration is correct,
+a message will indicate success:
+
+.. image:: /_static/images/adminstration/proxy_configuration_ok.png
+    :align: center
 
 **********
 Monitoring
@@ -56,20 +77,18 @@ Monitoring
 
 This part covers the general options of the real time monitoring interface.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Monitoring**
+#. Go into the menu: **Administration > Parameters > Monitoring**
 #. Click on **Monitoring**
 
 .. image :: /images/guide_exploitation/esupervision.png
    :align: center
 
-* **Default Engine** list defines the type of scheduler by default
 * **Interval Length** field indicates the time interval in seconds used to program the checks and notifications
 * **Images Directory** field defines the image directory in which the medias are stored
 * **Plugins Directory** field defines the directory where monitoring plugins are stored
 * **Start script for broker daemon** field contains the path to the init script of the broker
-* **Centreon Broker socket path** Centreon Broker socket path for send external command
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
-* **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home** ==> **Home**)
+* **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home > Home**)
 * **Page refresh interval** field defines the data refreshment interval in the overall view 
 * The boxes in the **Default acknowledgment settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgment or of a downtime
 
@@ -80,7 +99,7 @@ CentCore
 
 This part can be used set the operation of the CentCore process.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Centcore**
+#. Go into the menu: **Administration > Parameters > Centcore**
 
 .. image :: /images/guide_exploitation/ecentcore.png
    :align: center
