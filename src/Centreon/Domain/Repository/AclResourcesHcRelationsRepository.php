@@ -12,10 +12,8 @@ class AclResourcesHcRelationsRepository extends ServiceEntityRepository implemen
      */
     public function refresh(): void
     {
-        $sql = <<<SQL
-DELETE FROM acl_resources_hc_relations
-    WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)
-SQL;
+        $sql = "DELETE FROM acl_resources_hc_relations"
+            . "WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

@@ -22,12 +22,10 @@ class CfgResourceInstanceRelationsRepository extends ServiceEntityRepository
 
         $ids = join(',', $pollerIds);
 
-        $sql = <<<SQL
-SELECT
-    t.*
-FROM cfg_resource_instance_relations AS t
-WHERE t.instance_id IN ({$ids})
-SQL;
+        $sql = "SELECT t.*"
+            . "FROM cfg_resource_instance_relations AS t"
+            . "WHERE t.instance_id IN ({$ids})"
+        ;
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

@@ -12,10 +12,8 @@ class AclResourcesMetaRelationsRepository extends ServiceEntityRepository implem
      */
     public function refresh(): void
     {
-        $sql = <<<SQL
-DELETE FROM acl_resources_meta_relations
-    WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)
-SQL;
+        $sql = "DELETE FROM acl_resources_meta_relations"
+            . "WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

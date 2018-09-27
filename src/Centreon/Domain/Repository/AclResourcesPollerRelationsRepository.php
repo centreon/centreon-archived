@@ -12,10 +12,8 @@ class AclResourcesPollerRelationsRepository extends ServiceEntityRepository impl
      */
     public function refresh(): void
     {
-        $sql = <<<SQL
-DELETE FROM acl_resources_poller_relations
-    WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)
-SQL;
+        $sql = "DELETE FROM acl_resources_poller_relations"
+            . "WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
