@@ -320,6 +320,31 @@ sub getServerConfig($){
 }
 
 ##################################
+## Run Import / Export Worker
+#
+sub startWorker($) {
+
+    my $self = shift;
+        $self->{logger}->writeLogError("Starting test");
+    my ($lerror, $stdout, $cmd_line);
+
+    my $path = '/centreon/';
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `contact` WHERE `contact_admin` = '1' AND `contact_activate` = '1' LIMIT 1");
+    if ($status == -1){
+        $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
+        return undef;
+    }
+    my $data = $sth->fetchrow_hashref();
+    my $username = $data->{'contact_alias'};
+    my $passwordEnc = $data->{'contact_passwd'};
+
+    my $cmdexec = "/opt/remi/php72/root/usr/bin/php $self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -s -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
+
+    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+     return undef;
+}
+
+##################################
 ## Check SSH Port Value
 #
 sub checkSSHPort($) {
@@ -558,8 +583,8 @@ sub sendExportFile($){
         return;
     }
 
-    unless ( -e $self->{centreonDir}  . "filesGeneration/export/".$id) {
-        $self->{logger}->writeLogInfo("Export directory is empty for poller $self->{centreonDir}filesGeneration/export/$id.");
+    if ( -e $self->{centreonDir}  . "/filesGeneration/export/".$id) {
+        $self->{logger}->writeLogInfo("Export directory is empty for poller $id.");
         return;
     }
 
@@ -568,7 +593,7 @@ sub sendExportFile($){
 
     # Send data with SCP
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
-    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
+    $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
     
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
@@ -824,6 +849,8 @@ sub parseRequest($){
         $self->storeCommands($1, $2);
     } elsif ($action =~ /^GETINFOS\:([0-9]*)/){
         $self->getInfos($1);
+    } elsif ($action =~ /^STARTWORKER\:([0-9]*)/){
+        $self->startWorker($1);
     }
 }
 
