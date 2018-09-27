@@ -25,7 +25,21 @@ Central Server.
 Enable Remote Server option
 ---------------------------
 
+Connect to your server and execute following command::
+
+    # php /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP
+
 .. note::
-    TODO
+    Replace **@IP** by the IP of the Centreon server seen by the poller
+
+This command will enable **Remote Server** mode::
+
+    Starting Centreon Remote enable process:
+
+      Limiting Menu Access...Success
+      Limiting Actions...Done
+
+      Notifying Master...Success
+      Centreon Remote enabling finished.
 
 Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
