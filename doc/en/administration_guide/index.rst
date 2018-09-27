@@ -8,6 +8,7 @@ Administration
 
    acl
    poller/index
+   knowledge_base/index
    extensions
    media
    parameters
