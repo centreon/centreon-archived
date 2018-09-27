@@ -37,6 +37,7 @@
                 {else}
                 &nbsp;
                 {/if}
+                <a href="./poller-wizard/1" target="_top" class="btc bt_info">Add server with wizard</a>
                 {if $is_admin == 1 || $can_generate == 1}
                     {$form.apply_configuration.html}
                 {/if}
