@@ -9,9 +9,8 @@ class UserMenu extends Component {
     toggled: false,
     buildedLink: '',
     copied: false,
-    initialized: false
+    initialized: false  
   };
-
   autoLoginApi = axios("internal.php?object=centreon_topcounter&action=autoLoginToken");
 
   toggle = () => {
@@ -26,12 +25,14 @@ class UserMenu extends Component {
     const { initialized } = this.state;
     const { userId, username, autologinkey } = data;
     if (userId && !initialized) {
-      let token = autologinkey ? autologinkey : generatePassword('aKey')
+      let token = autologinkey ? autologinkey : generatePassword('aKey');
+     
       if (!autologinkey || autologinkey != token) {
         this.autoLoginApi.put("", {
           userId,
           token
         }).then(() => { })
+
       }
 
       this.setState({
@@ -51,13 +52,12 @@ class UserMenu extends Component {
 
   render() {
     const { data, clockData } = this.props;
-
     if (!data) {
       return null;
     }
 
-    const { toggled, copied, buildedLink } = this.state,
-      { fullname, username } = data;
+    const { toggled, copied, buildedLink } = this.state;
+    const { fullname, username, autologinkey } = data;
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
         <Clock clockData={clockData} />
@@ -75,7 +75,7 @@ class UserMenu extends Component {
                 </span>
               </li>
               <React.Fragment>
-                <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                <button className={`submenu-user-button ${(autologinkey ? 'shown' : 'hidden')}`}  onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
                 <textarea id="autologin-input" style={
                   {
                     width: 0,
