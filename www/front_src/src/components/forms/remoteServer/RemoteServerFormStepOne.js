@@ -3,13 +3,15 @@ import { Field, reduxForm as connectForm } from "redux-form";
 import InputField from "../../form-fields/InputField";
 import SelectField from "../../form-fields/SelectField";
 import RadioField from "../../form-fields/PreselectedRadioField";
+import { initialize } from 'redux-form';
 
 import {
   serverNameValidator,
   serverIpAddressValidator,
   centralIpAddressValidator,
   databaseUserValidator,
-  databasePasswordValidator
+  databasePasswordValidator,
+  centreonPathValidator
 } from "../../../helpers/validators";
 
 class RemoteServerFormStepOne extends Component {
@@ -39,6 +41,10 @@ class RemoteServerFormStepOne extends Component {
      this.initializeFromRest(waitList.length > 0);
      //this.initializeFromRest(true);//set to true of false if abandon the upper case condition
     }
+    this.setState({
+      initialized: true,
+      centreon_folder: '/centreon/'
+    });
   };
 
   render() {
@@ -98,6 +104,13 @@ class RemoteServerFormStepOne extends Component {
                   placeholder=""
                   label="Centreon Central IP address, as seen by this server:"
                 />
+                <Field
+                  name="centreon_folder"
+                  component={InputField}
+                  type="text"
+                  placeholder="/centreon/"
+                  label="Centreon Web Folder on Remote:"
+                />
               </div>
             ) : null}
 
@@ -116,7 +129,7 @@ class RemoteServerFormStepOne extends Component {
                   <Field
                     name="server_ip"
                     component={SelectField}
-                    label="Select linked Distant Pollers:"
+                    label="Select Pending Remote Links:"
                     required
                     options={[
                       {
@@ -156,6 +169,13 @@ class RemoteServerFormStepOne extends Component {
                   placeholder=""
                   label="Centreon Central IP address, as seen by this server:"
                 />
+                <Field
+                  name="centreon_folder"
+                  component={InputField}
+                  type="text"
+                  placeholder="/centreon/"
+                  label="Centreon Web Folder on Remote:"
+                />
               </div>
             ) : null}
 
@@ -179,13 +199,15 @@ const validate = ({
   server_ip,
   centreon_central_ip,
   db_user,
-  db_password
+  db_password,
+  centreon_folder
 }) => ({
   server_name: serverNameValidator(server_name),
   server_ip: serverIpAddressValidator(server_ip),
   centreon_central_ip: centralIpAddressValidator(centreon_central_ip),
   db_user: databaseUserValidator(db_user),
-  db_password: databasePasswordValidator(db_password)
+  db_password: databasePasswordValidator(db_password),
+  centreon_folder: centreonPathValidator(centreon_folder)
 });
 
 export default connectForm({
