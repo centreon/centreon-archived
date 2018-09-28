@@ -589,9 +589,9 @@ sub sendExportFile($){
     my $origin = $self->{centreonDir} . "/filesGeneration/export/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":/var/lib/centreon/remote-data/";
 
-    # Send data with SCP
+    # Send data with rSync
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
-    $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
+    $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
     
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
