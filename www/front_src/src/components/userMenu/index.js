@@ -24,18 +24,18 @@ class UserMenu extends Component {
   componentWillReceiveProps = (nextProps) => {
     const { data } = nextProps;
     const { initialized } = this.state;
-    const { userId, username,autologinkey } = data;
+    const { userId, username, autologinkey } = data;
     if (userId && !initialized) {
       let token = autologinkey ? autologinkey : AutoLoginToken.prototype.generatePassword('aKey')
-      if(!autologinkey || autologinkey != token){
-        this.autoLoginApi.put("",{
+      if (!autologinkey || autologinkey != token) {
+        this.autoLoginApi.put("", {
           userId,
           token
-        }).then(()=>{})
+        }).then(() => { })
       }
-      
+
       this.setState({
-        buildedLink: 'http://'+window.location.hostname+"/_CENTREON_PATH_PLACEHOLDER_/index.php" + '?autologin=1' + '&useralias=' + username + '&token=' + token,
+        buildedLink: 'http://' + window.location.hostname + "/_CENTREON_PATH_PLACEHOLDER_/index.php" + '?autologin=1' + '&useralias=' + username + '&token=' + token,
         initialized: true
       })
     }
