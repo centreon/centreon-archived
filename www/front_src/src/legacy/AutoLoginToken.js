@@ -1,3 +1,5 @@
+import React from "react";
+
 export default class AutoLoginToken {
   generatePassword(what) {
     if (parseInt(navigator.appVersion) <= 3) {
@@ -22,15 +24,6 @@ export default class AutoLoginToken {
         numI = this.getRandomNum();
       }
       sPassword = sPassword + String.fromCharCode(numI);
-    }
-
-    /**
-     * Put the new autologin value on the account form's input
-     */
-    if (what == "aKey") {
-      document.getElementById("aKey")
-        ? (document.getElementById("aKey").value = sPassword)
-        : null;
     }
 
     return sPassword;

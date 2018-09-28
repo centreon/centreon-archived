@@ -2,14 +2,17 @@ import React, { Component } from "react";
 import numeral from "numeral";
 import Clock from "../clock";
 import axios from "../../axios";
+import AutoLoginToken from '../../legacy/AutoLoginToken';
 
 class UserMenu extends Component {
   state = {
     toggled: false,
-    buildedLink: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
+    buildedLink: '',
     copied: false,
-    initialized:false
+    initialized: false
   };
+
+  autoLoginApi = axios("internal.php?object=centreon_topcounter&action=autoLoginToken");
 
   toggle = () => {
     const { toggled } = this.state;
@@ -19,13 +22,21 @@ class UserMenu extends Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    const {data} = nextProps;
-    const {initialized} = this.state;
-    const {autologinkey, userId, username} = data;
-    if(userId && !initialized){
+    const { data } = nextProps;
+    const { initialized } = this.state;
+    const { userId, username,autologinkey } = data;
+    if (userId && !initialized) {
+      let token = autologinkey ? autologinkey : AutoLoginToken.prototype.generatePassword('aKey')
+      if(!autologinkey || autologinkey != token){
+        this.autoLoginApi.put("",{
+          userId,
+          token
+        }).then(()=>{})
+      }
+      
       this.setState({
-        buildedLink:window.location.href + '?&autologin=1' + '&useralias='+username+'&token='+autologinkey,
-        initialized:true
+        buildedLink: 'http://'+window.location.hostname+"/_CENTREON_PATH_PLACEHOLDER_/index.php" + '?autologin=1' + '&useralias=' + username + '&token=' + token,
+        initialized: true
       })
     }
   }
@@ -46,8 +57,7 @@ class UserMenu extends Component {
     }
 
     const { toggled, copied, buildedLink } = this.state,
-      { fullname, username, autologinkey } = data;
-
+      { fullname, username } = data;
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
         <Clock clockData={clockData} />
@@ -73,7 +83,9 @@ class UserMenu extends Component {
                     position: 'fixed',
                     top: -100
                   }
-                }>{buildedLink}</textarea>
+
+                }
+                  value={buildedLink}></textarea>
               </React.Fragment>
             </ul>
             <div class="button-wrap">
