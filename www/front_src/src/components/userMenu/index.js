@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import numeral from "numeral";
 import Clock from "../clock";
+import axios from "../../axios";
 
 class UserMenu extends Component {
   state = {
     toggled: false,
-    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
-    copied: false
+    buildedLink: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
+    copied: false,
+    initialized:false
   };
-
 
   toggle = () => {
     const { toggled } = this.state;
@@ -16,6 +17,18 @@ class UserMenu extends Component {
       toggled: !toggled
     });
   };
+
+  componentWillReceiveProps = (nextProps) => {
+    const {data} = nextProps;
+    const {initialized} = this.state;
+    const {autologinkey, userId, username} = data;
+    if(userId && !initialized){
+      this.setState({
+        buildedLink:window.location.href + '?&autologin=1' + '&useralias='+username+'&token='+autologinkey,
+        initialized:true
+      })
+    }
+  }
 
 
   onCopy = () => {
@@ -32,8 +45,8 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled, copied, value } = this.state,
-      { fullname, username } = data;
+    const { toggled, copied, buildedLink } = this.state,
+      { fullname, username, autologinkey } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -60,7 +73,7 @@ class UserMenu extends Component {
                     position: 'fixed',
                     top: -100
                   }
-                }>{value}</textarea>
+                }>{buildedLink}</textarea>
               </React.Fragment>
             </ul>
             <div class="button-wrap">
