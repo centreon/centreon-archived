@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import numeral from "numeral";
 import Clock from "../clock";
 import axios from "../../axios";
-import AutoLoginToken from '../../legacy/AutoLoginToken';
+import {generatePassword} from "../../helpers/autoLoginTokenGenerator";
 
 class UserMenu extends Component {
   state = {
@@ -26,7 +26,7 @@ class UserMenu extends Component {
     const { initialized } = this.state;
     const { userId, username, autologinkey } = data;
     if (userId && !initialized) {
-      let token = autologinkey ? autologinkey : AutoLoginToken.prototype.generatePassword('aKey')
+      let token = autologinkey ? autologinkey : generatePassword('aKey')
       if (!autologinkey || autologinkey != token) {
         this.autoLoginApi.put("", {
           userId,
