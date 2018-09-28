@@ -105,9 +105,13 @@ if ($row = $resTimezone->fetch()) {
 }
 $link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')");
 
-# Generate random key for application key
+# Generate random key for this instance and set it to be not central and not remote
 $uniqueKey = md5(uniqid(rand(), true));
-$link->exec("INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '{$uniqueKey}')");
+$informationsTableInsert = 'INSERT INTO `informations` (`key`,`value`) VALUES ' .
+    "('appKey', '{$uniqueKey}'), ".
+    "('isRemote', 'no'), ".
+    "('isCentral', 'no')";
+$link->exec($informationsTableInsert);
 
 splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');
 
