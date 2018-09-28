@@ -40,6 +40,8 @@ require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
  */
 class CentreonACL
 {
+    const ACL_ACCESS_READ_WRITE = 1;
+    const ACL_ACCESS_READ_ONLY = 2;
 
     private $userID; /* ID of the user */
     private $parentTemplates = null;
@@ -382,19 +384,20 @@ class CentreonACL
             $DBRES->closeCursor();
         } else {
             if (count($this->accessGroups) > 0) {
-                # If user is in an access group
-                $str_topo = "";
+                // If user is in an access group
                 $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
                     . "FROM acl_group_topology_relations, acl_topology, acl_topology_relations "
                     . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "
                     . "AND acl_topology.acl_topo_activate = '1' "
-                    . "AND acl_group_topology_relations.acl_group_id IN (" . $this->getAccessGroupsString() . ") ";
+                    . "AND acl_group_topology_relations.acl_group_id IN ("
+                    . $this->getAccessGroupsString() . ") ";
+                
                 $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
 
                 if (!$DBRESULT->rowCount()) {
-                    $this->topology[1] = 1;
-                    $this->topology[101] = 1;
-                    $this->topology[10101] = 1;
+                    // If user has not access defined in ACL group
+                    // We just get access to Home
+                    $this->topology[1] = self::ACL_ACCESS_READ_WRITE;
                 } else {
                     $topology = array();
                     $tmp_topo_page = array();
@@ -406,15 +409,15 @@ class CentreonACL
                             . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
                         $DBRESULT2 = \CentreonDBInstance::getConfInstance()->query($query2);
                         while ($topo_page = $DBRESULT2->fetchRow()) {
-                            $topology[] = $topo_page["topology_topology_id"];
+                            $topology[] = (int) $topo_page["topology_topology_id"];
                             if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
                             } else {
-                                if ($topo_page["access_right"] == 1) { // Read/Write
+                                if ($topo_page["access_right"] == self::ACL_ACCESS_READ_WRITE) {
                                     $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
                                 } else {
-                                    if ($topo_page["access_right"] == 2 &&
-                                        $tmp_topo_page[$topo_page["topology_topology_id"]] == 0
+                                    if ($topo_page["access_right"] == self::ACL_ACCESS_READ_ONLY
+                                        && $tmp_topo_page[$topo_page["topology_topology_id"]] == 0
                                     ) {
                                         $tmp_topo_page[$topo_page["topology_topology_id"]] = 2;
                                     }
@@ -424,26 +427,24 @@ class CentreonACL
                         $DBRESULT2->closeCursor();
                     }
                     $DBRESULT->closeCursor();
-                    $ACL = "";
-                    if (count($topology)) {
-                        $ACL = "AND topology_id IN (" . implode(', ', $topology) . ") ";
-                    }
 
-                    $query3 = "SELECT topology_page, topology_id "
+                    if (count($topology)) {
+                        $query3 = "SELECT topology_page, topology_id "
                         . "FROM topology FORCE INDEX (`PRIMARY`) "
                         . "WHERE topology_page IS NOT NULL "
-                        . $ACL;
-                    $DBRESULT3 = \CentreonDBInstance::getConfInstance()->query($query3);
-                    while ($topo_page = $DBRESULT3->fetchRow()) {
-                        $this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
+                        . "AND topology_id IN (" . implode(', ', $topology) . ") ";
+                        $DBRESULT3 = \CentreonDBInstance::getConfInstance()->query($query3);
+                        while ($topo_page = $DBRESULT3->fetchRow()) {
+                            $this->topology[$topo_page["topology_page"]] =
+                                $tmp_topo_page[$topo_page["topology_id"]];
+                        }
+                        $DBRESULT3->closeCursor();
                     }
-                    $DBRESULT3->closeCursor();
                 }
             } else {
-                # If user isn't in an access group
-                $this->topology[1] = 1;
-                $this->topology[101] = 1;
-                $this->topology[10101] = 1;
+                // If user isn't in an access group
+                // We just get access to Home
+                $this->topology[1] = self::ACL_ACCESS_READ_WRITE;
             }
         }
     }
@@ -467,7 +468,7 @@ class CentreonACL
         }
         unset($key);
         if (!$this->topologyStr) {
-            $this->topologyStr = "\'\'";
+            $this->topologyStr = "''";
         }
     }
 
