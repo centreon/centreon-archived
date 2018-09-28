@@ -48,7 +48,7 @@ The host is now defined in Centreon web interface but the monitoring engine does
 
 You have now to :ref:`generate the configuration, export it and send it to the monitoring engine<deployconfiguration>`.
 
-You can see result in **Monitoring > Status Details > Hosts** menu:
+You can see result in **Monitoring > Status Details > Services** menu:
 
 .. image:: /_static/images/quick_start/add_template_monitoring.png
     :align: center
