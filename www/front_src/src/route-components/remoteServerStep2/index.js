@@ -93,8 +93,7 @@ class RemoteServerStepTwoRoute extends Component {
         <ProgressBar links={links} />
         <Form
           pollers={pollers}
-          initialValues={pollerData}
-          onSubmit={this.handleSubmit.bind(this)}
+          onSubmit={this.handleSubmit}
         />
       </div>
     );

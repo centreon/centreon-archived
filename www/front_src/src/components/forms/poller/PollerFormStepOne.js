@@ -39,6 +39,13 @@ class PollerFormStepOne extends Component {
               placeholder=""
               label="Centreon Central server IP address, as seen by this server:"
             />
+            <Field
+              name="centreon_folder"
+              component={InputField}
+              type="text"
+              placeholder="/centreon/"
+              label="Centreon Web Folder on Remote:"
+            />
             <div class="form-buttons">
               <button className="button" type="submit">
                 Next
