@@ -8,17 +8,19 @@ import ClassicRoute from "./components/router/classicRoute";
 import NavigationComponent from "./components/navigation";
 import "babel-polyfill";
 import Footer from "./components/footer";
-import Fullscreen from 'react-full-screen';
+import Fullscreen from 'react-fullscreen-crossbrowser';
 
 class App extends Component {
+  
   constructor(props) {
     super();
     this.state = {
-      isFull: false
+      isFullscreenEnabled: false,
     };
   }
+
   goFull = () => {
-    this.setState({isFull: true});
+    this.setState({ isFullscreenEnabled: true });
   }
 
   render() {
@@ -29,9 +31,10 @@ class App extends Component {
           <div id="content">
             <Header/>
             <Fullscreen
-              enabled={this.state.isFull}
-              onChange={isFull => this.setState({isFull})}>
-              <div className="full-screenable-node">
+              enabled={this.state.isFullscreenEnabled}
+              onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}
+            >
+              <div className='full-screenable-node'>
                 <div class="main-content">
                   <Switch onChange={this.handle}>
                     {routes.map(({

@@ -23,6 +23,7 @@
     "react-dom": "^16.4.2",
     "react-favicon": "0.0.14",
     "react-full-screen": "^0.2.3",
+    "react-fullscreen-crossbrowser": "^1.0.9",
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
@@ -35,9 +36,9 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "dev": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
-    "build": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
-    "start": "PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
+    "dev": "cross-env PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
+    "build": "cross-env PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
+    "start": "cross-env PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --progress --watch",
     "build:sass": "node-sass -r --output-style compressed ./src -o ./src",
     "watch:sass": "npm run build:sass && npm run build:sass -- -w",
     "test": "react-scripts test --env=jsdom",
