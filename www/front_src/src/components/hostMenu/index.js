@@ -106,7 +106,7 @@ class HostMenu extends Component {
                   to={"./main.php?p=20202&o=h_up&search="}
                   class="submenu-item-link"
                 >
-                  <span class="dot-colored green">Ok</span>
+                  <span class="dot-colored green">Up</span>
                   <span class="submenu-count">{numeral(ok).format("0a")}</span>
                 </Link>
               </li>
