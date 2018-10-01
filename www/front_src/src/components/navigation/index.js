@@ -89,6 +89,7 @@ class NavigationComponent extends Component {
 
   collapseSubMenu = (key, index) => {
     let { menuItems } = this.state;
+
     if(menuItems[index].children[key]["collapsed"]) {
       menuItems[index].children[key]["collapsed"] = false;
     } else {
@@ -96,6 +97,7 @@ class NavigationComponent extends Component {
         menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
       });
     }
+
     this.setState({
       menuItems
     });
@@ -189,7 +191,7 @@ class NavigationComponent extends Component {
                               ) : (
                                 <Link
                                   className="collapsed-level-item-link img-none"
-                                  to={routeMap.module + "?p=" + menuKey}
+                                  to={routeMap.module + "?p=" + menuKey.slice(1) + (subItem.options ? subItem.options : '')}
                                 >
                                   {subItem.label}
                                 </Link>
@@ -210,7 +212,6 @@ class NavigationComponent extends Component {
                                           }
                                           {Object.keys(subItem.children[key]).map(
                                             subKey => {
-                                              // manage url options (e.g. &o=c)
                                               const urlOptions = subItem.children[key][subKey].options !== null
                                                 ? subItem.children[key][subKey].options
                                                 : ''
@@ -239,7 +240,7 @@ class NavigationComponent extends Component {
                                                       this,
                                                       routeMap.module +
                                                         "?p=" +
-                                                        subKey +
+                                                        subKey.slice(1) +
                                                         urlOptions,
                                                       index
                                                     )}

@@ -210,7 +210,7 @@ Mise à jour de EMS/EPP
    Pas utilisateur de EMS/EPP ? Vous trouverez cependant les Plugins
    Packs Centreon extrêmement utiles pour vous aider à configurer votre
    supervision en quelques minutes. Vous trouverez les informations
-   d'installation dans notre :ref:`documentation en ligne <installation_ppm>`.
+   d'installation dans notre :ref:`documentation en ligne <impconfiguration>`.
 
 
 Si vous utilisez des modules Centreon, vous devrez les mettre à jour

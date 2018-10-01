@@ -24,7 +24,7 @@ UPDATE topology SET topology_page = '50501' WHERE topology_page = '10205' and to
 UPDATE topology SET topology_parent = '505' WHERE topology_page = '10201';
 UPDATE topology SET topology_page = '50502' WHERE topology_page = '10201' and topology_parent = '505';
 
--- Remane "Graphs" menu to "Engine Statistics"
+-- Rename "Graphs" menu to "Engine Statistics"
 UPDATE topology SET topology_name = 'Engine Statistics' WHERE topology_page = '50502';
 
 -- Rename "Server Status" to "Platform Status"
@@ -48,6 +48,10 @@ CREATE TABLE IF NOT EXISTS `task` (
   `params` BLOB NULL,
   `created_at` TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Add column to nagios_server table for remote-poller relation
+ALTER TABLE `nagios_server` ADD COLUMN `remote_id` int(11) NULL AFTER `centreonbroker_logs_path`;
+ALTER TABLE `nagios_server` ADD CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Update the "About" menu
 UPDATE topology SET topology_url = './include/Administration/about/about.php', topology_modules = '0', topology_popup = '0' WHERE topology_page = 506 AND topology_parent = 5;

@@ -69,14 +69,17 @@ if ($stat === false) {
                     <table cellpadding=\'0\' cellspacing=\'0\' border=\'0\' class=\'StyleDottedHr\' align=\'center\'>
                         <tbody>
                         <tr>
-                            <td class=\'formValue\'><input value=\'1\' name=\'send_statistics\' type="checkbox" checked/></td>
+                            <td class=\'formValue\'>
+                                <input value=\'1\' name=\'send_statistics\' type="checkbox" checked/>
+                            </td>
                             <td class=\'formlabel\'>
                                 <p style="text-align:justify">I agree to participate to the Centreon Customer Experience
                                     Improvement Program whereby anonymous information about the usage of this server
                                     may be sent to Centreon. This information will solely be used to improve the
                                     software user experience. I will be able to opt-out at anytime.
                                     Refer to
-                                    <a style="text-decoration: underline" href="http://ceip.centreon.com/">ceip.centreon.com</a>
+                                    <a target="_blank" style="text-decoration: underline" 
+                                    href="http://ceip.centreon.com/">ceip.centreon.com</a>
                                     for further details.
                                 </p>
                             </td>
@@ -106,8 +109,8 @@ if ($moveable) {
                 type: 'POST',
                 url: './step_upgrade/process/process_step5.php',
                 data: jQuery('input[name="send_statistics"]').serialize()
-            }).success(function(){
-                javascript:self.location="../main.php"
+            }).success(function () {
+                javascript:self.location = "../main.php"
             })
         }
     </script>

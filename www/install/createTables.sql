@@ -1720,7 +1720,9 @@ CREATE TABLE `nagios_server` (
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
   `centreonbroker_logs_path` VARCHAR(255),
-  PRIMARY KEY (`id`)
+  `remote_id` int(11) NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

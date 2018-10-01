@@ -11,6 +11,7 @@ class PollerExporter extends ExporterServiceAbstract
     const NAME = 'poller';
     const EXPORT_FILE_NAGIOS_SERVER = 'nagios_server.yaml';
     const EXPORT_FILE_CFG_RESOURCE = 'cfg_resource.yaml';
+    const EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION = 'cfg_resource_instance_relations.yaml';
     const EXPORT_FILE_CFG_NAGIOS = 'cfg_nagios.yaml';
     const EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE = 'cfg_nagios_broker_module.yaml';
     const EXPORT_FILE_CFG_CENTREONBROKER = 'cfg_centreonbroker.yaml';
@@ -54,8 +55,16 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgResource = $this->db
                 ->getRepository(Repository\CfgResourceRepository::class)
                 ->export($pollerIds);
-            // $cfgResource = $overwritePollerService->setCfgResource($cfgResource);
+            $cfgResource = $overwritePollerService->setCfgResource($cfgResource);
             $this->_dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
+        })();
+
+        (function() use ($pollerIds) {
+            $data = $this->db
+                ->getRepository(Repository\CfgResourceInstanceRelationsRepository::class)
+                ->export($pollerIds)
+            ;
+            $this->_dump($data, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION));
         })();
 
         (function() use ($pollerIds) {
@@ -144,15 +153,17 @@ class PollerExporter extends ExporterServiceAbstract
             $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
-                $dataRelation = [
-                    'resource_id' => $data['resource_id'],
-                    'instance_id' => $data['_instance_id'],
-                ];
-
-                unset($data['_instance_id']);
-
                 $db->insert('cfg_resource', $data);
-                $db->insert('cfg_resource_instance_relations', $dataRelation);
+            }
+        })();
+
+        // insert cfg resource
+        (function() use ($db) {
+            $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION);
+            $result = $this->_parse($exportPathFile);
+
+            foreach ($result as $data) {
+                $db->insert('cfg_resource_instance_relations', $data);
             }
         })();
 

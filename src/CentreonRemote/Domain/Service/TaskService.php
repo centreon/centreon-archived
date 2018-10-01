@@ -73,35 +73,46 @@ class TaskService
 
     /**
      * Adds a new task
+     * 
      * @param string $type
      * @param array $params
+     * @param int $parentId
      * @return mixed
      */
-    public function addTask(string $type, array $params)
+    public function addTask(string $type, array $params, int $parentId = null)
     {
         $newTask = new Task();
+        $newTask->setStatus(Task::STATE_PENDING);
+        $newTask->setParams(serialize($params));
+        $newTask->setParentId($parentId);
+
         switch ($type) {
             case Task::TYPE_EXPORT:
                 $newTask->setType(Task::TYPE_EXPORT);
-                $newTask->setStatus(Task::STATE_PENDING);
-                $newTask->setParams(serialize($params));
-                $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
+                $result = $this->getDbman()->getAdapter('configuration_db')
+                    ->insert('task', $newTask->toArray())
+                ;
+
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
                 $cmdWritten = $this->getCmdService()->sendCommand($cmd);
                 break;
+
             case Task::TYPE_IMPORT:
                 $newTask->setType(Task::TYPE_IMPORT);
-                $newTask->setStatus(Task::STATE_PENDING);
-                $newTask->setParams(serialize($params));
-                $result = $this->getDbman()->getAdapter('configuration_db')->insert('task',$newTask->toArray());
+                $result = $this->getDbman()->getAdapter('configuration_db')
+                    ->insert('task', $newTask->toArray())
+                ;
+
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
                 $cmdWritten = $this->getCmdService()->sendCommand($cmd);
                 break;
+
             default:
                 return false;
         }
+
         return ($result && $cmdWritten) ? $result : false;
     }
 

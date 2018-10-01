@@ -13,11 +13,10 @@ class PollerStepThreeRoute extends Component {
     {
       active: true,
       prevActive: true,
-      number: 1,
-      path: routeMap.serverConfigurationWizard
+      number: 1
     },
-    { active: true, prevActive: true, number: 2, path: routeMap.pollerStep1 },
-    { active: true, prevActive: true, number: 3, path: routeMap.pollerStep2 },
+    { active: true, prevActive: true, number: 2 },
+    { active: true, prevActive: true, number: 3 },
     { active: true, number: 4 }
   ];
 

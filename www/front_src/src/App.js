@@ -1,22 +1,23 @@
 import React, {Component} from "react";
 import Header from "./components/header";
-import {Switch, BrowserRouter} from "react-router-dom";
+import {Switch} from "react-router-dom";
 import {ConnectedRouter} from "react-router-redux";
 import {history} from "./store";
 import routes from "./route-maps/classicRoutes.js";
 import ClassicRoute from "./components/router/classicRoute";
 import NavigationComponent from "./components/navigation";
-import "babel-polyfill";
 import Footer from "./components/footer";
 import Fullscreen from 'react-full-screen';
 
 class App extends Component {
+
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       isFull: false
     };
   }
+
   goFull = () => {
     this.setState({isFull: true});
   }
@@ -28,21 +29,26 @@ class App extends Component {
           <NavigationComponent/>
           <div id="content">
             <Header/>
-            <Fullscreen
-              enabled={this.state.isFull}
-              onChange={isFull => this.setState({isFull})}>
-              <div className="full-screenable-node">
-                <div class="main-content">
-                  <Switch onChange={this.handle}>
-                    {routes.map(({
-                      path,
-                      comp,
-                      ...rest
-                    }, i) => (<ClassicRoute history={history} path={path} component={comp} {...rest}/>))}
-                  </Switch>
+            <div id="fullscreen-wrapper">
+              <Fullscreen
+                enabled={this.state.isFull}
+                onChange={isFull => this.setState({isFull})}>
+                <div className="full-screenable-node">
+                  <div class="main-content">
+                    <Switch onChange={this.handle}>
+                      {routes.map(({ path, comp, ...rest }) => (
+                        <ClassicRoute
+                          history={history}
+                          path={path}
+                          component={comp}
+                          {...rest}
+                        />
+                      ))}
+                    </Switch>
+                  </div>
                 </div>
-              </div>
-            </Fullscreen>
+              </Fullscreen>
+            </div>
             <Footer/>
           </div>
           <span className="full-screen" onClick={this.goFull}></span>

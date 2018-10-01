@@ -19,6 +19,10 @@ export const centralIpAddressValidator = centralIpAddress => {
     return message;
 }
 
+export const centreonPathValidator = centreonFolder => {
+  return !centreonFolder || centreonFolder.length < 1 ? "The field is required" : "";
+
+}
 
 export const selectRemoteServerValidator = selectRemoteServer =>
    !selectRemoteServer || selectRemoteServer.length < 1 ? "The field is required" : "";

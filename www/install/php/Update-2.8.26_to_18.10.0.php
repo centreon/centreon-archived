@@ -34,6 +34,17 @@
  *
  */
 
+/*
+ * Generate random key for application key
+ */
+$uniqueKey = md5(uniqid(rand(), TRUE));
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
+$pearDB->query($query);
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
+$pearDB->query($query);
+$query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isCentral', 'no')";
+$pearDB->query($query);
+
 // Retrieve current Nagios plugins path.
 $query = "SELECT value FROM options WHERE `key`='nagios_path_plugins'";
 $result = $pearDB->query($query);

@@ -1,10 +1,19 @@
 import React, { Component } from "react";
-import { reduxForm as connectForm } from "redux-form";
+import { Field, reduxForm as connectForm } from "redux-form";
 import MultiSelect from "../../form-fields/MultiSelect";
+import Select from "react-select";
+import fieldHoc from "../../form-fields/hoc";
 
 class RemoteServerFormStepTwo extends Component {
+  state = {
+    value:[]
+  }
+  handleChange = (e,values) => {
+    this.setState({value:values})
+  }
   render() {
     const { error, handleSubmit, onSubmit, pollers } = this.props;
+    const {value} = this.state;
     return (
       <div className="form-wrapper">
         <div className="form-inner">
@@ -13,13 +22,18 @@ class RemoteServerFormStepTwo extends Component {
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (
-              <MultiSelect
+              <Field
                 name="linked_pollers"
+                component={fieldHoc(Select)}
                 label="Select linked Remote Server:"
                 options={pollers.items.map(c => ({
                   value: c.id,
                   label: c.text
                 }))}
+                value={value}
+                onChange={this.handleChange}
+                multi={true}
+                isMulti={true}
               />
             ) : null}
             {/* <Field
@@ -45,6 +59,6 @@ const validate = () => ({});
 export default connectForm({
   form: "RemoteServerFormStepTwo",
   validate,
-  warn: () => {},
+  warn: () => { },
   enableReinitialize: true
 })(RemoteServerFormStepTwo);

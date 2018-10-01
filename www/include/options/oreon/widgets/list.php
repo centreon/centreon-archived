@@ -54,8 +54,10 @@ $labels['version'] = _('Version');
 $labels['author'] = _('Author');
 $labels['actions'] = _('Actions');
 
-$tpl->assign('hasWidgetsForInstallation', $widgetInfoObj->hasWidgetsForInstallation());
-$tpl->assign('hasWidgetsForUpgrade', $widgetInfoObj->hasWidgetsForUpgrade());
+$tpl->assign('canUpgradeOrInstallWidgets', (
+    $widgetInfoObj->hasWidgetsForInstallation() ||
+    $widgetInfoObj->hasWidgetsForUpgrade()
+));
 $tpl->assign('widgets', $widgets);
 $tpl->assign('labels', $labels);
 $tpl->display('list.ihtml');
@@ -66,7 +68,6 @@ var installAllConfirmMsg = '<?php echo _('Would you like to install all widgets?
 var uninstallConfirmMsg = '<?php echo _('Are you sure you want to uninstall this widget?');?>';
 var upgradeConfirmMsg = '<?php echo _('Would you like to upgrade this widget?');?>';
 var upgradeAllConfirmMsg = '<?php echo _('Would you like to upgrade all widgets?');?>';
-var p = '<?php echo $p;?>';
 
 jQuery(function() {
     jQuery('.installBtn').click(function() {
@@ -107,7 +108,7 @@ function forwardAction(confirmMsg, action, data)
                 success: function(response) {
                     var result = response.getElementsByTagName('result');
                     if (typeof(result) != 'undefined') {
-                        window.location = '?p='+p;
+                        parent.location.reload();
                     }
                 }
             });

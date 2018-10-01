@@ -8,6 +8,7 @@ use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
@@ -53,6 +54,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $pimple['centreon.keygen'] = function(Container $container) : AppKeyGeneratorService {
             $service = new AppKeyGeneratorService();
+
+            return $service;
+        };
+
+        $pimple['centreon.acl'] = function(Container $container) : CentreonACL {
+            $service = new CentreonACL($container);
 
             return $service;
         };

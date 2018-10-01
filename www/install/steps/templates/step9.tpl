@@ -23,7 +23,8 @@
                                     may be sent to Centreon. This information will solely be used to improve the
                                     software user experience. I will be able to opt-out at anytime.
                                     Refer to
-                                    <a href="http://ceip.centreon.com/">ceip.centreon.com</a>
+                                    <a target="_blank" style="text-decoration: underline"
+                                       href="http://ceip.centreon.com/">ceip.centreon.com</a>
                                     for further details.
                                 </p>
                             </td>
