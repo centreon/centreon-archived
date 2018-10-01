@@ -9,13 +9,6 @@ import axios from "../../axios";
 import routeMap from "../../route-maps/index";
 class NavigationComponent extends Component {
 
-  constructor(props) {
-    super(props);
-    this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
-
-  
-  }
-
   navService = axios("internal.php?object=centreon_menu&action=menu");
     state = {
       active: false,
@@ -50,8 +43,7 @@ class NavigationComponent extends Component {
     });
   };
 
-  handleDoubleClickItem(event) {
-   
+  handleDoubleClickItem = (event) => {
     //window.location.href = window.location.href + url;
     var identifier = event.target.getAttribute('id');
     console.log(identifier);
@@ -68,10 +60,8 @@ class NavigationComponent extends Component {
         break;
       default:
         console.log(identifier + ' ' + 'db clicked');
-    }
-
-  	
-  }
+    };
+  };
 
 
   UNSAFE_componentWillMount = () => {
@@ -172,7 +162,7 @@ class NavigationComponent extends Component {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
-                    onDoubleClick={this.handleDoubleClickItem}
+                    onDoubleClick={this.handleDoubleClickItem.bind(this)}
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
