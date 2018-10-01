@@ -43,23 +43,25 @@ class NavigationComponent extends Component {
     });
   };
 
-  handleDoubleClickItem = (event) => {
-    //window.location.href = window.location.href + url;
-    var identifier = event.target.getAttribute('id');
-    console.log(identifier);
-    console.log(event.target.id);
-    switch (identifier) {
-      case 'menu0':
-        console.log(identifier + ' ' + 'home');
+  handleDoubleClickItem = index => {
+    switch (index) {
+      case 0:
+        window.location.href='main.php?p=103';
         break;
-      case 'menu1':
-        console.log(identifier + ' ' + 'monitoring');
+      case 1:
+        window.location.href='main.php?p=20201';
         break;
-      case 'menu2':
-        console.log(identifier + ' ' + 'reporting');
+      case 2:
+        window.location.href='main.php?p=30701';
+        break;
+      case 3:
+        window.location.href='main.php?p=60101';
+        break;
+      case 4:
+        window.location.href='main.php?p=50110&o=general';
         break;
       default:
-        console.log(identifier + ' ' + 'db clicked');
+        window.location.href='/';
     };
   };
 
@@ -162,7 +164,7 @@ class NavigationComponent extends Component {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
-                    onDoubleClick={this.handleDoubleClickItem.bind(this)}
+                    onDoubleClick={this.handleDoubleClickItem.bind(this, index)}
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
