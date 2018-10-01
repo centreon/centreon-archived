@@ -14,12 +14,12 @@ Sommaire :
    release_notes/index
    lifecycle
    installation/index
-   migration/index
    quick_start/index
    configuration_guide/index
    exploitation_guide/index
    administration_guide/index
    upgrade/index
+   migration/index
    faq/index
    howto/index
    developper/index
