@@ -91,7 +91,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetRemotesList(): array
     {
-        $statement = $this->pearDB->query('SELECT id, ip FROM `remote_servers` WHERE `is_connected` = 1');
+        $query = 'SELECT ns.id, ns.ns_ip_address as ip FROM nagios_server as ns ' .
+            'JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address ' .
+            'WHERE rs.is_connected = 1';
+        $statement = $this->pearDB->query($query);
 
         return $statement->fetchAll();
     }
