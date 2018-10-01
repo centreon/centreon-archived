@@ -1021,17 +1021,6 @@ function initM(_time_reload, _sid, _o) {
     if (_servicegroup_enable == 1) {
         construct_ServiceGroupSelectList('servicegroups_selected');
     }
-    if (!document.getElementById('debug')) {
-        var _divdebug = document.createElement("div");
-        _divdebug.id = 'debug';
-        var _debugtable = document.createElement("table");
-        _debugtable.id = 'debugtable';
-        var _debugtr = document.createElement("tr");
-        _debugtable.appendChild(_debugtr);
-        _divdebug.appendChild(_debugtable);
-        var _header = document.getElementById(_headerId);
-        _header.appendChild(_divdebug);
-    }
 
     if (_first) {
         mainLoop();
