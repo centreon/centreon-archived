@@ -91,7 +91,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetRemotesList(): array
     {
-        $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
+        $statement = $this->pearDB->query('SELECT id, ip FROM `remote_servers` WHERE `is_connected` = 1');
 
         return $statement->fetchAll();
     }
