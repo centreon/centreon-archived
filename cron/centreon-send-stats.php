@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../www/class/centreonRestHttp.class.php';
-require_once __DIR__ . '/../config/config-statistics.php';
+require_once __DIR__ . '/../config/centreon-statistics.config.php';
 require_once __DIR__ . '/../www/class/centreonStatistics.class.php';
 
 $sendStatistics = 0;
