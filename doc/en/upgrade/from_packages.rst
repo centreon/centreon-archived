@@ -27,7 +27,7 @@ To update your Centreon MBI server, refer to the `associated documentation
 Backup
 ******
 
-Be sure that you have fully backup of your environment for all the following
+Be sure that you have fully backed up your environment for all the following
 server:
 
 * Central server
@@ -76,7 +76,7 @@ PHP timezone needs to be set. Perform the command: ::
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 
 .. note::
-    Change **Europe/Paris** by your timezone.
+    Change **Europe/Paris** to your timezone.
 
 Restart the services by executing the following commands: ::
 

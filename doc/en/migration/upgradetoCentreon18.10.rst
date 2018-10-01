@@ -20,7 +20,7 @@ This procedure only applies to a Centreon 3.4 platform that is installed on a
 +-----------------+---------+
 
 .. note::
-    If your platform has been installed from Centreon ISO or Centreon 3.4 depots
+    If your platform has been installed from Centreon ISO or Centreon 3.4 repositories
     on CentOS or Red Hat in version 7, refer to the :ref:`update<upgrade>`
     documentation.
 
