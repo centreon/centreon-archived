@@ -51,7 +51,26 @@ class NavigationComponent extends Component {
   };
 
   handleDoubleClickItem(event) {
-  	alert('I got double-clicked!');
+   
+    //window.location.href = window.location.href + url;
+    var identifier = event.target.getAttribute('id');
+    console.log(identifier);
+    console.log(event.target.id);
+    switch (identifier) {
+      case 'menu0':
+        console.log(identifier + ' ' + 'home');
+        break;
+      case 'menu1':
+        console.log(identifier + ' ' + 'monitoring');
+        break;
+      case 'menu2':
+        console.log(identifier + ' ' + 'reporting');
+        break;
+      default:
+        console.log(identifier + ' ' + 'db clicked');
+    }
+
+  	
   }
 
 
@@ -157,6 +176,7 @@ class NavigationComponent extends Component {
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
+                    id={"menu"+ index}
                   >
                     <span class={`iconmoon icon-${item.label.toLowerCase()}`}>
                       <span class={"menu-item-name"}>{item.label}</span>
