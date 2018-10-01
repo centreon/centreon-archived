@@ -138,7 +138,7 @@ class RemoteServerFormStepOne extends Component {
                         text: "Select IP",
                         value: ""
                       }
-                    ].concat(waitList.map(c => ({ value: c.ip, text: c.ip })))}
+                    ].concat(waitList.map(c => ({ value: c.id, text: c.ip })))}
                   />
                 ) : null}
                 <Field
