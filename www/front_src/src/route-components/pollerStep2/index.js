@@ -69,7 +69,7 @@ class PollerStepTwoRoute extends Component {
         <ProgressBar links={links} />
         <Form
           pollers={pollers}
-          initialValues={pollerData}
+          initialValues={{...pollerData, centreon_folder:"/centreon/"}}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </div>
