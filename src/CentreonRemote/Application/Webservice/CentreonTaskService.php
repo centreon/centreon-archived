@@ -59,6 +59,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postGetTaskStatus()
     {
+        $_POST = json_decode(file_get_contents('php://input'), true);
         $task_id = (isset($_POST['task_id'])) ? $_POST['task_id'] : null;
 
         if ($task_id){
