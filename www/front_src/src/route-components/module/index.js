@@ -52,10 +52,9 @@ class ModuleRoute extends Component {
     const { contentHeight } = this.state
     const { history } = this.props,
           { search } = history.location;
-
+    const params = search || '';
     return (
       <React.Fragment>
-        {search ? (
           <iframe
             id="main-content"
             title="Main Content"
@@ -63,11 +62,8 @@ class ModuleRoute extends Component {
             onLoad={this.handleResize}
             scrolling="yes"
             style={{ width: "100%", height: `${contentHeight}px` }}
-            src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${search}`}
+            src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
           />
-        ) : (
-          <Redirect to={"/_CENTREON_PATH_PLACEHOLDER_/main.php?p=1"} />
-        )}
       </React.Fragment>
     );
   }
