@@ -140,7 +140,10 @@ $contactGroups = $cg->getListContactgroup(true);
 $menus = array();
 $DBRESULT = $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
 while ($topo = $DBRESULT->fetchRow()) {
-    $menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
+    $menus[$topo["acl_topo_id"]] = CentreonUtils::escapeAll(
+        $topo["acl_topo_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 unset($topo);
 $DBRESULT->closeCursor();
