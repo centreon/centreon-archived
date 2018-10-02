@@ -420,3 +420,12 @@
   height: 100%;
   background-color: $white-color;
 }
+.submenu-top-item-link {
+  display: block;
+  padding: 0 !important;  
+  padding-left: 15px !important;
+  font-size: .8rem;
+  color: $white-color;
+  font-family: $primary-font-light;
+  margin-top: 10px;
+}
