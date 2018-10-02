@@ -17,9 +17,10 @@ class ServerWizardIdentity
         return !static::requestConfigurationIsRemote();
     }
 
-    public function fetchIfServerInstalledBam($ip)
+    public function fetchIfServerInstalledBam($ip, $centreonPath)
     {
-        $url = "{$ip}/centreon/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
+        $centreonPath = trim($centreonPath, '/');
+        $url = "{$ip}/{$centreonPath}/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
 
         try {
             $curl = new Curl;

@@ -44,18 +44,19 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
 
-        if (count($tasks) == 0)
-        {
+        if (count($tasks) == 0) {
             echo "None found\n";
         } else {
             foreach ($tasks as $task) {
                 $params = unserialize($task->getParams());
-                $commitment = new CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
+                $commitment = new \CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
+
                 try {
                     $this->getDi()['centreon_remote.export']->export($commitment);
                 } catch (\Exception $e) {
-                //todo error handling
+                    //todo error handling
                 }
+
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
             }
         }

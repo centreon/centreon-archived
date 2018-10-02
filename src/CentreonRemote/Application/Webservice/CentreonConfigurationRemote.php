@@ -177,6 +177,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="centreon_folder",
+     *       type="string",
+     *       description="path to the centreon web folder on the remote machine",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -232,7 +239,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
-            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP);
+            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP, $_POST['centreon_folder']);
         }
 
         // Add configuration of the new server in the database

@@ -55,5 +55,9 @@ class WizardConfigurationRequestValidator
         if (!isset($_POST['db_password']) || !$_POST['db_password']) {
             throw new \RestBadRequestException('You need to send \'db_password\' in the request.');
         }
+
+        if (!isset($_POST['centreon_folder']) || !$_POST['centreon_folder']) {
+            throw new \RestBadRequestException('You need to send \'centreon_folder\' in the request.');
+        }
     }
 }
