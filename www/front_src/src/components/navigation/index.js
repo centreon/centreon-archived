@@ -158,7 +158,7 @@ class NavigationComponent extends Component {
             </a>
           </div>
           <ul class="menu menu-items list-unstyled components">
-            {menuItems.map((item, index, menuKey) => {
+            {menuItems.map((item, index) => {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
