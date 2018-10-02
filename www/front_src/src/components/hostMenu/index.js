@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import numeral from "numeral";
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import config from "../../config";
 
 class HostMenu extends Component {
 
@@ -50,17 +51,17 @@ class HostMenu extends Component {
           <span class="wrap-right-icon__name">Hosts</span>
         </span>
 
-        <Link to="./main.php?p=20202&o=h_down&search=" class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
           <a class="number">
             <span>{numeral(down.unhandled).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20202&o=h_unreachable&search=" class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20202&o=h_unreachable&search="} class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
           <a class="number">
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20202&o=h_up&search=" class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20202&o=h_up&search="} class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
             <span>{numeral(ok).format("0a")}</span>
           </a>
@@ -72,7 +73,7 @@ class HostMenu extends Component {
             <ul class="submenu-items list-unstyled">
               <li class="submenu-item">
                 <Link
-                  to={"./main.php?p=20202&o=h&search="}
+                  to={config.urlBase + "main.php?p=20202&o=h&search="}
                   class="submenu-item-link"
                 >
                   <span>All</span>
@@ -81,7 +82,7 @@ class HostMenu extends Component {
               </li>
               <li class="submenu-item">
                 <Link
-                  to={"./main.php?p=20202&o=h_down&search="}
+                  to={config.urlBase + "main.php?p=20202&o=h_down&search="}
                   class="submenu-item-link"
                 >
                   <span class="dot-colored red">Down</span>
@@ -92,7 +93,7 @@ class HostMenu extends Component {
               </li>
               <li class="submenu-item">
                 <Link
-                  to={"./main.php?p=20202&o=h_unreachable&search="}
+                  to={config.urlBase + "main.php?p=20202&o=h_unreachable&search="}
                   class="submenu-item-link"
                 >
                   <span class="dot-colored gray">Unreachable</span>
@@ -103,7 +104,7 @@ class HostMenu extends Component {
               </li>
               <li class="submenu-item">
                 <Link
-                  to={"./main.php?p=20202&o=h_up&search="}
+                  to={config.urlBase + "main.php?p=20202&o=h_up&search="}
                   class="submenu-item-link"
                 >
                   <span class="dot-colored green">Up</span>
@@ -112,7 +113,7 @@ class HostMenu extends Component {
               </li>
               <li class="submenu-item">
                 <Link
-                  to={"./main.php?p=20202&o=h_pending&search="}
+                  to={config.urlBase + "main.php?p=20202&o=h_pending&search="}
                   class="submenu-item-link"
                 >
                   <span class="dot-colored blue">Pending</span>
