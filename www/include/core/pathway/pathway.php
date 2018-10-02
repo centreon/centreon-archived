@@ -61,8 +61,9 @@ if (isset($url)) {
                 . 'WHERE topology_url = :url'
             );
             $statement->bindValue(':url', $url, \PDO::PARAM_STR);
-            if ($statement->execute()) {
-                $result = $statement->fetch(\PDO::FETCH_ASSOC);
+            if ($statement->execute() 
+                && $result = $statement->fetch(\PDO::FETCH_ASSOC)
+            ) {
                 $p = $result['topology_page'];
             }
         }
@@ -91,39 +92,41 @@ $pdoStatement = $pearDB->prepare(
     ORDER BY topology_page ASC'
 );
 $pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
-$pdoStatement->execute();
+
 $breadcrumbData = [];
 
-while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
-    $isNameAlreadyInserted = array_search(
-        $result['topology_name'],
-        array_column($breadcrumbData, 'name')
-    );
-    
-    if ($isNameAlreadyInserted) {
-        /**
-         * We don't show two items with the same name. So we remove the first
-         * item with the same name (in tree with duplicate topology name,
-         * the first has no url)
-         */
-        $topology = array_pop(
-            array_slice(
-                $breadcrumbData,
-                array_search(
-                    $result['topology_name'],
-                    array_column($breadcrumbData, 'name')
-                )
-            )
+if($pdoStatement->execute()) {
+    while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
+        $isNameAlreadyInserted = array_search(
+            $result['topology_name'],
+            array_column($breadcrumbData, 'name')
         );
-        unset($breadcrumbData[$topology['page']]);
+
+        if ($isNameAlreadyInserted) {
+            /**
+             * We don't show two items with the same name. So we remove the first
+             * item with the same name (in tree with duplicate topology name,
+             * the first has no url)
+             */
+            $topology = array_pop(
+                array_slice(
+                    $breadcrumbData,
+                    array_search(
+                        $result['topology_name'],
+                        array_column($breadcrumbData, 'name')
+                    )
+                )
+            );
+            unset($breadcrumbData[$topology['page']]);
+        }
+
+        $breadcrumbData[$result['topology_page']] = [
+            'name' => $result['topology_name'],
+            'url' => $result['topology_url'],
+            'opt' => $result['topology_opt'],
+            'page' => $result['topology_page']
+        ];
     }
-    
-    $breadcrumbData[$result['topology_page']] = [
-        'name' => $result['topology_name'],
-        'url' => $result['topology_url'],
-        'opt' => $result['topology_opt'],
-        'page' => $result['topology_page']
-    ];
 }
 ?>
 <div class="pathway">

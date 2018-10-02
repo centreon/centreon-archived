@@ -54,17 +54,15 @@ class ModuleRoute extends Component {
           { search } = history.location;
     const params = search || '';
     return (
-      <React.Fragment>
-          <iframe
-            id="main-content"
-            title="Main Content"
-            frameBorder="0"
-            onLoad={this.handleResize}
-            scrolling="yes"
-            style={{ width: "100%", height: `${contentHeight}px` }}
-            src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
-          />
-      </React.Fragment>
+      <iframe
+        id="main-content"
+        title="Main Content"
+        frameBorder="0"
+        onLoad={this.handleResize}
+        scrolling="yes"
+        style={{ width: "100%", height: `${contentHeight}px` }}
+        src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+      />
     );
   }
 }
