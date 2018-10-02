@@ -435,6 +435,7 @@ class CentreonACL
                         $this->topology[$topo_page["topology_page"]] =
                             $tmp_topo_page[$topo_page["topology_id"]];
                     }
+                    $DBRESULT3->closeCursor();
                 }
             }
         }
