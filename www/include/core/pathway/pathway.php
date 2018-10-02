@@ -44,14 +44,23 @@ if (isset($url)) {
      * and we need to show breadcrumb for the first menu found (processed by
      * main.get.php).
      */
-    $statement = $pearDB->prepare(
-        'SELECT topology_page FROM topology '
-        . 'WHERE topology_url = :url'
+    $statementSelect = $pearDB->prepare(
+        'SELECT topology_url FROM topology WHERE topology_page = :topology_page'
     );
-    $statement->bindValue(':url', $url, \PDO::PARAM_STR);
-    if ($statement->execute()) {
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
-        $p = $result['topology_page'];
+    $statementSelect->bindValue(':topology_page', $p, \PDO::PARAM_INT);
+    if ($statementSelect->execute()) {
+        $result = $statementSelect->fetch(\PDO::FETCH_ASSOC);
+        if ($result['topology_url'] != $url) {
+            $statement = $pearDB->prepare(
+                'SELECT topology_page FROM topology '
+                . 'WHERE topology_url = :url'
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            if ($statement->execute()) {
+                $result = $statement->fetch(\PDO::FETCH_ASSOC);
+                $p = $result['topology_page'];
+            }
+        }
     }
 }
 
