@@ -11,17 +11,17 @@ import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
 
-    // check in arguments if min=1
+  state = {
+    isFullscreenEnabled: false
+  }
+
+  // check in arguments if min=1
+  getMinArgument = () => {
     const { search } = history.location
     const parsedArguments = queryString.parse(search)
-    this.min = (parsedArguments.min === "1")
 
-    this.state = {
-      isFullscreenEnabled: false
-    };
+    return (parsedArguments.min === "1")
   }
 
   goFull = () => {
@@ -29,14 +29,16 @@ class App extends Component {
   }
 
   render() {
+    const min = this.getMinArgument()
+
     return (
       <ConnectedRouter history={history}>
         <div class="wrapper">
-          {!this.min && // do not display menu if min=1
+          {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
           <div id="content">
-            {!this.min && // do not display header if min=1
+            {!min && // do not display header if min=1
               <Header/>
             }
             <div id="fullscreen-wrapper">
@@ -59,7 +61,7 @@ class App extends Component {
                 </div>
               </Fullscreen>
             </div>
-            {!this.min && // do not display footer if min=1
+            {!min && // do not display footer if min=1
               <Footer/>
             }
           </div>
