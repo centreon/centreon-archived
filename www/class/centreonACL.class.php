@@ -427,9 +427,9 @@ class CentreonACL
 
                 if (count($topology)) {
                     $query3 = "SELECT topology_page, topology_id "
-                    . "FROM topology FORCE INDEX (`PRIMARY`) "
-                    . "WHERE topology_page IS NOT NULL "
-                    . "AND topology_id IN (" . implode(', ', $topology) . ") ";
+                        . "FROM topology FORCE INDEX (`PRIMARY`) "
+                        . "WHERE topology_page IS NOT NULL "
+                        . "AND topology_id IN (" . implode(', ', $topology) . ") ";
                     $DBRESULT3 = $centreonDb->query($query3);
                     while ($topo_page = $DBRESULT3->fetchRow()) {
                         $this->topology[$topo_page["topology_page"]] =
