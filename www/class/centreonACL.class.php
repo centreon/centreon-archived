@@ -413,13 +413,11 @@ class CentreonACL
                         } else {
                             if ($topo_page["access_right"] == self::ACL_ACCESS_READ_WRITE) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
-                            } else {
-                                if ($topo_page["access_right"] == self::ACL_ACCESS_READ_ONLY
-                                    && $tmp_topo_page[$topo_page["topology_topology_id"]] == self::ACL_ACCESS_NONE
-                                ) {
-                                    $tmp_topo_page[$topo_page["topology_topology_id"]] =
-                                        self::ACL_ACCESS_READ_ONLY;
-                                }
+                            } elseif ($topo_page["access_right"] == self::ACL_ACCESS_READ_ONLY
+                                && $tmp_topo_page[$topo_page["topology_topology_id"]] == self::ACL_ACCESS_NONE
+                            ) {
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] =
+                                    self::ACL_ACCESS_READ_ONLY;
                             }
                         }
                     }
