@@ -233,7 +233,7 @@ if (!$centreon->user->showDiv("menu_2")) {
     </script> <?php
 }
 ?>
-    <section class="main" style="padding-top: 4px;">
+    <section class="main section-expand" style="padding-top: 4px;">
 <?php
 /*
  * Display PathWay
