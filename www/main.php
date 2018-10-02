@@ -94,5 +94,4 @@ include_once("./include/core/header/header.php");
 
 require_once _CENTREON_PATH_ . "/bootstrap.php";
 
-    include('./index.html')
-?>
+include('./index.html');
