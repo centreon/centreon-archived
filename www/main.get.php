@@ -203,7 +203,7 @@ if ($acl_page == 1 || $acl_page == 2) {
 include_once "./include/core/header/htmlHeader.php";
 
 ?>
-<div id="centreonMsg"></div>
+<div id="centreonMsg" class="react-centreon-message"></div>
 
 <script type='text/javascript'>
     //saving the user locale
