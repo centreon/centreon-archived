@@ -26,7 +26,7 @@ class PollerFormStepTwo extends Component {
                     value: ""
                   }
                 ].concat(
-                  pollers.map(c => ({ value: c.id, label: c.ip, text:c.ip }))
+                  pollers.map(c => ({ value: c.id, label: c.name, text:c.name }))
                 )}
               />
             ) : null}
