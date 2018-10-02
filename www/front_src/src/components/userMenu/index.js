@@ -53,7 +53,7 @@ class UserMenu extends Component {
                 </span>
               </li>
               <React.Fragment>
-                <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
                 <textarea id="autologin-input" style={
                   {
                     width: 0,
