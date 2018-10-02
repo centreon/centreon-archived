@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import numeral from "numeral";
 import Clock from "../clock";
+import config from "../../config";
 
 class UserMenu extends Component {
   state = {
@@ -46,7 +47,7 @@ class UserMenu extends Component {
                 <span class="submenu-item-link">
                   <span class="submenu-user-name">{fullname}</span>
                   <span class="submenu-user-type">as {username}</span>
-                  <a class="submenu-user-edit" href="./main.php?p=50104&o=c">
+                  <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
                     Edit profile
                   </a>
                 </span>
@@ -64,7 +65,7 @@ class UserMenu extends Component {
               </React.Fragment>
             </ul>
             <div class="button-wrap">
-              <a href="index.php?disconnect=1">
+              <a href={config.urlBase + "index.php?disconnect=1"}>
                 <button class="btn btn-small logout">Log out</button>
               </a>
             </div>
