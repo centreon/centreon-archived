@@ -10,15 +10,15 @@ $isRemote = 0;
 $db = $dependencyInjector['configuration_db'];
 $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
-    (int)$sendStatistics = $row['value'];
+    $sendStatistics = (int)$row['value'];
 }
 
 $result = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
 if ($row = $result->fetch()) {
-    (int)$isRemote = $row['value'];
+    $isRemote = $row['value'];
 }
 
-if ($sendStatistics && !$isRemote) {
+if ($sendStatistics && $isRemote !== 'yes') {
     $http = new CentreonRestHttp();
     $oStatistics = new CentreonStatistics();
     $timestamp = time();
@@ -33,7 +33,7 @@ if ($sendStatistics && !$isRemote) {
 
     // Construct the object gathering datas
     $data = array(
-        'timestamp' => $timestamp,
+        'timestamp' => "$timestamp",
         'UUID' => $UUID,
         'versions' => $versions,
         'infos' => $infos,

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import numeral from "numeral";
 import { Link } from "react-router-dom";
+import config from "../../config";
 
 class ServiceStatusMenu extends Component {
 
@@ -69,22 +70,22 @@ class ServiceStatusMenu extends Component {
           </span>
           <span class="wrap-right-icon__name">Services</span>
         </span>
-        <Link to="./main.php?p=20201&o=svc_critical&search=" class={"wrap-middle-icon round round-small " + (critical.unhandled > 0 ? "red" : "red-bordered")} >
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (critical.unhandled > 0 ? "red" : "red-bordered")} >
           <a class="number">
             <span>{numeral(critical.unhandled).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20201&o=svc_warning&search=" class={"wrap-middle-icon round round-small " + (warning.unhandled > 0 ? "orange" : "orange-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (warning.unhandled > 0 ? "orange" : "orange-bordered")}>
           <a class="number">
             <span>{numeral(warning.unhandled).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20201&o=svc_unknown&search=" class={"wrap-middle-icon round round-small " + (unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
           <a class="number">
             <span>{numeral(unknown.unhandled).format("0a")}</span>
           </a>
         </Link>
-        <Link to="./main.php?p=20201&o=svc_ok&search=" class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
           <a class="number">
             <span>{numeral(ok).format("0a")}</span>
           </a>

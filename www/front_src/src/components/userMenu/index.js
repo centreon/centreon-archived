@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import numeral from "numeral";
 import Clock from "../clock";
+import config from "../../config";
 
 class UserMenu extends Component {
   state = {
@@ -89,6 +90,7 @@ class UserMenu extends Component {
                   <button class="btn btn-small logout">Log out</button>
                 </a>
               </div>
+
             </div>
           </div>
         </div>

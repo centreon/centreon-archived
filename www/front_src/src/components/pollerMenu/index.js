@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
+import config from "../../config";
 
 const getIssueClass = (issues, key) => {
   return (issues && issues.length != 0) ?
