@@ -1258,6 +1258,9 @@ a.infobulle:hover   {z-index:25;}
     text-align:center;
     border-radius:4px;
 }
+#centreonMsg.react-centreon-message    {
+    top:10px;
+}
 
 
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.update_output,div.graph_footer,div.left_menu {margin:3px;padding:3px;}
