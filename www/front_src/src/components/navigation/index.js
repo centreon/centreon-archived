@@ -8,6 +8,7 @@ import axios from "../../axios";
 
 import routeMap from "../../route-maps/index";
 class NavigationComponent extends Component {
+
   navService = axios("internal.php?object=centreon_menu&action=menu");
 
   state = {
@@ -41,6 +42,26 @@ class NavigationComponent extends Component {
       active: true,
       menuItems
     });
+  };
+
+  handleDoubleClickItem = index => {
+    switch (index) {
+      case 1:
+        this.goToPage('main.php?p=20201', 1);
+        break;
+      case 2:
+        this.goToPage('main.php?p=30701', 2);
+        break;
+      case 3:
+        this.goToPage('main.php?p=60101', 3);
+        break;
+      case 4:
+        this.goToPage('main.php?p=50110&o=general', 4);
+        break;
+      default:
+        this.goToPage('main.php?p=103', 0);
+        break;
+    };
   };
 
   UNSAFE_componentWillMount = () => {
@@ -141,9 +162,11 @@ class NavigationComponent extends Component {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
+                    onDoubleClick={this.handleDoubleClickItem.bind(this,index)}
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
+                    id={"menu"+ index}
                   >
                     <span class={`iconmoon icon-${item.label.toLowerCase()}`}>
                       <span class={"menu-item-name"}>{item.label}</span>
