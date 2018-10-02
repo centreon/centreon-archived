@@ -51,6 +51,11 @@ if (isset($url)) {
     if ($statementSelect->execute()) {
         $result = $statementSelect->fetch(\PDO::FETCH_ASSOC);
         if ($result['topology_url'] != $url) {
+            /**
+             * If urls are not equal we can retrieve the topology page number
+             * associated to this url because there is multiple topology page
+             * number with the same URL.
+             */
             $statement = $pearDB->prepare(
                 'SELECT topology_page FROM topology '
                 . 'WHERE topology_url = :url'
