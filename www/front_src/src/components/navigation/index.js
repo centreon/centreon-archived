@@ -10,12 +10,13 @@ import routeMap from "../../route-maps/index";
 class NavigationComponent extends Component {
 
   navService = axios("internal.php?object=centreon_menu&action=menu");
-    state = {
-      active: false,
-      initiallyCollapsed: false,
-      selectedMenu: {},
-      menuItems: []
-    };
+
+  state = {
+    active: false,
+    initiallyCollapsed: false,
+    selectedMenu: {},
+    menuItems: []
+  };
 
   switchTopLevelMenu = selectedMenu => {
     this.setState({
@@ -45,26 +46,23 @@ class NavigationComponent extends Component {
 
   handleDoubleClickItem = index => {
     switch (index) {
-      case 0:
-        window.location.href='main.php?p=103';
-        break;
       case 1:
-        window.location.href='main.php?p=20201';
+        this.goToPage('main.php?p=20201', 1);
         break;
       case 2:
-        window.location.href='main.php?p=30701';
+        this.goToPage('main.php?p=30701', 2);
         break;
       case 3:
-        window.location.href='main.php?p=60101';
+        this.goToPage('main.php?p=60101', 3);
         break;
       case 4:
-        window.location.href='main.php?p=50110&o=general';
+        this.goToPage('main.php?p=50110&o=general', 4);
         break;
       default:
-        window.location.href='/';
+        this.goToPage('main.php?p=103', 0);
+        break;
     };
   };
-
 
   UNSAFE_componentWillMount = () => {
     this.navService.get().then(({ data }) => {
@@ -160,11 +158,11 @@ class NavigationComponent extends Component {
             </a>
           </div>
           <ul class="menu menu-items list-unstyled components">
-            {menuItems.map((item, index) => {
+            {menuItems.map((item, index, menuKey) => {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
                   <a
-                    onDoubleClick={this.handleDoubleClickItem.bind(this, index)}
+                    onDoubleClick={this.handleDoubleClickItem.bind(this,index)}
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
