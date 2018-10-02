@@ -20,6 +20,10 @@ class HostMenu extends Component {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+  };
+
   handleClick = (e) => {
     if (this.host.contains(e.target)) {
       return;
