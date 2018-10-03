@@ -11,6 +11,11 @@ Sélectionner **Mise à jour RPM** si vous avez installé Centreon à partir de 
 ou des RPMS, sinon sélectionner **A partir des sources**. Avant de mettre à jour
 réaliser une sauvegarde.
 
+.. warning::
+    En cas de migration d'une plate-forme disposant du module **Centreon Poller
+    Display 1.6.x**, référez-vous à la :ref:`procédure de migration suivante
+    <frompollerdisplay16>`.
+
 .. toctree::
     :maxdepth: 2
 

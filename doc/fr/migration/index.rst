@@ -11,5 +11,6 @@ Ce chapitre présente les procédure de migration d'une plate-forme de supervisi
    :maxdepth: 1
 
    upgradetoCentreon18.10
+   pollerdisplaytoremoteserver
    nagiostocentreon
 
