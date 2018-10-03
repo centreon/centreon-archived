@@ -163,8 +163,9 @@ class CentreonContactgroup
         /*
          * Check if contactgroup is not in databas
          */
-        $queryCheck = "SELECT cg_id FROM contactgroup
-            WHERE cg_name = '" . $this->db->escape($cg_name) . "'";
+        $queryCheck = "SELECT cg_id FROM contactgroup " .
+            "WHERE cg_name = '" . $this->db->escape($cg_name) . "' " .
+            "AND ar_id = " . $this->db->escape($cg_id);
         $res = $this->db->query($queryCheck);
         if ($res->rowCount() == 1) {
             $row = $res->fetch();

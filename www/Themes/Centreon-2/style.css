@@ -117,7 +117,7 @@ label {
     vertical-align: middle;
 }
 .main {
-    padding: 36px 15px;
+    padding: 0px 15px;
 }
 .pathway {
     padding: 10px 0;
@@ -1257,6 +1257,9 @@ a.infobulle:hover   {z-index:25;}
     width:310px;
     text-align:center;
     border-radius:4px;
+}
+#centreonMsg.react-centreon-message    {
+    top:10px;
 }
 
 
@@ -2603,4 +2606,9 @@ ul.module_list {
 
 .ui-progressbar-value {
   background-color: #88b917 !important
+}
+
+.section-expand {
+  height: 100%;
+  margin-bottom: 40px;
 }

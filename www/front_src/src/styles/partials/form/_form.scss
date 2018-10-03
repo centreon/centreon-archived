@@ -25,7 +25,7 @@
     }
     .css-1aya2g8,
     .css-2o5izw {
-      height: 25px;
+      height: auto;
       min-height: 0;
       border-radius: 2px;
       border: 1px solid #cdcdcd;
@@ -90,6 +90,7 @@
   }
   &-buttons {
     text-align: right;
+    margin-top: 15px;
     .button {
       border-radius: 4px;
       border: none;

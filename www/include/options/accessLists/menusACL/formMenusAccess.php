@@ -37,6 +37,28 @@ if (!isset($centreon)) {
     exit();
 }
 
+if ($o == ACL_ADD || $o == ACL_MODIFY) {
+    /**
+     * Filtering the topology relation to remove all relations with access right
+     * that are not equal to 1 (CentreonACL::ACL_ACCESS_READ_WRITE)
+     * or 2 (CentreonACL::ACL_ACCESS_READ_ONLY)
+     */
+    if (isset($_POST['acl_r_topos']) && is_array($_POST['acl_r_topos'])) {
+        foreach ($_POST['acl_r_topos'] as $topologyId => $accessRight) {
+            $topologyId = (int) $topologyId;
+            $accessRight = (int) $accessRight;
+            // Only 1 or 2 are allowed
+            $hasAccessNotAllowed =
+                $accessRight != CentreonACL::ACL_ACCESS_READ_WRITE
+                && $accessRight != CentreonACL::ACL_ACCESS_READ_ONLY;
+
+            if ($hasAccessNotAllowed) {
+                unset($_POST['acl_r_topos'][$topologyId]);
+            }
+        }
+    }
+}
+
 /*
  * Database retrieve information for LCA
  */

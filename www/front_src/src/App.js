@@ -7,35 +7,47 @@ import routes from "./route-maps/classicRoutes.js";
 import ClassicRoute from "./components/router/classicRoute";
 import NavigationComponent from "./components/navigation";
 import Footer from "./components/footer";
-import Fullscreen from 'react-full-screen';
+import Fullscreen from 'react-fullscreen-crossbrowser';
+import queryString from 'query-string';
 
 class App extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFull: false
-    };
+  state = {
+    isFullscreenEnabled: false
+  }
+
+  // check in arguments if min=1
+  getMinArgument = () => {
+    const { search } = history.location
+    const parsedArguments = queryString.parse(search)
+
+    return (parsedArguments.min === "1")
   }
 
   goFull = () => {
-    this.setState({isFull: true});
+    this.setState({ isFullscreenEnabled: true });
   }
 
   render() {
+    const min = this.getMinArgument()
+
     return (
       <ConnectedRouter history={history}>
         <div class="wrapper">
-          <NavigationComponent/>
+          {!min && // do not display menu if min=1
+            <NavigationComponent/>
+          }
           <div id="content">
-            <Header/>
+            {!min && // do not display header if min=1
+              <Header/>
+            }
             <div id="fullscreen-wrapper">
               <Fullscreen
-                enabled={this.state.isFull}
-                onChange={isFull => this.setState({isFull})}>
+                enabled={this.state.isFullscreenEnabled}
+                onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}>
                 <div className="full-screenable-node">
-                  <div class="main-content">
-                    <Switch onChange={this.handle}>
+                  <div className="main-content">
+                    <Switch>
                       {routes.map(({ path, comp, ...rest }) => (
                         <ClassicRoute
                           history={history}
@@ -49,7 +61,9 @@ class App extends Component {
                 </div>
               </Fullscreen>
             </div>
-            <Footer/>
+            {!min && // do not display footer if min=1
+              <Footer/>
+            }
           </div>
           <span className="full-screen" onClick={this.goFull}></span>
         </div>

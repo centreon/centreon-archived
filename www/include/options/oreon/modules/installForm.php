@@ -61,35 +61,27 @@ if (isset($_GET['action']) && $_GET['action'] == 'install_upgrade_all') {
     $upgradableModules = $moduleInfoObj->getUpgradeableList();
     $installed = [];
     $upgraded = [];
-    $output = '';
 
     foreach ($installableModules as $installableModule) {
         $moduleInstaller = $moduleFactory->newInstaller($installableModule['name']);
 
         if ( !$moduleInstaller->install() ) {
-            $output .= 'Unable to install module: ' . $installableModule['rname'] . '<br>';
             break;
         }
-
-        $output .= 'Successfully installed module: ' . $installableModule['rname'] . '<br>';
     }
 
     foreach ($upgradableModules as $upgradableModule) {
         $moduleUpgrader = $moduleFactory->newUpgrader($upgradableModule['name'], $upgradableModule['id']);
 
         if ( !$moduleUpgrader->upgrade() ) {
-            $output .= 'Unable to upgrade module: ' . $upgradableModule['rname'] . '<br>';
             break;
         }
-
-        $output .= 'Successfully upgraded module: ' . $upgradableModule['rname'] . '<br>';
     }
 
     $centreon->creatModuleList($pearDB);
     $centreon->user->access->updateTopologyStr();
     $centreon->initHooks();
 
-    $tpl->assign('output', $output);
     $tpl->assign('p', $p);
     $tpl->display('modulesAction.tpl');
     die;
@@ -113,23 +105,43 @@ if (file_exists($moduleInfoObj->getModulePath() . '/infos/infos.txt')) {
 $form1 = new HTML_QuickFormCustom('Form', 'post', "?p={$p}");
 
 if ($form1->validate()) {
+    $tpl->assign('p', $p);
+    $tpl->assign('o', $o);
+    $tpl->assign('name', $name);
+
     $moduleInstaller = $moduleFactory->newInstaller($name);
     $insert_ok = $moduleInstaller->install();
 
     if ($insert_ok) {
-        $tpl->assign('output', _('Module installed and registered'));
+        $tpl->assign('msg', 1);
 
         /* Rebuild modules in centreon object */
         $centreon->creatModuleList($pearDB);
         $centreon->user->access->updateTopologyStr();
         $centreon->initHooks();
     } else {
-        $tpl->assign('output', _('Unable to install module'));
+        $tpl->assign('msg', 2);
     }
+
+    $tpl->display('reload.ihtml');
+    return;
 } elseif ($o == 'i' && !$moduleInfoObj->getInstalledInformation($name)) {
     $form1->addElement('submit', 'install', _('Install Module'), array('class' => 'btc bt_success'));
     $redirect = $form1->addElement('hidden', 'o');
     $redirect->setValue('i');
+}
+
+if (array_key_exists('msg', $_GET) && $_GET['msg']) {
+    $msg = $_GET['msg'];
+
+    switch ($msg) {
+        case 1:
+            $tpl->assign('output', _('Module installed and registered'));
+            break;
+        case 2:
+            $tpl->assign('output', _('Unable to install module'));
+            break;
+    }
 }
 
 $form1->addElement('submit', 'list', _('Back'), array('class' => 'btc bt_default'));

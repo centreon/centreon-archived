@@ -284,17 +284,10 @@ Configuration de base
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
-1. Connectez-vous avec l'utilisateur 'root' sur votre serveur
-2. Installez le paquet de traduction en langue française avec la commande suivante
-
-::
-
-  # yum -y install centreon-lang-fr_FR
-
-3. Rendez-vous dans le menu **Administration** ==> **Options**
-4. Dans le menu de gauche cliquez sur **My Account**
-5. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
-6. Cliquez sur **Save**
+#. Clicuez sur votre profil utilisateur en haut à droite de l'interface
+#. Click sur le bouton **edit profil**
+#. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
+#. Cliquez sur **Save**
 
 .. image :: /images/guide_utilisateur/alanguage.png
    :align: center
