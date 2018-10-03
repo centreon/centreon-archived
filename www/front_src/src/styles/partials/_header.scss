@@ -428,7 +428,11 @@
   color: $white-color;
   font-family: $primary-font-light;
   margin-top: 10px;
+  padding-right: 25px !important;
+  position: relative;
   .submenu-top-count {
-    float: right;
+    position: absolute;
+    right: 10px;
+    top: 0;
   }
 }

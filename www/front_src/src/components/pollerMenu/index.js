@@ -23,10 +23,10 @@ const getPollerStatusIcon = issues => {
   let result = (
     <React.Fragment>
       <span class={`wrap-left-icon round ${databaseClass}`}>
-        <span class="iconmoon icon-database" />
+        <span class="iconmoon icon-database" title={databaseClass == 'green' ? 'OK: all database poller updates are active' : 'Some database poller updates are not active; check your configuration' } />
       </span>
       <span class={`wrap-left-icon round ${latencyClass}`}>
-        <span class="iconmoon icon-clock" />
+        <span class="iconmoon icon-clock" title={latencyClass == 'green' ? 'OK: no latency detected on your platform' : 'Latency detected, check configuration for better optimisation' } />
       </span>
     </React.Fragment>
   );
