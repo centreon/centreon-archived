@@ -19,3 +19,8 @@ www/include/core/menu/templates/*.tpl
 /www/install
 /www/_install
 /filesGeneration/export
+/www/asset-manifest.json
+/www/front_src/src/App.css
+/www/index.html
+/www/service-worker.js
+~                        
