@@ -181,11 +181,11 @@ foreach ($jsdata as $k => $val) {
  * set quick search position
  */
 function setQuickSearchPosition() {
-    if (jQuery('QuickSearch')) {
-        if (jQuery('header').is(':visible')) {
-            jQuery('QuickSearch').css({ top: '86px' });
+    if ($('QuickSearch')) {
+        if ($('header').is(':visible')) {
+            $('QuickSearch').css({ top: '86px' });
         } else {
-            jQuery('QuickSearch').css({ top: '3px' });
+            $('QuickSearch').css({ top: '3px' });
         }
     }
     jQuery(".timepicker").timepicker();
@@ -260,7 +260,11 @@ function validateFeature(name, version, enabled) {
         e.preventDefault();
         var href = jQuery(this).attr('href');
         var newhref = href.replace('main.php','main.get.php');
-        window.location.href = newhref;
+        if (jQuery(this).attr('target') == '_blank'){
+          window.open(newhref);
+        } else {
+          window.location.href = newhref;
+        }
       }
     );
     </script>
