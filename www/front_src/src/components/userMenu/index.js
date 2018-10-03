@@ -23,7 +23,27 @@ class UserMenu extends Component {
     let autoLoginInput = document.getElementById("autologin-input");
     autoLoginInput.select();
     document.execCommand('copy');
-    this.setState({ copied: true });
+    this.setState({ 
+      copied: true,
+      toggled: false
+    });
+  };
+
+  componentWillMount() {
+    window.addEventListener('mousedown', this.handleClick, false);
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+  };
+
+  handleClick = (e) => {
+    if (this.profile.contains(e.target)) {
+      return;
+    }
+    this.setState({
+      toggled: false
+    });
   };
 
   render() {
@@ -39,35 +59,37 @@ class UserMenu extends Component {
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
         <Clock clockData={clockData} />
-        <span class="iconmoon icon-user" onClick={this.toggle.bind(this)} />
-        <div class={"submenu profile"}>
-          <div class="submenu-inner">
-            <ul class="submenu-items list-unstyled">
-              <li class="submenu-item">
-                <span class="submenu-item-link">
-                  <span class="submenu-user-name">{fullname}</span>
-                  <span class="submenu-user-type">as {username}</span>
-                  <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
-                    Edit profile
-                  </a>
-                </span>
-              </li>
-              <React.Fragment>
-                <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
-                <textarea id="autologin-input" style={
-                  {
-                    width: 0,
-                    height: 0,
-                    position: 'fixed',
-                    top: -100
-                  }
-                }>{value}</textarea>
-              </React.Fragment>
-            </ul>
-            <div class="button-wrap">
-              <a href={config.urlBase + "index.php?disconnect=1"}>
-                <button class="btn btn-small logout">Log out</button>
-              </a>
+        <div ref={profile => this.profile = profile}>
+          <span class="iconmoon icon-user" onClick={this.toggle.bind(this)} />
+          <div class={"submenu profile"}>
+            <div class="submenu-inner">
+              <ul class="submenu-items list-unstyled">
+                <li class="submenu-item">
+                  <span class="submenu-item-link">
+                    <span class="submenu-user-name">{fullname}</span>
+                    <span class="submenu-user-type">as {username}</span>
+                    <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
+                      Edit profile
+                    </a>
+                  </span>
+                </li>
+                <React.Fragment>
+                  <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                  <textarea id="autologin-input" style={
+                    {
+                      width: 0,
+                      height: 0,
+                      position: 'fixed',
+                      top: -100
+                    }
+                  }>{value}</textarea>
+                </React.Fragment>
+              </ul>
+              <div class="button-wrap">
+                <a href={config.urlBase + "index.php?disconnect=1"}>
+                  <button class="btn btn-small logout">Log out</button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
