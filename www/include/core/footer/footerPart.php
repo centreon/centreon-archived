@@ -262,7 +262,8 @@ function validateFeature(name, version, enabled) {
         var href = jQuery(this).attr('href');
 
         // Manage centreon links
-        if (href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
+        // # allows to manage backboneJS links
+        if (href.match(/^\#/) || href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
 
           // If we open link a new tab, we want to keep the header
           if (jQuery(this).attr('target') === '_blank') {
