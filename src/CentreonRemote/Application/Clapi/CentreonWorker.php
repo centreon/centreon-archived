@@ -6,6 +6,7 @@ use Centreon\Domain\Repository\InformationsRepository;
 use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Domain\Repository\OptionsRepository;
+use Curl\Curl;
 use Pimple\Container;
 use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use ReflectionClass;
@@ -56,6 +57,23 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 //todo error handling
                 }
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+
+                /**
+                 * create import task on remote
+                 */
+                $centreonPath = $params['centreon_folder'];
+                $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?object=centreon_task_service&action=addImportTaskWithParent";
+
+                try {
+                    $curl = new Curl;
+                    $curl->post($url, ['parent_id' => $task->getId()]);
+
+                    if ($curl->error) {
+                        echo 'Curl error while creating parent task';
+                    }
+                } catch (\ErrorException $e) {
+                    echo 'Curl error while creating parent task';
+                }
             }
         }
 
