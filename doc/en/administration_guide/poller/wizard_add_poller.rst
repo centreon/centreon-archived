@@ -61,6 +61,8 @@ The Poller is now configured:
 Go to the :ref:`Simplified configuration of Centreon with IMP<impconfiguration>`
 chapter to configure your first monitoring.
 
+.. _confremoteserver:
+
 -------------------------
 Configure a Remote Server
 -------------------------
