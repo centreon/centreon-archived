@@ -2,13 +2,17 @@ import React, { Component } from "react";
 import Clock from "../clock";
 import config from "../../config";
 
+import axios from "../../axios";
+import {generatePassword} from "../../helpers/autoLoginTokenGenerator";
 class UserMenu extends Component {
   state = {
     toggled: false,
-    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
-    copied: false
+    buildedLink: '',
+    copied: false,
+    initialized: false  
   };
 
+  autoLoginApi = axios("internal.php?object=centreon_topcounter&action=autoLoginToken");
 
   toggle = () => {
     const { toggled } = this.state;
@@ -17,6 +21,26 @@ class UserMenu extends Component {
     });
   };
 
+  componentWillReceiveProps = (nextProps) => {
+    const { data } = nextProps;
+    const { initialized } = this.state;
+    const { userId, username, autologinkey } = data;
+    if (userId && !initialized) {
+      let token = autologinkey ? autologinkey : generatePassword('aKey');
+     
+      if (!autologinkey || autologinkey != token) {
+        this.autoLoginApi.put("", {
+          userId,
+          token
+        }).then(() => { })
+      }
+
+      this.setState({
+        buildedLink: window.location.protocol + '//' + window.location.hostname + "/_CENTREON_PATH_PLACEHOLDER_/index.php" + '?autologin=1' + '&useralias=' + username + '&token=' + token,
+        initialized: true
+      })
+    }
+  }
 
   onCopy = () => {
     let autoLoginInput = document.getElementById("autologin-input");
@@ -52,8 +76,8 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled, copied, value } = this.state,
-      { fullname, username } = data;
+    const { toggled, copied, buildedLink } = this.state,
+      { fullname, username, autologinkey } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -73,7 +97,7 @@ class UserMenu extends Component {
                   </span>
                 </li>
                 <React.Fragment>
-                  <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                  <button className={`submenu-user-button ${(autologinkey ? 'shown' : 'hidden')}`}  onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
                   <textarea id="autologin-input" style={
                     {
                       width: 0,
@@ -81,7 +105,8 @@ class UserMenu extends Component {
                       position: 'fixed',
                       top: -100
                     }
-                  }>{value}</textarea>
+                  }
+                    value={buildedLink}></textarea>
                 </React.Fragment>
               </ul>
               <div class="button-wrap">
