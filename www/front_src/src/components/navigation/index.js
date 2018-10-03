@@ -222,7 +222,7 @@ class NavigationComponent extends Component {
                                                       : "")
                                                   }
                                                 >
-                                                  <a
+                                                  <Link
                                                     onClick={this.goToPage.bind(
                                                       this,
                                                       routeMap.module +
@@ -232,13 +232,10 @@ class NavigationComponent extends Component {
                                                       index
                                                     )}
                                                     className="collapsed-level-item-link"
+                                                    to={routeMap.module + "?p=" + subKey.slice(1) + urlOptions}
                                                   >
-                                                    {
-                                                      subItem.children[key][
-                                                        subKey
-                                                      ].label
-                                                    }
-                                                  </a>
+                                                    {subItem.children[key][subKey].label}
+                                                  </Link>
                                                 </li>
                                               );
                                             }
