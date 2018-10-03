@@ -7,7 +7,8 @@
     "build:clean": "rm -rf www/static && rm -rf www/template",
     "build:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src",
     "build:app": "cd ./www/front_src && PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
-    "build:post": "mv ./www/static ./www/template"
+    "build:post": "mv ./www/static ./www/template",
+    "watch:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src && npm run build:sass && npm run build:sass -- -w"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -36,7 +37,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.8",
-    "react-scripts": "2.0.0-next.a671462c",
+    "react-scripts": "^2.0.3",
     "react-select": "^2.0.0",
     "redux": "^4.0.0",
     "redux-form": "^7.4.2",
