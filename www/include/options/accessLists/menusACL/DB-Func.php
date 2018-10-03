@@ -440,7 +440,7 @@ function insertLCA()
     );
     $prepare->bindValue(
         ':acl_name',
-        $submitedValues['acl_topo_alias'],
+        $submitedValues['acl_topo_name'],
         \PDO::PARAM_STR
     );
     $prepare->bindValue(

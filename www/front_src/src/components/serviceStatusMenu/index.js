@@ -18,6 +18,23 @@ class ServiceStatusMenu extends Component {
 
   };
 
+  componentWillMount() {
+    window.addEventListener('mousedown', this.handleClick, false);
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+  };
+
+  handleClick = (e) => {
+    if (this.service.contains(e.target)) {
+      return;
+    }
+    this.setState({
+      toggled: false
+    });
+  };
+
   render() {
     let data = this.props.data;
     
@@ -73,71 +90,85 @@ class ServiceStatusMenu extends Component {
             <span>{numeral(ok).format("0a")}</span>
           </a>
         </Link>
-        <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
-        <div class="submenu services">
-          <div class="submenu-inner">
-            <ul class="submenu-items list-unstyled">
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc&search="}
-                  class="submenu-item-link"
-                >
-                  <span>All services:</span>
-                  <span class="submenu-count">{total}</span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc_critical&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored red">Critical services:</span>
-                  <span class="submenu-count">
-                    {critical.unhandled}/{critical.total}
-                  </span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc_warning&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored orange">Warning services:</span>
-                  <span class="submenu-count">
-                    {warning.unhandled}/{warning.total}
-                  </span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored gray-light">Unknown services:</span>
-                  <span class="submenu-count">
-                    {unknown.unhandled}/{unknown.total}
-                  </span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc_ok&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored green">Ok services:</span>
-                  <span class="submenu-count">{ok}</span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20201&o=svc_pending&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored blue">Pending services:</span>
-                  <span class="submenu-count">{pending}</span>
-                </Link>
-              </li>
-            </ul>
+        <div ref={service => this.service = service}>
+          <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
+          <div class="submenu services">
+            <div class="submenu-inner">
+              <ul class="submenu-items list-unstyled">
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span>All services:</span>
+                      <span class="submenu-count">{total}</span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc_critical&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored red">Critical services:</span>
+                      <span class="submenu-count">
+                      {critical.unhandled}/{critical.total}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc_warning&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored orange">Warning services:</span>
+                      <span class="submenu-count">
+                        {warning.unhandled}/{warning.total}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored gray-light">Unknown services:</span>
+                      <span class="submenu-count">
+                        {unknown.unhandled}/{unknown.total}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc_ok&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored green">Ok services:</span>
+                      <span class="submenu-count">{ok}</span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={config.urlBase + "main.php?p=20201&o=svc_pending&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored blue">Pending services:</span>
+                      <span class="submenu-count">{pending}</span>
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
