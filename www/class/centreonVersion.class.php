@@ -77,7 +77,7 @@ class CentreonVersion
         // Get version of the centreon-broker
         $cmd = shell_exec("cbd -v");
 
-        if (preg_match('/^.*(\d+\.\d+\.\d+)$/', $cmd, $matches)) {
+        if (preg_match('/^.*(.\d+\.\d+\.\d+)$/', $cmd, $matches)) {
             $data['centreon-broker'] = $matches[1];
         }
 

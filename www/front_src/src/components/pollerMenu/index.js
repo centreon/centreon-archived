@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
+import config from "../../config";
 
 const getIssueClass = (issues, key) => {
   return (issues && issues.length != 0) ?
@@ -116,7 +117,7 @@ class PollerMenu extends Component {
                   );
                 })
                 : null}
-              <a href={"./main.php?p=609"}>
+              <a href={config.urlBase + "main.php?p=609"}>
                 <button class="btn btn-big btn-green submenu-top-button">
                   Configure pollers
                 </button>

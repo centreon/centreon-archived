@@ -56,8 +56,13 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsInstalled()
     {
+
+        //wait the iframe
+        sleep(2);
+
         $this->spin(
             function ($context) {
+                $context->getSession()->getDriver()->switchToIFrame("main-content");
                 $widget = $context->page->getEntry($context->widgetName);
                 return !$widget['actions']['install'];
             },
@@ -70,8 +75,12 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
+        //wait the iframe
+        sleep(2);
+
         $this->spin(
             function ($context) {
+                $context->getSession()->getDriver()->switchToIFrame("main-content");
                 $widget = $context->page->getEntry($context->widgetName);
                 return !$widget['actions']['remove'];
             },
