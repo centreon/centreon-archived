@@ -61,7 +61,7 @@ if (isset($url)) {
                 . 'WHERE topology_url = :url'
             );
             $statement->bindValue(':url', $url, \PDO::PARAM_STR);
-            if ($statement->execute() 
+            if ($statement->execute()
                 && $result = $statement->fetch(\PDO::FETCH_ASSOC)
             ) {
                 $p = $result['topology_page'];
@@ -95,7 +95,7 @@ $pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
 
 $breadcrumbData = [];
 
-if($pdoStatement->execute()) {
+if ($pdoStatement->execute()) {
     while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
         $isNameAlreadyInserted = array_search(
             $result['topology_name'],
