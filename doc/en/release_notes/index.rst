@@ -9,7 +9,7 @@ Please find here the releases notes of the last major versions :
 .. toctree::
     :maxdepth: 1
 
-    centreon-18.10.0.rst
+    centreon-18.10/index.rst
     centreon-2.8/index.rst
     centreon-2.7/index.rst
     centreon-2.6/index.rst
