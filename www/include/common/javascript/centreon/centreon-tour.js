@@ -48,6 +48,9 @@
           }
           $elem.removeClass(self.settings.highlightCls); 
         }
+      },
+      leg: {
+        top: '50%'
       }
     });
   }
