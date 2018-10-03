@@ -253,6 +253,16 @@ function validateFeature(name, version, enabled) {
         <?php
         }
         ?>
+    jQuery('body').delegate(
+      'a',
+      'click',
+      function(e) {
+        e.preventDefault();
+        var href = jQuery(this).attr('href');
+        var newhref = href.replace('main.php','main.get.php');
+        window.location.href = newhref;
+      }
+    );
     </script>
     </body>
     </html>
