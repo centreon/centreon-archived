@@ -153,10 +153,8 @@ class TaskService
         {
             return false;
         }
-        $task->setStatus($status);
 
-        $result = $this->getDbman()->getAdapter('configuration_db')->update('task', $task->toArray(), $taskId);
-
+        $result = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
         return $result;
     }
 }

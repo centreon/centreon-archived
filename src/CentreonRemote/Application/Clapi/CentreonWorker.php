@@ -6,6 +6,7 @@ use Centreon\Domain\Repository\InformationsRepository;
 use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Domain\Repository\OptionsRepository;
+use Curl\Curl;
 use Pimple\Container;
 use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use ReflectionClass;
@@ -43,7 +44,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
         echo "Checking for pending export tasks: \n";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
-
         if (count($tasks) == 0)
         {
             echo "None found\n";
@@ -52,11 +52,28 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $params = unserialize($task->getParams());
                 $commitment = new CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
                 try {
-                    $this->getDi()['centreon_remote.export']->export($commitment);
+                   $this->getDi()['centreon_remote.export']->export($commitment);
                 } catch (\Exception $e) {
                 //todo error handling
                 }
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+
+                /**
+                 * create import task on remote
+                 */
+                $centreonPath = trim($params['centreon_folder'], '/');
+                $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?object=centreon_task_service&action=addImportTaskWithParent";
+
+                try {
+                    $curl = new Curl;
+                    $curl->post($url, ['parent_id' => $task->getId()]);
+
+                    if ($curl->error) {
+                        echo 'Curl error while creating parent task';
+                    }
+                } catch (\ErrorException $e) {
+                    echo 'Curl error while creating parent task';
+                }
             }
         }
 

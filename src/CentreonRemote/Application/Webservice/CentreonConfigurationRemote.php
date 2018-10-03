@@ -91,7 +91,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetRemotesList(): array
     {
-        $statement = $this->pearDB->query('SELECT ip FROM `remote_servers` WHERE `is_connected` = 1');
+        $query = 'SELECT ns.id, ns.ns_ip_address as ip, ns.name FROM nagios_server as ns ' .
+            'JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address ' .
+            'WHERE rs.is_connected = 1';
+        $statement = $this->pearDB->query($query);
 
         return $statement->fetchAll();
     }
@@ -174,6 +177,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="centreon_folder",
+     *       type="string",
+     *       description="path to the centreon web folder on the remote machine",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -202,7 +212,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     {
         $_POST = json_decode(file_get_contents('php://input'), true);
         $openBrokerFlow = isset($_POST['open_broker_flow']);
-        $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $serverHasBamInstalled = false;
@@ -225,11 +234,12 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
+        $serverConfigurationService->setOpenBrokerFlow($openBrokerFlow);
 
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
-            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP);
+            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP, $_POST['centreon_folder']);
         }
 
         // Add configuration of the new server in the database
@@ -251,6 +261,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
             $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+            $pollerConfigurationService->setOpenBrokerFlow($openBrokerFlow);
             $pollerConfigurationService->setPollersConfigurationWithServer($pollerServers, $remoteServer);
 
             /**
@@ -261,20 +272,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 $params['pollers'][] = $poller->getId();
             }
             $params['server'] = $remoteServer->getId();
+            $params['remote_ip'] = $remoteServer->getIp();
+            $params['centreon_path'] = $_POST['centreon_folder'] ?? 'centreon';
             $taskId = $this->createExportTask($params);
         }
-
-        //todo: what do I do with these
-        // - $openBrokerFlow?
-        // - $manageBrokerConfiguration?
-        // - set informations table key isRemote to yes with the export data
 
         if ($isRemoteConnection) {
             $this->addServerToListOfRemotes($serverIP);
             $this->setCentreonInstanceAsCentral();
         }
-
-        //todo: update return based on success/fail
 
         return ['success' => true, 'task_id' => $taskId];
     }

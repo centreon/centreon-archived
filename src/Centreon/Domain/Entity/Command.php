@@ -4,7 +4,7 @@ namespace Centreon\Domain\Entity;
 
 class Command
 {
-    CONST COMMAND_START_IMPEX_WORKER = 'START_IMPEX_WORKER';
+    CONST COMMAND_START_IMPEX_WORKER = 'STARTWORKER:1';
 
     /**
      * @var string

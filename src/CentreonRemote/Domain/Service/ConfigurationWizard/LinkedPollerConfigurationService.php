@@ -25,12 +25,19 @@ class LinkedPollerConfigurationService
     /** @var PollerInteractionService */
     private $pollerInteraction;
 
+    protected $isOpenBrokerFlow = false;
+
 
     public function __construct(Container $di)
     {
         $this->di = $di;
         $this->db = $di['centreon.db-manager']->getAdapter('configuration_db')->getCentreonDBInstance();
         $this->pollerInteraction = new PollerInteractionService($di);
+    }
+
+    public function setOpenBrokerFlow($openBrokerFlow)
+    {
+        $this->isOpenBrokerFlow = $openBrokerFlow;
     }
 
     /**
@@ -49,7 +56,11 @@ class LinkedPollerConfigurationService
         foreach ($pollers as $poller) {
             $pollerID = $poller->getId();
 
-            $this->setBrokerOutputOfPoller($pollerID, $remote);
+            // If we do not have an open broker flow we need to set the host output of the poller
+            if (!$this->isOpenBrokerFlow) {
+                $this->setBrokerOutputOfPoller($pollerID, $remote);
+            }
+
             $this->setPollerRelationToRemote($pollerID, $remote);
         }
 

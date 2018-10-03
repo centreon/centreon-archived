@@ -115,6 +115,8 @@
             var tabElem = document.getElementById('exceptionTable');
             var trElem = document.createElement('tr');
             var tbodyElem = document.createElement('tbody');
+            var _o = '<?php echo $o; ?>';
+
 
             trElem.id = "trElem_" + globalj;
             if (trExceptionClassFlag) {
@@ -165,9 +167,11 @@
             tdElem3.appendChild(imgElem);
             trElem.appendChild(tdElem1);
             trElem.appendChild(tdElem2);
+
             if (_o != "w") {
                 trElem.appendChild(tdElem3);
             }
+
             globalj++;
             tbodyElem.appendChild(trElem);
             tabElem.appendChild(tbodyElem);

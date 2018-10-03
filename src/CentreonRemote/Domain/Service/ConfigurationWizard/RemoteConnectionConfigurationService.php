@@ -29,10 +29,6 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
 
         foreach ($configCentreonBrokerInfoData['central-module'] as $brokerConfig => $brokerData) {
             foreach ($brokerData as $row) {
-                if ($brokerConfig == 'output' && $row['config_key'] == 'host') {
-                    $row['config_value'] = $this->centralIp;
-                }
-
                 $row['config_id'] = $moduleID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }
@@ -40,10 +36,6 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
 
         foreach ($configCentreonBrokerInfoData['central-rrd'] as $brokerConfig => $brokerData) {
             foreach ($brokerData as $row) {
-                if ($brokerConfig == 'input' && $row['config_key'] == 'host') {
-                    $row['config_value'] = $this->centralIp;
-                }
-
                 $row['config_id'] = $rrdID;
                 $this->insertWithAdapter('cfg_centreonbroker_info', $row);
             }

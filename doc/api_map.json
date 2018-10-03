@@ -138,6 +138,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "centreon_folder",
+                        "in": "formData",
+                        "description": "path to the centreon web folder on the remote machine",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "linked_pollers",
                         "in": "formData",
                         "description": "pollers to link with the new remote",

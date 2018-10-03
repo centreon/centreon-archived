@@ -17,7 +17,7 @@ return [
     ],
     [
         'config_key'      => 'host',
-        'config_value'    => '',
+        'config_value'    => 'localhost',
         'config_group'    => 'input',
         'config_group_id' => '0',
         'grp_level'       => '0',

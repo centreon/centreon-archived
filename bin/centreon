@@ -140,7 +140,7 @@ if (isset($options["V"])) {
     exit(0);
 }
 
-if (isset($options["w"]) && $options['o'] == "CentreonWorker" && !empty($options["u"] && !empty($options["p"]))){
+if (isset($options["w"]) && $options['o'] == "CentreonWorker" && !empty($options["u"]) && !empty($options["p"])){
 
     $api->setLogin($options["u"]);
     $api->setPassword($options["p"]);

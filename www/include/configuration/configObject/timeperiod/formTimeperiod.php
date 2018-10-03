@@ -140,21 +140,20 @@ $DBRESULT->closeCursor();
  */
 require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
 if ($o == "c" || $o == "a" || $o == "mc") {
-    for ($k = 0; isset($mTp[$k]); $k++) {
-        print "<script type=\"text/javascript\">";
-        print "tab[$k] = " . $mTp[$k] . ";";
-        print "</script>";
-    }
+    print "<script type=\"text/javascript\">";
+    print "var tab = [];";
 
+    for ($k = 0; isset($mTp[$k]); $k++) {
+        print "tab[$k] = " . $mTp[$k] . ";";
+    }
     for ($k = 0; isset($exception_id[$k]); $k++) { ?>
-        <script type="text/javascript">
             globalExceptionTabId[<?php echo $k;?>] = <?php echo $exception_id[$k];?>;
             globalExceptionTabName[<?php echo $k;?>] = '<?php echo $exception_days[$k];?>';
             globalExceptionTabTimerange[<?php echo $k;?>] = '<?php echo $exception_timerange[$k];?>';
             globalExceptionTabTimeperiodId[<?php echo $k;?>] = <?php echo $exception_timeperiod_id[$k];?>;
-        </script>
         <?php
     }
+    print "</script>";
 }
 
 /*
