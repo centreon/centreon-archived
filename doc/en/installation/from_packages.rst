@@ -135,26 +135,8 @@ Before starting the web installation process, you will need to execute::
 
 Click :ref:`here <installation_web_ces>` to finalize the installation process.
 
+************************
+Destributed architecture
+************************
 
-*******************
-Installing a poller
-*******************
-
-This chapter describes the installation of a collector.
-
-Perform the command::
-
-    # yum install centreon-poller-centreon-engine
-
-The communication between a central server and a poller server is by SSH.
-
-You should exchange the SSH keys between the servers.
-
-If you don’t have any private SSH keys on the central server for the Centreon user::
-
-    # su - centreon
-    $ ssh-keygen -t rsa
-
-Copy this key on the collector::
-
-    $ ssh-copy-id centreon@your_poller_ip
+Go to :ref:`Administration<distributed_archi>` to add new Pollers and Remote Servers.

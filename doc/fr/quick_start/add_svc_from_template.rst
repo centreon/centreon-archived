@@ -54,7 +54,7 @@ connait pas encore !
 
 Vous devez :ref:`générer la configuration, l'exporter et l'envoyer au moteur de supervision<deployconfiguration>`.
 
-Le résultat est visible dans le menu **Monitoring > Status Details > Hosts** :
+Le résultat est visible dans le menu **Monitoring > Status Details > Services** :
 
 .. image:: /_static/images/quick_start/add_svc_template_monitoring.png
     :align: center

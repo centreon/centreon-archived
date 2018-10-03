@@ -3,7 +3,7 @@ Welcome to Centreon's documentation!
 
 Centreon is open source software which enables you to supervise all the elements comprising your information system.
 
-New ! :ref:`How to reduce your time to monitoring with Centreon IMP ? <impconfiguration>`
+:ref:`How to reduce your time to monitoring with Centreon IMP ? <impconfiguration>`
 
 Contents:
 

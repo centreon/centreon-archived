@@ -22,6 +22,5 @@ Pensez à mettre en place une stratégie de globalisation de la configuration af
    advanced_configuration/index
    process_description/index
    deploy
-   knowledge_base/index
 
 Une fois configurée, la supervision vous permettra de remonter des informations relatives à l'état de santé de votre Système d'informations. Pour connaître le fonctionnement de l'interface d'exploitation de ces résultats, référez vous au :ref:`guide d'exploitation <configuration_start>`.
