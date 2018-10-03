@@ -36,7 +36,7 @@ class PollerStepOneRoute extends Component {
         <ProgressBar links={links} />
         <Form
           onSubmit={this.handleSubmit.bind(this)}
-          initialValues={{centreon_folder:"/centreon/"}}
+          initialValues={{}}
         />
       </div>
     );

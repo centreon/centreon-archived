@@ -91,7 +91,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetRemotesList(): array
     {
-        $query = 'SELECT ns.id, ns.ns_ip_address as ip FROM nagios_server as ns ' .
+        $query = 'SELECT ns.id, ns.ns_ip_address as ip, ns.name FROM nagios_server as ns ' .
             'JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address ' .
             'WHERE rs.is_connected = 1';
         $statement = $this->pearDB->query($query);
@@ -177,6 +177,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *   ),
      *   @SWG\Parameter(
      *       in="formData",
+     *       name="centreon_folder",
+     *       type="string",
+     *       description="path to the centreon web folder on the remote machine",
+     *       required=false,
+     *   ),
+     *   @SWG\Parameter(
+     *       in="formData",
      *       name="linked_pollers",
      *       type="string",
      *       description="pollers to link with the new remote",
@@ -232,7 +239,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
             $serverConfigurationService->setDbPassword($_POST['db_password']);
-            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP);
+            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP, $_POST['centreon_folder']);
         }
 
         // Add configuration of the new server in the database

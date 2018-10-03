@@ -169,7 +169,6 @@ class CentreonDBAdapter
 
         try {
             $result = $qq->execute();
-            var_dump($this->db);die();
         } catch(\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }
