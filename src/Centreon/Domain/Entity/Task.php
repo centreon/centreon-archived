@@ -27,6 +27,12 @@ class Task implements EntityInterface
     private $type;
 
     /**
+     * Autoincrement ID
+     * @var integer
+     */
+    private $id;
+
+    /**
      * Task status
      * @var string
      */
@@ -56,6 +62,14 @@ class Task implements EntityInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -175,9 +189,15 @@ class Task implements EntityInterface
     {
         $ref = new ReflectionClass(__CLASS__);
         $constants = $ref->getConstants();
-        return self::array_filter_key($constants, function($key){
+        $statusConstants = self::array_filter_key($constants, function($key){
             return strpos($key,'STATE_') === 0;
         });
+        $statuses = [];
+        foreach ($statusConstants as $stKey => $stConstant){
+
+            $statuses[] = $ref->getConstant($stKey);
+        }
+        return $statuses;
     }
 
     /**

@@ -56,9 +56,9 @@ class PollerConfigurationRequestBridge
         $isRemoteConnection = (new ServerWizardIdentity)->requestConfigurationIsRemote();
 
         if ($isRemoteConnection) {
-            $pollerIDs = $_POST['linked_pollers'] ?? ''; // Poller ids are coming form the request
-            $pollerIDs = (array) $pollerIDs;
-            $this->pollers = $this->getPollersToLink($pollerIDs);
+            $pollers = $_POST['linked_pollers'] ?? ''; // Poller ids are coming form the request
+            $pollers = (array) $pollers;
+            $this->pollers = $this->getPollersToLink($pollers);
             $this->remoteServer = $this->getRemoteForConfiguration($this->serverID); // The server id is of the new remote
         } else {
             $remoteID = $_POST['linked_remote'] ?? ''; // Remote id is coming from the request
@@ -67,10 +67,22 @@ class PollerConfigurationRequestBridge
         }
     }
 
-    private function getPollersToLink(array $pollerIDs)
+    private function getPollersToLink(array $pollers)
     {
-        if (empty($pollerIDs)) {
+        if (empty($pollers)) {
             return [];
+        }
+
+        $pollerIDs = [];
+
+        if (is_array(reset($pollers))) {
+            foreach ($pollers as $poller) {
+                if (isset($poller['value'])) {
+                    $pollerIDs[] = $poller['value'];
+                }
+            }
+        } else {
+            $pollerIDs = $pollers;
         }
 
         $idBindString = str_repeat('?,', count($pollerIDs));

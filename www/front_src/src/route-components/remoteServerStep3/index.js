@@ -82,7 +82,7 @@ class RemoteServerStepThreeRoute extends Component {
     refreshGeneration = () => {
         const {history, pollerData} = this.props;
         this.getExportTask
-            .post("", {"task_id":pollerData.task_id})
+            .post("", {"task_id":pollerData.taskId})
             .then(response => {
                 if (response.data.finished == true){
                     clearInterval(this.generationInterval);

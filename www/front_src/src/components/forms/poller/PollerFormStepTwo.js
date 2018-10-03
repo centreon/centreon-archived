@@ -26,12 +26,12 @@ class PollerFormStepTwo extends Component {
                     value: ""
                   }
                 ].concat(
-                  pollers.map(c => ({ value: c.ip, label: c.ip }))
+                  pollers.map(c => ({ value: c.id, label: c.name, text:c.name }))
                 )}
               />
             ) : null}
             <Field
-              name="manage_broker_config"
+              name="open_broker_flow"
               component={CheckboxField}
               label="Advanced: reverse Centreon Broker communication flow"
             />

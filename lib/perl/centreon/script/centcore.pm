@@ -336,8 +336,7 @@ sub startWorker($) {
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
 
-    my $cmdexec = "php $self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -s -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
-
+    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
      return undef;
 }

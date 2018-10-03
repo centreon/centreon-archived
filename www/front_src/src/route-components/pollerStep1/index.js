@@ -34,7 +34,10 @@ class PollerStepOneRoute extends Component {
     return (
       <div>
         <ProgressBar links={links} />
-        <Form onSubmit={this.handleSubmit.bind(this)} />
+        <Form
+          onSubmit={this.handleSubmit.bind(this)}
+          initialValues={{}}
+        />
       </div>
     );
   }

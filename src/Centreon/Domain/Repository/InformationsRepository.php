@@ -61,4 +61,16 @@ class InformationsRepository extends ServiceEntityRepository
         $stmt->execute();
     }
 
+    /**
+     * Authorize Master to make calls to remote for Tasks
+     * @param string $ip
+     * @return void
+     */
+    public function authorizeMaster(string $ip): void
+    {
+        $sql = "INSERT INTO `informations` (`key`, `value`) VALUES ('authorizedMaster', :ip)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 }

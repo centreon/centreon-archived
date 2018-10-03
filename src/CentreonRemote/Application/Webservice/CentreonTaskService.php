@@ -3,6 +3,7 @@
 namespace CentreonRemote\Application\Webservice;
 
 use Centreon\Domain\Entity\Task;
+use Centreon\Domain\Repository\InformationsRepository;
 use Exception;
 
 class CentreonTaskService extends CentreonWebServiceAbstract
@@ -59,6 +60,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postGetTaskStatus()
     {
+        $_POST = json_decode(file_get_contents('php://input'), true);
         $task_id = (isset($_POST['task_id'])) ? $_POST['task_id'] : null;
 
         if ($task_id){
@@ -167,6 +169,14 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postAddImportTaskWithParent()
     {
+        /*
+         * make sure only authorized master can create task
+         */
+        $authorizedMaster = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->getOneByKey('authorizedMaster');
+        if ($_SERVER['REMOTE_ADDR'] !== $authorizedMaster->getValue()){
+            return json_encode(['success' => true, 'status'=> 'unauthorized']);
+        }
+
         $parent_id = (isset($_POST['parent_id'])) ? intval($_POST['parent_id']) : null;
         $params = (isset($_POST['params'])) ? $_POST['params'] : '';
 
@@ -179,14 +189,6 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         try {
             if (!$parent_id) {
                 throw new Exception('Missing parent_id parameter');
-            } elseif (!$params) {
-                throw new Exception('Missing params parameter');
-            } elseif (!array_key_exists('pollers', $params)) {
-                throw new Exception('Missing pollers list in params');
-            } elseif (!array_key_exists('pollers', $params)) {
-                throw new Exception('Missing pollers list in params');
-            } elseif (!array_key_exists('server', $params)) {
-                throw new Exception('Missing server ID in params');
             }
         } catch (\Exception $ex) {
             return json_encode([
