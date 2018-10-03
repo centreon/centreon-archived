@@ -141,7 +141,7 @@ $DBRESULT->closeCursor();
 require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
 if ($o == "c" || $o == "a" || $o == "mc") {
     print "<script type=\"text/javascript\">";
-    print "var tab = new Array();";
+    print "var tab = [];";
 
     for ($k = 0; isset($mTp[$k]); $k++) {
         print "tab[$k] = " . $mTp[$k] . ";";
