@@ -21,6 +21,8 @@ abstract class ServerConnectionConfigurationService
 
     protected $name;
 
+    protected $isOpenBrokerFlow = false;
+
     protected $shouldInsertBamBrokers = false;
 
     protected $brokerID = null;
@@ -58,6 +60,11 @@ abstract class ServerConnectionConfigurationService
     public function setDbPassword($password)
     {
         $this->dbPassword = $password;
+    }
+
+    public function setOpenBrokerFlow($openBrokerFlow)
+    {
+        $this->isOpenBrokerFlow = $openBrokerFlow;
     }
 
     protected function getDbAdapter(): CentreonDBAdapter

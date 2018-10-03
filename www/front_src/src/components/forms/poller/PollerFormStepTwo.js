@@ -31,7 +31,7 @@ class PollerFormStepTwo extends Component {
               />
             ) : null}
             <Field
-              name="manage_broker_config"
+              name="open_broker_flow"
               component={CheckboxField}
               label="Advanced: reverse Centreon Broker communication flow"
             />

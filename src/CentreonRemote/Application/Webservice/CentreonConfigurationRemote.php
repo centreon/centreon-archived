@@ -211,8 +211,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $_POST = json_decode(file_get_contents('php://input'), true);
-//        $openBrokerFlow = isset($_POST['open_broker_flow']);
-//        $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
+        $openBrokerFlow = isset($_POST['open_broker_flow']);
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $serverHasBamInstalled = false;
@@ -235,6 +234,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
+        $serverConfigurationService->setOpenBrokerFlow($openBrokerFlow);
 
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($_POST['db_user']);
@@ -261,6 +261,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
             $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+            $pollerConfigurationService->setOpenBrokerFlow($openBrokerFlow);
             $pollerConfigurationService->setPollersConfigurationWithServer($pollerServers, $remoteServer);
 
             /**
@@ -272,21 +273,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             }
             $params['server'] = $remoteServer->getId();
             $params['remote_ip'] = $remoteServer->getIp();
-            $params['centreon_path'] = $_POST['centreon_folder'];
+            $params['centreon_path'] = $_POST['centreon_folder'] ?? 'centreon';
             $taskId = $this->createExportTask($params);
         }
-
-        //todo: what do I do with these
-        // - $openBrokerFlow?
-        // - $manageBrokerConfiguration?
-        // - set informations table key isRemote to yes with the export data
 
         if ($isRemoteConnection) {
             $this->addServerToListOfRemotes($serverIP);
             $this->setCentreonInstanceAsCentral();
         }
-
-        //todo: update return based on success/fail
 
         return ['success' => true, 'task_id' => $taskId];
     }
