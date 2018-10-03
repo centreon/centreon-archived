@@ -43,6 +43,13 @@ if ($id && $o == 'd') {
     if (!is_null($moduleName)) {
         $removerObj = $moduleFactory->newRemover($moduleName, $id);
         $removerObj->remove();
+
+        // reload parent window
+        $tpl = initSmartyTpl($path, (new Smarty()));
+        $tpl->assign('p', $p);
+        $tpl->display('reload.ihtml');
+
+        return;
     }
 }
 
