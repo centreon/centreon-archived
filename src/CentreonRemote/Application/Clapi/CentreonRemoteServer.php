@@ -44,6 +44,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
         echo 'Done'. "\n";
 
+        echo "\n Authorizing Master...";
+        $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($ip);
+        echo 'Done'. "\n";
+
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";

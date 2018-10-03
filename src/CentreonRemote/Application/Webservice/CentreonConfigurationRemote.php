@@ -272,6 +272,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             }
             $params['server'] = $remoteServer->getId();
             $params['remote_ip'] = $remoteServer->getIp();
+            $params['centreon_path'] = $_POST['centreon_folder'];
             $taskId = $this->createExportTask($params);
         }
 
