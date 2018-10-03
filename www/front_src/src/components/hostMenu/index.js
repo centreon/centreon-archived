@@ -17,6 +17,23 @@ class HostMenu extends Component {
     });
   };
 
+  componentWillMount() {
+    window.addEventListener('mousedown', this.handleClick, false);
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+  };
+
+  handleClick = (e) => {
+    if (this.host.contains(e.target)) {
+      return;
+    }
+    this.setState({
+      toggled: false
+    });
+  };
+
   render() {
     let data = this.props.data;
 
@@ -66,61 +83,72 @@ class HostMenu extends Component {
             <span>{numeral(ok).format("0a")}</span>
           </a>
         </Link>
-
-        <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
-        <div class="submenu host">
-          <div class="submenu-inner">
-            <ul class="submenu-items list-unstyled">
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20202&o=h&search="}
-                  class="submenu-item-link"
-                >
-                  <span>All</span>
-                  <span class="submenu-count">{numeral(total).format("0a")}</span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20202&o=h_down&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored red">Down</span>
-                  <span class="submenu-count">
-                    {numeral(down.unhandled).format("0a")}/{numeral(down.total).format("0a")}
-                  </span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20202&o=h_unreachable&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored gray">Unreachable</span>
-                  <span class="submenu-count">
-                    {numeral(unreachable.unhandled).format("0a")}/{numeral(unreachable.total).format("0a")}
-                  </span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20202&o=h_up&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored green">Up</span>
-                  <span class="submenu-count">{numeral(ok).format("0a")}</span>
-                </Link>
-              </li>
-              <li class="submenu-item">
-                <Link
-                  to={config.urlBase + "main.php?p=20202&o=h_pending&search="}
-                  class="submenu-item-link"
-                >
-                  <span class="dot-colored blue">Pending</span>
-                  <span class="submenu-count">{numeral(pending).format("0a")}</span>
-                </Link>
-              </li>
-            </ul>
+        <div ref={host => this.host = host}>
+          <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
+          <div class="submenu host">
+            <div class="submenu-inner">
+              <ul class="submenu-items list-unstyled">
+                <li class="submenu-item">
+                  <Link
+                    to={"./main.php?p=20202&o=h&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span>All</span>
+                      <span class="submenu-count">{numeral(total).format("0a")}</span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={"./main.php?p=20202&o=h_down&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored red">Down</span>
+                      <span class="submenu-count">
+                        {numeral(down.unhandled).format("0a")}/{numeral(down.total).format("0a")}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={"./main.php?p=20202&o=h_unreachable&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored gray">Unreachable</span>
+                      <span class="submenu-count">
+                        {numeral(unreachable.unhandled).format("0a")}/{numeral(unreachable.total).format("0a")}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={"./main.php?p=20202&o=h_up&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored green">Ok</span>
+                      <span class="submenu-count">{numeral(ok).format("0a")}</span>
+                    </div>
+                  </Link>
+                </li>
+                <li class="submenu-item">
+                  <Link
+                    to={"./main.php?p=20202&o=h_pending&search="}
+                    class="submenu-item-link"
+                  >
+                    <div onClick={this.toggle}>
+                      <span class="dot-colored blue">Pending</span>
+                      <span class="submenu-count">{numeral(pending).format("0a")}</span>
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
