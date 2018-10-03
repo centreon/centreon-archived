@@ -253,17 +253,31 @@ function validateFeature(name, version, enabled) {
         <?php
         }
         ?>
+
     jQuery('body').delegate(
       'a',
       'click',
       function(e) {
         e.preventDefault();
         var href = jQuery(this).attr('href');
-        var newhref = href.replace('main.php','main.get.php');
-        if (jQuery(this).attr('target') == '_blank'){
-          window.open(newhref);
+
+        // Manage centreon links
+        if (href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
+
+          // If we open link a new tab, we want to keep the header
+          if (jQuery(this).attr('target') === '_blank') {
+            href = href.replace('main.get.php', 'main.php');
+            window.open(href);
+          // If it's an internal link, we remove header to avoid inception
+          } else {
+            href = href.replace('main.php', 'main.get.php');
+            window.location.href = href;
+          }
+
+        // Manage external links (ie: www.google.com)
+        // we always open it in a new tab
         } else {
-          window.location.href = newhref;
+            window.open(href);
         }
       }
     );
