@@ -157,10 +157,9 @@ class CentreonDBAdapter
             array_push($keyValues, array($key, $value));
         }
 
-        $sql = "UPDATE {$table} SET implode(', ',$keys) WHERE id = :id";
+        $sql = "UPDATE {$table} SET " . implode(', ',$keys) ." WHERE id = :id";
 
         $qq = $this->db->prepare($sql);
-
         $qq->bindParam(':id',$id);
 
         foreach ($keyValues as $key => $value)
@@ -170,6 +169,7 @@ class CentreonDBAdapter
 
         try {
             $result = $qq->execute();
+            var_dump($this->db);die();
         } catch(\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }

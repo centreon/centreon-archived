@@ -18,7 +18,7 @@ class ServerWizardIdentity
     }
 
     public function fetchIfServerInstalledBam($ip)
-    {
+    {return false;
         $url = "{$ip}/centreon/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
 
         try {

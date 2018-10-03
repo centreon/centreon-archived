@@ -204,8 +204,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        $openBrokerFlow = isset($_POST['open_broker_flow']);
-        $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
+//        $openBrokerFlow = isset($_POST['open_broker_flow']);
+//        $manageBrokerConfiguration = isset($_POST['manage_broker_configuration']);
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $serverHasBamInstalled = false;
@@ -264,6 +264,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 $params['pollers'][] = $poller->getId();
             }
             $params['server'] = $remoteServer->getId();
+            $params['remote_ip'] = $remoteServer->getIp();
             $taskId = $this->createExportTask($params);
         }
 

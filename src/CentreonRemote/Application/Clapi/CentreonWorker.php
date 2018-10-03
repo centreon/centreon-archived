@@ -43,7 +43,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
         echo "Checking for pending export tasks: \n";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
-
         if (count($tasks) == 0)
         {
             echo "None found\n";
@@ -52,7 +51,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $params = unserialize($task->getParams());
                 $commitment = new CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
                 try {
-                    $this->getDi()['centreon_remote.export']->export($commitment);
+                   $this->getDi()['centreon_remote.export']->export($commitment);
                 } catch (\Exception $e) {
                 //todo error handling
                 }

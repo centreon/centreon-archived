@@ -68,4 +68,14 @@ class TaskRepository extends ServiceEntityRepository
 
         return $result ?: null;
     }
+
+    /**
+     * update task status
+     */
+    public function updateStatus($status, $taskId)
+    {
+        $sql = "UPDATE task SET status = '$status' WHERE id = $taskId";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute();
+    }
 }
