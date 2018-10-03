@@ -123,7 +123,7 @@ if($pdoStatement->execute()) {
         $breadcrumbData[$result['topology_page']] = [
             'name' => $result['topology_name'],
             'url' => $result['topology_url'],
-            'opt' => $result['topology_opt'],
+            'opt' => $result['topology_url_opt'],
             'page' => $result['topology_page']
         ];
     }
