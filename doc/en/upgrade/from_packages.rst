@@ -1,275 +1,154 @@
 .. _upgrade_from_packages:
 
-=============
-From Packages
-=============
+========================
+Update to Centreon 18.10
+========================
 
-Centreon 3.4 includes Centreon Web 2.8, Centreon Engine 1.8, Centreon Broker 3.0.
-It is supported only on CentOS 7.
-
-.. warning::
-   If your centreon contains the centreon knowlegdebase module (AKA Centreon KB),
-   please first uninstall the module (from the web) in order to avoid upgrade problem.
-   Centreon KB is now embedded into Centreon since the version 2.8.0.
-
-
-Prerequisites
-=============
-
-The prerequisites for Centreon Web 2.8 have evolved. It is strongly recommended
-to follow the instructions to set up your platform.
-
-**Centreon advises you to use MariaDB** instead of MySQL.
-
-+----------+-----------+
-| Software | Version   |
-+==========+===========+
-| MariaDB  | >= 5.5.35 |
-+----------+-----------+
-| MySQL    | >= 5.1.73 |
-+----------+-----------+
-
-Dependent software
-==================
-
-The following table describes the dependent software:
-
-+----------+-----------+
-| Software | Version   |
-+==========+===========+
-| Apache   | 2.2       |
-+----------+-----------+
-| GnuTLS   | >= 2.0    |
-+----------+-----------+
-| Net-SNMP | 5.5       |
-+----------+-----------+
-| openssl  | >= 1.0.1e |
-+----------+-----------+
-| PHP      | >= 5.3.0  |
-+----------+-----------+
-| Qt       | >= 4.7.4  |
-+----------+-----------+
-| RRDtools | 1.4.7     |
-+----------+-----------+
-| zlib     | 1.2.3     |
-+----------+-----------+
-
-Backup
-======
-
-Be sure that you have fully backup of your environment for all the following server :
-
- * Central server
- * Database server
- * Reporting Centreon MBI server
-
-Centreon repository upgrade
-===========================
-
-If you are already a Centreon ISO user, you need to update your Centreon .repo file to
-get software that is part of Centreon 3.4 (namely Centreon Web 2.8 and
-associated components). Run the commands for your operating system.
-
-CentOS 7
-********
-
-::
-
-   $ rm -f /etc/yum.repos.d/ces-standard.repo /etc/yum.repos.d/centreon-stable.repo
-   $ wget http://yum.centreon.com/standard/3.4/el7/stable/noarch/RPMS/centreon-release-3.4-4.el7.centos.noarch.rpm
-   $ yum install --nogpgcheck centreon-release-3.4-4.el7.centos.noarch.rpm
-
-.. warning::
-   If you're using Centreon modules Centreon BAM, Centreon MAP4, CentreonMBI or Centreon EPP please contact our Support to have the new repo of each module.
-
-Core components upgrade
-=======================
-
-Stop Centreon components
-************************
-
-.. warning::
-    Before to start the update, check if you don't have any Centreon-Broker retention files.
-
-Stop Centreon Broker and Centreon Engine on **all poller**::
-
-   # service centengine stop
-   # service cbd stop
-
-Update components
-*****************
-
-In order to update the Centreon monitoring interface, simply run the following command:
-
- ::
-
- # yum update centreon
-
-.. warning::
-   If you encounter dependency problems with centreon-engine-webservices, please remove this RPM that is now deprecated. Run the following line:
-   # yum remove centreon-engine-webservices
-
-If you come from Centreon 2.7.0-RC2, in order to avoid the rpm naming problem please launch the following command line:
-
-  ::
-
-  # yum downgrade centreon-2.7.0 centreon-plugins-2.7.0 centreon-base-config-centreon-engine-2.7.0 centreon-plugin-meta-2.7.0 centreon-common-2.7.0 centreon-web-2.7.0 centreon-trap-2.7.0 centreon-perl-libs-2.7.0
-
-
-Restart web server
-******************
-
-Due to the installation of PHP-intl it is necessary to restart the Apache web server
-to load new extension.
-
- ::
-
-   # service httpd restart
-
-Update poller
-*************
-
-Repeat this procedure on all your poller :
-
- * Update repo
- * Update packets
-
-.. warning::
-   You must have on all your environment (Central and Poller) the same version of Centreon Engine 1.7 and Centreon Broker 3.0.
-
-Conclude update via Centreon web interface
-******************************************
-
-Connect to your Centreon web interface and follow instructions to update Centreon's databases. During this process a new configuration file will be created.
-
-Presentation
-------------
-
-.. image:: /_static/images/upgrade/step01.png
-   :align: center
-
-Check dependencies
-------------------
-
-This step checks the dependencies on php modules.
-
-.. image:: /_static/images/upgrade/step02.png
-   :align: center
-
-Release notes
--------------
-
-.. image:: /_static/images/upgrade/step03.png
-   :align: center
-
-Upgrade the database
---------------------
-
-This step upgrades database model and data, version by version.
-
-.. image:: /_static/images/upgrade/step04.png
-   :align: center
-
-Finish
-------
-
-.. image:: /_static/images/upgrade/step05.png
-   :align: center
-
-Generate and export configuration to all poller
-***********************************************
-
-To conclude the installation it is necessary to generate Centreon Engine and
-Centreon Broker configuration. To perform this operation go to **Configuration > Poller**
-menu and click on the generate configuration icon.
-
-Restart all Centreon components on all poller
-*********************************************
-
-Start Centreon Broker and Centreon Engine on **all poller**::
-
-   # service centengine start
-   # service cbd start
-
-
-Then, if all is ok, go on the Centreon interface and log out and follow the steps :
-
-EMS/EPP upgrade
-===============
+This chapter describes how to update your platform to Centreon 18.10.
 
 .. note::
-   Not a EMS/EPP user ? You might still find Centreon Plugin Packs very
-   useful to configure your monitoring system in minutes. You will find
-   installation guidance in the :ref:`online documentation <installation_ppm>`.
-
-
-If you use additional Centreon modules you might need to update them too,
-for them to work properly with your new Centreon version. This is
-particularly true for EMS/EPP users.
+    At the end of this procedure, Centreon EMS users will have to request new
+    licenses to `Centreon support <https://centreon.force.com>`_.
 
 .. warning::
-   In this case you need to contact our Support that will give you the link to set up the new repo for each module.
-   If you're using Centreon BAM, you must have the great repo to upgrade your Centreon.
-   The following option should not be used :
-   # --skip-broken
+    This procedure only applies on Centreon platform installed from Centreon 3.4
+    packages on **Red Hat / CentOS version 7** distributions.
+    
+    If this is not the case, refer to the :ref:`migration<upgradecentreon1810>`
+    procedure.
 
-Repository update
-*****************
+To update your Centreon MAP server, refer to the `associated documentation
+<https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
 
-Just like for Centreon ISO, the .repo file needs to be updated to use the 3.4
-release. Please ask Centreon support team if you do not know how to
-perform this operation.
+To update your Centreon MBI server, refer to the `associated documentation
+<https://documentation.centreon.com/docs/centreon-bi-2/en/latest/update/index.html>`_.
 
-Package update
+******
+Backup
+******
+
+Be sure that you have fully backed up your environment for all the following
+server:
+
+* Central server
+* Database server
+
+******************************
+Centreon Central Server Update
+******************************
+
+Repository upgrade
+==================
+
+To install Centreon you will need to set up the official software collections
+repository supported by Redhat.
+
+.. note::
+    *Software collections* are required in order to install PHP 7 and associated
+    libs (Centreon requirement).
+
+Run the following command: ::
+
+    # yum install centos-release-scl
+
+Centreon repository update.
+
+Run the following command: ::
+
+    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+
+Updating the Centreon solution
+==============================
+
+Update all components: ::
+
+    # yum update centreon*
+
+.. note::
+    Accept new GPG keys from repositories as needed.
+
+Complementary actions
+=====================
+
+PHP timezone needs to be set. Perform the command: ::
+
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+
+.. note::
+    Change **Europe/Paris** to your timezone.
+
+Restart the services by executing the following commands: ::
+
+    # systemctl enable rh-php71-php-fpm
+    # systemctl start rh-php71-php-fpm
+    # systemctl restart httpd
+    # systemctl restart cbd
+    # systemctl restart centengine
+
+Finalizing the update
+=====================
+
+Log into Centreon web interface to continue update process:
+
+Click on **Next**:
+
+.. image:: /_static/images/upgrade/web_update_1.png
+    :align: center
+
+Click on **Next**:
+
+.. image:: /_static/images/upgrade/web_update_2.png
+    :align: center
+
+The release notes describes main changes, click on **Next**:
+
+.. image:: /_static/images/upgrade/web_update_3.png
+    :align: center
+
+.. note::
+    TODO mettre à jour l'image.
+
+The process realizes the different updates, click on **Next**:
+
+.. image:: /_static/images/upgrade/web_update_4.png
+    :align: center
+
+Your Centreon server is now up to date, click on **Finish** to access to log in
+page:
+
+.. image:: /_static/images/upgrade/web_update_5.png
+    :align: center
+
+To update your Centreon BAM module, refer to the `associated documentation
+<https://documentation.centreon.com/docs/centreon-bam/en/latest/update/index.html>`_.
+
+**************
+Pollers update
 **************
 
-Run the following command on your central server to update Centreon
-Plugin Pack Manager, the Plugin Packs and their associated plugins.
+Repository upgrade
+==================
 
-::
+Run the following command: ::
 
-   # yum update centreon-pp-manager ces-plugins-* ces-pack-*
+    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
 
+Updating the Centreon solution
+==============================
 
-You will also need to run the following command on every poller using
-the Plugin Packs.
+Update all components: ::
 
-::
+    # yum update centreon*
 
-   # yum update ces-plugins-*
+.. note::
+    Accept new GPG keys from repositories as needed.
 
+Complementary actions
+=====================
 
-Web update
-**********
+Restart the services by executing the following commands: ::
 
-You now need to run the web update manually. For this purpose, go to
-Administration -> Extensions -> Modules.
-
-.. image:: /_static/images/upgrade/ppm_1.png
-   :align: center
-
-Install Centreon License Manager (PPM dependency) and update Centreon
-Plugin Pack Manager.
-
-.. image:: /_static/images/upgrade/ppm_2.png
-   :align: center
-
-Good, your module is working again !
-
-The identified risks during update
-==================================
-
-To reduce risks and issues during update to Centreon Web 2.8 linked to Centreon
-Engine 1.6 and Centreon Broker 3.0 we shared to you a list of known issues.
-Please check this points during and after your upgrade.
-
-Known issues
-************
-
-* Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.8) are prerequisites for Centreon Web 2.8
-* Update databases global schema issue
-* Scales in performance graphs display too many steps
-* PHP Warning issues when user access to performance graphs menu in Centreon Web
-* When you zoom on a graph the zoom is applied for all graphs
-* You can't cancel zoom
-* CSV export doesn't work for eventlogs
+    # systemctl restart cbd
+    # systemctl restart centengine

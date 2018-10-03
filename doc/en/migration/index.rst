@@ -1,12 +1,13 @@
-#################################
-Migration from Nagios to Centreon
-#################################
+#########################
+Migrate to Centreon 18.10
+#########################
 
-This chapter describes procedures to migrate from a Nagios based platform to
-a Centreon platform.
+This chapter presents the procedure for migrating from a supervision platform
+to Centreon 18.10:
 
 .. toctree::
    :maxdepth: 1
 
+   upgradetoCentreon18.10
    nagiostocentreon
 
