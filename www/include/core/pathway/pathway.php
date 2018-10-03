@@ -37,104 +37,106 @@ if (!isset($centreon)) {
     exit();
 }
 
-function getTopologyParent($p)
-{
-    global $pearDB;
-    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` " .
-        "FROM `topology` WHERE `topology_page` = '" . $p . "' ORDER BY `topology_page`";
-    $DBRESULT = $pearDB->query($rqPath);
-
-    $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->closeCursor();
-    return $redirectPath;
-}
-
-function getTopologyDataPage($p)
-{
-    global $pearDB;
-    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` " .
-        "FROM `topology` WHERE `topology_page` = '" . $p . "' ORDER BY `topology_page`";
-    $DBRESULT = $pearDB->query($rqPath);
-    $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->closeCursor();
-    return $redirectPath;
-}
-
-function getTopologyParentPage($p)
-{
-    global $pearDB;
-    $rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '" . $p . "'";
-    $DBRESULT = $pearDB->query($rqPath);
-    $redirectPath = $DBRESULT->fetchRow();
-    $DBRESULT->closeCursor();
-    return $redirectPath["topology_parent"];
-}
-
-
-$tab = getTopologyParent($p);
-$tabPath = array();
-
-$NameTopology = "";
-if (!empty($tab["topology_name"])) {
-    $NameTopology = _($tab["topology_name"]);
-}
-
-$tabPath[$tab["topology_page"]] = array();
-$tabPath[$tab["topology_page"]]["name"] = $NameTopology;
-$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
-$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
-$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
-
-while ($tab["topology_parent"]) {
-    $tab = getTopologyParent($tab["topology_parent"]);
-    $tabPath[$tab["topology_page"]] = array();
-    $tabPath[$tab["topology_page"]]["name"] = _($tab["topology_name"]);
-    $tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
-    $tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
-    $tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
-}
-ksort($tabPath);
-
-$page = $p;
-if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
-    while (1) {
-        $DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '" . $page .
-            "%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
-        if (!$DBRESULT->rowCount()) {
-            break;
-        }
-        $new_url = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
-        $tabPath[$new_url["topology_page"]] = array();
-        $tabPath[$new_url["topology_page"]]["name"] = _($new_url["topology_name"]);
-        $tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
-        $tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
-        $page = $new_url["topology_page"];
-        if (isset($new_url["topology_url"]) && $new_url["topology_url"]) {
-            break;
+if (isset($url)) {
+    /**
+     * If url is defined we can use it to retrieve the associated page number
+     * to show the right tree in case when we have just the topology parent
+     * and we need to show breadcrumb for the first menu found (processed by
+     * main.get.php).
+     */
+    $statementSelect = $pearDB->prepare(
+        'SELECT topology_url FROM topology WHERE topology_page = :topology_page'
+    );
+    $statementSelect->bindValue(':topology_page', $p, \PDO::PARAM_INT);
+    if ($statementSelect->execute()) {
+        $result = $statementSelect->fetch(\PDO::FETCH_ASSOC);
+        if ($result['topology_url'] != $url) {
+            /**
+             * If urls are not equal we can retrieve the topology page number
+             * associated to this url because there is multiple topology page
+             * number with the same URL.
+             */
+            $statement = $pearDB->prepare(
+                'SELECT topology_page FROM topology '
+                . 'WHERE topology_url = :url'
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            if ($statement->execute() 
+                && $result = $statement->fetch(\PDO::FETCH_ASSOC)
+            ) {
+                $p = $result['topology_page'];
+            }
         }
     }
 }
 
-/*
- * Not displaying two entries in a row having the same name
+/**
+ * Recursive query to retrieve tree details from child to parent
  */
-$tmpLastTabKeyAndName = null;
-foreach ($tabPath as $pageNumber => $tabInPath) {
-    if ($tmpLastTabKeyAndName && $tabInPath['name'] === $tmpLastTabKeyAndName['name']) {
-        unset($tabPath[$tmpLastTabKeyAndName['key']]);
+$pdoStatement = $pearDB->prepare(
+    'SELECT `topology_url`, `topology_url_opt`, `topology_parent`,
+    `topology_name`, `topology_page`
+    FROM topology where topology_page IN
+        (SELECT :topology_page
+        UNION
+        SELECT * FROM (
+            SELECT @pv:=(
+                    SELECT topology_parent
+                    FROM topology
+                    WHERE topology_page = @pv
+            ) AS topology_parent FROM topology
+            JOIN
+            (SELECT @pv:=:topology_page) tmp
+        ) a
+    WHERE topology_parent IS NOT NULL)
+    ORDER BY topology_page ASC'
+);
+$pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
+
+$breadcrumbData = [];
+
+if($pdoStatement->execute()) {
+    while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
+        $isNameAlreadyInserted = array_search(
+            $result['topology_name'],
+            array_column($breadcrumbData, 'name')
+        );
+
+        if ($isNameAlreadyInserted) {
+            /**
+             * We don't show two items with the same name. So we remove the first
+             * item with the same name (in tree with duplicate topology name,
+             * the first has no url)
+             */
+            $topology = array_pop(
+                array_slice(
+                    $breadcrumbData,
+                    array_search(
+                        $result['topology_name'],
+                        array_column($breadcrumbData, 'name')
+                    )
+                )
+            );
+            unset($breadcrumbData[$topology['page']]);
+        }
+
+        $breadcrumbData[$result['topology_page']] = [
+            'name' => $result['topology_name'],
+            'url' => $result['topology_url'],
+            'opt' => $result['topology_opt'],
+            'page' => $result['topology_page']
+        ];
     }
-    $tmpLastTabKeyAndName = array('key' => $pageNumber, 'name' => $tabInPath['name']);
 }
 ?>
 <div class="pathway">
 <?php
 if ($centreon->user->access->page($p)) {
     $flag = '';
-    foreach ($tabPath as $cle => $valeur) {
+    foreach ($breadcrumbData as $page => $details) {
         echo $flag;
         ?>
-        <a href="main.get.php?p=<?php echo $cle . $valeur["opt"]; ?>" class="pathWay"><?php print $valeur["name"]; ?></a>
+        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= $details["name"]; ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }
