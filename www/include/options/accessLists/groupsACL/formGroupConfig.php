@@ -49,7 +49,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set base value
      */
-    $group = array_map("myDecode", $DBRESULT->fetchRow());
+    $group = array_map("CentreonUtils::escapeAll", $DBRESULT->fetchRow());
 
     /*
      * Set Contact Childs
@@ -128,7 +128,10 @@ $query = "SELECT contact_id, contact_name "
     . "ORDER BY contact_name";
 $DBRESULT = $pearDB->query($query);
 while ($contact = $DBRESULT->fetchRow()) {
-    $contacts[$contact["contact_id"]] = $contact["contact_name"];
+    $contacts[$contact["contact_id"]] = CentreonUtils::escapeAll(
+        $contact["contact_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 unset($contact);
 $DBRESULT->closeCursor();
@@ -140,7 +143,10 @@ $contactGroups = $cg->getListContactgroup(true);
 $menus = array();
 $DBRESULT = $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
 while ($topo = $DBRESULT->fetchRow()) {
-    $menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
+    $menus[$topo["acl_topo_id"]] = CentreonUtils::escapeAll(
+        $topo["acl_topo_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 unset($topo);
 $DBRESULT->closeCursor();
@@ -149,7 +155,10 @@ $DBRESULT->closeCursor();
 $action = array();
 $DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions ORDER BY acl_action_name");
 while ($data = $DBRESULT->fetchRow()) {
-    $action[$data["acl_action_id"]] = $data["acl_action_name"];
+    $action[$data["acl_action_id"]] = CentreonUtils::escapeAll(
+        $data["acl_action_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 unset($data);
 $DBRESULT->closeCursor();
@@ -162,7 +171,10 @@ $query = 'SELECT acl_res_id, acl_res_name '
     . 'ORDER BY acl_res_name';
 $DBRESULT = $pearDB->query($query);
 while ($res = $DBRESULT->fetchRow()) {
-    $resources[$res["acl_res_id"]] = $res["acl_res_name"];
+    $resources[$res["acl_res_id"]] = CentreonUtils::escapeAll(
+        $res["acl_res_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 unset($res);
 $DBRESULT->closeCursor();
