@@ -136,7 +136,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($breadcrumbData as $page => $details) {
         echo $flag;
         ?>
-        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= $details["name"]; ?></a>
+        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= _($details["name"]); ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }
