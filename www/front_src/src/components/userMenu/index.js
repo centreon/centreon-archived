@@ -68,13 +68,13 @@ class UserMenu extends Component {
                   <span class="submenu-item-link">
                     <span class="submenu-user-name">{fullname}</span>
                     <span class="submenu-user-type">as {username}</span>
-                    <a class="submenu-user-edit" href="./main.php?p=50104&o=c">
+                    <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
                       Edit profile
                     </a>
                   </span>
                 </li>
                 <React.Fragment>
-                  <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
+                  <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
                   <textarea id="autologin-input" style={
                     {
                       width: 0,
