@@ -90,11 +90,11 @@ $elemArr = array();
 for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_action_id'] . "]");
     if ($topo["acl_action_activate"]) {
-        $moptions = "<a href='?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=u&limit=" . $limit .
+        $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=s&limit=" . $limit .
+        $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }

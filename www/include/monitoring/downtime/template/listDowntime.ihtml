@@ -60,18 +60,18 @@
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_name_link};{$tds.internal_downtime_id}]'></td>
 		<td class="ListColLeft" width="130">
                     {if $tds.service_name_link}
-                    <a href='?{$tds.host_name_link}'>
+                    <a href='./main.php?{$tds.host_name_link}'>
                     {else}
-                    <a href='?p=20202&o=hd&host_name={$tds.host_name_link}'>
+                    <a href='./main.php?p=20202&o=hd&host_name={$tds.host_name_link}'>
                     {/if}
                     {$tds.host_name}
                     </a>
                 </td>
 		<td class="ListColLeft" width="130">
                     {if $tds.service_name_link}
-                    <a href='?{$tds.host_name_link}'>
+                    <a href='./main.php?{$tds.host_name_link}'>
                     {else}
-                    <a href='?p=202&o=svcd&host_name={$tds.host_name_link}&service_description={$tds.service_description}'>
+                    <a href='./main.php?p=202&o=svcd&host_name={$tds.host_name_link}&service_description={$tds.service_description}'>
                     {/if}
                     {$tds.service_description}
                     </a>
