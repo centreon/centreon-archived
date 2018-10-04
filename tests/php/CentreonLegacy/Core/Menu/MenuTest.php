@@ -104,6 +104,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         $result = array(
             "p2" => array(
                 "label" => "By host",
+                "menu_id" => "By host",
                 "url" => "centreon/20101",
                 "active" => false,
                 "color" => "#85B446",
