@@ -115,12 +115,21 @@ class LinkedPollerConfigurationService
             $linkedResults = $linkedStatement->fetchAll(\PDO::FETCH_ASSOC);
             $linkedPollersOfRemote = array_column($linkedResults, 'id');
 
+            // Get IP of remote
+            $queryRemoteData = "SELECT ns.ns_ip_address as ip, rs.centreon_path FROM nagios_server as ns " .
+                " JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address " .
+                " WHERE ns.id = {$remoteID}";
+            $remoteDataStatement = $this->db->query($queryRemoteData);
+            $remoteDataResults = $remoteDataStatement->fetchAll(\PDO::FETCH_ASSOC);
+
             // Exclude the selected pollers which are going to another remote
             $pollerIDsToExport = array_diff($linkedPollersOfRemote, $pollerIDs);
 
             $exportParams = [
-                'server'  => $remoteID,
-                'pollers' => $pollerIDsToExport,
+                'server'        => $remoteID,
+                'pollers'       => $pollerIDsToExport,
+                'remote_ip'     => $remoteDataResults[0]['ip'],
+                'centreon_path' => $remoteDataResults[0]['centreon_path'],
             ];
             $this->di['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
         }

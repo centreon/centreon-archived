@@ -108,15 +108,10 @@ if($pdoStatement->execute()) {
              * item with the same name (in tree with duplicate topology name,
              * the first has no url)
              */
-            $topology = array_pop(
-                array_slice(
-                    $breadcrumbData,
-                    array_search(
-                        $result['topology_name'],
-                        array_column($breadcrumbData, 'name')
-                    )
-                )
-            );
+            $breadcrumbDataArrayNames = array_column($breadcrumbData, 'name');
+            $topologyNameSearch = array_search($result['topology_name'], $breadcrumbDataArrayNames);
+            $breadcrumbTopologyResults = array_slice($breadcrumbData, $topologyNameSearch);
+            $topology = array_pop($breadcrumbTopologyResults);
             unset($breadcrumbData[$topology['page']]);
         }
 

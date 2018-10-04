@@ -273,12 +273,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             }
             $params['server'] = $remoteServer->getId();
             $params['remote_ip'] = $remoteServer->getIp();
-            $params['centreon_path'] = $_POST['centreon_folder'] ?? 'centreon';
+            $params['centreon_path'] = $_POST['centreon_folder'] ?? '/centreon/';
             $taskId = $this->createExportTask($params);
         }
 
         if ($isRemoteConnection) {
-            $this->addServerToListOfRemotes($serverIP);
+            $centreonPath = $_POST['centreon_folder'] ?? '/centreon/';
+            $this->addServerToListOfRemotes($serverIP, $centreonPath);
             $this->setCentreonInstanceAsCentral();
         }
 
@@ -308,7 +309,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP)
+    private function addServerToListOfRemotes($serverIP, $centreonPath)
     {
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -318,17 +319,19 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
-            $data = ['1', $date, $serverIP];
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
+                'WHERE `ip` = ?';
+            $data = ['1', $date, $centreonPath, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'           => $serverIP,
-                'app_key'      => '',
-                'version'      => '',
-                'is_connected' => '1',
-                'created_at'   => $date,
-                'connected_at' => $date,
+                'ip'            => $serverIP,
+                'app_key'       => '',
+                'version'       => '',
+                'is_connected'  => '1',
+                'created_at'    => $date,
+                'connected_at'  => $date,
+                'centreon_path' => $centreonPath,
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
