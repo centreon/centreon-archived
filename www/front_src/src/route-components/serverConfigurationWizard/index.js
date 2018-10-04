@@ -13,10 +13,10 @@ class ServerConfigurationWizardRoute extends Component {
 
   handleSubmit = ({ server_type }) => {
     const { history } = this.props;
-    if (server_type == 1) {
+    if (server_type === '1') {
       history.push(routeMap.remoteServerStep1);
     }
-    if (server_type == 2) {
+    if (server_type === '2') {
       history.push(routeMap.pollerStep1);
     }
   };

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import WizardFormInstallingStatus from "../../components/wizardFormInstallingStatus";
 import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps";
 
 import { connect } from "react-redux";
 class PollerStepThreeRoute extends Component {

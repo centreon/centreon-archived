@@ -18,7 +18,7 @@ class ServiceStatusMenu extends Component {
 
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -71,24 +71,24 @@ class ServiceStatusMenu extends Component {
           <span class="wrap-right-icon__name">Services</span>
         </span>
         <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (critical.unhandled > 0 ? "red" : "red-bordered")} >
-          <a class="number">
+          <span class="number">
             <span>{numeral(critical.unhandled).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (warning.unhandled > 0 ? "orange" : "orange-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(warning.unhandled).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(unknown.unhandled).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(ok).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <div ref={service => this.service = service}>
           <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>

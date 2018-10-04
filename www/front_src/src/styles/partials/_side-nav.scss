@@ -168,11 +168,11 @@ a {
 
     &:first-child {
       &.active {
-        > a {
+        > span {
           background: $turquoise-centreon-primary;
         }
       }
-      > a:hover {
+      > span:hover {
         background: $turquoise-centreon-darken;
       }
       .collapsed-level-item {
@@ -194,11 +194,11 @@ a {
 
     &:nth-child(2) {
       &.active {
-        > a {
+        > span {
           background: $lime-centreon-primary;
         }
       }
-      > a:hover {
+      > span:hover {
         background: $lime-centreon-darken;
       }
       .collapsed-level-item {
@@ -219,11 +219,11 @@ a {
 
     &:nth-child(3) {
       &.active {
-        > a {
+        > span {
           background: $orange-centreon-primary;
         }
       }
-      > a:hover {
+      > span:hover {
         background: $orange-centreon-darken;
       }
       .collapsed-level-item {
@@ -244,11 +244,11 @@ a {
 
     &:nth-child(4) {
       &.active {
-        > a {
+        > span {
           background: $lightblue-centreon-primary;
         }
       }
-      > a:hover {
+      > span:hover {
         background: $lightblue-centreon-darken;
       }
       .collapsed-level-item {
@@ -269,11 +269,11 @@ a {
 
     &:nth-child(5) {
       &.active {
-        > a {
+        > span {
           background: $darkblue-centreon-primary;
         }
       }
-      > a:hover {
+      > span:hover {
         background: $darkblue-centreon-darken;
       }
       .collapsed-level-item {
@@ -292,7 +292,7 @@ a {
       }
     }
 
-    &.active > a {
+    &.active > span {
       color: $white-color;
       .iconmoon {
         color: $white-color;

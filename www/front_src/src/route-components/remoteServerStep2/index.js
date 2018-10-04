@@ -86,7 +86,6 @@ class RemoteServerStepTwoRoute extends Component {
 
   render() {
     const { links } = this,
-          { pollerData } = this.props,
           { pollers } = this.state;
     return (
       <div>

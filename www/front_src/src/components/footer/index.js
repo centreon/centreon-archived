@@ -9,19 +9,19 @@ class Footer extends Component {
           <div class="footer-wrap-middle">
             <ul class="list-unstyled footer-list">
               <li class="footer-list-item">
-                <a href="https://documentation.centreon.com/" target="_blank">Documentation</a>
+                <a href="https://documentation.centreon.com/" target="_blank" rel="noopener noreferrer">Documentation</a>
               </li>
               <li class="footer-list-item">
-                <a href="https://support.centreon.com" target="_blank">Centreon Support</a>
+                <a href="https://support.centreon.com" target="_blank" rel="noopener noreferrer">Centreon Support</a>
               </li>
               <li class="footer-list-item">
-                <a href="https://www.centreon.com" target="_blank">Centreon</a>
+                <a href="https://www.centreon.com" target="_blank" rel="noopener noreferrer">Centreon</a>
               </li>
               <li class="footer-list-item">
-                <a href="https://github.com/centreon/centreon.git" target="_blank">Github Project</a>
+                <a href="https://github.com/centreon/centreon.git" target="_blank" rel="noopener noreferrer">Github Project</a>
               </li>
               <li class="footer-list-item">
-                <a href="https://centreon.github.io" target="_blank">Slack</a>
+                <a href="https://centreon.github.io" target="_blank" rel="noopener noreferrer">Slack</a>
               </li>
             </ul>
           </div>
