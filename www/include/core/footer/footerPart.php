@@ -182,7 +182,7 @@ foreach ($jsdata as $k => $val) {
  */
 function setQuickSearchPosition() {
     if (jQuery('QuickSearch')) {
-        if ($jQuery('header').is(':visible')) {
+        if (jQuery('header').is(':visible')) {
           jQuery('QuickSearch').css({ top: '86px' });
         } else {
           jQuery('QuickSearch').css({ top: '3px' });
