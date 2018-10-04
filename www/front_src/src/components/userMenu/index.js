@@ -27,18 +27,11 @@ class UserMenu extends Component {
     const { userId, username, autologinkey } = data;
     if (userId && !initialized) {
       let token = autologinkey ? autologinkey : generatePassword('aKey');
-     
-      if (!autologinkey || autologinkey != token) {
-        this.autoLoginApi.put("", {
-          userId,
-          token
-        }).then(() => { })
-      }
 
       this.setState({
-        buildedLink: window.location.protocol + '//' + window.location.hostname + "/_CENTREON_PATH_PLACEHOLDER_/index.php" + '?autologin=1' + '&useralias=' + username + '&token=' + token,
+        buildedLink: window.location.href + '?autologin=1' + '&useralias=' + username + '&token=' + token,
         initialized: true
-      })
+      });
     }
   }
 

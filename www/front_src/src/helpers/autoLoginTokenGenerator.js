@@ -14,19 +14,9 @@ export const getRandomNum = () => {
 }
 
 export const checkPunc = (num) => {
-    if (num >= 33 && num <= 47) {
+    if ((num >= 33 && num <= 47) || (num >= 58 && num <= 64) || (num >= 91 && num <= 96) || (num >= 123 && num <= 126)) {
         return true;
     }
-    if (num >= 58 && num <= 64) {
-        return true;
-    }
-    if (num >= 91 && num <= 96) {
-        return true;
-    }
-    if (num >= 123 && num <= 126) {
-        return true;
-    }
-
     return false;
 }
 
