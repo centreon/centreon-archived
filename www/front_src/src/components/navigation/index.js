@@ -11,6 +11,9 @@ import routeMap from "../../route-maps/index";
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
 
+  clickTimeout = null;
+  doubleClicked = false;
+
   state = {
     active: false,
     initiallyCollapsed: false,
@@ -18,63 +21,16 @@ class NavigationComponent extends Component {
     menuItems: []
   };
 
-  switchTopLevelMenu = selectedMenu => {
-    this.setState({
-      selectedMenu
-    });
-  };
-
-  transformToArray = (data, callback) => {
-    let result = [];
-    for (var key in data) {
-      result.push(data[key]);
-    }
-    callback(result);
-  };
-
-  onSwitch = index => {
-    let { menuItems } = this.state;
-    for (let i = 0; i < menuItems.length; i++) {
-      menuItems[i].toggled = false;
-    }
-    menuItems[index].toggled = menuItems[index].toggled ? false : true;
-    this.setState({
-      active: true,
-      menuItems
-    });
-  };
-
-  handleDoubleClickItem = index => {
-    switch (index) {
-      case 1:
-        this.goToPage('main.php?p=20201', 1);
-        break;
-      case 2:
-        this.goToPage('main.php?p=30701', 2);
-        break;
-      case 3:
-        this.goToPage('main.php?p=60101', 3);
-        break;
-      case 4:
-        this.goToPage('main.php?p=50110&o=general', 4);
-        break;
-      default:
-        this.goToPage('main.php?p=103', 0);
-        break;
-    };
-  };
-
   UNSAFE_componentWillMount = () => {
     this.navService.get().then(({ data }) => {
-      this.transformToArray(data, array => {
-        this.setState({
-          menuItems: array,
-          selectedMenu: array[0]
-        });
+      this.setState({
+        menuItems: data,
+        selectedMenu: Object.values(data)[0]
       });
-    });
+    })
   };
 
+  // toggle between icons menu and details menu
   toggleNavigation = () => {
     const { active } = this.state;
     this.setState({
@@ -82,28 +38,47 @@ class NavigationComponent extends Component {
     });
   };
 
-  collapseInitialSubMenu = (key, index) => {
-    let { menuItems } = this.state;
-    menuItems[index].toggled = true;
-    menuItems[index].children[key]["collapsed"] = menuItems[index].children[
-      key
-    ]["collapsed"]
-      ? false
-      : true;
-    this.setState({
-      initiallyCollapsed: true,
-      menuItems
-    });
+  // handle double click on level 1
+  handleDoubleClick = (levelOneKey, levelOneProps) => {
+    clearTimeout(this.clickTimeout)
+    this.doubleClicked = true
+    const urlOptions = levelOneKey.slice(1) +
+      (levelOneProps.options !== null ? levelOneProps.options : '')
+    this.goToPage(
+      routeMap.module + "?p=" + urlOptions,
+      levelOneKey
+    )
+  }
+
+  // display/hide level 2
+  collapseLevelTwo = index => {
+    this.clickTimeout = setTimeout(() => {
+      if (!this.doubleClicked) {
+        let { menuItems } = this.state;
+
+        Object.keys(menuItems).forEach(key => {
+          menuItems[key].toggled = false;
+        })
+        menuItems[index].toggled = !menuItems[index].toggled;
+
+        this.setState({
+          active: true,
+          menuItems
+        });
+      }
+      this.doubleClicked = false
+    }, 200);
   };
 
-  collapseSubMenu = (key, index) => {
+  // display/hide level 3
+  collapseLevelThree = (levelOneKey, levelTwoKey) => {
     let { menuItems } = this.state;
 
-    if(menuItems[index].children[key]["collapsed"]) {
-      menuItems[index].children[key]["collapsed"] = false;
+    if (menuItems[levelOneKey].children[levelTwoKey]["collapsed"]) {
+      menuItems[levelOneKey].children[levelTwoKey]["collapsed"] = false;
     } else {
-      Object.keys(menuItems[index].children).forEach(subKey => {
-        menuItems[index].children[subKey]["collapsed"] = key === subKey ? true : false;
+      Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = levelTwoKey === subKey ? true : false;
       });
     }
 
@@ -114,10 +89,12 @@ class NavigationComponent extends Component {
 
   activateTopLevelMenu = index => {
     let { menuItems } = this.state;
-    for (let i = 0; i < menuItems.length; i++) {
-      menuItems[i].active = false;
-    }
+
+    Object.keys(menuItems).forEach(key => {
+      menuItems[key].active = false;
+    })
     menuItems[index].active = true;
+
     this.setState({
       menuItems
     });
@@ -130,12 +107,12 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems, initiallyCollapsed } = this.state;
-    const pageId = this.props.location.search.split("=")[1];
+    const { active, menuItems } = this.state;
+    const pageId = this.props.location.search.split("p=")[1];
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
         <div class="sidebar-inner">
-          <div class="sidebar-logo" onClick={this.toggleNavigation.bind(this)}>
+          <div class="sidebar-logo" onClick={this.toggleNavigation}>
             <span>
               <img
                 class="sidebar-logo-image"
@@ -146,7 +123,7 @@ class NavigationComponent extends Component {
               />
             </span>
           </div>
-          <div class="sidebar-logo-mini" onClick={this.toggleNavigation.bind(this)}>
+          <div class="sidebar-logo-mini" onClick={this.toggleNavigation}>
             <span>
               <img
                 class="sidebar-logo-mini-image"
@@ -158,120 +135,94 @@ class NavigationComponent extends Component {
             </span>
           </div>
           <ul class="menu menu-items list-unstyled components">
-            {menuItems.map((item, index) => {
+            {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => {
               return (
-                <li class={"menu-item" + (item.active ? " active" : "")}>
+                <li class={"menu-item" + (levelOneProps.active ? " active" : "")}>
                   <span
-                    onDoubleClick={this.handleDoubleClickItem.bind(this,index)}
-                    onClick={this.onSwitch.bind(this, index)}
+                    onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
+                    onClick={() => {this.collapseLevelTwo(levelOneKey)}}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
-                    id={"menu"+ index}
+                    id={"menu" + levelOneKey}
                   >
-                    <span class={`iconmoon icon-${item.label.toLowerCase()}`}>
-                      <span class={"menu-item-name"}>{item.label}</span>
+                    <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
+                      <span class={"menu-item-name"}>{levelOneProps.label}</span>
                     </span>
                   </span>
                   <ul
                     class="collapse collapsed-items list-unstyled"
-                    style={{ display: (item.toggled && active) ? "block" : "none" }}
+                    style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                   >
-                    {item.children
-                      ? Object.keys(item.children).map(menuKey => {
-                          let subItem = item.children[menuKey];
-                          return (
-                            <li
-                              class={
-                                "collapsed-item" +
-                                (subItem.collapsed ? " active" : "")
-                              }
+                    {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
+                      const urlOptions = levelTwoKey.slice(1) +
+                        (levelTwoProps.options !== null ? levelTwoProps.options : '')
+                      return (
+                        <li
+                          class={
+                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
+                          }
+                        >
+                          {Object.keys(levelTwoProps.children).length > 0 ? (
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
+                              class="collapsed-level-item-link"
                             >
-                              {Object.keys(subItem.children).length > 0 ? (
-                                <span
-                                  style={{ cursor: "pointer" }}
-                                  onClick={this.collapseSubMenu.bind(
-                                    this,
-                                    menuKey,
-                                    index
-                                  )}
-                                  class="collapsed-level-item-link"
-                                >
-                                  {subItem.label}
-                                </span>
-                              ) : (
-                                <Link
-                                  className="collapsed-level-item-link img-none"
-                                  to={routeMap.module + "?p=" + menuKey.slice(1) + (subItem.options ? subItem.options : '')}
-                                >
-                                  {subItem.label}
-                                </Link>
-                              )}
+                              {levelTwoProps.label}
+                            </span>
+                          ) : (
+                            <Link
+                              onClick={() => {
+                                this.goToPage(
+                                  routeMap.module + "?p=" + urlOptions,
+                                  levelOneKey
+                                )
+                              }}
+                              className="collapsed-level-item-link img-none"
+                              to={routeMap.module + "?p=" + urlOptions}
+                            >
+                              {levelTwoProps.label}
+                            </Link>
+                          )}
 
-                              <ul class="collapse-level collapsed-level-items first-level list-unstyled">
-                                {Object.keys(subItem.children).length > 0
-                                  ? 
-                                  Object.keys(subItem.children).map(
-                                      (key, idx) => (
-                                        <React.Fragment>
-                                          {
-                                          Object.keys(subItem.children).length > 1 ? 
-                                            <span class="collapsed-level-title">
-                                              {key}:{" "}
-                                            </span> 
-                                          : null
-                                          }
-                                          {Object.keys(subItem.children[key]).map(
-                                            subKey => {
-                                              const urlOptions = subItem.children[key][subKey].options !== null
-                                                ? subItem.children[key][subKey].options
-                                                : ''
-                                              if (pageId == subKey) {
-                                                if (!initiallyCollapsed) {
-                                                  this.collapseInitialSubMenu(
-                                                    menuKey,
-                                                    index
-                                                  );
-                                                  this.activateTopLevelMenu(
-                                                    index
-                                                  );
-                                                }
-                                              }
-                                              return (
-                                                <li
-                                                  class={
-                                                    "collapsed-level-item" +
-                                                    (pageId == subKey
-                                                      ? " active"
-                                                      : "")
-                                                  }
-                                                >
-                                                  <Link
-                                                    onClick={this.goToPage.bind(
-                                                      this,
-                                                      routeMap.module +
-                                                        "?p=" +
-                                                        subKey.slice(1) +
-                                                        urlOptions,
-                                                      index
-                                                    )}
-                                                    className="collapsed-level-item-link"
-                                                    to={routeMap.module + "?p=" + subKey.slice(1) + urlOptions}
-                                                  >
-                                                    {subItem.children[key][subKey].label}
-                                                  </Link>
-                                                </li>
-                                              );
-                                            }
-                                          )}
-                                        </React.Fragment>
-                                      )
-                                    )
-                                  : null}
-                              </ul>
-                            </li>
-                          );
-                        })
-                      : null}
+                          <ul class="collapse-level collapsed-level-items first-level list-unstyled">
+                            {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
+                              return (
+                              <React.Fragment>
+                                {Object.keys(levelTwoProps.children).length > 1 &&
+                                  <span class="collapsed-level-title">
+                                    {levelThreeKey}
+                                  </span>
+                                }
+                                {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
+                                    const urlOptions = levelFourKey.slice(1) +
+                                      (levelFourProps.options !== null ? levelFourProps.options : '')
+                                    return (
+                                      <li
+                                        class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                      >
+                                        <Link
+                                          onClick={() => {
+                                            this.goToPage(
+                                              routeMap.module + "?p=" + urlOptions,
+                                              levelOneKey
+                                            )
+                                          }}
+                                          className="collapsed-level-item-link"
+                                          to={routeMap.module + "?p=" + urlOptions}
+                                        >
+                                          {levelFourProps.label}
+                                        </Link>
+                                      </li>
+                                    );
+                                  }
+                                )}
+                              </React.Fragment>
+                            )})}
+                          </ul>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </li>
               );
@@ -280,7 +231,7 @@ class NavigationComponent extends Component {
           <div class="toggle-sidebar-wrap">
             <span
               class="toggle-sidebar-icon"
-              onClick={this.toggleNavigation.bind(this)}
+              onClick={() => {this.toggleNavigation()}}
             />
           </div>
         </div>
