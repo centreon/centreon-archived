@@ -62,7 +62,7 @@ class UserMenu extends Component {
     });
   };
 
-  copyButton = () => (
+  copyToClipboardBtn = () => (
     <button className={'submenu-user-button'}  onClick={this.onCopy.bind(this)}>Copy autologin link <span className={"btn-logout-icon icon-copy " + (this.state.copied && ["icon-copied"])}></span></button>
   )
 
@@ -76,7 +76,7 @@ class UserMenu extends Component {
     const { toggled, copied, buildedLink } = this.state,
       { fullname, username, autologinkey } = data;
 
-    const copyButton = autologinkey ? this.copyButton() : null;
+    const copyToClipboardBtn = autologinkey ? this.copyToClipboardBtn() : null;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -97,7 +97,7 @@ class UserMenu extends Component {
                 </li>
                 <React.Fragment>
 
-                {copyButton}
+                {copyToClipboardBtn}
                   <textarea id="autologin-input" style={
                     {
                       width: 0,
