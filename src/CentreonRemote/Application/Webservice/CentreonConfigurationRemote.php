@@ -253,12 +253,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             return ['error' => true, 'message' => $e->getMessage()];
         }
 
-        /*
-         * add centreon_path to server info
-         */
-        $centreon_path = $_POST['centreon_folder'] ?? '/centreon/';
-        $this->setRemoteCentreonPath($serverID, $centreon_path);
-
         $pollerConfigurationBridge->setServerID($serverID);
         $pollerConfigurationBridge->collectDataFromRequest();
         $taskId = null;
@@ -284,7 +278,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         }
 
         if ($isRemoteConnection) {
-            $this->addServerToListOfRemotes($serverIP);
+            $centreonPath = $_POST['centreon_folder'] ?? '/centreon/';
+            $this->addServerToListOfRemotes($serverIP, $centreonPath);
             $this->setCentreonInstanceAsCentral();
         }
 
@@ -314,7 +309,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP)
+    private function addServerToListOfRemotes($serverIP, $centreonPath)
     {
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -324,17 +319,19 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ? WHERE `ip` = ?';
-            $data = ['1', $date, $serverIP];
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
+                'WHERE `ip` = ?';
+            $data = ['1', $date, $centreonPath, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'           => $serverIP,
-                'app_key'      => '',
-                'version'      => '',
-                'is_connected' => '1',
-                'created_at'   => $date,
-                'connected_at' => $date,
+                'ip'            => $serverIP,
+                'app_key'       => '',
+                'version'       => '',
+                'is_connected'  => '1',
+                'created_at'    => $date,
+                'connected_at'  => $date,
+                'centreon_path' => $centreonPath,
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
@@ -372,18 +369,5 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     {
         $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params'=>$params));
         return $result;
-    }
-
-    /**
-     * Update Remote Server Entry to add centreon path
-     * @var int $serverID Id of server
-     * @var string $centreon_path Path of Centreon Web on Remote
-     * @return void
-     */
-    private function setRemoteCentreonPath(int $serverID, string $centreon_path)
-    {
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
-        $sql = "UPDATE `remote_servers` SET `centreon_path` = '$centreon_path' WHERE `id` = $serverID";
-        $dbAdapter->query($sql);
     }
 }
