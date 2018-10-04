@@ -82,7 +82,7 @@ $DBRESULT->closeCursor();
  */
 $file_install_acces = 0;
 if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '" . getcwd() .
+    $error_msg = "Installation Directory '" . __DIR__ .
         "/install/' is accessible. Delete this directory to prevent security problem.";
     $file_install_acces = 1;
 }
@@ -94,8 +94,9 @@ if (file_exists("./install/setup.php")) {
 $staticExists = glob('static/css/*.css');
 $newPath = explode('index.php', $_SERVER['REQUEST_URI'])[0];
 
-if (!$staticExists){
-    shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+if (!$staticExists) {
+    shell_exec('rm -rf ' . __DIR__ . '/static ');
+    shell_exec('cp -pR ' . __DIR__ . '/template '. __DIR__ . '/static');
     $allCssFiles = glob('static/css/*');
     $allJsFiles = glob('static/js/*');
     $indexFile = glob('index.html');
@@ -106,11 +107,11 @@ if (!$staticExists){
         file_put_contents($file, $newCont);
     }
 } else {
-    $hashStatic = explode('static/css/main.',$staticExists[0]);
-    $hashTemplate = explode('template/css/main.', (glob('template/css/*.css'))[0]);
-    if ($hashTemplate[1] !== $hashStatic){
-        shell_exec('rm -rf ' . getcwd() . '/static ');
-        shell_exec('cp -p ' . getcwd() . '/template '. getcwd() . '/static -R');
+    $hashStatic = explode('static/css/main.', $staticExists[0]);
+    $hashTemplate = explode('template/css/main.', glob('template/css/*.css')[0]);
+    if ($hashTemplate[1] !== $hashStatic) {
+        shell_exec('rm -rf ' . __DIR__ . '/static ');
+        shell_exec('cp -pR ' . __DIR__ . '/template '. __DIR__ . '/static');
         $allCssFiles = glob('static/css/*');
         $allJsFiles = glob('static/js/*');
         $indexFile = glob('index.html');
