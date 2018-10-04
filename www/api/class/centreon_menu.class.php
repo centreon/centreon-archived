@@ -37,8 +37,9 @@ use CentreonLegacy\Core\Menu\Menu;
 
 require_once dirname(__FILE__) . "/webService.class.php";
 
-class CentreonMenu extends CentreonWebService
+class CentreonMenu extends CentreonWebService implements CentreonWebServiceDiInterface
 {
+    private $dependencyInjector;
     /**
      * Get the init menu on loading page
      *
@@ -52,9 +53,22 @@ class CentreonMenu extends CentreonWebService
         if (!isset($_SESSION['centreon'])) {
             throw new \RestUnauthorizedException('Session does not exists.');
         }
-
+        /**
+         * Initialize the language translator
+         */
+        $this->dependencyInjector['translator'];
         $menu = new Menu($this->pearDB, $_SESSION['centreon']->user);
 
         return $menu->getMenu();
+    }
+
+    /**
+     * Define the dependency injector
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
+    public function finalConstruct(\Pimple\Container $dependencyInjector)
+    {
+        $this->dependencyInjector = $dependencyInjector;
     }
 }

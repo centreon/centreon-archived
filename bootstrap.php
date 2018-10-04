@@ -93,6 +93,15 @@ $dependencyInjector['finder'] = $dependencyInjector->factory(function ($c) {
     return new \Symfony\Component\Finder\Finder();
 });
 
+// Define Language translator
+$dependencyInjector['translator'] = $dependencyInjector->factory(function ($c) {
+    global $centreon;
+    $translator = new CentreonLang(_CENTREON_PATH_, $centreon);
+    $translator->bindLang();
+    $translator->bindLang('help');
+    return $translator;
+});
+
 // Dynamically register service provider
 \Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);
 

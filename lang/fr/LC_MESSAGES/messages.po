@@ -2577,6 +2577,31 @@ msgstr "Annulé"
 msgid "Actual End"
 msgstr "Fin Actuelle"
 
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:217
+msgid "Recurrent downtimes"
+msgstr "Temps d'arrêt récurrents"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:156
+msgid "Plugin Packs"
+msgstr "Packs de plugins"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Subscription"
+msgstr "Abonnement"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Platform Status"
+msgstr "Statut de la plateforme"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Engine Statistics"
+msgstr "Statistiques du moteur"
+
+
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
 msgstr "Pas de temps d'arrêt programmé"
