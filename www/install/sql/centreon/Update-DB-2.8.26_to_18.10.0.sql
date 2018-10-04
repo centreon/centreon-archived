@@ -56,3 +56,5 @@ ALTER TABLE `nagios_server` ADD CONSTRAINT `nagios_server_remote_id_id` FOREIGN 
 -- Update the "About" menu
 UPDATE topology SET topology_url = './include/Administration/about/about.php', topology_modules = '0', topology_popup = '0' WHERE topology_page = 506 AND topology_parent = 5;
 DELETE FROM topology WHERE topology_parent = 506;
+
+ALTER TABLE `remote_servers` ADD COLUMN `centreon_path` varchar(255) NULL;

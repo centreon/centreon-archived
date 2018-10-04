@@ -253,6 +253,12 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             return ['error' => true, 'message' => $e->getMessage()];
         }
 
+        /*
+         * add centreon_path to server info
+         */
+        $centreon_path = $_POST['centreon_folder'] ?? '/centreon/';
+        $this->setRemoteCentreonPath($serverID, $centreon_path);
+
         $pollerConfigurationBridge->setServerID($serverID);
         $pollerConfigurationBridge->collectDataFromRequest();
         $taskId = null;
@@ -273,7 +279,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             }
             $params['server'] = $remoteServer->getId();
             $params['remote_ip'] = $remoteServer->getIp();
-            $params['centreon_path'] = $_POST['centreon_folder'] ?? 'centreon';
+            $params['centreon_path'] = $_POST['centreon_folder'] ?? '/centreon/';
             $taskId = $this->createExportTask($params);
         }
 
@@ -366,5 +372,18 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     {
         $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params'=>$params));
         return $result;
+    }
+
+    /**
+     * Update Remote Server Entry to add centreon path
+     * @var int $serverID Id of server
+     * @var string $centreon_path Path of Centreon Web on Remote
+     * @return void
+     */
+    private function setRemoteCentreonPath(int $serverID, string $centreon_path)
+    {
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $sql = "UPDATE `remote_servers` SET `centreon_path` = '$centreon_path' WHERE `id` = $serverID";
+        $dbAdapter->query($sql);
     }
 }
