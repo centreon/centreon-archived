@@ -178,7 +178,7 @@ $tpl->assign("tab_comments_svc", $tab_comments_svc);
 $tpl->assign("nb_comments_svc", count($tab_comments_svc));
 $tpl->assign("no_svc_comments", _("No Comment for services."));
 $tpl->assign("cmt_service_comment", _("Services Comments"));
-$tpl->assign("host_comment_link", "?p=" . $p . "&o=vh");
+$tpl->assign("host_comment_link", "./main.php?p=" . $p . "&o=vh");
 $tpl->assign("view_host_comments", _("View comments of hosts"));
 $tpl->assign("delete", _("Delete"));
 $tpl->assign("search", $search_service);

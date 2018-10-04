@@ -102,12 +102,12 @@ for ($i = 0; $resources = $dbResult->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resources['acl_res_id'] . "]");
 
     if ($resources["acl_res_activate"]) {
-        $moptions = "<a href='?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
+        $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
             . "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search
             . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
-        $moptions = "<a href='?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
+        $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
             . "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled") . "'></a>&nbsp;&nbsp;";

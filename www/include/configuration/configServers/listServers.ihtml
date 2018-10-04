@@ -89,7 +89,7 @@
             <td class="ListColCenter">
               {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
               <!-- Link for edit poller monitoring engine configuration -->
-              <a href="?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
+              <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
                 <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
               </a>
               {/if}

@@ -159,7 +159,7 @@
                             <tr class='list_lvl_1'>
                               <td class="FormHeader" colspan="2">
                                 <h4>
-                                  {$detailed_graph}<a href="?p=20401&mode=0&svc_id={$url_svc_id}">
+                                  {$detailed_graph}<a href="./main.php?p=20401&mode=0&svc_id={$url_svc_id}">
                                     <img class="ico-18 pull-right" src="./img/icons/chart.png"/>
                                   </a>
                                 </h4>
@@ -214,7 +214,7 @@
                             {if $lcaTopo.201 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                        <a href='?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
+                                        <a href='./main.php?p=20202&o=hd&host_name={$h.host_name}'>{$lnk_host_status}</a>
 
                                 </td>
                                 <td></td>
@@ -224,12 +224,12 @@
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.6 || $admin == 1}
-                                        <a href='?p=60101&host_id={$h.host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
+                                        <a href='./main.php?p=60101&host_id={$h.host_id}&o=c'>{$lnk_host_config} {$h.host_name}</a>
                                     {/if}
                                 </td>
                                 <td class="ColPopup">
                                     {if $lcaTopo.602 || $admin == 1}
-                                        <a href='?p=60201&service_id={$service_id}&o=c'>{$lnk_serv_config}</a>
+                                        <a href='./main.php?p=60201&service_id={$service_id}&o=c'>{$lnk_serv_config}</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -237,10 +237,10 @@
                             {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                        <a href='?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
+                                        <a href='./main.php?p=20301&h={$h.host_id}'>{$lnk_host_logs}</a>
                                 </td>
                                 <td class="ColPopup">
-                                        <a href='?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
+                                        <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
                                 </td>
                             </tr>
                             {/if}
@@ -248,13 +248,13 @@
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.307 || $admin == 1}
-                                        <a href='?p=307&host={$h.host_id}'>{$lnk_host_reports}</a>
+                                        <a href='./main.php?p=307&host={$h.host_id}'>{$lnk_host_reports}</a>
                                     {/if}
                                 </td>
 
                                 <td class="ColPopup">
                                     {if $lcaTopo.30702 || $admin == 1}
-                                        <a href='?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>{$lnk_serv_reports}</a>
+                                        <a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>{$lnk_serv_reports}</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -262,7 +262,7 @@
                             {if $lcaTopo.4 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                        <a href='?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
+                                        <a href='./main.php?p=20401&mode=0&svc_id={$h.host_name}'>{$lnk_host_graphs}</a>
                                 </td>
                                 <td></td>
                             </tr>
@@ -276,7 +276,7 @@
                             {if $lcaTopo.60204 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                        <a href='?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
+                                        <a href='./main.php?p=60204&o=c&meta_id={$meta_id}&o=c'>{$lnk_serv_config}</a>
 
                                 </td>
                             </tr>
@@ -284,7 +284,7 @@
                             {if $lcaTopo.20301 || $admin == 1}
                             <tr>
                                 <td class="ColPopup">
-                                        <a href='?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
+                                        <a href='./main.php?p=20301&svc={$h.host_id}_{$service_id}'>{$lnk_serv_logs}</a>
 
                                 </td>
                             </tr>
@@ -304,7 +304,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="ColPopup">
-                                    <a href='?p=20201&o=svc&host_search={$h.host_name}'>{$lnk_serv_status}</a>
+                                    <a href='./main.php?p=20201&o=svc&host_search={$h.host_name}'>{$lnk_serv_status}</a>
                                 </td>
                             </tr>
                         </table>
@@ -336,21 +336,21 @@
                                 {if $aclAct.service_schedule_downtime || $admin == true}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a></b>
+                                            <b><a href='./main.php?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if $aclAct.service_comment || $admin == true}
                                     <tr class='list_one'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
+                                            <b><a href='./main.php?p=21002&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
                                 {if ($aclAct.service_submit_result || $admin == true) && $service_data.passive_checks_enabled}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            <b><a href='?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
+                                            <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
@@ -459,7 +459,7 @@
                                 </td>
                                 <td class="ListColRight ColPopup">
                                     {if $aclAct.service_acknowledgement && !$service_data.problem_has_been_acknowledged || $aclAct.service_disacknowledgement && $service_data.problem_has_been_acknowledged || $admin == true}
-                                        <a href='?p={$p}&o=svcak&cmd=15&host_name={$h.host_name|urlencode}&service_description={$svc_description|urlencode}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}' title='{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}'>
+                                        <a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name|urlencode}&service_description={$svc_description|urlencode}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}' title='{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}'>
                                             <img class="ico-16" src={$img_en[$service_data.problem_has_been_acknowledged]} alt="{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}" />
                                         </a>
                                     {/if}
@@ -543,7 +543,7 @@
                                 </td>
                                 <td>
                                 {foreach from=$contactgroups item=cg key=k}
-                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
+                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60302&o=c&cg_id={$k}'>{$cg}</a><br>
                                 {/foreach}
                                 </td>
                             </tr>
@@ -553,7 +553,7 @@
                                 </td>
                                 <td>
                                 {foreach from=$contacts item=c key=k}
-                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
+                                        &nbsp;&nbsp;&nbsp;-&nbsp;<a href='./main.php?p=60301&o=c&contact_id={$k}'>{$c}</a><br>
                                 {/foreach}
                                 </td>
                             </tr>

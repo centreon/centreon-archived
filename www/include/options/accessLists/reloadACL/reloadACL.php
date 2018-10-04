@@ -108,7 +108,7 @@ while ($r = $res->fetchRow()) {
         $session_data[$cpt]["ip_address"] = $r["ip_address"];
         $session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
         $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
-        $session_data[$cpt]["actions"] = "<a href='?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
+        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
         $selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
         $session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
         $cpt++;

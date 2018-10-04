@@ -2,7 +2,7 @@
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
         <td>
-            <a href="?p=508" class="btc bt_success">{t}Back{/t}</a>
+            <a href="./main.php?p=508" class="btc bt_success">{t}Back{/t}</a>
         </td>
     </tr>
 </table>

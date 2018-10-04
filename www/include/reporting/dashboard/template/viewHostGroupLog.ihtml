@@ -123,7 +123,7 @@
 				</tr>
 				{foreach item=tb from=$components}
 				<tr class={cycle values="list_two, list_one"}>
-					<td class="ListColHeaderLeft"><a href="?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>
+					<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.ID}&period={$get_period}&start={$get_date_start}&end={$get_date_end}">{$tb.NAME}</a></td>
 					<td class="ListColCenter" {$style.UP_BOTTOM}>{$tb.UP_TP}% ({$tb.UP_MP}%)</td>
 					<td class="ListColCenter" {$style.UP_BOTTOM} >{$tb.UP_A}</td>
 					<td class="ListColCenter" {$style.DOWN_BOTTOM}>{$tb.DOWN_TP}% ({$tb.DOWN_MP}%)</td>

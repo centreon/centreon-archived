@@ -48,11 +48,11 @@
         <td class='ListColCenter'>{$elem.type}</td>
         <td class='ListColLeft'>
         {if $elem.host != ''}
-            <a href="?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.host} / {$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.host} / {$elem.object_name}</a>
         {elseif $elem.hostgroup != ''}
-            <a href="?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>
         {elseif $elem.hosts}
-            <a href="?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
             (
             {assign var=flag value=0}
             {foreach key=key2 item=item2 from=$elem.hosts}
@@ -62,7 +62,7 @@
             {/foreach}
             ) {$elem.object_name}</a>
         {elseif $elem.hostgroups}
-            <a href="?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
             (
             {assign var=flag value=0}
             {foreach key=key2 item=item2 from=$elem.hostgroups}
@@ -72,7 +72,7 @@
             {/foreach}
             ) {$elem.object_name}</a>
         {else}
-            <a href="?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.object_name}</a>
         {/if}
         </td>
         <td class='ListColCenter'>{$elem.author}</td>

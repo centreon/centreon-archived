@@ -125,11 +125,11 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         $selectedElements->setAttribute('disabled', 'disabled');
     } else {
         if ($service["service_activate"]) {
-            $moptions .= "<a href='?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" .
+            $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" .
                 $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
-            $moptions .= "<a href='?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" .
+            $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" .
                 $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
         }
@@ -155,7 +155,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         foreach ($tplArr as $key => $value) {
             $value = str_replace('#S#', "/", $value);
             $value = str_replace('#BS#', "\\", $value);
-            $tplStr .= "&nbsp;->&nbsp;<a href='?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
+            $tplStr .= "&nbsp;->&nbsp;<a href='main.php?p=60206&o=c&service_id=" . $key . "'>" . $value . "</a>";
         }
     }
 

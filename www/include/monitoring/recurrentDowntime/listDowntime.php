@@ -98,11 +98,11 @@ foreach ($listDowntime as $dt) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $dt['dt_id'] . "]");
     if ($dt["dt_activate"]) {
-        $moptions .= "<a href='?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='main.php?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=e&limit=" . $limit .
+        $moptions .= "<a href='main.php?p=" . $p . "&dt_id=" . $dt['dt_id'] . "&o=e&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }

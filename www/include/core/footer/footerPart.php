@@ -182,10 +182,10 @@ foreach ($jsdata as $k => $val) {
  */
 function setQuickSearchPosition() {
     if (jQuery('QuickSearch')) {
-        if (jQuery('header').is(':visible')) {
-            jQuery('QuickSearch').css({ top: '86px' });
+        if ($jQuery('header').is(':visible')) {
+          jQuery('QuickSearch').css({ top: '86px' });
         } else {
-            jQuery('QuickSearch').css({ top: '3px' });
+          jQuery('QuickSearch').css({ top: '3px' });
         }
     }
     jQuery(".timepicker").timepicker();
@@ -253,6 +253,35 @@ function validateFeature(name, version, enabled) {
         <?php
         }
         ?>
+
+    jQuery('body').delegate(
+      'a',
+      'click',
+      function(e) {
+        e.preventDefault();
+        var href = jQuery(this).attr('href');
+
+        // Manage centreon links
+        // # allows to manage backboneJS links
+        if (href.match(/^\#/) || href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
+
+          // If we open link a new tab, we want to keep the header
+          if (jQuery(this).attr('target') === '_blank') {
+            href = href.replace('main.get.php', 'main.php');
+            window.open(href);
+          // If it's an internal link, we remove header to avoid inception
+          } else {
+            href = href.replace('main.php', 'main.get.php');
+            window.location.href = href;
+          }
+
+        // Manage external links (ie: www.google.com)
+        // we always open it in a new tab
+        } else {
+            window.open(href);
+        }
+      }
+    );
     </script>
     </body>
     </html>

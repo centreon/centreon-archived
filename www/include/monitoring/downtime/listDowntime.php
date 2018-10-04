@@ -272,7 +272,7 @@ $tpl->assign("nb_downtime_svc", count($tab_downtime_svc));
 $tpl->assign("dtm_service_downtime", _("Services Downtimes"));
 $tpl->assign("secondes", _("s"));
 $tpl->assign("view_host_dtm", _("View downtimes of hosts"));
-$tpl->assign("host_dtm_link", "?p=" . $p . "&o=vh");
+$tpl->assign("host_dtm_link", "./main.php?p=" . $p . "&o=vh");
 $tpl->assign("cancel", _("Cancel"));
 $tpl->assign("limit", $limit);
 
