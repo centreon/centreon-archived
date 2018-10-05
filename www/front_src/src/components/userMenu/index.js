@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import numeral from "numeral";
 import Clock from "../clock";
 import config from "../../config";
 
@@ -29,7 +28,7 @@ class UserMenu extends Component {
     });
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 

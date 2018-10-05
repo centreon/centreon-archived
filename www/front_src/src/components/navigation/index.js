@@ -114,8 +114,8 @@ class NavigationComponent extends Component {
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
         <div class="sidebar-inner">
-          <div class="sidebar-logo">
-            <a onClick={this.toggleNavigation.bind(this)}>
+          <div class="sidebar-logo" onClick={this.toggleNavigation.bind(this)}>
+            <span>
               <img
                 class="sidebar-logo-image"
                 src={logo}
@@ -123,10 +123,10 @@ class NavigationComponent extends Component {
                 height="57"
                 alt=""
               />
-            </a>
+            </span>
           </div>
-          <div class="sidebar-logo-mini">
-            <a onClick={this.toggleNavigation.bind(this)}>
+          <div class="sidebar-logo-mini" onClick={this.toggleNavigation.bind(this)}>
+            <span>
               <img
                 class="sidebar-logo-mini-image"
                 src={miniLogo}
@@ -134,13 +134,13 @@ class NavigationComponent extends Component {
                 height="21"
                 alt=""
               />
-            </a>
+            </span>
           </div>
           <ul class="menu menu-items list-unstyled components">
             {menuItems.map((item, index) => {
               return (
                 <li class={"menu-item" + (item.active ? " active" : "")}>
-                  <a
+                  <span
                     onClick={this.onSwitch.bind(this, index)}
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
@@ -148,7 +148,7 @@ class NavigationComponent extends Component {
                     <span class={`iconmoon icon-${item.menu_id.toLowerCase()}`}>
                       <span class={"menu-item-name"}>{item.label}</span>
                     </span>
-                  </a>
+                  </span>
                   <ul
                     class="collapse collapsed-items list-unstyled"
                     style={{ display: (item.toggled && active) ? "block" : "none" }}
@@ -164,7 +164,7 @@ class NavigationComponent extends Component {
                               }
                             >
                               {Object.keys(subItem.children).length > 0 ? (
-                                <a
+                                <span
                                   style={{ cursor: "pointer" }}
                                   onClick={this.collapseSubMenu.bind(
                                     this,
@@ -174,7 +174,7 @@ class NavigationComponent extends Component {
                                   class="collapsed-level-item-link"
                                 >
                                   {subItem.label}
-                                </a>
+                                </span>
                               ) : (
                                 <Link
                                   className="collapsed-level-item-link img-none"
@@ -189,7 +189,7 @@ class NavigationComponent extends Component {
                                   ? 
                                   Object.keys(subItem.children).map(
                                       (key, idx) => (
-                                        <div>
+                                        <React.Fragment>
                                           {
                                           Object.keys(subItem.children).length > 1 ? 
                                             <span class="collapsed-level-title">
@@ -240,7 +240,7 @@ class NavigationComponent extends Component {
                                               );
                                             }
                                           )}
-                                        </div>
+                                        </React.Fragment>
                                       )
                                     )
                                   : null}

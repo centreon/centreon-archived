@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Field, reduxForm as connectForm } from "redux-form";
-import MultiSelect from "../../form-fields/MultiSelect";
 import Select from "react-select";
 import fieldHoc from "../../form-fields/hoc";
 

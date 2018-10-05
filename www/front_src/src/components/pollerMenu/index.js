@@ -23,10 +23,10 @@ const getPollerStatusIcon = issues => {
   let result = (
     <React.Fragment>
       <span class={`wrap-left-icon round ${databaseClass}`}>
-        <span class="iconmoon icon-database" title={databaseClass == 'green' ? 'OK: all database poller updates are active' : 'Some database poller updates are not active; check your configuration' } />
+        <span class="iconmoon icon-database" title={databaseClass === 'green' ? 'OK: all database poller updates are active' : 'Some database poller updates are not active; check your configuration' } />
       </span>
       <span class={`wrap-left-icon round ${latencyClass}`}>
-        <span class="iconmoon icon-clock" title={latencyClass == 'green' ? 'OK: no latency detected on your platform' : 'Latency detected, check configuration for better optimisation' } />
+        <span class="iconmoon icon-clock" title={latencyClass === 'green' ? 'OK: no latency detected on your platform' : 'Latency detected, check configuration for better optimisation' } />
       </span>
     </React.Fragment>
   );
@@ -46,7 +46,7 @@ class PollerMenu extends Component {
     });
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -119,14 +119,14 @@ class PollerMenu extends Component {
                               const color =
                                 elem === "critical" ? "red" : "blue";
                               return (
-                                <a
+                                <span
                                   class="submenu-top-item-link"
                                   style={{ padding: "0px 16px 17px" }}
                                 >
                                   <span class={"dot-colored " + color}>
                                     {poller.name}
                                   </span>
-                                </a>
+                                </span>
                               );
                             });
                           } else return null;

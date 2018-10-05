@@ -3,7 +3,6 @@ import { Field, reduxForm as connectForm } from "redux-form";
 import InputField from "../../form-fields/InputField";
 import SelectField from "../../form-fields/SelectField";
 import RadioField from "../../form-fields/PreselectedRadioField";
-import { initialize } from 'redux-form';
 
 import {
   serverNameValidator,

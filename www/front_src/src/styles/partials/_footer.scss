@@ -1,5 +1,8 @@
 .footer {
-  flex: none;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 46px;
   padding: 0 100px 0 20px;
   box-sizing: border-box;
   background-color: #232f39;
