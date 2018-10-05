@@ -160,7 +160,7 @@ class CentreonTraps
             $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
         }
     }
-    
+
     /**
      * Indicates if the trap name already exists
      *
@@ -176,7 +176,7 @@ class CentreonTraps
             $prepare->bindValue(':trap_name', $trapName, \PDO::PARAM_STR);
             $prepare->execute();
             $result = $prepare->fetch(\PDO::FETCH_ASSOC);
-            return ((int) $result['total']) > 0;
+            return ((int)$result['total']) > 0;
         }
         return false;
     }
@@ -208,7 +208,7 @@ class CentreonTraps
                         } elseif ($cfgName != "traps_id") {
                             $fields[$cfgName] = $cfgValue;
                         }
-                        
+
                         if (is_null($val)) {
                             $val .= ($cfgValue == null)
                                 ? 'NULL'
@@ -219,40 +219,48 @@ class CentreonTraps
                                 : ", '" . $this->db->escape($cfgValue) . "'";
                         }
                     }
-                    
+
                     if (!is_null($val)
                         && !empty($trapName)
                         && !$this->trapNameExists($trapName)
                     ) {
-                        $res = $this->db->query(
-                            "INSERT INTO traps VALUES ($val)"
-                        );
+                        $this->db->query("INSERT INTO traps VALUES ($val)");
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
-                        $maxId = $res2->fetchRow();
+                        $maxId = $res2->fetch();
+
                         $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
                                         (SELECT " . $maxId['MAX(traps_id)'] . ", service_id 
                                             FROM traps_service_relation 
                                             WHERE traps_id = $trapsId)");
+
                         $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
                                         (SELECT " . $maxId['MAX(traps_id)'] . ", tpe_string, tpe_order
                                             FROM traps_preexec 
                                             WHERE trap_id = $trapsId)");
 
-                        $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$key;
+                        $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$trapsId;
+
                         $dbResult = $this->db->query($query);
-                        while ($row = $dbResult->fetchRow()) {
+
+                        while ($row = $dbResult->fetch()) {
+                            $severity = $row['severity_id'] ?? null;
                             $query = "INSERT INTO traps_matching_properties " .
                                 "(`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`) " .
-                                "VALUES (" . $maxId['MAX(traps_id)'] . "," . $row['tmo_order'] .
-                                ",'" . $row['tmo_regexp'] . "','" . $row['tmo_string'] . "'," . $row['tmo_status'] . "," .
-                                $row['severity_id'] . ")";
-                            $this->db->query($query);
+                                "VALUES (:trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)";
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':trap_id', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                            $stmt->bindValue(':tmo_order', $row['tmo_order'], \PDO::PARAM_INT);
+                            $stmt->bindValue(':tmo_regexp', $row['tmo_regexp'], \PDO::PARAM_STR);
+                            $stmt->bindValue(':tmo_string', $row['tmo_string'], \PDO::PARAM_STR);
+                            $stmt->bindValue(':tmo_status', $row['tmo_status'], \PDO::PARAM_INT);
+                            $stmt->bindValue(':severity_id', $severity, \PDO::PARAM_INT);
+                            $stmt->execute();
                         }
 
                         $this->centreon->CentreonLogAction->insertLog(
                             "traps",
                             $maxId["MAX(traps_id)"],
-                            $traps_name,
+                            $trapName,
                             "a",
                             $fields
                         );
