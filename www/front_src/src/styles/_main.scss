@@ -23,3 +23,13 @@ body {
 .hidden {
   display: none!important;
 }
+
+.hidden-input {
+  width: 0;
+  height: 0;
+  position: absolute;
+  opacity: 0;
+  width: 0px;
+  height: 0px;
+  top: -100px;
+}

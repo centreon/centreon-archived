@@ -57,7 +57,7 @@ class UserMenu extends Component {
     }
 
     const { toggled, copied } = this.state,
-      { fullname, username, autologinkey } = data;
+          { fullname, username, autologinkey } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -87,12 +87,7 @@ class UserMenu extends Component {
                     </button>
                     <textarea
                       id="autologin-input"
-                      style={{
-                        width: 0,
-                        height: 0,
-                        position: 'fixed',
-                        top: -100
-                      }}
+                      className={'hidden-input'}
                       ref={node => this.autologinNode = node}
                       value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
                     />
