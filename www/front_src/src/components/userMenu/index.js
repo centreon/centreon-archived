@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import Clock from "../clock";
 import config from "../../config";
 
+import axios from "../../axios";
+import {generatePassword} from "../../helpers/autoLoginTokenGenerator";
 class UserMenu extends Component {
   state = {
     toggled: false,
-    value: 'token=f855810b7eafb9cfb0c3d74c62af0fb2e2647939',
     copied: false
   };
-
 
   toggle = () => {
     const { toggled } = this.state;
@@ -17,12 +17,10 @@ class UserMenu extends Component {
     });
   };
 
-
   onCopy = () => {
-    let autoLoginInput = document.getElementById("autologin-input");
-    autoLoginInput.select();
-    document.execCommand('copy');
-    this.setState({ 
+    this.autologinNode.select();
+    window.document.execCommand('copy');
+    this.setState({
       copied: true,
       toggled: false
     });
@@ -45,6 +43,12 @@ class UserMenu extends Component {
     });
   };
 
+  getAutologinLink = () => {
+    const { username, autologinkey } = this.props.data
+
+    return window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey
+  };
+
   render() {
     const { data, clockData } = this.props;
 
@@ -52,14 +56,14 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled, copied, value } = this.state,
-      { fullname, username } = data;
+    const { toggled, copied } = this.state,
+          { fullname, username, autologinkey } = data;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
         <Clock clockData={clockData} />
         <div ref={profile => this.profile = profile}>
-          <span class="iconmoon icon-user" onClick={this.toggle.bind(this)} />
+          <span class="iconmoon icon-user" onClick={this.toggle} />
           <div class={"submenu profile"}>
             <div class="submenu-inner">
               <ul class="submenu-items list-unstyled">
@@ -72,17 +76,23 @@ class UserMenu extends Component {
                     </a>
                   </span>
                 </li>
-                <React.Fragment>
-                  <button class="submenu-user-button" onClick={this.onCopy.bind(this)}>Copy autologin link <span className={`iconmoon btn-logout-icon ${(copied ? 'icon-copied' : 'icon-copy')}`}></span></button>
-                  <textarea id="autologin-input" style={
-                    {
-                      width: 0,
-                      height: 0,
-                      position: 'fixed',
-                      top: -100
-                    }
-                  }>{value}</textarea>
-                </React.Fragment>
+                {autologinkey &&
+                  <React.Fragment>
+                    <button
+                      className={'submenu-user-button'}
+                      onClick={this.onCopy}
+                    >
+                      Copy autologin link
+                      <span className={"btn-logout-icon icon-copy " + (copied && ["icon-copied"])}></span>
+                    </button>
+                    <textarea
+                      id="autologin-input"
+                      className={'hidden-input'}
+                      ref={node => this.autologinNode = node}
+                      value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
+                    />
+                  </React.Fragment>
+                }
               </ul>
               <div class="button-wrap">
                 <a href={config.urlBase + "index.php?disconnect=1"}>
