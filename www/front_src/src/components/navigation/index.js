@@ -145,7 +145,7 @@ class NavigationComponent extends Component {
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
                   >
-                    <span class={`iconmoon icon-${item.label.toLowerCase()}`}>
+                    <span class={`iconmoon icon-${item.menu_id.toLowerCase()}`}>
                       <span class={"menu-item-name"}>{item.label}</span>
                     </span>
                   </span>
