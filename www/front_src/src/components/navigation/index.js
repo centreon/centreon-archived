@@ -74,32 +74,33 @@ class NavigationComponent extends Component {
   collapseLevelThree = (levelOneKey, levelTwoKey) => {
     let { menuItems } = this.state;
 
-    if (menuItems[levelOneKey].children[levelTwoKey]["collapsed"]) {
-      menuItems[levelOneKey].children[levelTwoKey]["collapsed"] = false;
-    } else {
-      Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
-        menuItems[levelOneKey].children[subKey]["collapsed"] = levelTwoKey === subKey ? true : false;
-      });
-    }
+    Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
+      if (subKey === levelTwoKey) {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = !menuItems[levelOneKey].children[subKey]["collapsed"];
+      } else {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = false;
+      }
+    });
 
     this.setState({
       menuItems
     });
   };
 
+  // activate level 1 (display colored menu)
   activateTopLevelMenu = index => {
     let { menuItems } = this.state;
 
     Object.keys(menuItems).forEach(key => {
-      menuItems[key].active = false;
+      menuItems[key].active = (key === index);
     })
-    menuItems[index].active = true;
 
     this.setState({
       menuItems
     });
   };
 
+  // navigate to the page
   goToPage = (route, topLevelIndex) => {
     const { history } = this.props;
     this.activateTopLevelMenu(topLevelIndex);
@@ -109,6 +110,7 @@ class NavigationComponent extends Component {
   render() {
     const { active, menuItems } = this.state;
     const pageId = this.props.location.search.split("p=")[1];
+
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
         <div class="sidebar-inner">
