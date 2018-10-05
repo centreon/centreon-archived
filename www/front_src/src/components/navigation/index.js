@@ -217,7 +217,7 @@ class NavigationComponent extends Component {
                                                 <li
                                                   class={
                                                     "collapsed-level-item" +
-                                                    (pageId == subKey
+                                                    (pageId == subKey.slice(1)
                                                       ? " active"
                                                       : "")
                                                   }
