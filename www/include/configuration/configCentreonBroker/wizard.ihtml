@@ -19,7 +19,7 @@ jQuery('document').ready(function() {
     jQuery('.button').mouseup(function(){
       jQuery(this).removeClass('click');
     });
-    jQuery('#wizard').centreonWizard({url: '?p=6090902&min=1&iframe=1', method: 'POST', name: 'broker', uuid: '{/literal}{$wizardId}{literal}'});
+    jQuery('#wizard').centreonWizard({url: 'main.php?p=6090902&min=1&iframe=1', method: 'POST', name: 'broker', uuid: '{/literal}{$wizardId}{literal}'});
 });
 {/literal}
 </script>

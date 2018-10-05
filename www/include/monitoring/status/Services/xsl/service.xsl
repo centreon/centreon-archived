@@ -162,7 +162,7 @@
                 <xsl:choose>
                     <xsl:when test="isMeta = 0">
                         <xsl:element name="a">
-                            <xsl:attribute name="href">?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
+                            <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="hnl" /></xsl:attribute>
                             <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                             <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
                             <xsl:value-of select="hdn"/>
@@ -184,7 +184,7 @@
                 </xsl:element>
             </xsl:if>
             <xsl:element name="a">
-                <xsl:attribute name="href">?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
+                <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
                 <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
                 <xsl:attribute name="id">svc-<xsl:value-of select="hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
                 <xsl:value-of select="sdn"/>
@@ -285,7 +285,7 @@
         <td class="ListColRight">
             <xsl:if test="svc_index &gt; 0">
                 <xsl:element name="a">
-                    <xsl:attribute name="href">?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>                   
+                    <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>                   
                         <xsl:element name="img">
                             <xsl:attribute name="id"><xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
                             <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>

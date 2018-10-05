@@ -80,7 +80,7 @@ class RemoteServerStepThreeRoute extends Component {
     };
 
     refreshGeneration = () => {
-        const {history, pollerData} = this.props;
+        const {pollerData} = this.props;
         this.getExportTask
             .post("", {"task_id":pollerData.taskId})
             .then(response => {

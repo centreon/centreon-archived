@@ -17,7 +17,7 @@ class HostMenu extends Component {
     });
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -69,19 +69,19 @@ class HostMenu extends Component {
         </span>
 
         <Link to={config.urlBase + "main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(down.unhandled).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20202&o=h_unreachable&search="} class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(unreachable.unhandled).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20202&o=h_up&search="} class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
-          <a class="number">
+          <span class="number">
             <span>{numeral(ok).format("0a")}</span>
-          </a>
+          </span>
         </Link>
         <div ref={host => this.host = host}>
           <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>

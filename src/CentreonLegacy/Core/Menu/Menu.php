@@ -72,19 +72,19 @@ class Menu
      *
      *
      * array(
-     *   "1" => array(
+     *   "p1" => array(
      *     "label" => "<level_one_label>",
      *     "url" => "<path_to_php_file>"
      *     "active" => "<true|false>"
      *     "color" => "<color_code>"
      *     "children" => array(
-     *       "101" => array(
+     *       "_101" => array(
      *         "label" => "<level_two_label>",
      *         "url" => "<path_to_php_file>",
      *         "active" => "<true|false>"
      *         "children" => array(
      *           "<group_name>" => array(
-     *             "10101" => array(
+     *             "_10101" => array(
      *               "label" => "level_three_label",
      *               "url" => "<path_to_php_file>"
      *               "active" => "<true|false>"
@@ -134,7 +134,8 @@ class Menu
                     $active = true;
                 }
                 $menu['p' . $row['topology_page']] = [
-                    'label'    => $row['topology_name'],
+                    'label'    => _($row['topology_name']),
+                    'menu_id'  => $row['topology_name'],
                     'url'      => $row['topology_url'],
                     'active'   => $active,
                     'color'    => $this->getColor($row['topology_page']),
@@ -152,7 +153,7 @@ class Menu
                  * This prefix will be remove by front-end.
                  */
                 $menu['p' . $matches[1]]['children']['_' . $row['topology_page']] = [
-                    'label'    => $row['topology_name'],
+                    'label'    => _($row['topology_name']),
                     'url'      => $row['topology_url'],
                     'active'   => $active,
                     'children' => [],
@@ -165,7 +166,7 @@ class Menu
                 }
                 $levelTwo = $matches[1] . $matches[2];
                 $levelThree = [
-                    'label'    => $row['topology_name'],
+                    'label'    => _($row['topology_name']),
                     'url'      => $row['topology_url'],
                     'active'   => $active,
                     'options'  => $row['topology_url_opt'],
@@ -213,7 +214,7 @@ class Menu
 
         $groups = array();
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            $groups[$row['topology_parent']][$row['topology_group']] = $row['topology_name'];
+            $groups[$row['topology_parent']][$row['topology_group']] = _($row['topology_name']);
         }
 
         $result->closeCursor();

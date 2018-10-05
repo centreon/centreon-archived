@@ -124,12 +124,12 @@ if ($in_statement != "") {
             $moptions = "";
             $selectedElements = $form->addElement('checkbox', "select[" . $relation['msr_id'] . "]");
             if ($relation["activate"]) {
-                $moptions .= "<a href='?p=" . $p . "&msr_id=" . $relation['msr_id'] .
+                $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=us&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
                     "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Disabled") . "'></a>&nbsp;&nbsp;";
             } else {
-                $moptions .= "<a href='?p=" . $p . "&msr_id=" . $relation['msr_id'] .
+                $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=ss&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
                     "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Enabled") . "'></a>&nbsp;&nbsp;";

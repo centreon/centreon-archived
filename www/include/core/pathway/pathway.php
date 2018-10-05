@@ -61,7 +61,7 @@ if (isset($url)) {
                 . 'WHERE topology_url = :url'
             );
             $statement->bindValue(':url', $url, \PDO::PARAM_STR);
-            if ($statement->execute() 
+            if ($statement->execute()
                 && $result = $statement->fetch(\PDO::FETCH_ASSOC)
             ) {
                 $p = $result['topology_page'];
@@ -95,7 +95,7 @@ $pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
 
 $breadcrumbData = [];
 
-if($pdoStatement->execute()) {
+if ($pdoStatement->execute()) {
     while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
         $isNameAlreadyInserted = array_search(
             $result['topology_name'],
@@ -108,15 +108,10 @@ if($pdoStatement->execute()) {
              * item with the same name (in tree with duplicate topology name,
              * the first has no url)
              */
-            $topology = array_pop(
-                array_slice(
-                    $breadcrumbData,
-                    array_search(
-                        $result['topology_name'],
-                        array_column($breadcrumbData, 'name')
-                    )
-                )
-            );
+            $breadcrumbDataArrayNames = array_column($breadcrumbData, 'name');
+            $topologyNameSearch = array_search($result['topology_name'], $breadcrumbDataArrayNames);
+            $breadcrumbTopologyResults = array_slice($breadcrumbData, $topologyNameSearch);
+            $topology = array_pop($breadcrumbTopologyResults);
             unset($breadcrumbData[$topology['page']]);
         }
 
@@ -136,7 +131,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($breadcrumbData as $page => $details) {
         echo $flag;
         ?>
-        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= $details["name"]; ?></a>
+        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= _($details["name"]); ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }

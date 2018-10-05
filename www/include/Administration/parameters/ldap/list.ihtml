@@ -37,8 +37,8 @@
 		{section name=elem loop=$list}
                 <tr class="{cycle values='list_one,list_two'}">
 			<td class="ListColPicker"><input type='checkbox' name='select[{$list[elem].ar_id}]' value='{$list[elem].ar_id}' /></td>
-			<td class="ListColLeft"><a href="?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_name}</a></td>
-			<td class="ListColLeft"><a href="?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_description}</a></td>
+			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_name}</a></td>
+			<td class="ListColLeft"><a href="./main.php?p={$p}&o=ldap&ar_id={$list[elem].ar_id}">{$list[elem].ar_description}</a></td>
 			<td class="ListColLeft">
                             {if $list[elem].ar_enable == 1}
                                 {$labels.enabled}

@@ -116,7 +116,7 @@ class LdapManualImportContext extends CentreonContext
      */
     public function hesLoggedByDefaultOnHomePage()
     {
-        if (!$this->assertFind('css', '#tfooter')) {
+        if (!$this->assertFind('css', 'nav#sidebar')) {
             throw new Exception('The user is not logged in');
         }
     }

@@ -116,11 +116,11 @@ for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hc['hc_id'] . "]");
     $moptions = "";
     if ($hc["hc_activate"]) {
-        $moptions .= "<a href='?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=u&limit=" . $limit .
+        $moptions .= "<a href='main.php?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
-        $moptions .= "<a href='?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=s&limit=" . $limit .
+        $moptions .= "<a href='main.php?p=" . $p . "&hc_id=" . $hc['hc_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right'" .
             "border='0' alt='" . _("Enabled") . "'></a>";
     }
