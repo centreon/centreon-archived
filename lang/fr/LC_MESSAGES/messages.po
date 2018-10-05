@@ -2899,6 +2899,7 @@ msgid "Add Widget"
 msgstr "Ajouter widget"
 
 #: centreon-web/www/install/menu_translation.php:43
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
 msgid "Administration"
 msgstr "Administration"
 
@@ -2982,6 +2983,7 @@ msgid "Commands"
 msgstr "Commandes"
 
 #: centreon-web/www/install/menu_translation.php:64
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -13743,8 +13745,9 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgid "Donate"
 #~ msgstr "Donation"
 
-#~ msgid "General options"
-#~ msgstr "Paramètres globaux"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "General options"
+msgstr "Paramètres globaux"
 
 #~ msgid "Host comments"
 #~ msgstr "Commentaires associés à l'hôte"
@@ -13755,14 +13758,17 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgid "Interactive view access"
 #~ msgstr "Vue interactive"
 
-#~ msgid "Job groups"
-#~ msgstr "Groupes de tâches"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Job groups"
+msgstr "Groupes de tâches"
 
-#~ msgid "Jobs"
-#~ msgstr "Tâches"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Jobs"
+msgstr "Tâches"
 
-#~ msgid "Logos"
-#~ msgstr "Logos"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Logos"
+msgstr "Logos"
 
 #~ msgid "Manage"
 #~ msgstr "Gérer"
@@ -13773,17 +13779,21 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgid "Pre-Update"
 #~ msgstr "Pré-mise à jour"
 
-#~ msgid "Publication rules"
-#~ msgstr "Règles de publication"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Publication rules"
+msgstr "Règles de publication"
 
-#~ msgid "Report design groups"
-#~ msgstr "Groupes de modèles de rapport"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report design groups"
+msgstr "Groupes de modèles de rapport"
 
-#~ msgid "Report designs"
-#~ msgstr "Modèles de rapport"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report designs"
+msgstr "Modèles de rapport"
 
-#~ msgid "Report view"
-#~ msgstr "Visualisation des rapports"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report view"
+msgstr "Visualisation des rapports"
 
 #~ msgid "Service comments"
 #~ msgstr "Commentaires pour ce service"
@@ -13791,8 +13801,9 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgid "Support"
 #~ msgstr "Support"
 
-#~ msgid "Trash"
-#~ msgstr "Poubelle"
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Trash"
+msgstr "Poubelle"
 
 #~ msgid "Web Site"
 #~ msgstr "Site web"
