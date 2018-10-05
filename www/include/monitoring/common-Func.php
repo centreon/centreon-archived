@@ -183,6 +183,8 @@ function get_notified_infos_for_service($serviceId, $hostId)
     $results = array('contacts' => array(), 'contactGroups' => array());
     $stopReading = array('contacts' => 0, 'contactGroups' => 0);
     $useOnlyContactsFromHost = 0;
+    
+    $service = $service ?? [];
 
     while (1) {
         if (isset($loop[$serviceId])) {
