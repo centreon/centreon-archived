@@ -242,13 +242,6 @@ if ($min != 1) {
     include_once "./include/core/pathway/pathway.php";
 }
 
-/*
- * Go on our page
- */
-if ($min != 1) {
-    $url = "./include/core/errors/alt_error.php";
-}
-
 if (isset($url) && $url) {
     include_once $url;
 }
