@@ -2,14 +2,11 @@
 
 namespace CentreonRemote\Application\Clapi;
 
-use Centreon\Domain\Repository\InformationsRepository;
 use Centreon\Domain\Repository\TaskRepository;
-use Centreon\Domain\Repository\TopologyRepository;
-use Centreon\Domain\Repository\OptionsRepository;
+use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use Curl\Curl;
 use Pimple\Container;
 use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
-use ReflectionClass;
 use Centreon\Domain\Entity\Task;
 
 class CentreonWorker implements CentreonClapiServiceInterface
@@ -50,12 +47,14 @@ class CentreonWorker implements CentreonClapiServiceInterface
         } else {
             foreach ($tasks as $task) {
                 $params = unserialize($task->getParams());
-                $commitment = new CentreonRemote\Infrastructure\Export\ExportCommitment($params['server'], $params['pollers']);
+                $commitment = new ExportCommitment($params['server'], $params['pollers']);
+
                 try {
                    $this->getDi()['centreon_remote.export']->export($commitment);
                 } catch (\Exception $e) {
-                //todo error handling
+                    //todo error handling
                 }
+
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
 
                 /**
