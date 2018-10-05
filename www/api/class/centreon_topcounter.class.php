@@ -739,7 +739,7 @@ class CentreonTopCounter extends CentreonWebService
                 $listPoller[$row['instance_id']]['database']['time'] = $row['stat_value'];
             } elseif ($row['stat_value'] >= 60) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 1;
-                $listPoller[$row['instance_id']]['latency']['state'] = $row['stat_value'];
+                $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];
             }
         }
 
