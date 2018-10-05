@@ -37,6 +37,11 @@ class HostMenu extends Component {
   render() {
     let data = this.props.data;
 
+    if (data.disable)
+    {
+      return null;
+    }
+
     if(!data || !data.total){
       data = {
         down: {
