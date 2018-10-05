@@ -7,12 +7,8 @@ import {generatePassword} from "../../helpers/autoLoginTokenGenerator";
 class UserMenu extends Component {
   state = {
     toggled: false,
-    buildedLink: '',
-    copied: false,
-    initialized: false  
+    copied: false
   };
-
-  autoLoginApi = axios("internal.php?object=centreon_topcounter&action=autoLoginToken");
 
   toggle = () => {
     const { toggled } = this.state;
@@ -21,25 +17,10 @@ class UserMenu extends Component {
     });
   };
 
-  componentWillReceiveProps = (nextProps) => {
-    const { data } = nextProps;
-    const { initialized } = this.state;
-    const { userId, username, autologinkey } = data;
-    if (userId && !initialized) {
-      let token = autologinkey ? autologinkey : generatePassword('aKey');
-
-      this.setState({
-        buildedLink: window.location.href + '?autologin=1' + '&useralias=' + username + '&token=' + token,
-        initialized: true
-      });
-    }
-  }
-
   onCopy = () => {
-    let autoLoginInput = document.getElementById("autologin-input");
-    autoLoginInput.select();
-    document.execCommand('copy');
-    this.setState({ 
+    this.autologinNode.select();
+    window.document.execCommand('copy');
+    this.setState({
       copied: true,
       toggled: false
     });
@@ -62,9 +43,11 @@ class UserMenu extends Component {
     });
   };
 
-  copyToClipboardBtn = () => (
-    <button className={'submenu-user-button'}  onClick={this.onCopy.bind(this)}>Copy autologin link <span className={"btn-logout-icon icon-copy " + (this.state.copied && ["icon-copied"])}></span></button>
-  )
+  getAutologinLink = () => {
+    const { username, autologinkey } = this.props.data
+
+    return window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey
+  };
 
   render() {
     const { data, clockData } = this.props;
@@ -73,16 +56,14 @@ class UserMenu extends Component {
       return null;
     }
 
-    const { toggled, copied, buildedLink } = this.state,
+    const { toggled, copied } = this.state,
       { fullname, username, autologinkey } = data;
-
-    const copyToClipboardBtn = autologinkey ? this.copyToClipboardBtn() : null;
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
         <Clock clockData={clockData} />
         <div ref={profile => this.profile = profile}>
-          <span class="iconmoon icon-user" onClick={this.toggle.bind(this)} />
+          <span class="iconmoon icon-user" onClick={this.toggle} />
           <div class={"submenu profile"}>
             <div class="submenu-inner">
               <ul class="submenu-items list-unstyled">
@@ -95,19 +76,28 @@ class UserMenu extends Component {
                     </a>
                   </span>
                 </li>
-                <React.Fragment>
-
-                {copyToClipboardBtn}
-                  <textarea id="autologin-input" style={
-                    {
-                      width: 0,
-                      height: 0,
-                      position: 'fixed',
-                      top: -100
-                    }
-                  }
-                    value={buildedLink}></textarea>
-                </React.Fragment>
+                {autologinkey &&
+                  <React.Fragment>
+                    <button
+                      className={'submenu-user-button'}
+                      onClick={this.onCopy}
+                    >
+                      Copy autologin link
+                      <span className={"btn-logout-icon icon-copy " + (copied && ["icon-copied"])}></span>
+                    </button>
+                    <textarea
+                      id="autologin-input"
+                      style={{
+                        width: 0,
+                        height: 0,
+                        position: 'fixed',
+                        top: -100
+                      }}
+                      ref={node => this.autologinNode = node}
+                      value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
+                    />
+                  </React.Fragment>
+                }
               </ul>
               <div class="button-wrap">
                 <a href={config.urlBase + "index.php?disconnect=1"}>
