@@ -1,5 +1,3 @@
-import React from "react";
-
 export const getRandomNum = () => {
     // between 0 - 1
     let rndNum = Math.random();
