@@ -37,9 +37,9 @@
  * Webservice that allow to retrieve all translations in one json file.
  * If the file doesn't exist it will be created at the first reading.
  */
-class CentreonI18n extends CentreonWebService {
+class CentreonI18n extends CentreonWebService
+{
     /**
-     * 
      * @var string Path where the translation file will be generate.
      */
     private $filesGenerationPath;
@@ -67,7 +67,7 @@ class CentreonI18n extends CentreonWebService {
     
     /**
      * Return a table containing all the translations.
-     * 
+     *
      * @return array
      * @throws \Exception
      */
@@ -84,7 +84,8 @@ class CentreonI18n extends CentreonWebService {
             } else {
                 $langs = $this->getAvailableLanguages();
                 foreach ($langs as $currentLang) {
-                    $filename = $this->rootTranslationPath . '/' . $currentLang 
+                    $filename = $this->rootTranslationPath
+                        . '/' . $currentLang
                         . '/' . $this->translationFile;
                     $langsArray[$currentLang] =
                         $this->transformTranslationFileIntoArray($filename);
@@ -139,7 +140,7 @@ class CentreonI18n extends CentreonWebService {
      * Each translation file need to be placed in a subdirectory whose name will
      * be used to segment all translations. In our case the subdirectory name
      * will be named as 'us', 'fr' or any country initials.
-     * 
+     *
      * @throws \Exception
      * @return array
      */
@@ -148,7 +149,7 @@ class CentreonI18n extends CentreonWebService {
         $directories = [];
         if ($dirHandler = opendir($this->rootTranslationPath)) {
             while (($file = readdir($dirHandler)) !== false) {
-                $filePath = 
+                $filePath =
                     $this->rootTranslationPath
                     . '/' . $file . '/' . $this->translationFile;
                 if (file_exists($filePath)) {
@@ -180,10 +181,9 @@ class CentreonI18n extends CentreonWebService {
      * should be created if it does not exist (true by default).
      */
     public function setFilesGenerationPath(
-        string $filesGenerationPath, 
+        string $filesGenerationPath,
         bool $createDirectory = true
-    ): void
-    {
+    ): void {
         if ($createDirectory && !is_dir($filesGenerationPath)) {
             mkdir($filesGenerationPath);
         }
@@ -195,7 +195,7 @@ class CentreonI18n extends CentreonWebService {
 
     /**
      * Retrieves the json file name that will be generated.
-     * 
+     *
      * @return string
      */
     public function getJsonFilename(): ?string
@@ -240,7 +240,7 @@ class CentreonI18n extends CentreonWebService {
     
     /**
      * Retrieves the translation file name.
-     * 
+     *
      * @return string
      */
     public function getTranslationFile(): ?string
@@ -260,7 +260,7 @@ class CentreonI18n extends CentreonWebService {
     
     /**
      * Retrieves the token of the line.
-     * 
+     *
      * @param string $line Line to analyse
      * @return string Token found
      */
@@ -273,7 +273,7 @@ class CentreonI18n extends CentreonWebService {
     
     /**
      * Retrieves the translation for the line given
-     * 
+     *
      * @param string $line Line to analyse
      * @return string Translation
      */
@@ -281,8 +281,8 @@ class CentreonI18n extends CentreonWebService {
     {
         $text = trim(
             substr(
-                $line, 
-                $this->tokenLength, 
+                $line,
+                $this->tokenLength,
                 strlen($line) - $this->tokenLength
             )
         );
