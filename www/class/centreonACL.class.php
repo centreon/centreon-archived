@@ -443,41 +443,81 @@ class CentreonACL
     }
     
     /**
-     * Use to check and fix if in the topology, a parent has access rights that 
-     * can be higher than children when they have the same URL.
+     * Use to check and fix if in the topology, a parent has access rights that
+     * can be higher than children when they have the same endpoint.
      */
     private function checkTopology(): void
     {
-        if(!empty($this->topology)) {
-            
-            $getParentAccessRight = function(int $childPage, array $topologies): int
-            {
-                $parentAccessRight = null;
-                if (strlen($childPage) > 1) {
-                    $parentPage = substr($childPage, 2, $length - 2);
-                    
-                    if(array_key_exists($parentPage, $topologies)) {
-                        $parentAccessRight = $topologies[$parentPage];
-                        return [$parentPage, $parentAccessRight];
-                    }                    
+        if (!empty($this->topology)) {
+            $getFirstChildPerLvl = function (array $topologies): ?array {
+                ksort($topologies, \SORT_ASC);
+                $parentsLvl = [];
+                
+                // Classify topologies by parents
+                foreach (array_keys($topologies) as $page) {
+                    if (strlen($page) == 1) {
+                        if (!array_key_exists($page, $parentsLvl)) {
+                            $parentsLvl[$page] = [];
+                        }
+                    } elseif (strlen($page) == 3) {
+                        $parent = substr($page, 0, 1);
+                        if (!array_key_exists($page, $parentsLvl[$parent])) {
+                            $parentsLvl[$parent][$page] = [];
+                        }
+                    } elseif (strlen($page) == 5) {
+                        $parentLvl1 = substr($page, 0, 1);
+                        $parentLvl2 = substr($page, 0, 3);
+                        if (!array_key_exists($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                            $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
+                        }
+                    }
                 }
-                return null;             
+                
+                /**
+                 * We keep the first lvl3 child by lvl1.
+                 * In this way, we keep the first child available for each parent
+                 */
+                foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
+                    // First reading, we don't delete the first child
+                    $canDeleteOtherChild = false;
+                    foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+                        if ($canDeleteOtherChild) {
+                            // Not the first reading, we can delete this child
+                            unset($parentsLvl[$parentLvl1][$parentLvl2]);
+                            continue;
+                        }
+                        // First reading
+                        ksort($childrenLvl3);
+                        // We keep the tree of the first child
+                        $parentsLvl[$parentLvl1][$parentLvl2] =
+                            array_slice($childrenLvl3, 0, 1, true)[0];
+                        /**
+                         * The first child has been processed so we set TRUE
+                         * to delete all the following children
+                         */
+                        $canDeleteOtherChild = true;
+                    }
+                }
+                return $parentsLvl;
             };
             
-            krsort($this->topology);
-            foreach($this->topology as $page => $currentAccessRight) {
-                
-                $parentDetails = $getParentAccessRight($page, $this->topology);
-                if(!is_null($arentDetails)) {
-                    list($parentPage, $parentAccessRight) = $parentDetails;
-                    if ($currentAccessRight > $parentAccessRight) {
-                        $this->topology[$parentPage] = $currentAccessRight;
+            /**
+             * Filter to keep the first child available per level.
+             */
+            $parentsLvl = $getFirstChildPerLvl($this->topology);
+            
+            // We fix topologies according to filter
+            foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
+                foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+                    if ($this->topology[$childrenLvl3] > $this->topology[$parentLvl2]) {
+                        $this->topology[$parentLvl2] = $this->topology[$childrenLvl3];
+                    }
+                    if ($this->topology[$parentLvl2] > $this->topology[$parentLvl1]) {
+                        $this->topology[$parentLvl1] = $this->topology[$parentLvl2];
                     }
                 }
             }
-            $topologies = "";
         }
-        $tmp = 0;
     }
 
     /**
