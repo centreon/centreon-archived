@@ -269,6 +269,11 @@ if ($form->validate()) {
     }
     $o = null;
     $features = $form->getSubmitValue('features');
+
+    if ($features === null) {
+        $features = [];
+    }
+
     $centreonFeature->saveUserFeaturesValue($centreon->user->get_id(), $features);
     $form->addElement(
         "button",
