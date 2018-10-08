@@ -258,12 +258,20 @@ function validateFeature(name, version, enabled) {
       'a',
       'click',
       function(e) {
-        e.preventDefault();
         var href = jQuery(this).attr('href');
 
-        // Manage centreon links
-        // # allows to manage backboneJS links
-        if (href.match(/^\#/) || href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
+        // if it's a relative path, we can use the default redirection
+        if (!href.match(/^\.\//)) {
+          e.preventDefault();
+
+          // Manage centreon links
+          // # allows to manage backboneJS links + jQuery form tabs
+          if (
+            href.match(/^\#/) ||
+            href.match(/^\?/) ||
+            href.match(/main\.php/) ||
+            href.match(/main\.get\.php/)
+          ) {
 
           // If we open link a new tab, we want to keep the header
           if (jQuery(this).attr('target') === '_blank') {
@@ -275,10 +283,11 @@ function validateFeature(name, version, enabled) {
             window.location.href = href;
           }
 
-        // Manage external links (ie: www.google.com)
-        // we always open it in a new tab
-        } else {
+          // Manage external links (ie: www.google.com)
+          // we always open it in a new tab
+          } else {
             window.open(href);
+          }
         }
       }
     );
