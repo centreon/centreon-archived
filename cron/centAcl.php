@@ -480,6 +480,15 @@ try {
                 }
 
                 /*
+                 * Get all hosts
+                 */
+                if (isset($hostIncCache[$res2["acl_res_id"]])) {
+                    foreach ($hostIncCache[$res2["acl_res_id"]] as $host_id => $flag) {
+                        $Host[$host_id] = 1;
+                    }
+                }
+
+                /*
                  * Give Authorized Categories
                  */
                 $authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
