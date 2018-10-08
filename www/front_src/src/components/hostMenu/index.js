@@ -70,17 +70,17 @@ class HostMenu extends Component {
 
         <Link to={config.urlBase + "main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (down.unhandled > 0 ? "red" : "red-bordered")}>
           <span class="number">
-            <span>{numeral(down.unhandled).format("0a")}</span>
+            <span id="count-host-down">{numeral(down.unhandled).format("0a")}</span>
           </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20202&o=h_unreachable&search="} class={"wrap-middle-icon round round-small "+ (unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
           <span class="number">
-            <span>{numeral(unreachable.unhandled).format("0a")}</span>
+            <span id="count-host-unreachable">{numeral(unreachable.unhandled).format("0a")}</span>
           </span>
         </Link>
         <Link to={config.urlBase + "main.php?p=20202&o=h_up&search="} class={"wrap-middle-icon round round-small "+ (ok > 0 ? "green" : "green-bordered")}>
           <span class="number">
-            <span>{numeral(ok).format("0a")}</span>
+            <span id="count-host-up">{numeral(ok).format("0a")}</span>
           </span>
         </Link>
         <div ref={host => this.host = host}>
