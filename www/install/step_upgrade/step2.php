@@ -98,6 +98,7 @@ $contents .= "</table>";
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);
+$template->assign('valid', $allClear);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
