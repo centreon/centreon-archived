@@ -9,16 +9,16 @@ class TopCounterProfileMenuContext extends CentreonContext
      */
     public function iClickToEditProfileLink()
     {
-        $this->visit('/');
-        $this->assertFind('css', '[aria-label="User Profile"]')->click();
+        $this->visit('/', false);
+        $this->assertFind('css', '.iconmoon.icon-user')->click();
         $this->spin(
             function ($context) {
-                return $this->getSession()->getPage()->has('css', '[aria-label="Edit profile"]');
+                return $this->getSession()->getPage()->has('css', '.submenu-user-edit');
             },
             'Popin not opened',
             20
         );
-        $this->assertFind('css', '[aria-label="Edit profile"]')->click();
+        $this->assertFind('css', '.submenu-user-edit')->click();
     }
 
     /**
@@ -28,7 +28,8 @@ class TopCounterProfileMenuContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return $this->getSession()->getPage()->has('css', 'input[name="contact_name"]');
+                $context->switchToIframe();
+                return $context->getSession()->getPage()->has('css', 'input[name="contact_name"]');
             },
             'The edit profile page is not loaded',
             10
@@ -40,16 +41,16 @@ class TopCounterProfileMenuContext extends CentreonContext
      */
     public function iClickToLogoutLink()
     {
-        $this->visit('/');
-        $this->assertFind('css', '[aria-label="User Profile"]')->click();
+        $this->visit('/', false);
+        $this->assertFind('css', '.iconmoon.icon-user')->click();
         $this->spin(
             function ($context) {
-                return $this->getSession()->getPage()->has('css', '[aria-label="Edit profile"]');
+                return $context->getSession()->getPage()->has('css', '.submenu-user-edit');
             },
             'Popin not opened',
             20
         );
-        $this->assertFind('css', '[aria-label="Logout"]')->click();
+        $this->assertFind('css', '.btn.btn-small.logout')->click();
     }
 
     /**
@@ -59,7 +60,7 @@ class TopCounterProfileMenuContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return $this->getSession()->getPage()->has('css', 'input[name="submitLogin"]');
+                return $context->getSession()->getPage()->has('css', 'input[name="submitLogin"]');
             },
             'The login page is not loaded',
             10
