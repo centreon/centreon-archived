@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from "../../components/loader";
 
 class ModuleRoute extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class ModuleRoute extends Component {
     this.resizeTimeout = null;
 
     this.state = {
-      contentHeight: 0
+      contentHeight: 0,
+      loading: true
     }
   }
 
@@ -22,6 +24,7 @@ class ModuleRoute extends Component {
         const { contentHeight } = this.state;
         if (clientHeight != contentHeight) {
           this.setState({
+            loading: false,
             contentHeight: clientHeight
           });
         }
@@ -48,20 +51,28 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    const { contentHeight } = this.state
+    const { contentHeight, loading } = this.state
     const { history } = this.props,
           { search } = history.location;
     const params = search || '';
     return (
-      <iframe
-        id="main-content"
-        title="Main Content"
-        frameBorder="0"
-        onLoad={this.handleResize}
-        scrolling="yes"
-        style={{ width: "100%", height: `${contentHeight}px` }}
-        src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
-      />
+      <>
+        {loading &&
+          <span className="main-loader">
+            <Loader />
+          </span>
+        }
+        <iframe
+          id="main-content"
+          title="Main Content"
+          frameBorder="0"
+          onLoad={this.handleResize}
+          scrolling="yes"
+          className={loading ? "hidden" : ""}
+          style={{ width: "100%", height: `${contentHeight}px` }}
+          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+        />
+      </>
     );
   }
 }
