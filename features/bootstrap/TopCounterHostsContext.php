@@ -63,7 +63,7 @@ class TopCounterHostsContext extends CentreonContext
     public function iClickOnTheChip($chip)
     {
         $this->visit('/');
-        $selector = '[aria-label="' . $chip . '"]';
+        $selector = '#' . $chip;
         $this->assertFind('css', $selector)->click();
     }
 
