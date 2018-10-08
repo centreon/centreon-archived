@@ -439,6 +439,45 @@ class CentreonACL
                 }
             }
         }
+        $this->checkTopology();
+    }
+    
+    /**
+     * Use to check and fix if in the topology, a parent has access rights that 
+     * can be higher than children when they have the same URL.
+     */
+    private function checkTopology(): void
+    {
+        if(!empty($this->topology)) {
+            
+            $getParentAccessRight = function(int $childPage, array $topologies): int
+            {
+                $parentAccessRight = null;
+                if (strlen($childPage) > 1) {
+                    $parentPage = substr($childPage, 2, $length - 2);
+                    
+                    if(array_key_exists($parentPage, $topologies)) {
+                        $parentAccessRight = $topologies[$parentPage];
+                        return [$parentPage, $parentAccessRight];
+                    }                    
+                }
+                return null;             
+            };
+            
+            krsort($this->topology);
+            foreach($this->topology as $page => $currentAccessRight) {
+                
+                $parentDetails = $getParentAccessRight($page, $this->topology);
+                if(!is_null($arentDetails)) {
+                    list($parentPage, $parentAccessRight) = $parentDetails;
+                    if ($currentAccessRight > $parentAccessRight) {
+                        $this->topology[$parentPage] = $currentAccessRight;
+                    }
+                }
+            }
+            $topologies = "";
+        }
+        $tmp = 0;
     }
 
     /**
