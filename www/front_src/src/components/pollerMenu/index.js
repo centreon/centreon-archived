@@ -20,18 +20,28 @@ const getPollerStatusIcon = issues => {
 
   let latencyClass = getIssueClass(issues, 'latency');
 
-  let result = (
+  return (
     <React.Fragment>
       <span class={`wrap-left-icon round ${databaseClass}`}>
-        <span class="iconmoon icon-database" title={databaseClass === 'green' ? 'OK: all database poller updates are active' : 'Some database poller updates are not active; check your configuration' } />
+        <span
+          class="iconmoon icon-database"
+          title={databaseClass === 'green' ?
+            'OK: all database poller updates are active' :
+            'Some database poller updates are not active; check your configuration'
+          }
+        />
       </span>
       <span class={`wrap-left-icon round ${latencyClass}`}>
-        <span class="iconmoon icon-clock" title={latencyClass == 'green' ? 'OK: no latency detected on your platform' : 'Latency detected, check configuration for better optimization' } />
+        <span
+          class="iconmoon icon-clock"
+          title={latencyClass == 'green' ?
+            'OK: no latency detected on your platform' :
+            'Latency detected, check configuration for better optimization'
+          }
+        />
       </span>
     </React.Fragment>
   );
-
-  return result;
 };
 
 class PollerMenu extends Component {
@@ -76,13 +86,13 @@ class PollerMenu extends Component {
     const statusIcon = getPollerStatusIcon(issues);
     return (
       <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
-        <span class="wrap-left-icon" onClick={this.toggle.bind(this)}>
+        <span class="wrap-left-icon" onClick={this.toggle}>
           <span class="iconmoon icon-poller" />
           <span class="wrap-left-icon__name">Pollers</span>
         </span>
         {statusIcon}
         <div ref={poller => this.poller = poller}>
-          <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
+          <span class="toggle-submenu-arrow" onClick={this.toggle} >{this.props.children}</span>
           <div class="submenu pollers">
             <div class="submenu-inner">
               <ul class="submenu-items list-unstyled">
@@ -93,14 +103,14 @@ class PollerMenu extends Component {
                   </span>
                 </li>
                 {issues
-                  ? Object.keys(issues).map((issue, index) => {
+                  ? Object.entries(issues).map(([key, issue]) => {
                     let message = "";
 
-                    if (issue === "database") {
+                    if (key === "database") {
                       message = "Database updates not active";
-                    } else if (issue === "stability") {
+                    } else if (key === "stability") {
                       message = "Pollers not running";
-                    } else if (issue === "latency") {
+                    } else if (key === "latency") {
                       message = "Latency detected";
                     }
 
@@ -109,15 +119,17 @@ class PollerMenu extends Component {
                         <span class="submenu-top-item-link">
                           {message}
                           <span class="submenu-top-count">
-                            {issues[issue].total ? issues[issue].total : "..."}
+                            {issue.total ? issue.total : "..."}
                           </span>
                         </span>
-                        {Object.keys(issues[issue]).map((elem, index) => {
-                          if (issues[issue][elem].poller) {
-                            const pollers = issues[issue][elem].poller;
-                            return pollers.map((poller, i) => {
-                              const color =
-                                elem === "critical" ? "red" : "blue";
+                        {Object.entries(issue).map(([elem, values]) => {
+                          if (values.poller) {
+                            const pollers = values.poller;
+                            return pollers.map((poller) => {
+                              let color = 'red';
+                              if (elem === 'warning') {
+                                color = 'orange';
+                              }
                               return (
                                 <span
                                   class="submenu-top-item-link"
@@ -136,9 +148,10 @@ class PollerMenu extends Component {
                   })
                   : null}
                 <a href={config.urlBase + "main.php?p=609"}>
-                  <button 
+                  <button
                     onClick={this.toggle}
-                    class="btn btn-big btn-green submenu-top-button">
+                    class="btn btn-big btn-green submenu-top-button"
+                  >
                     Configure pollers
                   </button>
                 </a>
