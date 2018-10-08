@@ -48,6 +48,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($ip);
         echo 'Done'. "\n";
 
+        echo "\n Set 'remote' instance type...";
+        system("sed -i -r 's/central/remote/g' " . _CENTREON_ETC_ . "/conf.pm");
+        echo 'Done'. "\n";
+
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";
@@ -65,6 +69,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
 
         echo "\n Restoring Actions...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('no');
+        echo 'Done'. "\n";
+
+        echo "\n Restore 'central' instance type...";
+        system("sed -i -r 's/remote/central/g' " . _CENTREON_ETC_ . "/conf.pm");
         echo 'Done'. "\n";
 
         echo "\n Centreon Remote disabling finished.\n";
