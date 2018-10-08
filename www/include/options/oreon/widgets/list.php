@@ -82,10 +82,6 @@ jQuery(function() {
         forwardAction(upgradeConfirmMsg, 'upgrade', jQuery(this).parent('td').attr('id'));
     });
 
-    jQuery('.upgradeAllBtn').click(function() {
-        forwardAction(upgradeAllConfirmMsg, 'upgrade-all', 'widget_all');
-    });
-
     jQuery('.uninstallBtn').click(function() {
         forwardAction(uninstallConfirmMsg, 'uninstall', jQuery(this).parent('td').attr('id'));
     });
