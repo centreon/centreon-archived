@@ -213,5 +213,7 @@ export default connectForm({
   form: "RemoteServerFormStepOne",
   validate,
   warn: () => {},
-  enableReinitialize: true
+  enableReinitialize: true,
+  destroyOnUnmount: false,
+  keepDirtyOnReinitialize: true
 })(RemoteServerFormStepOne);
