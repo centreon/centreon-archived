@@ -449,6 +449,9 @@ class CentreonACL
     private function checkTopology(): void
     {
         if (!empty($this->topology)) {
+            /**
+             * Filter to keep the first child available per level.
+             */
             $getFirstChildPerLvl = function (array $topologies): ?array {
                 ksort($topologies, \SORT_ASC);
                 $parentsLvl = [];
@@ -501,9 +504,6 @@ class CentreonACL
                 return $parentsLvl;
             };
             
-            /**
-             * Filter to keep the first child available per level.
-             */
             $parentsLvl = $getFirstChildPerLvl($this->topology);
             
             // We fix topologies according to filter
