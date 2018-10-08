@@ -22,7 +22,7 @@ class TopCounterHostsContext extends CentreonContext
         $this->restartAllPollers();
         $this->submitHostResult('Centreon-Server', 0, 'acceptance');
     }
-    
+
     /**
      * @Given a non-OK host
      */
@@ -62,7 +62,7 @@ class TopCounterHostsContext extends CentreonContext
      */
     public function iClickOnTheChip($chip)
     {
-        $this->visit('/');
+        $this->visit('/', false);
         $selector = '#' . $chip;
         $this->assertFind('css', $selector)->click();
     }
@@ -74,6 +74,7 @@ class TopCounterHostsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
+                $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', '#statusFilter');
             },
             'Hosts listing page not loaded.',
@@ -90,8 +91,8 @@ class TopCounterHostsContext extends CentreonContext
      */
     public function iClickOnTheHostsIcon()
     {
-        $this->visit('/');
-        $this->assertFind('css', '[aria-label="Hosts status"]')->click();
+        $this->visit('/', false);
+        $this->assertFind('css', '.wrap-right-hosts .icon-hosts')->click();
     }
 
     /**
@@ -101,7 +102,8 @@ class TopCounterHostsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'a[title="all hosts list"]');
+                $element = $context->getSession()->getPage()->find('css', '.submenu.host');
+                return $element->isVisible();
             },
             'The summary of hosts status is not open',
             10

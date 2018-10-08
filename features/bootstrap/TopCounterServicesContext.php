@@ -29,6 +29,19 @@ class TopCounterServicesContext extends CentreonContext
     }
 
     /**
+     * @Given an ok service
+     */
+    public function anOkService()
+    {
+        $this->submitServiceResult(
+            'Centreon-Server',
+            'AcceptanceTestService',
+            0,
+            'Acceptance test output.'
+        );
+    }
+
+    /**
      * @Given a Critical service
      */
     public function aCriticalService()
@@ -72,7 +85,7 @@ class TopCounterServicesContext extends CentreonContext
      */
     public function iClickOnTheChip($chip)
     {
-        $this->visit('/');
+        $this->visit('/', false);
         $selector = '#' . $chip;
         $this->assertFind('css', $selector)->click();
     }
@@ -84,6 +97,7 @@ class TopCounterServicesContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
+                $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', '#statusFilter');
             },
             'Services listing page not loaded.',
@@ -100,8 +114,8 @@ class TopCounterServicesContext extends CentreonContext
      */
     public function iClickOnTheServicesIcon()
     {
-        $this->visit('/');
-        $this->assertFind('css', '[aria-label="Services status"]')->click();
+        $this->visit('/', false);
+        $this->assertFind('css', '.wrap-right-services .icon-services')->click();
     }
 
     /**
@@ -111,7 +125,8 @@ class TopCounterServicesContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'a[title="all services list"]');
+                $element = $context->getSession()->getPage()->find('css', '.submenu.services');
+                return $element->isVisible();
             },
             'The summary of services status is not open',
             10

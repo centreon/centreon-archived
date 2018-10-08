@@ -8,6 +8,7 @@ Feature: Top Counter Service
     And I have a passive service
 
   Scenario: Link to ok services
+    Given an ok service
     When I click on the chip "count-svc-ok"
     Then I see the list of services filtered by status ok
 
