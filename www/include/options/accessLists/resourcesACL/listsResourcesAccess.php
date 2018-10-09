@@ -139,7 +139,7 @@ for ($i = 0; $resources = $dbResult->fetchRow(); $i++) {
         "RowMenu_all_hosts" => (isset($resources["all_hosts"]) && $resources["all_hosts"] == 1 ? _("Yes") : _("No")),
         "RowMenu_all_hostgroups" => $allHostgroups,
         "RowMenu_all_servicegroups" => $allServicegroups,
-        "RowMenu_link" => "?p=" . $p . "&o=c&acl_res_id=" . $resources['acl_res_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&acl_res_id=" . $resources['acl_res_id'],
         "RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $resources["acl_res_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions
@@ -153,10 +153,10 @@ $tpl->assign("elemArr", $elemArr);
  * Different messages we put in the template
  */
 $tpl->assign('msg', array(
-    "addL" => "?p=" . $p . "&o=a",
+    "addL" => "main.php?p=" . $p . "&o=a",
     "addT" => _("Add"),
     "testT" => _("Check User View"),
-    "testL" => "?p=" . $p . "&o=t&min=1",
+    "testL" => "main.php?p=" . $p . "&o=t&min=1",
     "delConfirm" => _("Do you confirm the deletion ?")
 ));
 

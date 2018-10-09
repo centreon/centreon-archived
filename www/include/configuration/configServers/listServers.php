@@ -276,7 +276,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         'RowMenu_select'             => $selectedElements->toHtml(),
         'RowMenu_name'               => $config['name'],
         'RowMenu_ip_address'         => $config['ns_ip_address'],
-        'RowMenu_link'               => "?p={$p}&o=c&server_id={$config['id']}",
+        'RowMenu_link'               => "main.php?p={$p}&o=c&server_id={$config['id']}",
         'RowMenu_type'               => $serverType,
         'RowMenu_is_running'         => $isRunning,
         'RowMenu_is_runningFlag'     => $nagiosInfo[$config['id']]['is_currently_running'],
@@ -308,7 +308,7 @@ $tpl->assign(
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

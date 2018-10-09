@@ -140,7 +140,7 @@ for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $nagios["nagios_name"],
         "RowMenu_instance" => $nagios_servers[$nagios["nagios_server_id"]],
-        "RowMenu_link" => "?p=" . $p . "&o=c&nagios_id=" . $nagios['nagios_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&nagios_id=" . $nagios['nagios_id'],
         "RowMenu_desc" => substr($nagios["nagios_comment"], 0, 40),
         "RowMenu_status" => $nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $nagios["nagios_activate"] ? "service_ok" : "service_critical",
@@ -156,7 +156,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 ?>

@@ -147,7 +147,7 @@ for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $cmd["command_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&command_id=" . $cmd['command_id'] . "&type=" . $cmd['command_type'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&command_id=" . $cmd['command_id'] . "&type=" . $cmd['command_type'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(substr(myDecodeCommand($cmd["command_line"]), 0, 50)) . "...",
         "RowMenu_type" => $commandType[$cmd["command_type"]],
         "RowMenu_huse" => "<a name='#' title='" . _("Host links (host template links)") . "'>" .
@@ -172,7 +172,7 @@ if (isset($_GET['type']) && $_GET['type'] != "") {
 }
 
 $tpl->assign('msg', array(
-    "addL" => "?p=" . $p . "&o=a&type=" . $type,
+    "addL" => "main.php?p=" . $p . "&o=a&type=" . $type,
     "addT" => _("Add"),
     "delConfirm" => _("Do you confirm the deletion ?")
 ));

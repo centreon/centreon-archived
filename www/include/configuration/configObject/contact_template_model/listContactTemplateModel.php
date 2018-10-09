@@ -175,7 +175,7 @@ foreach ($contacts as $contact) {
         "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
         "RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",
         "RowMenu_ico_title" => _('This is a contact template.'),
-        "RowMenu_link" => "?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
             html_entity_decode(
                 $contact["contact_alias"],
@@ -202,7 +202,7 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add")));
+$tpl->assign('msg', array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add")));
 if ($centreon->optGen['ldap_auth_enable']) {
     $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
 }

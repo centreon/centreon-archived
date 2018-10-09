@@ -105,10 +105,10 @@ for ($i = 0; $timeperiod = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $timeperiod["tp_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&tp_id=" . $timeperiod['tp_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&tp_id=" . $timeperiod['tp_id'],
         "RowMenu_desc" => $timeperiod["tp_alias"],
         "RowMenu_options" => $moptions,
-        "resultingLink" => "?p=" . $p . "&o=s&tp_id=" . $timeperiod['tp_id']
+        "resultingLink" => "main.php?p=" . $p . "&o=s&tp_id=" . $timeperiod['tp_id']
     );
     $style != "two" ? $style = "two" : $style = "one";
 }
@@ -118,7 +118,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

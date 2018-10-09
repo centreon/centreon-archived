@@ -49,7 +49,7 @@ try {
     $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
     $tpl->assign('msg', array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     ));
@@ -121,7 +121,7 @@ try {
 
             $elemArr[$j] = array(
                 "RowMenu_select" => $selectedElements->toHtml(),
-                "RowMenu_link" => "?p=" . $p . "&o=c&id=" . $result['id'],
+                "RowMenu_link" => "main.php?p=" . $p . "&o=c&id=" . $result['id'],
                 "RowMenu_name" => CentreonUtils::escapeSecure($result["name"]),
                 "RowMenu_description" => CentreonUtils::escapeSecure($result['description']),
                 "RowMenu_command_line" => CentreonUtils::escapeSecure($result['command_line']),

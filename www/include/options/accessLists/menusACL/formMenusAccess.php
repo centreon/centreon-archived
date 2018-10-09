@@ -326,7 +326,7 @@ if ($o == ACL_WATCH) {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&lca_id=" . $aclTopologyId, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&lca_id=" . $aclTopologyId, "changeT" => _("Modify")));
 
 $tpl->assign("lca_topos2", $acl_topos2);
 $tpl->assign("sort1", _("General Information"));

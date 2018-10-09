@@ -197,7 +197,7 @@ foreach ($contacts as $contact) {
             ? $contactTypeIconeTitle[$contact_type]
             : "",
         "RowMenu_type" => $contact_type,
-        "RowMenu_link" => "?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
             html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")
         ),
@@ -233,9 +233,9 @@ $tpl->assign("elemArr", $elemArr);
  * Different messages we put in the template
  */
 $tpl->assign('msg', array(
-    "addL" => "?p=" . $p . "&o=a",
+    "addL" => "main.php?p=" . $p . "&o=a",
     "addT" => _("Add"),
-    "ldap_importL" => "?p=" . $p . "&o=li",
+    "ldap_importL" => "main.php?p=" . $p . "&o=li",
     "ldap_importT" => _("LDAP Import"),
     "view_notif" => _("View contact notifications")
 ));
