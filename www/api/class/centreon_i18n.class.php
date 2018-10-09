@@ -65,6 +65,10 @@ class CentreonI18n extends CentreonWebService
      */
     private $tokenLength = 6;
     
+    private $userLanguage;
+    
+    private $defaultLanguage = 'en';
+    
     /**
      * Return a table containing all the translations.
      *
@@ -83,13 +87,42 @@ class CentreonI18n extends CentreonWebService
                 return unserialize(file_get_contents($jsonFile));
             } else {
                 $langs = $this->getAvailableLanguages();
-                foreach ($langs as $currentLang) {
-                    $filename = $this->rootTranslationPath
-                        . '/' . $currentLang
-                        . '/' . $this->translationFile;
-                    $langsArray[$currentLang] =
-                        $this->transformTranslationFileIntoArray($filename);
+
+                /**
+                 * If user language is defined, we only keep this one
+                 */
+                if (!empty($this->userLanguage)) {
+                    $userLanguage[] = $this->userLanguage;
+                    
+                    /**
+                     * We only process if the user's language is available in
+                     * the translation files
+                     */
+                    $languageToProcess = array_intersect($userLanguage, $langs);
+                    if (!empty($languageToProcess)) {
+                        $filename = $this->rootTranslationPath
+                            . '/' . $languageToProcess[0]
+                            . '/' . $this->translationFile;
+                        $langsArray[$languageToProcess[0]] =
+                            $this->transformTranslationFileIntoArray($filename);
+                    }
                 }
+                
+                /**
+                 * We use the first translation to create the default translation.
+                 * The default translation is in English and the process
+                 * consists in defining the values with the values of the
+                 * respective keys.
+                 */
+                $defaultTranslationFilename =
+                    $this->rootTranslationPath
+                    . '/' . $langs[0]
+                    . '/' . $this->translationFile;
+                $defaultTranslation = $this->transformTranslationFileIntoArray(
+                    $defaultTranslationFilename,
+                    true
+                );
+                $langsArray[$this->defaultLanguage] = $defaultTranslation;
                 file_put_contents($jsonFile, serialize($langsArray));
             }
         } else {
@@ -98,15 +131,18 @@ class CentreonI18n extends CentreonWebService
         return $langsArray;
     }
     
-    
     /**
      * Retrieve Transform a translation definition file into an array
      *
      * @param string $filename File name to process
+     * @param bool $isDefaultTranslation
      * @return array
      */
-    private function transformTranslationFileIntoArray(string $filename): array
-    {
+    private function transformTranslationFileIntoArray(
+        string $filename,
+        bool $isDefaultTranslation = false
+    ): array {
+        $isDefaultTranslationEmpty = empty($defaultTranslation);
         $translations = [];
         if ($fleHandler = fopen($filename, 'r')) {
             while (false !== ($line = fgets($fleHandler))) {
@@ -123,7 +159,11 @@ class CentreonI18n extends CentreonWebService
                         break;
                     case 'msgstr': // Token that contains the translation
                         if (!empty($label)) {
-                            $translations[$label] = $text;
+                            if ($isDefaultTranslation) {
+                                $translations[$label] = $label;
+                            } else {
+                                $translations[$label] = $text;
+                            }
                             $label = null;
                         }
                 }
@@ -288,5 +328,15 @@ class CentreonI18n extends CentreonWebService
         );
         // Removes double-quotes character that surround the text
         return substr($text, 1, strlen($text) - 2);
+    }
+    
+    public function getUserLanguage(): ?string
+    {
+        return $this->userLanguage;
+    }
+    
+    public function setUserLanguage(string $userLanguage): void
+    {
+        $this->userLanguage = $userLanguage;
     }
 }

@@ -115,7 +115,13 @@ $dependencyInjector[CentreonI18n::class] = function ($container) {
     $translation->setFilesGenerationPath($filesGenerationPath);
     $translation->setRootTranslationPath(_CENTREON_PATH_ . 'lang');
     $translation->setTranslationFile('LC_MESSAGES/messages.po');
-    $translation->setJsonFilename('messages.json');
+    $jsonFilename = 'messages.json';
+    if (isset($_SESSION['centreon'])) {
+        $userLanguage = $_SESSION['centreon']->user->get_lang();
+        $translation->setUserLanguage($userLanguage);
+        $jsonFilename = "{$userLanguage}_{$jsonFilename}";
+    }
+    $translation->setJsonFilename($jsonFilename);
     return $translation;
 };
 
