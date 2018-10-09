@@ -8,6 +8,9 @@ import axios from "../../axios";
 
 import routeMap from "../../route-maps/index";
 
+import { setNavigation } from"../../redux/actions/navigationActions";
+import { connect } from "react-redux";
+
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
 
@@ -22,7 +25,14 @@ class NavigationComponent extends Component {
   };
 
   UNSAFE_componentWillMount = () => {
+    const { setNavigation } = this.props
+
     this.navService.get().then(({ data }) => {
+
+      // store allowed topologies in redux (useful to get acl information in other components)
+      setNavigation(data);
+
+      // provide data in the state (render menu)
       this.setState({
         menuItems: data,
         selectedMenu: Object.values(data)[0]
@@ -242,4 +252,10 @@ class NavigationComponent extends Component {
   }
 }
 
-export default withRouter(NavigationComponent);
+const mapStateToProps = () => {}
+
+const mapDispatchToProps = {
+  setNavigation
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));
