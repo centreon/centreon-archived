@@ -25,12 +25,13 @@ pour installer un Centreon Central server.
 Activer l'option Remote Server
 ------------------------------
 
-Connectez-vous à votre serveur et exécutez la commande suivante ::
+Connectez-vous à votre serveur ayant la fonction **Remote Server** et exécutez
+la commande suivante ::
 
-    # php /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP
+    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP_CENTREON_CENTRAL
 
 .. note::
-    Remplacez **@IP** par l'IP du serveur Centreon vu par le collecteur.
+    Remplacez **@IP_CENTREON_CENTRAL** par l'IP du serveur Centreon vu par le collecteur.
 
 Cette commande va activer le mode **Remote Server** ::
 
