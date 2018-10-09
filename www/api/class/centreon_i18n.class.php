@@ -65,8 +65,14 @@ class CentreonI18n extends CentreonWebService
      */
     private $tokenLength = 6;
     
+    /**
+     * @var string Language of the user
+     */
     private $userLanguage;
     
+    /**
+     * @var string Label of the default translation language to generate
+     */
     private $defaultLanguage = 'en';
     
     /**
@@ -89,13 +95,13 @@ class CentreonI18n extends CentreonWebService
                 $langs = $this->getAvailableLanguages();
 
                 /**
-                 * If user language is defined, we only keep this one
+                 * If the language of user is defined, we only keep this one
                  */
                 if (!empty($this->userLanguage)) {
                     $userLanguage[] = $this->userLanguage;
                     
                     /**
-                     * We only process if the user's language is available in
+                     * We only process if the language of user is available in
                      * the translation files
                      */
                     $languageToProcess = array_intersect($userLanguage, $langs);
@@ -330,11 +336,21 @@ class CentreonI18n extends CentreonWebService
         return substr($text, 1, strlen($text) - 2);
     }
     
+    /**
+     * Retrieve the language of the user
+     *
+     * @return string Language of the user
+     */
     public function getUserLanguage(): ?string
     {
         return $this->userLanguage;
     }
     
+    /**
+     * Define the language of the user
+     *
+     * @param string $userLanguage Language of the user
+     */
     public function setUserLanguage(string $userLanguage): void
     {
         $this->userLanguage = $userLanguage;
