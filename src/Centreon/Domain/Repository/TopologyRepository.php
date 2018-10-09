@@ -102,6 +102,6 @@ class TopologyRepository extends ServiceEntityRepository
             }
         }
 
-        return $topologyUrls ?: null;
+        return $topologyUrls ?: [];
     }
 }
