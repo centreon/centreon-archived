@@ -452,7 +452,7 @@ class CentreonACL
             /**
              * Filter to keep the first child available per level.
              */
-            $getFirstChildPerLvl = function (array $topologies): ?array {
+            $getFirstChildPerLvl = function (array $topologies): array {
                 ksort($topologies, \SORT_ASC);
                 $parentsLvl = [];
                 
