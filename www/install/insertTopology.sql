@@ -184,6 +184,9 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart split',20401,2040101,1,1,'./include/views/graphs/graph-split.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL,'Chart periods',20401,2040102,1,1,'./include/views/graphs/graph-periods.php',NULL,'0','0','0',NULL,NULL,NULL,'1');
 
+-- Insert Multi-step Wizard into Topology
+INSERT INTO `topology` (topology_name, topology_page, topology_url, readonly, is_react) VALUES ('Poller/Remote Wizard', '999', '/poller-wizard/1', '0', '1');
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
