@@ -17,8 +17,8 @@ Chose the correct chapter regarding the type of server.
 Configure a Poller
 ------------------
 
-Go to the **Configuration > Pollers** menu an click **TODO** to configure a
-new poller.
+Go to the **Configuration > Pollers** menu an click **Add server with wizard**
+to configure a new poller.
 
 Select **Add a Centreon Poller** and click **Next**:
 
@@ -34,8 +34,7 @@ Central server and click **Next**:
 .. note::
     The IP address of the poller is the IP address or the FQDN to access to this
     poller since Centreon Central server.
-
-.. note::
+    
     The IP address of the Centreon Central server is the IP address or the FQDN
     to access to the Centreon Central server since the poller.
 
@@ -49,16 +48,10 @@ Remote Server in the list. Then click **Apply**:
 
 .. note::
     If you want to change the sens of the flow between the Centreon Server (or
-    the Remote Server and the Poller, check the **Centreon must connect to poller
-    to open Broker flow** chexkbox.
+    the Remote Server and the Poller, check the **Advanced: reverse Centreon
+    Broker communication flow** chexkbox.
 
-The wizard will configure your new server:
-
-.. image:: /images/poller/wizard_add_poller_4.png
-    :align: center
-
-.. note::
-    TODO end of process
+Wait few seconds, the wizard will configure your new server.
 
 The Poller is now configured:
 
@@ -72,8 +65,8 @@ chapter to configure your first monitoring.
 Configure a Remote Server
 -------------------------
 
-Go to the **Configuration > Pollers** menu an click **TODO** to configure a
-new poller.
+Go to the **Configuration > Pollers** menu an click **Add server with wizard** to
+configure a new poller.
 
 Select **Add a Centreon Remote Server** and click **Next**:
 
@@ -86,7 +79,7 @@ If you define a new Server, select  **Manual input** option and fill the form:
     :align: center
 
 If you enabled the **Remote Server** option during the installaion of your server,
-select the option **Please select a server**, then select your server and fill
+select the option **Select a Remote Server**, then select your server and fill
 the form:
 
 .. image:: /images/poller/wizard_add_remote_2b.png
@@ -98,30 +91,19 @@ the form:
 
 Click on **Next**
 
-Select the poller(s) to link to this Remote Server and check the **Manage automatically
-Centreon Broker Configuration of selected poller?** to update the Centreon Broker
-module of the pollers to connect to the Remote Server.
-
-.. note::
-    If an error appears doring this process, please edit the Centreon Broker
-    module of the poller(s) to complete this step.
-
-Then click **Apply**:
+Select the poller(s) to link to this Remote Server , then click on **Apply**:
 
 .. image:: /images/poller/wizard_add_remote_3.png
     :align: center
 
 The wizard will configure your new server:
 
-.. image:: /images/poller/wizard_add_poller_4.png
+.. image:: /images/poller/wizard_add_remote_4.png
     :align: center
-
-.. note::
-    TODO end of process
 
 The Remote Server is now configured:
 
-.. image:: /images/poller/wizard_add_poller_5.png
+.. image:: /images/poller/wizard_add_remote_5.png
     :align: center
 
 Go to the :ref:`Simplified configuration of Centreon with IMP<impconfiguration>`
