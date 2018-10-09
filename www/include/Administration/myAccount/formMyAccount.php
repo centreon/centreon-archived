@@ -260,6 +260,8 @@ if ($o == "c") {
     $form->setDefaults($defaultUserFeatures);
 }
 
+$sessionKeyFreeze = 'administration-form-my-account-freeze';
+
 if ($form->validate()) {
     updateContactInDB($centreon->user->get_id());
     if ($form->getSubmitValue("contact_passwd")) {
@@ -267,7 +269,30 @@ if ($form->validate()) {
     }
     $o = null;
     $features = $form->getSubmitValue('features');
+
+    if ($features === null) {
+        $features = [];
+    }
+
     $centreonFeature->saveUserFeaturesValue($centreon->user->get_id(), $features);
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c'", 'class' => 'btc bt_info')
+    );
+    $form->freeze();
+
+    if ($form->getSubmitValue("contact_lang") !== $cct['contact_lang']) {
+        $_SESSION[$sessionKeyFreeze] = true;
+        echo '<script>parent.location.href = "main.php?p=' . $p . '&o=c";</script>';
+        exit;
+    } elseif (array_key_exists($sessionKeyFreeze, $_SESSION)) {
+        unset($_SESSION[$sessionKeyFreeze]);
+    }
+} elseif (array_key_exists($sessionKeyFreeze, $_SESSION) && $_SESSION[$sessionKeyFreeze] === true) {
+    unset($_SESSION[$sessionKeyFreeze]);
+    $o = null;
     $form->addElement(
         "button",
         "change",
