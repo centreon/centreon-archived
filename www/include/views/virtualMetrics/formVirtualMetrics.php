@@ -255,7 +255,7 @@ if ($o == METRIC_MODIFY || $o == METRIC_ADD) {
     </script>
     <?php
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetricId, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&vmetric_id=" . $vmetricId, "changeT" => _("Modify")));
 
 $tpl->assign("sort1", _("Properties"));
 $tpl->assign("sort2", _("Graphs"));

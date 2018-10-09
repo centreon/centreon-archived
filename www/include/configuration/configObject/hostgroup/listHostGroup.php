@@ -179,7 +179,7 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($hg["hg_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&hg_id=" . $hg['hg_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&hg_id=" . $hg['hg_id'],
         "RowMenu_desc" => ($hg["hg_alias"] == ''
             ? '-'
             : CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"]))),
@@ -202,7 +202,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 ?>

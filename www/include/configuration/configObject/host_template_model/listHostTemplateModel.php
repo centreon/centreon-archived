@@ -177,7 +177,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&host_id=" . $host['host_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&host_id=" . $host['host_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
         "RowMenu_icone" => $host_icone,
         "RowMenu_svChilds" => count($svArr),
@@ -193,7 +193,7 @@ $tpl->assign("elemArr", $elemArr);
 /* Different messages we put in the template */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 #

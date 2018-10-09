@@ -166,7 +166,7 @@ $form->setDefaults($tab);
 
 if ($oreon->user->access->checkAction("service_comment")) {
     $tpl->assign('msgs', array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add a comment"),
         "delConfirm" => _("Do you confirm the deletion ?")
     ));

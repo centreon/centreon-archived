@@ -164,7 +164,7 @@ for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($hc["hc_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&hc_id=" . $hc['hc_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&hc_id=" . $hc['hc_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure($hc["hc_alias"]),
         "RowMenu_hc_type" => ($hc["level"] ? _('Severity') . ' (' . $hc['level'] . ')' : _('Regular')),
         "RowMenu_status" => $hc["hc_activate"] ? _("Enabled") : _("Disabled"),
@@ -185,7 +185,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 ?>

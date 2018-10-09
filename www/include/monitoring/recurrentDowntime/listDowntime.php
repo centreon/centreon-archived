@@ -114,7 +114,7 @@ foreach ($listDowntime as $dt) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($dt["dt_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&dt_id=" . $dt['dt_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&dt_id=" . $dt['dt_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure($dt["dt_description"]),
         "RowMenu_status" => $dt["dt_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_options" => $moptions
@@ -129,7 +129,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )

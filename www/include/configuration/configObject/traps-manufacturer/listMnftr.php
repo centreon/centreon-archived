@@ -108,7 +108,7 @@ for ($i = 0; $mnftr = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($mnftr["name"])),
-        "RowMenu_link" => "?p=" . $p . "&o=c&id=" . $mnftr['id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&id=" . $mnftr['id'],
         "RowMenu_alias" => CentreonUtils::escapeSecure(myDecode($mnftr["alias"])),
         "RowMenu_options" => $moptions
     );
@@ -121,7 +121,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*
