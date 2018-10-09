@@ -25,7 +25,7 @@ Central Server.
 Enable Remote Server option
 ---------------------------
 
-Connect to your **REmoter Server** and execute following command::
+Connect to your **Remoter Server** and execute following command::
 
     # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP_CENTREON_CENTRAL
 
