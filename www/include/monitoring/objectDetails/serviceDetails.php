@@ -823,6 +823,7 @@ if (!is_null($host_id)) {
 }
 ?>
 <?php if (!is_null($host_id)) { ?>
+    <?php require_once _CENTREON_PATH_ . "www/class/centreonMsg.class.php"; ?>
     <script type="text/javascript">
         var glb_confirm = "<?php  echo _("Submit command?"); ?>";
         var command_sent = "<?php echo _("Command sent"); ?>";
@@ -934,9 +935,6 @@ if (!is_null($host_id)) {
             } else {
                 msg_result = command_failure;
             }
-            <?php
-            require_once "./class/centreonMsg.class.php";
-            ?>
             _clear("centreonMsg");
             _setTextStyle("centreonMsg", "bold");
             _setText("centreonMsg", msg_result);
