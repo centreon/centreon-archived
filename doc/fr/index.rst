@@ -20,6 +20,7 @@ Sommaire :
    administration_guide/index
    upgrade/index
    migration/index
+   ceip
    faq/index
    howto/index
    developper/index
