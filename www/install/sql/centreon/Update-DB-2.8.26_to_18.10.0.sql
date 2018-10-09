@@ -58,3 +58,6 @@ UPDATE topology SET topology_url = './include/Administration/about/about.php', t
 DELETE FROM topology WHERE topology_parent = 506;
 
 ALTER TABLE `remote_servers` ADD COLUMN `centreon_path` varchar(255) NULL;
+
+-- Insert Multi-step Wizard into Topology
+INSERT INTO `topology` (topology_name, topology_page, topology_url, readonly, is_react) VALUES ('Poller/Remote Wizard', '999', '/poller-wizard/1', '0', '1');
