@@ -894,7 +894,7 @@ sub parseRequest($){
     } elsif ($action =~ /^FORCERELOAD\:([0-9]*)/){
         $self->initEngine($1, "force-reload", $action);
     } elsif ($action =~ /^START\:([0-9]*)/){
-        $self->initEngine($1, "start"), $action;
+        $self->initEngine($1, "start", $action);
     } elsif ($action =~ /^STOP\:([0-9]*)/){
         $self->initEngine($1, "stop", $action);
     } elsif ($action =~ /^SENDCFGFILE\:([0-9]*)/){
