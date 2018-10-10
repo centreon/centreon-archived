@@ -129,44 +129,124 @@ $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null
 
 
 /* ------------------------ Topoogy ---------------------------- */
-$pages = array();
-$query = "SELECT topology_page, topology_name, topology_parent FROM topology " .
-    "WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order, topology_group";
-$DBRESULT1 = $pearDB->query($query);
-while ($topo1 = $DBRESULT1->fetchRow()) {
-    if ($centreon->user->access->page($topo1["topology_page"]) == 1) {
-        $pages[$topo1["topology_page"]] = _($topo1["topology_name"]);
-    }
-    $query = "SELECT topology_page, topology_name, topology_parent FROM topology " .
-        "WHERE topology_parent = '" . $topo1["topology_page"] . "' AND topology_show = '1' ORDER BY topology_order";
-    $DBRESULT2 = $pearDB->query($query);
-    while ($topo2 = $DBRESULT2->fetchRow()) {
-        if ($centreon->user->access->page($topo2["topology_page"]) == 1) {
-            $pages[$topo2["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " . _($topo2["topology_name"]);
-        }
-        $query = "SELECT topology_name, topology_parent, topology_page FROM topology " .
-            "WHERE topology_parent = '" . $topo2["topology_page"] . "' " .
-            "AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_group, topology_order";
-        $DBRESULT3 = $pearDB->query($query);
-        while ($topo3 = $DBRESULT3->fetchRow()) {
-            if ($centreon->user->access->page($topo3["topology_page"]) == 1) {
-                $pages[$topo3["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " .
-                    _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]);
-            }
-            $query = "SELECT topology_name, topology_page, topology_parent FROM topology " .
-                "WHERE topology_parent = '" . $topo3["topology_page"] . "' " .
-                "AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_order";
-            $DBRESULT4 = $pearDB->query($query);
-            while ($topo4 = $DBRESULT4->fetchRow()) {
-                if ($centreon->user->access->page($topo4["topology_page"]) == 1) {
-                    $pages[$topo4["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " .
-                        _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]) . " > " .
-                        _($topo4["topology_name"]);
+$pages = [];
+$aclUser = $centreon->user->lcaTStr;
+if (!empty($aclUser)) {
+    $acls = array_flip(explode(',', $aclUser));
+    /**
+    * Transform [1, 2, 101, 202, 10101, 20201] to :
+    *
+    * 1
+    *   101
+    *     10101
+    * 2
+    *   202
+    *     20201
+    */
+    $createTopologyTree = function (array $topologies): array {
+        ksort($topologies, \SORT_ASC);
+        $parentsLvl = [];
+
+        // Classify topologies by parents
+        foreach (array_keys($topologies) as $page) {
+            if (strlen($page) == 1) {
+                if (!array_key_exists($page, $parentsLvl)) {
+                    $parentsLvl[$page] = [];
                 }
+            } elseif (strlen($page) == 3) {
+                $parent = substr($page, 0, 1);
+                if (!array_key_exists($page, $parentsLvl[$parent])) {
+                    $parentsLvl[$parent][$page] = [];
+                }
+            } elseif (strlen($page) == 5) {
+                $parentLvl1 = substr($page, 0, 1);
+                $parentLvl2 = substr($page, 0, 3);
+                if (!array_key_exists($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                    $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
+                }
+            }
+        }
+
+        return $parentsLvl;
+    };
+    
+    /**
+     * Check if at least one child can be shown
+     */
+    $oneChildCanBeShown = function () use (&$childrenLvl3, &$translatedPages): bool {
+        $isCanBeShow = false;
+        foreach ($childrenLvl3 as $topologyPage) {
+            if ($translatedPages[$topologyPage]['show']) {
+                $isCanBeShow = true;
+                break;
+            }
+        }
+        return $isCanBeShow;
+    };
+
+    $topologies = $createTopologyTree($acls);
+
+    /**
+     * Retrieve the name of all topologies available for this user
+     */
+    $aclResults = $pearDB->query(
+        "SELECT topology_page, topology_name, topology_show "
+        . "FROM topology "
+        . "WHERE topology_page IN ($aclUser)"
+    );
+
+    $translatedPages = [];
+
+    while ($acl = $aclResults->fetch(\PDO::FETCH_ASSOC)) {
+        $translatedPages[$acl['topology_page']] = [
+            'i18n' => _($acl['topology_name']),
+            'show' => ((int)$acl['topology_show'] === 1)
+        ];
+    }
+
+    /**
+     * Create flat tree for menu with the topologies names
+     * [item1Id] = menu1 > submenu1 > item1
+     * [item2Id] = menu2 > submenu2 > item2
+     */
+    foreach ($topologies as $parentLvl1 => $childrenLvl2) {
+        $parentNameLvl1 = $translatedPages[$parentLvl1]['i18n'];
+        foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+            $parentNameLvl2 = $translatedPages[$parentLvl2]['i18n'];
+            if ($oneChildCanBeShown()) {
+                /**
+                 * There is at least one child that can be shown then we can
+                 * process the third level
+                 */
+                foreach ($childrenLvl3 as $parentLvl3) {
+                    if ($translatedPages[$parentLvl3]['show']) {
+                        $parentNameLvl3 = $translatedPages[$parentLvl3]['i18n'];
+                    
+                        if ($parentNameLvl2 === $parentNameLvl3) {
+                            /**
+                             * The name between lvl2 and lvl3 are equals.
+                             * We keep only lvl1 and lvl3
+                             */
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl3;
+                        } else {
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl2 . ' > '
+                                . $parentNameLvl3;
+                        }
+                    }
+                }
+            } else {
+                /**
+                 * We show only first and second level
+                 */
+                $pages[$parentLvl3] =
+                    $parentNameLvl1 . ' > ' . $parentNameLvl2;
             }
         }
     }
 }
+
 $form->addElement('select', 'default_page', _("Default page"), $pages);
 
 $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
