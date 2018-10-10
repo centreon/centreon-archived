@@ -169,6 +169,20 @@ if (!empty($aclUser)) {
 
         return $parentsLvl;
     };
+    
+    /**
+     * Check if at least one child can be shown
+     */
+    $oneChildCanBeShown = function () use (&$childrenLvl3, &$translatedPages): bool {
+        $isCanBeShow = false;
+        foreach ($childrenLvl3 as $topologyPage) {
+            if ($translatedPages[$topologyPage]['show']) {
+                $isCanBeShow = true;
+                break;
+            }
+        }
+        return $isCanBeShow;
+    };
 
     $topologies = $createTopologyTree($acls);
 
@@ -176,7 +190,7 @@ if (!empty($aclUser)) {
      * Retrieve the name of all topologies available for this user
      */
     $aclResults = $pearDB->query(
-        "SELECT topology_page, topology_name "
+        "SELECT topology_page, topology_name, topology_show "
         . "FROM topology "
         . "WHERE topology_page IN ($aclUser)"
     );
@@ -184,7 +198,10 @@ if (!empty($aclUser)) {
     $translatedPages = [];
 
     while ($acl = $aclResults->fetch(\PDO::FETCH_ASSOC)) {
-        $translatedPages[$acl['topology_page']] = _($acl['topology_name']);
+        $translatedPages[$acl['topology_page']] = [
+            'i18n' => _($acl['topology_name']),
+            'show' => ((int)$acl['topology_show'] === 1)
+        ];
     }
 
     /**
@@ -193,24 +210,38 @@ if (!empty($aclUser)) {
      * [item2Id] = menu2 > submenu2 > item2
      */
     foreach ($topologies as $parentLvl1 => $childrenLvl2) {
-        $parentNameLvl1 = $translatedPages[$parentLvl1];
+        $parentNameLvl1 = $translatedPages[$parentLvl1]['i18n'];
         foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
-            foreach ($childrenLvl3 as $parentLvl3) {
-                $parentNameLvl2 = $translatedPages[$parentLvl2];
-                $parentNameLvl3 = $translatedPages[$parentLvl3];
-
-                if ($parentNameLvl2 === $parentNameLvl3) {
-                    /**
-                     * The name between lvl2 and lvl3 are equals.
-                     * We keep only lvl1 and lvl3
-                     */
-                    $pages[$parentLvl3] = $parentNameLvl1 . ' > '
-                        . $parentNameLvl3;
-                } else {
-                    $pages[$parentLvl3] = $parentNameLvl1 . ' > '
-                        . $parentNameLvl2 . ' > '
-                        . $parentNameLvl3;
+            $parentNameLvl2 = $translatedPages[$parentLvl2]['i18n'];
+            if ($oneChildCanBeShown()) {
+                /**
+                 * There is at least one child that can be shown then we can
+                 * process the third level
+                 */
+                foreach ($childrenLvl3 as $parentLvl3) {
+                    if ($translatedPages[$parentLvl3]['show']) {
+                        $parentNameLvl3 = $translatedPages[$parentLvl3]['i18n'];
+                    
+                        if ($parentNameLvl2 === $parentNameLvl3) {
+                            /**
+                             * The name between lvl2 and lvl3 are equals.
+                             * We keep only lvl1 and lvl3
+                             */
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl3;
+                        } else {
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl2 . ' > '
+                                . $parentNameLvl3;
+                        }
+                    }
                 }
+            } else {
+                /**
+                 * We show only first and second level
+                 */
+                $pages[$parentLvl3] =
+                    $parentNameLvl1 . ' > ' . $parentNameLvl2;
             }
         }
     }
