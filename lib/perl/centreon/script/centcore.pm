@@ -741,7 +741,13 @@ sub syncTraps($) {
             my $port = checkSSHPort($ns_server->{ssh_port});
 
             if ($id == 0) {
-                $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
+                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+                    $remote_server = $self->getServerConfig($ns_server->{remote_id});
+                    $port = checkSSHPort($remote_server->{ssh_port});
+                    $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $remote_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+                } else {
+                    $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
+                }
                 $self->{logger}->writeLogDebug($cmd);
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                       logger => $self->{logger},
@@ -749,6 +755,16 @@ sub syncTraps($) {
                                                                       );
                 if (defined($stdout) && $stdout){
                     $self->{logger}->writeLogInfo("Result : $stdout");
+                }
+                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+                    $cmd = "$self->{ssh} " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" > $self->{cmdDir}/" . time() . "-sendcmd'";
+                    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
+                                                                          logger => $self->{logger},
+                                                                          timeout => 300
+                                                                          );
+                    if (defined($stdout) && $stdout){
+                        $self->{logger}->writeLogInfo("Result : $stdout");
+                    }
                 }
             }
         }
