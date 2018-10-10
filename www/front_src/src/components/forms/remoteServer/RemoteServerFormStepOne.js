@@ -19,9 +19,9 @@ class RemoteServerFormStepOne extends Component {
     initialized: false
   };
 
-  onManualInputChanged = (e, value) => {
+  onManualInputChanged (inputTypeManual) {
     this.setState({
-      inputTypeManual: value
+      inputTypeManual: inputTypeManual
     });
   };
 
@@ -60,9 +60,8 @@ class RemoteServerFormStepOne extends Component {
 
             <Field
               name="inputTypeManual"
-              onChange={this.onManualInputChanged.bind(this)}
+              onChange={() => { this.onManualInputChanged(true) }}
               checked={inputTypeManual}
-              value={true}
               component={RadioField}
               label="Create new Remote Server"
             />
@@ -116,9 +115,8 @@ class RemoteServerFormStepOne extends Component {
 
             <Field
               name="inputTypeManual"
-              onClick={this.onManualInputChanged.bind(this)}
+              onClick={() => { this.onManualInputChanged(false) }}
               checked={!inputTypeManual}
-              value={false}
               component={RadioField}
               label="Select a Remote Server"
             />
@@ -179,7 +177,7 @@ class RemoteServerFormStepOne extends Component {
             ) : null}
 
 
-          
+
             <div class="form-buttons">
               <button className="button" type="submit">
                 Next
