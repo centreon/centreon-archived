@@ -25,7 +25,7 @@ class ModuleRoute extends Component {
         if (clientHeight != contentHeight) {
           this.setState({
             loading: false,
-            contentHeight: clientHeight
+            contentHeight: clientHeight - 30
           });
         }
       }, 200);
