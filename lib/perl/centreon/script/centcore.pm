@@ -619,13 +619,16 @@ sub sendExportFile($){
     # Send data with rSync
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
 
-    $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1 && echo 'CREATEREMOTETASK:$taskId' > ". $self->{cmdFile};
+    $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                  logger => $self->{logger},
-                                                                  timeout => 300
-                                                                  );
+                                                          logger => $self->{logger},
+                                                          timeout => 300
+                                                          );
     
     $self->{logger}->writeLogInfo("Result : $stdout");
+
+    $self->createRemote($taskId);
+
     $self->{logger}->writeLogInfo("End: Send export files on poller $id");
 }
 
