@@ -70,23 +70,23 @@ Centreon OSS 3.4
 +-------------------------+----------+--------------+----------------+-----------------------------+
 | Product                 | Version  | Release date | End of life    | State                       |
 +=========================+==========+==============+================+=============================+
-| Centreon Web            | 2.8.x    | 2016/11/14   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Web            | 2.8.x    | 2016/11/14   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Engine         | 1.8.x    | 2017/09/19   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Engine         | 1.8.x    | 2017/09/19   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Broker         | 3.0.x    | 2016/11/14   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Broker         | 3.0.x    | 2016/11/14   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon DSM            | 2.x      | 2014/09/01   | Centreon 20.10 | Blocking & security issues  |
+| Centreon DSM            | 2.x      | 2014/09/01   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Open Tickets   | 1.2.x    | 2016/06/20   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Open Tickets   | 1.2.x    | 2016/06/20   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon AWIE           | 1.x      | 2018/04/11   | Centreon 20.10 | Blocking & security issues  |
+| Centreon AWIE           | 1.x      | 2018/04/11   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Poller Display | 1.5.x    | 2018/04/11   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Poller Display | 1.5.x    | 2018/04/11   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Widgets        | 1.x      | N/A          | Centreon 20.10 | Blocking & security issues  |
+| Centreon Widgets        | 1.x      | N/A          | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
-| Centreon Plugins        | YYYYMMDD | N/A          | Centreon 20.10 | Blocking & security issues  |
+| Centreon Plugins        | YYYYMMDD | N/A          | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+----------+--------------+----------------+-----------------------------+
 
 Centreon IMP 3.4
@@ -95,11 +95,11 @@ Centreon IMP 3.4
 +-------------------------------+---------+--------------+----------------+-----------------------------+
 | Product                       | Version | Release date | End of life    | State                       |
 +===============================+=========+==============+================+=============================+
-| Centreon OSS                  | 3.4     | 2016/11/14   | Centreon 20.10 | Blocking & security issues  |
+| Centreon OSS                  | 3.4     | 2016/11/14   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon License Manager      | 1.1.x   | 2018/02/23   | Centreon 20.10 | Blocking & security issues  |
+| Centreon License Manager      | 1.1.x   | 2018/02/23   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon Plugin Packs Manager | 2.4.x   | 2018/05/30   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Plugin Packs Manager | 2.4.x   | 2018/05/30   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------------+---------+--------------+----------------+-----------------------------+
 | Plugin Packs                  | 3.x     | N/A          | N/A            | All issues                  |
 +-------------------------------+---------+--------------+----------------+-----------------------------+
@@ -110,13 +110,13 @@ Centreon EMS 3.4
 +-------------------------+---------+--------------+----------------+-----------------------------+
 | Product                 | Version | Release date | End of life    | State                       |
 +=========================+=========+==============+================+=============================+
-| Centreon IMP            | 3.4     | 2016/11/14   | Centreon 20.10 | Blocking & security issues  |
+| Centreon IMP            | 3.4     | 2016/11/14   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon BAM            | 3.6.x   | 2018/02/22   | Centreon 20.10 | Blocking & security issues  |
+| Centreon BAM            | 3.6.x   | 2018/02/22   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon MAP            | 4.4.x   | 2017/01/02   | Centreon 20.10 | Blocking & security issues  |
+| Centreon MAP            | 4.4.x   | 2017/01/02   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon MBI            | 3.2.x   | 2018/07/09   | Centreon 20.10 | Blocking & security issues  |
+| Centreon MBI            | 3.2.x   | 2018/07/09   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+---------+--------------+----------------+-----------------------------+
-| Centreon Auto Discovery | 2.3.x   | 2017/08/24   | Centreon 20.10 | Blocking & security issues  |
+| Centreon Auto Discovery | 2.3.x   | 2017/08/24   | Centreon 20.04 | Blocking & security issues  |
 +-------------------------+---------+--------------+----------------+-----------------------------+
