@@ -14581,8 +14581,8 @@ msgstr "Services en attente"
 msgid "Edit profile"
 msgstr "Editer le profil"
 
-msgid "Copy autologin key"
-msgstr "Copier la clé de connexion automatique"
+msgid "Copy autologin link"
+msgstr "Copier le lien de connexion automatique"
 
 msgid "Server Configuration Wizard"
 msgstr "Assistant de configuration du serveur"
@@ -14608,7 +14608,7 @@ msgstr "Nom du serveur"
 msgid "Server IP address"
 msgstr "Adresse IP du serveur"
 
-msgid "Database user"
+msgid "Database username"
 msgstr "Nom de l'utilisateur ayant accès à la base de données"
 
 msgid "Database password"
@@ -14641,8 +14641,8 @@ msgstr "Création d'une tâche d'exportation"
 msgid "Generating Export Files"
 msgstr "Génération de fichiers d'exportation"
 
-msgid "Processing Remote Import / Configuration"
-msgstr "Traitement de l'importation / configuration à distance"
+msgid "Processing Remote Import/Configuration"
+msgstr "Traitement de l'importation/configuration à distance"
 
 msgid "The field is required"
 msgstr "Ce champ est requis"
@@ -14652,3 +14652,9 @@ msgstr "Adresse IP non valide"
 
 msgid "Add server with wizard"
 msgstr "Ajouter un serveur à l'aide de l'assistant"
+
+msgid "Select linked Remote Server"
+msgstr "Selectionez le serveur distant lié"
+
+msgid "as"
+msgstr "en tant que"
