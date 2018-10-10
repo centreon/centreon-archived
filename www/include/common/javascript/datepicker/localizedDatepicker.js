@@ -48,26 +48,29 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
 
     setUserFormat();
 
-
     if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
+
+        // manage timezone : set +/- 1 day
+        if (defaultDate == "0" && localStorage.getItem('realTimezone')) {
+            defaultDate = new Date(moment().tz(localStorage.getItem('realTimezone')).format("YYYY-MM-DD"));
+        }
+
         // initializing all the displayed and the hidden datepickers
         jQuery("." + className).each(function () {
+
             // finding all the alternative field
             var altName = jQuery(this).attr("name");
-            if ("undefined" != jQuery(this).attr("name")) {
+            if (typeof(altName) != "undefined") {
                 var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
                 var value = $(this) && $(this).val() ? $(this).val() : defaultDate;
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
-                    altFormat: altFormat,
-                    onSelect: function (date) {
-                        alternativeField.val
-                    }
+                    altFormat: altFormat
                 }).datepicker("setDate", value)
             } else {
                 alert("Fatal : attribute name not found for the class " + className);
-                jQuery(this).datepicker()
+                jQuery(this).datepicker();
             }
         });
     } else {
@@ -76,10 +79,7 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
         var dateToSet = new Date(timestampToSet);
         jQuery("#" + idName).datepicker({
             altField: alternativeField,
-            altFormat: altFormat,
-            onSelect: function (date) {
-                alternativeField.val
-            }
+            altFormat: altFormat
         }).datepicker('setDate', dateToSet);
     }
 }
