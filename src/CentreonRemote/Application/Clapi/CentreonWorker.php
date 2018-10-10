@@ -3,11 +3,13 @@
 namespace CentreonRemote\Application\Clapi;
 
 use Centreon\Domain\Repository\TaskRepository;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use Curl\Curl;
 use Pimple\Container;
 use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Centreon\Domain\Entity\Task;
+use Centreon\Domain\Entity\Command;
 
 class CentreonWorker implements CentreonClapiServiceInterface
 {
@@ -46,7 +48,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
             echo "None found\n";
         } else {
             foreach ($tasks as $task) {
-                $params = unserialize($task->getParams());
+                $params = unserialize($task->getParams())['params'];
                 $commitment = new ExportCommitment($params['server'], $params['pollers']);
 
                 try {
@@ -55,24 +57,16 @@ class CentreonWorker implements CentreonClapiServiceInterface
                     //todo error handling
                 }
 
-                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+              //  $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
 
                 /**
-                 * create import task on remote
+                 * move export file
                  */
-                $centreonPath = trim($params['centreon_folder'], '/');
-                $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?object=centreon_task_service&action=addImportTaskWithParent";
-
-                try {
-                    $curl = new Curl;
-                    $curl->post($url, ['parent_id' => $task->getId()]);
-
-                    if ($curl->error) {
-                        echo 'Curl error while creating parent task';
-                    }
-                } catch (\ErrorException $e) {
-                    echo 'Curl error while creating parent task';
-                }
+                $cmd = new Command();
+                $compositeKey = $params['server'].':'.$task->getId();
+                $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES.$compositeKey);
+                $cmdService = new CentcoreCommandService();
+                $cmdWritten = $cmdService->sendCommand($cmd);
             }
         }
 
@@ -96,6 +90,32 @@ class CentreonWorker implements CentreonClapiServiceInterface
         }
 
         echo "\n Worker cycle completed.\n";
+    }
+
+    /**
+     * Worker method to create task for import on remote.
+     */
+    public function createRemoteTask(int $taskId)
+    {
+        $task = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findOneById($taskId);
+
+        /**
+         * create import task on remote
+         */
+        $params = unserialize($task->getParams())['params'];
+        $centreonPath = $params['centreon_path'];
+        $url = "{$params['remote_ip']}{$centreonPath}api/external.php?object=centreon_task_service&action=AddImportTaskWithParent";
+
+        try {
+            $curl = new Curl;
+            $res = $curl->post($url, ['parent_id' => $task->getId()]);
+
+            if ($curl->error) {
+                echo 'Curl error while creating parent task';
+            }
+        } catch (\ErrorException $e) {
+            echo 'Curl error while creating parent task';
+        }
     }
 
     public function getDi(): Container

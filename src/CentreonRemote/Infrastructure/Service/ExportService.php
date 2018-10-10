@@ -8,6 +8,7 @@ use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use ReflectionClass;
+use WebDriver\Exception;
 
 class ExportService
 {
@@ -65,7 +66,7 @@ class ExportService
      * Export all that is registered in exporter
      * 
      * @todo separate work of exporters
-     * 
+     * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
     public function export(ExportCommitment $commitment): void
