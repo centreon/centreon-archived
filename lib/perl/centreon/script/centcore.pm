@@ -729,6 +729,9 @@ sub syncTraps($) {
                                                                       logger => $self->{logger},
                                                                       timeout => 300
                                                                       );
+                if (defined($stdout) && $stdout){
+                    $self->{logger}->writeLogInfo("Result : $stdout");
+                }
             }
         }
     } else {
