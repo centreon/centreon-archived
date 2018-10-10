@@ -62,10 +62,6 @@ Tableau de maintenance des anciens produits
     Tous les autres produits non décrits dans les tableaux suivants ne sont
     plus pris en charge par Centreon.
 
-.. note::
-    Pour les clients ayant un support professionnel Centreon, reportez-vous à
-    votre contrat.
-
 Centreon OSS 3.4
 ================
 

@@ -61,9 +61,6 @@ Old products maintenance table
     All other products not described in the following tables are no more supported
     by Centreon
 
-.. note::
-    For customers with Centreon professional support, refer to your contract.
-
 Centreon OSS 3.4
 ================
 
