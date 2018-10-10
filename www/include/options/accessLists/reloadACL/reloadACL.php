@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 
 $path = "./include/options/accessLists/reloadACL/";
 
-//require_once "./include/common/common-Func.php";
+require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
 if (isset($_GET["o"]) && $_GET["o"] == "r") {
