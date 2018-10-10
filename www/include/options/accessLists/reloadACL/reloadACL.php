@@ -50,7 +50,7 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     $msg->setTextStyle("bold");
     $msg->setText(_("ACL reloaded"));
     $msg->setTimeOut("3");
-    passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
+    passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
 } elseif (isset($_POST["o"]) && $_POST["o"] == "u") {
     isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
     isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
@@ -74,10 +74,11 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     }
 
     $pearDB->query($query);
+    $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
     $msg->setText(_("ACL reloaded"));
     $msg->setTimeOut("3");
-    passthru("php " . _CENTREON_PATH_ . "/cron/centAcl.php");
+    passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
 }
 
 # Smarty template Init

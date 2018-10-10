@@ -1,3 +1,4 @@
+#!@PHP_BIN@
 <?php
 /*
  * Copyright 2005-2015 Centreon
