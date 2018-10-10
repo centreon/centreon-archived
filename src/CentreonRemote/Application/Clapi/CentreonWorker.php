@@ -103,7 +103,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
          * create import task on remote
          */
         $params = unserialize($task->getParams())['params'];
-        $centreonPath = $params['centreon_path'];
+        $centreonPath = trim($params['centreon_path'], '/');
         $url = "{$params['remote_ip']}{$centreonPath}api/external.php?object=centreon_task_service&action=AddImportTaskWithParent";
 
         try {
