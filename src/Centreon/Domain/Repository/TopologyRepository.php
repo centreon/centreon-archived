@@ -48,7 +48,7 @@ class TopologyRepository extends ServiceEntityRepository
                 $topologyUrls[] = $topologyUrl['topology_url'];
             }
         } else {
-            if (count($user->access->accessGroups) > 0){
+            if (count($user->access->getAccessGroups()) > 0){
                 $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
                     . "FROM acl_group_topology_relations, acl_topology, acl_topology_relations "
                     . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "
