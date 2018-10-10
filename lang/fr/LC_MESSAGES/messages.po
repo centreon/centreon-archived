@@ -14553,3 +14553,102 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 
 #~ msgid "Process Commands"
 #~ msgstr "Commandes du processus"
+
+msgid "All pollers"
+msgstr "Tous les collecteurs"
+
+msgid "Configure pollers"
+msgstr "Configurer les collecteurs"
+
+msgid "services"
+msgstr "services"
+
+msgid "Critical services"
+msgstr "Services critiques"
+
+msgid "Warning services"
+msgstr "Services en alertes"
+
+msgid "Unknown services"
+msgstr "Services inconnus"
+
+msgid "Ok services"
+msgstr "Services Ok"
+
+msgid "Pending services"
+msgstr "Services en attente"
+
+msgid "Edit profile"
+msgstr "Editer le profil"
+
+msgid "Copy autologin key"
+msgstr "Copier la clé de connexion automatique"
+
+msgid "Server Configuration Wizard"
+msgstr "Assistant de configuration du serveur"
+
+msgid "Choose a server type"
+msgstr "Choisissez un type de serveur"
+
+msgid "Add a Centreon Remote Server"
+msgstr "Ajouter un serveur distant Centreon"
+
+msgid "Add a Centreon Poller"
+msgstr "Ajouter un collecteur Centreon"
+
+msgid "Remote Server Configuration"
+msgstr "Configuration du serveur distant"
+
+msgid "Create new Remote Server"
+msgstr "Créer un nouveau serveur distant"
+
+msgid "Server Name"
+msgstr "Nom du serveur"
+
+msgid "Server IP address"
+msgstr "Adresse IP du serveur"
+
+msgid "Database user"
+msgstr "Nom de l'utilisateur ayant accès à la base de données"
+
+msgid "Database password"
+msgstr "Mot de passe de l'utilisateur ayant accès à la base de données"
+
+msgid "Centreon Central IP address, as seen by this server"
+msgstr "Adresse IP du Central Centreon, telle que vue par ce serveur"
+
+msgid "Centreon Web Folder on Remote"
+msgstr "Dossier Centreon web sur le serveur distant"
+
+msgid "Select a Remote Server"
+msgstr "Sélectionnez un serveur distant"
+
+msgid "Select Pending Remote Links"
+msgstr "Sélectionner les liens distants en attente"
+
+msgid "Select IP"
+msgstr "Sélectionnez une IP"
+
+msgid "Select pollers to be attached to this new Remote Server"
+msgstr "Sélectionner les collecteurs à attacher à ce nouveau serveur distant"
+
+msgid "Finalizing Setup"
+msgstr "Finalisation de la configuration"
+
+msgid "Creating Export Task"
+msgstr "Création d'une tâche d'exportation"
+
+msgid "Generating Export Files"
+msgstr "Génération de fichiers d'exportation"
+
+msgid "Processing Remote Import / Configuration"
+msgstr "Traitement de l'importation / configuration à distance"
+
+msgid "The field is required"
+msgstr "Ce champ est requis"
+
+msgid "Not a valid IP address"
+msgstr "Adresse IP non valide"
+
+msgid "Add server with wizard"
+msgstr "Ajouter un serveur à l'aide de l'assistant"
