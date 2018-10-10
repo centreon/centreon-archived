@@ -62,16 +62,17 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
             var altName = jQuery(this).attr("name");
             if (typeof(altName) != "undefined") {
                 var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
+                var value = $(this) && $(this).val() ? $(this).val() : defaultDate;
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
                     altFormat: altFormat
-                });
+                }).datepicker("setDate", value)
             } else {
                 alert("Fatal : attribute name not found for the class " + className);
                 jQuery(this).datepicker();
             }
-        }).datepicker("setDate", defaultDate);
+        });
     } else {
         // setting the displayed and hidden fields with a timestamp value sent from the backend
         var alternativeField = "input[name=alternativeDate" + idName + "]";
