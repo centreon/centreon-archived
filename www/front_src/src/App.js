@@ -44,7 +44,7 @@ class App extends Component {
       <ClassicRoute
         history={history}
         path={path}
-        component={acls.indexOf(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) > -1 ? NotAllowedPage : comp}
+        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? NotAllowedPage : comp}
         {...rest}
       />
     ))
