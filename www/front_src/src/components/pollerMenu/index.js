@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import config from "../../config";
 
+import { connect } from "react-redux";
+
 const getIssueClass = (issues, key) => {
   return (issues && issues.length != 0) ?
   ((issues[key]) ?
@@ -75,6 +77,10 @@ class PollerMenu extends Component {
 
   render() {
     const { data } = this.props;
+    const { entries } = this.props.navigationData;
+
+    // check if poller configuration page is allowed
+    const allowPollerConfiguration = entries.includes('60901')
 
     if (!data) {
       return null;
@@ -147,14 +153,16 @@ class PollerMenu extends Component {
                     );
                   })
                   : null}
-                <a href={config.urlBase + "main.php?p=609"}>
-                  <button
-                    onClick={this.toggle}
-                    class="btn btn-big btn-green submenu-top-button"
-                  >
-                    Configure pollers
-                  </button>
-                </a>
+                {allowPollerConfiguration && /* display poller configuration button if user is allowed */
+                  <a href={config.urlBase + "main.php?p=609"}>
+                    <button
+                      onClick={this.toggle}
+                      class="btn btn-big btn-green submenu-top-button"
+                    >
+                      Configure pollers
+                    </button>
+                  </a>
+                }
               </ul>
             </div>
           </div>
@@ -164,7 +172,13 @@ class PollerMenu extends Component {
   }
 }
 
-export default PollerMenu;
+const mapStateToProps = ({ navigation }) => ({
+  navigationData: navigation
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
   children: PropTypes.element.isRequired,
