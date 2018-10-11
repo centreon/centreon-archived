@@ -312,7 +312,7 @@ sub getPHPConfFile() {
 	my @tab_php_ini;
 
 	# PHP CLI
-	my $result = `/opt/rh/rh-php71/root/usr/bin/php -r 'echo php_ini_loaded_file();'`;
+	my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
 	push(@tab_php_ini, trim($result));
 
 	# Apache
