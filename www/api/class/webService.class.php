@@ -301,6 +301,9 @@ class CentreonWebService
             $webService = [
                 'class' => $dependencyInjector['centreon.webservice']->get($object)
             ];
+
+            // Initialize the language translator
+            $dependencyInjector['translator'];
             
             $wsObj = new $webService['class'];    
             $wsObj->setDi($dependencyInjector);
