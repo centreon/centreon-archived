@@ -312,12 +312,12 @@ sub getPHPConfFile() {
 	my @tab_php_ini;
 
 	# PHP CLI
-	my $result = `php -r 'echo php_ini_loaded_file();'`;
+	my $result = `/opt/rh/rh-php71/root/usr/bin/php -r 'echo php_ini_loaded_file();'`;
 	push(@tab_php_ini, trim($result));
 
 	# Apache
-	if ( -e '/etc/php.ini') {
-		push(@tab_php_ini, '/etc/php.ini');
+	if ( -e '/etc/opt/rh/rh-php71/php.ini') {
+	    push(@tab_php_ini, '/etc/opt/rh/rh-php71/php.ini');
 	} else {
         print STDERR "Unable to get PHP configuration\n";
     }
