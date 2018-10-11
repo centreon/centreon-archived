@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import config from "../../config";
+import {Translate} from 'react-redux-i18n';
 
 const getIssueClass = (issues, key) => {
   return (issues && issues.length != 0) ?
@@ -78,7 +79,7 @@ class PollerMenu extends Component {
       <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
         <span class="wrap-left-icon" onClick={this.toggle.bind(this)}>
           <span class="iconmoon icon-poller" />
-          <span class="wrap-left-icon__name">Pollers</span>
+          <span class="wrap-left-icon__name"><Translate value="Pollers"/></span>
         </span>
         {statusIcon}
         <div ref={poller => this.poller = poller}>
@@ -88,7 +89,7 @@ class PollerMenu extends Component {
               <ul class="submenu-items list-unstyled">
                 <li class="submenu-item">
                   <span class="submenu-item-link">
-                    All pollers
+                    <Translate value="All pollers"/>
                     <span class="submenu-count">{total ? total : "..."}</span>
                   </span>
                 </li>
@@ -139,7 +140,7 @@ class PollerMenu extends Component {
                   <button 
                     onClick={this.toggle}
                     class="btn btn-big btn-green submenu-top-button">
-                    Configure pollers
+                    <Translate value="Configure pollers"/>
                   </button>
                 </a>
               </ul>

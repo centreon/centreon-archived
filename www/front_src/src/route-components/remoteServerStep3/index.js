@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import axios from "../../axios";
 
 import axiosRemote from "../../axios/remote";
+import {I18n} from "react-redux-i18n";
 
 class RemoteServerStepThreeRoute extends Component {
   state = {
@@ -108,7 +109,7 @@ class RemoteServerStepThreeRoute extends Component {
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
-          formTitle={"Finalizing Setup:"}
+          formTitle={I18n.t("Finalizing Setup") + ":"}
         />
       </div>
     );
