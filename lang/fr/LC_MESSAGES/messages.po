@@ -14667,3 +14667,9 @@ msgstr "Attacher un collecteur à un serveur"
 
 msgid "Advanced: reverse Centreon Broker communication flow"
 msgstr "Avancé: inversé le flux de communication du broker Centreon"
+
+msgid "%s is not valid."
+msgstr "%s n'est pas valide."
+
+msgid "You need to send '%s' in the request."
+msgstr "You devez envoyer le paramètre '%s' dans la requête."
