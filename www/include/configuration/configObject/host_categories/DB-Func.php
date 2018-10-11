@@ -334,42 +334,31 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     }
     $DBRESULT->closeCursor();
 
-    /*
-	 * Update Host HG relations
-	 */
+    // delete all previous relations before reinsert new relations
     $pearDB->query("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = '" . $hc_id . "'");
 
+    // get host relations
+    $linkedHosts = isset($ret["hc_hosts"]) ?
+        $ret["hc_hosts"] :
+        CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
 
-    $ret = isset($ret["hc_hosts"]) ? $ret["hc_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
-    $hgNEW = array();
+    // get host template relations
+    $linkedHostTemplates = isset($ret["hc_hostsTemplate"]) ?
+        $ret["hc_hostsTemplate"] :
+        $form->getSubmitValue("hc_hostsTemplate");
 
-    $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
-    for ($i = 0; $i < count($ret); $i++) {
-        if ($i != 0) {
-            $rq .= ", ";
-        }
-        $rq .= " ('" . $hc_id . "', '" . $ret[$i] . "')";
+    // merge host and host template relations
+    $linkedObjects = array_merge($linkedHosts, $linkedHostTemplates);
 
-        $hostsNEW[$ret[$i]] = $ret[$i];
-    }
-    if ($i != 0) {
-        $DBRESULT = $pearDB->query($rq);
-    }
-    isset($ret["hc_hostsTemplate"])
-        ? $ret = $ret["hc_hostsTemplate"]
-        : $ret = $form->getSubmitValue("hc_hostsTemplate");
-    $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
-    if ($ret) {
-        for ($i = 0; $i < count($ret); $i++) {
+    // build query to insert all relations
+    if (count($linkedObjects)) {
+        $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
+        for ($i = 0; $i < count($linkedObjects); $i++) {
             if ($i != 0) {
                 $rq .= ", ";
             }
-            $rq .= " ('" . $hc_id . "', '" . $ret[$i] . "')";
-
-            $hostsNEW[$ret[$i]] = $ret[$i];
+            $rq .= " ('" . $hc_id . "', '" . $linkedObjects[$i] . "')";
         }
-    }
-    if ($i != 0) {
-        $DBRESULT = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
