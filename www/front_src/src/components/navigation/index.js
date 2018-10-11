@@ -67,9 +67,9 @@ class NavigationComponent extends Component {
         let { menuItems } = this.state;
 
         Object.keys(menuItems).forEach(key => {
-          menuItems[key].toggled = false;
-        })
-        menuItems[index].toggled = !menuItems[index].toggled;
+          menuItems[key].toggled = key === index ?
+            !menuItems[index].toggled : false;
+        });
 
         this.setState({
           active: true,
