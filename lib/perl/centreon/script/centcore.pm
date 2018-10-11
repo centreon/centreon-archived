@@ -418,9 +418,9 @@ sub sendExternalCommand($$){
                         my $remote_server = $self->getServerConfig($server_info->{remote_id});
                         $cmd_line =~ s/^\s+|\s+$//g;
                         $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port \"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' > " . $self->{cmdDir} . time() . "-sendcmd\"";
-                        $self->{logger}->writeLogInfo("Send external command using Remote Server: ".$remote_server->{ns_ip_address});
+                        $self->{logger}->writeLogInfo("Send external command using Remote Server: " . $remote_server->{ns_ip_address});
                     } else {
-                        $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
+                        $cmd2 = "$self->{ssh} -q " . $server_info->{ns_ip_address} . " -p $port \"$self->{echo} '" . $cmd_line."' >> " . $command_file . "\"";
                         $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd_line."\"");
                     }
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
@@ -436,17 +436,17 @@ sub sendExternalCommand($$){
                     my $remote_server = $self->getServerConfig($server_info->{remote_id});
                     $cmd_line =~ s/^\s+|\s+$//g;
                     $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port \"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' > " . $self->{cmdDir} . time() . "-sendcmd\"";
-                    $self->{logger}->writeLogInfo("Send external command using Remote Server: ".$remote_server->{ns_ip_address});
+                    $self->{logger}->writeLogInfo("Send external command using Remote Server: " . $remote_server->{ns_ip_address});
                 } else {
-                    $cmd2 = "$self->{ssh} -q ". $server_info->{ns_ip_address} ." -p $port \"$self->{echo} '".$cmd_line."' >> ".$command_file."\"";
-                    $self->{logger}->writeLogInfo("External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd_line."\"");
+                    $cmd2 = "$self->{ssh} -q " . $server_info->{ns_ip_address} . " -p $port \"$self->{echo} '" . $cmd_line . "' >> " . $command_file . "\"";
+                    $self->{logger}->writeLogInfo("External command : " . $server_info->{ns_ip_address} . " ($id) : \"" . $cmd_line . "\"");
                 }
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2, logger => $self->{logger}, timeout => $self->{cmd_timeout});
                 $cmd_line = "";
                 $count = 0;
             } 
             if ($lerror == -1) {
-                $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
+                $self->{logger}->writeLogError("Could not write into pipe file " . $command_file . " on poller " . $id);
             }
         }
 
@@ -671,7 +671,7 @@ sub initEngine($$$){
         if (defined($conf->{remote_id}) && $conf->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
             my $remote_server = $self->getServerConfig($conf->{remote_id});
             $action =~ s/^\s+|\s+$//g;
-            $cmd = "$self->{ssh} -p $port ". $remote_server->{ns_ip_address} ." 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
+            $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
             $self->{logger}->writeLogDebug("Send command using Remote Server");
         } else {
             $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} $self->{service} ".$conf->{init_script}." ".$options;
@@ -878,13 +878,13 @@ sub initCentreonTrapd {
                                                                   );
         } else {
             if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
-            my $remote_server = $self->getServerConfig($ns_server->{remote_id});
-            $action =~ s/^\s+|\s+$//g;
-            $cmd = "$self->{ssh} -p $port ". $remote_server->{ns_ip_address} ." 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
-            $self->{logger}->writeLogDebug("Send command using Remote Server");
-        } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
-        }
+                my $remote_server = $self->getServerConfig($ns_server->{remote_id});
+                $action =~ s/^\s+|\s+$//g;
+                $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
+                $self->{logger}->writeLogDebug("Send command using Remote Server");
+            } else {
+                $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
+            }
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                   logger => $self->{logger},
