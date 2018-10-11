@@ -34,7 +34,7 @@ class ModuleRoute extends Component {
 
   handleHref = (event) => {
     let href = event.detail.href;
-    this.props.history.push(href);
+    window.history.pushState(null,null, href);
   }
 
   componentDidMount() {
