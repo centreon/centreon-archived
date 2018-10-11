@@ -32,7 +32,6 @@
     "query-string": "^6.2.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-favicon": "0.0.14",
     "react-full-screen": "^0.2.3",
     "react-fullscreen-crossbrowser": "^1.0.9",
     "react-helmet": "^5.2.0",
