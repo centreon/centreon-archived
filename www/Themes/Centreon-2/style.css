@@ -1537,7 +1537,7 @@ table.ListTableSmallArg td {
 }
 .ToolbarTR          {padding-left:10px;}
 .ToolbarTR td:first-child {
-    width: 40%;
+    width: 50%;
 }
 .ToolbarTR select {
     line-height: 25px;
