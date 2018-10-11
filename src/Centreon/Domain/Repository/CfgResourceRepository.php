@@ -23,7 +23,8 @@ class CfgResourceRepository extends ServiceEntityRepository
 
         $sql = <<<SQL
 SELECT
-    t.*
+    t.*,
+    crir.instance_id AS `_instance_id`
 FROM cfg_resource AS t
 INNER JOIN cfg_resource_instance_relations AS crir ON crir.resource_id = t.resource_id
 WHERE crir.instance_id IN ({$ids})

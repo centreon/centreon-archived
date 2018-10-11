@@ -153,6 +153,7 @@ class PollerExporter extends ExporterServiceAbstract
             $result = $this->_parse($exportPathFile);
 
             foreach ($result as $data) {
+                unset($data['_instance_id']);
                 $db->insert('cfg_resource', $data);
             }
         })();
