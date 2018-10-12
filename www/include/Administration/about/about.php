@@ -45,8 +45,8 @@ $release = $DBRESULT->fetchRow();
             <table class="table">
                 <tr>
                     <td>
-                    <h3>Centreon <?php print $release["value"]; ?></h3> <br>
-
+                        <h3>Centreon <?php print $release["value"]; ?></h3>
+                        <p><em>(commit <a href="https://github.com/centreon/centreon/tree/@COMMIT@">@COMMIT@</a>)</em></p><br>
                     </td>
                     <td>
                         Developed by <a href="http://www.centreon.com">Centreon</a>
