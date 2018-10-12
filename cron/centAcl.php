@@ -284,7 +284,7 @@ try {
         $res->closeCursor();
 
         $hostCache = array();
-        $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
+        $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register IN ('1', '2')");
         while ($h = $DBRESULT->fetch()) {
             $hostCache[$h["host_id"]] = $h["host_name"];
         }
@@ -614,13 +614,22 @@ try {
                     }
                 }
 
-                foreach ($tabElem as $host_id => $svc_list) {
-                    /* inject host */
-                    $injectHandler->execute(array($host_id, null, $acl_group_id, $acl_group_id));
+                foreach ($resourceCache[$res2["acl_res_id"]] as $host => $svc_list) {
+                    if ($hostId = array_search($host, $hostCache)) {
 
-                    /* inject services */
-                    foreach ($svc_list as $svc_id => $flag) {
-                        $injectHandler->execute(array($host_id, $svc_id, $acl_group_id, $acl_group_id));
+                        /* inject host */
+                        $injectHandler->execute(array($hostId, null, $acl_group_id, $acl_group_id));
+
+                        /* inject services */
+                        foreach (array_values($svc_list) as $hostServiceId) {
+                            $explodedHostServiceId = explode(",", $hostServiceId);
+                            if (isset($explodedHostServiceId[1])) {
+                                $injectHandler->execute(
+                                    array($hostId, $explodedHostServiceId[1], $acl_group_id, $acl_group_id)
+                                );
+                            }
+                        }
+
                     }
                 }
 
