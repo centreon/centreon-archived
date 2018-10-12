@@ -115,6 +115,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
+                $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', 'input[name="oreon_path"]');
             },
             "The active page is not Administration > Parameters.",
@@ -129,6 +130,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
+                $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', 'input[name="host_search"]');
             },
             "The active page is not Monitoring > Status > Hosts.",

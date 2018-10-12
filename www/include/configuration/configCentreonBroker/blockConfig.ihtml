@@ -4,7 +4,7 @@
       {$tagBlock|capitalize} {$posBlock} - {$formBlock.header.typeName}
   </td>
   <td class="ListColLvl1_name" style="text-align: right;">
-      <a href="javascript:deleteRow('{$tagBlock}', {$posBlock});">
+      <a onclick="javascript:deleteRow('{$tagBlock}', {$posBlock});">
           <img class="ico-14" src="./img/icons/circle-cross.png" style="vertical-align:middle;"/>
       </a>
   </td>

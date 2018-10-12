@@ -8,6 +8,7 @@ import RemoteServerStepOne from "../route-components/remoteServerStep1";
 import RemoteServerStepTwo from "../route-components/remoteServerStep2";
 import RemoteServerStepThree from "../route-components/remoteServerStep3";
 import ServerConfigurationWizard from "../route-components/serverConfigurationWizard";
+import NotAllowedPage from "../route-components/notAllowedPage";
 
 const classicRoutes = [
   {
@@ -53,6 +54,11 @@ const classicRoutes = [
   {
     path: routeMap.serverConfigurationWizard,
     comp: ServerConfigurationWizard,
+    exact: true
+  },
+  {
+    path: routeMap.notAllowedPage,
+    comp: NotAllowedPage,
     exact: true
   }
 ];

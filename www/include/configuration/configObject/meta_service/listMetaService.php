@@ -148,7 +148,7 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($ms["meta_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&meta_id=" . $ms['meta_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&meta_id=" . $ms['meta_id'],
         "RowMenu_type" => CentreonUtils::escapeSecure($calcType[$ms["calcul_type"]]),
         "RowMenu_levelw" => isset($ms["warning"]) && $ms["warning"] ? $ms["warning"] : "-",
         "RowMenu_levelc" => isset($ms["critical"]) && $ms["critical"] ? $ms["critical"] : "-",
@@ -166,7 +166,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )

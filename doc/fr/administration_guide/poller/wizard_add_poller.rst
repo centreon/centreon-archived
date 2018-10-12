@@ -17,8 +17,8 @@ Choisissez le chapitre suivant le type de server.
 Configurer un collecteur
 ------------------------
 
-Rendez-vous dans le menu **Configuration > Pollers** et cliquez sur **TODO** pour
-accéder à l'assistant de configuration.
+Rendez-vous dans le menu **Configuration > Pollers** et cliquez sur **Add server
+with wizard** pour accéder à l'assistant de configuration.
 
 Sélectionnez **Add a Centreon Poller** et cliquez sur **Next** :
 
@@ -34,8 +34,7 @@ cliquez sur **Next** :
 .. note::
     L'adresse IP du collecteur est l'adresse IP ou le FQNS pour accéder au
     collecteur depuis le serveur Centreon Central.
-
-.. note::
+    
     L'adresse IP du collecteur est l'adresse IP ou le FQNS pour accéder au
     collecteur serveur Centreon Central vers le collecteur.
 
@@ -50,16 +49,10 @@ le Remote Server dans la liste et cliquez sur **Apply** :
 
 .. note::
     Si vous souhaitez changer le sens de connexion des données entre le serveur
-    Centreon central et le collecteur, cochez la case **Centreon must connect
-    to open Broker flow**.
+    Centreon central et le collecteur, cochez la case **Advanced: reverse Centreon
+    Broker communication flow**.
 
-L'assistant va configurer votre nouveau serveur :
-
-.. image:: /images/poller/wizard_add_poller_4.png
-    :align: center
-
-.. note::
-    TODO end of process
+Patientez quelques secondes, l'assistant va configurer votre nouveau serveur.
 
 Le collecteur est maintenant configuré :
 
@@ -73,8 +66,8 @@ pour mettre en place votre première supervision.
 Configurer un Remote Server
 ---------------------------
 
-Rendez-vous au menu **Configuration > Pollers** et cliquez sur **TODO** pour
-accéder à l’assistant de configuration.
+Rendez-vous au menu **Configuration > Pollers** et cliquez sur **Add server with
+wizard** pour accéder à l’assistant de configuration.
 
 Sélectionnez **Add a Centreon Remote Server** et cliquez sur **Next** :
 
@@ -88,7 +81,7 @@ et saisissez les informations demandées.
     :align: center
 
 Si vous avez déjà activé l'option **Remote Server** durant l'installation de
-votre server, sélectionnez l'option **Please select a server** et sélectionnez
+votre server, sélectionnez l'option **Select a Remote Server** et sélectionnez
 votre serveur dans la liste puis complétez les informations demandées.
 
 .. image:: /images/poller/wizard_add_remote_2b.png
@@ -100,31 +93,20 @@ votre serveur dans la liste puis complétez les informations demandées.
 
 Cliquez sur **Next** :
 
-Sélectionnez le(s) collecteur(s) à lier à ce Remote Server and cochez la case
-**Manage automatically Centreon Broker Configuration of selected poller?** pour
-mettre à jour le module Centreon Broker de ces collecteurs pour se connecter
-directement au Remote Server.
-
-.. note::
-    Si une erreur apparaît durant le processus, il sera nécessaire de finaliser
-    la configuration des modules Centreon Broker manuellement.
-
-Puis cliquez sur **Apply** :
+Sélectionnez le(s) collecteur(s) à lier à ce Remote Server. Puis cliquez sur
+**Apply** :
 
 .. image:: /images/poller/wizard_add_remote_3.png
     :align: center
 
 L'assistant va configurer votre nouveau serveur :
 
-.. image:: /images/poller/wizard_add_poller_4.png
+.. image:: /images/poller/wizard_add_remote_4.png
     :align: center
-
-.. note::
-    TODO end of process
 
 Le Remote Server est maintenant configuré :
 
-.. image:: /images/poller/wizard_add_poller_5.png
+.. image:: /images/poller/wizard_add_remote_5.png
     :align: center
 
 Rendez-vous au chapitre :ref:`Configuration simplifiée avec Centreon IMP<impconfiguration>`

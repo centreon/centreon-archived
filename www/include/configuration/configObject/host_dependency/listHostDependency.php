@@ -112,7 +112,7 @@ for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($dep["dep_name"])),
         "RowMenu_description" => CentreonUtils::escapeSecure(myDecode($dep["dep_description"])),
-        "RowMenu_link" => "?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";
@@ -124,7 +124,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 

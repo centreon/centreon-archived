@@ -10,7 +10,7 @@
         <link rel="shortcut icon" href="./img/favicon.ico">
     </head>
     <body OnLoad="document.login.useralias.focus();">
-        <form action="./index.php" method="post" name="login" style="height: 100%;">
+        <form action="./index.php" method="post" name="login" style="height:370px">
             {if $redirect != ''}
             <input type='hidden' value='{$redirect}' name='redirect'>
             {/if}

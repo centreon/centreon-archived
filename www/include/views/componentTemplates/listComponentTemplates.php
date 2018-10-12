@@ -131,7 +131,7 @@ for ($i = 0; $compo = $stmt->fetch(); $i++) {
         "title" => $title["host_name"],
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $compo["name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&compo_id=" . $compo['compo_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&compo_id=" . $compo['compo_id'],
         "RowMenu_desc" => $compo["ds_name"],
         "RowMenu_legend" => $compo["ds_legend"],
         "RowMenu_stack" => $yesOrNo[$compo["ds_stack"]],
@@ -152,7 +152,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

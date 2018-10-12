@@ -340,7 +340,7 @@ if ($o == "c" || $o == "a") {
     </script>
     <?php
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&compo_id=" . $compo_id, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&compo_id=" . $compo_id, "changeT" => _("Modify")));
 
 $tpl->assign("sort1", _("Properties"));
 $tpl->assign("sort2", _("Graphs"));

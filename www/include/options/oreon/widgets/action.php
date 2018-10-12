@@ -70,12 +70,19 @@ try {
             $widgetInstaller->install();
             break;
         case 'install-all':
-            $widgetsToInstall = $widgetInfoObj->getInstallableList();
 
-            foreach ($widgetsToInstall as $widgetName => $widgetData) {
+            // install all available widgets
+            foreach ($widgetInfoObj->getInstallableList() as $widgetName => $widgetData) {
                 $widgetInstaller = $factory->newInstaller($widgetName);
                 $widgetInstaller->install();
             }
+
+            // upgrade all available widgets
+            foreach ($widgetInfoObj->getUpgradeableList() as $widgetName => $widgetData) {
+                $widgetUpgrader = $factory->newUpgrader($widgetName);
+                $widgetUpgrader->upgrade();
+            }
+
             break;
         case 'uninstall':
             $widgetRemover = $factory->newRemover($directory);

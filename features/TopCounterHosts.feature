@@ -8,17 +8,17 @@ Feature: Top Counter Host
 
   Scenario: Link to ok hosts
     Given an OK host
-    When I click on the chip "Ok hosts"
+    When I click on the chip "count-host-up"
     Then I see the list of hosts filtered by status up
 
   Scenario: Link to critical hosts
     Given a non-OK host
-    When I click on the chip "Down hosts"
+    When I click on the chip "count-host-down"
     Then I see the list of hosts filtered by status down
 
   Scenario: Link to unknown hosts
     Given an unreachable host
-    When I click on the chip "Unreachable hosts"
+    When I click on the chip "count-host-unreachable"
     Then I see the list of hosts filtered by status unreachable
 
   Scenario: Open the summary of hosts status

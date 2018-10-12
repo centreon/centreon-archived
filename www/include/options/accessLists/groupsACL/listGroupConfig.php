@@ -129,7 +129,7 @@ for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $group["acl_group_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&acl_group_id=" . $group['acl_group_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&acl_group_id=" . $group['acl_group_id'],
         "RowMenu_desc" => myDecode($group["acl_group_alias"]),
         "RowMenu_contacts" => $ctNbr["nbr"],
         "RowMenu_contactgroups" => $cgNbr["nbr"],
@@ -147,7 +147,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

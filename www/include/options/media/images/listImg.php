@@ -94,7 +94,7 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         $selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[" . $elem['dir_id'] . "-')");
         $rowOpt = array(
             "RowMenu_select" => $selectedDirElem->toHtml(),
-            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
+            "RowMenu_DirLink" => "main.php?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
             "RowMenu_dir" => CentreonUtils::escapeSecure(
                 $elem["dir_name"],
                 CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
@@ -121,8 +121,8 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         );
         $rowOpt = array(
             "RowMenu_select" => $selectedImgElem->toHtml(),
-            "RowMenu_ImgLink" => "?p=$p&o=ci&img_id={$elem['img_id']}",
-            "RowMenu_DirLink" => "?p=$p&o=cd&dir_id={$elem['dir_id']}",
+            "RowMenu_ImgLink" => "main.php?p=$p&o=ci&img_id={$elem['img_id']}",
+            "RowMenu_DirLink" => "main.php?p=$p&o=cd&dir_id={$elem['dir_id']}",
             "RowMenu_dir" => CentreonUtils::escapeSecure(
                 $elem["dir_name"],
                 CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
@@ -152,7 +152,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )

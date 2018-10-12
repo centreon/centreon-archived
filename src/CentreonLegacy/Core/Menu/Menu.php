@@ -191,7 +191,7 @@ class Menu
                     $menu
                         ['p' . $matches[1]]['children']
                         ['_' . $levelTwo]['children']
-                        ['main']['_' . $row['topology_page']] = $levelThree;
+                        ['main-menu']['_' . $row['topology_page']] = $levelThree;
                 }
             }
         }

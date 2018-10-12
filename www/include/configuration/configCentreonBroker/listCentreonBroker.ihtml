@@ -22,7 +22,7 @@
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
                 &nbsp;&nbsp;&nbsp;
-                <a href="?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
+                <a href="main.php?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
             </td>
             { else }
             <td>&nbsp;</td>
@@ -65,7 +65,7 @@
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
                 &nbsp;&nbsp;&nbsp;
-                <a href="?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
+                <a href="main.php?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
             </td>
             { else }
             <td>&nbsp;</td>

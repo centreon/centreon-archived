@@ -1,8 +1,7 @@
 {if $canUpgradeOrInstallWidgets}
-    <br>
-        <a href="javascript:;" class="btc bt_success installAllBtn">
-            Install/Upgrade all
-        </a>
+    <span class="btc bt_success installAllBtn">
+        {t}Install/Upgrade all{/t}
+    </span>
     <br>
     <br>
 {/if}

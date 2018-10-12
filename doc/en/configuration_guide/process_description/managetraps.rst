@@ -199,9 +199,8 @@ Use a Regular expression
 
 It's also possible to modify the output by using a regular expression with **Output Transform** option. You just have to define the regexp and it will be executed at trap reception.
 
-For example
+For example::
 
-::
     s/\|/-/g
 
 Will replace **|** in the output to **-**.

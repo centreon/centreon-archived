@@ -25,12 +25,12 @@ Central Server.
 Enable Remote Server option
 ---------------------------
 
-Connect to your server and execute following command::
+Connect to your **Remoter Server** and execute following command::
 
-    # php /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP
+    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP_CENTREON_CENTRAL
 
 .. note::
-    Replace **@IP** by the IP of the Centreon server seen by the poller
+    Replace **@IP_CENTREON_CENTRAL** by the IP of the Centreon server seen by the poller
 
 This command will enable **Remote Server** mode::
 
