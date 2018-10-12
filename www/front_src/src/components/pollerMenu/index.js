@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import config from "../../config";
 import {Translate} from 'react-redux-i18n';
+import {I18n} from "react-redux-i18n";
 
 import { connect } from "react-redux";
 
@@ -29,8 +30,8 @@ const getPollerStatusIcon = issues => {
         <span
           class="iconmoon icon-database"
           title={databaseClass === 'green' ?
-            'OK: all database poller updates are active' :
-            'Some database poller updates are not active; check your configuration'
+             I18n.t('OK: all database poller updates are active') :
+             I18n.t('Some database poller updates are not active; check your configuration')
           }
         />
       </span>
@@ -38,8 +39,8 @@ const getPollerStatusIcon = issues => {
         <span
           class="iconmoon icon-clock"
           title={latencyClass == 'green' ?
-            'OK: no latency detected on your platform' :
-            'Latency detected, check configuration for better optimization'
+             I18n.t('OK: no latency detected on your platform') :
+             I18n.t('Latency detected, check configuration for better optimization')
           }
         />
       </span>
@@ -114,11 +115,11 @@ class PollerMenu extends Component {
                     let message = "";
 
                     if (key === "database") {
-                      message = "Database updates not active";
+                      message = I18n.t("Database updates not active");
                     } else if (key === "stability") {
-                      message = "Pollers not running";
+                      message = I18n.t("Pollers not running");
                     } else if (key === "latency") {
-                      message = "Latency detected";
+                      message = I18n.t("Latency detected");
                     }
 
                     return (
