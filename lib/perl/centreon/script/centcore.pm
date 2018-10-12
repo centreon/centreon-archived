@@ -269,8 +269,8 @@ sub getBrokerStats($) {
                                                               logger => $self->{logger},
                                                               timeout => $self->{cmd_timeout}
                                                               );
-        if (defined($stdout) && $stdout) {
-            $self->{logger}->writeLogInfo("Result : $stdout");
+        if ($lerror == -1) {
+            $self->{logger}->writeLogError("Result : $stdout");
         }
     }
     return 0;
@@ -331,13 +331,18 @@ sub startWorker($) {
         $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
         return undef;
     }
+
     my $data = $sth->fetchrow_hashref();
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
 
     my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
+    $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
-     return undef;
+    if ($lerror == -1){
+        $self->{logger}->writeLogError("Result : $stdout");
+    }
+    return undef;
 }
 
 ##################################
@@ -356,13 +361,18 @@ sub createRemote($) {
         $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
         return undef;
     }
+
     my $data = $sth->fetchrow_hashref();
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
 
     my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a createRemoteTask -v '".$taskId."' >> /var/log/centreon/worker.log";
+    $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
-     return undef;
+    if ($lerror == -1){
+        $self->{logger}->writeLogError("Result : $stdout");
+    }
+    return undef;
 }
 
 ##################################
@@ -624,8 +634,9 @@ sub sendExportFile($){
                                                           logger => $self->{logger},
                                                           timeout => 300
                                                           );
-    
-    $self->{logger}->writeLogInfo("Result : $stdout");
+    if (defined($stdout) && $stdout){
+        $self->{logger}->writeLogInfo("Result : $stdout");
+    }
 
     $self->createRemote($taskId);
 
