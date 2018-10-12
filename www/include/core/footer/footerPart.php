@@ -253,6 +253,34 @@ function validateFeature(name, version, enabled) {
         <?php
         }
         ?>
+    
+    // send an event to parent for change in iframe URL
+    function parentHrefUpdate(href) {
+      let parentHref = window.parent.location.href;
+      href = href.replace('main.get.php', 'main.php');
+
+      if (parentHref.localeCompare(href) === 0) {
+        return;
+      }
+
+      href = '/' + href.split(window.location.host + '/')[1];
+
+      if (parentHref.localeCompare(href) === 0) {
+        return;
+      }
+
+      var event = new CustomEvent('react.href.update', {
+          detail: {
+              href: href
+          }
+      });
+      window.parent.dispatchEvent(event);
+    }
+
+    jQuery(document).ready(function(){
+        // inform the parent about iframe URL
+        parentHrefUpdate(location.href);
+    });
 
     jQuery('body').delegate(
       'a',

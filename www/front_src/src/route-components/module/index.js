@@ -32,6 +32,11 @@ class ModuleRoute extends Component {
     }
   }
 
+  handleHref = event => {
+    let href = event.detail.href;
+    window.history.pushState(null, null, href);
+  }
+
   componentDidMount() {
     this.mainContainer = window.parent.document.getElementById('fullscreen-wrapper');
 
@@ -40,6 +45,13 @@ class ModuleRoute extends Component {
       "resize",
       this.handleResize
     );
+
+    // add event listener to update page url
+    window.addEventListener(
+      "react.href.update",
+      this.handleHref,
+      false
+    );
   };
 
   componentWillUnmount() {
@@ -47,6 +59,11 @@ class ModuleRoute extends Component {
     window.parent.removeEventListener(
       "resize",
       this.handleResize
+    );
+
+    window.parent.removeEventListener(
+      "react.href.update",
+      this.handleHref
     );
   }
 
