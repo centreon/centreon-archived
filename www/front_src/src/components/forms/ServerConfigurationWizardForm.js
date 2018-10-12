@@ -1,5 +1,6 @@
 import React from "react";
 import { Field, reduxForm as connectForm } from "redux-form";
+import {Translate} from 'react-redux-i18n';
 
 import RadioGroupFields from "../form-fields/RadioGroupFields";
 
@@ -23,8 +24,8 @@ const ServerConfigurationWizardForm = ({
   <div className="form-wrapper small">
     <div className="form-inner">
       <div className="form-heading">
-        <h2 className="form-title">Server Configuration Wizard</h2>
-        <p className="form-text">Choose a server type:</p>
+        <h2 className="form-title"><Translate value="Server Configuration Wizard"/></h2>
+        <p className="form-text"><Translate value="Choose a server type"/>:</p>
       </div>
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
@@ -34,7 +35,7 @@ const ServerConfigurationWizardForm = ({
         />
         <div class="form-buttons">
           <button className="button" type="submit">
-            Next
+          <Translate value="Next"/>
           </button>
         </div>
         {error ? <div class="error-block">{error.message}</div> : null}

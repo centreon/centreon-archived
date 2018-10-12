@@ -7,6 +7,9 @@ import { Link, withRouter } from "react-router-dom";
 import axios from "../../axios";
 
 import routeMap from "../../route-maps/index";
+
+import {Translate} from 'react-redux-i18n';
+
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
 
@@ -145,8 +148,8 @@ class NavigationComponent extends Component {
                     style={{ cursor: "pointer" }}
                     class="menu-item-link dropdown-toggle"
                   >
-                    <span class={`iconmoon icon-${item.menu_id.toLowerCase()}`}>
-                      <span class={"menu-item-name"}>{item.label}</span>
+                    <span class={`iconmoon icon-${item.label.toLowerCase()}`}>
+                      <span class={"menu-item-name"}><Translate value={item.label}/></span>
                     </span>
                   </span>
                   <ul
@@ -173,14 +176,14 @@ class NavigationComponent extends Component {
                                   )}
                                   class="collapsed-level-item-link"
                                 >
-                                  {subItem.label}
+                                  <Translate value={subItem.label}/>
                                 </span>
                               ) : (
                                 <Link
                                   className="collapsed-level-item-link img-none"
                                   to={routeMap.module + "?p=" + menuKey.slice(1) + (subItem.options ? subItem.options : '')}
                                 >
-                                  {subItem.label}
+                                  <Translate value={subItem.label}/>
                                 </Link>
                               )}
 
@@ -193,7 +196,7 @@ class NavigationComponent extends Component {
                                           {
                                           Object.keys(subItem.children).length > 1 ? 
                                             <span class="collapsed-level-title">
-                                              {key}:{" "}
+                                              <Translate value={key}/>:{" "}
                                             </span> 
                                           : null
                                           }
@@ -234,7 +237,7 @@ class NavigationComponent extends Component {
                                                     className="collapsed-level-item-link"
                                                     to={routeMap.module + "?p=" + subKey.slice(1) + urlOptions}
                                                   >
-                                                    {subItem.children[key][subKey].label}
+                                                    <Translate value={subItem.children[key][subKey].label}/>
                                                   </Link>
                                                 </li>
                                               );
