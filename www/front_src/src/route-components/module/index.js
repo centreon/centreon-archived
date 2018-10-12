@@ -32,7 +32,7 @@ class ModuleRoute extends Component {
     }
   }
 
-  handleHref = (event) => {
+  handleHref = event => {
     let href = event.detail.href;
     window.history.pushState(null, null, href);
   }
@@ -48,9 +48,9 @@ class ModuleRoute extends Component {
 
     // add event listener to update page url
     window.addEventListener(
-        "react.href.update",
-        this.handleHref,
-        false
+      "react.href.update",
+      this.handleHref,
+      false
     );
   };
 
