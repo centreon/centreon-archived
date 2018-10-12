@@ -255,6 +255,7 @@
       .submenu-user-type {
         display: inline-block;
         width: 54%;
+        overflow: hidden;
       }
       .submenu-user-edit {
         font-family: $primary-font-light;
@@ -320,7 +321,7 @@
       .submenu-user-name {
         display: block;
         margin-bottom: 10px;
-        word-break: break-word;
+        text-overflow: ellipsis;
       }
       .button-wrap {
         .btn {
