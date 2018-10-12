@@ -119,7 +119,7 @@ class NavigationComponent extends Component {
 
   render() {
     const { active, menuItems } = this.state;
-    const pageId = this.props.location.search.split("p=")[1];
+    const pageId = this.props.history.location.search.split("p=")[1];
 
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
