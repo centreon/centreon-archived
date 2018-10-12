@@ -1,3 +1,4 @@
+#!@PHP_BIN@
 <?php
 /*
  * Copyright 2005-2018 Centreon
@@ -169,10 +170,9 @@ try {
             "AND (all_hosts IS NOT NULL OR all_hostgroups IS NOT NULL OR all_servicegroups IS NOT NULL)";
     $res = $pearDB->query($query);
     while ($row = $res->fetch()) {
-        /**
-         * Specific counter
-         */
-        $i = 0;
+
+        // manage acl_resources.changed flag
+        $aclResourcesUpdated = false;
 
         /**
          * Add Hosts
@@ -182,6 +182,12 @@ try {
                 "FROM acl_resources_host_relations WHERE acl_res_id = '" . $row['acl_res_id'] . "') " .
                 "AND host_register = '1'";
             $res1 = $pearDB->query($query);
+
+            if ($res1->rowCount()) {
+                // set acl_resources.changed flag to 1
+                $aclResourcesUpdated = true;
+            }
+
             while ($rowData = $res1->fetch()) {
                 $insert_query = "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id) VALUES ('" .
                     $rowData['host_id'] . "', '" . $row['acl_res_id'] . "')";
@@ -197,6 +203,12 @@ try {
             $query = "SELECT hg_id FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_hg_id " .
                 "FROM acl_resources_hg_relations WHERE acl_res_id = '" . $row['acl_res_id'] . "')";
             $res1 = $pearDB->query($query);
+
+            if ($res1->rowCount()) {
+                // set acl_resources.changed flag to 1
+                $aclResourcesUpdated = true;
+            }
+
             while ($rowData = $res1->fetch()) {
                 $insert_query = "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id) VALUES ('" .
                     $rowData['hg_id'] . "', '" . $row['acl_res_id'] . "')";
@@ -212,6 +224,12 @@ try {
             $query = "SELECT sg_id FROM servicegroup WHERE sg_id NOT IN (SELECT DISTINCT sg_id " .
                 "FROM acl_resources_sg_relations WHERE acl_res_id = '" . $row['acl_res_id'] . "')";
             $res1 = $pearDB->query($query);
+
+            if ($res1->rowCount()) {
+                // set acl_resources.changed flag to 1
+                $aclResourcesUpdated = true;
+            }
+
             while ($rowData = $res1->fetch()) {
                 $insert_query = "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id) VALUES ('" .
                     $rowData['sg_id'] . "', '" . $row['acl_res_id'] . "')";
@@ -220,7 +238,7 @@ try {
             $res1->closeCursor();
         }
 
-        if ($i != 0) {
+        if ($aclResourcesUpdated) {
             $pearDB->query("UPDATE acl_resources SET changed = '1' WHERE acl_res_id = '" . $row['acl_res_id'] . "'");
         }
     }
