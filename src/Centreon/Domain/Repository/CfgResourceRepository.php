@@ -24,10 +24,11 @@ class CfgResourceRepository extends ServiceEntityRepository
         $sql = <<<SQL
 SELECT
     t.*,
-    crir.instance_id AS `_instance_id`
+    GROUP_CONCAT(crir.instance_id) AS _instance_id
 FROM cfg_resource AS t
 INNER JOIN cfg_resource_instance_relations AS crir ON crir.resource_id = t.resource_id
 WHERE crir.instance_id IN ({$ids})
+GROUP BY t.resource_id
 SQL;
 
         $stmt = $this->db->prepare($sql);

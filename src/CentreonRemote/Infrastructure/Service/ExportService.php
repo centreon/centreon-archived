@@ -135,7 +135,7 @@ class ExportService
         $manifest = new ExportManifest($commitment, $this->version);
         $manifest->validate();
 
-        $filterExporters = $manifest->get('exporters');
+        $filterExporters = $manifest->get('exporters') ?? [];
 
         foreach ($this->exporter->all() as $exporterMeta) {
             if (!in_array($exporterMeta['classname'], $filterExporters)) {
