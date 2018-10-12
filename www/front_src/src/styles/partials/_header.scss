@@ -254,6 +254,9 @@
     &.profile {
       .submenu-user-type {
         display: inline-block;
+        width: 54%;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .submenu-user-edit {
         font-family: $primary-font-light;
