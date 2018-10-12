@@ -36,7 +36,7 @@ class TopHeader extends Component {
   clockService = axios("internal.php?object=centreon_topcounter&action=clock");
 
   state = {
-    pollerData: {},
+    pollerData: null,
     hostsData: {},
     clockData: {},
     servicesStatusData: {},
@@ -58,21 +58,45 @@ class TopHeader extends Component {
       this.setState({
         pollerData: data
       });
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          pollerData: null
+        });
+      }
     });
     this.hostsService.get().then(({data}) => {
       this.setState({
         hostsData: data
       });
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          hostsData: {disable: true}
+        });
+      }
     });
     this.servicesStatusService.get().then(({data}) => {
       this.setState({
         servicesStatusData: data
       });
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          servicesStatusData: {disable: true}
+        });
+      }
     });
     this.userService.get().then(({data}) => {
       this.setState({
         userData: data
       });
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          userData: null
+        });
+      }
     });
   };
 

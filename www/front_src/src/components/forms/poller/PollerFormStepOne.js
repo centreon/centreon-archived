@@ -64,5 +64,7 @@ export default connectForm({
   form: "PollerFormStepOne",
   validate,
   warn: () => {},
-  enableReinitialize: true
+  enableReinitialize: true,
+  destroyOnUnmount: false,
+  keepDirtyOnReinitialize: true
 })(PollerFormStepOne);

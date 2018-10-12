@@ -9,16 +9,17 @@ class TopCounterPollersContext extends CentreonContext
      */
     public function iClickOnThePollersIconAndIClickOnTheConfigurationButton()
     {
-        $this->visit('/');
-        $this->assertFind('css', '[aria-label="Pollers status"]')->click();
+        $this->visit('/', false);
+        $this->assertFind('css', '.iconmoon.icon-poller')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '[aria-label="Pollers configuration"]');
+                $element = $context->getSession()->getPage()->find('css', '.submenu.pollers');
+                return $element->isVisible();
             },
             'The summary of pollers status is not open',
             10
         );
-        $this->assertFind('css', '[aria-label="Pollers configuration"]')->click();
+        $this->assertFind('css', '.submenu.pollers .btn-green.submenu-top-button')->click();
     }
 
     /**
@@ -28,6 +29,7 @@ class TopCounterPollersContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
+                $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', '[name="apply_configuration"]');
             },
             'The poller configuration page is not loaded',

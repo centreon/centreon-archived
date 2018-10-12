@@ -425,7 +425,7 @@ CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
 RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins;Central;Centreon Plugins Path
 RESOURCECFG;setparam;2;activate;1
-RESOURCECFG;ADD;$USER1$;/usr/lib/nagios/plugins;Central;Nagios Plugins Path
+RESOURCECFG;ADD;$USER1$;/usr/lib64/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;1;activate;1
 CENTBROKERCFG;ADD;central-broker-master;Central
 CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.xml

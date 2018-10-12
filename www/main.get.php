@@ -242,20 +242,6 @@ if ($min != 1) {
     include_once "./include/core/pathway/pathway.php";
 }
 
-/*
- * Go on our page
- */
-if ($min != 1) {
-    require_once("./class/centreonMsg.class.php");
-    $msg = new CentreonMsg();
-    if (!$centreon->user->admin && !count($centreon->user->access->getAccessGroups())) {
-        $msg->setImage("./img/icons/warning.png");
-        $msg->setTextStyle("bold");
-        $msg->setText(_("You are not in an access group"));
-        $msg->setTimeOut("3");
-    }
-}
-
 if (isset($url) && $url) {
     include_once $url;
 }

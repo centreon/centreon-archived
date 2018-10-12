@@ -46,7 +46,7 @@ class CentreonTopCounter extends CentreonWebService
     /**
      * @var int
      */
-    protected $timeUnit = 300;
+    protected $timeUnit = 60;
 
     /**
      * @var int
@@ -348,7 +348,7 @@ class CentreonTopCounter extends CentreonWebService
     public function getPollersListIssues()
     {
         if (!$this->hasAccessToPollers) {
-            throw new \RestUnauthorizedException("You're not authorized to access poller datas");
+            throw new \RestUnauthorizedException(_("You're not authorized to access poller data"));
         }
 
         $pollers = $this->pollersStatusList();
@@ -738,7 +738,8 @@ class CentreonTopCounter extends CentreonWebService
                 $listPoller[$row['instance_id']]['latency']['state'] = 2;
                 $listPoller[$row['instance_id']]['database']['time'] = $row['stat_value'];
             } elseif ($row['stat_value'] >= 60) {
-                $listPoller[$row['instance_id']]['latency']['state'] = $row['stat_value'];
+                $listPoller[$row['instance_id']]['latency']['state'] = 1;
+                $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];
             }
         }
 

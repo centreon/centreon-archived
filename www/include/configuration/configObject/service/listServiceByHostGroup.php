@@ -329,8 +329,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . ($service["nbr"] > 1 ? "three" : $style),
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($service["hg_name"]),
-        "RowMenu_link" => "?p=60102&o=c&hg_id=" . $service['hg_id'],
-        "RowMenu_link2" => "?p=" . $p . "&o=c&service_id=" . $service['service_id'],
+        "RowMenu_link" => "main.php?p=60102&o=c&hg_id=" . $service['hg_id'],
+        "RowMenu_link2" => "main.php?p=" . $p . "&o=c&service_id=" . $service['service_id'],
         "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
         "RowMenu_sicon" => $svc_icon,
         "RowMenu_retry" =>
@@ -356,7 +356,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )

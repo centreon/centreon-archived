@@ -42,7 +42,7 @@ if (isset($url)) {
      * If url is defined we can use it to retrieve the associated page number
      * to show the right tree in case when we have just the topology parent
      * and we need to show breadcrumb for the first menu found (processed by
-     * main.get.php).
+     * main.php).
      */
     $statementSelect = $pearDB->prepare(
         'SELECT topology_url FROM topology WHERE topology_page = :topology_page'
@@ -131,7 +131,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($breadcrumbData as $page => $details) {
         echo $flag;
         ?>
-        <a href="main.get.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= _($details["name"]); ?></a>
+        <a href="main.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= _($details["name"]); ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }

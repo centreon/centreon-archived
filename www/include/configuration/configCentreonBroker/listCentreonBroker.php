@@ -182,7 +182,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($config["config_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&id=" . $config['config_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&id=" . $config['config_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
             substr(
                 $nagios_servers[$config["ns_nagios_server"]],
@@ -205,7 +205,7 @@ $tpl->assign("elemArr", $elemArr);
  * Different messages we put in the template
  */
 $tpl->assign('msg', array(
-    "addL" => "?p=" . $p . "&o=a",
+    "addL" => "main.php?p=" . $p . "&o=a",
     "addT" => _("Add"),
     "addWizard" => _('Add with wizard'),
     "delConfirm" => _("Do you confirm the deletion ?")

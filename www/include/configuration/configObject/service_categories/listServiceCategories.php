@@ -140,7 +140,7 @@ for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "sc_name" => htmlentities($sc["sc_name"], ENT_QUOTES, "UTF-8"),
-        "sc_link" => "?p=" . $p . "&o=c&sc_id=" . $sc['sc_id'],
+        "sc_link" => "main.php?p=" . $p . "&o=c&sc_id=" . $sc['sc_id'],
         "sc_description" => htmlentities($sc["sc_description"], ENT_QUOTES, "UTF-8"),
         "svc_linked" => $nb_svc["COUNT(*)"],
         "sc_type" => ($sc['level'] ? _('Severity') . ' (' . $sc['level'] . ')' : _('Regular')),
@@ -155,7 +155,7 @@ $tpl->assign("elemArr", $elemArr);
 /*
  * Different messages we put in the template
  */
-$tpl->assign('msg', array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add")));
+$tpl->assign('msg', array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add")));
 
 ?>
     <script type="text/javascript">

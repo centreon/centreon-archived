@@ -104,7 +104,7 @@ for ($i = 0; $graph = $stmt->fetch(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $graph["name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&graph_id=" . $graph['graph_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&graph_id=" . $graph['graph_id'],
         "RowMenu_desc" => $graph["vertical_label"],
         "RowMenu_base" => $graph["base"],
         "RowMenu_split_component" => $graph["split_component"] ? _("Yes") : _("No"),
@@ -119,7 +119,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

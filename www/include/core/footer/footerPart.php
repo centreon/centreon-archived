@@ -253,32 +253,64 @@ function validateFeature(name, version, enabled) {
         <?php
         }
         ?>
+    
+    // send an event to parent for change in iframe URL
+    function parentHrefUpdate(href) {
+      let parentHref = window.parent.location.href;
+      href = href.replace('main.get.php', 'main.php');
+
+      if (parentHref.localeCompare(href) === 0) {
+        return;
+      }
+
+      href = '/' + href.split(window.location.host + '/')[1];
+
+      if (parentHref.localeCompare(href) === 0) {
+        return;
+      }
+
+      var event = new CustomEvent('react.href.update', {
+          detail: {
+              href: href
+          }
+      });
+      window.parent.dispatchEvent(event);
+    }
+
+    jQuery(document).ready(function(){
+        // inform the parent about iframe URL
+        parentHrefUpdate(location.href);
+    });
 
     jQuery('body').delegate(
       'a',
       'click',
       function(e) {
-        e.preventDefault();
         var href = jQuery(this).attr('href');
 
-        // Manage centreon links
-        // # allows to manage backboneJS links
-        if (href.match(/^\#/) || href.match(/^\?/) || href.match(/main\.php/) || href.match(/main\.get\.php/)) {
+        // if it's a relative path, we can use the default redirection
+        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/)) {
+          e.preventDefault();
 
-          // If we open link a new tab, we want to keep the header
-          if (jQuery(this).attr('target') === '_blank') {
-            href = href.replace('main.get.php', 'main.php');
-            window.open(href);
-          // If it's an internal link, we remove header to avoid inception
+          // Manage centreon links
+          // # allows to manage backboneJS links + jQuery form tabs
+          if (href.match(/^\#|^\?|main\.php|main\.get\.php/)) {
+
+            // If we open link a new tab, we want to keep the header
+            if (jQuery(this).attr('target') === '_blank') {
+              href = href.replace('main.get.php', 'main.php');
+              window.open(href);
+            // If it's an internal link, we remove header to avoid inception
+            } else {
+              href = href.replace('main.php', 'main.get.php');
+              window.location.href = href;
+            }
+
+          // Manage external links (ie: www.google.com)
+          // we always open it in a new tab
           } else {
-            href = href.replace('main.php', 'main.get.php');
-            window.location.href = href;
-          }
-
-        // Manage external links (ie: www.google.com)
-        // we always open it in a new tab
-        } else {
             window.open(href);
+          }
         }
       }
     );

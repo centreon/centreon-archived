@@ -78,7 +78,7 @@ $tpl->assign('list', $list);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=ldap&new=1",
+        "addL" => "main.php?p=" . $p . "&o=ldap&new=1",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )

@@ -133,7 +133,7 @@ foreach ($cgs as $cg) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $cg["cg_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&cg_id=" . $cg['cg_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&cg_id=" . $cg['cg_id'],
         "RowMenu_desc" => $cg["cg_alias"],
         "RowMenu_contacts" => $ctNbr["nbr"],
         "RowMenu_status" => $cg["cg_activate"] ? _("Enabled") : _("Disabled"),
@@ -148,7 +148,7 @@ $tpl->assign("elemArr", $elemArr);
  * Different messages we put in the template
  */
 $tpl->assign('msg', array(
-    "addL" => "?p=" . $p . "&o=a",
+    "addL" => "main.php?p=" . $p . "&o=a",
     "addT" => _("Add"),
     "delConfirm" => _("Do you confirm the deletion ?"),
     "view_notif" => _("View contact group notifications")

@@ -137,7 +137,7 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
             $resource["resource_name"],
             CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
         ),
-        "RowMenu_link" => "?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
         "RowMenu_values" => CentreonUtils::escapeSecure(
             substr($resource["resource_line"], 0, 40),
             CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
@@ -189,7 +189,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*

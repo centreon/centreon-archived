@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from "../../components/loader";
 
 class ModuleRoute extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class ModuleRoute extends Component {
     this.resizeTimeout = null;
 
     this.state = {
-      contentHeight: 0
+      contentHeight: 0,
+      loading: true
     }
   }
 
@@ -22,11 +24,17 @@ class ModuleRoute extends Component {
         const { contentHeight } = this.state;
         if (clientHeight != contentHeight) {
           this.setState({
-            contentHeight: clientHeight
+            loading: false,
+            contentHeight: clientHeight - 30
           });
         }
       }, 200);
     }
+  }
+
+  handleHref = event => {
+    let href = event.detail.href;
+    window.history.pushState(null, null, href);
   }
 
   componentDidMount() {
@@ -37,6 +45,13 @@ class ModuleRoute extends Component {
       "resize",
       this.handleResize
     );
+
+    // add event listener to update page url
+    window.addEventListener(
+      "react.href.update",
+      this.handleHref,
+      false
+    );
   };
 
   componentWillUnmount() {
@@ -45,23 +60,36 @@ class ModuleRoute extends Component {
       "resize",
       this.handleResize
     );
+
+    window.parent.removeEventListener(
+      "react.href.update",
+      this.handleHref
+    );
   }
 
   render() {
-    const { contentHeight } = this.state
+    const { contentHeight, loading } = this.state
     const { history } = this.props,
           { search } = history.location;
     const params = search || '';
     return (
-      <iframe
-        id="main-content"
-        title="Main Content"
-        frameBorder="0"
-        onLoad={this.handleResize}
-        scrolling="yes"
-        style={{ width: "100%", height: `${contentHeight}px` }}
-        src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
-      />
+      <>
+        {loading &&
+          <span className="main-loader">
+            <Loader />
+          </span>
+        }
+        <iframe
+          id="main-content"
+          title="Main Content"
+          frameBorder="0"
+          onLoad={this.handleResize}
+          scrolling="yes"
+          className={loading ? "hidden" : ""}
+          style={{ width: "100%", height: `${contentHeight}px` }}
+          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+        />
+      </>
     );
   }
 }

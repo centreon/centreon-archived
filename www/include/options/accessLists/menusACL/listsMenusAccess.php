@@ -122,7 +122,7 @@ for ($i = 0; $topo = $dbResult->fetchRow(); $i++) {
             $topo["acl_topo_name"],
             CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
         ),
-        "RowMenu_link" => "?p=" . $p . "&o=c&acl_topo_id=" . $topo['acl_topo_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&acl_topo_id=" . $topo['acl_topo_id'],
         "RowMenu_alias" => CentreonUtils::escapeSecure(
             $topo["acl_topo_alias"],
             CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
@@ -141,7 +141,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 ?>
