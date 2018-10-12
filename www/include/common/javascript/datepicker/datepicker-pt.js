@@ -12,7 +12,7 @@
 	}
 }( function( datepicker ) {
 
-  datepicker.regional['pt-BR'] = {
+  datepicker.regional.pt = {
           closeText: 'Fechar',
           prevText: '&#x3c;Anterior',
           nextText: 'Pr&oacute;ximo&#x3e;',
@@ -30,7 +30,7 @@
           isRTL: false,
           showMonthAfterYear: false,
           yearSuffix: ''};
-  datepicker.setDefaults( datepicker.regional['pt-BR'] );
-  return datepicker.regional['pt-BR'];
+  datepicker.setDefaults( datepicker.regional.pt );
+  return datepicker.regional.pt;
 
 }));
