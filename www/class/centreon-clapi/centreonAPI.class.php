@@ -663,7 +663,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-        
+
         $action = strtoupper($this->action);
 
         /**
@@ -702,7 +702,7 @@ class CentreonAPI
                 }
 
                 if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
-                    print "Object $this->object not found in Centreon API.\n";
+                    print "Object \$this->object not found in Centreon API.\n";
                     return 1;
                 }
             }
@@ -823,7 +823,7 @@ class CentreonAPI
 
     /**
      * Export All configuration
-     * 
+     *
      * @param $withoutClose disable using of PHP exit function (default: false)
      */
     public function export($withoutClose = false)
@@ -867,7 +867,7 @@ class CentreonAPI
                     if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
                         echo "Unknown object : $splits[0];$splits[1]\n";
                         $this->setReturnCode(1);
-                        
+
                         if ($withoutClose === false) {
                             $this->close();
                         } else {
