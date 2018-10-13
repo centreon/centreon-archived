@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import config from "../../config";
+import axios from "../../axios";
 
 import { connect } from "react-redux";
 
@@ -47,10 +48,53 @@ const getPollerStatusIcon = issues => {
 };
 
 class PollerMenu extends Component {
+
+  pollerService = axios(
+    "internal.php?object=centreon_topcounter&action=pollersListIssues"
+  );
+
+  refreshTimeout = null;
+
   state = {
-    toggled: false
+    toggled: false,
+    data: null
   };
 
+  UNSAFE_componentWillMount() {
+    window.addEventListener('mousedown', this.handleClick, false);
+    this.getData();
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+    clearTimeout(this.refreshTimeout);
+  };
+
+  // fetch api to get host data
+  getData = () => {
+    this.pollerService.get().then(({data}) => {
+      this.setState({
+        data
+      }, this.refreshData);
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          data: null
+        });
+      }
+    });
+  }
+
+  // refresh poller data every 30 seconds
+  // @todo get this interval from backend
+  refreshData = () => {
+    clearTimeout(this.refreshTimeout);
+    this.refreshTimeout = setTimeout(() => {
+      this.getData();
+    }, 30000);
+  };
+
+  // display/hide detailed poller data
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
@@ -58,16 +102,9 @@ class PollerMenu extends Component {
     });
   };
 
-  UNSAFE_componentWillMount() {
-    window.addEventListener('mousedown', this.handleClick, false);
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handleClick, false);
-  };
-
+  // hide poller detailed data if click outside
   handleClick = (e) => {
-    if (this.poller.contains(e.target)) {
+    if (!this.poller || this.poller.contains(e.target)) {
       return;
     }
     this.setState({
@@ -76,20 +113,17 @@ class PollerMenu extends Component {
   };
 
   render() {
-    const { data } = this.props;
-    const { entries } = this.props.navigationData;
-
-    // check if poller configuration page is allowed
-    const allowPollerConfiguration = entries.includes('60901')
+    const { data, toggled } = this.state;
 
     if (!data) {
       return null;
     }
 
-    const { total, issues } = data;
-    const { toggled } = this.state;
+    // check if poller configuration page is allowed
+    const { entries } = this.props.navigationData;
+    const allowPollerConfiguration = entries.includes('60901')
 
-    const statusIcon = getPollerStatusIcon(issues);
+    const statusIcon = getPollerStatusIcon(data.issues);
     return (
       <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
         <span class="wrap-left-icon" onClick={this.toggle}>
@@ -105,11 +139,11 @@ class PollerMenu extends Component {
                 <li class="submenu-item">
                   <span class="submenu-item-link">
                     All pollers
-                    <span class="submenu-count">{total ? total : "..."}</span>
+                    <span class="submenu-count">{data.total ? data.total : "..."}</span>
                   </span>
                 </li>
-                {issues
-                  ? Object.entries(issues).map(([key, issue]) => {
+                {data.issues
+                  ? Object.entries(data.issues).map(([key, issue]) => {
                     let message = "";
 
                     if (key === "database") {

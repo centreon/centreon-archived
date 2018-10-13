@@ -3,31 +3,66 @@ import PropTypes from 'prop-types';
 import numeral from "numeral";
 import { Link } from "react-router-dom";
 import config from "../../config";
+import axios from "../../axios";
 
 class ServiceStatusMenu extends Component {
 
+  servicesStatusService = axios(
+    "internal.php?object=centreon_topcounter&action=servicesStatus"
+  );
+
+  refreshTimeout = null;
+
   state = {
-    toggled: false
+    toggled: false,
+    data: null
   };
 
+  UNSAFE_componentWillMount() {
+    window.addEventListener('mousedown', this.handleClick, false);
+    this.getData();
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('mousedown', this.handleClick, false);
+    clearTimeout(this.refreshTimeout);
+  };
+
+  // fetch api to get service data
+  getData = () => {
+    this.servicesStatusService.get().then(({data}) => {
+      this.setState({
+        data
+      }, this.refreshData);
+    }).catch((error) => {
+      if (error.response.status == 401){
+        this.setState({
+          data: null
+        });
+      }
+    });
+  }
+
+  // refresh service data every 15 seconds
+  // @todo get this interval from backend
+  refreshData = () => {
+    clearTimeout(this.refreshTimeout);
+    this.refreshTimeout = setTimeout(() => {
+      this.getData();
+    }, 15000);
+  };
+
+  // display/hide detailed service data
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
       toggled: !toggled
     });
-
   };
 
-  UNSAFE_componentWillMount() {
-    window.addEventListener('mousedown', this.handleClick, false);
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener('mousedown', this.handleClick, false);
-  };
-
+  // hide service detailed data if click outside
   handleClick = (e) => {
-    if (this.service.contains(e.target)) {
+    if (!this.service || this.service.contains(e.target)) {
       return;
     }
     this.setState({
@@ -36,63 +71,39 @@ class ServiceStatusMenu extends Component {
   };
 
   render() {
-    let data = this.props.data;
+    const { data, toggled } = this.state;
 
-    if (data.disable)
-    {
-      return null;
+    // do not display service information until having data
+    if (!data) {
+      return null
     }
-    
-    if(!data || !data.total){
-      data = {
-        warning: {
-          total: null,
-          unhandled: null
-        },
-        critical: {
-          total: null,
-          unhandled: null
-        },
-        unknown: {
-          total: null,
-          unhandled: null
-        },
-        ok: null,
-        pending: null,
-        total: 0,
-      }
-    }
-
-    let { critical, ok, pending, total, unknown, warning } = data;
-
-    const { toggled } = this.state;
 
     return (
       <div  class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
         <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
           <span class="iconmoon icon-services">
-            {pending > 0 ? <span class="custom-icon" /> : null}
+            {data.pending > 0 ? <span class="custom-icon" /> : null}
           </span>
           <span class="wrap-right-icon__name">Services</span>
         </span>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (critical.unhandled > 0 ? "red" : "red-bordered")} >
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (data.critical.unhandled > 0 ? "red" : "red-bordered")} >
           <span class="number">
-            <span id="count-svc-critical">{numeral(critical.unhandled).format("0a")}</span>
+            <span id="count-svc-critical">{numeral(data.critical.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (warning.unhandled > 0 ? "orange" : "orange-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (data.warning.unhandled > 0 ? "orange" : "orange-bordered")}>
           <span class="number">
-            <span id="count-svc-warning">{numeral(warning.unhandled).format("0a")}</span>
+            <span id="count-svc-warning">{numeral(data.warning.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (data.unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
           <span class="number">
-            <span id="count-svc-unknown">{numeral(unknown.unhandled).format("0a")}</span>
+            <span id="count-svc-unknown">{numeral(data.unknown.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (ok > 0 ? "green" : "green-bordered")}>
+        <Link to={config.urlBase + "main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (data.ok > 0 ? "green" : "green-bordered")}>
           <span class="number">
-            <span id="count-svc-ok">{numeral(ok).format("0a")}</span>
+            <span id="count-svc-ok">{numeral(data.ok).format("0a")}</span>
           </span>
         </Link>
         <div ref={service => this.service = service}>
@@ -107,7 +118,7 @@ class ServiceStatusMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span>All services:</span>
-                      <span class="submenu-count">{total}</span>
+                      <span class="submenu-count">{data.total}</span>
                     </div>
                   </Link>
                 </li>
@@ -119,7 +130,7 @@ class ServiceStatusMenu extends Component {
                     <div onClick={this.toggle}>
                       <span class="dot-colored red">Critical services:</span>
                       <span class="submenu-count">
-                      {critical.unhandled}/{critical.total}
+                      {data.critical.unhandled}/{data.critical.total}
                       </span>
                     </div>
                   </Link>
@@ -132,7 +143,7 @@ class ServiceStatusMenu extends Component {
                     <div onClick={this.toggle}>
                       <span class="dot-colored orange">Warning services:</span>
                       <span class="submenu-count">
-                        {warning.unhandled}/{warning.total}
+                        {data.warning.unhandled}/{data.warning.total}
                       </span>
                     </div>
                   </Link>
@@ -145,7 +156,7 @@ class ServiceStatusMenu extends Component {
                     <div onClick={this.toggle}>
                       <span class="dot-colored gray-light">Unknown services:</span>
                       <span class="submenu-count">
-                        {unknown.unhandled}/{unknown.total}
+                        {data.unknown.unhandled}/{data.unknown.total}
                       </span>
                     </div>
                   </Link>
@@ -157,7 +168,7 @@ class ServiceStatusMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span class="dot-colored green">Ok services:</span>
-                      <span class="submenu-count">{ok}</span>
+                      <span class="submenu-count">{data.ok}</span>
                     </div>
                   </Link>
                 </li>
@@ -168,7 +179,7 @@ class ServiceStatusMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span class="dot-colored blue">Pending services:</span>
-                      <span class="submenu-count">{pending}</span>
+                      <span class="submenu-count">{data.pending}</span>
                     </div>
                   </Link>
                 </li>
