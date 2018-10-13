@@ -564,12 +564,12 @@ function multipleServiceInDB(
                     if (isset($maxId["MAX(service_id)"])) {
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
-                            $query = "INSERT INTO host_service_relation VALUES ('', NULL, '" . $host . "', NULL, '" .
+                            $query = "INSERT INTO host_service_relation VALUES (0, NULL, '" . $host . "', NULL, '" .
                                 $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             setHostChangeFlag($pearDB, $host, null);
                         } elseif ($hostgroup) {
-                            $query = "INSERT INTO host_service_relation VALUES ('', '" . $hostgroup .
+                            $query = "INSERT INTO host_service_relation VALUES (0, '" . $hostgroup .
                                 "', NULL, NULL, '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             setHostChangeFlag($pearDB, null, $hostgroup);
@@ -582,13 +582,13 @@ function multipleServiceInDB(
                             $fields["service_hgPars"] = "";
                             while ($service = $DBRESULT->fetchRow()) {
                                 if ($service["host_host_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES ('', NULL, '" .
+                                    $query = "INSERT INTO host_service_relation VALUES (0, NULL, '" .
                                         $service["host_host_id"] . "', NULL, '" . $maxId["MAX(service_id)"] . "')";
                                     $pearDB->query($query);
                                     setHostChangeFlag($pearDB, $service['host_host_id'], null);
                                     $fields["service_hPars"] .= $service["host_host_id"] . ",";
                                 } elseif ($service["hostgroup_hg_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES ('', '" .
+                                    $query = "INSERT INTO host_service_relation VALUES (0, '" .
                                         $service["hostgroup_hg_id"] . "', NULL, NULL, '" .
                                         $maxId["MAX(service_id)"] . "')";
                                     $pearDB->query($query);
@@ -608,7 +608,7 @@ function multipleServiceInDB(
                         $DBRESULT = $pearDB->query($query);
                         $fields["service_cs"] = "";
                         while ($C = $DBRESULT->fetchRow()) {
-                            $query = "INSERT INTO contact_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO contact_service_relation VALUES (0, '" .
                                 $maxId["MAX(service_id)"] . "', '" . $C["contact_id"] . "')";
                             $pearDB->query($query);
                             $fields["service_cs"] .= $C["contact_id"] . ",";
@@ -623,7 +623,7 @@ function multipleServiceInDB(
                         $DBRESULT = $pearDB->query($query);
                         $fields["service_cgs"] = "";
                         while ($Cg = $DBRESULT->fetchRow()) {
-                            $query = "INSERT INTO contactgroup_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO contactgroup_service_relation VALUES (0, '" .
                                 $Cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
@@ -667,7 +667,7 @@ function multipleServiceInDB(
                         $dbResult = $pearDB->query($query);
                         $fields["service_traps"] = "";
                         while ($traps = $dbResult->fetchRow()) {
-                            $query = "INSERT INTO traps_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO traps_service_relation VALUES (0, '" .
                                 $traps["traps_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_traps"] .= $traps["traps_id"] . ",";
@@ -1051,7 +1051,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"])
     && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null
         ? $rq .= "'" . $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] . "', "
-        : $rq .= "'NULL', ";
+        : $rq .= "NULL, ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null
         ? $rq .= "'" . implode(",", array_keys($ret["service_stalOpts"])) . "', "
         : $rq .= "NULL, ";
@@ -1669,11 +1669,11 @@ function updateServiceContactGroup($service_id = null, $ret = array())
     }
 
     $cg = new CentreonContactgroup($pearDB);
-    
+
     if (!$ret) {
         return;
     }
-    
+
     for ($i = 0; $i < count($ret); $i++) {
         if (!is_numeric($ret[$i])) {
             $res = $cg->insertLdapGroup($ret[$i]);
@@ -2049,11 +2049,11 @@ function updateServiceTrap($service_id = null, $ret = array())
     } else {
         $ret = $form->getSubmitValue("service_traps");
     }
-    
+
     if (!$ret) {
         return;
     }
-    
+
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO traps_service_relation ";
         $rq .= "(traps_id, service_id) ";
@@ -2416,11 +2416,11 @@ function setServiceCriticality($serviceId, $criticalityId)
 {
     global $pearDB;
 
-    $pearDB->query("DELETE FROM service_categories_relation 
+    $pearDB->query("DELETE FROM service_categories_relation
                 WHERE service_service_id = " . $pearDB->escape($serviceId) . "
                 AND NOT EXISTS(
-                    SELECT sc_id 
-                    FROM service_categories sc 
+                    SELECT sc_id
+                    FROM service_categories sc
                     WHERE sc.sc_id = service_categories_relation.sc_id
                     AND sc.level IS NULL)");
     if ($criticalityId) {
