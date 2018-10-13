@@ -264,7 +264,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $dbResult = $pearDB->query($query);
                     $fields["contact_aclRelation"] = "";
                     while ($aclRelation = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO acl_group_contacts_relations VALUES ('', '" .
+                        $query = "INSERT INTO acl_group_contacts_relations VALUES (0, '" .
                             $maxId["MAX(contact_id)"] . "', '" . $aclRelation["acl_group_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_aclRelation"] .= $aclRelation["acl_group_id"] . ",";
@@ -279,7 +279,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query($query);
                     $fields["contact_hostNotifCmds"] = "";
                     while ($hostCmd = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO contact_hostcommands_relation VALUES ('', '" .
+                        $query = "INSERT INTO contact_hostcommands_relation VALUES (0, '" .
                             $maxId["MAX(contact_id)"] . "', '" . $hostCmd["command_command_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_hostNotifCmds"] .= $hostCmd["command_command_id"] . ",";
@@ -294,7 +294,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query($query);
                     $fields["contact_svNotifCmds"] = "";
                     while ($serviceCmd = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO contact_servicecommands_relation VALUES ('', '" .
+                        $query = "INSERT INTO contact_servicecommands_relation VALUES (0, '" .
                             $maxId["MAX(contact_id)"] . "', '" . $serviceCmd["command_command_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_svNotifCmds"] .= $serviceCmd["command_command_id"] . ",";
@@ -309,7 +309,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query($query);
                     $fields["contact_cgNotif"] = "";
                     while ($Cg = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO contactgroup_contact_relation VALUES ('', '" .
+                        $query = "INSERT INTO contactgroup_contact_relation VALUES (0, '" .
                             $maxId["MAX(contact_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_cgNotif"] .= $Cg["contactgroup_cg_id"] . ",";
