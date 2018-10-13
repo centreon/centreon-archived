@@ -104,7 +104,7 @@ class PollerMenu extends Component {
 
   // hide poller detailed data if click outside
   handleClick = (e) => {
-    if (this.poller.contains(e.target)) {
+    if (!this.poller || this.poller.contains(e.target)) {
       return;
     }
     this.setState({
@@ -114,14 +114,14 @@ class PollerMenu extends Component {
 
   render() {
     const { data, toggled } = this.state;
-    const { entries } = this.props.navigationData;
-
-    // check if poller configuration page is allowed
-    const allowPollerConfiguration = entries.includes('60901')
 
     if (!data) {
       return null;
     }
+
+    // check if poller configuration page is allowed
+    const { entries } = this.props.navigationData;
+    const allowPollerConfiguration = entries.includes('60901')
 
     const statusIcon = getPollerStatusIcon(data.issues);
     return (

@@ -62,7 +62,7 @@ class HostMenu extends Component {
 
   // hide host detailed data if click outside
   handleClick = (e) => {
-    if (this.host.contains(e.target)) {
+    if (!this.host || this.host.contains(e.target)) {
       return;
     }
     this.setState({

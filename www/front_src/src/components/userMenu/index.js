@@ -66,7 +66,7 @@ class UserMenu extends Component {
   };
 
   handleClick = (e) => {
-    if (this.profile.contains(e.target)) {
+    if (!this.profile || this.profile.contains(e.target)) {
       return;
     }
     this.setState({

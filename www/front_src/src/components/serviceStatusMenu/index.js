@@ -62,7 +62,7 @@ class ServiceStatusMenu extends Component {
 
   // hide service detailed data if click outside
   handleClick = (e) => {
-    if (this.service.contains(e.target)) {
+    if (!this.service || this.service.contains(e.target)) {
       return;
     }
     this.setState({
