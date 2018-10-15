@@ -28,6 +28,9 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_ip_address"> {$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="localhost"> {$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
+		{if $form.remote_id.label}
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
+		{/if}
 		<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.SSH_Informations}</h4>
