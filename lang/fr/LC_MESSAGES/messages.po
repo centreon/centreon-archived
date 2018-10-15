@@ -14685,17 +14685,8 @@ msgstr "%s n'est pas valide."
 msgid "You need to send '%s' in the request."
 msgstr "You devez envoyer le paramètre '%s' dans la requête."
 
-msgid "OK: all database poller updates are active"
-msgstr "OK: les informations des collecteurs sont à jour en base de données"
-
 msgid "Some database poller updates are not active; check your configuration"
 msgstr "Certains collecteurs ne sont pas à jour en base de données; vérifiez votre configuration"
 
-msgid "OK: no latency detected on your platform"
-msgstr "OK: aucune latence détectée sur votre plateforme"
-
 msgid "Latency detected, check configuration for better optimization"
 msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
-
-msgid "Main Menu"
-msgstr "Menu principal"

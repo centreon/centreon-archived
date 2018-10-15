@@ -25,7 +25,7 @@ class WizardConfigurationRequestValidator
 
     private function validateServerGeneralFields()
     {
-        $missingParameterMessage = 'You need to send \'%s\' in the request.';
+        $missingParameterMessage = "You need to send '%s' in the request.";
         
         if (!isset($_POST['server_name']) || !$_POST['server_name']) {
             throw new \RestBadRequestException(

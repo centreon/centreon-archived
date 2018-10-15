@@ -106,6 +106,9 @@ $dependencyInjector['path.files_generation'] = _CENTREON_PATH_ . '/filesGenerati
 
 // Defines the web service that will transform the translation files into one json file
 $dependencyInjector[CentreonI18n::class] = function ($container) {
+    if (!is_dir($container['path.files_generation'])) {
+        mkdir($container['path.files_generation']);
+    }
     $filesGenerationPath = $container['path.files_generation'] . 'translation';
     if (!is_dir($filesGenerationPath)) {
         mkdir($filesGenerationPath);
@@ -117,7 +120,7 @@ $dependencyInjector[CentreonI18n::class] = function ($container) {
     $translation->setTranslationFile('LC_MESSAGES/messages.po');
     $jsonFilename = 'messages.json';
     if (isset($_SESSION['centreon'])) {
-        $userLanguage = $_SESSION['centreon']->user->get_lang();
+        $userLanguage = substr($_SESSION['centreon']->user->get_lang(), 0, 2);
         $translation->setUserLanguage($userLanguage);
         $jsonFilename = "{$userLanguage}_{$jsonFilename}";
     }
