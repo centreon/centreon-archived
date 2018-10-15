@@ -107,7 +107,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/keepAlive.js"></script>
     <!-- graph js -->
     <script src="./include/common/javascript/charts/d3.min.js"></script>
     <script src="./include/common/javascript/charts/c3.min.js"></script>

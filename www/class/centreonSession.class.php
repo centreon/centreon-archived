@@ -109,17 +109,25 @@ class CentreonSession
      * Update session to keep alive
      *
      * @param \CentreonDB $pearDB
+     * @return bool If the session is updated or not
      */
-    public function updateSession($pearDB)
+    public function updateSession($pearDB) : bool
     {
         session_start();
 
-        /* Update last_reload parameter */
-        $query = 'UPDATE `session` '
-            . 'SET `last_reload` = "' . time() . '", '
-            . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
-            . 'WHERE `session_id` = "' . session_id() . '" ';
-        $pearDB->query($query);
+        $sessionId = session_id();
+
+        if ($this->checkSession($sessionId, $pearDB) === 1) {
+            /* Update last_reload parameter */
+            $query = 'UPDATE `session` '
+                . 'SET `last_reload` = "' . time() . '", '
+                . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
+                . 'WHERE `session_id` = "' . session_id() . '" ';
+            $pearDB->query($query);
+            return true; // return true if session is properly updated
+        } else {
+            return false; // return false if session does not exist
+        }
     }
 
     public static function getUser($sessionId, $pearDB)
