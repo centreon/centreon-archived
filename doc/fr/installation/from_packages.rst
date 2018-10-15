@@ -126,10 +126,14 @@ Activer le lancement automatique de services au démarrage.
 
 Lancer les commandes suivantes sur le serveur Central : ::
 
-    # systemctl enable httpd.service
-    # systemctl enable snmpd.service
-    # systemctl enable mysql.service
+    # systemctl enable httpd
+    # systemctl enable snmpd
+    # systemctl enable snmptrapd
     # systemctl enable rh-php71-php-fpm
+    # systemctl enable centcore
+    # systemctl enable centreontrapd
+    # systemctl enable cbd
+    # systemctl enable centengine
 
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande
@@ -142,6 +146,11 @@ Avant de démarrer la configuration via l'interface web la commande suivante
 doit être exécutée : ::
 
     # systemctl start rh-php71-php-fpm
+    # systemctl start httpd
+    # systemctl start mysqld
+    # systemctl start cbd
+    # systemctl start snmpd
+    # systemctl start snmptrapd
 
 Cliquer :ref:`ici <installation_web_ces>` pour finaliser le processus d'installation.
 

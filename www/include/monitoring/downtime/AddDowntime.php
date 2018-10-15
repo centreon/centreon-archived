@@ -314,8 +314,12 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addRule('comment', _("Required Field"), 'required');
 
     $data = array();
-    $data["start_time"] = $centreonGMT->getDate("G:i", time());
-    $data["end_time"] = $centreonGMT->getDate("G:i", time() + 7200);
+    $gmt = $centreonGMT->getMyGMT();
+    if(!$gmt) {
+        $gmt = date_default_timezone_get();
+    }
+    $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
+    $data["end_time"] = $centreonGMT->getDate("G:i", time() + 7200, $gmt);
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
