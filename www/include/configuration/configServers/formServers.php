@@ -68,7 +68,7 @@ if (($o == "c" || $o == "w") && $server_id) {
     $DBRESULT->closeCursor();
 
     if ($cfg_server['localhost']) {
-        $serverType = "central"
+        $serverType = "central";
     } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
         $serverType = "remote";
     }
