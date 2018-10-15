@@ -85,7 +85,7 @@ class UserMenu extends Component {
 
     //creating autologin link, getting href, testing if there is a parameter, then generating link : if '?' then &autologin(etc.)
     const gethref = window.location.href,
-          conditionnedhref = window.location.search ? gethref  + '&': gethref + '?',
+          conditionnedhref = gethref + (window.location.search ?'&':'?'),
           autolink = conditionnedhref + 'autologin=1&useralias=' + username + '&token=' + autologinkey
 
     return (
