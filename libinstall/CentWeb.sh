@@ -377,6 +377,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 
 # setgid flag
 chmod -R g+rwxs $CENTREON_GENDIR/filesGeneration/
+$CHOWN -R $WEB_USER:$WEB_GROUP $CENTREON_GENDIR/filesGeneration/export
 
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
