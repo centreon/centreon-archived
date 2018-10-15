@@ -77,7 +77,7 @@ class UserMenu extends Component {
 
   render() {
     const { data, toggled, copied } = this.state;
-  
+
     if (!data) {
       return null;
     }
