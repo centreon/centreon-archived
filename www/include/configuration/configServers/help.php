@@ -4,6 +4,7 @@ $help['name'] = dgettext("help", "Used for identifying the poller");
 $help['ns_ip_address'] = dgettext("help", "IP address of the poller");
 $help['localhost'] = dgettext("help", "Whether the poller is local");
 $help['is_default'] = dgettext("help", "Main poller");
+$help['remote_id'] = dgettext("help", "Remote Server to which this server will be attached");
 $help['ssh_port'] = dgettext("help", "SSH port of the remote poller");
 $help['monitoring_engine'] = dgettext("help", "Monitoring engine");
 $help['init_script'] = dgettext("help", "Path of init script of the scheduler");
