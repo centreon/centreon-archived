@@ -77,7 +77,7 @@ class UserMenu extends Component {
   getAutologinLink = () => {
     const { username, autologinkey } = this.props.data
 
-    return window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey
+    return window.location.href + '&autologin=1&useralias=' + username + '&token=' + autologinkey
   };
 
   render() {
@@ -118,7 +118,7 @@ class UserMenu extends Component {
                       id="autologin-input"
                       className={'hidden-input'}
                       ref={node => this.autologinNode = node}
-                      value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
+                      value={window.location.href + '&autologin=1&useralias=' + username + '&token=' + autologinkey}
                     />
                   </React.Fragment>
                 }
