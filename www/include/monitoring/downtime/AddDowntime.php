@@ -314,8 +314,9 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addRule('comment', _("Required Field"), 'required');
 
     $data = array();
-    $data["start_time"] = $centreonGMT->getDate("G:i", time());
-    $data["end_time"] = $centreonGMT->getDate("G:i", time() + 7200);
+    $startTime = new \DateTime();
+    $data["start_time"] = $startTime->format('H:i');
+    $data["end_time"] = $startTime->modify('+2 HOURS')->format('H:i');
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
