@@ -315,13 +315,6 @@ sub getPHPConfFile() {
 	my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
 	push(@tab_php_ini, trim($result));
 
-	# Apache
-	if ( -e '/etc/opt/rh/rh-php71/php.ini') {
-	    push(@tab_php_ini, '/etc/opt/rh/rh-php71/php.ini');
-	} else {
-        print STDERR "Unable to get PHP configuration\n";
-    }
-
 	return @tab_php_ini;
 }
 
@@ -585,6 +578,11 @@ sub centralBackup() {
 			print STDERR "Unable to copy PHP configuration file\n";
 		}
 	}
+	# PHP configuration ini files
+	`cp -pr /etc/opt/rh/rh-php71/php.d/ $TEMP_CENTRAL_ETC_DIR/php/`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy PHP configuration files\n";
+    }
 
 	#####################
 	# Get Centreon logs #
