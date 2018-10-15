@@ -186,6 +186,12 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 
 -- Insert Multi-step Wizard into Topology
 INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Poller/Remote Wizard', '/poller-wizard/1', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Remote Wizard Step 2', '/poller-wizard/2', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Remote Wizard Step 3', '/poller-wizard/3', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Remote Wizard Final Step', '/poller-wizard/4', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Poller Wizard Step 2', '/poller-wizard/5', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Poller Wizard Step 3', '/poller-wizard/6', '0', '1');
+INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Poller Wizard Final Step', '/poller-wizard/7', '0', '1');
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
