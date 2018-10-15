@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Form from "../../components/forms/remoteServer/RemoteServerFormStepOne";
 import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
 import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps";
+import routeMap from "../../route-maps/route-map";
 import axios from "../../axios";
 import { connect } from "react-redux";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import routeMap from "../../route-maps";
+import routeMap from "../../route-maps/route-map";
 import { Link } from "react-router-dom";
 
 const LineMenu = ({ menu }) => (
