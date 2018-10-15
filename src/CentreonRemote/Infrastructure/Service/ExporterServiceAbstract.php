@@ -41,9 +41,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         $this->db = $services->get('centreon.db-manager');
 
         if ($services->has('centreon.config')) {
-            $this->config = $services->get('centreon.config')
-                ->getMacros()
-            ;
+            $this->config = $services->get('centreon.config');
         }
     }
 
@@ -114,9 +112,15 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     protected function _parse(string $filename): array
     {
-        $result = $this->commitment->getParser()::parse($filename);
+        $macros = null;
 
-        $this->config->replaceMacros($result);
+        if ($this->config !== null) {
+            $macros = function(&$result) {
+                $result !== null ? $this->config->replaceMacros($result) : null;
+            };
+        }
+
+        $result = $this->commitment->getParser()::parse($filename, $macros);
 
         return $result;
     }
