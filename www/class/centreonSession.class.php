@@ -113,21 +113,28 @@ class CentreonSession
      */
     public function updateSession($pearDB) : bool
     {
-        session_start();
+        $sessionUpdated = false;
 
+        session_start();
         $sessionId = session_id();
 
         if ($this->checkSession($sessionId, $pearDB) === 1) {
-            /* Update last_reload parameter */
-            $query = 'UPDATE `session` '
-                . 'SET `last_reload` = "' . time() . '", '
-                . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
-                . 'WHERE `session_id` = "' . session_id() . '" ';
-            $pearDB->query($query);
-            return true; // return true if session is properly updated
+            try {
+                /* Update last_reload parameter */
+                $query = 'UPDATE `session` '
+                    . 'SET `last_reload` = "' . time() . '", '
+                    . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
+                    . 'WHERE `session_id` = "' . $sessionId . '" ';
+                $pearDB->query($query);
+                $sessionUpdated = true; // return true if session is properly updated
+            } catch (\PDOException $e) {
+                $sessionUpdated = false; // return false if session is not properly updated in database
+            }
         } else {
-            return false; // return false if session does not exist
+            $sessionUpdated = false; // return false if session does not exist
         }
+
+        return $sessionUpdated;
     }
 
     public static function getUser($sessionId, $pearDB)
