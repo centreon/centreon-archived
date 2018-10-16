@@ -54,7 +54,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 try {
                    $this->getDi()['centreon_remote.export']->export($commitment);
                 } catch (\Exception $e) {
-                    //todo error handling
+                    echo $e->__toString()."\n";
                 }
 
               //  $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
@@ -82,7 +82,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 try {
                     $this->getDi()['centreon_remote.export']->import();
                 } catch (\Exception $e) {
-                    //todo error handling
+                    echo $e->__toString()."\n";
                 }
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
             }
@@ -111,10 +111,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
             $res = $curl->post($url, ['parent_id' => $task->getId()]);
 
             if ($curl->error) {
-                echo 'Curl error while creating parent task';
+                echo "Curl error while creating parent task\n";
             }
         } catch (\ErrorException $e) {
-            echo 'Curl error while creating parent task';
+            echo "Curl error while creating parent task\n";
+            echo $e->__toString()."\n";
         }
     }
 
