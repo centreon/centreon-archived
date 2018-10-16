@@ -3,8 +3,10 @@ import Header from "./components/header";
 import {Switch} from "react-router-dom";
 import {ConnectedRouter} from "react-router-redux";
 import {history} from "./store";
-import routes from "./route-maps/classicRoutes.js";
 import ClassicRoute from "./components/router/classicRoute";
+import ReactRoute from './components/router/reactRoute';
+
+import {classicRoutes, reactRoutes} from "./route-maps";
 import NavigationComponent from "./components/navigation";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
@@ -38,13 +40,13 @@ class App extends Component {
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
   }
 
-  linkRoutesAndComponents = () => {
+  linkReactRoutesAndComponents = () => {
     const {acls} = this.state;
-    return routes.map(({ path, comp, ...rest }) => (
-      <ClassicRoute
+    return reactRoutes.map(({ path, comp, ...rest }) => (
+      <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? NotAllowedPage : comp}
+        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? comp : NotAllowedPage}
         {...rest}
       />
     ))
@@ -53,14 +55,14 @@ class App extends Component {
   render() {
     const {aclsLoaded} = this.state;
     const min = this.getMinArgument();
-    let router = '';
+    let reactRouter = '';
 
     if (aclsLoaded) {
-      router = this.linkRoutesAndComponents();
+      reactRouter = this.linkReactRoutesAndComponents();
     }
 
     return (
-      aclsLoaded && <ConnectedRouter history={history}>
+      <ConnectedRouter history={history}>
         <div class="wrapper">
           {!min && // do not display menu if min=1
             <NavigationComponent/>
@@ -76,7 +78,10 @@ class App extends Component {
                 <div className="full-screenable-node">
                   <div className="main-content">
                     <Switch>
-                      {router}
+                      {classicRoutes.map(({path, comp, ...rest}, i) => (
+                        <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
+                      ))}
+                      {aclsLoaded && reactRouter}
                     </Switch>
                   </div>
                 </div>

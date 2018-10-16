@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import routeMap from "../../route-maps";
+import routeMap from "../../route-maps/route-map";
 
 class HomeRoute extends Component {
   render() {

@@ -6,7 +6,7 @@ import miniLogo from "../../img/centreon-logo-mini.svg";
 import { Link, withRouter } from "react-router-dom";
 import axios from "../../axios";
 
-import routeMap from "../../route-maps/index";
+import routeMap from "../../route-maps/route-map";
 
 import {Translate} from 'react-redux-i18n';
 import { setNavigation } from"../../redux/actions/navigationActions";

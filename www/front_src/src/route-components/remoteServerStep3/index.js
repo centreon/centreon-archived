@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import WizardFormInstallingStatus from "../../components/wizardFormInstallingStatus";
 import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps";
+import routeMap from "../../route-maps/route-map";
 
 import { connect } from "react-redux";
 import axios from "../../axios";
