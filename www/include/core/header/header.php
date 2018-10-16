@@ -100,14 +100,6 @@ foreach ($_GET as $key => $value) {
 $args .= "'";
 
 /*
- * Get session and Check if session is not expired
- */
-$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '" . session_id() . "'");
-if (!$DBRESULT->fetchColumn()) {
-    header("Location: index.php?disconnect=2" . $args);
-}
-
-/*
  * Check autologin here
  */
 if (!isset($_SESSION["centreon"])) {

@@ -55,7 +55,10 @@ class CentreonKeepalive extends CentreonWebService
     public function getKeepAlive()
     {
         $session = new CentreonSession();
-        $session->updateSession($this->pearDB);
+        if (!$session->updateSession($this->pearDB)) {
+            // return 401 if session is not updated (session expired)
+            throw new \RestUnauthorizedException(_('Session is expired'));
+        }
     }
 
     /**

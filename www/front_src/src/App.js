@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import config from "./config";
 import Header from "./components/header";
 import {Switch} from "react-router-dom";
 import {ConnectedRouter} from "react-router-redux";
@@ -22,6 +23,8 @@ class App extends Component {
     aclsLoaded: false
   }
 
+  keepAliveTimeout = null
+
   // check in arguments if min=1
   getMinArgument = () => {
     const { search } = history.location
@@ -34,10 +37,31 @@ class App extends Component {
     this.setState({ isFullscreenEnabled: true });
   }
 
-  UNSAFE_componentWillMount = () => {
+  // get allowed routes
+  getAcl = () => {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+  }
+
+  // keep alive (redirect to login page if session is expired)
+  keepAlive = () => {
+    this.keepAliveTimeout = setTimeout(() => {
+      axios("internal.php?object=centreon_keepalive&action=keepAlive")
+        .get()
+        .then(() => this.keepAlive())
+        .catch(error => {
+          if (error.response.status == 401) {
+            // redirect to login page
+            window.location.href = config.urlBase + 'index.php?disconnect=1'
+          }
+        })
+    }, 15000)
+  }
+
+  UNSAFE_componentWillMount = () => {
+    this.getAcl()
+    this.keepAlive()
   }
 
   linkReactRoutesAndComponents = () => {
