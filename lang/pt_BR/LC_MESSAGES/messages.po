@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Centreon web 10.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-23 10:23+0000\n"
-"PO-Revision-Date: 2018-10-16 09:29+0100\n"
+"PO-Revision-Date: 2018-10-16 09:39+0100\n"
 "Last-Translator: Luiz Costa <me@luizgustavo.pro.br>\n"
 "Language-Team: Centreon team\n"
 "Language: pt_BR\n"
@@ -14642,22 +14642,22 @@ msgstr ""
 #~ msgstr "Arrêter le suivi précis des hôtes"
 
 #~ msgid "Start obsessing over services"
-#~ msgstr "Démarrer l'exécution des commandes post contrôle"
+#~ msgstr "Inicia checagem de pós-comando de serviços"
 
 #~ msgid "Stop obsessing over services"
-#~ msgstr "Arrêter l'exécution des commandes post contrôle"
+#~ msgstr "Para checagem de pós-comando de serviços"
 
 #~ msgid "Enable flap detection"
-#~ msgstr "Démarrer la détection de bagotage des statuts"
+#~ msgstr "Ativa detecção de variação"
 
 #~ msgid "Disable flap detection"
-#~ msgstr "Arrêter la détection de bagotage des statuts"
+#~ msgstr "Desabilita detecção de variação"
 
 #~ msgid "Enable performance data"
-#~ msgstr "Activer le traitement des données de performance"
+#~ msgstr "Ativar o processamento de dados de Performance"
 
 #~ msgid "Disable performance data"
-#~ msgstr "Arrêter le traitement des données de performance"
+#~ msgstr "Desativar o processamento de dados de Performance"
 
 #~ msgid "Process Commands"
-#~ msgstr "Commandes du processus"
+#~ msgstr "Processos de Comandos"
