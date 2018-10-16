@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Centreon web 10.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-23 10:23+0000\n"
-"PO-Revision-Date: 2018-10-12 10:15+0100\n"
-"Last-Translator: Laurent Pinsivy <lpinsivy@centreon.com>\n"
+"PO-Revision-Date: 2018-10-16 09:29+0100\n"
+"Last-Translator: Luiz Costa <me@luizgustavo.pro.br>\n"
 "Language-Team: Centreon team\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -2576,6 +2576,30 @@ msgstr "Cancelado"
 msgid "Actual End"
 msgstr "Fim atual"
 
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:217
+msgid "Recurrent downtimes"
+msgstr "Manutenções recorrentes"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:156
+msgid "Plugin Packs"
+msgstr "Pacote de Plugins"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Manager"
+msgstr "Gerencia"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Subscription"
+msgstr "Subscrição"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Platform Status"
+msgstr "Estado da Plataforma"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:169
+msgid "Engine Statistics"
+msgstr "Estatísticas do Motor"
+
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
 msgstr "Sem manutenção agendada"
@@ -2874,6 +2898,7 @@ msgid "Add Widget"
 msgstr "Adicionar Ferramenta"
 
 #: centreon-web/www/install/menu_translation.php:43
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
 msgid "Administration"
 msgstr "Administração"
 
@@ -2957,6 +2982,7 @@ msgid "Commands"
 msgstr "Comandos"
 
 #: centreon-web/www/install/menu_translation.php:64
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
 msgid "Configuration"
 msgstr "Configuração"
 
@@ -13336,6 +13362,172 @@ msgstr ""
 msgid "Set downtime for hosts services"
 msgstr "Configura manutenção para os serviços de hosts"
 
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "General options"
+msgstr "Opções Globais"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Job groups"
+msgstr "Grupos de Tarefa"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Jobs"
+msgstr "Tarefas"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Logos"
+msgstr "Logotipos"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Publication rules"
+msgstr "Regras de Publicação"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report design groups"
+msgstr "Grupos de modelos de relatorio"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report designs"
+msgstr "Modelos de Relatorio"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report view"
+msgstr "Visualização de Relatorio"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Trash"
+msgstr "Lixeira"
+
+msgid "All pollers"
+msgstr "Todos os Coletores"
+
+msgid "Configure pollers"
+msgstr "Configurar coletores"
+
+msgid "services"
+msgstr "serviços"
+
+msgid "Critical services"
+msgstr "Serviços criticos"
+
+msgid "Warning services"
+msgstr "Serviços em Aviso"
+
+msgid "Unknown services"
+msgstr "Serviços desconhecidos"
+
+msgid "Ok services"
+msgstr "Serviços OK"
+
+msgid "Pending services"
+msgstr "Serviços Pendentes"
+
+msgid "Edit profile"
+msgstr "Editar perfil"
+
+msgid "Copy autologin link"
+msgstr "Copia link de auto-autenticação"
+
+msgid "Server Configuration Wizard"
+msgstr "Assistente de Configuração de Servidor"
+
+msgid "Choose a server type"
+msgstr "Escolha um tipo de servidor"
+
+msgid "Add a Centreon Remote Server"
+msgstr "Adiciona um Servidor Remoto do Centreon"
+
+msgid "Add a Centreon Poller"
+msgstr "Adiciona um Coletor do Centreon"
+
+msgid "Remote Server Configuration"
+msgstr "Configuração do Servidor Remoto"
+
+msgid "Create new Remote Server"
+msgstr "Cria um novo Servidor Remoto"
+
+msgid "Server Name"
+msgstr "Nome do Servidor"
+
+msgid "Server IP address"
+msgstr "Endereço IP do Servidor"
+
+msgid "Database username"
+msgstr "Nome de usuário do banco de dados"
+
+msgid "Database password"
+msgstr "Senha do banco de dados"
+
+msgid "Centreon Central IP address, as seen by this server"
+msgstr "Endereço IP do Centreon Central, como visto pelo o servidor"
+
+msgid "Centreon Web Folder on Remote"
+msgstr "Pasta do Centreon Web remoto"
+
+msgid "Select a Remote Server"
+msgstr "Selecione um Servidor Remoto"
+
+msgid "Select Pending Remote Links"
+msgstr "Selecione associações pendentes remota"
+
+msgid "Select IP"
+msgstr "Selecione IP"
+
+msgid "Select pollers to be attached to this new Remote Server"
+msgstr ""
+"Selecione os coletores que devem ser anexados com o novo Servidor Remoto"
+
+msgid "Finalizing Setup"
+msgstr "Finalizando Configuração"
+
+msgid "Creating Export Task"
+msgstr "Criando Tarefa de Exportação"
+
+msgid "Generating Export Files"
+msgstr "Gerando Arquivos para serem Exportados"
+
+msgid "Processing Remote Import/Configuration"
+msgstr "Processando Configuração/Importação Remota"
+
+msgid "The field is required"
+msgstr "Este campo é requerido"
+
+msgid "Not a valid IP address"
+msgstr "Não é um endereço de IP válido"
+
+msgid "Add server with wizard"
+msgstr "Adicionar servidor com assistente"
+
+msgid "Select linked Remote Server"
+msgstr "Selecione um Servidor Remoto associado"
+
+msgid "as"
+msgstr "como"
+
+msgid "Server Configuration"
+msgstr "Configuração do Servidor"
+
+msgid "Attach poller to a server"
+msgstr "Anexar coletor a um servidor"
+
+msgid "Advanced: reverse Centreon Broker communication flow"
+msgstr "Avançado: fluxo de comunicação reversa do Centreon Broker"
+
+msgid "%s is not valid."
+msgstr "%s não é valido."
+
+msgid "You need to send '%s' in the request."
+msgstr "Você precisa enviar '%s' na sua requisição."
+
+msgid "Some database poller updates are not active; check your configuration"
+msgstr ""
+"Algumas atualizações no banco de dados do coletor não estão ativas, "
+"verifique sua configuração."
+
+msgid "Latency detected, check configuration for better optimization"
+msgstr ""
+"Latência detectada, verifique a configuração para uma melhor otimização"
+
 #~ msgid " element(s) found"
 #~ msgstr "élément(s) trouvé(s)"
 
@@ -13686,9 +13878,6 @@ msgstr "Configura manutenção para os serviços de hosts"
 #~ msgid "Donate"
 #~ msgstr "Donation"
 
-#~ msgid "General options"
-#~ msgstr "Paramètres globaux"
-
 #~ msgid "Host comments"
 #~ msgstr "Commentaires associés à l'hôte"
 
@@ -13697,15 +13886,6 @@ msgstr "Configura manutenção para os serviços de hosts"
 
 #~ msgid "Interactive view access"
 #~ msgstr "Vue interactive"
-
-#~ msgid "Job groups"
-#~ msgstr "Groupes de tâches"
-
-#~ msgid "Jobs"
-#~ msgstr "Tâches"
-
-#~ msgid "Logos"
-#~ msgstr "Logos"
 
 #~ msgid "Manage"
 #~ msgstr "Gérer"
@@ -13716,26 +13896,11 @@ msgstr "Configura manutenção para os serviços de hosts"
 #~ msgid "Pre-Update"
 #~ msgstr "Pré-mise à jour"
 
-#~ msgid "Publication rules"
-#~ msgstr "Règles de publication"
-
-#~ msgid "Report design groups"
-#~ msgstr "Groupes de modèles de rapport"
-
-#~ msgid "Report designs"
-#~ msgstr "Modèles de rapport"
-
-#~ msgid "Report view"
-#~ msgstr "Visualisation des rapports"
-
 #~ msgid "Service comments"
 #~ msgstr "Commentaires pour ce service"
 
 #~ msgid "Support"
 #~ msgstr "Support"
-
-#~ msgid "Trash"
-#~ msgstr "Poubelle"
 
 #~ msgid "Web Site"
 #~ msgstr "Site web"
