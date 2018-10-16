@@ -23,7 +23,7 @@
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
  * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * Centreon also meet, for each linked independent module, the terms and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -46,8 +46,8 @@ set_include_path(implode(PATH_SEPARATOR, array(
 spl_autoload_register(function ($sClass) {
     $fileName = $sClass;
     $fileName{0} = strtolower($fileName{0});
-    $fileNameType1 = __DIR__  . "/www/class/" . $fileName . ".class.php";
-    $fileNameType2 = __DIR__  . "/www/class/" . $fileName . ".php";
+    $fileNameType1 = __DIR__ . "/www/class/" . $fileName . ".class.php";
+    $fileNameType2 = __DIR__ . "/www/class/" . $fileName . ".php";
 
     if (file_exists($fileNameType1)) {
         require_once $fileNameType1;
@@ -101,6 +101,32 @@ $dependencyInjector['translator'] = $dependencyInjector->factory(function ($c) {
     $translator->bindLang('help');
     return $translator;
 });
+
+$dependencyInjector['path.files_generation'] = _CENTREON_PATH_ . '/filesGeneration/';
+
+// Defines the web service that will transform the translation files into one json file
+$dependencyInjector[CentreonI18n::class] = function ($container) {
+    if (!is_dir($container['path.files_generation'])) {
+        mkdir($container['path.files_generation']);
+    }
+    $filesGenerationPath = $container['path.files_generation'] . 'translation';
+    if (!is_dir($filesGenerationPath)) {
+        mkdir($filesGenerationPath);
+    }
+    require_once _CENTREON_PATH_ . '/www/api/class/centreon_i18n.class.php';
+    $translation = new CentreonI18n();
+    $translation->setFilesGenerationPath($filesGenerationPath);
+    $translation->setRootTranslationPath(_CENTREON_PATH_ . 'lang');
+    $translation->setTranslationFile('LC_MESSAGES/messages.po');
+    $jsonFilename = 'messages.json';
+    if (isset($_SESSION['centreon'])) {
+        $userLanguage = substr($_SESSION['centreon']->user->get_lang(), 0, 2);
+        $translation->setUserLanguage($userLanguage);
+        $jsonFilename = "{$userLanguage}_{$jsonFilename}";
+    }
+    $translation->setJsonFilename($jsonFilename);
+    return $translation;
+};
 
 // Dynamically register service provider
 \Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);

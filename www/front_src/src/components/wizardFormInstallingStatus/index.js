@@ -1,5 +1,6 @@
 import React from "react";
 import Loader from "../loader";
+import {Translate} from 'react-redux-i18n';
 
 export default ({
   formTitle,
@@ -16,7 +17,7 @@ export default ({
         </div>
         <Loader />
         <p className="form-text">
-          Creating Export Task{" "}
+          <Translate value="Creating Export Task"/>{" "}
           <span
             className={"form-status" + (statusCreating ? " valid" : " failed")}
           >
@@ -28,7 +29,7 @@ export default ({
           </span>
         </p>
         <p className="form-text">
-          Generating Export Files{" "}
+          <Translate value="Generating Export Files"/>{" "}
           <span
             className={
               "form-status" + (statusGenerating ? " valid" : " failed")
@@ -42,7 +43,7 @@ export default ({
           </span>
         </p>
         <p className="form-text">
-          Processing Remote Import/Configuration{" "}
+          <Translate value="Processing Remote Import/Configuration"/>{" "}
           <span
             className={
               "form-status" + (statusProcessing ? " valid" : " failed")

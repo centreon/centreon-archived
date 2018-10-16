@@ -3,6 +3,7 @@ import numeral from "numeral";
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import config from "../../config";
+import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 
 class HostMenu extends Component {
@@ -84,7 +85,7 @@ class HostMenu extends Component {
           <span class="iconmoon icon-hosts">
             {data.pending > 0 ? <span class="custom-icon" /> : null}
           </span>
-          <span class="wrap-right-icon__name">Hosts</span>
+          <span class="wrap-right-icon__name"><Translate value="Hosts"/></span>
         </span>
 
         <Link to={config.urlBase + "main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (data.down.unhandled > 0 ? "red" : "red-bordered")}>
@@ -113,7 +114,7 @@ class HostMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span>All</span>
+                      <Translate value="All"/>
                       <span class="submenu-count">{numeral(data.total).format("0a")}</span>
                     </div>
                   </Link>
@@ -124,7 +125,7 @@ class HostMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored red">Down</span>
+                      <span class="dot-colored red"><Translate value="Down"/></span>
                       <span class="submenu-count">
                         {numeral(data.down.unhandled).format("0a")}/{numeral(data.down.total).format("0a")}
                       </span>
@@ -137,7 +138,7 @@ class HostMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored gray">Unreachable</span>
+                      <span class="dot-colored gray"><Translate value="Unreachable"/></span>
                       <span class="submenu-count">
                         {numeral(data.unreachable.unhandled).format("0a")}/{numeral(data.unreachable.total).format("0a")}
                       </span>
@@ -150,7 +151,7 @@ class HostMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored green">Up</span>
+                      <span class="dot-colored green"><Translate value="Up"/></span>
                       <span class="submenu-count">{numeral(data.ok).format("0a")}</span>
                     </div>
                   </Link>
@@ -161,7 +162,7 @@ class HostMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored blue">Pending</span>
+                      <span class="dot-colored blue"><Translate value="Pending"/></span>
                       <span class="submenu-count">{numeral(data.pending).format("0a")}</span>
                     </div>
                   </Link>

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Clock from "../clock";
 import config from "../../config";
+import {Translate} from 'react-redux-i18n';
+
 import axios from "../../axios";
 
 class UserMenu extends Component {
@@ -99,9 +101,9 @@ class UserMenu extends Component {
                 <li class="submenu-item">
                   <span class="submenu-item-link">
                     <span class="submenu-user-name">{fullname}</span>
-                    <span class="submenu-user-type">as {username}</span>
+                    <span class="submenu-user-type"><Translate value="as"/> {username}</span>
                     <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
-                      Edit profile
+                    <Translate value="Edit profile"/>
                     </a>
                   </span>
                 </li>
@@ -111,7 +113,7 @@ class UserMenu extends Component {
                       className={'submenu-user-button'}
                       onClick={this.onCopy}
                     >
-                      Copy autologin link
+                      <Translate value="Copy autologin link"/>
                       <span className={"btn-logout-icon icon-copy " + (copied && ["icon-copied"])}></span>
                     </button>
                     <textarea
@@ -125,7 +127,7 @@ class UserMenu extends Component {
               </ul>
               <div class="button-wrap">
                 <a href={config.urlBase + "index.php?disconnect=1"}>
-                  <button class="btn btn-small logout">Log out</button>
+                  <button class="btn btn-small logout"><Translate value="Logout"/></button>
                 </a>
               </div>
             </div>

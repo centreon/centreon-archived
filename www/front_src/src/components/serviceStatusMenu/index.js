@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import numeral from "numeral";
 import { Link } from "react-router-dom";
 import config from "../../config";
+import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 
 class ServiceStatusMenu extends Component {
@@ -117,7 +118,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span>All services:</span>
+                      <span><Translate value="All Services"/>:</span>
                       <span class="submenu-count">{data.total}</span>
                     </div>
                   </Link>
@@ -128,7 +129,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored red">Critical services:</span>
+                      <span class="dot-colored red"><Translate value="Critical services"/>:</span>
                       <span class="submenu-count">
                       {data.critical.unhandled}/{data.critical.total}
                       </span>
@@ -141,7 +142,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored orange">Warning services:</span>
+                      <span class="dot-colored orange"><Translate value="Warning services"/>:</span>
                       <span class="submenu-count">
                         {data.warning.unhandled}/{data.warning.total}
                       </span>
@@ -154,7 +155,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored gray-light">Unknown services:</span>
+                      <span class="dot-colored gray-light"><Translate value="Unknown services"/>:</span>
                       <span class="submenu-count">
                         {data.unknown.unhandled}/{data.unknown.total}
                       </span>
@@ -167,7 +168,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored green">Ok services:</span>
+                      <span class="dot-colored green"><Translate value="Ok services"/>:</span>
                       <span class="submenu-count">{data.ok}</span>
                     </div>
                   </Link>
@@ -178,7 +179,7 @@ class ServiceStatusMenu extends Component {
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored blue">Pending services:</span>
+                      <span class="dot-colored blue"><Translate value="Pending services"/>:</span>
                       <span class="submenu-count">{data.pending}</span>
                     </div>
                   </Link>

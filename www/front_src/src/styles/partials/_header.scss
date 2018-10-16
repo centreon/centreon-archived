@@ -177,7 +177,7 @@
        }
      }
      &-user {
-       padding-right: 20px;
+       padding: 6px 22px 6px 35px;
        .iconmoon {
          &.icon-user {
           &:before {
@@ -254,7 +254,7 @@
     &.profile {
       .submenu-user-type {
         display: inline-block;
-        width: 54%;
+        width: 51%;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -276,10 +276,10 @@
         background-color: transparent;
         margin: 0 auto;
         display: block;
-        width: 150px;
+        width: 95%;
         outline: none;
         position: relative;
-        padding: 0 27px 0 10px;
+        padding: 5px 27px 5px 10px;
         box-sizing: border-box;
         &:hover {
           color: rgb(0,9,22);
@@ -290,13 +290,18 @@
             }
           }
         }
+        span:first-child {
+          line-height: 17px;
+          display: block;
+        }
       }
       .btn-logout-icon {
         width: 19px;
         height: 19px;
         position: absolute;
         right: 9px;
-        top: 5px;
+        top: 50%;
+        transform: translateY(-50%);
         &:before {
           content: "\e90d";
           color: rgba(255, 161, 37, 1);

@@ -8,8 +8,10 @@ import axios from "../../axios";
 
 import routeMap from "../../route-maps/index";
 
+import {Translate} from 'react-redux-i18n';
 import { setNavigation } from"../../redux/actions/navigationActions";
 import { connect } from "react-redux";
+
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -158,7 +160,7 @@ class NavigationComponent extends Component {
                     id={"menu" + levelOneKey}
                   >
                     <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                      <span class={"menu-item-name"}>{levelOneProps.label}</span>
+                      <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
                     </span>
                   </span>
                   <ul
@@ -180,7 +182,7 @@ class NavigationComponent extends Component {
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
                               class="collapsed-level-item-link"
                             >
-                              {levelTwoProps.label}
+                              <Translate value={levelTwoProps.label}/>
                             </span>
                           ) : (
                             <Link
@@ -193,7 +195,7 @@ class NavigationComponent extends Component {
                               className="collapsed-level-item-link img-none"
                               to={routeMap.module + "?p=" + urlOptions}
                             >
-                              {levelTwoProps.label}
+                              <Translate value={levelTwoProps.label}/>
                             </Link>
                           )}
 
@@ -203,7 +205,7 @@ class NavigationComponent extends Component {
                               <React.Fragment>
                                 {Object.keys(levelTwoProps.children).length > 1 &&
                                   <span class="collapsed-level-title">
-                                    {levelThreeKey}
+                                    <Translate value={levelThreeKey}/>
                                   </span>
                                 }
                                 {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
@@ -223,7 +225,7 @@ class NavigationComponent extends Component {
                                           className="collapsed-level-item-link"
                                           to={routeMap.module + "?p=" + urlOptions}
                                         >
-                                          {levelFourProps.label}
+                                          <Translate value={levelFourProps.label}/>
                                         </Link>
                                       </li>
                                     );

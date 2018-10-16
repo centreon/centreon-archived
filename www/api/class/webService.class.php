@@ -301,14 +301,26 @@ class CentreonWebService
             $webService = [
                 'class' => $dependencyInjector['centreon.webservice']->get($object)
             ];
+
+            // Initialize the language translator
+            $dependencyInjector['translator'];
+
             $wsObj = new $webService['class'];
             $wsObj->setDi($dependencyInjector);
         } else {
             $webService = self::webservicePath($object);
-
-            /* Initialize the webservice */
-            require_once($webService['path']);
-            $wsObj = new $webService['class'];
+            
+            /**
+             * Either we retrieve an instance of this web service that has been
+             * created in the dependency injector, or we create a new one.
+             */
+            if (isset($dependencyInjector[$webService['class']])) {
+                $wsObj = $dependencyInjector[$webService['class']];
+            } else {
+                /* Initialize the webservice */
+                require_once($webService['path']);
+                $wsObj = new $webService['class'];
+            }
         }
 
         if ($wsObj instanceof CentreonWebServiceDiInterface) {
