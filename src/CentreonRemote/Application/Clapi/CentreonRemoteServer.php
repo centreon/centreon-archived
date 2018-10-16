@@ -49,7 +49,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo 'Done'. "\n";
 
         echo "\n Set 'remote' instance type...";
-        system("sed -i -r 's/(\$instance_mode?\s+=?\s+")([a-z]+)(";)/\1remote\3/' " . _CENTREON_ETC_ . "/conf.pm");
+        system("sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm");
         echo 'Done'. "\n";
 
         echo "\n Notifying Master...";
@@ -72,7 +72,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo 'Done'. "\n";
 
         echo "\n Restore 'central' instance type...";
-        system("sed -i -r 's/(\$instance_mode?\s+=?\s+")([a-z]+)(";)/\1central\3/' " . _CENTREON_ETC_ . "/conf.pm");
+        system("sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' " . _CENTREON_ETC_ . "/conf.pm");
         echo 'Done'. "\n";
 
         echo "\n Centreon Remote disabling finished.\n";
