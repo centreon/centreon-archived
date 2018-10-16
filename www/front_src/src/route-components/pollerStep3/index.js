@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import WizardFormInstallingStatus from "../../components/wizardFormInstallingStatus";
 import ProgressBar from "../../components/progressBar";
+import {I18n} from "react-redux-i18n";
 
 import { connect } from "react-redux";
 class PollerStepThreeRoute extends Component {
@@ -30,7 +31,7 @@ class PollerStepThreeRoute extends Component {
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
-          formTitle={"Finalizing Setup:"}
+          formTitle={I18n.t("Finalizing Setup") + ":"}
         />
       </div>
     );

@@ -21,7 +21,7 @@
 			<img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span>
 		</td>
 		<td class="FormRowValue">
-			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.php?p=60301&o=li'" class="btc bt_info" value='{$manualImport}'>
+			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.get.php?p=60301&o=li'" class="btc bt_info" value='{$manualImport}'>
 		</td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_limit" /><span>{$form.ldap_search_limit.label}</span></td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>

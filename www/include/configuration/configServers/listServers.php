@@ -240,8 +240,8 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $nagiosInfo[$config['id']]['last_alive'])
         ? $nagiosInfo[$config['id']]['last_alive']
         : '-';
-    $serverType = $config['localhost'] ? _('Central') : 'Distant Poller';
-    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs) ? 'Remote Server' : $serverType;
+    $serverType = $config['localhost'] ? _('Central') : _('Distant Poller');
+    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs) ? _('Remote Server') : $serverType;
 
     if (
         isset($nagiosInfo[$config['id']]['is_currently_running']) &&

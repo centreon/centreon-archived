@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import FieldMsg from "./FieldMsg";
 import RadioField from "./RadioField";
 
+import {I18n} from "react-redux-i18n";
+
 const getValue = item => (item.value ? item.value : item);
 
 const getLabel = item => (item.label ? item.label : item);
@@ -16,7 +18,7 @@ const renderOptions = (options, rest) =>
       key={i}
       {...rest}
       value={getValue(item)}
-      label={getLabel(item)}
+      label={I18n.t(getLabel(item))}
       info={getInfo(item)}
       checked={getValue(item) === rest.input.value}
       className="radio-group-field__radio"

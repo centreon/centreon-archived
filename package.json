@@ -36,6 +36,7 @@
     "react-fullscreen-crossbrowser": "^1.0.9",
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
+    "react-redux-i18n": "^1.9.3",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.8",
     "react-scripts": "^2.0.3",

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Clock from "../clock";
 import config from "../../config";
+import {Translate} from 'react-redux-i18n';
+
 import axios from "../../axios";
 
 class UserMenu extends Component {
@@ -56,6 +58,7 @@ class UserMenu extends Component {
     });
   };
 
+  //copy for autologin link
   onCopy = () => {
     this.autologinNode.select();
     window.document.execCommand('copy');
@@ -74,12 +77,6 @@ class UserMenu extends Component {
     });
   };
 
-  getAutologinLink = () => {
-    const { username, autologinkey } = this.props.data
-
-    return window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey
-  };
-
   render() {
     const { data, toggled, copied } = this.state;
 
@@ -87,6 +84,11 @@ class UserMenu extends Component {
       return null;
     }
     const { fullname, username, autologinkey } = data;
+
+    //creating autologin link, getting href, testing if there is a parameter, then generating link : if '?' then &autologin(etc.)
+    const gethref = window.location.href,
+          conditionnedhref = gethref + (window.location.search ? '&' : '?'),
+          autolink = conditionnedhref + 'autologin=1&useralias=' + username + '&token=' + autologinkey
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -99,9 +101,9 @@ class UserMenu extends Component {
                 <li class="submenu-item">
                   <span class="submenu-item-link">
                     <span class="submenu-user-name">{fullname}</span>
-                    <span class="submenu-user-type">as {username}</span>
+                    <span class="submenu-user-type"><Translate value="as"/> {username}</span>
                     <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
-                      Edit profile
+                    <Translate value="Edit profile"/>
                     </a>
                   </span>
                 </li>
@@ -111,21 +113,21 @@ class UserMenu extends Component {
                       className={'submenu-user-button'}
                       onClick={this.onCopy}
                     >
-                      Copy autologin link
+                      <Translate value="Copy autologin link"/>
                       <span className={"btn-logout-icon icon-copy " + (copied && ["icon-copied"])}></span>
                     </button>
                     <textarea
                       id="autologin-input"
                       className={'hidden-input'}
                       ref={node => this.autologinNode = node}
-                      value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
+                      value={autolink}
                     />
                   </React.Fragment>
                 }
               </ul>
               <div class="button-wrap">
                 <a href={config.urlBase + "index.php?disconnect=1"}>
-                  <button class="btn btn-small logout">Log out</button>
+                  <button class="btn btn-small logout"><Translate value="Logout"/></button>
                 </a>
               </div>
             </div>
