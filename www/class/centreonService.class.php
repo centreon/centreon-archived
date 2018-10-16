@@ -1052,6 +1052,11 @@ class CentreonService
         }
 
         foreach ($values as $value) {
+            // Check if $value is not a concatenation of host - service
+            if ($value == '-') {
+                continue;
+            }
+
             if (strpos($value, '-')) {
                 $tmpValue = explode('-', $value);
                 $hostIdList[] = $tmpValue[0];
