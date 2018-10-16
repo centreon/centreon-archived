@@ -118,9 +118,9 @@ class CentreonService
             return null;
         }
         $res = $this->db->query(
-            "SELECT service_id 
+            "SELECT service_id
                  FROM service
-                 WHERE service_description = '" . $this->db->escape($templateName) . "' 
+                 WHERE service_description = '" . $this->db->escape($templateName) . "'
                     AND service_register = '0'"
         );
         if (!$res->rowCount()) {
@@ -254,7 +254,7 @@ class CentreonService
                 $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
                           FROM service s
                           INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
-                          INNER JOIN host h ON hsr.host_host_id = h.host_id 
+                          INNER JOIN host h ON hsr.host_host_id = h.host_id
                           WHERE  1 = 1 " . $where;
                 $res = $this->db->query($query);
                 while ($row = $res->fetchRow()) {
@@ -365,7 +365,7 @@ class CentreonService
      */
     public function getServiceTemplateList()
     {
-        $res = $this->db->query("SELECT service_id, service_description 
+        $res = $this->db->query("SELECT service_id, service_description
                             FROM service
                             WHERE service_register = '0'
                             ORDER BY service_description");
@@ -398,7 +398,7 @@ class CentreonService
         $macroFrom = false
     ) {
         if (false === $isMassiveChange) {
-            $this->db->query("DELETE FROM on_demand_macro_service 
+            $this->db->query("DELETE FROM on_demand_macro_service
 							WHERE svc_svc_id = " . $this->db->escape($serviceId));
         } else {
             $macroList = "";
@@ -433,7 +433,7 @@ class CentreonService
                 $this->db->query(
                     "INSERT INTO on_demand_macro_service
                         (`svc_macro_name`, `svc_macro_value`, `is_password`, `description`,
-                            `svc_svc_id`, `macro_order`) 
+                            `svc_svc_id`, `macro_order`)
                         VALUES ('\$_SERVICE" . strtoupper($this->db->escape($value)) . "\$', '" .
                     $this->db->escape($macrovalues[$key]) . "', " . (isset($macroPassword[$key]) ? 1 : 'NULL') .
                     ", '" . $this->db->escape($macroDescription[$key]) . "', " . $this->db->escape($serviceId) .
@@ -565,8 +565,8 @@ class CentreonService
 
         if (is_null($arr)) {
             $arr = array();
-            $res = $this->db->query("SELECT service_id 
-                    FROM service 
+            $res = $this->db->query("SELECT service_id
+                    FROM service
                     WHERE service_locked = 1");
             while ($row = $res->fetchRow()) {
                 $arr[$row['service_id']] = true;
@@ -586,14 +586,14 @@ class CentreonService
     public function cleanServiceRelations($table = "", $host_id_field = "", $service_id_field = "")
     {
         $sql = "DELETE FROM {$table}
-                    WHERE NOT EXISTS ( 
-                        SELECT hsr1.host_host_id 
+                    WHERE NOT EXISTS (
+                        SELECT hsr1.host_host_id
                         FROM host_service_relation hsr1
                         WHERE hsr1.host_host_id = {$table}.{$host_id_field}
                         AND hsr1.service_service_id = {$table}.{$service_id_field}
                     )
                     AND NOT EXISTS (
-                        SELECT hsr2.host_host_id 
+                        SELECT hsr2.host_host_id
                         FROM host_service_relation hsr2, hostgroup_relation hgr
                         WHERE hsr2.host_host_id = hgr.host_host_id
                         AND hgr.host_host_id = {$table}.{$host_id_field}
@@ -631,8 +631,8 @@ class CentreonService
                 $staticArr[$serviceId] = true;
                 return true;
             }
-            $res = $this->db->query("SELECT service_template_model_stm_id 
-			   	    FROM service 
+            $res = $this->db->query("SELECT service_template_model_stm_id
+			   	    FROM service
 				    WHERE service_id = {$serviceId}");
             $service = $res->fetchRow();
         }
