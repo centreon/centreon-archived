@@ -43,11 +43,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
         echo "Checking for pending export tasks: \n";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
-        if (count($tasks) == 0)
-        {
+        if (count($tasks) == 0) {
             echo "None found\n";
         } else {
             foreach ($tasks as $task) {
+                /*
+                 * mark task as being worked on
+                 */
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_PROGRESS);
+
                 $params = unserialize($task->getParams())['params'];
                 $commitment = new ExportCommitment($params['server'], $params['pollers']);
 
@@ -57,7 +61,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
                     echo $e->__toString()."\n";
                 }
 
-              //  $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
 
                 /**
                  * move export file
@@ -79,6 +83,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
             echo "None found\n";
         } else {
             foreach ($tasks as $task) {
+                /*
+                * mark task as being worked on
+                */
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_PROGRESS);
+
                 try {
                     $this->getDi()['centreon_remote.export']->import();
                 } catch (\Exception $e) {
