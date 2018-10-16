@@ -130,7 +130,7 @@ function multipleServiceGroupDependencyInDB($dependencies = array(), $nbrDup = a
                     $fields["dep_sgParents"] = "";
                     while ($sg = $DBRESULT->fetchRow()) {
                         $query = "INSERT INTO dependency_servicegroupParent_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $sg["servicegroup_sg_id"] . "')";
+                            "VALUES (0, '" . $maxId["MAX(dep_id)"] . "', '" . $sg["servicegroup_sg_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_sgParents"] .= $sg["servicegroup_sg_id"] . ",";
                     }
