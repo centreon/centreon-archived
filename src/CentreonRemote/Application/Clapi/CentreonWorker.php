@@ -40,13 +40,14 @@ class CentreonWorker implements CentreonClapiServiceInterface
      */
     public function processQueue()
     {
-        echo "Checking for pending export tasks: \n";
+        $datetime = (new \DateTime())->format("Y:m:d h:i:s");
+        echo "\n[{$datetime}] Checking for pending export tasks: ";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks();
         if (count($tasks) == 0) {
-            echo "None found\n";
+            echo "None found";
         } else {
-            foreach ($tasks as $task) {
+            foreach ($tasks as $x => $task) {
                 /*
                  * mark task as being worked on
                  */
@@ -71,18 +72,20 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES.$compositeKey);
                 $cmdService = new CentcoreCommandService();
                 $cmdWritten = $cmdService->sendCommand($cmd);
+                
+                echo ($x ? ', ' : '') . "#" . $task->getId();
             }
         }
 
-        echo "\n Checking for pending import tasks: ";
+        echo "\n[{$datetime}] Checking for pending import tasks: ";
 
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findImportTasks();
 
         if (count($tasks) == 0)
         {
-            echo "None found\n";
+            echo "None found";
         } else {
-            foreach ($tasks as $task) {
+            foreach ($tasks as $x => $task) {
                 /*
                 * mark task as being worked on
                 */
@@ -94,11 +97,13 @@ class CentreonWorker implements CentreonClapiServiceInterface
                     echo $e->__toString()."\n";
                 }
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(),Task::STATE_COMPLETED);
+                
+                echo ($x ? ', ' : '') . "#" . $task->getId() . " (parent ID #" . $task->getParentId() . ")";
             }
 
         }
 
-        echo "\n Worker cycle completed.\n";
+        echo "\n[{$datetime}] Worker cycle completed.";
     }
 
     /**
