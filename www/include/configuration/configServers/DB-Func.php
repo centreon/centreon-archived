@@ -253,7 +253,7 @@ function insertServer($ret = array())
     $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`," .
         " `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
-        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`) ";
+        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`) ";
     $rq .= "VALUES (";
     isset($ret["name"]) && $ret["name"] != null
         ? $rq .= "'" . htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8") . "', "
@@ -307,7 +307,10 @@ function insertServer($ret = array())
         ? $rq .= "'" . $ret["ns_activate"]["ns_activate"] . "',  "
         : $rq .= "NULL, ";
     isset($ret["centreonbroker_logs_path"]) && $ret["centreonbroker_logs_path"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8") . "' "
+        ? $rq .= "'" . htmlentities(trim($ret["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "NULL,";
+    isset($ret["remote_id"]) && $ret["remote_id"] != null
+        ? $rq .= "'" . htmlentities(trim($ret["remote_id"]), ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL";
     $rq .= ")";
 
@@ -461,6 +464,9 @@ function updateServer($id = null)
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonbroker_logs_path = NULL, ";
+    isset($ret["remote_id"]) && $ret["remote_id"] != null
+        ? $rq .= "remote_id = '" . htmlentities(trim($ret["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "remote_id = NULL, ";
     $rq .= "ns_activate = '" . $ret["ns_activate"]["ns_activate"] . "' ";
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);

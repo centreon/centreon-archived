@@ -56,10 +56,22 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
  * Database retrieve information for Nagios
  */
 $nagios = array();
+$serverType = "poller";
 if (($o == "c" || $o == "w") && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->closeCursor();
+
+    $query = 'SELECT ip FROM remote_servers';
+    $DBRESULT = $pearDB->query($query);
+    $remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
+    $DBRESULT->closeCursor();
+
+    if ($cfg_server['localhost']) {
+        $serverType = "central";
+    } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
+        $serverType = "remote";
+    }
 }
 
 /*
@@ -89,6 +101,22 @@ $attrsText3 = array("size" => "5");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 
 /*
+ * Include Poller api
+ */
+$attrPollers = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
+    'multiple' => false,
+    'linkedObject' => 'centreonInstance'
+);
+$route = './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
+'&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
+$attrPoller1 = array_merge(
+    $attrPollers,
+    array('defaultDatasetRoute' => $route)
+);
+
+/*
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
@@ -116,7 +144,9 @@ $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
-
+if (strcmp($serverType, 'poller') ==  0) {
+    $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
+}
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);

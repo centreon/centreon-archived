@@ -76,9 +76,29 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             $queryValues['name'] = '%%';
         }
 
-        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name FROM nagios_server ' .
-            'WHERE name LIKE :name ' .
-            'AND ns_activate = "1" ';
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ns.id, ns.name FROM nagios_server ns ';
+
+        if (isset($this->arguments['t'])) {
+            if ($this->arguments['t'] == 'remote') {
+                $queryPoller .= "JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) ";
+            } elseif ($this->arguments['t'] == 'poller') {
+                $queryPoller .= "LEFT JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) "
+                    . "WHERE rs.ip IS NULL "
+                    . "AND ns.localhost = '0' ";
+            } elseif ($this->arguments['t'] == 'central') {
+                $queryPoller .= "WHERE ns.localhost = '0' ";
+            }
+        } else {
+            $queryPollerType .= '';
+        }
+
+        if (stripos($queryPoller, 'WHERE') === false) {
+            $queryPoller .= 'WHERE ns.name LIKE :name ';
+        } else {
+            $queryPoller .= 'AND ns.name LIKE :name ';
+        }
+        $queryPoller .= 'AND ns.ns_activate = "1" ';
+
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
         }
