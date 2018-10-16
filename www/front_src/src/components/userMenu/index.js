@@ -56,6 +56,7 @@ class UserMenu extends Component {
     });
   };
 
+  //copy for autologin link
   onCopy = () => {
     this.autologinNode.select();
     window.document.execCommand('copy');
@@ -74,12 +75,6 @@ class UserMenu extends Component {
     });
   };
 
-  getAutologinLink = () => {
-    const { username, autologinkey } = this.props.data
-
-    return window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey
-  };
-
   render() {
     const { data, toggled, copied } = this.state;
 
@@ -87,6 +82,11 @@ class UserMenu extends Component {
       return null;
     }
     const { fullname, username, autologinkey } = data;
+
+    //creating autologin link, getting href, testing if there is a parameter, then generating link : if '?' then &autologin(etc.)
+    const gethref = window.location.href,
+          conditionnedhref = gethref + (window.location.search ? '&' : '?'),
+          autolink = conditionnedhref + 'autologin=1&useralias=' + username + '&token=' + autologinkey
 
     return (
       <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
@@ -118,7 +118,7 @@ class UserMenu extends Component {
                       id="autologin-input"
                       className={'hidden-input'}
                       ref={node => this.autologinNode = node}
-                      value={window.location.href + '?autologin=1&useralias=' + username + '&token=' + autologinkey}
+                      value={autolink}
                     />
                   </React.Fragment>
                 }
