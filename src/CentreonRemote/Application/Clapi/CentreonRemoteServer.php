@@ -87,7 +87,8 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             $this->getDi()['centreon_remote.export']->import();
             echo "Success\n";
         } catch (\Exception $ex) {
-            echo "Fail\n";
+            echo "Fail:\n";
+            echo $e->__toString()."\n";
         }
 
         echo "\n Centreon Remote import finished.\n";

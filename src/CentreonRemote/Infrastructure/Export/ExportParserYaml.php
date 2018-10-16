@@ -7,13 +7,19 @@ use Symfony\Component\Yaml\Yaml;
 class ExportParserYaml implements ExportParserInterface
 {
 
-    public static function parse(string $filename): array
+    public static function parse(string $filename, callable $macros = null): array
     {
         if (!file_exists($filename)) {
             return [];
         }
 
-        $value = Yaml::parseFile($filename);
+        $content = file_get_contents($filename);
+
+        if ($macros !== null) {
+            $macros($content);
+        }
+
+        $value = Yaml::parse($content);
 
         return $value;
     }

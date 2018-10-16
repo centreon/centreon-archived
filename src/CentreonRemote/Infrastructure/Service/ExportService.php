@@ -8,6 +8,7 @@ use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
 use ReflectionClass;
+use WebDriver\Exception;
 
 class ExportService
 {
@@ -65,7 +66,7 @@ class ExportService
      * Export all that is registered in exporter
      * 
      * @todo separate work of exporters
-     * 
+     * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
     public function export(ExportCommitment $commitment): void
@@ -134,7 +135,7 @@ class ExportService
         $manifest = new ExportManifest($commitment, $this->version);
         $manifest->validate();
 
-        $filterExporters = $manifest->get('exporters');
+        $filterExporters = $manifest->get('exporters') ?? [];
 
         foreach ($this->exporter->all() as $exporterMeta) {
             if (!in_array($exporterMeta['classname'], $filterExporters)) {

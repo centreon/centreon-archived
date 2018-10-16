@@ -119,6 +119,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
             $services = [
                 'centreon.db-manager',
+                'centreon.config',
             ];
 
             $locator = new ServiceLocator($pimple, $services);

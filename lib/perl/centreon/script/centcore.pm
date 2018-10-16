@@ -269,8 +269,8 @@ sub getBrokerStats($) {
                                                               logger => $self->{logger},
                                                               timeout => $self->{cmd_timeout}
                                                               );
-        if (defined($stdout) && $stdout) {
-            $self->{logger}->writeLogInfo("Result : $stdout");
+        if ($lerror == -1) {
+            $self->{logger}->writeLogError("Result : $stdout");
         }
     }
     return 0;
@@ -325,20 +325,54 @@ sub getServerConfig($){
 sub startWorker($) {
 
     my $self = shift;
-        $self->{logger}->writeLogError("Starting test");
     my ($lerror, $stdout, $cmd_line);
     my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `contact` WHERE `contact_admin` = '1' AND `contact_activate` = '1' LIMIT 1");
     if ($status == -1){
         $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
         return undef;
     }
+
     my $data = $sth->fetchrow_hashref();
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
 
     my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
+    $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
-     return undef;
+    if ($lerror == -1){
+        $self->{logger}->writeLogError("Result : $stdout");
+    }
+    return undef;
+}
+
+##################################
+## Run Remote Create Task
+#
+sub createRemote($) {
+
+    my $self = shift;
+    my $taskId = $_[0];
+    if (!$taskId){
+    return undef;
+    }
+    my ($lerror, $stdout, $cmd_line);
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT * FROM `contact` WHERE `contact_admin` = '1' AND `contact_activate` = '1' LIMIT 1");
+    if ($status == -1){
+        $self->{logger}->writeLogError("Error selecting admin from db for starting worker");
+        return undef;
+    }
+
+    my $data = $sth->fetchrow_hashref();
+    my $username = $data->{'contact_alias'};
+    my $passwordEnc = $data->{'contact_passwd'};
+
+    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a createRemoteTask -v '".$taskId."' >> /var/log/centreon/worker.log";
+    $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
+    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
+    if ($lerror == -1){
+        $self->{logger}->writeLogError("Result : $stdout");
+    }
+    return undef;
 }
 
 ##################################
@@ -610,6 +644,10 @@ sub sendExportFile($){
     my $self = shift;
     # Init Values
     my $id = $_[0];
+    my $taskId = $_[1];
+    if (!$id || !$taskId){
+        return undef;
+    }
     my ($lerror, $stdout, $cmd);
 
     my $cfg_dir = $self->getNagiosConfigurationField($id, "cfg_dir");
@@ -631,14 +669,18 @@ sub sendExportFile($){
 
     # Send data with rSync
     $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
+
     $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
-    
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                                  logger => $self->{logger},
-                                                                  timeout => 300
-                                                                  );
-    
-    $self->{logger}->writeLogInfo("Result : $stdout");
+                                                          logger => $self->{logger},
+                                                          timeout => 300
+                                                          );
+    if (defined($stdout) && $stdout){
+        $self->{logger}->writeLogInfo("Result : $stdout");
+    }
+
+    $self->createRemote($taskId);
+
     $self->{logger}->writeLogInfo("End: Send export files on poller $id");
 }
 
@@ -921,8 +963,8 @@ sub parseRequest($){
         $self->initEngine($1, "stop", $action);
     } elsif ($action =~ /^SENDCFGFILE\:([0-9]*)/){
         $self->sendConfigFile($1);
-    } elsif ($action =~ /^SENDEXPORTFILE\:([0-9]*)/){
-        $self->sendExportFile($1);
+    } elsif ($action =~ /^SENDEXPORTFILE\:([0-9]*)\:(.*)/){
+        $self->sendExportFile($1, $2);
     } elsif ($action =~ /^TEST\:([0-9]*)/){
         # Experimental
         $self->testConfig($1);
@@ -938,6 +980,8 @@ sub parseRequest($){
         $self->getInfos($1);
     } elsif ($action =~ /^STARTWORKER\:([0-9]*)/){
         $self->startWorker($1);
+    } elsif ($action =~ /^CREATEREMOTETASK\:([0-9]*)/){
+        $self->createRemote($1);
     }
 }
 

@@ -6,6 +6,7 @@ use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
+use Centreon\Infrastructure\Service\CentcoreConfigService;
 
 abstract class ExporterServiceAbstract implements ExporterServiceInterface
 {
@@ -26,6 +27,11 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     protected $commitment;
 
     /**
+     * @var \Centreon\Infrastructure\Service\CentcoreConfigService
+     */
+    protected $config;
+
+    /**
      * Construct
      * 
      * @param \Psr\Container\ContainerInterface $services
@@ -33,6 +39,10 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     public function __construct(ContainerInterface $services)
     {
         $this->db = $services->get('centreon.db-manager');
+
+        if ($services->has('centreon.config')) {
+            $this->config = $services->get('centreon.config');
+        }
     }
 
     public function setCache(ExporterCacheService $cache): void
@@ -102,7 +112,15 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     protected function _parse(string $filename): array
     {
-        $result = $this->commitment->getParser()::parse($filename);
+        $macros = null;
+
+        if ($this->config !== null) {
+            $macros = function(&$result) {
+                $result !== null ? $this->config->replaceMacros($result) : null;
+            };
+        }
+
+        $result = $this->commitment->getParser()::parse($filename, $macros);
 
         return $result;
     }
@@ -128,7 +146,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         if ($data) {
             foreach ($data as $row) {
                 $id = $row[$uniqueId];
-                
+
                 foreach ($input as $_key => $_row) {
                     $_id = $_row[$uniqueId];
                     if ($id === $_id) {
@@ -136,7 +154,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
                     }
                 }
             }
-            
+
             $input = array_merge($data, $input);
         }
 
