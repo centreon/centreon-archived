@@ -1652,7 +1652,8 @@ class CentreonACL
                         $svc = getMyHostServices($data['id']);
                         foreach ($svc as $svc_id => $svc_name) {
                             $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                . "VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ")";
+                                . "VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ") "
+                                . "ON DUPLICATE KEY UPDATE group_id = " . $group_id;
                             \CentreonDBInstance::getMonInstance()->query($request2);
                         }
                     } elseif ($data['action'] == 'DUP' && isset($data['duplicate_host'])) {

@@ -62,3 +62,47 @@ if ($row
     $query = "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins' WHERE resource_line='/usr/lib/nagios/plugins'";
     $pearDB->query($query);
 }
+
+/*
+ * fix menu acl when child is checked but its parent is not checked
+ */
+
+// get all acl menu configurations
+$aclTopologies = $pearDB->query('SELECT acl_topo_id FROM acl_topology');
+while ($aclTopology = $aclTopologies->fetch()) {
+    $aclTopologyId = $aclTopology['acl_topo_id'];
+
+    // get parents of topologies which are at least read only
+    $statement = $pearDB->prepare(
+        'SELECT t.topology_page, t.topology_id, t.topology_parent ' .
+        'FROM acl_topology_relations atr, topology t ' .
+        'WHERE acl_topo_id = :topologyId ' .
+        'AND atr.topology_topology_id = t.topology_id ' .
+        'AND atr.access_right IN (1,2) ' . // read/write and read only
+        'AND t.topology_parent IS NOT NULL' // do not get
+    );
+    $statement->bindParam(':topologyId', $aclTopologyId, \PDO::PARAM_INT);
+    $statement->execute();
+    $topologies = $statement->fetchAll(\PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC);
+
+    // get missing parent topology relations
+    $aclToInsert = [];
+    foreach ($topologies as $topologyParameters) {
+        if (
+            !isset($topologies[$topologyParameters['topology_parent']]) &&
+            !in_array($topologyParameters['topology_parent'], $aclToInsert)
+        ) {
+            $aclToInsert[] = $topologyParameters['topology_parent'];
+        }
+    }
+
+    // insert missing parent topology relations
+    if (count($aclToInsert)) {
+        $statement = $pearDB->query(
+            'INSERT INTO acl_topology_relations(acl_topo_id, topology_topology_id) ' .
+            'SELECT ' . $aclTopologyId  . ', t.topology_id ' .
+            'FROM topology t ' .
+            'WHERE t.topology_page IN (' . implode(',', $aclToInsert) . ')'
+        );
+    }
+}

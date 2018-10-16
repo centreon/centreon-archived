@@ -118,10 +118,14 @@ Launch services during the system bootup
 
 To make services automatically start during system bootup perform these commands on the central server::
 
-    # systemctl enable httpd.service
-    # systemctl enable snmpd.service
-    # systemctl enable mysql.service
+    # systemctl enable httpd
+    # systemctl enable snmpd
+    # systemctl enable snmptrapd
     # systemctl enable rh-php71-php-fpm
+    # systemctl enable centcore
+    # systemctl enable centreontrapd
+    # systemctl enable cbd
+    # systemctl enable centengine
 
 .. note::
     If MySQL database is on a dedicated server, execute the enable command of mysql on the database server.
@@ -132,6 +136,11 @@ Conclude installation
 Before starting the web installation process, you will need to execute::
 
     # systemctl start rh-php71-php-fpm
+    # systemctl start httpd
+    # systemctl start mysqld
+    # systemctl start cbd
+    # systemctl start snmpd
+    # systemctl start snmptrapd
 
 Click :ref:`here <installation_web_ces>` to finalize the installation process.
 
