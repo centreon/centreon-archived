@@ -126,7 +126,8 @@ class CentreonWorker implements CentreonClapiServiceInterface
             $res = $curl->post($url, ['parent_id' => $task->getId()]);
 
             if ($curl->error) {
-                echo "Curl error while creating parent task\n";
+                printf("Curl error while creating parent task: %s\n", $curl->error_message);
+                printf("url called: %s\n", $url);
             }
         } catch (\ErrorException $e) {
             echo "Curl error while creating parent task\n";
