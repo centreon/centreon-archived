@@ -2567,6 +2567,24 @@ ul.module_list {
 }
 
 /* Tour plugin */
+
+#tourbus-leg-0-1,
+#tourbus-leg-0-2,
+#tourbus-leg-0-3,
+#tourbus-leg-0-4,
+#tourbus-leg-0-5 {
+    position: absolute;
+    top: 107px;
+}
+
+#tourbus-leg-0-6,
+#tourbus-leg-0-7,
+#tourbus-leg-0-8,
+#tourbus-leg-0-9 {
+    position: absolute;
+    top: 145px;
+}
+
 .tourbus-content {
     margin-bottom: 10px;
 }
