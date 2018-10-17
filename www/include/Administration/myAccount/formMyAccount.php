@@ -161,7 +161,7 @@ if (!empty($aclUser)) {
             } elseif (strlen($page) == 5) {
                 $parentLvl1 = substr($page, 0, 1);
                 $parentLvl2 = substr($page, 0, 3);
-                if (!array_key_exists($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                if (isset($parentsLvl[$parentLvl1][$parentLvl2]) && !array_key_exists($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
                     $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
                 }
             }

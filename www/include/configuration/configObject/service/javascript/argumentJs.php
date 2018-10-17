@@ -40,9 +40,9 @@ function mk_paginationFF(){}
 function set_header_title(){}
 
 var o = '<?php echo $o;?>';
-var _cmdId = '<?php echo $cmdId;?>';
-var _svcId = '<?php echo $service_id;?>';
-var _svcTplId = '<?php echo $serviceTplId;?>';
+var _cmdId = '<?php echo isset($cmdId) ? $cmdId : null; ?>';
+var _svcId = '<?php echo isset($cmdId) ? $service_id : null; ?>';
+var _svcTplId = '<?php echo isset($cmdId) ? $serviceTplId : null; ?>';
 
 /**
  *
