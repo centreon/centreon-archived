@@ -49,7 +49,7 @@ $release = $DBRESULT->fetchRow();
                         <p><em>(commit <a href="https://github.com/centreon/centreon/tree/@COMMIT@">@COMMIT@</a>)</em></p><br>
                     </td>
                     <td>
-                        Developed by <a href="http://www.centreon.com">Centreon</a>
+                        Developed by <a href="http://www.centreon.com">Centreon</a> and <a href="https://centreon.github.io/">community</a>
                     </td>
                     <td style="text-align: center" rowspan="3"><img src="./img/centreon.png" alt="logo centreon" /></td>
                 </tr>
@@ -58,8 +58,8 @@ $release = $DBRESULT->fetchRow();
                         <h3><?php echo _("Project Leaders"); ?></h3>
                     </td>
                     <td>
-                        -&nbsp;<a href="mailto:jmathis@centreon.com">Julien Mathis</a> <br>
-                        -&nbsp;<a href="mailto:rlemerlus@centreon.com">Romain Le Merlus</a> <br>
+                        -&nbsp;Julien Mathis<br>
+                        -&nbsp;Romain Le Merlus<br>
                     </td>
                     <td></td>
                 </tr>
@@ -68,31 +68,28 @@ $release = $DBRESULT->fetchRow();
                         <h3><?php echo _("Developers"); ?></h3>
                     </td>
                     <td style="padding-top :10px;">
-                        <p>Lionel Assepo</p>
-                        <p>Maximilien Bersoult</p>
+                        <p>Adrien Gelibert</p>
+                        <p>Colin Gagnaire</p>
+                        <p>Danijel Halupka</p>
+                        <p>David Boucher</p>
+                        <p>Edyta Skibinska</p>
+                        <p>Etienne Gautier</p>
+                        <p>Guillaume Baldo</p>
+                        <p>Jérémy Delpierre</p>
                         <p>Kevin Duret</p>
-                        <p>Toufik Mechouet</p>
-                        <p>Rabaa Ridene</p>
-                        <p>Loïc Laurent</p>
-                        <p>Benoît Sauveton</p>
-                        <p>Romain Bertholon</p>
-                        <p>Christophe Coraboeuf</p>
-                        <p>Nicolas Cordier</p>
-                        <p>Damien Duponchelle</p>
-                        <p>Cedrick Facon</p>
-                        <p>Nikolaus Filus</p>
-                        <p>Quentin Garnier</p>
-                        <p>Dorian Guillois</p>
-                        <p>Sylvestre Ho</p>
-                        <p>Matthieu Kermagoret</p>
-                        <p>Antoine Nguyen</p>
+                        <p>Laurent Calvet</p>
                         <p>Laurent Pinsivy</p>
-                        <p>David Porte</p>
-                        <p>Mathavarajan Sugumaran</p>
-                        <p>Cedric Temple</p>
-                        <p>Alexandru Vilau</p>
-                        <p>Guillaume Watteeux</p>
-                        <p>Remi Werquin</p>
+                        <p>Loïc Laurent</p>
+                        <p>Marko Kovac</p>
+                        <p>Matthieu Kermagoret</p>
+                        <p>Maximilien Bersoult</p>
+                        <p>Nikola Lovic</p>
+                        <p>Quentin Garnier</p>
+                        <p>Rabaa Ridene</p>
+                        <p>Stéphane Chapron</p>
+                        <p>Valentin Hristov</p>
+                        <p>Ventsislav Radev</p>
+                        <p>Victor Vassilev</p>
                     </td>
                     <td></td>
                 </tr>
@@ -101,72 +98,52 @@ $release = $DBRESULT->fetchRow();
                     <td style="padding-top: 10px;" colspan="2">
                         <table class="table">
                             <tr>
-                                <td>Marisa Belijar</td>
-                                <td>Tobias Boehnert</td>
-                            </tr>
-                            <tr>
-                                <td>Duy-Huan BUI</td>
-                                <td>Gaetan Lucas de Couville</td>
-                            </tr>
-                            <tr>
-                                <td>Sebastien Boulianne</td>
-                                <td>Bertrand Cournaud</td>
-                            </tr>
-                            <tr>
-                                <td>Vincent Carpentier</td>
-                                <td>Christoph Ziemann</td>
-                            </tr>
-                            <tr>
-                                <td>Mathieu Chateau</td>
-                                <td>Eric Coquard</td>
-                            </tr>
-                            <tr>
-                                <td>Luiz Gustavo Costa</td>
-                                <td>Guillaume Halbitte</td>
-                            </tr>
-                            <tr>
-                                <td>Thomas Fisher</td>
+                                <td>Adrien Morais</td>
                                 <td>Loïc Fontaine</td>
                             </tr>
                             <tr>
-                                <td>Jean Gabès</td>
-                                <td>Claire Gizard</td>
+                                <td>Benjamin Robert</td>
+                                <td>Louis Sautier</td>
                             </tr>
                             <tr>
-                                <td>Jean Marc Grisar</td>
-                                <td>Florin Grosu</td>
+                                <td>btassite</td>
+                                <td>Luiz Felipe Aranha</td>
                             </tr>
                             <tr>
-                                <td>Jay Lopez</td>
-                                <td>Jan Kuipers</td>
+                                <td>Cédric Meschin</td>
+                                <td>Luiz Gustavo Costa</td>
+                            </tr>
+                            <tr>
+                                <td>Charles Gautier</td>
+                                <td>Marie Gallardo</td>
+                            </tr>
+                            <tr>
+                                <td>CPbN</td>
+                                <td>Remi Werquin</td>
+                            </tr>
+                            <tr>
+                                <td>Eric Coquard</td>
+                                <td>Samuel Mutel</td>
+                            </tr>
+                            <tr>
+                                <td>Fabien Thepaut</td>
+                                <td>Sebastien Boulianne</td>
+                            </tr>
+                            <tr>
+                                <td>Guillaume Watteeux</td>
+                                <td>Simon Bomm</td>
                             </tr>
                             <tr>
                                 <td>Ira Janssen</td>
-                                <td>Thomas Johansen</td>
+                                <td>SuL</td>
                             </tr>
                             <tr>
-                                <td>Peeters Jan</td>
-                                <td>Jan Kuipers</td>
+                                <td>Jean Baptiste Borrel</td>
+                                <td>Thi Uyên Dang</td>
                             </tr>
                             <tr>
-                                <td>Danil Makeyev</td>
-                                <td>Camille N&eacute;ron</td>
-                            </tr>
-                            <tr>
-                                <td>Maxime Peccoux</td>
-                                <td>Patrick Proy</td>
-                            </tr>
-                            <tr>
-                                <td>Matthieu Robin</td>
-                                <td>Joerg Steinlechner</td>
-                            </tr>
-                            <tr>
-                                <td>Silvio Rodrigo Damasceno de Souza</td>
-                                <td>Thierry Van Acker</td>
-                            </tr>
-                            <tr>
-                                <td>Felix Zingel</td>
-                                <td>Massimiliano Ziccardi</td>
+                                <td>Lionel Assepo</td>
+                                <td>uncleflo</td>
                             </tr>
                             <tr>
                                 <td colspan="2">
