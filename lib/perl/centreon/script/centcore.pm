@@ -784,6 +784,7 @@ sub syncTraps($) {
             # Get configuration
             my $ns_server = $self->getServerConfig($server->{id});
             my $port = checkSSHPort($ns_server->{ssh_port});
+            my $remote_server;
 
             if ($id == 0) {
                 if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
