@@ -118,6 +118,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
          */
         $params = unserialize($task->getParams())['params'];
         $centreonPath = trim($params['centreon_path'], '/');
+        $centreonPath = $centreonPath ? $centreonPath : '/centreon';
         $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?object=centreon_task_service&action=AddImportTaskWithParent";
 
         try {
@@ -125,7 +126,8 @@ class CentreonWorker implements CentreonClapiServiceInterface
             $res = $curl->post($url, ['parent_id' => $task->getId()]);
 
             if ($curl->error) {
-                echo "Curl error while creating parent task\n";
+                printf("Curl error while creating parent task: %s\n", $curl->error_message);
+                printf("url called: %s\n", $url);
             }
         } catch (\ErrorException $e) {
             echo "Curl error while creating parent task\n";
