@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Centreon web 10.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-23 10:23+0000\n"
-"PO-Revision-Date: 2018-10-16 09:39+0100\n"
+"PO-Revision-Date: 2018-10-17 15:55+0100\n"
 "Last-Translator: Luiz Costa <me@luizgustavo.pro.br>\n"
 "Language-Team: Centreon team\n"
 "Language: pt_BR\n"
@@ -669,13 +669,13 @@ msgstr "Comandos em buffer"
 #: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
-msgstr "Status de Host"
+msgstr "Estado de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
 #: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
-msgstr "Status de Serviço"
+msgstr "Estado do Serviço"
 
 #: centreon-web/www/class/centreonAuth.class.php:279
 #: centreon-web/www/class/centreonAuth.class.php:285
@@ -1897,7 +1897,7 @@ msgstr "Instalado"
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySGJS.php:87
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:450
 msgid "Status"
-msgstr "Status"
+msgstr "Estado"
 
 #: centreon-web/www/install/smarty_translate.php:336
 #: centreon-web/www/install/smarty_translate.php:744
@@ -2089,7 +2089,7 @@ msgstr "Opções de agendamento de Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:540
 msgid "Notification status"
-msgstr "Status de Notificação"
+msgstr "Estado da Notificação"
 
 #: centreon-web/www/install/smarty_translate.php:555
 #: centreon-web/www/include/configuration/configServers/formServers.php:145
@@ -2222,7 +2222,7 @@ msgstr "Instancias de Coletagem"
 
 #: centreon-web/www/install/smarty_translate.php:792
 msgid "Poller States"
-msgstr "Status de Coleta"
+msgstr "Estado dos Coletores"
 
 #: centreon-web/www/install/smarty_translate.php:795
 #: centreon-web/www/install/menu_translation.php:95
@@ -2357,7 +2357,7 @@ msgstr "Serviço"
 #: centreon-web/www/include/monitoring/status/Services/service.php:390
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:452
 msgid "Service Status"
-msgstr "Status de Serviço"
+msgstr "Estado do Serviço"
 
 #: centreon-web/www/install/smarty_translate.php:828
 #: centreon-web/www/install/menu_translation.php:120
@@ -2468,7 +2468,7 @@ msgstr "Nome do Host"
 #: centreon-web/www/include/monitoring/comments/listComment.php:197
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:257
 msgid "Output"
-msgstr "Status detalhado"
+msgstr "Estado detalhado"
 
 #: centreon-web/www/install/smarty_translate.php:873
 #: centreon-web/www/install/smarty_translate.php:909
@@ -2944,7 +2944,7 @@ msgstr "Por Grupo de Serviços"
 
 #: centreon-web/www/install/menu_translation.php:54
 msgid "By Status"
-msgstr "Por Status"
+msgstr "Por Estado"
 
 #: centreon-web/www/install/menu_translation.php:55
 #: centreon-web/www/include/configuration/configObject/service/formService.php:913
@@ -3304,7 +3304,7 @@ msgstr "Estatisticas de Coleta"
 #: centreon-web/www/include/eventLogs/viewLog.php:256
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:200
 msgid "Pollers"
-msgstr "Coletadores"
+msgstr "Coletores"
 
 #: centreon-web/www/install/menu_translation.php:124
 #: centreon-web/www/include/options/accessLists/reloadACL/reloadACL.php:114
@@ -3335,7 +3335,7 @@ msgstr "Manual"
 
 #: centreon-web/www/install/menu_translation.php:132
 msgid "Server Status"
-msgstr "Status do Servidor"
+msgstr "Estado do Servidor"
 
 #: centreon-web/www/install/menu_translation.php:133
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:330
@@ -3390,7 +3390,7 @@ msgstr "Traps SNMP"
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:450
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:445
 msgid "Status Details"
-msgstr "Detalhes de Status"
+msgstr "Detalhes de Estado"
 
 #: centreon-web/www/install/menu_translation.php:146
 msgid "System Logs"
@@ -4871,7 +4871,7 @@ msgstr "Propriedades de depuração"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:100
 msgid "Engine Status"
-msgstr "Status do Motor"
+msgstr "Estado do Motor"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:101
 msgid "Resources storage"
@@ -4903,7 +4903,7 @@ msgstr "Caminho para o banco de dados do RRDTool para Metricas"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:112
 msgid "Path to RRDTool Database For Status"
-msgstr "Caminho para o banco de dados do RRDTool para Status"
+msgstr "Caminho para o banco de dados do RRDTool para Estado"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:116
 msgid "Path to RRDTool Database For Monitoring Engine Statistics"
@@ -7069,7 +7069,7 @@ msgstr "para"
 
 #: centreon-web/www/include/views/graphs/graphs.php:263
 msgid "Display Status"
-msgstr "Exibir Status"
+msgstr "Exibir Estado"
 
 #: centreon-web/www/include/views/graphTemplates/formGraphTemplate.php:76
 msgid "Add a Graph Template"
@@ -7955,7 +7955,7 @@ msgstr "Coletores associados"
 
 #: centreon-web/www/include/configuration/configNagios/listNagios.php:90
 msgid "Satellites"
-msgstr "Coletadores"
+msgstr "Coletores"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:136
 msgid "Add a Monitoring Engine Configuration File"
@@ -7994,11 +7994,11 @@ msgstr "Coletor associado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:159
 msgid "Status file"
-msgstr "Arquivo de Status"
+msgstr "Arquivo de Estado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:160
 msgid "Status File Update Interval"
-msgstr "Intervalo de atualização do arquivo de Status"
+msgstr "Intervalo de atualização do arquivo de Estado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:161
 msgid "Log file"
@@ -8781,7 +8781,7 @@ msgstr "Arquivos"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:886
 msgid "States Retention"
-msgstr "Status de Retenção"
+msgstr "Estado de Retenção"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:887
 msgid "Broker Module"
@@ -9201,7 +9201,7 @@ msgstr "OID"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 msgid "Default Status"
-msgstr "Status por padrão"
+msgstr "Estado por padrão"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 #: centreon-web/www/include/configuration/configObject/service/formService.php:704
@@ -9944,14 +9944,14 @@ msgstr "Limiar de Variação Alta"
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:760
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:734
 msgid "Retain Status Information"
-msgstr "Informação de retenção de Status"
+msgstr "Informação de retenção de Estado"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:934
 #: centreon-web/www/include/configuration/configObject/service/formService.php:856
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:768
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:742
 msgid "Retain Non Status Information"
-msgstr "Informação de retenção Sem Status"
+msgstr "Informação de retenção Sem Estado"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:943
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:751
@@ -10015,7 +10015,7 @@ msgstr "Imagem VRML"
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:959
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:765
 msgid "Status Map Image"
-msgstr "Imagem para Mapa de Status"
+msgstr "Imagem para Mapa de Estado"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:960
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:766
@@ -11230,7 +11230,7 @@ msgstr "Usado pelo o comando"
 
 #: centreon-web/www/include/configuration/configObject/connector/formConnector.php:129
 msgid "Connector Status"
-msgstr "Status do Conector"
+msgstr "Estado do Conector"
 
 #: centreon-web/www/include/configuration/configObject/metaservice_dependency/formMetaServiceDependency.php:140
 msgid "Meta Service Names"
@@ -12165,7 +12165,7 @@ msgstr "Ordenar por severidade"
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:453
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:454
 msgid "Status information"
-msgstr "Informação de Status"
+msgstr "Informação de Estado"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:133
 #: centreon-web/www/include/monitoring/status/Services/service.php:338
@@ -12182,7 +12182,7 @@ msgstr "Hosts com Problemas"
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:185
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:453
 msgid "Host Status"
-msgstr "Status de Host"
+msgstr "Estado de Host"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:157
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroup.php:66
@@ -12297,11 +12297,11 @@ msgstr "Hosts : Configurar Manutenção"
 
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroupJS.php:71
 msgid "Hosts Status"
-msgstr "Status de Hosts"
+msgstr "Estado de Hosts"
 
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroupJS.php:75
 msgid "Services Status"
-msgstr "Status de Serviços"
+msgstr "Estado de Serviços"
 
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:158
 msgid "Polling instance"
