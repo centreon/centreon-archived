@@ -75,6 +75,9 @@ class App extends Component {
   UNSAFE_componentWillMount = () => {
     this.getAcl();
     this.keepAlive();
+  }
+
+  componentDidMount = () => {
     this.getRefreshIntervals();
   }
 

@@ -9,7 +9,7 @@ import ServiceStatusMenu from "../serviceStatusMenu";
 class TopHeader extends Component {
 
   render() {
-    const {refreshIntervals} = this.props.refreshIntervals;
+    const {refreshIntervals} = this.props;
     return (
       <header class="header">
         <div class="header-icons">

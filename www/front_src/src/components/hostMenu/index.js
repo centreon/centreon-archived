@@ -44,13 +44,14 @@ class HostMenu extends Component {
     });
   }
 
-  // refresh host data every 15 seconds
-  // @todo get this interval from backend
+  // refresh host data
   refreshData = () => {
+    const {refreshIntervals} = this.props;
+    let refreshMonitoring = (refreshIntervals.AjaxTimeReloadMonitoring) ? parseInt(refreshIntervals.AjaxTimeReloadMonitoring)*1000 : 15000;
     clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
       this.getData();
-    }, 15000);
+    }, refreshMonitoring);
   };
 
   // display/hide detailed host data
