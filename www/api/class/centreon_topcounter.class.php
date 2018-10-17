@@ -630,6 +630,28 @@ class CentreonTopCounter extends CentreonWebService
     }
 
     /**
+     * Get intervals for refreshing header data
+     * Method: GET
+     */
+    public function getRefreshIntervals()
+    {
+        $query = "SELECT * FROM `options` WHERE `key` IN ('AjaxTimeReloadMonitoring','AjaxTimeReloadStatistic')";
+        try {
+            $res = $this->pearDB->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException($e);
+        }
+        $row = $res->fetchAll();
+
+        $result = [];
+        foreach ($row as $item){
+            $result[$item['key']] = $item['value'];
+        }
+
+        return $result;
+    }
+
+    /**
      * Get the configured pollers
      */
     protected function pollersList()

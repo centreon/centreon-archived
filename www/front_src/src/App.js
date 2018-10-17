@@ -20,7 +20,9 @@ class App extends Component {
   state = {
     isFullscreenEnabled: false,
     acls: [],
-    aclsLoaded: false
+    aclsLoaded: false,
+    refreshIntervals: {},
+    intervalsLoaded: false
   }
 
   keepAliveTimeout = null
@@ -44,6 +46,17 @@ class App extends Component {
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
   }
 
+  getRefreshIntervals = () => {
+    axios("internal.php?object=centreon_topcounter&action=refreshIntervals")
+      .get()
+      .then(({data}) => {
+        this.setState({refreshIntervals: data, intervalsLoaded: true});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   // keep alive (redirect to login page if session is expired)
   keepAlive = () => {
     this.keepAliveTimeout = setTimeout(() => {
@@ -60,8 +73,12 @@ class App extends Component {
   }
 
   UNSAFE_componentWillMount = () => {
-    this.getAcl()
-    this.keepAlive()
+    this.getAcl();
+    this.keepAlive();
+  }
+
+  componentDidMount = () => {
+    this.getRefreshIntervals();
   }
 
   linkReactRoutesAndComponents = () => {
@@ -79,6 +96,8 @@ class App extends Component {
   render() {
     const {aclsLoaded} = this.state;
     const min = this.getMinArgument();
+    const {refreshIntervals} = this.state;
+
     let reactRouter = '';
 
     if (aclsLoaded) {
@@ -93,7 +112,7 @@ class App extends Component {
           }
           <div id="content">
             {!min && // do not display header if min=1
-              <Header/>
+              <Header refreshIntervals={refreshIntervals}/>
             }
             <div id="fullscreen-wrapper">
               <Fullscreen

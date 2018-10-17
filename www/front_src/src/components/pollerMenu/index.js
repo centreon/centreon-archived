@@ -87,13 +87,14 @@ class PollerMenu extends Component {
     });
   }
 
-  // refresh poller data every 30 seconds
-  // @todo get this interval from backend
+  // refresh poller data every N seconds
   refreshData = () => {
+    const {refreshIntervals} = this.props;
+    let refreshStats = (refreshIntervals.AjaxTimeReloadStatistic) ? parseInt(refreshIntervals.AjaxTimeReloadStatistic)*1000 : 15000;
     clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
       this.getData();
-    }, 30000);
+    }, refreshStats);
   };
 
   // display/hide detailed poller data
