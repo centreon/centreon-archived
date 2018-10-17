@@ -174,6 +174,7 @@ sub new {
     $self->{digest_trap} = undef;
     
     $self->{cmdFile} = undef;
+    $self->{cmdDir} = undef;
     
     # Pipe for log DB 
     %{$self->{logdb_pipes}} = (running => 0);
@@ -682,11 +683,19 @@ sub forceCheck {
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = '/bin/echo "' . $prefix .  "[$datetime] $str\" >> " . $self->{cmdFile};
+        if (defined($self->{cmdDir})) {
+            $submit = '/bin/echo "' . $prefix .  "[$datetime] $str\" >> " . $self->{cmdDir} . "/" . $datetime . "-traps";
+        } else {
+            $submit = '/bin/echo "' . $prefix .  "[$datetime] $str\" >> " . $self->{cmdFile};
+        }
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        if (defined($self->{cmdDir})) {
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdDir} . "/" . $datetime . "-traps' 2>&1";
+        } else {
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        }
     }
     
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
@@ -717,11 +726,20 @@ sub submitResult_do {
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
+        if (defined($self->{cmdDir})) {
+            $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdDir} . "/" . $datetime . "-traps";
+        } else {
+            $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile};
+        }
         $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+		if (defined($self->{cmdDir})) {
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdDir} . "/" . $datetime . "-traps' 2>&1";
+        } else {
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        }
     }
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
                                                              logger => $self->{logger},
@@ -870,6 +888,7 @@ sub substitute_centreon_var {
     $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
     $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
+    $str =~ s/\@CMDDIR\@/$self->{cmdDir}/g;
     $str =~ s/\@USERARG1\@/$self->{current_user_arg1}/g;
     $str =~ s/\@USERARG2\@/$self->{current_user_arg2}/g;
     my $date = strftime("%Y%m%d", localtime());
@@ -1139,6 +1158,7 @@ sub run {
                                              logger => $self->{logger});
 
         $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
+        $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore";
         $self->{csdb} = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                               host => $self->{centreon_config}->{db_host},
                                               port => $self->{centreon_config}->{db_port},

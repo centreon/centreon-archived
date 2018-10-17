@@ -44,13 +44,14 @@ class ServiceStatusMenu extends Component {
     });
   }
 
-  // refresh service data every 15 seconds
-  // @todo get this interval from backend
+  // refresh service data
   refreshData = () => {
+    const {refreshIntervals} = this.props;
+    let refreshMonitoring = (refreshIntervals.AjaxTimeReloadMonitoring) ? parseInt(refreshIntervals.AjaxTimeReloadMonitoring)*1000 : 15000;
     clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
       this.getData();
-    }, 15000);
+    }, refreshMonitoring);
   };
 
   // display/hide detailed service data

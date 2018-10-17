@@ -6,6 +6,7 @@ use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
+use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use CentreonClapi\CentreonACL;
@@ -60,6 +61,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $pimple['centreon.acl'] = function(Container $container) : CentreonACL {
             $service = new CentreonACL($container);
+
+            return $service;
+        };
+
+        $pimple['centreon.config'] = function(Container $container) : CentcoreConfigService {
+            $service = new CentcoreConfigService($container);
 
             return $service;
         };

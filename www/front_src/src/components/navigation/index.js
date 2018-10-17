@@ -182,7 +182,7 @@ class NavigationComponent extends Component {
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
                               class="collapsed-level-item-link"
                             >
-                              <Translate value={levelTwoProps.label}/>
+                                <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
                             </span>
                           ) : (
                             <Link

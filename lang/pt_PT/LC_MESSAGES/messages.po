@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Centreon web 10.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-23 10:23+0000\n"
-"PO-Revision-Date: 2018-10-16 09:39+0100\n"
+"PO-Revision-Date: 2018-10-16 13:46+0100\n"
 "Last-Translator: Luiz Costa <me@luizgustavo.pro.br>\n"
 "Language-Team: Centreon team\n"
-"Language: pt_BR\n"
+"Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,7 +54,7 @@ msgstr "Porta de conexão"
 #: centreon-web/broker_field_translation.php:10
 #: centreon-web/www/install/centreon_broker_translation.php:37
 msgid "Correlation file"
-msgstr "Arquivo de correlação"
+msgstr "Ficheiro de correlação"
 
 #: centreon-web/broker_field_translation.php:11
 msgid "Correlation passive"
@@ -63,32 +63,32 @@ msgstr "Correlação passiva"
 #: centreon-web/broker_field_translation.php:12
 #: centreon-web/www/install/centreon_broker_translation.php:79
 msgid "DB host"
-msgstr "Endereço Banco de dados"
+msgstr "Endereço Base de dados"
 
 #: centreon-web/broker_field_translation.php:13
 #: centreon-web/www/install/centreon_broker_translation.php:83
 msgid "DB name"
-msgstr "Nome Banco de dados"
+msgstr "Nome Base de dados"
 
 #: centreon-web/broker_field_translation.php:14
 #: centreon-web/www/install/centreon_broker_translation.php:82
 msgid "DB password"
-msgstr "Senha Banco de dados"
+msgstr "Palavra-passe Base de dados"
 
 #: centreon-web/broker_field_translation.php:15
 #: centreon-web/www/install/centreon_broker_translation.php:80
 msgid "DB port"
-msgstr "Porta Banco de dados"
+msgstr "Porta Base de dados"
 
 #: centreon-web/broker_field_translation.php:16
 #: centreon-web/www/install/centreon_broker_translation.php:78
 msgid "DB type"
-msgstr "Tipo do Banco de dados"
+msgstr "Tipo do Base de dados"
 
 #: centreon-web/broker_field_translation.php:17
 #: centreon-web/www/install/centreon_broker_translation.php:81
 msgid "DB user"
-msgstr "Usuário Banco de dados"
+msgstr "Utilizador Base de dados"
 
 #: centreon-web/broker_field_translation.php:18
 #: centreon-web/www/install/centreon_broker_translation.php:65
@@ -118,12 +118,12 @@ msgstr "Nome do Failover"
 #: centreon-web/broker_field_translation.php:23
 #: centreon-web/www/install/centreon_broker_translation.php:90
 msgid "File for Centreon Broker statistics"
-msgstr "Localização do arquivo de estatisticas do Centreon Broker"
+msgstr "Localização do ficheiro de estatisticas do Centreon Broker"
 
 #: centreon-web/broker_field_translation.php:24
 #: centreon-web/www/install/centreon_broker_translation.php:61
 msgid "File path"
-msgstr "Localização do arquivo"
+msgstr "Localização do ficheiro"
 
 #: centreon-web/broker_field_translation.php:25
 #: centreon-web/www/install/centreon_broker_translation.php:41
@@ -157,7 +157,7 @@ msgstr "Nível de registro (Log)"
 #: centreon-web/broker_field_translation.php:31
 #: centreon-web/www/install/centreon_broker_translation.php:69
 msgid "Max file size in bytes"
-msgstr "Tamanho máximo do arquivo em bytes"
+msgstr "Tamanho máximo do ficheiro em bytes"
 
 #: centreon-web/broker_field_translation.php:32
 #: centreon-web/www/install/centreon_broker_translation.php:84
@@ -167,7 +167,7 @@ msgstr "Máximo de consultas por transação"
 #: centreon-web/broker_field_translation.php:33
 #: centreon-web/www/install/centreon_broker_translation.php:62
 msgid "Maximum size of file"
-msgstr "Tamanho máximo do arquivo"
+msgstr "Tamanho máximo do ficheiro"
 
 #: centreon-web/broker_field_translation.php:34
 msgid "Metric naming"
@@ -186,7 +186,7 @@ msgstr "Um por retenção"
 #: centreon-web/broker_field_translation.php:37
 #: centreon-web/www/install/centreon_broker_translation.php:50
 msgid "Private key file."
-msgstr "Arquivo de chave privada (SSH)"
+msgstr "Ficheiro de chave privada (SSH)"
 
 #: centreon-web/broker_field_translation.php:38
 #: centreon-web/www/install/centreon_broker_translation.php:51
@@ -196,12 +196,12 @@ msgstr "Certificado público"
 #: centreon-web/broker_field_translation.php:39
 #: centreon-web/www/install/centreon_broker_translation.php:70
 msgid "RRD file directory for metrics"
-msgstr "Diretorio de arquivos RRD para metrica"
+msgstr "Diretorio de ficheiros RRD para metrica"
 
 #: centreon-web/broker_field_translation.php:40
 #: centreon-web/www/install/centreon_broker_translation.php:71
 msgid "RRD file directory for statuses"
-msgstr "Diretorio de arquivos RRD para status"
+msgstr "Diretorio de ficheiros RRD para status"
 
 #: centreon-web/broker_field_translation.php:41
 #: centreon-web/www/install/centreon_broker_translation.php:77
@@ -223,7 +223,7 @@ msgstr "Republicação ativada"
 #: centreon-web/broker_field_translation.php:44
 #: centreon-web/www/install/centreon_broker_translation.php:38
 msgid "Retention file"
-msgstr "Arquivo de retenção"
+msgstr "Ficheiro de retenção"
 
 #: centreon-web/broker_field_translation.php:45
 #: centreon-web/www/install/centreon_broker_translation.php:43
@@ -243,27 +243,27 @@ msgstr "Nome do status"
 
 #: centreon-web/broker_field_translation.php:48
 msgid "Storage DB host"
-msgstr "Endereço do banco de dados de armazenagem"
+msgstr "Endereço do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:49
 msgid "Storage DB name"
-msgstr "Nome do banco de dados de armazenagem"
+msgstr "Nome do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:50
 msgid "Storage DB password"
-msgstr "Senha do banco de dados de armazenagem"
+msgstr "Palavra-passe do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:51
 msgid "Storage DB port"
-msgstr "Porta do banco de dados de armazenagem"
+msgstr "Porta do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:52
 msgid "Storage DB type"
-msgstr "Tipo do banco de dados de armazenagem"
+msgstr "Tipo do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:53
 msgid "Storage DB user"
-msgstr "Usuário do banco de dados de armazenagem"
+msgstr "Utilizador do base de dados de armazenagem"
 
 #: centreon-web/broker_field_translation.php:54
 #: centreon-web/www/install/centreon_broker_translation.php:91
@@ -959,13 +959,13 @@ msgid ""
 "Could not write to Centreon Broker's configuration file '%s' for monitoring "
 "engine '%s'. Please add writing permissions for the webserver's user"
 msgstr ""
-"Não foi possivel escrever dados para o Centreon Broker no arquivo de "
+"Não foi possivel escrever dados para o Centreon Broker no ficheiro de "
 "configuração '%s' do motor de monitoramento '%s'. Por favor adicione "
-"permissão de escrita para o usuário do serviço web"
+"permissão de escrita para o utilizador do serviço web"
 
 #: centreon-web/www/class/centreon-clapi/centreon.Config.Poller.class.php:587
 msgid "OK: All configuration files copied with success."
-msgstr "OK: Todos os arquivos de configuração foram copiados com sucesso."
+msgstr "OK: Todos os ficheiros de configuração foram copiados com sucesso."
 
 #: centreon-web/www/class/centreon-clapi/centreon.Config.Poller.class.php:595
 msgid "OK: All configuration will be send to '"
@@ -1155,7 +1155,7 @@ msgstr "Máximo"
 
 #: centreon-web/www/install/smarty_translate.php:24
 msgid "File Path"
-msgstr "Caminho do Arquivo"
+msgstr "Caminho do Ficheiro"
 
 #: centreon-web/www/install/smarty_translate.php:27
 #: centreon-web/www/include/configuration/configObject/meta_service/formMetaService.php:222
@@ -1220,7 +1220,7 @@ msgstr "Notificações de Interface"
 
 #: centreon-web/www/install/smarty_translate.php:45
 msgid "Password Management"
-msgstr "Gerenciamento de Senha"
+msgstr "Gerenciamento de Palavra-passe"
 
 #: centreon-web/www/install/smarty_translate.php:48
 msgid "Preferences"
@@ -1244,7 +1244,7 @@ msgstr "Configuração do acesso a API"
 
 #: centreon-web/www/install/smarty_translate.php:63
 msgid "Autorized contacts"
-msgstr "Contatos autorizados"
+msgstr "Contactos autorizados"
 
 #: centreon-web/www/install/smarty_translate.php:66
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:119
@@ -1420,8 +1420,8 @@ msgstr "Aplicar"
 msgid ""
 "Deleting this view might impact other users. Are you sure you want to do it?"
 msgstr ""
-"Removendo essa visão irá impactar outros usuários. Você tem certeza que quer "
-"fazer isso ?"
+"Removendo essa visão irá impactar outros utilizadors. Você tem certeza que "
+"quer fazer isso ?"
 
 #: centreon-web/www/install/smarty_translate.php:162
 #: centreon-web/www/include/Administration/performance/viewData.php:303
@@ -1695,11 +1695,11 @@ msgstr "MB"
 
 #: centreon-web/www/install/smarty_translate.php:228
 msgid "Database Informations"
-msgstr "Informações do Banco de dados"
+msgstr "Informações do Base de dados"
 
 #: centreon-web/www/install/smarty_translate.php:231
 msgid "Database Engine"
-msgstr "Motor de Banco de dados"
+msgstr "Motor de Base de dados"
 
 #: centreon-web/www/install/smarty_translate.php:234
 msgid "Engine Name"
@@ -1716,7 +1716,7 @@ msgstr "Versão"
 
 #: centreon-web/www/install/smarty_translate.php:240
 msgid "Centreon DataBase Statistics"
-msgstr "Banco de dados de statisticas do Centreon"
+msgstr "Base de dados de statisticas do Centreon"
 
 #: centreon-web/www/install/smarty_translate.php:264
 msgid "Data free"
@@ -2112,12 +2112,12 @@ msgstr "Modelo de serviço"
 #: centreon-web/www/include/eventLogs/xml/data.php:743
 #: centreon-web/www/include/eventLogs/export/data.php:117
 msgid "Contact"
-msgstr "Contato"
+msgstr "Contacto"
 
 #: centreon-web/www/install/smarty_translate.php:624
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:117
 msgid "Contact template"
-msgstr "Modelo de Contato"
+msgstr "Modelo de Contacto"
 
 #: centreon-web/www/install/smarty_translate.php:633
 msgid "Escalation"
@@ -2214,7 +2214,7 @@ msgstr "Comando de pós-reinicio"
 
 #: centreon-web/www/install/smarty_translate.php:762
 msgid "Configuration Files Export"
-msgstr "Exportação de arquivos de configuração"
+msgstr "Exportação de ficheiros de configuração"
 
 #: centreon-web/www/install/smarty_translate.php:765
 msgid "Polling instances"
@@ -2627,12 +2627,12 @@ msgstr "Tipo"
 #: centreon-web/www/install/steps/process/installStorageDb.php:45
 msgid "Could not find storage database. Session probably expired."
 msgstr ""
-"Não foi possivel encontrar o banco de dados. A sessão provavelmente expirou."
+"Não foi possivel encontrar o base de dados. A sessão provavelmente expirou."
 
 #: centreon-web/www/install/steps/process/installConfigurationDb.php:50
 msgid "Could not find configuration database. Session probably expired."
 msgstr ""
-"Não foi possivel encontrar a configurações do banco de dados. A sessão "
+"Não foi possivel encontrar a configurações do base de dados. A sessão "
 "provavelmente expirou."
 
 #: centreon-web/www/install/steps/process/installConfigurationDb.php:56
@@ -2640,7 +2640,7 @@ msgid ""
 "Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and "
 "restart MySQL Server."
 msgstr ""
-"Adicione a propriedade innodb_file_per_table=1 no arquivo my.cnf na seção "
+"Adicione a propriedade innodb_file_per_table=1 no ficheiro my.cnf na seção "
 "[mysqld] e reinicie o servidor MySQL.veur MySQL."
 
 #: centreon-web/www/install/steps/process/installConfigurationDb.php:65
@@ -2648,13 +2648,13 @@ msgid ""
 "Add open_files_limit=32000 in my.cnf file under the [mysqld] section and "
 "restart MySQL Server."
 msgstr ""
-"Adicione a propriedade open_files_limit=32000 no arquivo my.cnf na seção "
+"Adicione a propriedade open_files_limit=32000 no ficheiro my.cnf na seção "
 "[mysqld] e reinicie o servidor MySQL."
 
 #: centreon-web/www/install/steps/process/createDbUser.php:45
 msgid "Could not find database user. Session probably expired."
 msgstr ""
-"Não foi possivel encontrar o usuário do banco de dados. A sessão "
+"Não foi possivel encontrar o utilizador do base de dados. A sessão "
 "provavelmente expirou."
 
 #: centreon-web/www/install/steps/process/configFileSetup.php:40
@@ -2666,43 +2666,43 @@ msgstr ""
 #: centreon-web/www/install/steps/step6.php:48
 #: centreon-web/www/install/steps/step6.php:69
 msgid "Database information"
-msgstr "Informações do banco de dados"
+msgstr "Informações do base de dados"
 
 #: centreon-web/www/install/steps/step6.php:74
 msgid "Database Host Address (default: localhost)"
-msgstr "Endereço do banco de dados (padrão: localhost)"
+msgstr "Endereço do base de dados (padrão: localhost)"
 
 #: centreon-web/www/install/steps/step6.php:81
 msgid "Database Port (default: 3306)"
-msgstr "Porta do banco de dados (padrão:  3306)"
+msgstr "Porta do base de dados (padrão:  3306)"
 
 #: centreon-web/www/install/steps/step6.php:88
 msgid "Root password"
-msgstr "Senha de root"
+msgstr "Palavra-passe de root"
 
 #: centreon-web/www/install/steps/step6.php:95
 msgid "Configuration database name"
-msgstr "Nome do banco de dados de configuração"
+msgstr "Nome do base de dados de configuração"
 
 #: centreon-web/www/install/steps/step6.php:102
 msgid "Storage database name"
-msgstr "Nome do banco de dados de armazenagem"
+msgstr "Nome do base de dados de armazenagem"
 
 #: centreon-web/www/install/steps/step6.php:109
 msgid "Database user name"
-msgstr "Nome de usuário do banco de dados"
+msgstr "Nome de utilizador do base de dados"
 
 #: centreon-web/www/install/steps/step6.php:116
 msgid "Database user password"
-msgstr "Senha do usuário de banco de dados"
+msgstr "Palavra-passe do utilizador de base de dados"
 
 #: centreon-web/www/install/steps/step6.php:123
 msgid "Confirm user password"
-msgstr "Confirmar a senha de usuário"
+msgstr "Confirmar a palavra-passe de utilizador"
 
 #: centreon-web/www/install/steps/functions.php:140
 msgid "File not found"
-msgstr "Arquivo não encontrado"
+msgstr "Ficheiro não encontrado"
 
 #: centreon-web/www/install/steps/step2.php:43
 #: centreon-web/www/install/step_upgrade/step2.php:46
@@ -2717,7 +2717,7 @@ msgstr "Nome do modulo"
 #: centreon-web/www/install/steps/step2.php:52
 #: centreon-web/www/install/step_upgrade/step2.php:54
 msgid "File"
-msgstr "Arquivo"
+msgstr "Ficheiro"
 
 #: centreon-web/www/install/steps/step2.php:65
 #: centreon-web/www/install/step_upgrade/step2.php:68
@@ -2732,7 +2732,7 @@ msgstr "Não carregado"
 #: centreon-web/www/install/steps/step2.php:81
 #: centreon-web/www/install/step_upgrade/step2.php:82
 msgid "Set the default timezone in php.ini file"
-msgstr "Configure o fuso horário padrão no arquivo php.ini"
+msgstr "Configure o fuso horário padrão no ficheiro php.ini"
 
 #: centreon-web/www/install/steps/step2.php:83
 #: centreon-web/www/install/step_upgrade/step2.php:85
@@ -2761,8 +2761,8 @@ msgid ""
 "This installer will help you setup your database and your monitoring "
 "configuration."
 msgstr ""
-"Este instalador irá lhe ajudar a configurar seu banco de dados e seu "
-"ambiente de monitoramento."
+"Este instalador irá lhe ajudar a configurar seu base de dados e seu ambiente "
+"de monitoramento."
 
 #: centreon-web/www/install/steps/step1.php:49
 #: centreon-web/www/install/step_upgrade/step1.php:53
@@ -2772,7 +2772,7 @@ msgstr "O processo completo deve levar em torno de 10 minutos."
 #: centreon-web/www/install/steps/step1.php:54
 #: centreon-web/www/install/step_upgrade/step1.php:63
 msgid "Configuration file not found."
-msgstr "Arquivo de configuração não encontrado."
+msgstr "Ficheiro de configuração não encontrado."
 
 #: centreon-web/www/install/steps/step3.php:43
 #: centreon-web/www/install/steps/step3.php:63
@@ -2797,11 +2797,11 @@ msgstr "Login"
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:414
 #: centreon-web/www/include/core/login/login.php:60
 msgid "Password"
-msgstr "Senha"
+msgstr "Palavra-passe"
 
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
-msgstr "Confirme a senha"
+msgstr "Confirme a palavra-passe"
 
 #: centreon-web/www/install/steps/step5.php:87
 msgid "First name"
@@ -2809,7 +2809,7 @@ msgstr "Primeiro nome"
 
 #: centreon-web/www/install/steps/step5.php:94
 msgid "Last name"
-msgstr "Sobrenome"
+msgstr "Apelido"
 
 #: centreon-web/www/install/steps/step5.php:101
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:94
@@ -2837,7 +2837,7 @@ msgid ""
 "Currently installing database... please do not interrupt this process.<br/"
 "><br/>"
 msgstr ""
-"Efetuando a instalação do banco de dados ... por favor não interrompa este "
+"Efetuando a instalação do base de dados ... por favor não interrompa este "
 "processo.<br/><br/>"
 
 #: centreon-web/www/install/steps/step7.php:50
@@ -2847,19 +2847,19 @@ msgstr "Etapa"
 
 #: centreon-web/www/install/steps/step7.php:68
 msgid "Configuration database"
-msgstr "Configuração do banco de dados"
+msgstr "Configuração do base de dados"
 
 #: centreon-web/www/install/steps/step7.php:69
 msgid "Storage database"
-msgstr "Banco de dados de armazenagem"
+msgstr "Base de dados de armazenagem"
 
 #: centreon-web/www/install/steps/step7.php:70
 msgid "Utils database"
-msgstr "Utilitários de banco de dados"
+msgstr "Utilitários de base de dados"
 
 #: centreon-web/www/install/steps/step7.php:71
 msgid "Creating database user"
-msgstr "Criando usuário do banco de dados"
+msgstr "Criando utilizador do base de dados"
 
 #: centreon-web/www/install/steps/step7.php:72
 msgid "Setting up basic configuration"
@@ -2867,7 +2867,7 @@ msgstr "Instalação da configuração básica"
 
 #: centreon-web/www/install/steps/step7.php:73
 msgid "Setting up configuration file"
-msgstr "instalação dos arquivos de configuração"
+msgstr "instalação dos ficheiros de configuração"
 
 #: centreon-web/www/install/steps/step7.php:74
 msgid "Partitioning database tables"
@@ -2966,7 +2966,7 @@ msgstr "Client Centreon Map (admin)"
 
 #: centreon-web/www/install/menu_translation.php:59
 msgid "Centreon Map Client (user)"
-msgstr "Client Centreon Map (usuário)"
+msgstr "Client Centreon Map (utilizador)"
 
 #: centreon-web/www/install/menu_translation.php:60
 msgid "Centreon UI"
@@ -2995,15 +2995,15 @@ msgstr "Conectores"
 #: centreon-web/www/include/options/accessLists/define/formLCA.php:220
 #: centreon-web/www/include/options/accessLists/groupsACL/listGroupConfig.php:65
 msgid "Contact Groups"
-msgstr "Grupos de Contato"
+msgstr "Grupos de Contacto"
 
 #: centreon-web/www/install/menu_translation.php:67
 msgid "Contact Templates"
-msgstr "Modelos de Contato"
+msgstr "Modelos de Contacto"
 
 #: centreon-web/www/install/menu_translation.php:68
 msgid "Contacts / Users"
-msgstr "Contatos / Usuários"
+msgstr "Contactos / Utilizadors"
 
 #: centreon-web/www/install/menu_translation.php:69
 msgid "CSS"
@@ -3417,18 +3417,18 @@ msgstr "Solucionador de Problemas"
 
 #: centreon-web/www/install/menu_translation.php:150
 msgid "User Settings"
-msgstr "Configurações de Usuário"
+msgstr "Configurações de Utilizador"
 
 #: centreon-web/www/install/menu_translation.php:151
 #: centreon-web/www/include/options/session/connected_user.php:97
 #: centreon-web/www/include/monitoring/comments/listComment.php:198
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:258
 msgid "Users"
-msgstr "Usuários"
+msgstr "Utilizadors"
 
 #: centreon-web/www/install/menu_translation.php:152
 msgid "Users Access"
-msgstr "Acessos de Usuários"
+msgstr "Acessos de Utilizadors"
 
 #: centreon-web/www/install/menu_translation.php:153
 msgid "Views"
@@ -3462,7 +3462,7 @@ msgstr "Assistente de Configuração"
 msgid ""
 "<p>Currently upgrading database... please do not interrupt this process.</p>"
 msgstr ""
-"<p>Efetuando atualização de banco de dados ... por favor não interrompa este "
+"<p>Efetuando atualização de base de dados ... por favor não interrompa este "
 "processo.</p>"
 
 #: centreon-web/www/install/step_upgrade/step4.php:69
@@ -3480,14 +3480,14 @@ msgstr ""
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
-msgstr "Os arquivos SQL estão localizados em %s"
+msgstr "Os ficheiros SQL estão localizados em %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid ""
 "But do not edit the SQL files unless you know what you are doing.Refresh "
 "this page when the problem is fixed."
 msgstr ""
-"Mas não edite os arquivos SQL se você não souber o que esta fazendo. "
+"Mas não edite os ficheiros SQL se você não souber o que esta fazendo. "
 "Atualize esta página para verificar se o problema foi resolvido."
 
 #: centreon-web/www/install/step_upgrade/step1.php:46
@@ -3646,7 +3646,7 @@ msgid ""
 "rebuild the RRD Database"
 msgstr ""
 "Você confirma a alteração do tipo de fonte de dados do RRD ? Se sim, você "
-"deve reconstruir o banco de dados do RRD"
+"deve reconstruir o base de dados do RRD"
 
 #: centreon-web/www/include/Administration/performance/viewMetrics.php:176
 #: centreon-web/www/include/Administration/performance/viewData.php:260
@@ -3788,12 +3788,12 @@ msgstr "Tipo da fonte de dados"
 #: centreon-web/www/include/Administration/performance/viewData.php:260
 #: centreon-web/www/include/Administration/performance/viewData.php:280
 msgid "Rebuild RRD Database"
-msgstr "Reconstroi o banco de dados RRD"
+msgstr "Reconstroi o base de dados RRD"
 
 #: centreon-web/www/include/Administration/performance/viewData.php:260
 #: centreon-web/www/include/Administration/performance/viewData.php:280
 msgid "Stop rebuilding RRD Databases"
-msgstr "Para de reconstruir o banco de dados RRD"
+msgstr "Para de reconstruir o base de dados RRD"
 
 #: centreon-web/www/include/Administration/performance/viewData.php:302
 msgid "Rebuild Waiting"
@@ -3891,11 +3891,11 @@ msgstr "Velocidade de processamento de evento"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:86
 msgid "Queue file"
-msgstr "Fila de Arquivos"
+msgstr "Fila de Ficheiros"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:90
 msgid "Queued file enabled"
-msgstr "Fila de arquivo ativada"
+msgstr "Fila de ficheiro ativada"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:94
 msgid "Queued events"
@@ -3903,7 +3903,7 @@ msgstr "Fila de Eventos"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:98
 msgid "Memory file"
-msgstr "Arquivo de Memória"
+msgstr "Ficheiro de Memória"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:103
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:105
@@ -3929,15 +3929,15 @@ msgstr "Entrada"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:257
 msgid "Error in getting stats filename"
-msgstr "Erro ao recuperar status do nome de arquivo"
+msgstr "Erro ao recuperar status do nome de ficheiro"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:260
 msgid "No statistics file defined for this poller"
-msgstr "Sem arquivo de estatisticas definido para este coletor"
+msgstr "Sem ficheiro de estatisticas definido para este coletor"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:270
 msgid "Cannot open statistics file"
-msgstr "Não foi possível abrir o arquivo de estatísticas"
+msgstr "Não foi possível abrir o ficheiro de estatísticas"
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:85
 msgid "Change my settings"
@@ -3960,7 +3960,7 @@ msgstr "Bip"
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:98
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:349
 msgid "Confirm Password"
-msgstr "Confirma Senha"
+msgstr "Confirma Palavra-passe"
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:101
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:301
@@ -4060,7 +4060,7 @@ msgstr "E-mail válido"
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:187
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:570
 msgid "Passwords do not match"
-msgstr "As senhas não correspondem"
+msgstr "As palavra-passes não correspondem"
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:189
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:191
@@ -4296,7 +4296,7 @@ msgstr "Tempo máximo para comandos do Centcore"
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:565
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:177
 msgid "Linked Contacts"
-msgstr "Contatos associados"
+msgstr "Contactos associados"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:117
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:100
@@ -4339,11 +4339,11 @@ msgstr "Ativa autenticação LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:74
 msgid "Store LDAP password"
-msgstr "Armazena senha do LDAP"
+msgstr "Armazena palavra-passe do LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:78
 msgid "Auto import users"
-msgstr "Auto importação de usuários"
+msgstr "Auto importação de utilizadors"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:96
 msgid "Use service DNS"
@@ -4380,11 +4380,11 @@ msgstr "Servidores LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:123
 msgid "Bind user"
-msgstr "Usuário de Dominio"
+msgstr "Utilizador de Dominio"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:124
 msgid "Bind password"
-msgstr "Senha de Dominio"
+msgstr "Palavra-passe de Dominio"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:125
 msgid "Protocol version"
@@ -4415,7 +4415,7 @@ msgstr "Active Directory"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:133
 msgid "Search user base DN"
-msgstr "URL de busca de usuário DN"
+msgstr "URL de busca de utilizador DN"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:134
 msgid "Search group base DN"
@@ -4423,7 +4423,7 @@ msgstr "URL de busca de grupo DN"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:135
 msgid "User filter"
-msgstr "Filtro de usuário"
+msgstr "Filtro de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:136
 msgid "Login attribute"
@@ -4431,27 +4431,27 @@ msgstr "Atributo de Login"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:137
 msgid "User group attribute"
-msgstr "Atributo de grupo de usuário"
+msgstr "Atributo de grupo de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:138
 msgid "User displayname attribute"
-msgstr "Atributo de nome de usuário (displayname)"
+msgstr "Atributo de nome de utilizador (displayname)"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:139
 msgid "User firstname attribute"
-msgstr "Atributo de primeiro nome de usuário"
+msgstr "Atributo de primeiro nome de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:140
 msgid "User lastname attribute"
-msgstr "Atributo de último nome de usuário"
+msgstr "Atributo de último nome de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:141
 msgid "User email attribute"
-msgstr "Atributo de e-mail de usuário"
+msgstr "Atributo de e-mail de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:142
 msgid "User pager attribute"
-msgstr "Atributo de bip de usuário"
+msgstr "Atributo de bip de utilizador"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:143
 msgid "Group filter"
@@ -4509,7 +4509,7 @@ msgstr "É impossivel validar, um ou mais campos estão incorretos"
 #, php-format
 msgid "Bad ldap filter: missing %s pattern. Check user or group filter"
 msgstr ""
-"Filtro de LDAP ruim: faltando padrão %s. Verifique o filtro de usuário ou "
+"Filtro de LDAP ruim: faltando padrão %s. Verifique o filtro de utilizador ou "
 "grupo"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:315
@@ -4526,7 +4526,7 @@ msgstr "Servidores LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:351
 msgid "Import users manually"
-msgstr "Importar usuários manualmente"
+msgstr "Importar utilizadors manualmente"
 
 #: centreon-web/www/include/Administration/parameters/ldap/xml/ldap_host.php:100
 #: centreon-web/www/include/Administration/parameters/ldap/xml/additionalRowXml.php:154
@@ -4780,7 +4780,7 @@ msgstr "Desativar"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:56
 msgid "Knowledge base database name"
-msgstr "Nome do banco de dados de Conhecimento"
+msgstr "Nome do base de dados de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:57
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:61
@@ -4795,23 +4795,23 @@ msgstr "Campo obrigatorio"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:58
 msgid "Knowledge base database user"
-msgstr "Usuário do banco de dados de Conhecimento"
+msgstr "Utilizador do base de dados de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:59
 msgid "Knowledge base Database password"
-msgstr "Senha do banco de dados de Conhecimento"
+msgstr "Palavra-passe do base de dados de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:60
 msgid "Knowledge base Database host"
-msgstr "Endereço do banco de dados de Conhecimento"
+msgstr "Endereço do base de dados de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:65
 msgid "Test DB connection"
-msgstr "Teste a conexão com o banco de dados"
+msgstr "Teste a conexão com o base de dados"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:68
 msgid "Knowledge base Database prefix"
-msgstr "Prefixo da base do banco de dados de Conhecimento"
+msgstr "Prefixo da base do base de dados de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:69
 msgid "Knowledge base url"
@@ -4823,7 +4823,7 @@ msgstr "Conta da wiki da base de Conhecimento (com permissão de escrita)"
 
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:73
 msgid "Knowledge wiki account password"
-msgstr "Senha da conta wiki da Base de Conhecimento"
+msgstr "Palavra-passe da conta wiki da Base de Conhecimento"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:55
 msgid "Logs Directory"
@@ -4847,7 +4847,7 @@ msgstr "Depuração do RRDTool"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:61
 msgid "LDAP User Import debug"
-msgstr "Depuração de importação de usuários LDAP"
+msgstr "Depuração de importação de utilizadors LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
 msgid "Centcore Engine debug"
@@ -4899,21 +4899,21 @@ msgstr "Ativação de registros de auditoria"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:111
 msgid "Path to RRDTool Database For Metrics"
-msgstr "Caminho para o banco de dados do RRDTool para Metricas"
+msgstr "Caminho para o base de dados do RRDTool para Metricas"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:112
 msgid "Path to RRDTool Database For Status"
-msgstr "Caminho para o banco de dados do RRDTool para Status"
+msgstr "Caminho para o base de dados do RRDTool para Status"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:116
 msgid "Path to RRDTool Database For Monitoring Engine Statistics"
 msgstr ""
-"Caminho para o banco de dados do RRDTool para estatisticas do motor de "
+"Caminho para o base de dados do RRDTool para estatisticas do motor de "
 "monitoramento"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:119
 msgid "RRDTool database size"
-msgstr "Tamanho do banco de dados do RRDTool"
+msgstr "Tamanho do base de dados do RRDTool"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:120
 msgid "Retention Duration for Data in MySQL"
@@ -4960,11 +4960,11 @@ msgstr "Diretorio temporario"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:85
 msgid "Backup database centreon"
-msgstr "Backup do banco de dados Centreon"
+msgstr "Backup do base de dados Centreon"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:86
 msgid "Backup database centreon_storage"
-msgstr "Backup do banco de dados centreon_storage"
+msgstr "Backup do base de dados centreon_storage"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:88
 msgid "Dump"
@@ -5062,11 +5062,11 @@ msgstr "Retenção de Backup"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:115
 msgid "Backup configuration files"
-msgstr "Backup dos arquivos de configuração"
+msgstr "Backup dos ficheiros de configuração"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:116
 msgid "MySQL configuration file path"
-msgstr "Caminho do arquivo de configuração do MySQL"
+msgstr "Caminho do ficheiro de configuração do MySQL"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:125
 msgid "SCP export enabled"
@@ -5074,7 +5074,7 @@ msgstr "Ativa exportação SCP"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:127
 msgid "Remote user"
-msgstr "Usuário Remoto"
+msgstr "Utilizador Remoto"
 
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:128
 msgid "Remote host"
@@ -5092,7 +5092,7 @@ msgstr "Menu"
 #: centreon-web/www/include/Administration/parameters/css/form.php:136
 #: centreon-web/www/include/Administration/parameters/css/form.php:138
 msgid "CSS File"
-msgstr "Arquivo CSS"
+msgstr "Ficheiro CSS"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:76
 msgid "Centreon information"
@@ -5400,7 +5400,7 @@ msgstr "O valor deve ser um número"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:203
 msgid "Monitoring database layer"
-msgstr "Camada do banco de dados de Monitoramento"
+msgstr "Camada do base de dados de Monitoramento"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:205
 msgid "Engine Directories"
@@ -5572,7 +5572,7 @@ msgstr "Ação"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:138
 msgid "Contact Name"
-msgstr "Nome do Contato"
+msgstr "Nome do Contacto"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:139
 msgid "Field Name"
@@ -5612,7 +5612,7 @@ msgstr "Objeto"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:313
 msgid "User"
-msgstr "Usuário"
+msgstr "Utilizador"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:317
 msgid "Object Type"
@@ -5660,7 +5660,7 @@ msgid ""
 "Deleting this widget might impact users with whom you are sharing this view. "
 "Are you sure you want to do it?"
 msgstr ""
-"Removendo esta ferramenta irá impactar usuários que compartilham desta "
+"Removendo esta ferramenta irá impactar utilizadors que compartilham desta "
 "visão. Você tem certeza que quer fazer isso ?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
@@ -5749,11 +5749,11 @@ msgstr "Bloqueado?"
 
 #: centreon-web/www/include/home/customViews/index.php:260
 msgid "User List"
-msgstr "Lista de usuários"
+msgstr "Lista de utilizadors"
 
 #: centreon-web/www/include/home/customViews/index.php:280
 msgid "User Group List"
-msgstr "Lista de Grupo de Usuários"
+msgstr "Lista de Grupo de Utilizadors"
 
 #: centreon-web/www/include/home/customViews/index.php:301
 #: centreon-web/www/include/home/customViews/index.php:302
@@ -5853,7 +5853,7 @@ msgstr "Limpa filtros"
 #: centreon-web/www/include/options/accessLists/groupsACL/listGroupConfig.php:64
 #: centreon-web/www/include/configuration/configObject/contactgroup/listContactGroup.php:73
 msgid "Contacts"
-msgstr "Contatos"
+msgstr "Contactos"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/listsResourcesAccess.php:67
 msgid "All Hosts"
@@ -5869,7 +5869,7 @@ msgstr "Todos os Grupos de Serviço"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/listsResourcesAccess.php:128
 msgid "Check User View"
-msgstr "Verifica a visão do usuário"
+msgstr "Verifica a visão do utilizador"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/listsResourcesAccess.php:139
 #: centreon-web/www/include/options/accessLists/resourcesACL/listsResourcesAccess.php:151
@@ -6038,7 +6038,7 @@ msgstr "Inclui todos os grupos de serviço"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:256
 msgid "People linked to this Access list"
-msgstr "Usuários associados a lista de acesso"
+msgstr "Utilizadors associados a lista de acesso"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:258
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:167
@@ -6057,14 +6057,14 @@ msgid ""
 "selected hostgroup(s)."
 msgstr ""
 "<b><i>Ajuda :</i></b> Selecione hosts e grupo de hosts que podem ser vistos "
-"por usuários associados. Você também tem a possibilidade de excluir host(s) "
-"do grupo(s) de hosts selecionado."
+"por utilizadors associados. Você também tem a possibilidade de excluir "
+"host(s) do grupo(s) de hosts selecionado."
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:267
 msgid ""
 "<b><i>Help :</i></b> Select services that can be seen by associated users."
 msgstr ""
-"<b><i>Ajuda :</i></b> Selecione serviços que podem ser visto por usuários "
+"<b><i>Ajuda :</i></b> Selecione serviços que podem ser visto por utilizadors "
 "associados."
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:268
@@ -6072,7 +6072,7 @@ msgid ""
 "<b><i>Help :</i></b> Select meta services that can be seen by associated "
 "users."
 msgstr ""
-"<b><i>Ajuda:</i></b> Selecione meta-serviço para que usuários associados "
+"<b><i>Ajuda:</i></b> Selecione meta-serviço para que utilizadors associados "
 "possam ver."
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:269
@@ -6151,23 +6151,23 @@ msgstr "Recursos de Serviços"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/showUsersAccess.php:109
 msgid "Centreon Users"
-msgstr "Usuários Centreon"
+msgstr "Utilizadors Centreon"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/showUsersAccess.php:147
 #: centreon-web/www/include/configuration/configObject/contact/displayNotification.php:229
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:224
 msgid "The selected user didn't see any resources"
-msgstr "O usuário selecionado não pode ver qualquer recurso"
+msgstr "O utilizador selecionado não pode ver qualquer recurso"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/showUsersAccess.php:148
 msgid "Please select an user in order to display resources"
-msgstr "Por favor selecione o usuário na ordem para visualizar recursos"
+msgstr "Por favor selecione o utilizador na ordem para visualizar recursos"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/showUsersAccess.php:149
 #: centreon-web/www/include/configuration/configObject/contact/displayNotification.php:231
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:226
 msgid "The selected user is not enable."
-msgstr "O usuário selecionado não esta ativo."
+msgstr "O utilizador selecionado não esta ativo."
 
 #: centreon-web/www/include/options/accessLists/define/listLCA.php:86
 #: centreon-web/www/include/options/accessLists/define/formLCA.php:200
@@ -6213,7 +6213,7 @@ msgstr "Definição do permissionamento (ACL)"
 #: centreon-web/www/include/configuration/configObject/service/formService.php:647
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:585
 msgid "Implied Contact Groups"
-msgstr "Grupos de Contato implicitos"
+msgstr "Grupos de Contacto implicitos"
 
 #: centreon-web/www/include/options/accessLists/define/formLCA.php:239
 msgid "Implied Resources"
@@ -6272,7 +6272,7 @@ msgstr "Recarregar ACL"
 
 #: centreon-web/www/include/options/accessLists/reloadACL/reloadACL.php:125
 msgid "Connected users"
-msgstr "Usuários conectados"
+msgstr "Utilizadors conectados"
 
 #: centreon-web/www/include/options/accessLists/reloadACL/reloadACL.php:126
 #: centreon-web/www/include/options/session/connected_user.php:98
@@ -6472,7 +6472,7 @@ msgstr "Listagem de Exibição de Coletor"
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:150
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:66
 msgid "Generate Configuration Files"
-msgstr "Geração de arquivos de configuração"
+msgstr "Geração de ficheiros de configuração"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:151
 msgid "Generate SNMP Trap configuration"
@@ -6639,7 +6639,7 @@ msgstr "Link para lista de acesso de Ação"
 #: centreon-web/www/include/configuration/configObject/escalation/formEscalation.php:209
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:575
 msgid "Linked Contact Groups"
-msgstr "Grupos de Contatos associados"
+msgstr "Grupos de Contactos associados"
 
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:187
 msgid "Menu access"
@@ -6670,7 +6670,7 @@ msgid ""
 "Contactgroups exists. If you try to use a LDAP contactgroup, please verified "
 "if a Centreon contactgroup has the same name."
 msgstr ""
-"Grupos de Contato já existe. Se você esta tentando usar um grupo de contato "
+"Grupos de Contacto já existe. Se você esta tentando usar um grupo de contato "
 "do LDAP, verifique se ele não tem o mesmo nome de um grupo de contato do "
 "Centreon."
 
@@ -6730,12 +6730,12 @@ msgstr "Modulo instalado e registrado"
 #: centreon-web/www/include/options/oreon/modules/formModule.php:93
 #: centreon-web/www/include/options/oreon/modules/formModule.php:160
 msgid "SQL file included"
-msgstr "Arquivo SQL incluido"
+msgstr "Ficheiro SQL incluido"
 
 #: centreon-web/www/include/options/oreon/modules/formModule.php:102
 #: centreon-web/www/include/options/oreon/modules/formModule.php:167
 msgid "PHP file included"
-msgstr "Arquivo PHP incluido"
+msgstr "Ficheiro PHP incluido"
 
 #: centreon-web/www/include/options/oreon/modules/formModule.php:113
 #: centreon-web/www/include/options/oreon/modules/formModule.php:174
@@ -6763,7 +6763,7 @@ msgstr "Existente ou novo diretorio"
 
 #: centreon-web/www/include/options/media/images/formImg.php:100
 msgid "Image or archive"
-msgstr "Imagem ou arquivo"
+msgstr "Imagem ou ficheiro"
 
 #: centreon-web/www/include/options/media/images/formImg.php:103
 msgid "Modify Image"
@@ -6858,7 +6858,7 @@ msgstr "Nome do diretorio"
 
 #: centreon-web/www/include/options/media/images/formDirectory.php:119
 msgid "Move files to directory"
-msgstr "Mover arquivos para o diretorio"
+msgstr "Mover ficheiros para o diretorio"
 
 #: centreon-web/www/include/options/media/images/formDirectory.php:120
 msgid "Destination directory"
@@ -6921,11 +6921,11 @@ msgstr "Fechar"
 
 #: centreon-web/www/include/options/session/connected_user.php:50
 msgid "User kicked"
-msgstr "Usuário desconectado"
+msgstr "Utilizador desconectado"
 
 #: centreon-web/www/include/options/session/connected_user.php:86
 msgid "Kick User"
-msgstr "Desconectar usuário"
+msgstr "Desconectar utilizador"
 
 #: centreon-web/www/include/options/session/connected_user.php:99
 msgid "Last request"
@@ -7959,15 +7959,15 @@ msgstr "Coletadores"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:136
 msgid "Add a Monitoring Engine Configuration File"
-msgstr "Adicionar um arquivo de configuração do motor de monitoramento"
+msgstr "Adicionar um ficheiro de configuração do motor de monitoramento"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:138
 msgid "Modify a Monitoring Engine Configuration File"
-msgstr "Modificar um arquivo de configuração do motor de monitoramento"
+msgstr "Modificar um ficheiro de configuração do motor de monitoramento"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:140
 msgid "View a Monitoring Engine Configuration File"
-msgstr "Visualizar arquivo de configuração do motor de monitoramento"
+msgstr "Visualizar ficheiro de configuração do motor de monitoramento"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:146
 #: centreon-web/www/include/configuration/configObject/host_dependency/formHostDependency.php:92
@@ -7994,15 +7994,15 @@ msgstr "Coletor associado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:159
 msgid "Status file"
-msgstr "Arquivo de Status"
+msgstr "Ficheiro de Status"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:160
 msgid "Status File Update Interval"
-msgstr "Intervalo de atualização do arquivo de Status"
+msgstr "Intervalo de atualização do ficheiro de Status"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:161
 msgid "Log file"
-msgstr "Arquivo de Registro"
+msgstr "Ficheiro de Registro"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:162
 msgid "Object Configuration Directory"
@@ -8010,11 +8010,11 @@ msgstr "Diretorio de Configuração de Objetos"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:163
 msgid "Object Configuration File"
-msgstr "Arquivo de Configuração de Objeto"
+msgstr "Ficheiro de Configuração de Objeto"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:164
 msgid "Temp File"
-msgstr "Arquivo Temporario"
+msgstr "Ficheiro Temporario"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:165
 msgid "Check result directory"
@@ -8022,11 +8022,11 @@ msgstr "Diretorio de resultados de checagem"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:166
 msgid "Max Check Result File Age"
-msgstr "Tempo de vida máximo do arquivo de resultado de checagem"
+msgstr "Tempo de vida máximo do ficheiro de resultado de checagem"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
-msgstr "Usuário de sistema de Monitoramento"
+msgstr "Utilizador de sistema de Monitoramento"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:172
 msgid "Monitoring system Group"
@@ -8198,7 +8198,7 @@ msgstr "Metodo de rotação de registros"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:228
 msgid "Log Archive Path"
-msgstr "Caminho do arquivo de Registros"
+msgstr "Caminho do ficheiro de Registros"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:237
 msgid "External Command Check Option"
@@ -8214,11 +8214,11 @@ msgstr "Slots de Buffer de Comando Externo"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:241
 msgid "External Command File"
-msgstr "Arquivo de Comando Externo"
+msgstr "Ficheiro de Comando Externo"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:246
 msgid "Lock File"
-msgstr "Bloquear Arquivo"
+msgstr "Bloquear Ficheiro"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:255
 msgid "State Retention Option"
@@ -8226,7 +8226,7 @@ msgstr "Opção de Retenção de Estado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:256
 msgid "State Retention File"
-msgstr "Arquivo de Retenção de Estado"
+msgstr "Ficheiro de Retenção de Estado"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:257
 msgid "Automatic State Retention Update Interval"
@@ -8242,11 +8242,11 @@ msgstr "Use a opção Retained Scheduling Info"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:282
 msgid "Retained Contact Host Attribute Mask"
-msgstr "Máscara de Atributo do Host de Contato Retido"
+msgstr "Máscara de Atributo do Host de Contacto Retido"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:288
 msgid "Retained Contact Service Attribute Mask"
-msgstr "Máscara de Atributos do Serviço de Contato Retido"
+msgstr "Máscara de Atributos do Serviço de Contacto Retido"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:294
 msgid "Retained Process Host Attribute Mask"
@@ -8452,19 +8452,19 @@ msgstr "Comando de processamento de dados de performance de Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:485
 msgid "Host Performance Data File"
-msgstr "Arquivo de dados de Performance de Host"
+msgstr "Ficheiro de dados de Performance de Host"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:486
 msgid "Service Performance Data File"
-msgstr "Arquivo de dados de Performance de Serviço"
+msgstr "Ficheiro de dados de Performance de Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:491
 msgid "Host Performance Data File Template"
-msgstr "Modelo de arquivo de dados de Performance de Host"
+msgstr "Modelo de ficheiro de dados de Performance de Host"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:497
 msgid "Service Performance Data File Template"
-msgstr "Modelo de arquivo de dados de Performance de Serviço"
+msgstr "Modelo de ficheiro de dados de Performance de Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:502
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:508
@@ -8478,28 +8478,29 @@ msgstr "Escrita"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:505
 msgid "Host Performance Data File Mode"
-msgstr "Modo de Arquivo de Dados de Performance do Host"
+msgstr "Modo de Ficheiro de Dados de Performance do Host"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:511
 msgid "Service Performance Data File Mode"
-msgstr "Modo de Arquivo de Dados de Performance do Serviço"
+msgstr "Modo de Ficheiro de Dados de Performance do Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:516
 msgid "Host Performance Data File Processing Interval"
-msgstr "Intervalo de processamento de Arquivo de Dados de Performance do Host"
+msgstr "Intervalo de processamento de Ficheiro de Dados de Performance do Host"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:522
 msgid "Service Performance Data File Processing Interval"
 msgstr ""
-"Intervalo de processamento de Arquivo de Dados de Performance do Serviço"
+"Intervalo de processamento de Ficheiro de Dados de Performance do Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:529
 msgid "Host Performance Data File Processing Command"
-msgstr "Comando de processamento de Arquivo de Dados de Performance do Host"
+msgstr "Comando de processamento de Ficheiro de Dados de Performance do Host"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:535
 msgid "Service Performance Data File Processing Command"
-msgstr "Comando de processamento de Arquivo de Dados de Performance do Serviço"
+msgstr ""
+"Comando de processamento de Ficheiro de Dados de Performance do Serviço"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:546
 msgid "Orphaned Service Check Option"
@@ -8604,11 +8605,11 @@ msgstr "Use setpgid"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:679
 msgid "Debug file (Directory + File)"
-msgstr "Arquivo de Depuração (Diretorio + Arquivo)"
+msgstr "Ficheiro de Depuração (Diretorio + Ficheiro)"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:680
 msgid "Debug file Maximum Size"
-msgstr "Tamanho máximo do arquivo de depuração"
+msgstr "Tamanho máximo do ficheiro de depuração"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:685
 msgid "Daemon core dumps"
@@ -8695,7 +8696,7 @@ msgstr "O Broker precisa de opções para ser carregado"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:862
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:871
 msgid "Files"
-msgstr "Arquivos"
+msgstr "Ficheiros"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:863
 msgid "Check Options"
@@ -8777,7 +8778,7 @@ msgstr "Tempos limites"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:885
 msgid "Archives"
-msgstr "Arquivos"
+msgstr "Ficheiros"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:886
 msgid "States Retention"
@@ -9286,7 +9287,7 @@ msgstr "Intervalo de execução"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:308
 msgid "Insert trap's information into database"
-msgstr "Insere informação de traps no banco de dados"
+msgstr "Insere informação de traps no base de dados"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:314
 msgid "Output Transform"
@@ -9752,7 +9753,7 @@ msgstr "Atraso da notificação de recuperação"
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:528
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:535
 msgid "Contact additive inheritance"
-msgstr "Contato com a herança aditiva"
+msgstr "Contacto com a herança aditiva"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:717
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:720
@@ -10252,7 +10253,7 @@ msgstr "Herda somente contatos e/ou grupos de contatos do Host"
 #: centreon-web/www/include/configuration/configObject/meta_service/formMetaService.php:266
 #: centreon-web/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:576
 msgid "Implied Contacts"
-msgstr "Contatos herdados"
+msgstr "Contactos herdados"
 
 #: centreon-web/www/include/configuration/configObject/service/formService.php:702
 #: centreon-web/www/include/configuration/configObject/meta_service/formMetaService.php:288
@@ -10853,17 +10854,17 @@ msgstr "Você não tem permissão para acessar este contato"
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
-msgstr "Adicionar usuário"
+msgstr "Adicionar utilizador"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
-msgstr "Modificar usuário"
+msgstr "Modificar utilizador"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
-msgstr "Visualizar usuário"
+msgstr "Visualizar utilizador"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
@@ -10927,7 +10928,7 @@ msgstr "Relação de Grupos"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:337
 msgid "Linked to Contact Groups"
-msgstr "Associar a Grupos de Contato"
+msgstr "Associar a Grupos de Contacto"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:346
 msgid "Reach Centreon Front-end"
@@ -11011,7 +11012,7 @@ msgstr "Opção obrigatoria"
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:572
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:345
 msgid "Contact already exists"
-msgstr "Contato já existe"
+msgstr "Contacto já existe"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:574
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:347
@@ -11060,7 +11061,8 @@ msgstr "Notificações de Serviço"
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:225
 msgid "Please select a user in order to view his notifications"
 msgstr ""
-"Por favor, selecione um usuário na ordem para visualizar estas notificações"
+"Por favor, selecione um utilizador na ordem para visualizar estas "
+"notificações"
 
 #: centreon-web/www/include/configuration/configObject/contact/listContact.php:101
 #: centreon-web/www/include/configuration/configObject/contact_template_model/listContactTemplateModel.php:98
@@ -11074,11 +11076,11 @@ msgstr "Acesso"
 
 #: centreon-web/www/include/configuration/configObject/contact/listContact.php:123
 msgid "This user is an administrator."
-msgstr "Este usuário é um Administrador"
+msgstr "Este utilizador é um Administrador"
 
 #: centreon-web/www/include/configuration/configObject/contact/listContact.php:123
 msgid "This user is a simple user."
-msgstr "Este usuário é um usuário simples."
+msgstr "Este utilizador é um utilizador simples."
 
 #: centreon-web/www/include/configuration/configObject/contact/listContact.php:123
 #: centreon-web/www/include/configuration/configObject/contact_template_model/listContactTemplateModel.php:153
@@ -11258,11 +11260,11 @@ msgstr "Visualiza Modelo de Host"
 
 #: centreon-web/www/include/configuration/configObject/traps-mibs/formMibs.php:60
 msgid "Import SNMP traps from MIB file"
-msgstr "Importação de traps SNMP de arquivo MIB"
+msgstr "Importação de traps SNMP de ficheiro MIB"
 
 #: centreon-web/www/include/configuration/configObject/traps-mibs/formMibs.php:77
 msgid "File (.mib)"
-msgstr "Arquivo (.mib)"
+msgstr "Ficheiro (.mib)"
 
 #: centreon-web/www/include/configuration/configObject/traps-mibs/formMibs.php:135
 #, php-format
@@ -11275,19 +11277,19 @@ msgstr "Você não esta autorizado a acessar este grupo de contato"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:154
 msgid "Add a Contact Group"
-msgstr "Adicionar Grupo de Contato"
+msgstr "Adicionar Grupo de Contacto"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:156
 msgid "Modify a Contact Group"
-msgstr "Modificar Grupo de Contato"
+msgstr "Modificar Grupo de Contacto"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:158
 msgid "View a Contact Group"
-msgstr "Visualizar Grupo de Contato"
+msgstr "Visualizar Grupo de Contacto"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:165
 msgid "Contact Group Name"
-msgstr "Nome do Grupo de Contato"
+msgstr "Nome do Grupo de Contacto"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/formContactGroup.php:187
 msgid "Linked ACL groups"
@@ -11295,7 +11297,7 @@ msgstr "Grupos de permissionamento (ACL) associado"
 
 #: centreon-web/www/include/configuration/configObject/contactgroup/listContactGroup.php:132
 msgid "View contact group notifications"
-msgstr "Visualizar Notificações de Grupo de Contato"
+msgstr "Visualizar Notificações de Grupo de Contacto"
 
 #: centreon-web/www/include/configuration/configGenerateTraps/formGenerateTraps.php:87
 msgid "SNMP Trap Generation"
@@ -11311,7 +11313,7 @@ msgstr "Servidor Implicito"
 
 #: centreon-web/www/include/configuration/configGenerateTraps/formGenerateTraps.php:96
 msgid "Generate trap database "
-msgstr "Gerar banco de dados de trap"
+msgstr "Gerar base de dados de trap"
 
 #: centreon-web/www/include/configuration/configGenerateTraps/formGenerateTraps.php:97
 msgid "Apply configurations"
@@ -11333,7 +11335,7 @@ msgstr "Enviar sinal"
 
 #: centreon-web/www/include/configuration/configGenerateTraps/formGenerateTraps.php:148
 msgid "Database generation"
-msgstr "Geração de banco de dados"
+msgstr "Geração de base de dados"
 
 #: centreon-web/www/include/configuration/configGenerateTraps/formGenerateTraps.php:166
 msgid "Centcore commands"
@@ -11369,7 +11371,7 @@ msgstr "Configuração do Centreon Broker"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:100
 msgid "Config file name"
-msgstr "Nome Arquivo de Configuração"
+msgstr "Nome Ficheiro de Configuração"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:101
 #: centreon-web/www/include/configuration/configCentreonBroker/wizard/step2.php:46
@@ -11388,7 +11390,7 @@ msgstr "Tamanho máximo da fila de Eventos"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:105
 msgid "Command file"
-msgstr "Arquivo de comando"
+msgstr "Ficheiro de comando"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:110
 msgid "Write timestamp"
@@ -11412,7 +11414,7 @@ msgstr "Nome Obrigatorio"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:180
 msgid "Mandatory filename"
-msgstr "Arquivo obrigatorio"
+msgstr "Ficheiro obrigatorio"
 
 #: centreon-web/www/include/configuration/configCentreonBroker/formCentreonBroker.php:181
 msgid "Mandatory retention path"
@@ -11588,7 +11590,7 @@ msgstr "Binario das estatisticas do Motor de Monitoramento"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:118
 msgid "Perfdata file"
-msgstr "Arquivo de Performance"
+msgstr "Ficheiro de Performance"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:120
 msgid "SSH port"
@@ -11624,7 +11626,7 @@ msgstr "Caminho do script de inicialização do Centreontrapd"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:170
 msgid "Directory of light database for traps"
-msgstr "Diretorio de banco de dados leve para traps SNMP"
+msgstr "Diretorio de base de dados leve para traps SNMP"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:221
 msgid "The name of the poller is mandatory"
@@ -11843,7 +11845,7 @@ msgstr "Executa depuração do motor de monitoramento (-v)"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:67
 msgid "Move Export Files"
-msgstr "Move arquivos exportados"
+msgstr "Move ficheiros exportados"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:69
 msgid "Post generation command"
@@ -11879,7 +11881,7 @@ msgstr "Preparando ambiente"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:142
 msgid "Generating files"
-msgstr "Gerando arquivos"
+msgstr "Gerando ficheiros"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:143
 msgid "Running debug mode"
@@ -11887,7 +11889,7 @@ msgstr "Executando modo de depuração"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:144
 msgid "Moving files"
-msgstr "Movendo arquivos"
+msgstr "Movendo ficheiros"
 
 #: centreon-web/www/include/configuration/configGenerate/formGenerateFiles.php:145
 msgid "Restarting engine"
@@ -11911,8 +11913,8 @@ msgstr "Execução de comando"
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:271
 msgid "Could not write into centcore.cmd. Please check file permissions."
 msgstr ""
-"Não foi possivel escrever no arquivo centcore.cmd, Verifique as pemissões do "
-"arquivo."
+"Não foi possivel escrever no ficheiro centcore.cmd, Verifique as pemissões "
+"do ficheiro."
 
 #: centreon-web/www/include/configuration/configGenerate/xml/restartPollers.php:166
 msgid "<br><b>Centreon : </b>A reload signal has been sent to "
@@ -11948,9 +11950,9 @@ msgid ""
 "Could not write to file '%s' for monitoring engine '%s'. Please add writing\n"
 "                                     permissions for the webserver's user"
 msgstr ""
-"Não foi possivel escrever no arquivo '%s' do motor de monitoramento '%s'. "
+"Não foi possivel escrever no ficheiro '%s' do motor de monitoramento '%s'. "
 "Por favor, adicione\n"
-"                                     permissões de escrita do usuário do "
+"                                     permissões de escrita do utilizador do "
 "webserver no mesmo."
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:232
@@ -11972,10 +11974,10 @@ msgid ""
 "                                             engine '%s'. Please add writing "
 "permissions for the webserver's user"
 msgstr ""
-"Não foi possivel escrever no arquivo de configuração '%s' do Centreon Broker "
-"para o motor de monitoramento\n"
+"Não foi possivel escrever no ficheiro de configuração '%s' do Centreon "
+"Broker para o motor de monitoramento\n"
 "                                             '%s'. Por favor verifique as "
-"permissões para o usuário do webserver."
+"permissões para o utilizador do webserver."
 
 #: centreon-web/www/include/configuration/configGenerate/xml/moveFiles.php:274
 msgid "<br><b>Centreon : </b>All configuration will be send to "
@@ -12064,11 +12066,11 @@ msgstr "Sua sessão expirou."
 
 #: centreon-web/www/include/core/login/login.php:100
 msgid "You must specify a username"
-msgstr "Você deve especificar um nome de usuário"
+msgstr "Você deve especificar um nome de utilizador"
 
 #: centreon-web/www/include/core/login/login.php:101
 msgid "You must specify a password"
-msgstr "Você deve especificar uma senha"
+msgstr "Você deve especificar uma palavra-passe"
 
 #: centreon-web/www/include/core/errors/alt_error.php:40
 msgid "You are not allowed to reach this page"
@@ -12094,7 +12096,7 @@ msgstr "Por favor, defina uma chave de autenticação automatica no seu perfil."
 
 #: centreon-web/www/include/core/menu/menu.php:265
 msgid "Connected Users"
-msgstr "Usuários Conectados"
+msgstr "Utilizadors Conectados"
 
 #: centreon-web/www/include/monitoring/status/Hosts/xml/hostXML.php:266
 #: centreon-web/www/include/monitoring/status/Hosts/hostJS.php:108
@@ -12716,7 +12718,7 @@ msgstr "OK: nenhuma latência detectada na sua plataforma"
 msgid ""
 "Some database poller updates are not active; check your Monitoring platform"
 msgstr ""
-"Alguns coletores não atualizaram o banco de dados; Verifique sua plataforma "
+"Alguns coletores não atualizaram o base de dados; Verifique sua plataforma "
 "de Monitoramento"
 
 #: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:272
@@ -12803,7 +12805,7 @@ msgstr "Manutenção configurada por %s"
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
 msgid "*The timezone used is configured on your user settings"
 msgstr ""
-"*O fuso horário utilizado é o que foi configurado no seu perfil de usuário"
+"*O fuso horário utilizado é o que foi configurado no seu perfil de utilizador"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "Set downtime"
@@ -13046,11 +13048,11 @@ msgstr "Gráfico Detalhado"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:571
 msgid "Contact groups notified for this service"
-msgstr "Grupos de Contato notificados por este serviço"
+msgstr "Grupos de Contacto notificados por este serviço"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:579
 msgid "Contacts notified for this service"
-msgstr "Contatos notificados por este serviço"
+msgstr "Contactos notificados por este serviço"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:595
 msgid "Service groups"
@@ -13244,11 +13246,11 @@ msgstr "Categorias do Host"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:586
 msgid "Contact groups notified for this host"
-msgstr "Grupos de Contato notificados por este host"
+msgstr "Grupos de Contacto notificados por este host"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:594
 msgid "Contacts notified for this host"
-msgstr "Contatos notificados por este host"
+msgstr "Contactos notificados por este host"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:622
 msgid "URL Notes"
@@ -13356,7 +13358,7 @@ msgstr "Grupos de Serviço"
 msgid " The timezone used is configured on your user settings"
 msgstr ""
 "O fuso horário utilizado é o mesmo que foi configurado no seu perfil de "
-"usuário"
+"utilizador"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
 msgid "Set downtime for hosts services"
@@ -13453,10 +13455,10 @@ msgid "Server IP address"
 msgstr "Endereço IP do Servidor"
 
 msgid "Database username"
-msgstr "Nome de usuário do banco de dados"
+msgstr "Nome de utilizador do base de dados"
 
 msgid "Database password"
-msgstr "Senha do banco de dados"
+msgstr "Palavra-passe do base de dados"
 
 msgid "Centreon Central IP address, as seen by this server"
 msgstr "Endereço IP do Centreon Central, como visto pelo o servidor"
@@ -13484,7 +13486,7 @@ msgid "Creating Export Task"
 msgstr "Criando Tarefa de Exportação"
 
 msgid "Generating Export Files"
-msgstr "Gerando Arquivos para serem Exportados"
+msgstr "Gerando Ficheiros para serem Exportados"
 
 msgid "Processing Remote Import/Configuration"
 msgstr "Processando Configuração/Importação Remota"
@@ -13521,8 +13523,8 @@ msgstr "Você precisa enviar '%s' na sua requisição."
 
 msgid "Some database poller updates are not active; check your configuration"
 msgstr ""
-"Algumas atualizações no banco de dados do coletor não estão ativas, "
-"verifique sua configuração."
+"Algumas atualizações no base de dados do coletor não estão ativas, verifique "
+"sua configuração."
 
 msgid "Latency detected, check configuration for better optimization"
 msgstr ""

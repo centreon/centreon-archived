@@ -11,10 +11,13 @@ www/img/media/*
 www/install/install.conf.php
 config/centreon.config.php
 *-dev.yml
-filesGeneration/export
 www/static
 www/template
 www/asset-manifest.json
 www/front_src/src/App.css
 www/index.html
 www/service-worker.js
+www/include/core/menu/templates/*.js
+www/include/core/menu/templates/*.tpl
+!filesGeneration/export/.keep
+filesGeneration/export/*

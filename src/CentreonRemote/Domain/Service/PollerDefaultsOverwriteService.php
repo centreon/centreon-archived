@@ -51,7 +51,7 @@ class PollerDefaultsOverwriteService
             $dataToMerge[$key][$columnName] = $this->pollerID;
         }
 
-        return array_merge($dataToMerge, $data);
+        return array_merge($data, $dataToMerge);
     }
 
     public function setNagiosServer(array $data)
@@ -105,6 +105,17 @@ class PollerDefaultsOverwriteService
 
     public function setCfgResource(array $data)
     {
+        // prepare _instance_id for method findPollerAndSetResourceData
+        foreach ($data as $key => $val) {
+            $instanceIds = explode(',', $val['_instance_id']);
+
+            if (in_array($this->pollerID, $instanceIds)) {
+                $data[$key]['_instance_id'] = $this->pollerID;
+            } else {
+                $data[$key]['_instance_id'] = '';
+            }
+        }
+
         return $this->findPollerAndSetResourceData($data, '_instance_id', 'cfg_resource.php');
     }
 }

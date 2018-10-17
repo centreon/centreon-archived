@@ -62,7 +62,13 @@ require_once $modules_path . 'functions.php';
  */
 $pearDB = $dependencyInjector['configuration_db'];
 
-$conf = getWikiConfig($pearDB);
+try {
+    $conf = getWikiConfig($pearDB);
+} catch (\Exception $e){
+    echo $e->getMessage();
+    exit();
+}
+
 $WikiURL = $conf['kb_wiki_url'];
 
 /*

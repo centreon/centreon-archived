@@ -72,7 +72,7 @@ class ExportManifest
 
     public function get(string $key)
     {
-        $result = array_key_exists($key, $this->data) ? $this->data[$key] : null;
+        $result = $this->data && array_key_exists($key, $this->data) ? $this->data[$key] : null;
 
         return $result;
     }

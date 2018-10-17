@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import config from "./config";
 import Header from "./components/header";
 import {Switch} from "react-router-dom";
 import {ConnectedRouter} from "react-router-redux";
@@ -19,8 +20,12 @@ class App extends Component {
   state = {
     isFullscreenEnabled: false,
     acls: [],
-    aclsLoaded: false
+    aclsLoaded: false,
+    refreshIntervals: {},
+    intervalsLoaded: false
   }
+
+  keepAliveTimeout = null
 
   // check in arguments if min=1
   getMinArgument = () => {
@@ -34,10 +39,46 @@ class App extends Component {
     this.setState({ isFullscreenEnabled: true });
   }
 
-  UNSAFE_componentWillMount = () => {
+  // get allowed routes
+  getAcl = () => {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+  }
+
+  getRefreshIntervals = () => {
+    axios("internal.php?object=centreon_topcounter&action=refreshIntervals")
+      .get()
+      .then(({data}) => {
+        this.setState({refreshIntervals: data, intervalsLoaded: true});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  // keep alive (redirect to login page if session is expired)
+  keepAlive = () => {
+    this.keepAliveTimeout = setTimeout(() => {
+      axios("internal.php?object=centreon_keepalive&action=keepAlive")
+        .get()
+        .then(() => this.keepAlive())
+        .catch(error => {
+          if (error.response.status == 401) {
+            // redirect to login page
+            window.location.href = config.urlBase + 'index.php?disconnect=1'
+          }
+        })
+    }, 15000)
+  }
+
+  UNSAFE_componentWillMount = () => {
+    this.getAcl();
+    this.keepAlive();
+  }
+
+  componentDidMount = () => {
+    this.getRefreshIntervals();
   }
 
   linkReactRoutesAndComponents = () => {
@@ -55,6 +96,8 @@ class App extends Component {
   render() {
     const {aclsLoaded} = this.state;
     const min = this.getMinArgument();
+    const {refreshIntervals} = this.state;
+
     let reactRouter = '';
 
     if (aclsLoaded) {
@@ -69,7 +112,7 @@ class App extends Component {
           }
           <div id="content">
             {!min && // do not display header if min=1
-              <Header/>
+              <Header refreshIntervals={refreshIntervals}/>
             }
             <div id="fullscreen-wrapper">
               <Fullscreen

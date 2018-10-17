@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -23,7 +23,7 @@
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
  * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * Centreon also meet, for each linked independent module, the terms and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,44 +33,45 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
-require_once dirname(__FILE__) . "/webService.class.php";
-
-/**
- * Class CentreonKeepalive
- */
-class CentreonKeepalive extends CentreonWebService
-{
-    /**
-     * CentreonKeepalive constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Keep alive
-     */
-    public function getKeepAlive()
-    {
-        $session = new CentreonSession();
-        if (!$session->updateSession($this->pearDB)) {
-            // return 401 if session is not updated (session expired)
-            throw new \RestUnauthorizedException(_('Session is expired'));
-        }
-    }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param array $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
-    }
-}
+echo _("All pollers");
+echo _("Configure pollers");
+echo _("services");
+echo _("Critical services");
+echo _("Warning services");
+echo _("Unknown services");
+echo _("Ok services");
+echo _("Pending services");
+echo _("Edit profile");
+echo _("Copy autologin link");
+echo _("Server Configuration Wizard");
+echo _("Choose a server type");
+echo _("Add a Centreon Remote Server");
+echo _("Add a Centreon Poller");
+echo _("Remote Server Configuration");
+echo _("Create new Remote Server");
+echo _("Server Name");
+echo _("Server IP address");
+echo _("Database username");
+echo _("Database password");
+echo _("Centreon Central IP address, as seen by this server");
+echo _("Centreon Web Folder on Remote");
+echo _("Select a Remote Server");
+echo _("Select Pending Remote Links");
+echo _("Select IP");
+echo _("Select pollers to be attached to this new Remote Server");
+echo _("Finalizing Setup");
+echo _("Creating Export Task");
+echo _("Generating Export Files");
+echo _("Processing Remote Import/Configuration");
+echo _("The field is required");
+echo _("Not a valid IP address");
+echo _("Add server with wizard");
+echo _("Select linked Remote Server");
+echo _("as");
+echo _("Server Configuration");
+echo _("Attach poller to a server");
+echo _("Advanced: reverse Centreon Broker communication flow");
+echo _("%s is not valid.");
+echo _("You need to send '%s' in the request.");
+echo _("Some database poller updates are not active; check your configuration");
+echo _("Latency detected, check configuration for better optimization");

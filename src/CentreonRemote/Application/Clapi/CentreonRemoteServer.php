@@ -48,6 +48,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($ip);
         echo 'Done'. "\n";
 
+        echo "\n Set 'remote' instance type...";
+        system("sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm");
+        echo 'Done'. "\n";
+
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";
@@ -67,6 +71,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $result = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('no');
         echo 'Done'. "\n";
 
+        echo "\n Restore 'central' instance type...";
+        system("sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' " . _CENTREON_ETC_ . "/conf.pm");
+        echo 'Done'. "\n";
+
         echo "\n Centreon Remote disabling finished.\n";
     }
 
@@ -79,7 +87,8 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             $this->getDi()['centreon_remote.export']->import();
             echo "Success\n";
         } catch (\Exception $ex) {
-            echo "Fail\n";
+            echo "Fail:\n";
+            echo $e->__toString()."\n";
         }
 
         echo "\n Centreon Remote import finished.\n";
