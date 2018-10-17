@@ -7,6 +7,8 @@ import axios from "../../axios";
 
 import { connect } from "react-redux";
 
+const POLLER_TOPOLOGY_PAGE = '60901'
+
 const getIssueClass = (issues, key) => {
   return (issues && issues.length != 0) ?
   ((issues[key]) ?
@@ -123,9 +125,10 @@ class PollerMenu extends Component {
 
     // check if poller configuration page is allowed
     const { entries } = this.props.navigationData;
-    const allowPollerConfiguration = entries.includes('60901')
+    const allowPollerConfiguration = entries.includes(POLLER_TOPOLOGY_PAGE)
 
     const statusIcon = getPollerStatusIcon(data.issues);
+
     return (
       <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
         <span class="wrap-left-icon" onClick={this.toggle}>
