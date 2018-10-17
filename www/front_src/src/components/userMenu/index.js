@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Clock from "../clock";
 import config from "../../config";
 import {Translate} from 'react-redux-i18n';
-
 import axios from "../../axios";
+import { connect } from "react-redux";
+
+const EDIT_PROFILE_TOPOLOGY_PAGE = '50104'
 
 class UserMenu extends Component {
 
@@ -83,6 +85,11 @@ class UserMenu extends Component {
     if (!data) {
       return null;
     }
+
+    // check if edit profile page (My Account) is allowed
+    const { entries } = this.props.navigationData;
+    const allowEditProfile = entries.includes(EDIT_PROFILE_TOPOLOGY_PAGE)
+
     const { fullname, username, autologinkey } = data;
 
     //creating autologin link, getting href, testing if there is a parameter, then generating link : if '?' then &autologin(etc.)
@@ -102,9 +109,14 @@ class UserMenu extends Component {
                   <span class="submenu-item-link">
                     <span class="submenu-user-name">{fullname}</span>
                     <span class="submenu-user-type"><Translate value="as"/> {username}</span>
-                    <a class="submenu-user-edit" href={config.urlBase + "main.php?p=50104&o=c"}>
-                    <Translate value="Edit profile"/>
-                    </a>
+                    {allowEditProfile &&
+                      <a
+                        class="submenu-user-edit"
+                        href={config.urlBase + "main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
+                      >
+                        <Translate value="Edit profile"/>
+                      </a>
+                    }
                   </span>
                 </li>
                 {autologinkey &&
@@ -138,4 +150,10 @@ class UserMenu extends Component {
   }
 }
 
-export default UserMenu;
+const mapStateToProps = ({ navigation }) => ({
+  navigationData: navigation
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);
