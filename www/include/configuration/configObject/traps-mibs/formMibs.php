@@ -70,13 +70,16 @@ $attrManufacturer = array(
     'linkedObject' => 'centreonManufacturer'
 );
 
+/**
+ * commented out as deprecated, but kept for reference
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
     '&action=defaultValues&target=traps&field=manufacturer_id&id=';
 $attrManufacturer1 = array_merge(
     $attrManufacturer,
     array('defaultDatasetRoute' => $route)
 );
-$form->addElement('select2', 'mnftr', _("Vendor Name"), array(), $attrManufacturer1);
+*/
+$form->addElement('select2', 'mnftr', _("Vendor Name"), array(), $attrManufacturer);
 
 $form->addElement('file', 'filename', _("File (.mib)"));
 
