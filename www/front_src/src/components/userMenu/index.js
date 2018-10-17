@@ -86,7 +86,7 @@ class UserMenu extends Component {
       return null;
     }
 
-    // check if poller configuration page is allowed
+    // check if edit profile page (My Account) is allowed
     const { entries } = this.props.navigationData;
     const allowEditProfile = entries.includes(EDIT_PROFILE_TOPOLOGY_PAGE)
 
