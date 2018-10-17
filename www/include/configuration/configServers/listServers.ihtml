@@ -34,7 +34,7 @@
                 {$msg.options} {$form.o1.html}
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                <a href="./poller-wizard/1" target="_top" class="btc bt_info">Add server with wizard</a>
+                <a href="./poller-wizard/1" target="_top" class="btc bt_info">{t}Add server with wizard{/t}</a>
                 {else}
                 &nbsp;
                 {/if}
