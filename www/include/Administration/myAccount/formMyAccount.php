@@ -150,18 +150,30 @@ if (!empty($aclUser)) {
         // Classify topologies by parents
         foreach (array_keys($topologies) as $page) {
             if (strlen($page) == 1) {
+                // MENU level 1
                 if (!array_key_exists($page, $parentsLvl)) {
                     $parentsLvl[$page] = [];
                 }
             } elseif (strlen($page) == 3) {
-                $parent = substr($page, 0, 1);
-                if (!array_key_exists($page, $parentsLvl[$parent])) {
-                    $parentsLvl[$parent][$page] = [];
+                // MENU level 2
+                $parentLvl1 = substr($page, 0, 1);
+                if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                    $parentsLvl[$parentLvl1] = [];
+                }
+                if (!array_key_exists($page, $parentsLvl[$parentLvl1])) {
+                    $parentsLvl[$parentLvl1][$page] = [];
                 }
             } elseif (strlen($page) == 5) {
+                // MENU level 3
                 $parentLvl1 = substr($page, 0, 1);
                 $parentLvl2 = substr($page, 0, 3);
-                if (isset($parentsLvl[$parentLvl1][$parentLvl2]) && !array_key_exists($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                    $parentsLvl[$parentLvl1] = [];
+                }
+                if (!array_key_exists($parentLvl2, $parentsLvl[$parentLvl1])) {
+                    $parentsLvl[$parentLvl1][$parentLvl2] = [];
+                }
+                if (!in_array($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
                     $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
                 }
             }
