@@ -196,6 +196,7 @@ function updateCommand($cmd_id = null, $params = array())
         "`command_activate` = :command_activate " .
         "WHERE `command_id` = :command_id";
 
+    $ret["graph_id"] = (isset($ret["graph_id"]) && !empty($ret["graph_id"])) ? $ret["graph_id"] : null;
     $ret["connectors"] = (isset($ret["connectors"]) && !empty($ret["connectors"])) ? $ret["connectors"] : null;
     $ret["command_activate"]["command_activate"] = (isset($ret["command_activate"]["command_activate"])) ?
         $ret["command_activate"]["command_activate"] : null;
@@ -244,19 +245,19 @@ function insertCommand($ret = array())
     /*
      * Insert
      */
-    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, 
+    $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`,
         `graph_id`, `connector_id`, `command_comment`, `command_activate`) ";
     $rq .= "VALUES (
-            '" . $pearDB->escape($ret["command_name"]) . "', 
-            '" . $pearDB->escape($ret["command_line"]) . "', 
-            '" . $pearDB->escape($ret['enable_shell']) . "', 
-            '" . $pearDB->escape($ret["command_example"]) . "', 
-            '" . $ret["command_type"]["command_type"] . "', 
-            '" . $ret["graph_id"] . "', 
+            '" . $pearDB->escape($ret["command_name"]) . "',
+            '" . $pearDB->escape($ret["command_line"]) . "',
+            '" . $pearDB->escape($ret['enable_shell']) . "',
+            '" . $pearDB->escape($ret["command_example"]) . "',
+            '" . $ret["command_type"]["command_type"] . "',
+            '" . $ret["graph_id"] . "',
             " . (isset($ret["connectors"]) && !empty($ret["connectors"])
             ? "'" . $ret['connectors'] . "'"
-            : "NULL") . ", 
-            '" . $pearDB->escape($ret["command_comment"]) . "', 
+            : "NULL") . ",
+            '" . $pearDB->escape($ret["command_comment"]) . "',
             '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
     $DBRESULT = $pearDB->query($rq);
@@ -356,8 +357,8 @@ function duplicateArgDesc($new_cmd_id, $cmd_id)
 {
     global $pearDB;
 
-    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) 
-                    SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description 
+    $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description)
+                    SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description
                     FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
     $pearDB->query($query);
 }
@@ -484,11 +485,11 @@ function insertMacrosDesc($cmd, $ret)
 
             if (!empty($sName)) {
 
-                $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
-                    (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
-                    VALUES (" . intval($cmd) . ", 
-                        '" . $pearDB->escape($sName) . "', 
-                        '" . $pearDB->escape($sDesc) . "', 
+                $sQueryInsert = "INSERT INTO `on_demand_macro_command`
+                    (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`)
+                    VALUES (" . intval($cmd) . ",
+                        '" . $pearDB->escape($sName) . "',
+                        '" . $pearDB->escape($sDesc) . "',
                         '" . $arr[$sType] . "')";
                 $pearDB->query($sQueryInsert);
             }
