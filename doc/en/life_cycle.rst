@@ -4,62 +4,62 @@
 Lifecycle Products Policy
 =========================
 
-Starting with Centreon 18.10, the Centreon company will publish new releases of
-Centreon on a regular cadence, enabling the community, businesses and developers
-to plan their roadmaps with certainty of access to newer open source upstream
+Starting with Centreon 18.10, Centreon will publish new releases of the
+Centreon solution at a regular cadence, enabling the community, businesses and developers
+to plan their roadmaps with the guarantee of upstream access to the latest open source
 capabilities.
 
 *************************
 Version numbers are YY.MM
 *************************
 
-Releases of Centreon get a version by the year and the month of delivery. For
+Releases of Centreon are named according to the year and the month of delivery. For
 example, Centreon 18.10 was released in October 2018. All modules and components
-of the Centreon software collection have the same versioning.
+of the Centreon software suite use the same versioning.
 
 ***************
 Release cadence
 ***************
 
-The Centreon company plans to deliver 2 release by year. The first one in April
-and the second one in October. Between these two major releases, Centreon will
-deliver continuous minors releases including security fixes, bug fixes and
+The Centreon company plans to deliver two releases by year, the first in April
+and the second in October. Between these two major releases, Centreon will continuously
+deliver minor updates including security fixes, bug fixes and
 enhancements.
 
 ********************************
 Maintenance and security updates
 ********************************
 
-The lifecycle of a version is divided into 3 phases:
+The lifecycle of a version is divided into three phases:
 
-#. First phase: bugs of all severity (minor, major, critical, blocking) and security issues are fixed by priority
-#. Second phases: major, critical and blocking bugs or security issues are fixed by priority
-#. Third phase: blocking bugs or security issues are fixed by priority
+#. First phase: Bugs of all severity levels (minor, major, critical, blocker) and security issues are fixed by priority.
+#. Second phases: Major, critical bugs and blockers, or security issues are fixed by priority.
+#. Third phase: Blockers or security issues are fixed by priority.
 
 .. note::
-    The severity and prioritization of bugs are Centreon’s team responsability
+    The severity and prioritization of bugs are the Centreon team's responsibility.
 
-The second phase of a version starts when the next major version is available.
+The second phase of a version begins when the next major version is available.
 For example, the release of Centreon 19.04 starts the second phase of Centreon
 18.10.
 
-The third phase of a version starts when the second next major version is
+The third phase of a version begins when the second next major version is
 available. For example, the release of Centreon 19.10 starts the third phase
 of Centreon 18.10 and the second phase of Centreon 19.04.
 
-This schema presents the Centreon lifecycle:
+This schema shows the Centreon lifecycle:
 
 .. image:: /_static/images/lifecycle.png
     :align: center
     :scale: 65%
 
-******************************
-Old products maintenance table
-******************************
+**************************************
+Maintenance table for earlier products 
+**************************************
 
 .. note::
-    All other products not described in the following tables are no more supported
-    by Centreon
+    Any other products not described in the following tables are no longer supported
+    by Centreon.
 
 Centreon OSS 3.4
 ================
