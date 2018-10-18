@@ -759,7 +759,7 @@ sub readtrap {
             # If line begins with a double quote (") but does not END in a double quote then we need to merge
             # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
             # Net-SNMP sometimes divides long lines into multiple lines..
-            if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /[^\\]\"$/)) ) {
+            if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /\"$/)) ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
                 $temp2 =~ s/[\r\n]//g;			# Remove the newline character
                 while (defined(my $line2 = <$input>)) {
