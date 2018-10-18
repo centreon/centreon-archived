@@ -2567,6 +2567,10 @@ ul.module_list {
 }
 
 /* Tour plugin */
+#tourbus-leg-0-0 {
+    left: calc(50% - 200px)!important;
+    position: absolute;
+}
 
 #tourbus-leg-0-1,
 #tourbus-leg-0-2,
