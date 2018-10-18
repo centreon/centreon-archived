@@ -244,4 +244,9 @@ class HostExporter extends ExporterServiceAbstract
         // commit transaction
         $db->commit();
     }
+
+    public static function order(): int
+    {
+        return 30;
+    }
 }

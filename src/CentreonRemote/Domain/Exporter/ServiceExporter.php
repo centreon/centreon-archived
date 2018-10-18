@@ -37,9 +37,11 @@ class ServiceExporter extends ExporterServiceAbstract
         $pollerIds = $this->commitment->getPollers();
 
         $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+            $baList = $this->cache->get('ba.list');
+
             return $this->db
                     ->getRepository(Repository\ServiceRepository::class)
-                    ->getChainByPoller($pollerIds)
+                    ->getChainByPoller($pollerIds, $baList)
             ;
         });
 
@@ -215,5 +217,10 @@ class ServiceExporter extends ExporterServiceAbstract
 
         // commit transaction
         $db->commit();
+    }
+
+    public static function order(): int
+    {
+        return 40;
     }
 }

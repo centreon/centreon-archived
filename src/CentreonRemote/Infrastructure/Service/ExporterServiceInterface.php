@@ -21,4 +21,6 @@ interface ExporterServiceInterface
     public function import(): void;
 
     public static function getName(): string;
+
+    public static function order(): int;
 }
