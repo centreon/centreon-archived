@@ -67,9 +67,10 @@ SQL;
      * Get a chain of the related objects
      * 
      * @param int[] $pollerIds
+     * @param int[] $ba
      * @return array
      */
-    public function getChainByPoller(array $pollerIds): array
+    public function getChainByPoller(array $pollerIds, array $ba = null): array
     {
         // prevent SQL exception
         if (!$pollerIds) {
@@ -78,6 +79,7 @@ SQL;
 
         $ids = join(',', $pollerIds);
         $sql = <<<SQL
+SELECT l.* FROM (
 SELECT
     t.host_tpl_id AS `id`
 FROM host_template_relation AS t
@@ -85,6 +87,22 @@ INNER JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
 WHERE hr.nagios_server_id IN ({$ids})
 GROUP BY t.host_tpl_id
 SQL;
+
+        // Extract BA hosts
+        if ($ba) {
+            foreach ($ba as $key => $val) {
+                $ba[$key] = "'ba_{$val}'";
+            }
+
+            $ba = implode(',', $ba);
+            $sql .= " UNION SELECT t2.host_host_id AS `id`"
+                . " FROM host_service_relation AS t2"
+                . " INNER JOIN service s2 ON s2.service_id = t2.service_service_id"
+                . " AND s2.service_description IN({$ba}) GROUP BY t2.host_host_id";
+        }
+
+        $sql .= ") AS l GROUP BY l.id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
 
