@@ -1414,7 +1414,7 @@ table.ListTableSmallArg td {
 .ListTable,.ListTableMedium,.ListTableSmall,.ListTableMultiTp {border-collapse:separate;border-spacing:0;border-style:solid;empty-cells:show;}
 .ListTable,.ListTableMedium,.ListTableSmall {border-width:1px;}
 .ListTable td,.ListTableMedium td,.ListTableSmall td,.ListTableSmallArg {padding-bottom:2px;padding-top:2px;}
-.ListTable td {padding: 4px;}
+.ListTable td {padding: 4px; overflow: hidden; text-overflow: ellipsis;}
 .tab .ListTableMedium {
     margin-top:21px;
 }
