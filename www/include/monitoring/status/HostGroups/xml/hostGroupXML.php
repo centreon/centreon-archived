@@ -115,7 +115,7 @@ if ($obj->is_admin) {
     $rq1 .= $searchStr .
         "GROUP BY hg.name, h.state";
 } else {
-    $rq1 = "SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
+    $rq1 = "SELECT hg.name as alias, h.state, count(DISTINCT h.host_id) AS nb " .
         "FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg " .
         "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
         "AND hhg.host_id = h.host_id " .
