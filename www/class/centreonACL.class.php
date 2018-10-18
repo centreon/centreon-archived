@@ -404,7 +404,8 @@ class CentreonACL
                         . "FROM acl_topology_relations, acl_topology "
                         . "WHERE acl_topology.acl_topo_activate = '1' "
                         . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                        . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
+                        . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' "
+                        . "AND acl_topology_relations.access_right != 0"; // do not get "access none"
                     $DBRESULT2 = $centreonDb->query($query2);
                     while ($topo_page = $DBRESULT2->fetchRow()) {
                         $topology[] = (int) $topo_page["topology_topology_id"];
