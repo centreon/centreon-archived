@@ -57,21 +57,21 @@ class PollerMenu extends Component {
     "internal.php?object=centreon_topcounter&action=pollersListIssues"
   );
 
-  refreshTimeout = null;
+  refreshInterval = null;
 
   state = {
     toggled: false,
-    data: null
+    data: null,
+    intervalApplied: false
   };
 
   UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
-    this.getData();
   };
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
-    clearTimeout(this.refreshTimeout);
+    clearInterval(this.refreshInterval);
   };
 
   // fetch api to get host data
@@ -79,7 +79,7 @@ class PollerMenu extends Component {
     this.pollerService.get().then(({data}) => {
       this.setState({
         data
-      }, this.refreshData);
+      });
     }).catch((error) => {
       if (error.response.status == 401){
         this.setState({
@@ -89,15 +89,19 @@ class PollerMenu extends Component {
     });
   }
 
-  // refresh poller data every N seconds
-  refreshData = () => {
-    const {refreshIntervals} = this.props;
-    let refreshStats = (refreshIntervals.AjaxTimeReloadStatistic) ? parseInt(refreshIntervals.AjaxTimeReloadStatistic)*1000 : 15000;
-    clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(() => {
+  componentWillReceiveProps = (nextProps) => {
+    const {refreshTime} = nextProps;
+    const {intervalApplied} = this.state;
+    if(refreshTime && !intervalApplied){
       this.getData();
-    }, refreshStats);
-  };
+      this.refreshInterval = setInterval(() => {
+        this.getData();
+      }, refreshTime);
+      this.setState({
+        intervalApplied:true
+      })
+    }
+  }
 
   // display/hide detailed poller data
   toggle = () => {
@@ -212,8 +216,9 @@ class PollerMenu extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  navigationData: navigation
+const mapStateToProps = ({ navigation, intervals }) => ({
+  navigationData: navigation,
+  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadStatistic)*1000 : false
 });
 
 const mapDispatchToProps = {};

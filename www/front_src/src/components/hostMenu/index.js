@@ -6,27 +6,29 @@ import config from "../../config";
 import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 
+import { connect } from "react-redux";
+
 class HostMenu extends Component {
 
   hostsService = axios(
     "internal.php?object=centreon_topcounter&action=hosts_status"
   );
 
-  refreshTimeout = null;
+  refreshInterval = null;
 
   state = {
     toggled: false,
-    data: null
+    data: null,
+    intervalApplied: false
   };
 
   UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
-    this.getData();
   };
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
-    clearTimeout(this.refreshTimeout);
+    clearInterval(this.refreshInterval);
   };
 
   // fetch api to get host data
@@ -34,7 +36,7 @@ class HostMenu extends Component {
     this.hostsService.get().then(({data}) => {
       this.setState({
         data
-      }, this.refreshData);
+      });
     }).catch((error) => {
       if (error.response.status == 401){
         this.setState({
@@ -44,15 +46,19 @@ class HostMenu extends Component {
     });
   }
 
-  // refresh host data
-  refreshData = () => {
-    const {refreshIntervals} = this.props;
-    let refreshMonitoring = (refreshIntervals.AjaxTimeReloadMonitoring) ? parseInt(refreshIntervals.AjaxTimeReloadMonitoring)*1000 : 15000;
-    clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(() => {
+  componentWillReceiveProps = (nextProps) => {
+    const {refreshTime} = nextProps;
+    const {intervalApplied} = this.state;
+    if(refreshTime && !intervalApplied){
       this.getData();
-    }, refreshMonitoring);
-  };
+      this.refreshInterval = setInterval(() => {
+        this.getData();
+      }, refreshTime);
+      this.setState({
+        intervalApplied:true
+      })
+    }
+  }
 
   // display/hide detailed host data
   toggle = () => {
@@ -177,7 +183,14 @@ class HostMenu extends Component {
   }
 }
 
-export default HostMenu;
+const mapStateToProps = ({ intervals }) => ({
+  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadMonitoring)*1000 : false
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
+
 HostMenu.propTypes = {
   children: PropTypes.element.isRequired,
 };
