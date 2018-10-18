@@ -106,6 +106,10 @@ switch ($o) {
         break;
     case "m":
         multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        $acl = $centreon->user->access;
+        $hgs = $acl->getHostGroupAclConf(null, 'broker');
+        $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
+        $hoststring = $acl->getHostsString('ID', $dbmon);
         require_once($path . "listHostGroup.php");
         break; #Duplicate n Host grou
     case "d":
