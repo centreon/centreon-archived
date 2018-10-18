@@ -23,7 +23,7 @@ class ServiceRepository extends ServiceEntityRepository
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = implode(',', $pollerIds);
 
         $sql = <<<SQL
 SELECT l.* FROM(
@@ -39,7 +39,7 @@ GROUP BY t.service_id
 SQL;
 
         if ($templateChainList) {
-            $list = join(',', $templateChainList);
+            $list = implode(',', $templateChainList);
             $sql .= <<<SQL
 
 UNION
@@ -99,7 +99,7 @@ SQL;
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = implode(',', $pollerIds);
         $sql = <<<SQL
 SELECT l.* FROM (
 SELECT
@@ -119,7 +119,7 @@ SQL;
                 $ba[$key] = "'ba_{$val}'";
             }
 
-            $ba = join(',', $ba);
+            $ba = implode(',', $ba);
             $sql .= " UNION SELECT t2.service_id AS `id` FROM service AS t2 WHERE t2.service_description IN({$ba})";
         }
         
