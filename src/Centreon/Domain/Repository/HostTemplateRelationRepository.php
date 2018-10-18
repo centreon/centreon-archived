@@ -95,7 +95,10 @@ SQL;
             }
 
             $ba = implode(',', $ba);
-            $sql .= " UNION SELECT t2.host_host_id AS `id` FROM host_service_relation AS t2 INNER JOIN service s2 ON s2.service_id = t2.service_service_id AND s2.service_description IN({$ba}) GROUP BY t2.host_host_id";
+            $sql .= " UNION SELECT t2.host_host_id AS `id`"
+                . " FROM host_service_relation AS t2"
+                . " INNER JOIN service s2 ON s2.service_id = t2.service_service_id"
+                . " AND s2.service_description IN({$ba}) GROUP BY t2.host_host_id";
         }
 
         $sql .= ") AS l GROUP BY l.id";
