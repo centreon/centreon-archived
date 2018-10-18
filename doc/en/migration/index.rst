@@ -11,5 +11,6 @@ to Centreon 18.10:
    :maxdepth: 1
 
    upgradetoCentreon18.10
+   pollerdisplaytoremoteserver
    nagiostocentreon
 

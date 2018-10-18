@@ -62,6 +62,8 @@ Le collecteur est maintenant configuré :
 Rendez-vous au chapitre :ref:`Configuration simplifiée avec Centreon IMP<impconfiguration>`
 pour mettre en place votre première supervision.
 
+.. _confremoteserver:
+
 ---------------------------
 Configurer un Remote Server
 ---------------------------

@@ -1,3 +1,5 @@
+.. _migrate_to_1810:
+
 =============================================
 Migration depuis une plate-forme Centreon 3.4
 =============================================
@@ -33,6 +35,11 @@ Migration
     En cas de migration d'une plate-forme disposant du système de redondance
     Centreon, il est nécessaire de contacter votre `support Centreon 
     <https://support.centreon.com>`_.
+
+.. warning::
+    En cas de migration d'une plate-forme disposant du module **Centreon Poller
+    Display 1.6.x**, référez-vous à la :ref:`procédure de migration suivante
+    <frompollerdisplay16>`.
 
 Installation du nouveau serveur
 ===============================

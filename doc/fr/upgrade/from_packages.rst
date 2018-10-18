@@ -155,3 +155,10 @@ Redémarrez les services en exécutant les commandes suivantes : ::
 
     # systemctl restart cbd
     # systemctl restart centengine
+
+***************************************
+Mise à jour des serveurs Poller Display
+***************************************
+
+Référez-vous à la documentation de :ref:`migration d'un serveur Poller Display
+vers Remote Server 18.10 <migratefrompollerdisplay>`.

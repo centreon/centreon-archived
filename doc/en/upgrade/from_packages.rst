@@ -152,3 +152,9 @@ Restart the services by executing the following commands: ::
 
     # systemctl restart cbd
     # systemctl restart centengine
+
+******************************
+Centreon Poller Displat update
+******************************
+
+Refer to the :ref:`migration procedure for Poller Display <migratefrompollerdisplay>`.
