@@ -38,9 +38,11 @@ class HostExporter extends ExporterServiceAbstract
         $pollerIds = $this->commitment->getPollers();
 
         $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+            $baList = $this->cache->get('ba.list');
+
             return $this->db
                     ->getRepository(Repository\HostTemplateRelationRepository::class)
-                    ->getChainByPoller($pollerIds)
+                    ->getChainByPoller($pollerIds, $baList)
             ;
         });
 
