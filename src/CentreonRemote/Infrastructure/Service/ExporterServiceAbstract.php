@@ -110,6 +110,10 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         return $exportFilepath;
     }
 
+    public static function order(): int {
+        return 10;
+    }
+
     protected function _parse(string $filename): array
     {
         $macros = null;

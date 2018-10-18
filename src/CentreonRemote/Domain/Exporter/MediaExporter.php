@@ -243,4 +243,9 @@ class MediaExporter extends ExporterServiceAbstract implements ExporterServicePa
         // commit transaction
         $db->commit();
     }
+
+    public static function order(): int
+    {
+        return 100;
+    }
 }

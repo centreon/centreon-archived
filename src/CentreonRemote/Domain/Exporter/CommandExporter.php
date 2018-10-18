@@ -228,4 +228,9 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         // commit transaction
         $db->commit();
     }
+
+    public static function order(): int
+    {
+        return 20;
+    }
 }
