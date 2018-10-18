@@ -23,7 +23,7 @@ class ServiceRepository extends ServiceEntityRepository
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = implode(',', $pollerIds);
 
         $sql = <<<SQL
 SELECT l.* FROM(
@@ -39,7 +39,7 @@ GROUP BY t.service_id
 SQL;
 
         if ($templateChainList) {
-            $list = join(',', $templateChainList);
+            $list = implode(',', $templateChainList);
             $sql .= <<<SQL
 
 UNION
@@ -89,17 +89,19 @@ SQL;
      * Get a chain of the related objects
      * 
      * @param int[] $pollerIds
+     * @param int[] $ba
      * @return array
      */
-    public function getChainByPoller(array $pollerIds): array
+    public function getChainByPoller(array $pollerIds, array $ba = null): array
     {
         // prevent SQL exception
         if (!$pollerIds) {
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = implode(',', $pollerIds);
         $sql = <<<SQL
+SELECT l.* FROM (
 SELECT
     t.service_template_model_stm_id AS `id`
 FROM service AS t
@@ -110,6 +112,19 @@ INNER JOIN ns_host_relation AS hr ON hr.host_host_id = hsr.host_host_id OR hr.ho
 WHERE t.service_template_model_stm_id IS NOT NULL AND hr.nagios_server_id IN ({$ids})
 GROUP BY t.service_template_model_stm_id
 SQL;
+
+        // Extract BA services
+        if ($ba) {
+            foreach ($ba as $key => $val) {
+                $ba[$key] = "'ba_{$val}'";
+            }
+
+            $ba = implode(',', $ba);
+            $sql .= " UNION SELECT t2.service_id AS `id` FROM service AS t2 WHERE t2.service_description IN({$ba})";
+        }
+        
+        $sql .= ") AS l GROUP BY l.id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
 

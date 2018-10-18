@@ -1,3 +1,5 @@
+.. _migrate_to_1810:
+
 ======================================
 Migration from a Centreon 3.4 platform
 ======================================
@@ -23,6 +25,10 @@ This procedure only applies to a Centreon 3.4 platform that is installed on a
     If your platform has been installed from Centreon ISO or Centreon 3.4 repositories
     on CentOS or Red Hat in version 7, refer to the :ref:`update<upgrade>`
     documentation.
+
+.. warning::
+    If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
+    please refer to the following :ref:`migration procedure <frompollerdisplay16>`.
 
 *********
 Migration

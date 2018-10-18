@@ -312,14 +312,15 @@ sub getPHPConfFile() {
 	my @tab_php_ini;
 
 	# PHP CLI
-	my $result = `php -r 'echo php_ini_loaded_file();'`;
+	my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
 	push(@tab_php_ini, trim($result));
 
-	# Apache
-	if ( -e '/etc/php.ini') {
-		push(@tab_php_ini, '/etc/php.ini');
-	} else {
-        print STDERR "Unable to get PHP configuration\n";
+    # PHP configuration files
+	my @ini=`@PHP_BIN@ -r "echo php_ini_scanned_files();"`;
+	for (@ini) {
+	    chomp;
+	    s/,$//;
+	    push(@tab_php_ini, @ini);
     }
 
 	return @tab_php_ini;

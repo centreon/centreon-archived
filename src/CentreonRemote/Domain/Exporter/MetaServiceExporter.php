@@ -121,4 +121,9 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         // commit transaction
         $db->commit();
     }
+
+    public static function order(): int
+    {
+        return 80;
+    }
 }

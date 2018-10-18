@@ -195,4 +195,9 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         // commit transaction
         $db->commit();
     }
+
+    public static function order(): int
+    {
+        return 70;
+    }
 }

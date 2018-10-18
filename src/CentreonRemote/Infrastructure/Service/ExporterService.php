@@ -26,5 +26,14 @@ class ExporterService implements ContainerInterface
             'classname' => $object,
             'factory' => $factory,
         ];
+
+        $this->_sort();
+    }
+
+    private function _sort(): void
+    {
+        usort($this->objects, function($a, $b) {
+            return $a['classname']::order() - $b['classname']::order();
+        });
     }
 }
