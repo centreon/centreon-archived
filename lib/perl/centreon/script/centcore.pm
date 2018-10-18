@@ -335,6 +335,9 @@ sub startWorker($) {
     my $data = $sth->fetchrow_hashref();
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
+    if ($passwordEnc =~ m/^md5__(.*)/) {
+        $passwordEnc = $1;
+    }
 
     my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
     $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
@@ -365,6 +368,9 @@ sub createRemote($) {
     my $data = $sth->fetchrow_hashref();
     my $username = $data->{'contact_alias'};
     my $passwordEnc = $data->{'contact_passwd'};
+    if ($passwordEnc =~ m/^md5__(.*)/) {
+        $passwordEnc = $1;
+    }
 
     my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a createRemoteTask -v '".$taskId."' >> /var/log/centreon/worker.log";
     $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
