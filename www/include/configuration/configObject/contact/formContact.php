@@ -74,7 +74,7 @@ $initialValues = array();
 $DBRESULT = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
 $isRemote = array_map("myDecode", $DBRESULT->fetchRow());
 $DBRESULT->closeCursor();
-$isRemote = (strcmp($isRemote['value'], 'yes') == 0) ? true : false;
+$isRemote = ($isRemote['value'] === 'yes') ? true : false;
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
