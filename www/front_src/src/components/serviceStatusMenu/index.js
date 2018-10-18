@@ -6,27 +6,29 @@ import config from "../../config";
 import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 
+import { connect } from "react-redux";
+
 class ServiceStatusMenu extends Component {
 
   servicesStatusService = axios(
     "internal.php?object=centreon_topcounter&action=servicesStatus"
   );
 
-  refreshTimeout = null;
+  refreshInterval = null;
 
   state = {
     toggled: false,
-    data: null
+    data: null,
+    intervalApplied: false
   };
 
   UNSAFE_componentWillMount() {
     window.addEventListener('mousedown', this.handleClick, false);
-    this.getData();
   };
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
-    clearTimeout(this.refreshTimeout);
+    clearInterval(this.refreshInterval);
   };
 
   // fetch api to get service data
@@ -34,7 +36,7 @@ class ServiceStatusMenu extends Component {
     this.servicesStatusService.get().then(({data}) => {
       this.setState({
         data
-      }, this.refreshData);
+      });
     }).catch((error) => {
       if (error.response.status == 401){
         this.setState({
@@ -44,15 +46,19 @@ class ServiceStatusMenu extends Component {
     });
   }
 
-  // refresh service data
-  refreshData = () => {
-    const {refreshIntervals} = this.props;
-    let refreshMonitoring = (refreshIntervals.AjaxTimeReloadMonitoring) ? parseInt(refreshIntervals.AjaxTimeReloadMonitoring)*1000 : 15000;
-    clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(() => {
+  componentWillReceiveProps = (nextProps) => {
+    const {refreshTime} = nextProps;
+    const {intervalApplied} = this.state;
+    if(refreshTime && !intervalApplied){
       this.getData();
-    }, refreshMonitoring);
-  };
+      this.refreshInterval = setInterval(() => {
+        this.getData();
+      }, refreshTime);
+      this.setState({
+        intervalApplied:true
+      })
+    }
+  }
 
   // display/hide detailed service data
   toggle = () => {
@@ -195,8 +201,14 @@ class ServiceStatusMenu extends Component {
 }
 
 
+const mapStateToProps = ({ navigation, intervals }) => ({
+  navigationData: navigation,
+  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadMonitoring)*1000 : false
+});
 
-export default ServiceStatusMenu;
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu);
 
 ServiceStatusMenu.propTypes = {
   children: PropTypes.element.isRequired,

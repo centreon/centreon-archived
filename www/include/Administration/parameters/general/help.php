@@ -44,8 +44,8 @@ $help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessi
  */
 
 $help['tip_refresh_interval'] = dgettext('help', 'Refresh interval.');
-$help['tip_refresh_interval_for_statistics'] = dgettext('help', 'Refresh interval used for statistics (top counters).');
-$help['tip_refresh_interval_for_monitoring'] = dgettext('help', 'Refresh interval used in monitoring consoles.');
+$help['tip_refresh_interval_for_statistics'] = dgettext('help', 'Refresh interval used for statistics (top counters). Minimum value: 10');
+$help['tip_refresh_interval_for_monitoring'] = dgettext('help', 'Refresh interval used in monitoring consoles. Minimum value: 10');
 $help['tip_first_refresh_delay_for_statistics'] = dgettext(
     'help',
     'First refresh delay for statistics (top counters).'

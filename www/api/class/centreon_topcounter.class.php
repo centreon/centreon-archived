@@ -645,7 +645,7 @@ class CentreonTopCounter extends CentreonWebService
 
         $result = [];
         foreach ($row as $item){
-            $result[$item['key']] = $item['value'];
+            $result[$item['key']] = (intval($item['value']) > 10) ? $item['value'] : 10;
         }
 
         return $result;
