@@ -67,24 +67,3 @@ class AutoloadServiceProvider
         $providers[$object] = $object::order();
     }
 }
-
-//            $interface = AutoloadServiceProviderInterface::class;
-//            $hasInterface = (new \ReflectionClass($object))
-//                ->implementsInterface($interface);
-//
-//            if (!$hasInterface) {
-//                continue;
-//            }
-//
-//            $providers[] = $object;
-//
-//            foreach ($object::dependencies() as $dependency) {
-//                $hasInterface = (new \ReflectionClass($object))
-//                    ->implementsInterface($interface);
-//
-//                if (!$hasInterface) {
-//                    continue;
-//                }
-//                $dependencyMatrix[$dependency] = $object;
-//            }
-//        $dependencyMatrix[$object] = $object::dependencies();
