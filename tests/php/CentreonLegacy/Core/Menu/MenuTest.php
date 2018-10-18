@@ -213,7 +213,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase
                 "children" => array(
                     '_201' => array(
                         "children" => array(
-                            "main-menu" => array(
+                            "Main Menu" => array(
                                 '_20101' => array(
                                     "label" => "By host",
                                     "url" => "centreon/20101",
