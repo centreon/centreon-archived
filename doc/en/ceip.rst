@@ -99,6 +99,6 @@ Upon the first startup of the Centreon server, a random number is generated:
 the anonymous installation ID.
 
 Which products support the Centreon Experience Improvement Program?
-============================================================================
+===================================================================
 
 The CEIP program covers the Centreon central server.

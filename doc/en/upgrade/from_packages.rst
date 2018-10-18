@@ -123,9 +123,9 @@ page:
 To upgrade your Centreon BAM module, refer to the `associated documentation
 <https://documentation.centreon.com/docs/centreon-bam/en/latest/update/index.html>`_.
 
-**********************
+*********************
 Upgrading the Pollers
-**********************
+*********************
 
 Upgrading the repository
 ========================
@@ -136,7 +136,7 @@ Run the following command: ::
     # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
 
 Upgrading the Centreon solution
-==============================
+===============================
 
 Upgrade all components: ::
 

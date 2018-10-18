@@ -3,7 +3,7 @@ About
 #####
 
 
-Centreon is free open source monitoring software tool by Centreon, a leading Paris-based software publisher.
+Centreon is a free open source monitoring software tool by Centreon, a leading Paris-based software publisher.
 The Centreon platform measures the availability, health and performance of
 application layers, hardware resources and user-oriented services within an IT infrastructure.
 

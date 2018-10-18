@@ -4,7 +4,7 @@
 Using packages
 ==============
 
-Centreon provides an RPM for its products through the Centreon open source version available free of charge on our repository.
+Centreon provides RPM packages for its products through the Centreon open source version available free of charge in our repository.
 
 These packages have been successfully tested in version 7.x CentOS and Red Hat environments.
 
