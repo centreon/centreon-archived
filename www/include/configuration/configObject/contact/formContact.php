@@ -68,6 +68,14 @@ require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 $initialValues = array();
 
+/*
+ * Check if this server is a Remote Server to hide some part of form
+ */
+$DBRESULT = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
+$isRemote = array_map("myDecode", $DBRESULT->fetchRow());
+$DBRESULT->closeCursor();
+$isRemote = ($isRemote['value'] === 'yes') ? true : false;
+
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
     /**
@@ -619,7 +627,9 @@ if ($o != "mc") {
     $ret = $form->getSubmitValues();
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
-    $form->addRule('contact_email', _("Valid Email"), 'required');
+    if ($isRemote == false) {
+        $form->addRule('contact_email', _("Valid Email"), 'required');
+    }
     $form->addRule('contact_oreon', _("Required Field"), 'required');
     $form->addRule('contact_lang', _("Required Field"), 'required');
     if ($centreon->user->admin) {
@@ -627,8 +637,9 @@ if ($o != "mc") {
     }
     $form->addRule('contact_auth_type', _("Required Field"), 'required');
 
-    if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
-        && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1
+    if ((isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
+        && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
+        && ($isRemote == false)
     ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
@@ -758,7 +769,11 @@ if ($valid) {
         $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
     $tpl->assign('auth_type', $contactAuthType);
-    $tpl->display("formContact.ihtml");
+    if ($isRemote == false) {
+        $tpl->display("formContact.ihtml");
+    } else {
+        $tpl->display("formContactLight.ihtml");
+    }
 }
 ?>
 <script type="text/javascript" src="./include/common/javascript/keygen.js"></script>
