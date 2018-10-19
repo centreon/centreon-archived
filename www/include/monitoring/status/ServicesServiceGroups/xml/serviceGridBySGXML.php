@@ -107,17 +107,26 @@ if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
 
+// this query allows to manage pagination
 $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-    . "FROM servicegroups sg "
-    . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
-    . "INNER JOIN services s ON s.service_id = sgm.service_id "
-    . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
-    . $obj->access->getACLHostsTableJoin($obj->DBC, "h.host_id")
-    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
-    . "WHERE 1 = 1  ";
+    . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s ";
 
-# Servicegroup ACL
-$query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
+if (!$obj->is_admin) {
+    $query .= ", centreon_acl ";
+}
+
+$query .= "WHERE sgm.servicegroup_id = sg.servicegroup_id "
+    . "AND sgm.host_id = h.host_id "
+    . "AND sgm.service_id = s.service_id ";
+
+// filter elements with acl (host, service, servicegroup)
+if (!$obj->is_admin) {
+    $query .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
+        . $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
+        . $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id")
+        . $obj->access->queryBuilder("AND", "group_id", $obj->access->getAccessGroupsString()) . " "
+        . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
+}
 
 /* Servicegroup search */
 if ($sgSearch != "") {
@@ -168,7 +177,7 @@ $aTab = array();
 if ($numRows > 0) {
     $sg_search .= "AND (";
     $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $DBRESULT->fetch()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
     $servicegroupsSql1 = array();
@@ -186,18 +195,28 @@ if ($numRows > 0) {
         $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name," .
-        "h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
-        . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id " .
-        "AND sg.servicegroup_id=sgm.servicegroup_id "
-        . $s_search
-        . $sg_search
-        . $h_search
-        . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
-        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-        . " order by tri asc";
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name, "
+        . "h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
+        . "(case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
+        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ";
+
+    if (!$obj->is_admin) {
+        $query2 .= ", centreon_acl ";
+    }
+
+    $query2 .= "WHERE sgm.servicegroup_id = sg.servicegroup_id "
+        . "AND sgm.host_id = h.host_id "
+        . "AND sgm.service_id = s.service_id ";
+
+    // filter elements with acl (host, service, servicegroup)
+    if (!$obj->is_admin) {
+        $query2 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+            $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+            $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
+            $obj->access->queryBuilder("AND", "group_id", $obj->access->getAccessGroupsString()) . " " .
+            $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
+    }
+    $query2 .= $sg_search . $h_search . $s_search . " ORDER BY sg_name, tri ASC";
 
     $DBRESULT = $obj->DBC->query($query2);
 
@@ -207,7 +226,7 @@ if ($numRows > 0) {
     $flag = 0;
     $count = 0;
 
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $DBRESULT->fetch()) {
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
