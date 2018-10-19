@@ -98,7 +98,7 @@ abstract class ServerConnectionConfigurationService
 
         $this->insertConfigCentreonBroker($serverID);
 
-        if ($this->shouldInsertBamBrokers) {
+        if ($this->shouldInsertBamBrokers && $this->isRemote() === false) {
             $this->insertBamBrokers();
         }
 
@@ -190,5 +190,10 @@ abstract class ServerConnectionConfigurationService
     public function shouldInsertBamBrokers()
     {
         $this->shouldInsertBamBrokers = true;
+    }
+
+    protected function isRemote(): bool
+    {
+        return false;
     }
 }

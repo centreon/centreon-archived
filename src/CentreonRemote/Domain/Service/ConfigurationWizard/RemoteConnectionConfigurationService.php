@@ -41,4 +41,9 @@ class RemoteConnectionConfigurationService extends ServerConnectionConfiguration
             }
         }
     }
+
+    protected function isRemote(): bool
+    {
+        return true;
+    }
 }
