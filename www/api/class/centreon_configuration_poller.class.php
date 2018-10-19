@@ -89,7 +89,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
                 $queryPoller .= "WHERE ns.localhost = '0' ";
             }
         } else {
-            $queryPollerType .= '';
+            $queryPoller .= '';
         }
 
         if (stripos($queryPoller, 'WHERE') === false) {
