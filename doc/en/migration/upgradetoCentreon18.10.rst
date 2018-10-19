@@ -1,15 +1,15 @@
 .. _migrate_to_1810:
 
 ======================================
-Migration from a Centreon 3.4 platform
+Migrating from a Centreon 3.4 platform
 ======================================
 
 *************
 Prerequisites
 *************
 
-This procedure only applies to a Centreon 3.4 platform that is installed on a
-64-bit GNU/Linux distribution and has the following prerequisites:
+This procedure, which only applies to a Centreon 3.4 platform installed on a
+64-bit GNU/Linux distribution, has the following prerequisites:
 
 +-----------------+---------+
 | Components      | Version |
@@ -23,7 +23,7 @@ This procedure only applies to a Centreon 3.4 platform that is installed on a
 
 .. note::
     If your platform has been installed from Centreon ISO or Centreon 3.4 repositories
-    on CentOS or Red Hat in version 7, refer to the :ref:`update<upgrade>`
+    on CentOS or Red Hat version 7, refer to the :ref:`update<upgrade>`
     documentation.
 
 .. warning::
@@ -31,7 +31,7 @@ This procedure only applies to a Centreon 3.4 platform that is installed on a
     please refer to the following :ref:`migration procedure <frompollerdisplay16>`.
 
 *********
-Migration
+Migrating
 *********
 
 .. warning::
@@ -42,15 +42,15 @@ Installing the new server
 =========================
 
 Install your new Centreon central server from the :ref:`ISO<installisoel7>` or from
-:ref:`packages <install_from_packages>` and finish the install process to connect
-to Centreon web interface.
+:ref:`packages <install_from_packages>` and finish the installation process by connecting
+to the Centreon web interface.
 
 .. note::
-    It is better to set the same password for the 'centreon' user during the web
-    installation process
+    It is preferable to set the same password for the 'centreon' user during the web
+    installation process.
  
-Data synchronization
-====================
+Synchronizing the data
+======================
 
 Connect to your old Centreon server and synchronize following directories::
 
@@ -63,10 +63,10 @@ Connect to your old Centreon server and synchronize following directories::
 .. note::
     Replace **IP_New_Centreon** by the IP or the new Centreon server.
 
-If your DBMS is installed on the same server than Centreon central, execute the
+If your DBMS is installed on the same server as the Centreon central server, execute the
 following commands:
 
-#. Stop **mysqld** on both Centreon server: ::
+#. Stop **mysqld** on both Centreon servers: ::
 
     # service mysql stop
 
@@ -74,31 +74,31 @@ following commands:
 
     # rsync -avz /var/lib/mysql/ root@IP_New_Centreon:/var/lib/mysql/
 
-#. Start mysqld process on new server: ::
+#. Start the mysqld process on the new server: ::
 
     # systemctl start mysqld
 
-Plugins synchronization
-=======================
+Synchronizing the plugins
+=========================
 
-The synchronization of monitoring plugins is more complex and depends on your
+Synchronizing the monitoring plugins is more complex and depends on your
 installation. The main directories to synchronize are:
 
 #. /usr/lib/nagios/plugins/
 #. /usr/lib/centreon/plugins/
 
 .. note::
-    It is mandatory to install needed dependencies to run the plugins.
+    It is mandatory to install the required dependencies to run the plugins.
 
-Upgrade Centreon
-================
+Upgrading Centreon
+==================
 
-Go to http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon url and perform the
-process of upgrade.
+Go to http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon URL and perform the
+upgrade.
 
 .. note::
     If you changed the 'centreon' password during the installation process
-    you must execute the following steps:
+    you must follow these steps:
     
     #. Edit /etc/centreon/centreon.conf.php file
     #. Edit /etc/centreon/conf.pm file
@@ -106,15 +106,15 @@ process of upgrade.
 	   interface and change the password for **Perfdata generator** and
 	   **Broker SQL database** output.
 
-If the IP of your Centreon server changed, edit all the Centreon Broker module
-of all your pollers and change the IP to connect to the Centreon central
+If the IP of your Centreon server has changed, edit configuration for all the Centreon Broker modules
+on your pollers and change the IP to connect to the Centreon central server
 (output IPv4).
 
 Then :ref:`generate <deployconfiguration>` the configuration of all your pollers
 and export it.
 
-Modules upgrade
-===============
+Upgrading the modules
+=====================
 
-Please refer to the documentation of each modules to verify the compatibility
-with Centreon 18.10 and to perform upgrade.
+Please refer to the documentation of each module both to verify compatibility
+with Centreon 18.10 and perform the upgrade.

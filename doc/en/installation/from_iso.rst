@@ -8,27 +8,27 @@ Using Centreon ISO el7
 Installation
 ************
 
-Step 1: Start
-=============
+Step 1: Starting up the server
+==============================
 
-To install Centreon, start your server on the Centreon ISO image in version el7.
-Start with **Install CentOS 7**:
+To install Centreon, start up your server from the Centreon ISO image in version el7.
+Start up with **Install CentOS 7**:
 
 .. image :: /images/user/01_bootmenu.png
    :align: center
    :scale: 65%
 
-Step 2: Choice of language
-==========================
+Step 2: Choosing a language
+============================
 
-Choose the language of the installation process then click **Done**:
+Choose the language for the installation process then click on **Done**:
 
 .. image :: /images/user/02_select_install_lang.png
    :align: center
    :scale: 65%
 
-Step 3: Component selection
-===========================
+Step 3: Selecting components
+============================
 
 Click on the **Installation Type** menu:
 
@@ -36,7 +36,7 @@ Click on the **Installation Type** menu:
    :align: center
    :scale: 65%
 
-It is possible to choose different options:
+You can choose different options:
 
 .. image :: /images/user/04_form_type_install.png
    :align: center
@@ -44,115 +44,115 @@ It is possible to choose different options:
 
 |
 
- * **Central with database**: Install Centreon (web interface and database), monitoring engine and broker
- * **Central without database**: Install Centreon (web interface only), monitoring engine and broker
- * **Poller**: Install poller (monitoring engine and broker only)
- * **Database**: Install database server (use with **Central server without database** option)
+ * **Central with database**: Install Centreon (web interface and database), monitoring engine and broker.
+ * **Central without database**: Install Centreon (web interface only), monitoring engine and broker.
+ * **Poller**: Install poller (monitoring engine and broker only).
+ * **Database**: Install database server (use with **Central server without database** option).
 
 Step 4: System configuration
 ============================
 
-Partitioning of disk
---------------------
+Partitioning the disk
+---------------------
 
-Click on **Installation Destination** menu:
+Click on the **Installation Destination** menu:
 
 .. image :: /images/user/05_menu_filesystem.png
    :align: center
    :scale: 65%
 
-Select the hard disk drive and the **I will configure partitioning** option, then click **Done**:
+Select the hard disk drive and the **I will configure partitioning** option, then click on **Done**:
 
 .. image :: /images/user/06_select_disk.png
    :align: center
    :scale: 65%
 
-Using **+** button create your own partitioning file system following :ref:`documentation prerequisites<diskspace>` then click **Done**:
+Using the **+** button create, your own partitioning file system following the instructions in :ref:`documentation prerequisites<diskspace>`, then click on **Done**:
 
 .. image :: /images/user/07_partitioning_filesystem.png
    :align: center
    :scale: 65%
 
-A confirmation window appears. Click **Accept Changes** to validate the partitioning:
+A confirmation window appears. Click on **Accept Changes** to validate the partitioning:
 
 .. image :: /images/user/08_apply_changes.png
    :align: center
    :scale: 65%
 
-Network configuration
----------------------
+Configuring the network
+------------------------
 
-Click **Network & Hostname** menu:
+Click on the **Network & Hostname** menu:
 
 .. image :: /images/user/09_menu_network.png
    :align: center
    :scale: 65%
 
-Enable all network interfaces and define hostname then click **Done**:
+Enable all network interfaces and define hostname, then click on **Done**:
 
 .. image :: /images/user/10_network_hostname.png
    :align: center
    :scale: 65%
 
-Timezone configuration
-----------------------
+Configuring the timezone
+------------------------
 
-Click **Date & Time** menu:
+Click on the **Date & Time** menu:
 
 .. image :: /images/user/11_menu_timezone.png
    :align: center
    :scale: 65%
 
-Select timezone then click on configuration button:
+Select timezone, then click on the configuration button:
 
 .. image :: /images/user/12_select_timzeone.png
    :align: center
    :scale: 65%
 
-Enable or add a NTP server, click **OK** then **Done**:
+To enable or add a NTP server, click on **OK**, then on **Done**:
 
 .. image :: /images/user/13_enable_ntp.png
    :align: center
    :scale: 65%
 
-Start installation
-------------------
+Beginning the installation
+---------------------------
 
-Once configuration is over click **Begin Installation**:
+Once configuration is complete, click on **Begin Installation**:
 
 .. image :: /images/user/14_begin_install.png
    :align: center
    :scale: 65%
 
-Click **Root Password** :
+Click on **Root Password**:
 
 .. image :: /images/user/15_menu_root_password.png
    :align: center
    :scale: 65%
 
-Define and confirm **root** user password. Click **Done**:
+Define and confirm **root** user password. Click on **Done**:
 
 .. image :: /images/user/16_define_root_password.png
    :align: center
    :scale: 65%
 
-Wait during installation process:
+Wait for installation process to finish:
 
 .. image :: /images/user/17_wait_install.png
    :align: center
    :scale: 65%
 
-When the installation is finished, click **Reboot**:
+When the installation is complete, click on **Reboot**:
 
 .. image :: /images/user/18_reboot_server.png
    :align: center
    :scale: 65%
 
 
-Update system packages
-----------------------
+Updating the system packages
+-----------------------------
 
-Connect to your server using a terminal and execute:
+Connect to your server using a terminal and execute the command:
   ::
 
   # yum update
@@ -167,7 +167,7 @@ Accept all GPG keys:
    :align: center
    :scale: 65%
 
-Then restart your server with following command:
+Then restart your server with the following command:
   ::
 
   # reboot
@@ -178,17 +178,17 @@ Configuration
 
 .. _installation_web_ces:
 
-Via the web interface
-=====================
+Using the web interface
+=======================
 
-Log into Centreon web interface via the url : http://[SERVER_IP]/centreon.
-The Centreon setup wizard is displayed, click on **Next**.
+Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon.
+The Centreon setup wizard is displayed. Click on **Next**.
 
 .. image :: /images/user/acentreonwelcome.png
    :align: center
    :scale: 85%
 
-The Centreon setup wizard checks the availability of the modules, click on **Next**.
+The Centreon setup wizard checks the availability of the modules. Click on **Next**.
 
 .. image :: /images/user/acentreoncheckmodules.png
    :align: center
@@ -206,13 +206,14 @@ Click on **Next**.
    :align: center
    :scale: 85%
 
-Provide information related to the admin user, click on **Next**.
+Provide the information on the admin user, then click on **Next**.
 
 .. image :: /images/user/aadmininfo.png
    :align: center
    :scale: 85%
 
-By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, these two data entries must be changed. In our box, we only need to define a password for the user accessing the Centreon databases, i.e. ‘Centreon’, click on **Next**.
+By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, change these entries.
+In this case, you only need to define a password for the user accessing the Centreon databases, i.e., ‘Centreon’. Click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
@@ -220,9 +221,9 @@ By default, the ‘localhost’ server is defined and the root password is empty
 
 .. note::
     If the **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
-    error message appears, please perform the following operations:
+    error message appears, perform the following operations:
     
-    1. Log-on to the ‘root’ user on your server
+    1. Log in to the ‘root’ user on your server.
     
     2. Modify this file::
     
@@ -237,35 +238,37 @@ By default, the ‘localhost’ server is defined and the root password is empty
 
         # systemctl restart mysql
     
-    5. Click on **Refresh**
+    5. Click on **Refresh**.
 
-The Centreon setup wizard configures the databases, click on **Next**.
+The Centreon setup wizard configures the databases. Click on **Next**.
 
 .. image :: /images/user/adbconf.png
    :align: center
    :scale: 85%
 
-At this point, you will be able to install the modules provided with Centreon.
+At this point, you will be able to install the Centreon server modules.
 
-Click on **Install**
+Click on **Install**.
 
 .. image :: /images/user/module_installationa.png
    :align: center
    :scale: 85%
 
-Once installation is performed, click on **Next**
+Once installation is complete, click on **Next**.
 
 .. image :: /images/user/module_installationb.png
    :align: center
    :scale: 85%
 
-At this point, an ad informs you of the latest Centreon news/products . If your platform is connected to the Internet, you will receive the latest information. If not, the information of the current version will be displayed.
+At this point, an advertisement informs you of the latest Centreon news and products. 
+If your platform is connected to the internet, you will receive the up-to-date information.
+If you are not online, only information on the current version will be displayed.
 
 .. image :: /images/user/aendinstall.png
    :align: center
    :scale: 85%
 
-The installation is finished, click on **Finish**.
+The installation is complete. Click on **Finish**.
 
 You can now log in.
 
@@ -273,19 +276,19 @@ You can now log in.
    :align: center
    :scale: 65%
 
-Start monitoring
-================
+Starting the monitoring engine
+==============================
 
 To start the monitoring engine :
 
- 1. On the web interface, go to **Configuration** ==> **Pollers**
- 2. Leave the default options and click on **Export configuration**
- 3. Select **Central** poller from the box input **Pollers**
- 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**
- 5. Check **Move Export Files** and **Restart Monitoring Engine** with option method **Restart** selected
- 6. Click on **Export** again
- 7. Log into the ‘root’ user on your server
- 8. Verify if services **cbd**, **centengine** and **centcore** is running
+ 1. On your web interface, go to **Configuration** ==> **Pollers**.
+ 2. Keep the default options and click on **Export configuration**.
+ 3. Select **Central** poller from the box input **Pollers**.
+ 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**.
+ 5. Check **Move Export Files** and **Restart Monitoring Engine** with option **Restart** selected.
+ 6. Click on **Export** again.
+ 7. Log in to the ‘root’ user on your server.
+ 8. Verify that services **cbd**, **centengine** and **centcore** are running.
 
   ::
 
@@ -293,7 +296,7 @@ To start the monitoring engine :
     service centengine status
     service centcore status
 
- If they are not running, start them
+ If these services are not running, start them.
 
  * Start Centreon Broker
 
@@ -314,65 +317,63 @@ To start the monitoring engine :
 
     service centcore start
 
-Monitoring is now working. You can start to monitor your IT !
+Monitoring is now working. You can begin monitoring your IT system!
 
 Introduction to the web interface
 =================================
 
 
-Centreon web interface is made up of several menus, each menu has a specific function:
+The Centreon web interface contains several menus, each with a specific function:
 
 .. image :: /images/user/amenu.png
    :align: center
 
 |
 
-* The **Home** menu enables access to the first home screen after logging in. It summarizes the general status of the supervision.
-* The **Monitoring** menu contains the status of all the supervised elements in real and delayed time via the viewing of logs and performance graphics.
-* The **Reporting** menu serves to view, intuitively (via diagrams), the evolution of the supervision on a given period.
-* The **Configuration** menu serves to configure all monitored objects and the supervision infrastructure.
-* The **Administration** menu serves to configure the Centreon web interface and to view the general status of the servers.
+* **Home** lets you access the first home screen after logging in. It provides a summary of overall monitoring status.
+* **Monitoring** provides a combined view of the status of all monitored items in real and delayed time using logs and performance graphics.
+* **Reporting** provides an intuitive view (using diagrams) of the evolution of monitoring over a given period.
+* **Configuration** allows you to configure all monitored items and the monitoring infrastructure.
+* **Administration** allows you to configure the Centreon web interface and view the overall status of the servers.
 
 .. _installation_ppm:
 
-*****************************
-Easy monitoring configuration
-*****************************
+***************************************
+Quick and easy monitoring configuration
+***************************************
 
-Centreon is great in itself, highly versatile  and can be configured to
-fit the very specifics of your monitored infrastructure. However you
-might find it useful to use Centreon IMP to get you started in minutes.
-Centreon IMP provides you Plugin Packs which are bundled configuration
-templates that highly reduce the time needed to properly monitor the
-most common services of your network.
+Centreon is a highly versatile monitoring solution that can be configured to
+meet the specific needs of your IT infrastructure. To quickly configure Centreon and help you get started, you
+may want to use Centreon IMP. This tool provides you with Plugin Packs, which are bundled configuration
+templates that will dramatically reduce the time needed to implement the Centreon platform for monitoring
+the services in your network.
 
-Centreon IMP needs the technical components: Centreon License Manager
-and Centreon Plugin Pack Manager to work.
+Centreon IMP requires the Centreon License Manager and Centreon Plugin Pack Manager in order to function.
 
-Web install
-===========
+Installing from the internet
+=============================
 
-If you didn't installed those module during the installation process, go to the
+If you haven't installed any modules during the installation process, go to the
 **Administration > Extensions > Modules** menu.
 
-Click on **Install/Upgrade all** and validate the action.
+Click on **Install/Upgrade all** and validate.
 
 .. image:: /_static/images/installation/install_imp_1.png
    :align: center
 
-Once the instalaltion is finish, click on **Back**.
+Once the installation is complete, click on **Back**.
 The modules are now installed.
 
 .. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-You're now ready to go to Configuration -> Plugin packs -> Manager.
-You'll find there 10 free Plugin Packs to get you started. 5 more are
-available after free registration and 150+ if you subscribe to the IMP
-offer (more information on `our website <https://www.centreon.com>`_).
+Now proceed to Configuration -> Plugin packs -> Manager.
+10 free Plugin Packs are provided to get you started. Five additional Packs are
+available once you register and over 150 more if you subscribe to the IMP
+offer (for more information: `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
-You can continue to configure your monitoring with Centreon IMP by
-following :ref:`this guide <impconfiguration>`.
+You can continue to configure your monitoring system with Centreon IMP by
+following the instructions in :ref:`this guide <impconfiguration>`.

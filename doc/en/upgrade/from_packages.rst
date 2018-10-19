@@ -1,10 +1,10 @@
 .. _upgrade_from_packages:
 
-========================
-Update to Centreon 18.10
-========================
+===========================
+Upgrading to Centreon 18.10
+===========================
 
-This chapter describes how to update your platform to Centreon 18.10.
+This chapter describes how to upgrade your platform to Centreon 18.10.
 
 .. note::
     At the end of this procedure, Centreon EMS users will have to request new
@@ -17,28 +17,28 @@ This chapter describes how to update your platform to Centreon 18.10.
     If this is not the case, refer to the :ref:`migration<upgradecentreon1810>`
     procedure.
 
-To update your Centreon MAP server, refer to the `associated documentation
+To upgrade your Centreon MAP server, refer to the `associated documentation
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
 
-To update your Centreon MBI server, refer to the `associated documentation
+To upgrade your Centreon MBI server, refer to the `associated documentation
 <https://documentation.centreon.com/docs/centreon-bi-2/en/latest/update/index.html>`_.
 
-******
-Backup
-******
+*******************
+Performing a backup
+*******************
 
-Be sure that you have fully backed up your environment for all the following
-server:
+Be sure that you have fully backed up your environment for the following
+servers:
 
 * Central server
 * Database server
 
-******************************
-Centreon Central Server Update
-******************************
+********************************
+Centreon Central Server Upgrade
+********************************
 
-Repository upgrade
-==================
+Upgrading the repository
+========================
 
 To install Centreon you will need to set up the official software collections
 repository supported by Redhat.
@@ -51,7 +51,7 @@ Run the following command: ::
 
     # yum install centos-release-scl
 
-Centreon repository update.
+Upgrading the Centreon repository.
 
 Run the following command: ::
 
@@ -61,7 +61,7 @@ Run the following command: ::
 Updating the Centreon solution
 ==============================
 
-Update all components: ::
+Upgrade all components: ::
 
     # yum update centreon*
 
@@ -78,7 +78,7 @@ PHP timezone needs to be set. Perform the command: ::
 .. note::
     Change **Europe/Paris** to your timezone.
 
-Restart the services by executing the following commands: ::
+Restart the services by running the following commands: ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
@@ -86,10 +86,10 @@ Restart the services by executing the following commands: ::
     # systemctl restart cbd
     # systemctl restart centengine
 
-Finalizing the update
-=====================
+Finalizing the upgrade
+======================
 
-Log into Centreon web interface to continue update process:
+Log into Centreon web interface to continue upgrade process:
 
 Click on **Next**:
 
@@ -109,7 +109,7 @@ The release notes describes main changes, click on **Next**:
 .. note::
     TODO mettre à jour l'image.
 
-The process realizes the different updates, click on **Next**:
+The process performs the various upgrades, click on **Next**:
 
 .. image:: /_static/images/upgrade/web_update_4.png
     :align: center
@@ -120,25 +120,25 @@ page:
 .. image:: /_static/images/upgrade/web_update_5.png
     :align: center
 
-To update your Centreon BAM module, refer to the `associated documentation
+To upgrade your Centreon BAM module, refer to the `associated documentation
 <https://documentation.centreon.com/docs/centreon-bam/en/latest/update/index.html>`_.
 
-**************
-Pollers update
-**************
+*********************
+Upgrading the Pollers
+*********************
 
-Repository upgrade
-==================
+Upgrading the repository
+========================
 
 Run the following command: ::
 
     # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
     # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
 
-Updating the Centreon solution
-==============================
+Upgrading the Centreon solution
+===============================
 
-Update all components: ::
+Upgrade all components: ::
 
     # yum update centreon*
 

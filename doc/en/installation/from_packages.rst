@@ -4,15 +4,15 @@
 Using packages
 ==============
 
-Centreon provides RPM for its products through the Centreon Open Sources version available free of charge on our repository.
+Centreon provides RPM packages for its products through the Centreon open source version available free of charge in our repository.
 
-These packages have been successfully tested on CentOS and Red Hat environments 7.x version.
+These packages have been successfully tested in version 7.x CentOS and Red Hat environments.
 
-*****************
-Pre-install steps
-*****************
+**********************
+Pre-installation steps
+**********************
 
-*SELinux* should be disabled. In order to do this, you have to edit the file
+*SELinux* should be disabled. To do this, you first have to edit the file
 */etc/selinux/config* and replace "enforcing" by "disabled"::
 
     SELINUX=disabled
@@ -25,9 +25,9 @@ A quick check of SELinux status::
     $ getenforce
     Disabled
 
-***********************
-Repository installation
-***********************
+*************************
+Installing the repository
+*************************
 
 Redhat Software collections repository
 --------------------------------------
@@ -35,7 +35,7 @@ Redhat Software collections repository
 To install Centreon you will need to set up the official software collections repository supported by Redhat.
 
 .. note::
-    Software collections are required in order to install PHP 7 and associated libs (Centreon requirement)
+    Software collections are required in order to install PHP 7 and associated libs (Centreon requirement).
 
 Software collections repository installation::
 
@@ -46,7 +46,7 @@ The repository is now installed.
 Centreon repository
 -------------------
 
-To install Centreon software from the repository, you should first install 
+To install Centreon software from the repository, you should first install the
 centreon-release package which will provide the repository file.
 
 Centreon repository installation::
@@ -62,7 +62,7 @@ Installing a Centreon central server
 
 This chapter describes the installation of a Centreon central server.
 
-Perform the command::
+Run the command::
 
   # yum install centreon-base-config-centreon-engine centreon
 
@@ -71,7 +71,7 @@ Installing MySQL on the Centreon central server
 
 This chapter describes the installation of MySQL on a server including Centreon.
 
-Perform the command::
+Run the command::
 
    # yum install MariaDB-server
    # systemctl restart mysql
@@ -84,39 +84,39 @@ The MySQL database server should be available to complete installation (locally 
 It is necessary to modify **LimitNOFILE** limitation.
 Setting this option into /etc/my.cnf will NOT work.
 
-Perform the commands::
+Run the commands::
 
    # mkdir -p  /etc/systemd/system/mariadb.service.d/
    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
    # systemctl daemon-reload
    # systemctl restart mysql
 
-PHP timezone
-------------
+Setting the PHP timezone
+------------------------
 
-PHP timezone needs to be set. Perform the command::
+You must set the PHP timezone. Perform the command::
 
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 
 .. note::
-    Change **Europe/Paris** by your timezone.
+    Change **Europe/Paris** to your timezone.
 
-After saving the file, please do not forget to restart apache server::
+After saving the file, please do not forget to restart the apache server::
 
     # systemctl restart httpd
 
-Firewall
---------
+Configuring/disabling the firewall
+----------------------------------
 
-Add firewall rules or disable it. To disable it execute following commands::
+Add firewall rules or disable the firewall by running following commands::
 
     # systemctl stop firewalld
     # systemctl disable firewalld
 
-Launch services during the system bootup
-----------------------------------------
+Launching services during system bootup
+---------------------------------------
 
-To make services automatically start during system bootup perform these commands on the central server::
+To make services automatically start during system bootup run these commands on the central server::
 
     # systemctl enable httpd
     # systemctl enable snmpd
@@ -130,8 +130,8 @@ To make services automatically start during system bootup perform these commands
 .. note::
     If MySQL database is on a dedicated server, execute the enable command of mysql on the database server.
 
-Conclude installation
----------------------
+Concluding the installation
+---------------------------
 
 Before starting the web installation process, you will need to execute::
 
@@ -145,7 +145,7 @@ Before starting the web installation process, you will need to execute::
 Click :ref:`here <installation_web_ces>` to finalize the installation process.
 
 ************************
-Destributed architecture
+Distributed architecture
 ************************
 
 Go to :ref:`Administration<distributed_archi>` to add new Pollers and Remote Servers.
