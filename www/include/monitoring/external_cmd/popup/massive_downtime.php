@@ -141,8 +141,6 @@ if (!$gmt) {
 
 $form->setDefaults(
     array(
-        "start" => $centreonGMT->getDate("Y/m/d", time(), $gmt),
-        "end" => $centreonGMT->getDate("Y/m/d", time() + 7200, $gmt),
         "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
         "end_time" => $centreonGMT->getDate("G:i", time() + 7200, $gmt)
     )
