@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Centreon web 10.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-17 17:02+0100\n"
-"PO-Revision-Date: 2018-10-17 17:03+0100\n"
+"PO-Revision-Date: 2018-10-19 13:42+0100\n"
 "Last-Translator: Luiz Costa <me@luizgustavo.pro.br>\n"
 "Language-Team: Centreon team\n"
 "MIME-Version: 1.0\n"
@@ -42,10 +42,8 @@ msgid "seconds"
 msgstr "segundos"
 
 #: /home/lgcosta/devel/centreon/centreon/www/lib/HTML/QuickForm/HTML_QuickFormCustom.php:118
-msgid ""
-"The form has not been submitted since 15 minutes. Please retry to resubmit"
-msgstr ""
-"O formulário não foi enviado depois de 15 minutos. Por favor, tente reenviar"
+msgid "The form has not been submitted since 15 minutes. Please retry to resubmit"
+msgstr "O formulário não foi enviado depois de 15 minutos. Por favor, tente reenviar"
 
 #: /home/lgcosta/devel/centreon/centreon/www/lib/HTML/QuickForm/HTML_QuickFormCustom.php:119
 msgid "here"
@@ -433,22 +431,20 @@ msgstr "movimento"
 #: /home/lgcosta/devel/centreon/centreon/www/class/centreon-clapi/centreon.Config.Poller.class.php:578
 #, php-format
 msgid ""
-"Centreon Broker's configuration directory '%s' does not exist and could not "
-"be created for monitoring engine '%s'. Please check it's path or create it"
+"Centreon Broker's configuration directory '%s' does not exist and could not be created for monitoring engine '%s'. "
+"Please check it's path or create it"
 msgstr ""
-"O diretorio '%s' de configuração do Centreon Broker não existe ou não foi "
-"criado para o motor de monitoramento '%s'. Por favor verifique o caminho ou "
-"crie ele"
+"O diretorio '%s' de configuração do Centreon Broker não existe ou não foi criado para o motor de monitoramento '%s'. "
+"Por favor verifique o caminho ou crie ele"
 
 #: /home/lgcosta/devel/centreon/centreon/www/class/centreon-clapi/centreon.Config.Poller.class.php:591
 #, php-format
 msgid ""
-"Could not write to Centreon Broker's configuration file '%s' for monitoring "
-"engine '%s'. Please add writing permissions for the webserver's user"
+"Could not write to Centreon Broker's configuration file '%s' for monitoring engine '%s'. Please add writing "
+"permissions for the webserver's user"
 msgstr ""
-"Não foi possivel escrever dados para o Centreon Broker no arquivo de "
-"configuração '%s' do motor de monitoramento '%s'. Por favor adicione "
-"permissão de escrita para o usuário do serviço web"
+"Não foi possivel escrever dados para o Centreon Broker no arquivo de configuração '%s' do motor de monitoramento '%s'. "
+"Por favor adicione permissão de escrita para o usuário do serviço web"
 
 #: /home/lgcosta/devel/centreon/centreon/www/class/centreon-clapi/centreon.Config.Poller.class.php:614
 msgid "OK: All configuration files copied with success."
@@ -670,12 +666,10 @@ msgid "All"
 msgstr "Todos"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/home/customViews/views.php:103
-msgid ""
-"No widget configured in this view. Please add a new widget with the \"Add "
-"widget\" button."
+msgid "No widget configured in this view. Please add a new widget with the \"Add widget\" button."
 msgstr ""
-"Nenhuma ferramenta foi configurada para esta visão. Por favor, adicione uma "
-"nova ferramenta com o botão \"Adicionar ferramenta\"."
+"Nenhuma ferramenta foi configurada para esta visão. Por favor, adicione uma nova ferramenta com o botão \"Adicionar "
+"ferramenta\"."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/home/customViews/formLoad.php:50
 msgid "Load a public view"
@@ -912,20 +906,14 @@ msgid "Widget"
 msgstr "Ferramenta"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/home/customViews/index.php:345
-msgid ""
-"Deleting this widget might impact users with whom you are sharing this view."
-" Are you sure you want to do it?"
+msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
 msgstr ""
-"Removendo esta ferramenta irá impactar usuários que compartilham desta "
-"visão. Você tem certeza que quer fazer isso ?"
+"Removendo esta ferramenta irá impactar usuários que compartilham desta visão. Você tem certeza que quer fazer isso ?"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/home/customViews/index.php:348
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:57
-msgid ""
-"Deleting this view might impact other users. Are you sure you want to do it?"
-msgstr ""
-"Removendo essa visão irá impactar outros usuários. Você tem certeza que quer"
-" fazer isso ?"
+msgid "Deleting this view might impact other users. Are you sure you want to do it?"
+msgstr "Removendo essa visão irá impactar outros usuários. Você tem certeza que quer fazer isso ?"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/home/customViews/index.php:349
 msgid "Set this view as your default view?"
@@ -2283,12 +2271,11 @@ msgstr "Campos obrigatorios"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:824
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host/formHost.php:1105
 msgid ""
-"Contactgroups exists. If you try to use a LDAP contactgroup, please verified"
-" if a Centreon contactgroup has the same name."
+"Contactgroups exists. If you try to use a LDAP contactgroup, please verified if a Centreon contactgroup has the same "
+"name."
 msgstr ""
-"Grupos de Contato já existe. Se você esta tentando usar um grupo de contato "
-"do LDAP, verifique se ele não tem o mesmo nome de um grupo de contato do "
-"Centreon."
+"Grupos de Contato já existe. Se você esta tentando usar um grupo de contato do LDAP, verifique se ele não tem o mesmo "
+"nome de um grupo de contato do Centreon."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/groupsACL/formGroupConfig.php:359
 msgid "Group Information"
@@ -2699,36 +2686,26 @@ msgstr "Ajuda"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:303
 msgid ""
-"<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by "
-"associated users. You also have the possibility to exclude host(s) from "
-"selected hostgroup(s)."
+"<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by associated users. You also have the possibility "
+"to exclude host(s) from selected hostgroup(s)."
 msgstr ""
-"<b><i>Ajuda :</i></b> Selecione hosts e grupo de hosts que podem ser vistos "
-"por usuários associados. Você também tem a possibilidade de excluir host(s) "
-"do grupo(s) de hosts selecionado."
+"<b><i>Ajuda :</i></b> Selecione hosts e grupo de hosts que podem ser vistos por usuários associados. Você também tem a "
+"possibilidade de excluir host(s) do grupo(s) de hosts selecionado."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:309
-msgid ""
-"<b><i>Help :</i></b> Select services that can be seen by associated users."
-msgstr ""
-"<b><i>Ajuda :</i></b> Selecione serviços que podem ser visto por usuários "
-"associados."
+msgid "<b><i>Help :</i></b> Select services that can be seen by associated users."
+msgstr "<b><i>Ajuda :</i></b> Selecione serviços que podem ser visto por usuários associados."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:314
-msgid ""
-"<b><i>Help :</i></b> Select meta services that can be seen by associated "
-"users."
-msgstr ""
-"<b><i>Ajuda:</i></b> Selecione meta-serviço para que usuários associados "
-"possam ver."
+msgid "<b><i>Help :</i></b> Select meta services that can be seen by associated users."
+msgstr "<b><i>Ajuda:</i></b> Selecione meta-serviço para que usuários associados possam ver."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:319
 msgid ""
-"<b><i>Help :</i></b> Select the filter(s) you want to apply to the resource "
-"definition for a more restrictive view."
+"<b><i>Help :</i></b> Select the filter(s) you want to apply to the resource definition for a more restrictive view."
 msgstr ""
-"<b><i>Ajuda :</i></b> Selecione os filtro(s) que você quer aplicar para a "
-"definição de recursos com uma visão mais restritiva."
+"<b><i>Ajuda :</i></b> Selecione os filtro(s) que você quer aplicar para a definição de recursos com uma visão mais "
+"restritiva."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:329
 msgid "Poller Filter"
@@ -3245,8 +3222,7 @@ msgstr "Fim"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "*The timezone used is configured on your user settings"
-msgstr ""
-"*O fuso horário utilizado é o que foi configurado no seu perfil de usuário"
+msgstr "*O fuso horário utilizado é o que foi configurado no seu perfil de usuário"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/external_cmd/popup/massive_downtime.php:155
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/downtime/AddDowntime.php:255
@@ -3813,9 +3789,7 @@ msgstr "Coletores"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/downtime/AddDowntime.php:263
 msgid " The timezone used is configured on your user settings"
-msgstr ""
-"O fuso horário utilizado é o mesmo que foi configurado no seu perfil de "
-"usuário"
+msgstr "O fuso horário utilizado é o mesmo que foi configurado no seu perfil de usuário"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/downtime/AddDowntime.php:295
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/general/form.php:287
@@ -4400,20 +4374,15 @@ msgstr "OK: todos os coletores estão em execução"
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/status/TopCounter/xml/statusCounter.php:250
 #, php-format
 msgid "Latency detected on %s; check configuration for better optimisation"
-msgstr ""
-"Latência detectada em %s, verifique a configuração para uma melhor "
-"otimização"
+msgstr "Latência detectada em %s, verifique a configuração para uma melhor otimização"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/status/TopCounter/xml/statusCounter.php:254
 msgid "OK: no latency detected on your platform"
 msgstr "OK: nenhuma latência detectada na sua plataforma"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/status/TopCounter/xml/statusCounter.php:258
-msgid ""
-"Some database poller updates are not active; check your Monitoring platform"
-msgstr ""
-"Alguns coletores não atualizaram o banco de dados; Verifique sua plataforma "
-"de Monitoramento"
+msgid "Some database poller updates are not active; check your Monitoring platform"
+msgstr "Alguns coletores não atualizaram o banco de dados; Verifique sua plataforma de Monitoramento"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/status/TopCounter/xml/statusCounter.php:260
 msgid "OK: all database poller updates are active"
@@ -4857,7 +4826,7 @@ msgstr "Próxima Notificação"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/hostDetails.php:481
 msgid "Is This Host Flapping?"
-msgstr "Est-ce que le statut de hôte bagote ?"
+msgstr "O host esta em variação ?"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/hostDetails.php:482
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/serviceDetails.php:580
@@ -5089,12 +5058,8 @@ msgid "Action URL"
 msgstr "URL de Ação"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/hostDetails.php:700
-msgid ""
-"This host no longer exists in Centreon configuration. Please reload the "
-"configuration."
-msgstr ""
-"Este host não existe mais na configuração Centreon. Por favor, recarregue a "
-"configuração."
+msgid "This host no longer exists in Centreon configuration. Please reload the configuration."
+msgstr "Este host não existe mais na configuração Centreon. Por favor, recarregue a configuração."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/hostDetails.php:715
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/serviceDetails.php:828
@@ -5291,12 +5256,8 @@ msgid "View logs for service %s"
 msgstr "Visualizar registros para o serviço %s"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/objectDetails/serviceDetails.php:822
-msgid ""
-"The related host no longer exists in Centreon configuration. Please reload "
-"the configuration."
-msgstr ""
-"O host relacionado não existe mais na configuração do Centreon. Por favor, "
-"recarregue a configuração."
+msgid "The related host no longer exists in Centreon configuration. Please reload the configuration."
+msgstr "O host relacionado não existe mais na configuração do Centreon. Por favor, recarregue a configuração."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/formVirtualMetrics.php:62
 msgid "Host list"
@@ -5324,8 +5285,7 @@ msgstr "Nome da metrica"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/formVirtualMetrics.php:125
 msgid "Choose a service if you want a specific virtual metric for it."
-msgstr ""
-"Escolha um serviço se você quiser uma métrica virtual específica para ele."
+msgstr "Escolha um serviço se você quiser uma métrica virtual específica para ele."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/formVirtualMetrics.php:126
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/componentTemplates/formComponentTemplate.php:149
@@ -5344,15 +5304,11 @@ msgstr "Função RPN (Notação Reversa Polonesa)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/formVirtualMetrics.php:140
 msgid ""
-"<br><i><b><font color=\"#B22222\">Notes "
-"</font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different "
-"sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn "
-"expressions."
+"<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different "
+"sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn expressions."
 msgstr ""
-"<br><i><b><font color=\"#B22222\">Notas "
-"</font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Não misture métricas de diferentes "
-"fontes.<br>&nbsp;&nbsp;&nbsp;- Somente funções de agregação funcionam em "
-"expressões rnp em VDEF."
+"<br><i><b><font color=\"#B22222\">Notas </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Não misture métricas de diferentes "
+"fontes.<br>&nbsp;&nbsp;&nbsp;- Somente funções de agregação funcionam em expressões rnp em VDEF."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/formVirtualMetrics.php:145
 msgid "Metric Unit"
@@ -6139,8 +6095,7 @@ msgstr "Propriedades de Marca D'agua"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/rrdtool/form.php:120
 msgid "Rrdcached configuration : work only with Centreon Broker"
-msgstr ""
-"Configuração do modulo RRDCached: Funciona somente com o Centreon Broker"
+msgstr "Configuração do modulo RRDCached: Funciona somente com o Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/rrdtool/form.php:123
 msgid "Enable RRDCached"
@@ -6482,9 +6437,7 @@ msgstr "TLS"
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/form.php:313
 #, php-format
 msgid "Bad ldap filter: missing %s pattern. Check user or group filter"
-msgstr ""
-"Filtro de LDAP ruim: faltando padrão %s. Verifique o filtro de usuário ou "
-"grupo"
+msgstr "Filtro de LDAP ruim: faltando padrão %s. Verifique o filtro de usuário ou grupo"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/form.php:315
 msgid "Invalid LDAP Host parameters"
@@ -6558,14 +6511,11 @@ msgstr "Caminho para o banco de dados do RRDTool para Estado"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:125
 msgid "Path to RRDTool Database For Monitoring Engine Statistics"
-msgstr ""
-"Caminho para o banco de dados do RRDTool para estatisticas do motor de "
-"monitoramento"
+msgstr "Caminho para o banco de dados do RRDTool para estatisticas do motor de monitoramento"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:128
 msgid "Retention duration for performance data in RRDTool databases"
-msgstr ""
-"Duração de retenção para dados de desempenho em bancos de dados do RRDTool"
+msgstr "Duração de retenção para dados de desempenho em bancos de dados do RRDTool"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:129
 msgid "Retention duration for performance data in MySQL database"
@@ -7412,12 +7362,9 @@ msgstr "Tipo de Armazenagem"
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/performance/viewMetrics.php:161
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/performance/viewMetrics.php:163
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/performance/viewMetrics.php:165
-msgid ""
-"Do you confirm the change of the RRD data source type ? If yes, you must "
-"rebuild the RRD Database"
+msgid "Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database"
 msgstr ""
-"Você confirma a alteração do tipo de fonte de dados do RRD ? Se sim, você "
-"deve reconstruir o banco de dados do RRD"
+"Você confirma a alteração do tipo de fonte de dados do RRD ? Se sim, você deve reconstruir o banco de dados do RRD"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/performance/viewMetrics.php:187
 msgid "Set RRD Data Source Type to ABSOLUTE"
@@ -7491,7 +7438,7 @@ msgstr "Primeira página"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configKnowledge/pagination.php:148
 #: /home/lgcosta/devel/centreon/centreon/www/include/common/pagination.php:198
 msgid "Previous page"
-msgstr "Page précédante"
+msgstr "Página anterior"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configKnowledge/pagination.php:149
 #: /home/lgcosta/devel/centreon/centreon/www/include/common/pagination.php:199
@@ -7527,8 +7474,7 @@ msgstr "Mostra objetos não relacionados ao wiki"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configKnowledge/search.php:65
 msgid "Show wiki pageless only - inherited templates included"
-msgstr ""
-"Mostra objetos não relacionados ao wiki - incluindo herança de modelos"
+msgstr "Mostra objetos não relacionados ao wiki - incluindo herança de modelos"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configKnowledge/display-hostTemplates.php:136
 msgid "Hosts Templates"
@@ -7592,8 +7538,7 @@ msgstr "O nome da configuração já existe"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configCentreonBroker/wizard/save.php:296
 msgid "Error while inserting central-module configuration"
-msgstr ""
-"Erro durante a inserção de configuração no modulo central (central-module)"
+msgstr "Erro durante a inserção de configuração no modulo central (central-module)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configCentreonBroker/wizard/save.php:300
 msgid "Error while inserting central-broker configuration"
@@ -8068,9 +8013,8 @@ msgstr "Servidor remoto"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/listServers.php:302
 msgid ""
-"Only services, servicegroups, hosts and hostgroups are taken in account in "
-"order to calculate this status. If you modify a template, it won't tell you "
-"the configuration had changed."
+"Only services, servicegroups, hosts and hostgroups are taken in account in order to calculate this status. If you "
+"modify a template, it won't tell you the configuration had changed."
 msgstr ""
 "Somente serviços, grupos de serviço, hosts e grupos de hosts são considerados para calcular esse status. \n"
 "Se você modificar um modelo, ele não lhe dirá que a configuração foi alterada."
@@ -8191,9 +8135,7 @@ msgstr "Teste do Plugin"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/command/minHelpCommand.php:109
 msgid "Error: Cannot Execute this command due to a path security problem."
-msgstr ""
-"Erro: Não é possível executar este comando devido a um problema de segurança"
-" do caminho."
+msgstr "Erro: Não é possível executar este comando devido a um problema de segurança do caminho."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/command/minHelpCommand.php:119
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/command/formCommand.php:309
@@ -8268,11 +8210,8 @@ msgid "Macros"
 msgstr "Macros"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/command/formMacros.php:125
-msgid ""
-"Sorry, your command line does not contain any $_SERVICE$ macro or $_HOST$ "
-"macro."
-msgstr ""
-"Desculpe, o seu comando não contém qualquer macro $_SERVICE$ ou $_HOST$."
+msgid "Sorry, your command line does not contain any $_SERVICE$ macro or $_HOST$ macro."
+msgstr "Desculpe, o seu comando não contém qualquer macro $_SERVICE$ ou $_HOST$."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/command/formCommand.php:165
 msgid "Add a Command"
@@ -9046,12 +8985,12 @@ msgstr "Adicionar uma informação extendida"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:856
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:776
 msgid "Modify an Extended Info"
-msgstr "Modifier une information supplémentaire"
+msgstr "Editar informações adicionais"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:858
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:778
 msgid "View an Extended Info"
-msgstr "Visualiser une information supplémentaire"
+msgstr "Visualizar informações adicionais"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:865
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:785
@@ -9147,12 +9086,8 @@ msgid "HostGroup or Host Required"
 msgstr "Grupo de Host ou Host requerido"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:980
-msgid ""
-"This description is in conflict with another one that is already defined in "
-"the selected relation(s)"
-msgstr ""
-"Esta descrição está em conflito com outra que já está definida na(s) "
-"relação(ões) selecionada(s)"
+msgid "This description is in conflict with another one that is already defined in the selected relation(s)"
+msgstr "Esta descrição está em conflito com outra que já está definida na(s) relação(ões) selecionada(s)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:987
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:891
@@ -9167,13 +9102,11 @@ msgstr "Você não pode sobrepor macros reservadas"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:1024
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host/formHost.php:1132
 msgid ""
-"Warning, unconventional use of interval check. You should prefer to use an "
-"interval lower than 24h, if needed, pair this configuration with the use of "
-"timeperiods"
+"Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair "
+"this configuration with the use of timeperiods"
 msgstr ""
-"Aviso, uso não convencional de verificação de intervalo. Você deve preferir "
-"usar um intervalo menor que 24h, se necessário, emparelhar essa configuração"
-" com o uso de períodos de tempo"
+"Aviso, uso não convencional de verificação de intervalo. Você deve preferir usar um intervalo menor que 24h, se "
+"necessário, emparelhar essa configuração com o uso de períodos de tempo"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/formService.php:1125
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:1004
@@ -9219,7 +9152,7 @@ msgstr "Opções de Historico"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/servicegroup_dependency/formServiceGroupDependency.php:215
 msgid "Dependent Servicegroups"
-msgstr "Servicegroups dependentes"
+msgstr "Grupos de serviços dependentes"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/traps-mibs/formMibs.php:60
 msgid "Import SNMP traps from MIB file"
@@ -9284,8 +9217,7 @@ msgstr "Notificações de Serviço"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contactgroup/displayNotification.php:193
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact/displayNotification.php:198
 msgid "Please select a user in order to view his notifications"
-msgstr ""
-"Por favor, selecione um usuário na ordem para visualizar estas notificações"
+msgstr "Por favor, selecione um usuário na ordem para visualizar estas notificações"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contactgroup/formContactGroup.php:52
 msgid "You are not allowed to access this contact group"
@@ -9418,12 +9350,12 @@ msgstr "Nome Completo"
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact/formContact.php:249
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:199
 msgid "Contact template used"
-msgstr "Modèle de contact utilisé"
+msgstr "Modelo de Contato usado"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact/formContact.php:251
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:201
 msgid "Additional Addresses"
-msgstr "Adresses complémentaires"
+msgstr "Endereço adicional"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact/formContact.php:252
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:202
@@ -9714,7 +9646,7 @@ msgstr "Modo de Seleção"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/meta_service/formMetaService.php:175
 msgid "SQL LIKE-clause expression"
-msgstr "Expression SQL à rechercher de type LIKE"
+msgstr "Expressão SQL do tipo LIKE"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/meta_service/formMetaService.php:181
 msgid "Meta Service State"
@@ -9781,11 +9713,8 @@ msgid "View a Service Template Model"
 msgstr "Visualizar Modelo de Serviço"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:276
-msgid ""
-"Using a Template Model allows you to have multi-level Template connections"
-msgstr ""
-"Usando um  modelo permite que você tenha conexões de modelos de vários "
-"níveis"
+msgid "Using a Template Model allows you to have multi-level Template connections"
+msgstr "Usando um  modelo permite que você tenha conexões de modelos de vários níveis"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service_template_model/formServiceTemplateModel.php:284
 msgid "Linked to host templates"
@@ -9940,12 +9869,8 @@ msgstr "Comunidade SNMP"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:242
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host/formHost.php:442
-msgid ""
-"A host can have multiple templates, their orders have a significant "
-"importance"
-msgstr ""
-"Um host pode ter múltiplos modelos, a ordem deles tem importância "
-"significativa"
+msgid "A host can have multiple templates, their orders have a significant importance"
+msgstr "Um host pode ter múltiplos modelos, a ordem deles tem importância significativa"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:244
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host/formHost.php:444
@@ -9955,9 +9880,7 @@ msgstr "Aqui, uma imagem que fala por si."
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:246
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host/formHost.php:446
 msgid "Using a Template allows you to have multi-level Template connection"
-msgstr ""
-"Usando um Modelo, permite que vocẽ tenha multiplos nives de conexão com "
-"outros Modelos"
+msgstr "Usando um Modelo, permite que vocẽ tenha multiplos nives de conexão com outros Modelos"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:252
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:783
@@ -10107,7 +10030,7 @@ msgstr "URL de Notas"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/hostgroup/formHostGroup.php:151
 msgid "Map Icon"
-msgstr "Icône pour la carte"
+msgstr "Ícone do Mapa"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/hostgroup/formHostGroup.php:159
 msgid "RRD retention"
@@ -10568,9 +10491,7 @@ msgstr "Resultados do comando de Pós-Execução"
 #: /home/lgcosta/devel/centreon/centreon/src/CentreonRemote/Infrastructure/Service/PollerInteractionService.php:120
 #: /home/lgcosta/devel/centreon/centreon/src/CentreonRemote/Infrastructure/Service/PollerInteractionService.php:167
 msgid "Could not write into centcore.cmd. Please check file permissions."
-msgstr ""
-"Não foi possivel escrever no arquivo centcore.cmd, Verifique as pemissões do"
-" arquivo."
+msgstr "Não foi possivel escrever no arquivo centcore.cmd, Verifique as pemissões do arquivo."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configGenerate/xml/restartPollers.php:168
 msgid "<br><b>Centreon : </b>A reload signal has been sent to "
@@ -10939,13 +10860,11 @@ msgstr "Tempo máximo de Notificação"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:463
 msgid "Obsessive Compulsive Service Processor Timeout"
-msgstr ""
-"Tempo máximo de execução de um comando de controle pós-checagem de Serviço"
+msgstr "Tempo máximo de execução de um comando de controle pós-checagem de Serviço"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:464
 msgid "Obsessive Compulsive Host Processor Timeout"
-msgstr ""
-"Tempo máximo de execução de um comando de controle pós-checagem de Host"
+msgstr "Tempo máximo de execução de um comando de controle pós-checagem de Host"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:465
 msgid "Performance Data Processor Command Timeout"
@@ -11019,8 +10938,7 @@ msgstr "Intervalo de processamento de Arquivo de Dados de Performance do Host"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:533
 msgid "Service Performance Data File Processing Interval"
-msgstr ""
-"Intervalo de processamento de Arquivo de Dados de Performance do Serviço"
+msgstr "Intervalo de processamento de Arquivo de Dados de Performance do Serviço"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:540
 msgid "Host Performance Data File Processing Command"
@@ -11028,8 +10946,7 @@ msgstr "Comando de processamento de Arquivo de Dados de Performance do Host"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:546
 msgid "Service Performance Data File Processing Command"
-msgstr ""
-"Comando de processamento de Arquivo de Dados de Performance do Serviço"
+msgstr "Comando de processamento de Arquivo de Dados de Performance do Serviço"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:557
 msgid "Orphaned Service Check Option"
@@ -11093,9 +11010,7 @@ msgstr "Multiplo modulo Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:616
 msgid "This directive can be used multiple times, see nagios documentation."
-msgstr ""
-"Esta diretiva pode ser utilizada várias vezes, veja a documentação do "
-"Nagios."
+msgstr "Esta diretiva pode ser utilizada várias vezes, veja a documentação do Nagios."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:622
 msgid "Event broker directive"
@@ -11143,9 +11058,7 @@ msgstr "Tamanho máximo do arquivo de depuração"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:698
 msgid "Daemon core dumps"
-msgstr ""
-"Ativa a possibilidade de obter um \"core dump\" (não compatível com o "
-"Centreon Engine)"
+msgstr "Ativa a possibilidade de obter um \"core dump\" (não compatível com o Centreon Engine)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:701
 msgid "Basic information"
@@ -11344,8 +11257,7 @@ msgstr "Aviso : Este valor pode ser perigoso, use -1 se você tem dúvidas."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:925
 msgid "This option must be enabled for Centreon Dashboard module."
-msgstr ""
-"Esta opção deve ser ativa para o modulo de Painel de Controle do Centreon."
+msgstr "Esta opção deve ser ativa para o modulo de Painel de Controle do Centreon."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:926
 msgid "This option must be disable in order to avoid latency problem."
@@ -11829,7 +11741,7 @@ msgstr "Fim atual"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:297
 msgid "No downtime scheduled for services"
-msgstr "Aucun temps d'arrêt planifié pour les services"
+msgstr "Sem manutenções agendadas para os serviços"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:324
 msgid "Snmp Traps"
@@ -11845,7 +11757,7 @@ msgstr "Grupo de traps SNMP"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:387
 msgid "Host category"
-msgstr "Catégorie d'hôtes"
+msgstr "Categoria do Host"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:393
 msgid "Informations"
@@ -11861,7 +11773,7 @@ msgstr "Escala"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:414
 msgid "Service category"
-msgstr "Catégories de service"
+msgstr "Categoria do Serviço"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:438
 msgid "Service Scheduling Options"
@@ -11925,7 +11837,7 @@ msgstr "Configurações Básicas"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:555
 msgid "Inclusion"
-msgstr "Inclusion"
+msgstr "Inclusão"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:558
 msgid "Time Range exceptions"
@@ -11933,7 +11845,7 @@ msgstr "Exceções de Período de tempo"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:582
 msgid "You must set a poller for generate configuration."
-msgstr "Sélectionner un collecteur pour générer la configuration."
+msgstr "Você deve configurar um coletor para gerar configuração."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:594
 msgid "Back to Centreon Broker configuration menu"
@@ -12020,12 +11932,10 @@ msgid "The entire process should take around ten minutes."
 msgstr "O processo completo deve levar em torno de 10 minutos."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step1.php:57
-msgid ""
-"It is strongly recommended to make a backup of your databases before going "
-"any further."
+msgid "It is strongly recommended to make a backup of your databases before going any further."
 msgstr ""
-"É extremamente recomendável que você faça uma cópia de segurança dos seus "
-"bancos de dados antes de fazer qualquer coisa."
+"É extremamente recomendável que você faça uma cópia de segurança dos seus bancos de dados antes de fazer qualquer "
+"coisa."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step1.php:63
 msgid "Configuration file not found."
@@ -12041,11 +11951,8 @@ msgid "Installation"
 msgstr "Instalação"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step4.php:57
-msgid ""
-"<p>Currently upgrading database... please do not interrupt this process.</p>"
-msgstr ""
-"<p>Efetuando atualização de banco de dados ... por favor não interrompa este"
-" processo.</p>"
+msgid "<p>Currently upgrading database... please do not interrupt this process.</p>"
+msgstr "<p>Efetuando atualização de banco de dados ... por favor não interrompa este processo.</p>"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step4.php:61
 msgid "Step"
@@ -12056,12 +11963,8 @@ msgid "You seem to be having trouble with your upgrade."
 msgstr "Parece que você esta tendo problemas com sua atualização."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step4.php:70
-msgid ""
-"You may refer to the line that causes problem in order to find out more "
-"about the issue."
-msgstr ""
-"Você deve verificar a linha que esta causando  o problema para poder-mos "
-"encontrar uma resolução para este caso."
+msgid "You may refer to the line that causes problem in order to find out more about the issue."
+msgstr "Você deve verificar a linha que esta causando  o problema para poder-mos encontrar uma resolução para este caso."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step4.php:71
 #, php-format
@@ -12069,12 +11972,10 @@ msgid "The SQL files are located in %s"
 msgstr "Os arquivos SQL estão localizados em %s"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step4.php:72
-msgid ""
-"But do not edit the SQL files unless you know what you are doing.Refresh "
-"this page when the problem is fixed."
+msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
 msgstr ""
-"Mas não edite os arquivos SQL se você não souber o que esta fazendo. "
-"Atualize esta página para verificar se o problema foi resolvido."
+"Mas não edite os arquivos SQL se você não souber o que esta fazendo. Atualize esta página para verificar se o problema "
+"foi resolvido."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/index.php:15
 msgid "Centreon Installation"
@@ -12086,12 +11987,8 @@ msgstr "Atualização finalizada"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/step_upgrade/step5.php:62
 #, php-format
-msgid ""
-"Congratulations, you have successfully upgraded to Centreon version "
-"<b>%s</b>."
-msgstr ""
-"Parabéns, você efetuou com sucesso a atualização do Centreon para versão "
-"<b>%s</b>."
+msgid "Congratulations, you have successfully upgraded to Centreon version <b>%s</b>."
+msgstr "Parabéns, você efetuou com sucesso a atualização do Centreon para versão <b>%s</b>."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/menu_translation.php:37
 msgid "About"
@@ -12175,7 +12072,7 @@ msgstr "Centreon Map"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/menu_translation.php:58
 msgid "Centreon Map Client (admin)"
-msgstr "Client Centreon Map (admin)"
+msgstr "Cliente Centreon Map (admin)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/menu_translation.php:59
 msgid "Centreon Map Client (user)"
@@ -12623,9 +12520,7 @@ msgstr "Republicação ativada"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/centreon_broker_translation.php:87
 msgid "Rebuild check interval in seconds"
-msgstr ""
-"Intervalo de checagem da reconstrução de gráficos de performance (em "
-"segundos)"
+msgstr "Intervalo de checagem da reconstrução de gráficos de performance (em segundos)"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/centreon_broker_translation.php:88
 msgid "Store performance data in data_bin"
@@ -12644,12 +12539,10 @@ msgid "Store in performance data in data_bin"
 msgstr "Armazena dados no banco de performance em data_bin"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/steps/process/installConfigurationDb.php:65
-msgid ""
-"Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and "
-"restart MySQL Server."
+msgid "Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server."
 msgstr ""
-"Adicione a propriedade innodb_file_per_table=1 no arquivo my.cnf na seção "
-"[mysqld] e reinicie o servidor MySQL.veur MySQL."
+"Adicione a propriedade innodb_file_per_table=1 no arquivo my.cnf na seção [mysqld] e reinicie o servidor MySQL.veur "
+"MySQL."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/steps/process/insertBaseConf.php:97
 msgid "Cannot get timezone information"
@@ -12765,8 +12658,7 @@ msgstr "Selecione IP"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/react_translation.php:61
 msgid "Select pollers to be attached to this new Remote Server"
-msgstr ""
-"Selecione os coletores que devem ser anexados com o novo Servidor Remoto"
+msgstr "Selecione os coletores que devem ser anexados com o novo Servidor Remoto"
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/react_translation.php:62
 msgid "Finalizing Setup"
@@ -12830,14 +12722,11 @@ msgstr "Você precisa enviar '%s' na sua requisição."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/react_translation.php:76
 msgid "Some database poller updates are not active; check your configuration"
-msgstr ""
-"Algumas atualizações no banco de dados do coletor não estão ativas, "
-"verifique sua configuração."
+msgstr "Algumas atualizações no banco de dados do coletor não estão ativas, verifique sua configuração."
 
 #: /home/lgcosta/devel/centreon/centreon/www/install/react_translation.php:77
 msgid "Latency detected, check configuration for better optimization"
-msgstr ""
-"Latência detectada, verifique a configuração para uma melhor otimização"
+msgstr "Latência detectada, verifique a configuração para uma melhor otimização"
 
 #: /home/lgcosta/devel/centreon/centreon/src/CentreonLegacy/Core/Install/Step/Step3.php:48
 msgid "Monitoring engine information"
@@ -12903,12 +12792,11 @@ msgid "graph on"
 msgstr "gráfico em"
 
 msgid ""
-"Connection to Wiki database failed, please contact your administrator or "
-"read the Centreon online documentation to configure wiki access"
+"Connection to Wiki database failed, please contact your administrator or read the Centreon online documentation to "
+"configure wiki access"
 msgstr ""
-"Conexão com a base de dados da Wiki falhou, por favor entre em contato com o"
-" seu administrador ou leia a documentaçao online do Centreon parar "
-"configurar o acesso ao Wiki."
+"Conexão com a base de dados da Wiki falhou, por favor entre em contato com o seu administrador ou leia a documentaçao "
+"online do Centreon parar configurar o acesso ao Wiki."
 
 msgid "File Path"
 msgstr "Caminho do Arquivo"
@@ -13082,30 +12970,19 @@ msgid "General informations"
 msgstr "Informações Gerais"
 
 msgid "Could not find storage database. Session probably expired."
-msgstr ""
-"Não foi possivel encontrar o banco de dados. A sessão provavelmente expirou."
+msgstr "Não foi possivel encontrar o banco de dados. A sessão provavelmente expirou."
 
 msgid "Could not find configuration database. Session probably expired."
-msgstr ""
-"Não foi possivel encontrar a configurações do banco de dados. A sessão "
-"provavelmente expirou."
+msgstr "Não foi possivel encontrar a configurações do banco de dados. A sessão provavelmente expirou."
 
-msgid ""
-"Add open_files_limit=32000 in my.cnf file under the [mysqld] section and "
-"restart MySQL Server."
-msgstr ""
-"Adicione a propriedade open_files_limit=32000 no arquivo my.cnf na seção "
-"[mysqld] e reinicie o servidor MySQL."
+msgid "Add open_files_limit=32000 in my.cnf file under the [mysqld] section and restart MySQL Server."
+msgstr "Adicione a propriedade open_files_limit=32000 no arquivo my.cnf na seção [mysqld] e reinicie o servidor MySQL."
 
 msgid "Could not find database user. Session probably expired."
-msgstr ""
-"Não foi possivel encontrar o usuário do banco de dados. A sessão "
-"provavelmente expirou."
+msgstr "Não foi possivel encontrar o usuário do banco de dados. A sessão provavelmente expirou."
 
 msgid "Could not find CENTREON_ETC. Session probably expired."
-msgstr ""
-"Não foi possivel encontrar a variavel CENTREON_ETC . A sessão provavelmente "
-"expirou."
+msgstr "Não foi possivel encontrar a variavel CENTREON_ETC . A sessão provavelmente expirou."
 
 msgid "Database Host Address (default: localhost)"
 msgstr "Endereço do banco de dados (padrão: localhost)"
@@ -13134,12 +13011,8 @@ msgstr "Confirmar a senha de usuário"
 msgid "Broker Module information"
 msgstr "Informações do modulo Broker"
 
-msgid ""
-"This installer will help you setup your database and your monitoring "
-"configuration."
-msgstr ""
-"Este instalador irá lhe ajudar a configurar seu banco de dados e seu "
-"ambiente de monitoramento."
+msgid "This installer will help you setup your database and your monitoring configuration."
+msgstr "Este instalador irá lhe ajudar a configurar seu banco de dados e seu ambiente de monitoramento."
 
 msgid "Login"
 msgstr "Login"
@@ -13156,12 +13029,8 @@ msgstr "Sobrenome"
 msgid "Congratulations, you have successfully installed Centreon!"
 msgstr "Parabéns, o Centreon foi instalado com sucesso!"
 
-msgid ""
-"Currently installing database... please do not interrupt this "
-"process.<br/><br/>"
-msgstr ""
-"Efetuando a instalação do banco de dados ... por favor não interrompa este "
-"processo.<br/><br/>"
+msgid "Currently installing database... please do not interrupt this process.<br/><br/>"
+msgstr "Efetuando a instalação do banco de dados ... por favor não interrompa este processo.<br/><br/>"
 
 msgid "Configuration database"
 msgstr "Configuração do banco de dados"
@@ -13236,15 +13105,13 @@ msgid "Proxy protocol"
 msgstr "Protocolo Proxy"
 
 msgid "No view available. To create a new view, please click \"Add view\" button."
-msgstr ""
-"Nenhuma visão disponível. Para criar uma nova visão, clique no botão "
-"\"Adicionar visão\"."
+msgstr "Nenhuma visão disponível. Para criar uma nova visão, clique no botão \"Adicionar visão\"."
 
 msgid "Create a view"
 msgstr "Criar uma visão"
 
 msgid "Shared views list"
-msgstr "Liste des vues partagées"
+msgstr "Lista de visões compartilhadas"
 
 msgid "Edit a view"
 msgstr "Editar uma visão"
@@ -13358,12 +13225,11 @@ msgid "Start time"
 msgstr "Hora de Inicio"
 
 msgid ""
-"Only services and hosts are taken in account in order to calculate this "
-"status. If you modify a template, it won't tell you the configuration had "
-"changed."
+"Only services and hosts are taken in account in order to calculate this status. If you modify a template, it won't "
+"tell you the configuration had changed."
 msgstr ""
-"Apenas serviços e hosts são considerados para calcular esse status. Se você "
-"modificar um modelo, ele não informará que a configuração foi alterada."
+"Apenas serviços e hosts são considerados para calcular esse status. Se você modificar um modelo, ele não informará que "
+"a configuração foi alterada."
 
 msgid "Y/m/d"
 msgstr "d/m/Y"
@@ -13376,8 +13242,7 @@ msgstr "d/m/Y G:i"
 
 msgid "Right Click here to add an autologin link directly to your bookmarks"
 msgstr ""
-"Clique com o botão direito do mouse para adicionar o link de autenticação "
-"automatica diretamente no seu bookmarks"
+"Clique com o botão direito do mouse para adicionar o link de autenticação automatica diretamente no seu bookmarks"
 
 msgid "Please define autologin authentication key in your profile."
 msgstr "Por favor, defina uma chave de autenticação automatica no seu perfil."
@@ -13421,1112 +13286,1063 @@ msgstr "Visualização de Relatorio"
 msgid "Trash"
 msgstr "Lixeira"
 
-#~ msgid " element(s) found"
-#~ msgstr "élément(s) trouvé(s)"
+msgid " element(s) found"
+msgstr "item (s) encontrado (s)"
 
-#~ msgid "Select all"
-#~ msgstr "Tout sélectionner"
+msgid "Select all"
+msgstr "Selecionar tudo"
 
-#~ msgid "Add "
-#~ msgstr "Ajouter"
+msgid "Add "
+msgstr "Adicionar"
 
-#~ msgid " elements to selection ?"
-#~ msgstr "éléments à sélectioner?"
+msgid " elements to selection ?"
+msgstr "elementos para selecionar?"
 
-#~ msgid "Could not find utils database. Session probably expired."
-#~ msgstr ""
-#~ "Impossible de trouver la base de données du broker. La session a "
-#~ "probablement expirée"
+msgid "Could not find utils database. Session probably expired."
+msgstr "Não é possível encontrar o banco de dados do Broker. A sessão provavelmente expirou."
 
-#~ msgid ""
-#~ "The installation is now finished. To get further information regarding "
-#~ "Centreon please visit the following links"
-#~ msgstr ""
-#~ "L'installation est maintenant terminée. Pour plus d'informations concernant "
-#~ "Centreon utiliser les liens suivants"
+msgid "The installation is now finished. To get further information regarding Centreon please visit the following links"
+msgstr "A instalação está completa agora. Para mais informações sobre o Centreon, use os seguintes links"
 
-#~ msgid "Official website"
-#~ msgstr "Site web officiel"
+msgid "Official website"
+msgstr "Site oficial"
 
-#~ msgid "Forum"
-#~ msgstr "Forum"
+msgid "Forum"
+msgstr "Fórum"
 
-#~ msgid "Bug Tracker"
-#~ msgstr "Rapporter un bogue"
+msgid "Bug Tracker"
+msgstr "Reportar um erro"
 
-#~ msgid ""
-#~ "For professional support subscription please contact the <a "
-#~ "href=\"http://support.centreon.com\">Centreon Support Center</a>."
-#~ msgstr ""
-#~ "Pour la souscription à un support professionnel, contacter le <a "
-#~ "href=\"http://support.centreon.com\">Centre de Support Centreon</a>."
+msgid ""
+"For professional support subscription please contact the <a href=\"http://support.centreon.com\">Centreon Support "
+"Center</a>."
+msgstr ""
+"Pour la souscription à un support professionnel, contacter le <a href=\"http://support.centreon.com\">Centre de "
+"Support Centreon</a>."
 
-#~ msgid "Utils database name"
-#~ msgstr "Nom de la base de données temps réel"
+msgid "Utils database name"
+msgstr "Nome do banco de dados em tempo real"
 
-#~ msgid "Failover"
-#~ msgstr "Failover"
+msgid "Failover"
+msgstr "Failover"
 
-#~ msgid "File read path"
-#~ msgstr "Chemin du fichier en cours de lecture"
+msgid "File read path"
+msgstr "Caminho do arquivo sendo reproduzido"
 
-#~ msgid "File read offset"
-#~ msgstr "Indice de lecture du fichier"
+msgid "File read offset"
+msgstr "Índice de leitura de arquivo"
 
-#~ msgid "File write path"
-#~ msgstr "Chemin du fichier en cours d'écriture"
+msgid "File write path"
+msgstr "Caminho do arquivo sendo escrito"
 
-#~ msgid "File write offset"
-#~ msgstr "Indice d'écriture du fichier"
+msgid "File write offset"
+msgstr "Índice de Gravação de Arquivo"
 
-#~ msgid "File max size"
-#~ msgstr "Taille maximale du fichier"
+msgid "File max size"
+msgstr "Tamanho máximo do arquivo"
 
-#~ msgid "Temporary recovery mode"
-#~ msgstr "Activation du fichier temporaire"
+msgid "Temporary recovery mode"
+msgstr "Ativação do arquivo temporário"
 
-#~ msgid "Performance broker page work only with Centreon Broker."
-#~ msgstr "La page de performance fonctionne uniquement avec Centreon Broker."
+msgid "Performance broker page work only with Centreon Broker."
+msgstr "A página de desempenho só funciona com o Centreon Broker."
 
-#~ msgid "Widget Title"
-#~ msgstr "Titre du Widget"
+msgid "Widget Title"
+msgstr "Título do Widget"
 
-#~ msgid "Tree Focus"
-#~ msgstr "Focus sur l'arborescence"
+msgid "Tree Focus"
+msgstr "Concentre-se na árvore"
 
-#~ msgid "Metaservices"
-#~ msgstr "Méta-Service"
+msgid "Metaservices"
+msgstr "Meta-Service"
 
-#~ msgid "Split"
-#~ msgstr "Séparer"
+msgid "Split"
+msgstr "Separado"
 
-#~ msgid "Length"
-#~ msgstr "Taille"
+msgid "Length"
+msgstr "Size"
 
-#~ msgid "SNMP information"
-#~ msgstr "Informations SNMP"
+msgid "SNMP information"
+msgstr "Informação SNMP"
 
-#~ msgid "Global Community"
-#~ msgstr "Communauté globale"
+msgid "Global Community"
+msgstr "Comunidade global"
 
-#~ msgid "Directory of traps configuration files"
-#~ msgstr "Répertoire des fichiers de configuration des traps"
+msgid "Directory of traps configuration files"
+msgstr "Diretório de arquivos de configuração de trap"
 
-#~ msgid "snmpttconvertmib Directory + Binary"
-#~ msgstr "Chemin complet de l'exécutable snmpttconvertmib"
+msgid "snmpttconvertmib Directory + Binary"
+msgstr "Caminho completo para o executável snmpttconvertmib"
 
-#~ msgid "SNMPTT log file"
-#~ msgstr "Nom du Fichier de journalisation de SNMPTT"
+msgid "SNMPTT log file"
+msgstr "Nome do Arquivo de Log SNMPTT"
 
-#~ msgid "Perl library directory"
-#~ msgstr "Répertoire des librairies Perl"
+msgid "Perl library directory"
+msgstr "Perl Library Directory"
 
-#~ msgid "Can't read in directory"
-#~ msgstr "Impossible de lire dans le répertoire"
+msgid "Can't read in directory"
+msgstr "Não é possível ler no diretório"
 
-#~ msgid "Reporting time period"
-#~ msgstr "Période de génération des rapports"
+msgid "Reporting time period"
+msgstr "Período de relatório"
 
-#~ msgid "Start Hour"
-#~ msgstr "Heure de début"
+msgid "Start Hour"
+msgstr "Hora de início"
 
-#~ msgid "Start Minute"
-#~ msgstr "Minute de début"
+msgid "Start Minute"
+msgstr "Comece minuto"
 
-#~ msgid "End Hour"
-#~ msgstr "Heure de fin"
+msgid "End Hour"
+msgstr "Hora final"
 
-#~ msgid "End Minute"
-#~ msgstr "Minute de fin"
+msgid "End Minute"
+msgstr "Minuto final"
 
-#~ msgid "Centreon Broker socket path"
-#~ msgstr "Chemin d'accès au socket Unix de Centreon Broker"
+msgid "Centreon Broker socket path"
+msgstr "Caminho do soquete Centreon Broker Unix"
 
-#~ msgid "Add a Service comment"
-#~ msgstr "Ajouter pour un service"
+msgid "Add a Service comment"
+msgstr "Adicionar para um serviço"
 
-#~ msgid "Add a Service downtime"
-#~ msgstr "Planifier pour un service"
+msgid "Add a Service downtime"
+msgstr "Plano para um serviço"
 
-#~ msgid "Add a service downtime"
-#~ msgstr "Planifier pour service"
+msgid "Add a service downtime"
+msgstr "Plano de serviço"
 
-#~ msgid "Add a host downtime"
-#~ msgstr "Planifier pour un hôte"
+msgid "Add a host downtime"
+msgstr "Plano para um host"
 
-#~ msgid "Add a Host downtime"
-#~ msgstr "Ajouter un temps d'arrêt pour un hôte"
+msgid "Add a Host downtime"
+msgstr "Adicionar um tempo de inatividade para um host"
 
-#~ msgid "Select a downtime type"
-#~ msgstr "Sélectionner un type de temps d'arrêt"
+msgid "Select a downtime type"
+msgstr "Selecione um tipo de tempo de parada"
 
-#~ msgid "Connection Error to NDO DataBase ! \n"
-#~ msgstr "Erreur de connexion à la base de données NDO ! \n"
+msgid "Connection Error to NDO DataBase ! \n"
+msgstr "Erro ao conectar-se ao banco de dados NDO! \n"
 
-#~ msgid "Active Check"
-#~ msgstr "Contrôle actif"
+msgid "Active Check"
+msgstr "Controle ativo"
 
-#~ msgid "Last time up"
-#~ msgstr "Dernière fois dans un état up"
+msgid "Last time up"
+msgstr "A última vez em um estado"
 
-#~ msgid "Last time unreachable"
-#~ msgstr "Dernière fois dans un état injoignable"
+msgid "Last time unreachable"
+msgstr "Última vez em um estado inacessível"
 
-#~ msgid "Last ok time"
-#~ msgstr "Dernière fois dans un état ok"
+msgid "Last ok time"
+msgstr "Última vez em um estado ok"
 
-#~ msgid "Last warning time"
-#~ msgstr "Derniere fois dans un état warning"
+msgid "Last warning time"
+msgstr "Última vez em estado de alerta"
 
-#~ msgid "Last unknown time"
-#~ msgstr "Dernière fois dans un état inconnu"
+msgid "Last unknown time"
+msgstr "Última vez em um estado desconhecido"
 
-#~ msgid "Last critical time"
-#~ msgstr "Dernière fois dans un état critique"
+msgid "Last critical time"
+msgstr "Última vez em estado crítico"
 
-#~ msgid "Services: Set Downtime"
-#~ msgstr "Services: Planifier un temps d'arrêt"
+msgid "Services: Set Downtime"
+msgstr "Serviços: planeje um tempo limite"
 
-#~ msgid "Hosts: Set Downtime"
-#~ msgstr "Hôtes: Planifier un temps d'arrêt"
+msgid "Hosts: Set Downtime"
+msgstr "Hosts: planeje um tempo de parada"
 
-#~ msgid "Disacknowledge"
-#~ msgstr "Désacquittement"
+msgid "Disacknowledge"
+msgstr "Sem Conhecimento"
 
-#~ msgid "Enable Notification"
-#~ msgstr "Activer la Notification"
+msgid "Enable Notification"
+msgstr "Ativar notificação"
 
-#~ msgid "Disable Notification"
-#~ msgstr "Désactiver la Notification"
+msgid "Disable Notification"
+msgstr "Desativar notificação"
 
-#~ msgid "Enable Check"
-#~ msgstr "Activer la Vérification"
+msgid "Enable Check"
+msgstr "Ativar verificação"
 
-#~ msgid "Disable Check"
-#~ msgstr "Désactiver la Vérification"
+msgid "Disable Check"
+msgstr "Desativar verificação"
 
-#~ msgid "Sort by Name"
-#~ msgstr "Trier par nom"
+msgid "Sort by Name"
+msgstr "Ordenar por nome"
 
-#~ msgid "Host Category Name"
-#~ msgstr "Nom de la catégorie d'hôte"
+msgid "Host Category Name"
+msgstr "Nome da categoria do host"
 
-#~ msgid "Parent Template"
-#~ msgstr "Modèles parent"
+msgid "Parent Template"
+msgstr "Modelos pai"
 
-#~ msgid "Service Template Name"
-#~ msgstr "Nom du modèle de service"
+msgid "Service Template Name"
+msgstr "Nome do modelo de serviço"
 
-#~ msgid "Service Templates names"
-#~ msgstr "Noms des modèles de service"
+msgid "Service Templates names"
+msgstr "Nomes de modelos de serviço"
 
-#~ msgid "Parent Templates"
-#~ msgstr "Modèles parent"
+msgid "Parent Templates"
+msgstr "Modelos pai"
 
-#~ msgid "Host Templates name"
-#~ msgstr "Nom des modèles d'hôtes"
+msgid "Host Templates name"
+msgstr "Nome dos modelos de hosts"
 
-#~ msgid "Host Template Name"
-#~ msgstr "Nom du modèle d'hôte"
+msgid "Host Template Name"
+msgstr "Nome do modelo de host"
 
-#~ msgid "Host Parallel Templates"
-#~ msgstr "Modèles d'hôte parallèles"
+msgid "Host Parallel Templates"
+msgstr "Modelos de host paralelo"
 
-#~ msgid "Include Timeperiods"
-#~ msgstr "Inclure les périodes"
+msgid "Include Timeperiods"
+msgstr "Incluir períodos"
 
-#~ msgid "Meta Service Name"
-#~ msgstr "Nom du Méta-Service"
+msgid "Meta Service Name"
+msgstr "Nome do Meta Serviço"
 
-#~ msgid "Compulsory Contact Group"
-#~ msgstr "Groupe de contacts obligatoire"
+msgid "Compulsory Contact Group"
+msgstr "Grupo de Contato Obrigatório"
 
-#~ msgid "Service Group Name"
-#~ msgstr "Nom du groupe de services"
+msgid "Service Group Name"
+msgstr "Nome do Grupo de Serviço"
 
-#~ msgid "Include Comments"
-#~ msgstr "Inclure les commentaires"
+msgid "Include Comments"
+msgstr "Incluir comentários"
 
-#~ msgid "Monitoring Engine Configuration Files Export"
-#~ msgstr "Export des fichiers de configuration du moteur de supervision"
+msgid "Monitoring Engine Configuration Files Export"
+msgstr "Exportando arquivos de configuração do Supervisor Engine"
 
-#~ msgid "Generate Files"
-#~ msgstr "Générer les fichiers"
+msgid "Generate Files"
+msgstr "Gerar arquivos"
 
-#~ msgid "Dependencies Management"
-#~ msgstr "Gestion des dépendances"
+msgid "Dependencies Management"
+msgstr "Gerenciamento de Dependência"
 
-#~ msgid "Current Activation"
-#~ msgstr "Activation actuelle"
+msgid "Current Activation"
+msgstr "Ativação atual"
 
-#~ msgid "Relations between Elements"
-#~ msgstr "Relations entre les éléments"
+msgid "Relations between Elements"
+msgstr "Relações entre os elementos"
 
-#~ msgid "Export in XML too"
-#~ msgstr "Exporter également en XML"
+msgid "Export in XML too"
+msgstr "Exportar também em XML"
 
-#~ msgid "Run debug (-v)"
-#~ msgstr "Lancer le débogage (-v)"
+msgid "Run debug (-v)"
+msgstr "Iniciar a depuração (-v)"
 
-#~ msgid "Run Optimisation test (-s)"
-#~ msgstr "Lancer un test d'Optimisation (-s)"
+msgid "Run Optimisation test (-s)"
+msgstr "Executar um teste de otimização (-s)"
 
-#~ msgid "External Command"
-#~ msgstr "Commande externe"
+msgid "External Command"
+msgstr "Pedido externo"
 
-#~ msgid "Correlation"
-#~ msgstr "Activer la corrélation"
+msgid "Correlation"
+msgstr "Ativar correlação"
 
-#~ msgid "Apply configuration"
-#~ msgstr "Appliquer la configuration"
+msgid "Apply configuration"
+msgstr "Aplicar configuração"
 
-#~ msgid "SSH Private key"
-#~ msgstr "Clé privée SSH"
+msgid "SSH Private key"
+msgstr "Chave privada SSH"
 
-#~ msgid "Object Cache File"
-#~ msgstr "Fichier de cache des objets"
+msgid "Object Cache File"
+msgstr "Arquivo de cache de objetos"
 
-#~ msgid "Precached Object File"
-#~ msgstr "Fichier de pre-cache des objets"
+msgid "Precached Object File"
+msgstr "Arquivo de objeto de pré-cache"
 
-#~ msgid "Free child process memory"
-#~ msgstr "Libérer la mémoire des processus enfants"
+msgid "Free child process memory"
+msgstr "Memória livre de processos filhos"
 
-#~ msgid "Child processes fork twice"
-#~ msgstr "Création de deux processus enfants pour chaque contrôle"
+msgid "Child processes fork twice"
+msgstr "Criando dois processos filhos para cada controle"
 
-#~ msgid "Enable embedded Perl"
-#~ msgstr "Utilisation de l'interpréteur Perl intégré"
+msgid "Enable embedded Perl"
+msgstr "Usando o interpretador Perl interno"
 
-#~ msgid "Use embedded Perl implicitly"
-#~ msgstr "Utilisation implicite de l'interpréteur Perl intégré"
+msgid "Use embedded Perl implicitly"
+msgstr "Uso implícito do interpretador Perl integrado"
 
-#~ msgid "Embedded Perl initialisation file"
-#~ msgstr "Interpréteur Perl intégré"
+msgid "Embedded Perl initialisation file"
+msgstr "Intérprete Perl Integrado"
 
-#~ msgid "Perl"
-#~ msgstr "Perl"
+msgid "Perl"
+msgstr "Perl"
 
-#~ msgid "Centstorage debug"
-#~ msgstr "Débogage Centstorage"
+msgid "Centstorage debug"
+msgstr "Depuração do Centstorage"
 
-#~ msgid "Mminutes"
-#~ msgstr "Minutes"
+msgid "Mminutes"
+msgstr "Minutos"
 
-#~ msgid "Disable submit result if no matched rules"
-#~ msgstr "Désactiver la mise à jour du service si aucune règle n'est valide"
+msgid "Disable submit result if no matched rules"
+msgstr "Desativar atualização de serviço se nenhuma regra for válida"
 
-#~ msgid "The list of pollers is <a href=\"./main.php?p=60901\">here</a>."
-#~ msgstr ""
-#~ "La liste des collecteur est disponible <a "
-#~ "href=\"./main.php?p=60901\">ici</a>."
+msgid "The list of pollers is <a href=\"./main.php?p=60901\">here</a>."
+msgstr "A lista de coletores esta em <a href=\"./main.php?p=60901\">ici</a>."
 
-#~ msgid "<br><b>Centreon : </b>A force-reload signal has been sent to "
-#~ msgstr ""
-#~ "<br><b>Centreon : </b>Une commande de redémarrage forcée a été envoyée vers"
+msgid "<br><b>Centreon : </b>A force-reload signal has been sent to "
+msgstr "<br><b>Centreon : </b>Une commande de redémarrage forcée a été envoyée vers"
 
-#~ msgid "ACL rules"
-#~ msgstr "Règles d'accès"
+msgid "ACL rules"
+msgstr "Regras de acesso"
 
-#~ msgid "All Graphs"
-#~ msgstr "Tous les graphiques"
+msgid "All Graphs"
+msgstr "Todos os gráficos"
 
-#~ msgid "Business Intelligence"
-#~ msgstr "Business Intelligence"
+msgid "Business Intelligence"
+msgstr "Business Intelligence"
 
-#~ msgid "Centreon Map WS"
-#~ msgstr "Centreon Map WS"
+msgid "Centreon Map WS"
+msgstr "Centreon Map WS"
 
-#~ msgid "Centreon-Broker"
-#~ msgstr "Centreon Broker"
+msgid "Centreon-Broker"
+msgstr "Centreon Broker"
 
-#~ msgid "CentStorage"
-#~ msgstr "CentStorage"
+msgid "CentStorage"
+msgstr "CentStorage"
 
-#~ msgid "Check Version"
-#~ msgstr "Vérifier la version"
+msgid "Check Version"
+msgstr "Verifique a versão"
 
-#~ msgid "Donate"
-#~ msgstr "Donation"
+msgid "Donate"
+msgstr "Doação"
 
-#~ msgid "Host comments"
-#~ msgstr "Commentaires associés à l'hôte"
+msgid "Host comments"
+msgstr "Comentários relacionados ao host"
 
-#~ msgid "Interactive View"
-#~ msgstr "Vue interactive"
+msgid "Interactive View"
+msgstr "Visualização interativa"
 
-#~ msgid "Interactive view access"
-#~ msgstr "Vue interactive"
+msgid "Interactive view access"
+msgstr "Visualização interativa"
 
-#~ msgid "Manage"
-#~ msgstr "Gérer"
+msgid "Manage"
+msgstr "Gerenciar"
 
-#~ msgid "Monitoring Engine Statistics"
-#~ msgstr "Statistiques de l'ordonnanceur"
+msgid "Monitoring Engine Statistics"
+msgstr "Estatísticas do agendador"
 
-#~ msgid "Pre-Update"
-#~ msgstr "Pré-mise à jour"
+msgid "Pre-Update"
+msgstr "Pré-atualização"
 
-#~ msgid "Service comments"
-#~ msgstr "Commentaires pour ce service"
+msgid "Service comments"
+msgstr "Comentários para este serviço"
 
-#~ msgid "Support"
-#~ msgstr "Support"
+msgid "Support"
+msgstr "Apoio, suporte"
 
-#~ msgid "Web Site"
-#~ msgstr "Site web"
+msgid "Web Site"
+msgstr "Site web"
 
-#~ msgid "The CSRF * token is invalid, please click"
-#~ msgstr "Le jeton * CSRF est invalide, s'il vous plaît cliquer ici"
+msgid "The CSRF * token is invalid, please click"
+msgstr "O token * CSRF é inválido, por favor clique aqui"
 
-#~ msgid "* Cross-Site Request Forgery : unauthorized commands are transmitted"
-#~ msgstr ""
-#~ "* Cross-Site Request Forgery : des requêtes non autorisées ont été "
-#~ "transmises"
+msgid "* Cross-Site Request Forgery : unauthorized commands are transmitted"
+msgstr "* Cross-Site Request Forgery: pedidos não autorizados foram encaminhados"
 
-#~ msgid "Traceroute"
-#~ msgstr "Traceroute"
+msgid "Traceroute"
+msgstr "Traceroute"
 
-#~ msgid "Please wait..."
-#~ msgstr "Merci de patienter..."
+msgid "Please wait..."
+msgstr "Por favor espere ..."
 
-#~ msgid "Exclude Timeperiods"
-#~ msgstr "Exclure les périodes"
+msgid "Exclude Timeperiods"
+msgstr "Períodos excluídos"
 
-#~ msgid "Monitoring Engine configuration upload"
-#~ msgstr "Envoi de la configuration du moteur de supervision"
+msgid "Monitoring Engine configuration upload"
+msgstr "Enviando a configuração do mecanismo do supervisor"
 
-#~ msgid "Poller/Centreon Server"
-#~ msgstr "Collecteur"
+msgid "Poller/Centreon Server"
+msgstr "Collector"
 
-#~ msgid "Upload Options"
-#~ msgstr "Options d'envoi"
+msgid "Upload Options"
+msgstr "Opções de envio"
 
-#~ msgid "Delete all configuration for the chosen type of files"
-#~ msgstr "Supprimer toute la configuration des types de fichiers choisis"
+msgid "Delete all configuration for the chosen type of files"
+msgstr "Excluir toda a configuração dos tipos de arquivo selecionados"
 
-#~ msgid "Update definition in case of double definition"
-#~ msgstr "Mettre à jour la définition en cas de définition en double"
+msgid "Update definition in case of double definition"
+msgstr "Atualizar definição quando definição duplicada"
 
-#~ msgid "Include comments"
-#~ msgstr "Inclure les commentaires"
+msgid "Include comments"
+msgstr "Incluir comentários"
 
-#~ msgid "File Type"
-#~ msgstr "Type de fichier"
+msgid "File Type"
+msgstr "Tipo de arquivo"
 
-#~ msgid ""
-#~ "For archive upload, be sure that the first line of each file has no "
-#~ "importance because it is not handled.<br />Avoid to begin with a definition."
-#~ msgstr ""
-#~ "Pour un envoi de fichier, assurez vous que la première ligne de chaque "
-#~ "fichier n'ait pas d'importance car elle n'est pas prise en compte.<br "
-#~ "/>Evitez de commencer avec une définition."
+msgid ""
+"For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid "
+"to begin with a definition."
+msgstr ""
+"Ao enviar um arquivo, certifique-se de que a primeira linha de cada arquivo não seja importante, porque não é levada "
+"em conta. <br /> Evite começar com uma definição."
 
-#~ msgid "main.cfg"
-#~ msgstr "main.cfg"
+msgid "main.cfg"
+msgstr "main.cfg"
 
-#~ msgid "ndo2db.cfg"
-#~ msgstr "ndo2db.cfg"
+msgid "ndo2db.cfg"
+msgstr "Ndo2db.cfg"
 
-#~ msgid "ndomod.cfg"
-#~ msgstr "ndomod.cfg"
+msgid "ndomod.cfg"
+msgstr "ndomod.cfg"
 
-#~ msgid "cgi.cfg"
-#~ msgstr "cgi.cfg"
+msgid "cgi.cfg"
+msgstr "Cgi.cfg"
 
-#~ msgid "resource.cfg"
-#~ msgstr "resource.cfg"
+msgid "resource.cfg"
+msgstr "resource.cfg"
 
-#~ msgid "Template based method file"
-#~ msgstr "Fichier de méthode basé sur le modèle"
+msgid "Template based method file"
+msgstr "Arquivo de método baseado em modelo"
 
-#~ msgid "Notification Command"
-#~ msgstr "Commande de notification"
+msgid "Notification Command"
+msgstr "Comando de notificação"
 
-#~ msgid ""
-#~ "It is recommended to upload all the Command definitions first by specifying "
-#~ "their types."
-#~ msgstr ""
-#~ "Il est recommandé d'envoyer d'abord les définitions de commandes en "
-#~ "spécifiant leur type."
+msgid "It is recommended to upload all the Command definitions first by specifying their types."
+msgstr "É recomendável que você primeiro envie as definições de comando especificando seu tipo."
 
-#~ msgid ""
-#~ "Indeed, it's the only way to make a difference between Check and "
-#~ "Notification Commands."
-#~ msgstr ""
-#~ "En effet, c'est le seul moyen de différencier les commandes de notification "
-#~ "et de vérification."
+msgid "Indeed, it's the only way to make a difference between Check and Notification Commands."
+msgstr "De fato, essa é a única maneira de diferenciar os comandos de notificação e verificação."
 
-#~ msgid "File (zip, tar or cfg)"
-#~ msgstr "Fichier (zip, tar ou cfg)"
+msgid "File (zip, tar or cfg)"
+msgstr "Arquivo (zip, tar ou cfg)"
 
-#~ msgid "Manual Filling"
-#~ msgstr "Remplissage manuel"
+msgid "Manual Filling"
+msgstr "Preenchimento manual"
 
-#~ msgid "Increment"
-#~ msgstr "Incrément"
+msgid "Increment"
+msgstr "Incremento"
 
-#~ msgid "Replace"
-#~ msgstr "Remplacement"
+msgid "Replace"
+msgstr "Substituição"
 
-#~ msgid "Group member update behavior"
-#~ msgstr "Comportement de mise à jour des membres du groupe"
+msgid "Group member update behavior"
+msgstr "Atualizar o comportamento dos membros do grupo"
 
-#~ msgid "Create new object with prefix"
-#~ msgstr "Créer un nouvel objet avec un prefix"
+msgid "Create new object with prefix"
+msgstr "Criar um novo objeto com um prefixo"
 
-#~ msgid "Replace existing ones"
-#~ msgstr "Remplacer les fichiers existants"
+msgid "Replace existing ones"
+msgstr "Substituir arquivos existentes"
 
-#~ msgid "Behavior on duplicate names"
-#~ msgstr "Comportement sur les noms en doublon"
+msgid "Behavior on duplicate names"
+msgstr "Comportamento em nomes duplicados"
 
-#~ msgid "Prefix"
-#~ msgstr "Préfixe des tables"
+msgid "Prefix"
+msgstr "Prefixo de tabelas"
 
-#~ msgid "Load"
-#~ msgstr "Charger"
+msgid "Load"
+msgstr "Carregador"
 
-#~ msgid "Not supported extension"
-#~ msgstr "Extension non prise en charge"
+msgid "Not supported extension"
+msgstr "Extensão não suportada"
 
-#~ msgid "File loading OK"
-#~ msgstr "Chargement du fichier OK"
+msgid "File loading OK"
+msgstr "Carregando o arquivo OK"
 
-#~ msgid "Manual filling OK"
-#~ msgstr "Remplissage manuel OK"
+msgid "Manual filling OK"
+msgstr "Preenchimento manual OK"
 
-#~ msgid "File loading KO"
-#~ msgstr "Chargement du fichier KO"
+msgid "File loading KO"
+msgstr "Carregando o arquivo KO"
 
-#~ msgid "Data recovery OK"
-#~ msgstr "Récupération des données OK"
+msgid "Data recovery OK"
+msgstr "Recuperação de dados OK"
 
-#~ msgid "Data recovery KO"
-#~ msgstr "Récupération des données KO"
+msgid "Data recovery KO"
+msgstr "KO Recuperação de Dados"
 
-#~ msgid "Entries are registered"
-#~ msgstr "Les entrées sont enregistrées"
+msgid "Entries are registered"
+msgstr "As entradas são salvas"
 
-#~ msgid "Could not import ndo2db"
-#~ msgstr "Impossible d'importer ndo2db"
+msgid "Could not import ndo2db"
+msgstr "Impossível importar ndo2db"
 
-#~ msgid "Could not import ndomod"
-#~ msgstr "Impossible d'importer ndomod"
+msgid "Could not import ndomod"
+msgstr "Impossível importar ndomod"
 
-#~ msgid "Import behavior"
-#~ msgstr "Résultat de l'import"
+msgid "Import behavior"
+msgstr "Resultado da importação"
 
-#~ msgid "Display Options"
-#~ msgstr "Options d'affichage"
+msgid "Display Options"
+msgstr "Opções de exibição"
 
-#~ msgid "Archive logs of monitoring engine"
-#~ msgstr "Journaux d'archive du moteur de supervision"
+msgid "Archive logs of monitoring engine"
+msgstr "Registros de arquivo do mecanismo de supervisão"
 
-#~ msgid "Centstorage Configuration"
-#~ msgstr "Configuration de Centstorage"
+msgid "Centstorage Configuration"
+msgstr "Configuração do Centstorage"
 
-#~ msgid "in seconds - Must be higher than 10"
-#~ msgstr "en secondes - Doit être supérieur à 10"
+msgid "in seconds - Must be higher than 10"
+msgstr "em segundos - deve ser maior que 10"
 
-#~ msgid "in seconds - Must be higher than 2"
-#~ msgstr "en secondes - Doit etre supérieur à 2"
+msgid "in seconds - Must be higher than 2"
+msgstr "em segundos - deve ser maior que 2"
 
-#~ msgid "Retain Satus Information"
-#~ msgstr "Rétention des informations de statut"
+msgid "Retain Satus Information"
+msgstr "Informações do status de retenção"
 
-#~ msgid "Additionnal Information"
-#~ msgstr "Informations complémentaires"
+msgid "Additionnal Information"
+msgstr "Informação adicional"
 
-#~ msgid "Choose a host, then its associated service."
-#~ msgstr "Choisir un hôte, puis son service associé."
+msgid "Choose a host, then its associated service."
+msgstr "Escolha um host e, em seguida, seu serviço associado."
 
-#~ msgid "Host / Service Data Source"
-#~ msgstr "Source de données Hôte / Service"
+msgid "Host / Service Data Source"
+msgstr "Fonte de Dados do Host / Serviço"
 
-#~ msgid "Required Fields 'Host' and 'Service' list"
-#~ msgstr "Champs requis dans la liste des 'Hôtes' et des 'Services'"
+msgid "Required Fields 'Host' and 'Service' list"
+msgstr "Campos obrigatórios na lista de` Hosts` e `Services`"
 
-#~ msgid "Required Field 'Service' list"
-#~ msgstr "Champ requis dans la liste 'Service'"
+msgid "Required Field 'Service' list"
+msgstr "Campo obrigatório na lista\" Service` "
 
-#~ msgid "Grid background color"
-#~ msgstr "Couleur d'arrière plan de la grille"
+msgid "Grid background color"
+msgstr "Cor de fundo da grade"
 
-#~ msgid "Main grid color"
-#~ msgstr "Couleur principale de la grille"
+msgid "Main grid color"
+msgstr "Cor principal da grade"
 
-#~ msgid "Secondary grid color"
-#~ msgstr "Couleur secondaire de la grille"
+msgid "Secondary grid color"
+msgstr "Cor secundária da grade"
 
-#~ msgid "Outline color"
-#~ msgstr "Schéma de couleurs"
+msgid "Outline color"
+msgstr "Esquema de cores"
 
-#~ msgid "Background color"
-#~ msgstr "Couleur d'arrière plan"
+msgid "Background color"
+msgstr "Cor de fundo"
 
-#~ msgid "Text color"
-#~ msgstr "Couleur du texte"
+msgid "Text color"
+msgstr "Cor do texto"
 
-#~ msgid "Arrow color"
-#~ msgstr "Couleur de la flèche des axes"
+msgid "Arrow color"
+msgstr "Cor da seta do eixo"
 
-#~ msgid "Top color"
-#~ msgstr "Couleur du haut"
+msgid "Top color"
+msgstr "Cor do topo"
 
-#~ msgid "Bottom color"
-#~ msgstr "Couleur du bas"
+msgid "Bottom color"
+msgstr "Cor do fundo"
 
-#~ msgid "Data Source Choice"
-#~ msgstr "Choix de la source de données"
+msgid "Data Source Choice"
+msgstr "Escolhendo a fonte de dados"
 
-#~ msgid "Data Source List"
-#~ msgstr "List des sources de données"
+msgid "Data Source List"
+msgstr "Lista de fontes de dados"
 
-#~ msgid "Hosts list"
-#~ msgstr "Hôtes"
+msgid "Hosts list"
+msgstr "hosts"
 
-#~ msgid "Graph List"
-#~ msgstr "Liste des graphiques"
+msgid "Graph List"
+msgstr "Lista de gráficos"
 
-#~ msgid "Force Reload"
-#~ msgstr "Forcer le rechargement"
+msgid "Force Reload"
+msgstr "Forçar o recarregamento"
 
-#~ msgid "Low Flap threshold"
-#~ msgstr "Seuil bas de détection de bagotage des statuts"
+msgid "Low Flap threshold"
+msgstr "Limiar baixo de detecção de status de bagotage"
 
-#~ msgid "Implied Hosts"
-#~ msgstr "Hôtes liés"
+msgid "Implied Hosts"
+msgstr "Anfitriões ligados"
 
-#~ msgid "Implied Services"
-#~ msgstr "Services liés"
+msgid "Implied Services"
+msgstr "Serviços relacionados"
 
-#~ msgid "Implied Host Groups"
-#~ msgstr "Groupes d'hôtes liés"
+msgid "Implied Host Groups"
+msgstr "Grupos relacionados de hosts"
 
-#~ msgid "Implied Meta Services"
-#~ msgstr "Méta-Services liés"
+msgid "Implied Meta Services"
+msgstr "Meta Serviços Relacionados"
 
-#~ msgid "Implied Service Groups"
-#~ msgstr "Groupes de services liés"
+msgid "Implied Service Groups"
+msgstr "Grupos de serviços relacionados"
 
-#~ msgid "Meta Services Escalation"
-#~ msgstr "Escalades des Méta-Services"
+msgid "Meta Services Escalation"
+msgstr "Escalades des Méta-Services"
 
-#~ msgid "Servicegroups Escalation"
-#~ msgstr "Escalades des groupes de services"
+msgid "Servicegroups Escalation"
+msgstr "Escalonamentos de grupos de serviço"
 
-#~ msgid "Default Engine"
-#~ msgstr "Moteur par défaut"
+msgid "Default Engine"
+msgstr "Mecanismo padrão"
 
-#~ msgid "Enable strict mode for host parentship management"
-#~ msgstr "Activer le mode strict de gestion des relations de parentés"
+msgid "Enable strict mode for host parentship management"
+msgstr "Ativar o modo estrito de gerenciamento de relacionamento"
 
-#~ msgid "Configuration UI behavior"
-#~ msgstr "Configuration du comportement de l'interface"
+msgid "Configuration UI behavior"
+msgstr "Configurando o comportamento da interface"
 
-#~ msgid "Censtorage Core Options"
-#~ msgstr "Options du processus Censtorage"
+msgid "Censtorage Core Options"
+msgstr "Opções do Processo Censtorage"
 
-#~ msgid "Drop possibility after parsing performance data"
-#~ msgstr "Actions après traitement des données de performances"
+msgid "Drop possibility after parsing performance data"
+msgstr "Ações após o processamento de dados de desempenho"
 
-#~ msgid "Logs Integration Properties"
-#~ msgstr "Propriétés des logs de Nagios"
+msgid "Logs Integration Properties"
+msgstr "Propriedades dos logs do Nagios"
 
-#~ msgid "Enable Centstorage Engine (require restart of centstorage)"
-#~ msgstr ""
-#~ "Active le Moteur de Centstorage (requiert le redémarrage de centstorage)"
+msgid "Enable Centstorage Engine (require restart of centstorage)"
+msgstr "Active le Moteur de Centstorage (requiert le redémarrage de centstorage)"
 
-#~ msgid "RRDTool auto delete"
-#~ msgstr "Auto suppression des fichiers RRD non utilisés"
+msgid "RRDTool auto delete"
+msgstr "Exclusão automática de arquivos RRD não utilizados"
 
-#~ msgid "Purge check interval"
-#~ msgstr "Intervalle de contrôle de la purge"
+msgid "Purge check interval"
+msgstr "Intervalo de controle de limpeza"
 
-#~ msgid "Drop Data in another file"
-#~ msgstr "Copier les données dans un autre fichier"
+msgid "Drop Data in another file"
+msgstr "Copie os dados para outro arquivo"
 
-#~ msgid "Drop file"
-#~ msgstr "Copier dans le fichier"
+msgid "Drop file"
+msgstr "Copiar para arquivo"
 
-#~ msgid "RRDTool & MySQL"
-#~ msgstr "RRDTool & MySQL"
+msgid "RRDTool & MySQL"
+msgstr "RRDTool e MySQL"
 
-#~ msgid "Hosts status colors"
-#~ msgstr "Couleurs pour le statut des hôtes"
+msgid "Hosts status colors"
+msgstr "Cores para o status dos convidados"
 
-#~ msgid "Services status colors"
-#~ msgstr "Couleurs pour le statut des services"
+msgid "Services status colors"
+msgstr "Cores para o status dos serviços"
 
-#~ msgid "Specifics for hosts"
-#~ msgstr "Spécificités des hôtes"
+msgid "Specifics for hosts"
+msgstr "Especificidades de hosts"
 
-#~ msgid "Host UP Color"
-#~ msgstr "Couleur d'hôte DISPONIBLE"
+msgid "Host UP Color"
+msgstr "Host color AVAILABLE"
 
-#~ msgid "Host DOWN Color"
-#~ msgstr "Couleur d'hôte INDISPONIBLE"
+msgid "Host DOWN Color"
+msgstr "Cor do host não disponível"
 
-#~ msgid "Host UNREACHABLE Color"
-#~ msgstr "Couleur d'hôte INJOIGNABLE"
+msgid "Host UNREACHABLE Color"
+msgstr "Cor do hospedeiro INJOIGNABLE"
 
-#~ msgid "Service OK Color"
-#~ msgstr "Couleur de service OK"
+msgid "Service OK Color"
+msgstr "Cor do serviço OK"
 
-#~ msgid "Service WARNING Color"
-#~ msgstr "Couleur de service WARNING"
+msgid "Service WARNING Color"
+msgstr "ATENÇÃO cor de serviço"
 
-#~ msgid "Service CRITICAL Color"
-#~ msgstr "Couleur de service CRITIQUE"
+msgid "Service CRITICAL Color"
+msgstr "COR DE SERVIÇO CRÍTICO"
 
-#~ msgid "Row Color for Service CRITICAL"
-#~ msgstr "Couleur de la ligne pour un service CRITIQUE"
+msgid "Row Color for Service CRITICAL"
+msgstr "Cor da linha para um serviço CRÍTICO"
 
-#~ msgid "Service PENDING Color"
-#~ msgstr "Couleur de service en ATTENTE"
+msgid "Service PENDING Color"
+msgstr "Aguardando cor de serviço"
 
-#~ msgid "Service UNKNOWN Color"
-#~ msgstr "Couleur de service INCONNU"
+msgid "Service UNKNOWN Color"
+msgstr "Cor do serviço DESCONHECIDO"
 
-#~ msgid "Acknowledge host or service Color"
-#~ msgstr "Couleur des hôtes ou des services acquittés"
+msgid "Acknowledge host or service Color"
+msgstr "Cor dos anfitriões ou serviços pagos"
 
-#~ msgid "Downtime host or service Color"
-#~ msgstr "Couleur des hôtes ou des services en temps d'arrêt"
+msgid "Downtime host or service Color"
+msgstr "Cor dos hosts ou serviços paralisados"
 
-#~ msgid "Color for host Down (Service view)"
-#~ msgstr ""
-#~ "Couleur pour les hôtes en statut problèmatique (page de supervision des "
-#~ "services)"
+msgid "Color for host Down (Service view)"
+msgstr "Cor para hosts em status problemático (página de supervisão de serviço)"
 
-#~ msgid "Color for host Unreachable (Service view)"
-#~ msgstr ""
-#~ "Couleur pour les hôtes non joignable (page de supervision des services)"
+msgid "Color for host Unreachable (Service view)"
+msgstr "Cor para hosts não alcançáveis (página de supervisão de serviço)"
 
-#~ msgid "Status Color Properties"
-#~ msgstr "Définition des couleurs"
+msgid "Status Color Properties"
+msgstr "Definição de cor"
 
-#~ msgid "Browser detected"
-#~ msgstr "Navigateur détecté"
+msgid "Browser detected"
+msgstr "Browser detectado"
 
-#~ msgid "Status summarized by Hostgroups"
-#~ msgstr "Résumé des états par groupes d'hôtes"
+msgid "Status summarized by Hostgroups"
+msgstr "Resumo de estados por grupos de hosts"
 
-#~ msgid "Scheduling Queue"
-#~ msgstr "File d'attente"
+msgid "Scheduling Queue"
+msgstr "Fila"
 
-#~ msgid "All Logs"
-#~ msgstr "Tous les logs"
+msgid "All Logs"
+msgstr "Todos os logs"
 
-#~ msgid "Warnings"
-#~ msgstr "Alertes"
+msgid "Warnings"
+msgstr "Alertas"
 
-#~ msgid "nagios.cfg"
-#~ msgstr "nagios.cfg"
+msgid "nagios.cfg"
+msgstr "nagios.cfg"
 
-#~ msgid "resources"
-#~ msgstr "ressources"
+msgid "resources"
+msgstr "Recursos"
 
-#~ msgid "cgi"
-#~ msgstr "cgi"
+msgid "cgi"
+msgstr "cgi"
 
-#~ msgid "Wiki"
-#~ msgstr "Wiki"
+msgid "Wiki"
+msgstr "Wiki"
 
-#~ msgid "SNMP"
-#~ msgstr "SNMP"
+msgid "SNMP"
+msgstr "SNMP"
 
-#~ msgid "Optimize"
-#~ msgstr "Optimiser"
+msgid "Optimize"
+msgstr "Otimizar"
 
-#~ msgid "Global Health"
-#~ msgstr "Santé globale"
+msgid "Global Health"
+msgstr "Saúde global"
 
-#~ msgid "Directories"
-#~ msgstr "Répertoires"
+msgid "Directories"
+msgstr "Diretórios"
 
-#~ msgid "Process Info"
-#~ msgstr "Informations sur le processus"
+msgid "Process Info"
+msgstr "Informação do processo"
 
-#~ msgid "Process Control"
-#~ msgstr "Informations sur le processus"
+msgid "Process Control"
+msgstr "Informação do processo"
 
-#~ msgid "System Information"
-#~ msgstr "Information sur le système"
+msgid "System Information"
+msgstr "Informação do Sistema"
 
-#~ msgid "Monitoring Engines"
-#~ msgstr "Moteurs de supervision"
+msgid "Monitoring Engines"
+msgstr "Motores de supervisão"
 
-#~ msgid "Extra"
-#~ msgstr "Extra"
+msgid "Extra"
+msgstr "Extra"
 
-#~ msgid "command"
-#~ msgstr "commande"
+msgid "command"
+msgstr "Control"
 
-#~ msgid "timeperiod"
-#~ msgstr "période de temps"
+msgid "timeperiod"
+msgstr "período de tempo"
 
-#~ msgid "contact"
-#~ msgstr "contact"
+msgid "contact"
+msgstr "contato"
 
-#~ msgid "contactgroup"
-#~ msgstr "groupe de contacts"
+msgid "contactgroup"
+msgstr "grupo de contatos"
 
-#~ msgid "hostgroup"
-#~ msgstr "groupe d'hôtes"
+msgid "hostgroup"
+msgstr "grupo de hosts"
 
-#~ msgid "servicegroup"
-#~ msgstr "groupe de services"
+msgid "servicegroup"
+msgstr "grupo de serviço"
 
-#~ msgid "snmp traps"
-#~ msgstr "traps snmp"
+msgid "snmp traps"
+msgstr "armadilhas snmp"
 
-#~ msgid "escalation"
-#~ msgstr "escalade"
+msgid "escalation"
+msgstr "Escalada"
 
-#~ msgid "host dependency"
-#~ msgstr "dépendance d'hôte"
+msgid "host dependency"
+msgstr "dependência de host"
 
-#~ msgid "hostgroup dependency"
-#~ msgstr "dépendance de groupe d'hôtes"
+msgid "hostgroup dependency"
+msgstr "dependência de grupo"
 
-#~ msgid "service dependency"
-#~ msgstr "dépendance de service"
+msgid "service dependency"
+msgstr "dependência de serviço"
 
-#~ msgid "servicegroup dependency"
-#~ msgstr "dépendance de groupe de services"
+msgid "servicegroup dependency"
+msgstr "dependência do grupo de serviços"
 
-#~ msgid "Yearly"
-#~ msgstr "Annuel"
+msgid "Yearly"
+msgstr "Anual"
 
-#~ msgid "Private key file. "
-#~ msgstr "Clé privée SSH"
+msgid "Private key file. "
+msgstr "Chave privada SSH"
 
-#~ msgid "Informational messages "
-#~ msgstr "Événements de type information"
+msgid "Informational messages "
+msgstr "Eventos de Informação"
 
-#~ msgid "Centreon Broker information"
-#~ msgstr "Information sur Centreon Broker"
+msgid "Centreon Broker information"
+msgstr "Informações sobre o Broker Centreon"
 
-#~ msgid "Centreon-Broker Correlation"
-#~ msgstr "Corrélation Centreon Broker"
+msgid "Centreon-Broker Correlation"
+msgstr "Correlação Centreon-Broker"
 
-#~ msgid "Centreon-Broker Input"
-#~ msgstr "Entrées Centreon Broker"
+msgid "Centreon-Broker Input"
+msgstr "Entradas do Broker Centreon"
 
-#~ msgid "Centreon-Broker Logger"
-#~ msgstr "Journalisation Centreon Broker"
+msgid "Centreon-Broker Logger"
+msgstr "Centreon Broker Registrador"
 
-#~ msgid "Centreon-Broker Output"
-#~ msgstr "Sorties Centreon Broker"
+msgid "Centreon-Broker Output"
+msgstr "Centreon Broker Saída"
 
-#~ msgid "Centreon-Broker Stats"
-#~ msgstr "Statistiques Centreon Broker"
+msgid "Centreon-Broker Stats"
+msgstr "Centreon Broker Estatisticas"
 
-#~ msgid "Centreon-Broker Temporary"
-#~ msgstr "Buffer Centreon Broker"
+msgid "Centreon-Broker Temporary"
+msgstr "Buffer Centreon Broker"
 
-#~ msgid "No Comment for hosts."
-#~ msgstr "Pas de commentaires pour les hôtes."
+msgid "No Comment for hosts."
+msgstr "Sem comentários para convidados."
 
-#~ msgid "View comments of services"
-#~ msgstr "Visualiser les commentaires des services"
+msgid "View comments of services"
+msgstr "Ver comentários do serviço"
 
-#~ msgid "Useres"
-#~ msgstr "Utilisateurs"
+msgid "Useres"
+msgstr "Usuários"
 
-#~ msgid "Compulsory Contact"
-#~ msgstr "Contact obligatoire"
+msgid "Compulsory Contact"
+msgstr "Contato obrigatório"
 
-#~ msgid "External commands"
-#~ msgstr "Commandes externes"
+msgid "External commands"
+msgstr "Comandos externos"
 
-#~ msgid "Contact templace"
-#~ msgstr "Modèle de contact"
+msgid "Contact templace"
+msgstr "Modelo de contato"
 
-#~ msgid "You are"
-#~ msgstr "Vous êtes"
+msgid "You are"
+msgstr "Você é"
 
-#~ msgid "Orphan hosts"
-#~ msgstr "Hôtes orphelins"
+msgid "Orphan hosts"
+msgstr "Órfãos"
 
-#~ msgid "ServiceGroups"
-#~ msgstr "Groupes de services"
+msgid "ServiceGroups"
+msgstr "Grupos de serviço"
 
-#~ msgid "Orphan Hosts"
-#~ msgstr "Hôtes seuls"
+msgid "Orphan Hosts"
+msgstr "Hosts sozinho"
 
-#~ msgid "Acknowledge/Disacknowledge a service"
-#~ msgstr "Acquitter/Désacquitter un service"
+msgid "Acknowledge/Disacknowledge a service"
+msgstr "Conhecimento / Sem Conhecimento de um serviço"
 
-#~ msgid "Acknowledge/Disaknowledge a host"
-#~ msgstr "Acquitter/Désacquitter un hôte"
+msgid "Acknowledge/Disaknowledge a host"
+msgstr "Acquitar / Desativar o Som de um Host"
 
-#~ msgid "Cannot get last version"
-#~ msgstr "Impossible d'obtenir la dernière version"
+msgid "Cannot get last version"
+msgstr "Não é possível obter a versão mais recente"
 
-#~ msgid "Security patch available"
-#~ msgstr "Correctif de sécurité disponible"
+msgid "Security patch available"
+msgstr "Patch de segurança disponível"
 
-#~ msgid "Update patch available"
-#~ msgstr "Correctif de mise à jour disponible"
+msgid "Update patch available"
+msgstr "Atualizar patch disponível"
 
-#~ msgid "Centreon is updated."
-#~ msgstr "Centreon a été mis à jour."
+msgid "Centreon is updated."
+msgstr "O Centreon foi atualizado."
 
-#~ msgid "Execution start"
-#~ msgstr "Début de l'exécution"
+msgid "Execution start"
+msgstr "Início da execução"
 
-#~ msgid "Error when installing patch : %s."
-#~ msgstr "Erreur lors de l'installation du correctif : %s."
+msgid "Can't get list of files."
+msgstr "Não é possível obter a lista de arquivos."
 
-#~ msgid "%s patch is installed."
-#~ msgstr "le correctif %s a été installé."
+msgid "Can't open configuration file : /etc/oreon.conf"
+msgstr "Não foi possível abrir o arquivo de configuração: /etc/oreon.conf"
 
-#~ msgid "Can't get list of files."
-#~ msgstr "Impossible d'obtenir la liste des fichiers."
+msgid "Can't get file'"
+msgstr "Não é possível obter o arquivo"
 
-#~ msgid "Can't open configuration file : /etc/oreon.conf"
-#~ msgstr "Impossible d'ouvrir le fichier de configuration : /etc/oreon.conf"
+msgid "In order to complete your upgrade (%s), unzip the downloaded file, and follow the instructions in README\n"
+msgstr "Para concluir a atualização (%s), descompacte o arquivo baixado e siga as instruções no arquivo README\n"
 
-#~ msgid "Can't get file'"
-#~ msgstr "Impossible d'obtenir le fichier"
+msgid "Can't open patch"
+msgstr "Não é possível abrir a correção"
 
-#~ msgid "%s is downloaded."
-#~ msgstr "%s est téléchargé."
+msgid "Change update options"
+msgstr "Alterar opções de atualização"
 
-#~ msgid ""
-#~ "In order to complete your upgrade (%s), unzip the downloaded file, and "
-#~ "follow the instructions in README\n"
-#~ msgstr ""
-#~ "Afin de terminer la mise à jour (%s), décompressez le fichier téléchargé, et"
-#~ " suivez les instructions du fichier README\n"
+msgid "Check stable versions"
+msgstr "Verificar atualizações de versão estáveis"
 
-#~ msgid "Can't open patch"
-#~ msgstr "Impossible d'ouvrir le correctif"
+msgid "Check patches"
+msgstr "Verifique se há atualizações de patch"
 
-#~ msgid "launch %s with root permissions.\n"
-#~ msgstr "lancer %s avec les permissions root.\n"
+msgid "Check secu-patches"
+msgstr "Verificar atualizações de patch de segurança"
 
-#~ msgid "Change update options"
-#~ msgstr "Modifier les options de mise à jour"
+msgid "Check Release candidate"
+msgstr "Verificar atualizações de versão candidatas"
 
-#~ msgid "Check stable versions"
-#~ msgstr "Vérifier les mises à jour de version stable"
+msgid "Check Beta"
+msgstr "Verifique as atualizações da versão beta"
 
-#~ msgid "Check patches"
-#~ msgstr "Vérifier les mises à jour de correctifs"
+msgid "Patch Download path"
+msgstr "Diretório para baixar os patches"
 
-#~ msgid "Check secu-patches"
-#~ msgstr "Vérifier les mises à jour de correctifs de sécurité"
+msgid "Broker engine used by Centreon"
+msgstr "Corretor usado pelo Centreon"
 
-#~ msgid "Check Release candidate"
-#~ msgstr "Vérifier les mises à jour de version candidate"
+msgid "Refresh Interval"
+msgstr "Intervalo de atualização"
 
-#~ msgid "Check Beta"
-#~ msgstr "Vérifier les mises à jour de version beta"
+msgid "First Refresh delay for statistics"
+msgstr "Primeiro tempo de atualização para a página de estatísticas"
 
-#~ msgid "Patch Download path"
-#~ msgstr "Répertoire pour le téléchargement des correctifs"
+msgid "First Refresh delay for monitoring"
+msgstr "Primeiro tempo de atualização para a página de supervisão"
 
-#~ msgid "Broker engine used by Centreon"
-#~ msgstr "Broker utilisé par Centreon"
+msgid "Default host timezone"
+msgstr "Fuso horário padrão do host"
 
-#~ msgid "Refresh Interval"
-#~ msgstr "Intervalle de rafraîchissement"
+msgid "Enable resources's insertion in index_data by Centreon"
+msgstr "Ativar a inserção de recursos em index_data pelo Centreon"
 
-#~ msgid "First Refresh delay for statistics"
-#~ msgstr "Délai du premier rafraîchissement pour la page des statistiques"
+msgid "Enable Perfdata Synchronisation"
+msgstr "Ativar sincronização de dados de desempenho"
 
-#~ msgid "First Refresh delay for monitoring"
-#~ msgstr "Délai du premier rafraîchissement pour la page de supervision"
+msgid "Enable Logs Synchronisation"
+msgstr "Ativar sincronização de log"
 
-#~ msgid "Default host timezone"
-#~ msgstr "Timezone par défaut de l'hôte"
+msgid "On Problem Host"
+msgstr "Sobre o problema do host"
 
-#~ msgid "Enable resources's insertion in index_data by Centreon"
-#~ msgstr "Activer l'insertion de ressources dans index_data par Centreon"
+msgid "Unhandled"
+msgstr "Sem tratados"
 
-#~ msgid "Enable Perfdata Synchronisation"
-#~ msgstr "Activer la synchronisation des données de performance"
+msgid "No unhandled service problem"
+msgstr "Nenhum problema de serviço não pago"
 
-#~ msgid "Enable Logs Synchronisation"
-#~ msgstr "Activer la synchronisation des logs"
+msgid "Service Name"
+msgstr "Nome do serviço"
 
-#~ msgid "Availability: %s%%"
-#~ msgstr "Disponibilité : %s%%"
+msgid "C"
+msgstr "C"
 
-#~ msgid "On Problem Host"
-#~ msgstr "Sur Problème de l'hôte"
+msgid "Status Output"
+msgstr "Informação de status"
 
-#~ msgid "Unhandled"
-#~ msgstr "Non Traités"
+msgid "No unhandled host problem"
+msgstr "Nenhum problema de host não pago"
 
-#~ msgid "Unhandled Service problems (last %s)"
-#~ msgstr "Problèmes de service non traités (%s derniers)"
+msgid "View name"
+msgstr "Ver nome"
 
-#~ msgid "No unhandled service problem"
-#~ msgstr "Aucun problème de service non acquitté"
+msgid "Warning: "
+msgstr "Aviso:"
 
-#~ msgid "Service Name"
-#~ msgstr "Nom du service"
+msgid "Do you confirm the cancelation?"
+msgstr "Você confirma o cancelamento?"
 
-#~ msgid "C"
-#~ msgstr "C"
+msgid "Hosts Downtimes"
+msgstr "Stop time of hosts"
 
-#~ msgid "Status Output"
-#~ msgstr "Information sur le statut"
+msgid "No downtime scheduled for hosts"
+msgstr "Nenhum tempo de inatividade programado para convidados"
 
-#~ msgid "Unhandled Host problems (last %s)"
-#~ msgstr "Problèmes d'hôte non traités (%s derniers)"
+msgid "View downtimes of services"
+msgstr "Visualize o tempo de inatividade dos serviços"
 
-#~ msgid "No unhandled host problem"
-#~ msgstr "Aucun problème d'hôte non acquitté"
+msgid "PENDING"
+msgstr "PENDENTE"
 
-#~ msgid "View name"
-#~ msgstr "Nom de la Vue"
+msgid "Sort by criticality"
+msgstr "Classificar por criticidade"
 
-#~ msgid "Warning: "
-#~ msgstr "Warning:"
+msgid "Poller :"
+msgstr "Colecionador:"
 
-#~ msgid "Do you confirm the cancelation?"
-#~ msgstr "Confirmez-vous l'annulation?"
+msgid "Period :"
+msgstr "Períodos:"
 
-#~ msgid "Hosts Downtimes"
-#~ msgstr "Temps d'arrêt des hôtes"
+msgid "Scheduling Process Information"
+msgstr "Informação do processo de encomenda"
 
-#~ msgid "No downtime scheduled for hosts"
-#~ msgstr "Aucun temps d'arrêt planifié pour les hôtes"
+msgid "Program Version"
+msgstr "Versão do programa"
 
-#~ msgid "View downtimes of services"
-#~ msgstr "Visualiser les temps d'arrêt des services"
+msgid "Program Start Time"
+msgstr "Hora de início do programa"
 
-#~ msgid "PENDING"
-#~ msgstr "EN ATTENTE"
+msgid "Last Log File Rotation:"
+msgstr "Última rotação do arquivo de log:"
 
-#~ msgid "Sort by criticality"
-#~ msgstr "Trier par criticité"
+msgid "Last External Command Check:"
+msgstr "Hora da última encomenda externa:"
 
-#~ msgid "Poller :"
-#~ msgstr "Collecteur :"
+msgid "Monitoring Engine PID"
+msgstr "Supervisor Engine ID"
 
-#~ msgid "Period :"
-#~ msgstr "Périodes :"
+msgid "Currently running?"
+msgstr "No processo de execução?"
 
-#~ msgid "Scheduling Process Information"
-#~ msgstr "Information du processus d'ordonnancement"
+msgid "Host Checks Being Executed?"
+msgstr "Controle de host ativado?"
 
-#~ msgid "Program Version"
-#~ msgstr "Version du programme"
+msgid "Passive Host Checks Being Accepted?"
+msgstr "Controle de host passivo passivo ativado?"
 
-#~ msgid "Program Start Time"
-#~ msgstr "Heure de démarrage du programme"
+msgid "Service Checks Being Executed?"
+msgstr "Controle de serviço ativado?"
 
-#~ msgid "Last Log File Rotation:"
-#~ msgstr "Dernière rotation du fichier de journalisation:"
+msgid "Passive Service Checks Being Accepted?"
+msgstr "Controle passivo de serviços ativado?"
 
-#~ msgid "Last External Command Check:"
-#~ msgstr "Heure de la dernière commande externe:"
+msgid "Event Handlers Enabled?"
+msgstr "Gerenciador de eventos ativado?"
 
-#~ msgid "Monitoring Engine PID"
-#~ msgstr "ID du moteur de supervision"
+msgid "Obsessing Over Hosts?"
+msgstr "Execução das ordens pós controle dos hosts?"
 
-#~ msgid "Currently running?"
-#~ msgstr "En cours d'exécution ?"
+msgid "Obsessing Over Services?"
+msgstr "Execução de ordens de serviços pós-controle?"
 
-#~ msgid "Host Checks Being Executed?"
-#~ msgstr "Contrôle des hôtes activé ?"
+msgid "Performance Data Being Processed?"
+msgstr "Processamento de dados de desempenho ativado?"
 
-#~ msgid "Passive Host Checks Being Accepted?"
-#~ msgstr "Contrôle passif des hôtes activé ?"
+msgid "Flap detection enabled?"
+msgstr "Status de detecção de bagotagem ativado?"
 
-#~ msgid "Service Checks Being Executed?"
-#~ msgstr "Contrôle des services activé ?"
+msgid "Shutdown the Monitoring Engine process"
+msgstr "Pare o motor de supervisão"
 
-#~ msgid "Passive Service Checks Being Accepted?"
-#~ msgstr "Contrôle passif des services activé ?"
+msgid "Start the Monitoring Engine process"
+msgstr "Iniciar o mecanismo de supervisão"
 
-#~ msgid "Event Handlers Enabled?"
-#~ msgstr "Gestionnaire d'évènements activé ?"
+msgid "Restart the Monitoring Engine process"
+msgstr "Reinicie o processo de supervisão"
 
-#~ msgid "Obsessing Over Hosts?"
-#~ msgstr "Exécution des commandes post contrôle d'hôtes?"
+msgid "Disable notifications"
+msgstr "Desativar notificações"
 
-#~ msgid "Obsessing Over Services?"
-#~ msgstr "Exécution des commandes post contrôle des services ?"
+msgid "Start executing service checks"
+msgstr "Iniciar a execução de verificações de serviço"
 
-#~ msgid "Performance Data Being Processed?"
-#~ msgstr "Traitement des données de performances activé ?"
+msgid "Stop executing service checks"
+msgstr "Parar a execução de verificações de serviço"
 
-#~ msgid "Flap detection enabled?"
-#~ msgstr "Détection de bagotage des statuts activée ?"
+msgid "Start accepting passive service checks"
+msgstr "Iniciar o controle passivo dos serviços"
 
-#~ msgid "Shutdown the Monitoring Engine process"
-#~ msgstr "Arrêter le moteur de supervision"
+msgid "Stop accepting passive service checks"
+msgstr "Pare o controle passivo de serviços"
 
-#~ msgid "Start the Monitoring Engine process"
-#~ msgstr "Démarrer le moteur de supervision"
+msgid "Start executing host checks"
+msgstr "Iniciar Controle de Host"
 
-#~ msgid "Restart the Monitoring Engine process"
-#~ msgstr "Redémarrer le processus de supervision"
+msgid "Stop executing host checks"
+msgstr "Pare o controle de hosts"
 
-#~ msgid "Disable notifications"
-#~ msgstr "Désactiver les notifications"
+msgid "Start accepting passive host checks"
+msgstr "Iniciar o controle de host passivo"
 
-#~ msgid "Start executing service checks"
-#~ msgstr "Démarrer l'exécution des contrôles de services"
+msgid "Stop accepting passive host checks"
+msgstr "Parar o controle passivo de hosts"
 
-#~ msgid "Stop executing service checks"
-#~ msgstr "Arrêter l'exécution des contrôles de services"
+msgid "Enable event handlers"
+msgstr "Ativar gerenciador de eventos"
 
-#~ msgid "Start accepting passive service checks"
-#~ msgstr "Démarrer le contrôle passif des services"
+msgid "Disable event handlers"
+msgstr "Pare o gerente do evento"
 
-#~ msgid "Stop accepting passive service checks"
-#~ msgstr "Arrêter le contrôle passif des services"
+msgid "Start obsessing over hosts"
+msgstr "Iniciar o rastreamento preciso dos hosts"
 
-#~ msgid "Start executing host checks"
-#~ msgstr "Démarrer le contrôle des hôtes"
+msgid "Stop obsessing over hosts"
+msgstr "Pare o rastreamento preciso de hosts"
 
-#~ msgid "Stop executing host checks"
-#~ msgstr "Arrêter le contrôle des hôtes"
+msgid "Start obsessing over services"
+msgstr "Inicia checagem de pós-comando de serviços"
 
-#~ msgid "Start accepting passive host checks"
-#~ msgstr "Démarrer le contrôle passif des hôtes"
+msgid "Stop obsessing over services"
+msgstr "Para checagem de pós-comando de serviços"
 
-#~ msgid "Stop accepting passive host checks"
-#~ msgstr "Arrêter le contrôle passif des hôtes"
+msgid "Enable flap detection"
+msgstr "Ativa detecção de variação"
 
-#~ msgid "Enable event handlers"
-#~ msgstr "Activer le gestionnaire d'évènements"
+msgid "Disable flap detection"
+msgstr "Desabilita detecção de variação"
 
-#~ msgid "Disable event handlers"
-#~ msgstr "Arrêter le gestionnaire d'évènements"
+msgid "Enable performance data"
+msgstr "Ativar o processamento de dados de Performance"
 
-#~ msgid "Start obsessing over hosts"
-#~ msgstr "Démarrer le suivi précis des hôtes"
+msgid "Disable performance data"
+msgstr "Desativar o processamento de dados de Performance"
 
-#~ msgid "Stop obsessing over hosts"
-#~ msgstr "Arrêter le suivi précis des hôtes"
-
-#~ msgid "Start obsessing over services"
-#~ msgstr "Inicia checagem de pós-comando de serviços"
-
-#~ msgid "Stop obsessing over services"
-#~ msgstr "Para checagem de pós-comando de serviços"
-
-#~ msgid "Enable flap detection"
-#~ msgstr "Ativa detecção de variação"
-
-#~ msgid "Disable flap detection"
-#~ msgstr "Desabilita detecção de variação"
-
-#~ msgid "Enable performance data"
-#~ msgstr "Ativar o processamento de dados de Performance"
-
-#~ msgid "Disable performance data"
-#~ msgstr "Desativar o processamento de dados de Performance"
-
-#~ msgid "Process Commands"
-#~ msgstr "Processos de Comandos"
+msgid "Process Commands"
+msgstr "Processos de Comandos"
