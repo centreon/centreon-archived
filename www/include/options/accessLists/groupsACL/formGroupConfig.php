@@ -49,7 +49,7 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set base value
      */
-    $group = array_map("CentreonUtils::escapeAll", $DBRESULT->fetchRow());
+    $group = $DBRESULT->fetchRow();
 
     /*
      * Set Contact Childs

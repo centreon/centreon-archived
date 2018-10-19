@@ -90,7 +90,10 @@ if ($o == ACL_MODIFY || $o == ACL_WATCH) {
 $groups = array();
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 while ($group = $DBRESULT->fetchRow()) {
-    $groups[$group["acl_group_id"]] = $group["acl_group_name"];
+    $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
+        $group["acl_group_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 $DBRESULT->closeCursor();
 
