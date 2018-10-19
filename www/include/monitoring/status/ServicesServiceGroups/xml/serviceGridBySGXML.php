@@ -107,6 +107,7 @@ if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
 
+// this query allows to manage pagination
 $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
     . "FROM servicegroups sg, services_servicegroups sgm, hosts h, services s ";
 
@@ -118,6 +119,7 @@ $query .= "WHERE sgm.servicegroup_id = sg.servicegroup_id "
     . "AND sgm.host_id = h.host_id "
     . "AND sgm.service_id = s.service_id ";
 
+// filter elements with acl (host, service, servicegroup)
 if (!$obj->is_admin) {
     $query .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
         . $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
@@ -206,6 +208,7 @@ if ($numRows > 0) {
         . "AND sgm.host_id = h.host_id "
         . "AND sgm.service_id = s.service_id ";
 
+    // filter elements with acl (host, service, servicegroup)
     if (!$obj->is_admin) {
         $query2 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
             $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
