@@ -6,4 +6,5 @@
     delaycompress
     notifempty
     missingok
+    su root root
 }
