@@ -134,21 +134,20 @@ $form->addElement(
     _("*The timezone used is configured on your user settings")
 );
 
+$gmt = $centreonGMT->getMyGMT();
+if (!$gmt) {
+    $gmt = date_default_timezone_get();
+}
+
 $form->setDefaults(
     array(
-        "start" => $centreonGMT->getDate("Y/m/d", time()),
-        "end" => $centreonGMT->getDate("Y/m/d", time() + 7200),
-        "start_time" => $centreonGMT->getDate("G:i", time()),
-        "end_time" => $centreonGMT->getDate("G:i", time() + 7200)
+        "start" => $centreonGMT->getDate("Y/m/d", time(), $gmt),
+        "end" => $centreonGMT->getDate("Y/m/d", time() + 7200, $gmt),
+        "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
+        "end_time" => $centreonGMT->getDate("G:i", time() + 7200, $gmt)
     )
 );
-/*
-$host_or_centreon_time[] =
-HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Centreon Time"), '0');
-$host_or_centreon_time[] = HTML_QuickForm::createElement('radio', 'host_or_centreon_time', null, _("Host Time"), '1');
-$form->addGroup($host_or_centreon_time, 'host_or_centreon_time', _("Select Host or Centreon Time"), '&nbsp;');        
-$form->setDefaults(array('host_or_centreon_time' => '0'));   
-*/
+
 $form->addElement(
     'text',
     'duration',
@@ -246,7 +245,7 @@ $form->addElement(
     )
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
+// adding hidden fields to get the result of datepicker in an unlocalized format
 $form->addElement(
     'hidden',
     'alternativeDateStart',
