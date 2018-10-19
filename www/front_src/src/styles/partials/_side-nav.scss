@@ -190,6 +190,18 @@ a {
           }
         }
       }
+      .collapsed-item {
+        &.active {
+          .collapsed-level-item-link.active {
+            background: $turquoise-centreon-primary;
+            color: $white-color;
+          }
+        }
+        > .collapsed-level-item-link:hover {
+            background: $turquoise-centreon-darken;
+            color: $white-color;
+        }
+      }
     }
 
     &:nth-child(2) {
@@ -213,6 +225,18 @@ a {
             background: $lime-centreon-darken;
             color: $white-color;
           }
+        }
+      }
+      .collapsed-item {
+        &.active {
+          .collapsed-level-item-link.active {
+            background: $lime-centreon-primary;
+            color: $white-color;
+          }
+        }
+        > .collapsed-level-item-link:hover{
+            background: $lime-centreon-darken;
+            color: $white-color;
         }
       }
     }
@@ -240,6 +264,18 @@ a {
           }
         }
       }
+      .collapsed-item {
+        &.active {
+          .collapsed-level-item-link.active {
+            background: $orange-centreon-primary;
+            color: $white-color;
+          }
+        }
+        > .collapsed-level-item-link:hover{
+            background: $orange-centreon-darken;
+            color: $white-color;
+        }
+      }
     }
 
     &:nth-child(4) {
@@ -265,6 +301,18 @@ a {
           }
         }
       }
+      .collapsed-item {
+        &.active {
+          .collapsed-level-item-link.active {
+            background: $lightblue-centreon-primary;
+            color: $white-color;
+          }
+        }
+        > .collapsed-level-item-link:hover{
+            background: $lightblue-centreon-darken;
+            color: $white-color;
+        }
+      }
     }
 
     &:nth-child(5) {
@@ -288,6 +336,18 @@ a {
             background: $darkblue-centreon-darken;
             color: $white-color;
           }
+        }
+      }
+      .collapsed-item {
+        &.active {
+          .collapsed-level-item-link.active {
+            background: $darkblue-centreon-primary;
+            color: $white-color;
+          }
+        }
+        > .collapsed-level-item-link:hover{
+            background: $darkblue-centreon-darken;
+            color: $white-color;
         }
       }
     }
