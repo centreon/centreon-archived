@@ -24,6 +24,7 @@ class HostServiceRelationRepository extends ServiceEntityRepository
         $ids = join(',', $pollerIds);
 
         $sql = <<<SQL
+SELECT l.* FROM (
 SELECT
     t.*
 FROM host_service_relation AS t
