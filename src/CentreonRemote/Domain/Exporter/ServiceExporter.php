@@ -47,9 +47,10 @@ class ServiceExporter extends ExporterServiceAbstract
 
         // Extract data
         (function() use ($pollerIds) {
+            $baList = $this->cache->get('ba.list');
             $hostRelation = $this->db
                 ->getRepository(Repository\HostServiceRelationRepository::class)
-                ->export($pollerIds)
+                ->export($pollerIds, $baList)
             ;
             $this->_dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
