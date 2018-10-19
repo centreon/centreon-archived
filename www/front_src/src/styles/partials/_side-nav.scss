@@ -197,11 +197,9 @@ a {
             color: $white-color;
           }
         }
-        &:hover {
-          > .collapsed-level-item-link {
+        > .collapsed-level-item-link:hover {
             background: $turquoise-centreon-darken;
             color: $white-color;
-          }
         }
       }
     }
@@ -236,11 +234,9 @@ a {
             color: $white-color;
           }
         }
-        &:hover {
-          > .collapsed-level-item-link {
+        > .collapsed-level-item-link:hover{
             background: $lime-centreon-darken;
             color: $white-color;
-          }
         }
       }
     }
@@ -275,11 +271,9 @@ a {
             color: $white-color;
           }
         }
-        &:hover {
-          > .collapsed-level-item-link {
+        > .collapsed-level-item-link:hover{
             background: $orange-centreon-darken;
             color: $white-color;
-          }
         }
       }
     }
@@ -314,11 +308,9 @@ a {
             color: $white-color;
           }
         }
-        &:hover {
-          > .collapsed-level-item-link {
+        > .collapsed-level-item-link:hover{
             background: $lightblue-centreon-darken;
             color: $white-color;
-          }
         }
       }
     }
@@ -353,11 +345,9 @@ a {
             color: $white-color;
           }
         }
-        &:hover {
-           > .collapsed-level-item-link {
+        > .collapsed-level-item-link:hover{
             background: $darkblue-centreon-darken;
             color: $white-color;
-          }
         }
       }
     }
