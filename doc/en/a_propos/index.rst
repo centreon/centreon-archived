@@ -2,29 +2,36 @@
 About
 #####
 
+Centreon is an open source IT monitoring solution by Centreon, a leading
+Paris-based software company.
 
-Centreon is a free open source monitoring software tool by Centreon, a leading Paris-based software publisher.
-The Centreon platform measures the availability, health and performance of
-application layers, hardware resources and user-oriented services within an IT infrastructure.
+Centreon is a fully packaged, easy to install and ready to use solution that
+includes all required components for the real-time monitoring of any Information
+System:
 
-Centreon is a powerful tool for administrators and operators who monitor IT systems.
-First released in 2012, this solution includes its own scheduler engine (Centreon Engine) and Event Manager
-(Centreon Broker).
+* A generic data collection engine
+* A complete Plugin library to monitor the complete IT infrastructure, from business applications down to network elements
+* A multi-user, ergonomic user interface
+* Advanced user rights management through Access Control Lists (ACL)
+* Comprehensive Alarms and Notifications management
+* Real-time, customized dashboards
+* Availability reports
 
+The Centreon open source solution is the foundation of the 
+`Centreon EMS <https://www.centreon.com/solutions/centreon-ems/>`_
+software suite, which adds the following licensed modules:
 
-In addition to advanced configuration concepts inherited from the Nagios ecosystem, 
-Centreon offers features such as ability to view the state of services and monitored equipment, metrology, reporting,
-access to monitoring events and advanced user management via access control lists (ACLs).
+* `Centreon EPP <https://www.centreon.com/solutions/centreon-epp/>`_, for instant monitoring configuration
+* `Centreon MAP <https://www.centreon.com/solutions/centreon-map/>`_, to create graphical real-time views
+* `Centreon BAM <https://www.centreon.com/solutions/centreon-bam/>`_, to correlate key business processes to critical IT components
+* `Centreon MBI <https://www.centreon.com/solutions/centreon-mbi/>`_, to automatically create ITIL-compliant infrastructure management and capacity planning reports
 
+Other modules are developed by the open source community and extend Centreon capabilities.
 
-Additional modules provided by the open source community and the Centreon software engineering team have expanded the solution's functionality to include 
-a BI tool, mapping, numerous APIs for interacting with Centreon to ensure automated configuration management.
+Centreon is a mature and robust solution that supports a variety of architecture to address scalability, high-availability, resiliency and distributed networks monitoring.
 
+Finally, the Centreon solution includes many tools to integrate into your IT Operations Management production environment:
 
-Centreon stands out as a mature, reliable and innovative platform that is tailored to managers' business goals
-by offering a way to structure strategic core IT data (in terms of availability, capacity, maintainability, reliability).
-
-
-Other strengths of the Centreon software suite include unlimited distribution capability and a high-performance data collection system.
-Centreon is designed to meet the requirements of scalability, network partitioning, geographically fragmented sites and
-limited bandwidth.
+* A complete set of APIs to automate monitoring configuration from tools such as Salt, Ansible, Puppet, Chef…
+* Integration with all popular ITSM solution such as ServiceNow, GLPI, Easyvista, iTop, OTRS…
+* Stream connectors to Time-Series DataBase, Big Data or Manager of Managers solutions: Graphite, InfluxDB, Elasticsearch, Splunk, BMC Truesight, ServiceNow Event Management, ...
