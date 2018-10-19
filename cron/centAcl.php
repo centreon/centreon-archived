@@ -453,10 +453,6 @@ try {
         unset($row);
 
         // Prepare statement
-        $injectHandler = $pearDBO->prepare(
-            "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES (?, ?, ?) " .
-            "ON DUPLICATE KEY UPDATE group_id = ?"
-        );
         $deleteHandler = $pearDBO->prepare("DELETE FROM centreon_acl WHERE group_id = ?");
 
         /** ***********************************************
@@ -614,30 +610,58 @@ try {
                     }
                 }
 
+                $strBegin = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ";
+                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = ? ";
+
+                $str = "";
+                $params = [];
+                $i = 0;
                 foreach ($resourceCache[$res2["acl_res_id"]] as $host => $svc_list) {
                     if ($hostId = array_search($host, $hostCache)) {
+                        if ($str != "") {
+                            $str .= ", ";
+                        }
+                        $str .= " (?, NULL, ?) ";
+                        $params[] = $hostId;
+                        $params[] = $acl_group_id;
 
-                        /* inject host */
-                        $injectHandler->execute(array($hostId, null, $acl_group_id, $acl_group_id));
-
-                        /* inject services */
                         foreach (array_values($svc_list) as $hostServiceId) {
                             $explodedHostServiceId = explode(",", $hostServiceId);
+
+                            if ($str != "") {
+                                $str .= ', ';
+                            }
+
                             if (isset($explodedHostServiceId[1])) {
-                                $injectHandler->execute(
-                                    array($hostId, $explodedHostServiceId[1], $acl_group_id, $acl_group_id)
-                                );
+                                $i++;
+                                $str .= " (?, ?, ?) ";
+                                $params[] = $hostId;
+                                $params[] = $explodedHostServiceId[1];
+                                $params[] = $acl_group_id;
+                                if ($i >= 1000) {
+                                    $params[] = $acl_group_id; // argument for $strEnd
+                                    $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
+                                    $stmt->execute($params); // inject acl by bulk (1000 relations)
+                                    $params = [];
+                                    $str = "";
+                                    $i = 0;
+                                }
                             }
                         }
-
                     }
                 }
 
+                // inject remaining acls (bulk of less than 1000 relations)
+                if ($str != "") {
+                    $params[] = $acl_group_id; // argument for $strEnd
+                    $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
+                    $stmt->execute($params);
+                    $str = "";
+                }
+
                 // reset flags of acl_resources
-                $pearDB->query(
-                    "UPDATE `acl_resources` SET `changed` = '0' WHERE acl_res_id = '" .
-                    $res2["acl_res_id"] . "'"
-                );
+                $stmt = $pearDB->prepare("UPDATE `acl_resources` SET `changed` = '0' WHERE acl_res_id = ?");
+                $stmt->execute([$res2["acl_res_id"]]);
             }
             $DBRESULT2->closeCursor();
 
@@ -650,10 +674,8 @@ try {
             $cpt++;
 
             // reset flags of acl_groups
-            $pearDB->query(
-                "UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " .
-                $pearDB->escape($acl_group_id)
-            );
+            $stmt = $pearDB->prepare("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = ?");
+            $stmt->execute([$acl_group_id]);
         }
 
         /**
