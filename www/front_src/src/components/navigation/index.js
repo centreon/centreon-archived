@@ -192,7 +192,7 @@ class NavigationComponent extends Component {
                                   levelOneKey
                                 )
                               }}
-                              className="collapsed-level-item-link img-none"
+                              className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
                               to={routeMap.module + "?p=" + urlOptions}
                             >
                               <Translate value={levelTwoProps.label}/>
