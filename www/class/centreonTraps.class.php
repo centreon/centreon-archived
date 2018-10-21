@@ -228,14 +228,14 @@ class CentreonTraps
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                         $maxId = $res2->fetch();
 
-                        $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
-                                        (SELECT " . $maxId['MAX(traps_id)'] . ", service_id 
-                                            FROM traps_service_relation 
+                        $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id)
+                                        (SELECT " . $maxId['MAX(traps_id)'] . ", service_id
+                                            FROM traps_service_relation
                                             WHERE traps_id = $trapsId)");
 
-                        $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
+                        $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order)
                                         (SELECT " . $maxId['MAX(traps_id)'] . ", tpe_string, tpe_order
-                                            FROM traps_preexec 
+                                            FROM traps_preexec
                                             WHERE trap_id = $trapsId)");
 
                         $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$trapsId;
@@ -305,6 +305,12 @@ class CentreonTraps
         if (!isset($ret['traps_advanced_treatment_default']) ||
             !$ret['traps_advanced_treatment_default']) {
             $ret['traps_advanced_treatment_default'] = 0;
+        }
+        if (!isset($ret["traps_timeout"]) || !$ret["traps_timeout"]) {
+            $ret["traps_timeout"] = 0;
+        }
+        if (!isset($ret["traps_exec_interval"]) || !$ret["traps_exec_interval"]) {
+            $ret["traps_exec_interval"] = 0;
         }
         if (isset($ret['traps_exec_interval_type']['traps_exec_interval_type'])) {
             $ret['traps_exec_interval_type'] = $ret['traps_exec_interval_type']['traps_exec_interval_type'];
@@ -395,10 +401,10 @@ class CentreonTraps
      */
     protected function setServiceRelations($trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation 
+        $this->db->query("DELETE FROM traps_service_relation
                 WHERE traps_id = " . $this->db->escape($trapId) . "
-                AND NOT EXISTS (SELECT s.service_id 
-                    FROM service s 
+                AND NOT EXISTS (SELECT s.service_id
+                    FROM service s
                     WHERE s.service_register = '0'
                     AND s.service_id = traps_service_relation.service_id)");
         $services = CentreonUtils::mergeWithInitialValues($this->form, 'services');
@@ -429,10 +435,10 @@ class CentreonTraps
      */
     protected function setServiceTemplateRelations($trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation 
+        $this->db->query("DELETE FROM traps_service_relation
                 WHERE traps_id = " . $this->db->escape($trapId) . "
-                AND NOT EXISTS (SELECT s.service_id 
-                    FROM service s 
+                AND NOT EXISTS (SELECT s.service_id
+                    FROM service s
                     WHERE s.service_register = '1'
                     AND s.service_id = traps_service_relation.service_id)");
         $serviceTpl = (array)$this->form->getSubmitValue('service_templates');
@@ -497,9 +503,9 @@ class CentreonTraps
         }
 
         $rq = "INSERT INTO traps ";
-        $rq .= "(traps_name, traps_oid, traps_args, 
-            traps_status, severity_id, traps_submit_result_enable, 
-            traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
+        $rq .= "(traps_name, traps_oid, traps_args,
+            traps_status, severity_id, traps_submit_result_enable,
+            traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable,
             traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value,
             traps_routing_filter_services, manufacturer_id, traps_log, traps_exec_interval, traps_exec_interval_type,
             traps_exec_method, traps_downtime, traps_output_transform, traps_advanced_treatment_default,

@@ -40,7 +40,7 @@ function updateOption($pearDB, $key, $value)
      * Purge
      */
     $DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-    
+
     /*
      * Add
      */
@@ -171,7 +171,7 @@ function updateNagiosConfigData($gopt_id = null)
             ? $pearDB->escape($ret['broker']) : "broker"
     );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
-    
+
     /*
      * Correlation engine
      */
@@ -282,7 +282,7 @@ function updateNagiosConfigData($gopt_id = null)
         'monitoring_svc_notification_3',
         isset($ret["monitoring_svc_notification_3"]) && $ret['monitoring_svc_notification_3'] ? 1 : 0
     );
-        
+
     $centreon->initOptGen($pearDB);
 }
 
@@ -776,13 +776,13 @@ function updateRRDToolConfigData($gopt_id = null)
 function updatePartitioningConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    
+
     foreach ($ret as $key => $value) {
         if (preg_match('/^partitioning_/', $key)) {
             updateOption($db, $key, $value);
         }
     }
-    
+
     $centreon->initOptGen($db);
 }
 
@@ -816,14 +816,17 @@ function updateODSConfigData()
     if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/") {
         $ret["RRDdatabase_path"] .= "/";
     }
-    
+
+    if (!isset($ret["storage_type"])) {
+        $ret["storage_type"] = 2;
+    }
     if (!isset($ret["len_storage_downtimes"])) {
         $ret["len_storage_downtimes"] = 0;
     }
     if (!isset($ret["len_storage_comments"])) {
         $ret["len_storage_comments"] = 0;
     }
-    
+
     $rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
                 `RRDdatabase_status_path` = '".$ret["RRDdatabase_status_path"]."',
 				`RRDdatabase_nagios_stats_path` = '".$ret["RRDdatabase_nagios_stats_path"]."',
@@ -835,7 +838,7 @@ function updateODSConfigData()
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`reporting_retention` = '".$ret["reporting_retention"]."',
                 `audit_log_option` = '".$ret["audit_log_option"]."',
-				`storage_type` = '".(isset($ret["storage_type"]) ? $ret["storage_type"] : null)."', 
+				`storage_type` = '".$ret["storage_type"]."',
                 `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
                 `len_storage_comments` = '".$ret["len_storage_comments"]."' "
                 . " WHERE `id` = 1 LIMIT 1 ;";
