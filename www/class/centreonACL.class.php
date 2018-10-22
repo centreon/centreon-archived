@@ -77,13 +77,13 @@ class CentreonACL
         $this->userID = $userId;
 
         if (!isset($isAdmin)) {
-            $localPearDB = new CentreonDB();
+            $db = \CentreonDBInstance::getConfInstance();
             $query = "SELECT contact_admin "
                 . "FROM `contact` "
                 . "WHERE contact_id = '" . CentreonDB::escape($userId) . "' "
                 . "LIMIT 1 ";
-            $RESULT = $localPearDB->query($query);
-            $row = $RESULT->fetchRow();
+            $result = $db->query($query);
+            $row = $result->fetch();
             $this->admin = $row['contact_admin'];
         } else {
             $this->admin = $isAdmin;
@@ -137,21 +137,22 @@ class CentreonACL
      */
     private function checkUpdateACL()
     {
-        global $pearDB;
-
         if (is_null($this->parentTemplates)) {
             $this->loadParentTemplates();
         }
 
         if (!$this->admin) {
+            $db = \CentreonDBInstance::getConfInstance();
             $query = "SELECT update_acl "
                 . "FROM session "
                 . "WHERE update_acl = '1' "
                 . "AND user_id IN (" . join(', ', $this->parentTemplates) . ") ";
-            $DBRES = $pearDB->query($query);
-            if ($DBRES->rowCount()) {
-                $pearDB->query("UPDATE session SET update_acl = '0'
-                    WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")");
+            $result = $db->query($query);
+            if ($result->rowCount()) {
+                $db->query(
+                    "UPDATE session SET update_acl = '0' " .
+                    "WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")"
+                );
                 $this->resetACL();
             }
         }
