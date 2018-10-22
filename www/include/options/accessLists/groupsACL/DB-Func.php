@@ -43,12 +43,16 @@ require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 /**
  * Set the Acl group changed flag to 1
  *
- * @param $db
- * @param $aclGroupId
+ * @param $db CentreonDB
+ * @param $aclGroupId int
  */
 function setAclGroupChanged($db, $aclGroupId)
 {
-    $db->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id = " . $db->escape($aclGroupId));
+    $prepare = $db->prepare(
+        "UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id = :id"
+    );
+    $prepare->bindValue(':id', $aclGroupId, \PDO::PARAM_INT);
+    $prepare->execute();
 }
 
 /**
@@ -229,28 +233,57 @@ function insertGroupInDB($ret = array())
 }
 
 /**
+ * Insert a new access group
  *
- * Insert Group
- * @param $ret
+ * @param $groupInfos Array containing group's informations
+ * @global $form    HTML_QuickFormCustom
+ * @global $pearDB  CentreonDB
+ * @return int Return id of the new access group
  */
-function insertGroup($ret)
+function insertGroup($groupInfos)
 {
     global $form, $pearDB;
 
-    if (!count($ret)) {
-        $ret = $form->getSubmitValues();
+    if (!count($groupInfos)) {
+        $groupInfos = $form->getSubmitValues();
     }
 
-    $rq = "INSERT INTO acl_groups "
-        . "(acl_group_name, acl_group_alias, acl_group_activate) "
-        . "VALUES "
-        . "('" . htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8") . "', "
-        . "'" . htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8") . "', "
-        . "'" . htmlentities((isset($ret["acl_group_activate"]) ? $ret["acl_group_activate"]["acl_group_activate"] : ''), ENT_QUOTES, "UTF-8") . "') ";
-    $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
-    $cg_id = $DBRESULT->fetchRow();
-    return ($cg_id["MAX(acl_group_id)"]);
+    $isAclGroupActivate = false;
+    if (isset($groupInfos['acl_group_activate'])
+        && isset($groupInfos['acl_group_activate']['acl_group_activate'])
+        && $groupInfos['acl_group_activate']['acl_group_activate'] == '1'
+    ) {
+        $isAclGroupActivate = true;
+    }
+
+    $request = "INSERT INTO acl_groups "
+            . "(acl_group_name, acl_group_alias, acl_group_activate) "
+            . "VALUES (:group_name, :group_alias, :is_activate)";
+
+    $prepare = $pearDB->prepare($request);
+    $prepare->bindValue(
+        ':group_name',
+        $groupInfos['acl_group_name'],
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':group_alias',
+        $groupInfos['acl_group_alias'],
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':group_alias',
+        $groupInfos['acl_group_alias'],
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':is_activate',
+        ($isAclGroupActivate ? '1': '0'),
+        \PDO::PARAM_STR
+    );
+    return $prepare->execute()
+        ? $pearDB->lastInsertId()
+        : null;
 }
 
 /**
@@ -278,28 +311,61 @@ function updateGroupInDB($acl_group_id = null)
 }
 
 /**
+ * Update the selected group
  *
- * Upgrade information of the selected group
- * @param $acl_group_id
+ * @param int $acl_group_id
+ * @global $form HTML_QuickFormCustom
+ * @global $pearDB CentreonDB
  */
-function updateGroup($acl_group_id = null)
+function updateGroup($aclGroupId = null)
 {
     global $form, $pearDB;
 
-    if (!$acl_group_id) {
+    if (is_null($aclGroupId)) {
         return;
     }
 
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    $rq = "UPDATE acl_groups ";
-    $rq .= "SET acl_group_name = '" . htmlentities($ret["acl_group_name"], ENT_QUOTES, "UTF-8") . "', "
-        . "acl_group_alias = '" . htmlentities($ret["acl_group_alias"], ENT_QUOTES, "UTF-8") . "', "
-        . "acl_group_activate = '"
-        . htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8") . "' "
-        . "WHERE acl_group_id = '" . $acl_group_id . "'";
-    $pearDB->query($rq);
-    setAclGroupChanged($pearDB, $acl_group_id);
+    $groupInfos = $form->getSubmitValues();
+
+    $isAclGroupActivate = false;
+    if (isset($groupInfos['acl_group_activate'])
+        && isset($groupInfos['acl_group_activate']['acl_group_activate'])
+        && $groupInfos['acl_group_activate']['acl_group_activate'] == '1'
+    ) {
+        $isAclGroupActivate = true;
+    }
+
+    $request = "UPDATE acl_groups "
+        . "SET acl_group_name = :acl_group_name, "
+        . "acl_group_alias = :acl_group_alias, "
+        . "acl_group_activate = :is_activate "
+        . "WHERE acl_group_id = :acl_group_id";
+
+    $prepare = $pearDB->prepare($request);
+    $prepare->bindValue(
+        ':acl_group_name',
+        $groupInfos["acl_group_name"],
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':acl_group_alias',
+        $groupInfos["acl_group_alias"],
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':is_activate',
+        ($isAclGroupActivate ? '1': '0'),
+        \PDO::PARAM_STR
+    );
+    $prepare->bindValue(
+        ':acl_group_id',
+        $aclGroupId,
+        \PDO::PARAM_INT
+    );
+
+    $prepare->execute();
+
+    setAclGroupChanged($pearDB, $aclGroupId);
 }
 
 /**

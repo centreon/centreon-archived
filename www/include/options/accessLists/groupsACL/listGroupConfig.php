@@ -128,9 +128,15 @@ for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => $group["acl_group_name"],
+        "RowMenu_name" => CentreonUtils::escapeAll(
+            $group["acl_group_name"],
+            CentreonUtils::ESCAPE_ALL
+        ),
         "RowMenu_link" => "main.php?p=" . $p . "&o=c&acl_group_id=" . $group['acl_group_id'],
-        "RowMenu_desc" => myDecode($group["acl_group_alias"]),
+        "RowMenu_desc" => CentreonUtils::escapeAll(
+            $group["acl_group_alias"],
+            CentreonUtils::ESCAPE_ALL
+        ),
         "RowMenu_contacts" => $ctNbr["nbr"],
         "RowMenu_contactgroups" => $cgNbr["nbr"],
         "RowMenu_status" => $group["acl_group_activate"] ? _("Enabled") : _("Disabled"),
