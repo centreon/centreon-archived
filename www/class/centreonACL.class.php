@@ -1688,7 +1688,8 @@ class CentreonACL
                             while ($row2 = $DBRESULT2->fetch()) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $data["id"] . "', "
-                                    . "'" . $row2["service_id"] . "', " . $row2['group_id'] . ")";
+                                    . "'" . $row2["service_id"] . "', " . $row2['group_id'] . ") "
+                                    . "ON DUPLICATE KEY UPDATE group_id = " . $row2['group_id'];
                                 \CentreonDBInstance::getMonInstance()->query($request2);
                             }
                         }
