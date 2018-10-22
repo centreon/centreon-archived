@@ -320,7 +320,7 @@ sub getPHPConfFile() {
 	for (@ini) {
 	    chomp;
 	    s/,$//;
-	    push(@tab_php_ini, @ini);
+	    push(@tab_php_ini, $_);
     }
 
 	return @tab_php_ini;
