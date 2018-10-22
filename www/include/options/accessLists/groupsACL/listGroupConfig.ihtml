@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./include/common/javascript/resize_td.js"></script>
 <form name='form' method='POST'>
     <table class="ajaxOption table">
         <tbody>
