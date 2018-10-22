@@ -77,12 +77,12 @@ class CentreonACL
         $this->userID = $userId;
 
         if (!isset($isAdmin)) {
-            $pearDB = \CentreonDBInstance::getConfInstance();
+            $db = \CentreonDBInstance::getConfInstance();
             $query = "SELECT contact_admin "
                 . "FROM `contact` "
                 . "WHERE contact_id = '" . CentreonDB::escape($userId) . "' "
                 . "LIMIT 1 ";
-            $result = $pearDB->query($query);
+            $result = $db->query($query);
             $row = $result->fetch();
             $this->admin = $row['contact_admin'];
         } else {
