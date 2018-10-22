@@ -186,6 +186,18 @@ The table below describes the general access functionalities:
 |                                        | in the monitoring consoles                                            |
 +----------------------------------------+-----------------------------------------------------------------------+
 
+The table below describes the access to the configuration generation:
+
++----------------------------------------+-----------------------------------------------------------------------+
+|   Field                                |   Associated actions                                                  |
++========================================+=======================================================================+
+| Generate Configuration Files           | Allows users to generate, test and export configuration to pollers    |
+|                                        | and to restart the monitoring scheduler                               |
++----------------------------------------+-----------------------------------------------------------------------+
+| Generate SNMP Trap configuration       | Allows users to generate and export configuration of the SNMP traps   |
+|                                        | for the Centreontrapd process on pollers and to restart this one      |
++----------------------------------------+-----------------------------------------------------------------------+
+
 The table below describes all the actions that can be authorized on the scheduler:
 
 +----------------------------------------+-----------------------------------------------------------------------+

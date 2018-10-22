@@ -185,6 +185,18 @@ Le tableau ci-dessous décrit les fonctionnalités générales d'accès :
 | collecteurs                            | ou **Supervision** ==> **Services**                                   |
 +----------------------------------------+-----------------------------------------------------------------------+
 
+Le tableau ci-dessous décrit les fonctionnalités de génération de la configuration :
+
++----------------------------------------+-----------------------------------------------------------------------+
+|   Champ                                |   Actions associées                                                   |
++========================================+=======================================================================+
+| Générer les fichiers de configuration  | Permet de générer, tester et exporter la configuration des            |
+|                                        | collecteurs et de redémarrer les moteurs de supervision               |
++----------------------------------------+-----------------------------------------------------------------------+
+| Générer la configuration des traps     | Permet de générer et exporter la configuration des traps SNMP pour le |
+| SNMP                                   | processus Centreontrapd sur les collecteurs et de redémarrer ce       |
+|                                        | dernier                                                               |
++----------------------------------------+-----------------------------------------------------------------------+
 
 Le tableau ci-dessous décrit l'ensemble des actions qui peuvent être autorisées sur l'ordonnanceur :
 
