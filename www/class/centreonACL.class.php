@@ -1684,7 +1684,7 @@ class CentreonACL
                             $request = "SELECT service_id, group_id FROM centreon_acl "
                                 . "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
                             $DBRESULT2 = \CentreonDBInstance::getMonInstance()->query($request);
-                            while ($row2 = $DBRESULT2->fetchRow()) {
+                            while ($row2 = $DBRESULT2->fetch()) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $data["id"] . "', "
                                     . "'" . $row2["service_id"] . "', " . $row2['group_id'] . ")";
