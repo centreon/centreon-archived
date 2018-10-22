@@ -116,7 +116,6 @@ switch ($o) {
         break;
     case "m":
         multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
-        $acl = $centreon->user->access;
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $aclHostString = $acl->getHostsString('ID', $dbmon);
         $aclPollerString = $acl->getPollerString();
