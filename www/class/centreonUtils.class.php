@@ -148,7 +148,7 @@ class CentreonUtils
      * @return int
      * @throws Exception
      */
-    public function getDateTimeTimestamp($datetime)
+    public static function getDateTimeTimestamp($datetime)
     {
         static $db;
         static $centreonGmt;
