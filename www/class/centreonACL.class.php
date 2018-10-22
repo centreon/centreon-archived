@@ -523,7 +523,10 @@ class CentreonACL
             // We fix topologies according to filter
             foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
                 foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
-                    if ($this->topology[$childrenLvl3] > $this->topology[$parentLvl2]) {
+                    if (isset($this->topology[$childrenLvl3])
+                        && isset($this->topology[$parentLvl2])
+                        && $this->topology[$childrenLvl3] > $this->topology[$parentLvl2]
+                    ) {
                         /**
                          * The parent has more privileges than his child.
                          * We define the access rights of parent with that of
@@ -531,7 +534,10 @@ class CentreonACL
                          */
                         $this->topology[$parentLvl2] = $this->topology[$childrenLvl3];
                     }
-                    if ($this->topology[$parentLvl2] > $this->topology[$parentLvl1]) {
+                    if (isset($this->topology[$parentLvl2])
+                        && isset($this->topology[$parentLvl1])
+                        && $this->topology[$parentLvl2] > $this->topology[$parentLvl1]
+                    ) {
                         /**
                          * The parent has more privileges than his child.
                          * We define the access rights of parent with that of
