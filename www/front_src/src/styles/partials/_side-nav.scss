@@ -412,7 +412,7 @@ a {
         display: block;
       }
       > .collapsed-level-item-link {
-        background-position: 26px -41px;
+        background-position: 26px -94px;
       }
     }
     &.active {
@@ -422,7 +422,7 @@ a {
     }
     > .collapsed-level-item-link {
       background: url("./img/icons/aside-menu-arrows.png") no-repeat;
-      background-position: 26px 7px;
+      background-position: 26px 10px;
       background-color: #f7f7f7;
       &.img-none {
         background: none;
