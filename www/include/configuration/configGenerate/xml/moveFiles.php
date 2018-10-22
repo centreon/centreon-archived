@@ -101,6 +101,8 @@ if (!empty($remotesResults)) {
 
         if (!empty($linkedResults)) {
             $exportParams['pollers'] = array_column($linkedResults, 'id');
+        } else {
+            $exportParams['pollers'] = [$remote['id']];
         }
 
         $dependencyInjector['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
