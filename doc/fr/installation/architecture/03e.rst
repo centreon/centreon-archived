@@ -10,9 +10,9 @@ Fonctionnement
 
 L'architecture distribuée avec Remote Server consiste à avoir trois types d'entités :
 
-* Le serveur central qui centralise les informations de supervision
+* Le serveur central qui centralise les informations de supervision et permet de configurer la supervision
 * Un ou plusieurs collecteurs qui sont chargés de la supervision des équipements
-* Un ou plusieurs Remote Server opur afficher et opérer sur un sous ensemble des données collectées
+* Un ou plusieurs Remote Server pour afficher et opérer sur un sous ensemble des données collectées
 
 Les serveurs centraux regroupent les éléments suivants :
 
@@ -53,7 +53,7 @@ Le serveur central fonctionne normalement :
 * Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et collecteurs ainsi que du redémarrage des moteurs de supervision
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
-* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances a Centreon Broker RRD
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 Remote Server
@@ -66,7 +66,7 @@ Le Remote Server fonctionne normalement :
 * Le service CentCore est chargé d'opérer sur les données collectées
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
-* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances a Centreon Broker RRD locallement et vers Centreon Broker SQL du serveur Centreon Central
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD localement et vers Centreon Broker SQL du serveur Centreon Central
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 Collecteur
