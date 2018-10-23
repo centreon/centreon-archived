@@ -277,9 +277,15 @@ class CentreonGMT
     public function getUTCDateFromString($date, $gmt = null, $reverseOffset = 1)
     {
         $return = "";
+
         if (!isset($gmt)) {
             $gmt = $this->myGMT;
         }
+
+        if ($gmt == null) {
+            $gmt = date_default_timezone_get();
+        }
+
         if (isset($date) && isset($gmt)) {
             if (!is_numeric($date)) {
                 $sDate = new DateTime($date);
