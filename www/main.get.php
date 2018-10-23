@@ -90,7 +90,7 @@ $num = $inputs["num"];
  * Include all func
  */
 include_once("./include/common/common-Func.php");
-include_once("./include/core/header/header.php");
+include_once("./include/core/header/header.iframe.php");
 
 require_once _CENTREON_PATH_ . "/bootstrap.php";
 
@@ -120,7 +120,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./include/core/errors/alt_error.php";
+                $url = "./include/core/errors/alt_error.php"; 
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
