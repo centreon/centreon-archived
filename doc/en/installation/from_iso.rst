@@ -288,36 +288,35 @@ To start the monitoring engine :
  5. Check **Move Export Files** and **Restart Monitoring Engine** with option **Restart** selected.
  6. Click on **Export** again.
  7. Log in to the ‘root’ user on your server.
- 8. Verify that services **cbd**, **centengine** and **centcore** are running.
+ 8. Start Centreon Broker ::
 
-  ::
-
-    service cbd status
-    service centengine status
-    service centcore status
-
- If these services are not running, start them.
-
- * Start Centreon Broker
-
-  ::
-
-    service cbd start
+     # service cbd start
 
 
- * Start Centreon Engine
+ 9. Start Centreon Engine ::
 
-  ::
+     # service centengine start
 
-    service centengine start
+ 10. Start centcore :: 
 
- * Start centcore
+    # service centcore start
 
-  ::
+11. Start centreontrapd ::
 
-    service centcore start
+    # service centreontrapd start
 
 Monitoring is now working. You can begin monitoring your IT system!
+
+Launching services during system bootup
+=======================================
+
+To make services automatically start during system bootup run these commands
+on the central server: ::
+
+    # systemctl enable centcore
+    # systemctl enable centreontrapd
+    # systemctl enable cbd
+    # systemctl enable centengine
 
 Introduction to the web interface
 =================================

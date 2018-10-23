@@ -299,29 +299,40 @@ Pour démarrer l'ordonnanceur de supervision :
 
 1. Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
 2. Laissez les options par défaut, et cliquez sur **Exporter**
-3. Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
-4. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
-5. Cliquez à nouveau sur **Exporter**
-6. Connectez-vous avec l'utilisateur 'root' sur votre serveur
-7. Démarrez le composant Centreon Broker
+3. Sélectionnez le collecteur **Central** dans la liste de sélection
+4. Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+5. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+6. Cliquez à nouveau sur **Exporter**
+7. Connectez-vous avec l'utilisateur 'root' sur votre serveur
+8. Démarrez le composant Centreon Broker ::
 
-::
+    # service cbd start
 
-   # service cbd start
+9. Démarrez Centreon Engine ::
 
-8. Démarrez Centreon Engine
+    # service centengine start
 
-::
-
-   # service centengine start
-
-9. Démarrez centcore
-
-::
+10. Démarrez centcore ::
 
     # service centcore start
 
+11. Démarrez centreontrapd ::
+
+    # service centreontrapd start
+
 La supervision est maintenant opérationnelle.
+
+Lancer les services au démarrage
+================================
+
+Activer le lancement automatique de services au démarrage.
+
+Lancer les commandes suivantes sur le serveur Central : ::
+
+    # systemctl enable centcore
+    # systemctl enable centreontrapd
+    # systemctl enable cbd
+    # systemctl enable centengine
 
 Découverte de l'interface web
 =============================
