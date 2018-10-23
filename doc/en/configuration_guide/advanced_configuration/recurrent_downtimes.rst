@@ -30,8 +30,8 @@ Configuration
 
 To add a recurrent downtime period:
 
-1. Go into the menu: **Configuration ==> Hosts** (or **Services** depending on the type of object on which the downtime period is to be implemented)
-2. In the left menu, click on **Downtimes**
+1. Go into the menu: **Monitoring ==> Downtimes**
+2. In the left menu, click on **Recurrent Downtimes**
 3. Click on **Add**
  
 .. image:: /images/user/configuration/10advanced_configuration/05recurrentdowntimes.png
