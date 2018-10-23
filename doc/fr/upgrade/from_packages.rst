@@ -109,9 +109,6 @@ La note de version présente les principaux changements, cliquez sur **Next** :
 .. image:: /_static/images/upgrade/web_update_3.png
     :align: center
 
-.. note::
-    TODO mettre à jour l'image.
-
 Le processus réalise les différentes mises à jour, cliquez sur **Next** :
 
 .. image:: /_static/images/upgrade/web_update_4.png

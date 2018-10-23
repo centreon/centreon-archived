@@ -106,9 +106,6 @@ The release notes describes main changes, click on **Next**:
 .. image:: /_static/images/upgrade/web_update_3.png
     :align: center
 
-.. note::
-    TODO mettre à jour l'image.
-
 The process performs the various upgrades, click on **Next**:
 
 .. image:: /_static/images/upgrade/web_update_4.png
