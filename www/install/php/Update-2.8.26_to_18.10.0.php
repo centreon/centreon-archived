@@ -78,8 +78,7 @@ while ($aclTopology = $aclTopologies->fetch()) {
         'FROM acl_topology_relations atr, topology t ' .
         'WHERE acl_topo_id = :topologyId ' .
         'AND atr.topology_topology_id = t.topology_id ' .
-        'AND atr.access_right IN (1,2) ' . // read/write and read only
-        'AND t.topology_parent IS NOT NULL' // do not get
+        'AND atr.access_right IN (1,2) ' // read/write and read only
     );
     $statement->bindParam(':topologyId', $aclTopologyId, \PDO::PARAM_INT);
     $statement->execute();
@@ -87,12 +86,27 @@ while ($aclTopology = $aclTopologies->fetch()) {
 
     // get missing parent topology relations
     $aclToInsert = [];
-    foreach ($topologies as $topologyParameters) {
+    foreach ($topologies as $topologyPage => $topologyParameters) {
         if (
+            isset($topologyParameters['topology_parent']) &&
             !isset($topologies[$topologyParameters['topology_parent']]) &&
             !in_array($topologyParameters['topology_parent'], $aclToInsert)
         ) {
-            $aclToInsert[] = $topologyParameters['topology_parent'];
+            if (strlen($topologyPage) === 5) { // level 3
+                $levelOne = substr($topologyPage, 0, 1); // get level 1 from begining of topology_page
+                if (!isset($aclToInsert[$levelOne])) {
+                    $aclToInsert[] = $levelOne;
+                }
+                $levelTwo = substr($topologyPage, 0, 3); // get level 2 from begining of topology_page
+                if (!isset($aclToInsert[$levelTwo])) {
+                    $aclToInsert[] = $levelTwo;
+                }
+            } elseif (strlen($topologyPage) === 3) { // level 2
+                $levelOne = substr($topologyPage, 0, 1); // get level 1 from begining of topology_page
+                if (!isset($aclToInsert[$levelOne])) {
+                    $aclToInsert[] = $levelOne;
+                }
+            }
         }
     }
 
