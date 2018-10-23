@@ -6,14 +6,19 @@ use Centreon\Domain\Entity\Command;
 
 class CentcoreCommandService
 {
-    CONST CENTCORE_COMMAND_QUEUE_FILE = 'centcore.cmd';
-
     /**
      * @param Command $command
      * @return mixed
      */
     public function sendCommand(Command $command)
     {
-        return file_put_contents(_CENTREON_VARLIB_ . '/' . self::CENTCORE_COMMAND_QUEUE_FILE,$command->getCommandLine() . "\n");
+        // generate a hashed name to avoid conflict with other external commands
+        $commandFile = hash('sha256', $command->getCommandLine()) . '.cmd';
+
+        return file_put_contents(
+            _CENTREON_VARLIB_ . '/centcore/' . $commandFile,
+            $command->getCommandLine() . "\n",
+            FILE_APPEND
+        );
     }
 }
