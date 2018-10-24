@@ -345,7 +345,7 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     // get host template relations
     $linkedHostTemplates = isset($ret["hc_hostsTemplate"]) ?
         $ret["hc_hostsTemplate"] :
-        $form->getSubmitValue("hc_hostsTemplate");
+        CentreonUtils::mergeWithInitialValues($form, 'hc_hostsTemplate');
 
     // merge host and host template relations
     $linkedObjects = array_merge($linkedHosts, $linkedHostTemplates);
