@@ -15,3 +15,4 @@ Administration
    logs
    backup
    partitioning/index
+   customuri
