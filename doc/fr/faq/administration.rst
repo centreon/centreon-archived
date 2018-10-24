@@ -1,10 +1,6 @@
-===================
-Foire Aux Questions
-===================
-
-**************
-Administration
-**************
+=========================================
+Administration de la plate-forme Centreon
+=========================================
 
 Comment la fonction **Supprimer des graphiques** fonctionne ?
 =============================================================
