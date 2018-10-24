@@ -4,6 +4,23 @@
 Distributed architecture with Remote server
 ===========================================
 
+Centreon Remote Server is a new building-block in the Centreon distributed
+monitoring architecture. It comes in addition to the existing Centreon Central
+Server and Centreon Pollers.
+
+Centreon Remote Server allows remote IT operations team to benefit from the full
+Centreon user experience, albeit on a subset of Centreon Pollers. Monitoring
+configuration takes place on the Central Server and is automatically synchronized
+with all Remote Servers. Monitoring Operations (Acknowledge, Downtime...) may
+take place both on a Remote Server or the Central Server.
+
+In case of network link failure between a Remote Server and the Central Server,
+data retention takes place and the two Servers are synchronized as soon as the
+connection is up again.
+
+Centreon Remote Server is integrated in Centreon Core. It fully replaces the 
+Poller Display module.
+
 ***********
 Description
 ***********

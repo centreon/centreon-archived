@@ -4,6 +4,24 @@
 Architecture distribuée avec Remote Server
 ==========================================
 
+Centreon Remote Server est un nouveau module de l’architecture de supervision
+distribuée Centreon. Il s’ajoute aux serveurs Centreon Central et collecteurs
+Centreon existants.
+
+Centreon Remote Server permet aux équipes d’exploitation informatiques distantes
+de bénéficier de l’expérience utilisateur complète de Centreon, mais pour un
+sous-ensemble de Centreon Pollers. La configuration de la supervision s'effectue
+sur le serveur central et est synchronisée avec tous les serveurs distants. Les
+opérations de surveillance (acquittement, temps d’arrêt, etc.) peuvent avoir lieu
+à la fois sur un serveur distant et sur le serveur central.
+
+En cas de défaillance de la liaison réseau entre un serveur distant et le serveur
+central, les données sont conservées et les deux serveurs sont synchronisés dès
+que la connexion est rétablie.
+
+Centreon Remote Server est intégré au cœur de Centreon. Il remplace complètement
+le module Poller Display.
+
 **************
 Fonctionnement
 **************
