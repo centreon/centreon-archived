@@ -95,7 +95,8 @@ Le tableau suivant présente les prérequis pour une installation de Centreon :
 +----------------------+-------------------------+----------------------------+----------------+---------------+
 
 .. note::
-    Les vCPU doivent avoir une fréquence avoisinant les 3 GHz
+    Un collecteur peut superviser en moyenne 7000 services actifs.
+    Les vCPU doivent avoir une fréquence avoisinant les 3 GHz.
 
 Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques
 de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
