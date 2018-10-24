@@ -93,7 +93,7 @@ class TopologyRepository extends ServiceEntityRepository
                     if (count($topology)) {
                         $query3 = "SELECT topology_url "
                             . "FROM topology FORCE INDEX (`PRIMARY`) "
-                            . "WHERE topology_page IS NOT NULL "
+                            . "WHERE topology_url IS NOT NULL "
                             . "AND is_react = '1' "
                             . "AND topology_id IN (" . implode(', ', $topology) . ") ";
                         $DBRESULT3 = $this->db->query($query3);
