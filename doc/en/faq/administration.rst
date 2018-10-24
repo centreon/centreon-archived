@@ -1,6 +1,6 @@
-**************
-Administration
-**************
+================================
+Centreon administration platform
+================================
 
 How does the *Empty all services data* action work?
 ===================================================

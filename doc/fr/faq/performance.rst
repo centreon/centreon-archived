@@ -1,8 +1,8 @@
 .. _performance:
 
-===========
-Performance
-===========
+======================================
+Performance de la plate-forme Centreon
+======================================
 
 Ce chapitre est un guide pour optimiser Centreon
 
@@ -16,9 +16,6 @@ Centreon utilise deux ou trois bases de données en fonction de votre broker:
 
 * ``centreon`` -- Stockage de la configuration
 * ``centreon_storage`` -- Données temps réelle et historique
-* ``centreon_status`` -- Données temps réelle si ``ndo2db`` est utilisé
-
-La base de données ``centreon_status`` est installée même si vous n'utilisez pas ``ndo2db``.
 
 Index
 =====

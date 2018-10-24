@@ -1,8 +1,8 @@
 .. _performance:
 
-===========
-Performance
-===========
+=============================
+Centreon platform performance
+=============================
 
 This is a guide on improving Centreon's performance
 

@@ -3,8 +3,9 @@ Foire Aux Questions
 ===================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   general
+   gdpr_compliance
    administration
    performance
-   gdpr_compliance
