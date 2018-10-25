@@ -6,7 +6,7 @@ Upgrading to Centreon 18.10
 
 This chapter describes how to upgrade your platform to Centreon 18.10.
 
-.. note::
+.. warning::
     At the end of this procedure, Centreon EMS users will have to request new
     licenses to `Centreon support <https://centreon.force.com>`_.
 
