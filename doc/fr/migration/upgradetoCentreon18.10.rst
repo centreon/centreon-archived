@@ -78,8 +78,7 @@ exécutez les commandes suivantes :
 
     # rsync -avz /var/lib/mysql/ root@IP_New_Centreon:/var/lib/mysql/
 
-#.  En cas de migration d'un SGBD MySQL/MariaDB 5.x vers 10.x, il est nécessaire
-de lancer la commande suivante sur le nouveau serveur ::
+#. En cas de migration d'un SGBD MySQL/MariaDB 5.x vers 10.x, il est nécessaire de lancer la commande suivante sur le nouveau serveur : ::
 
     # mysql_upgrade
 
