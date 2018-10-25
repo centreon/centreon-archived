@@ -7,7 +7,7 @@ Mise à jour vers Centreon 18.10
 Ce chapitre décrit la procédure de mise à jour de votre plate-forme vers
 Centreon 18.10.
 
-.. note::
+.. warning::
     A la fin de cette procédure, les utilisateurs de Centreon EMS devront demander de
     nouvelles licenses au `Support Centreon <https://centreon.force.com>`_.
 
