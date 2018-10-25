@@ -74,6 +74,10 @@ following commands:
 
     # rsync -avz /var/lib/mysql/ root@IP_New_Centreon:/var/lib/mysql/
 
+#. If you migrate your DMBS from 5.x to 10.x, it's necessary to execute this command on the new server : ::
+
+    # mysql_upgrade
+
 #. Start the mysqld process on the new server: ::
 
     # systemctl start mysqld
