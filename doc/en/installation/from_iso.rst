@@ -288,22 +288,22 @@ To start the monitoring engine :
  5. Check **Move Export Files** and **Restart Monitoring Engine** with option **Restart** selected.
  6. Click on **Export** again.
  7. Log in to the ‘root’ user on your server.
+
  8. Start Centreon Broker ::
 
-     # service cbd start
-
+     # systemctl start cbd
 
  9. Start Centreon Engine ::
 
-     # service centengine start
+     # systemctl start centengine
 
- 10. Start centcore :: 
+ 10. Start centcore ::
 
-    # service centcore start
+     # systemctl start centcore
 
-11. Start centreontrapd ::
+ 11. Start centreontrapd ::
 
-    # service centreontrapd start
+     # systemctl start centreontrapd
 
 Monitoring is now working. You can begin monitoring your IT system!
 
