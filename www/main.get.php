@@ -120,7 +120,7 @@ if ($acl_page == 1 || $acl_page == 2) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
             } else {
-                $url = "./include/core/errors/alt_error.php"; 
+                $url = "./include/core/errors/alt_error.php";
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
