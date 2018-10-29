@@ -46,7 +46,7 @@ Installation du nouveau serveur
 
 Installez un nouveau serveur Centreon à partir de :ref:`l'ISO<installisoel7>`
 ou :ref:`des paquets<install_from_packages>` et terminez le processus
-d'installation jusqu'à vous connecter à l'interface web.
+d'installation en vous connectant à l'interface web.
 
 .. note::
     Il est préférable de saisir le même mot de passe pour l'utilisateur
@@ -101,6 +101,11 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
 
 Mise à jour de la suite Centreon
 ================================
+
+Forcez la mise à jour du nouveau serveur en déplacant le contenu du répertoire /usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS dans le repértoire /usr/share/centreon/www/install
+
+# cd /usr/share/centreon/installDir/
+# mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
 Se connecter à l'url http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon et suivre
 les étapes de mise à jour.
