@@ -97,7 +97,12 @@ installation. The main directories to synchronize are:
 Upgrading Centreon
 ==================
 
-Go to http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon URL and perform the
+On the new server, force the update by moving the content of the directoy /usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS to the directory /usr/share/centreon/www/install
+
+# cd /usr/share/centreon/installDir/
+# mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
+
+Go to http://[New_Centreon_IP]/centreon URL and perform the
 upgrade.
 
 .. note::
@@ -106,9 +111,7 @@ upgrade.
     
     #. Edit /etc/centreon/centreon.conf.php file
     #. Edit /etc/centreon/conf.pm file
-    #. Edit the Centreon Broker central configuration, using Centreon web
-	   interface and change the password for **Perfdata generator** and
-	   **Broker SQL database** output.
+    #. Edit the Centreon Broker central configuration, using Centreon web interface and change the password for **Perfdata generator** and **Broker SQL database** output.
 
 If the IP of your Centreon server has changed, edit configuration for all the Centreon Broker modules
 on your pollers and change the IP to connect to the Centreon central server
