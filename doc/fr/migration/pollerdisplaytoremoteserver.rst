@@ -23,7 +23,7 @@ vers 18.10.
 .. note::
     Si vous possédez des modules Centreon EMS, il est nécessaire de mettre à
     jour ces dépôts. Contactez votre support Centreon pour obtenir ces derniers.
-    Demendez également les nouvelles licences associées.
+    Demandez également les nouvelles licences associées.
 
 ******************************************************
 Migration d'un server Poller Display vers Remote Serve
