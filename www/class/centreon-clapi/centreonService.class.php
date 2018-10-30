@@ -1238,7 +1238,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($telements as $telement) {
-                CentreonTrap::getInstance()->export($element['traps_name']);
+                CentreonTrap::getInstance()->export($telement['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $telement['service_description'] . $this->delim
