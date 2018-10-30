@@ -46,7 +46,4 @@ class Centreon_Object_Service_Macro_Custom extends Centreon_Object
     protected $primaryKey = "svc_macro_id";
     protected $uniqueLabelField = "svc_macro_name";
 
-    public function duplicate()
-    {
-    }
 }

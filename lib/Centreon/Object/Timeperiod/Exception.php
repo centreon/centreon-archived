@@ -46,7 +46,4 @@ class Centreon_Object_Timeperiod_Exception extends Centreon_Object
     protected $primaryKey = "exception_id";
     protected $uniqueLabelField = "days";
 
-    public function duplicate()
-    {
-    }
 }
