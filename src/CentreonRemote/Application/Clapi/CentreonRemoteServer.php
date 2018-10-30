@@ -88,7 +88,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             echo "Success\n";
         } catch (\Exception $ex) {
             echo "Fail:\n";
-            echo $e->__toString()."\n";
+            echo $ex->__toString()."\n";
         }
 
         echo "\n Centreon Remote import finished.\n";
