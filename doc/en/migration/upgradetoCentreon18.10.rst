@@ -97,10 +97,12 @@ installation. The main directories to synchronize are:
 Upgrading Centreon
 ==================
 
-On the new server, force the update by moving the content of the directoy /usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS to the directory /usr/share/centreon/www/install
+On the new server, force the update by moving the content of the
+**/usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS** directory to
+the **/usr/share/centreon/www/install** directory: ::
 
-# cd /usr/share/centreon/installDir/
-# mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
+    # cd /usr/share/centreon/installDir/
+    # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
 Go to http://[New_Centreon_IP]/centreon URL and perform the
 upgrade.

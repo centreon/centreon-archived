@@ -102,10 +102,12 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
 Mise à jour de la suite Centreon
 ================================
 
-Forcez la mise à jour du nouveau serveur en déplacant le contenu du répertoire /usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS dans le repértoire /usr/share/centreon/www/install
+Forcez la mise à jour du nouveau serveur en déplacant le contenu du répertoire
+**/usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS** dans le
+repértoire **/usr/share/centreon/www/install** : ::
 
-# cd /usr/share/centreon/installDir/
-# mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
+    # cd /usr/share/centreon/installDir/
+    # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
 Se connecter à l'url http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon et suivre
 les étapes de mise à jour.
