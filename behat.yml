@@ -332,3 +332,7 @@ default:
     topcounterpoller:
       paths: [ %paths.base%/features/TopCounterPollers.feature ]
       contexts: [ TopCounterPollersContext ]
+
+    vulnerability_comment:
+      paths: [ %paths.base%/features/VulnerabilityComment.feature ]
+      contexts: [ VulnerabilityCommentContext ]
