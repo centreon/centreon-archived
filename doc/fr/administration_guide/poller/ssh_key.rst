@@ -1,8 +1,6 @@
-.. _sskkeypoller:
-
--------------------
+*******************
 Echange de clés SSH
--------------------
+*******************
 
 La communication entre le serveur central et un collecteur se fait via SSH.
 
@@ -18,5 +16,3 @@ Vous devez copier cette clé sur le nouveau serveur : ::
 
     # su - centreon
     $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
-
-Rendez-vous au chapitre :ref:`Configurer un server dans Centreon<wizard_add_poller>`.
