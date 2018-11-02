@@ -41,6 +41,9 @@ Cette commande va activer le mode **Remote Server** ::
       Limiting Actions...Done
 
       Notifying Master...Success
+      
+      Set 'remote' instance type...Done
+      
       Centreon Remote enabling finished.
 
 Rendez-vous au chapitre :ref:`Echange de clés SSH<sskkeypoller>` pour continuer.
