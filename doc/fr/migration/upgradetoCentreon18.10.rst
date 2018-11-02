@@ -39,7 +39,7 @@ Migration
 .. warning::
     En cas de migration d'une plate-forme disposant du module **Centreon Poller
     Display 1.6.x**, référez-vous à la :ref:`procédure de migration suivante
-    <frompollerdisplay16>`.
+    <migratefrompollerdisplay>`.
 
 Installation du nouveau serveur
 ===============================

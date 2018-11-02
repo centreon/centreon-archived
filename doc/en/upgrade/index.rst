@@ -10,7 +10,7 @@ This procedure is linked to your initial version of Centreon. You will have to u
 
 .. warning::
     If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
-    please refer to the following :ref:`migration procedure <frompollerdisplay16>`.
+    please refer to the following :ref:`migration procedure <migratefrompollerdisplay>`.
 
 .. toctree::
     :maxdepth: 2
