@@ -4,19 +4,24 @@
 A partir des VMs
 ================
 
-Deux Machines virtuelles pré-configurées sont disponibles sur le site de téléchargement de Centreon.
+Deux Machines virtuelles pré-configurées sont disponibles sur le site de
+`téléchargement de Centreon <https://download.centreon.com/>`_.
 
-Ces machines virtuelles sont disponibles au format OVF et sont validées pour des architectures VMWare. La procédure décrite ici a été validée sur la version 5.1 du client VSphere.
+Ces machines virtuelles sont disponibles au format OVF (VMware) et OVA (VirtualBox).
+
+************************
+Serveur Centreon central
+************************
 
 Import
-------
+======
 
 Il est dans un premier temps nécessaire d'importer le ficher OVF. Pour cela, sur le client VSphere allez dans le menu **File > Deploy OVF Template** et sélectionnez le ficher précedemment téléchargé.
 Il est alors nécessaire de suivre les différents menus. Les différents choix sont trés liés à l'infrastructure VMWare en place, il est difficile d'être rééllement spécifique dans cette documentation.
 Il est important de noter que les bonnes pratiques sont de choisir le mode **Thin Provision** qui vous permettra d'économiser de l'espace disque sur vos datastores.
 
 Connexion
----------
+=========
 
 La machine est configurée avec des comptes par défaut.
 
@@ -34,10 +39,14 @@ celles-ci, **spécialement les opérations 4 et 5**.
 .. note::
     Pour supprimer ce message, supprimez le fichier **/etc/profile.d/centreon.sh**.
 
+**********
 Collecteur
-----------
+**********
 
-L'installation d'un collecteur de supervision (poller) est trés similaire à celle du central de supervision. Il est juste nécessaire d'ajouter à cette procédure l'échange des clefs SSH et la configuration sur l'interface Web.
+Le déploiement d'un collecteur de supervision (poller) à partir de la machine
+virtuelle est trés similaire à celle d'un serveur Centtreon central. Après
+déploiement, il est nécessaire d'ajouter à cette procédure l'échange des
+clefs SSH et la configuration du collecteur via l'interface Web:
 
 Echange des clefs SSH
 =====================
@@ -62,12 +71,4 @@ le mot de passe de l'utilisateur centreon sur le collecteur est configuré par d
 Configuration de l'interface Web
 ================================
 
-#. Dans le menu **Configuration > Poller > Pollers**, activez le **Poller Template** et remplacez IP_POLLER par l'adresse IP de votre poller.
-#. Dans le menu **Configuration > Poller > Engine configuration**, activez **Poller-template**
-#. Dans le menu **Configuration > Poller > Broker configuration**, activez **Poller-template-module** et dans l'onglet **Output** remplacez **IP_CENTRAL** par l'adresse IP de votre serveur central.
-
-Vous pouvez maintenant ajouter des éléments à superviser sur votre collecteur, il est fonctionnel !
-
-.. warning::
-
-    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir l'option **restart**.
+.. include:: ../administration_guide/poller/wizard_add_poller.rst

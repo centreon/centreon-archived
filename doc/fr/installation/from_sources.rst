@@ -733,4 +733,4 @@ Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service apa
 
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation (localement ou non). Pour information, nous recommandons MariaDB.
 
-Suivez la procédure d'installation web :ref:`ici <installation_web_ces>`.
+.. include:: common/web_install.rst
