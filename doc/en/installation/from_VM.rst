@@ -61,4 +61,4 @@ Then you can configure and add resources on your poller. The poller is operation
 
 .. warning::
 
-    When you export your configuration for the first time, you have to choose "restart".
+    When you export your configuration for the first time, you have to choose "restart" option.

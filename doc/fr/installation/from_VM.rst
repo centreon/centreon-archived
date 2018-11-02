@@ -63,4 +63,4 @@ Vous pouvez maintenant ajouter des éléments à superviser sur votre collecteur
 
 .. warning::
 
-    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir le choix restart.
+    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir l'option **restart**.
