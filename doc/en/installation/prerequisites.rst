@@ -95,7 +95,9 @@ The table below gives the prerequisites for the installation of Centreon:
 
 .. note::
     A poller can monitor around 7000 active services.
-    vCPU must have a frequency around 3 GHz
+    vCPU must have a frequency around 3 GHz. The number of vCPU depends of the
+    complexity of checks. If you use connectors or perform a lot of
+    system/third-party binary calls, please add more vCPU.
 
 .. _diskspace:
 
