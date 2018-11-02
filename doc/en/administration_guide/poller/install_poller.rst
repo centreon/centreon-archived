@@ -15,7 +15,7 @@ For the question **Which server type would you like to install?** choose the opt
 .. image:: /images/user/configuration/10advanced_configuration/07installpoller.png
     :align: center
 
-Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
+Go to :ref:`SSH Key Exchange chapter to continue<sskkeypoller>`.
 
 Using Centreon packages
 -----------------------
