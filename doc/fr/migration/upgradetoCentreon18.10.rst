@@ -136,6 +136,9 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
 
 .. note::
     Si vous avez des pollers en centreon engine 1.8.1 que vous comptez migrer plus tard en centreon engine 18.10, attention au dossier des plugins nagios. La ressource $USER1$ ce Centreon 18.10 pointe sur /usr/lib64/nagios/plugins
+    
+    A éxécuter sur vos collecteurs en centreon-engine 1.8.1 :
+    
     # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
     # rmdir /usr/lib64/nagios/plugins/
     # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
