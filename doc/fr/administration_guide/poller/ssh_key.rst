@@ -8,7 +8,7 @@ La communication entre le serveur central et un collecteur se fait via SSH.
 
 Vous devez échanger les clés SSH entre les serveurs.
 
-Si vous n’avez pas de clé SSH privées sur le serveur central pour
+Si vous n’avez pas de clé SSH privée sur le serveur central pour
 l’utilisateur 'centreon' : ::
 
     # su - centreon

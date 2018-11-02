@@ -80,6 +80,7 @@ Cette commande va activer le mode **Remote Server** ::
 
 .. note::
     Un serveur Centreon Remote Server est un serveur dont l’administration est 
-    autonome. Ainsi, la configuration de l’annuaire LDAP, des utilisateurs et
-    des ACL est propre à ce serveur et doit être configuré via le menu
-    **Administration**.
+    autonome. Ainsi, la configuration de l’annuaire LDAP, celle des utilisateurs
+    ainsi que celle des ACL sont propres à ce serveur et doivent être configurées
+    via les menus **Configuration** (pour les utilisateurs) et **Administration**
+    (pour l'annuaire LDAP et les ACL).

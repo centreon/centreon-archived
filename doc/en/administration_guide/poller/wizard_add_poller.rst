@@ -7,7 +7,7 @@ Configure new server in Centreon
 Since Centreon 18.10, a new wizard is available to define a new server (poller
 or Remote Server) to a Centreon platform
 
-Chose the correct chapter regarding the type of server.
+Choose the correct chapter regarding the type of server.
 
 .. note::
     It is possible to configure a new Poller :ref:`manually<add_manual_poller>`,
@@ -17,7 +17,7 @@ Chose the correct chapter regarding the type of server.
 Configure a Poller
 ------------------
 
-Go to the **Configuration > Pollers** menu an click **Add server with wizard**
+Go to the **Configuration > Pollers** menu and click **Add server with wizard**
 to configure a new poller.
 
 Select **Add a Centreon Poller** and click **Next**:
@@ -47,11 +47,11 @@ Else, if you want to link this poller to an existing Remote Server, select the
 Remote Server in the list. Then click **Apply**:
 
 .. note::
-    If you want to change the sens of the flow between the Centreon Server (or
+    If you want to change the sense of the flow between the Centreon Server (or
     the Remote Server and the Poller, check the **Advanced: reverse Centreon
-    Broker communication flow** chexkbox.
+    Broker communication flow** checkbox.
 
-Wait few seconds, the wizard will configure your new server.
+Wait a few seconds, the wizard will configure your new server.
 
 The Poller is now configured:
 
@@ -67,7 +67,7 @@ chapter to configure your first monitoring.
 Configure a Remote Server
 -------------------------
 
-Go to the **Configuration > Pollers** menu an click **Add server with wizard** to
+Go to the **Configuration > Pollers** menu and click **Add server with wizard** to
 configure a new poller.
 
 Select **Add a Centreon Remote Server** and click **Next**:
@@ -80,7 +80,7 @@ If you define a new Server, select  **Manual input** option and fill the form:
 .. image:: /images/poller/wizard_add_remote_2a.png
     :align: center
 
-If you enabled the **Remote Server** option during the installaion of your server,
+If you enabled the **Remote Server** option during the installation of your server,
 select the option **Select a Remote Server**, then select your server and fill
 the form:
 
@@ -89,7 +89,7 @@ the form:
 
 .. note::
     The **Database user** and **Database password** are the credentials defined
-    during the instalaltion of the Remote Server
+    during the installation of the Remote Server
 
 Click on **Next**
 

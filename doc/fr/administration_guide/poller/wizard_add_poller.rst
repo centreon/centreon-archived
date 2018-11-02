@@ -1,13 +1,13 @@
 .. _wizard_add_poller:
 
-==========================================
-Configurer un nouveau server dans Centreon
-==========================================
+===========================================
+Configurer un nouveau serveur dans Centreon
+===========================================
 
 Depuis Centreon 18.10, un assistant de configuration est disponible pour ajouter
 un collecteur ou un Remote Server à la plate-forme Centreon.
 
-Choisissez le chapitre suivant le type de server.
+Choisissez le chapitre suivant le type de serveur.
 
 .. note::
     Il est possible d'ajouter un nouveau collecteur :ref:`manuellement<add_manual_poller>`,
@@ -83,7 +83,7 @@ et saisissez les informations demandées.
     :align: center
 
 Si vous avez déjà activé l'option **Remote Server** durant l'installation de
-votre server, sélectionnez l'option **Select a Remote Server** et sélectionnez
+votre serveur, sélectionnez l'option **Select a Remote Server** et sélectionnez
 votre serveur dans la liste puis complétez les informations demandées.
 
 .. image:: /images/poller/wizard_add_remote_2b.png
@@ -91,7 +91,7 @@ votre serveur dans la liste puis complétez les informations demandées.
 
 .. note::
     Les champs **Database user** et **Database password** sont les accès aux bases
-    de données Centreon définit durant l'installation de votre Remote Server.
+    de données Centreon définis durant l'installation de votre Remote Server.
 
 Cliquez sur **Next** :
 
