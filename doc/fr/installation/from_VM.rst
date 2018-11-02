@@ -28,6 +28,12 @@ Le mot de passe de de l'utilisateur **root** de la base de données n'est pas in
     Pour des raisons de sécurité, il est recommandé de changer tous ces mots
     de passe aprés l'installation
 
+A la première connexion, un message indique les opérations à réaliser. Suivez
+celles-ci, **spécialement les opérations 4 et 5**.
+
+.. note::
+    Pour supprimer ce message, supprimez le fichier **/etc/profile.d/centreon.sh**.
+
 Collecteur
 ----------
 

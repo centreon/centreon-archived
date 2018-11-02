@@ -26,6 +26,12 @@ The **root** password of the DBMS is not initialized.
 .. note::
     For security reasons, we highly recommend you to change those passwords after installation.
 
+On the first connection, a message describes the operations to be performed.
+Run these, **especially operations 4 and 5**.
+
+.. note::
+    To remove this message, remove the **/etc/profile.d/centreon.sh** file.
+
 Poller
 ------
 
