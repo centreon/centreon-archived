@@ -34,12 +34,19 @@ Using Poller VM is nearly the same as central. You just have to exchange SSH key
 Exchange SSH keys
 =================
 
-On your central server:
+The communication between a central server and a poller server is done by SSH.
 
-   ::
+You should exchange the SSH keys between the servers.
 
-    su - centreon
-    ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
+If you don’t have any private SSH keys on the central server for the Centreon user: ::
+
+    # su - centreon
+    $ ssh-keygen -t rsa
+
+Copy this key on the new server: ::
+
+    # su - centreon
+    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
 The password of the centreon user is **centreon**. It can be easily changed using **passwd** command.
 
@@ -54,4 +61,4 @@ Then you can configure and add resources on your poller. The poller is operation
 
 .. warning::
 
-    When you export your configuration for the first time, you have to choose "restart".
+    When you export your configuration for the first time, you have to choose "restart" option.

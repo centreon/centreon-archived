@@ -35,12 +35,20 @@ L'installation d'un collecteur de supervision (poller) est trés similaire à ce
 Echange des clefs SSH
 =====================
 
-Sur votre serveur central :
+La communication entre le serveur central et un collecteur se fait via SSH.
 
-   ::
+Vous devez échanger les clés SSH entre les serveurs.
 
-    su - centreon
-    ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
+Si vous n’avez pas de clé SSH privées sur le serveur central pour
+l’utilisateur ‘centreon’ ::
+
+    # su - centreon
+    $ ssh-keygen -t rsa
+
+Vous devez copier cette clé sur le nouveau serveur : ::
+
+    # su - centreon
+    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
 le mot de passe de l'utilisateur centreon sur le collecteur est configuré par défaut à **centreon**. Il est fortement conseillé de la changer en utilisant la commande **passwd**.
 
@@ -55,4 +63,4 @@ Vous pouvez maintenant ajouter des éléments à superviser sur votre collecteur
 
 .. warning::
 
-    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir le choix restart.
+    La premiére fois que vous exportez la configuration, il sera nécessaire de choisir l'option **restart**.
