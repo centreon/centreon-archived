@@ -7,7 +7,7 @@ Configure new server in Centreon
 Since Centreon 18.10, a new wizard is available to define a new server (poller
 or Remote Server) to a Centreon platform
 
-Chose the correct chapter regarding the type of server.
+Choose the correct chapter regarding the type of server.
 
 .. note::
     It is possible to configure a new Poller :ref:`manually<add_manual_poller>`,
@@ -51,7 +51,7 @@ Remote Server in the list. Then click **Apply**:
     the Remote Server and the Poller, check the **Advanced: reverse Centreon
     Broker communication flow** checkbox.
 
-Wait few seconds, the wizard will configure your new server.
+Wait a few seconds, the wizard will configure your new server.
 
 The Poller is now configured:
 
@@ -67,7 +67,7 @@ chapter to configure your first monitoring.
 Configure a Remote Server
 -------------------------
 
-Go to the **Configuration > Pollers** menu an click **Add server with wizard** to
+Go to the **Configuration > Pollers** menu and click **Add server with wizard** to
 configure a new poller.
 
 Select **Add a Centreon Remote Server** and click **Next**:
