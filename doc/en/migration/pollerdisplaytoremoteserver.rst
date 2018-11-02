@@ -17,7 +17,7 @@ If the module **centreon-poller-display-central-1.6.x** is installed:
 
     # yum remove centreon-poller-display-central
 
-If your server use a CentOS or Red Hat v7 operating system, refer to the
+If your server uses a CentOS or Red Hat v7 operating system, refer to the
 :ref:`update procedure <upgrade_from_packages>` to update your Poller Display
 server; else refer to the :ref:`migration procedure <migrate_to_1810>`.
 
@@ -32,7 +32,7 @@ Migration a server from Centreon Poller Display to Remote Server
 1. Go to the **Administration > Extensions > Modules** menu and uninstall the
    **Centreon Poller Display** module.
 
-2. If the module was installed using RPM package, remove this one using the
+2. If the module was installed using an RPM package, remove this one using the
    following command::
 
     # yum remove centreon-poller-display
@@ -65,11 +65,11 @@ This command will enable **Remote Server** mode::
       Notifying Master...Success
      Centreon Remote enabling finished.
 
-6. Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>` to perform
+6. Go to :ref:`SSH Key Exchange chapter to continue<sskkeypoller>` to perform
    exchange between your **Remote Server** and all attached **pollers**.
 
 7. **On the Centreon Central server**, edit all pollers and attach them to the
-   **Remote Server** using select list.
+   **Remote Server** using the selection list.
 
 .. note::
     Do not forget to :ref:`generate configuration <deployconfiguration>` of your
