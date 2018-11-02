@@ -2,7 +2,7 @@
 Nagios Reader to Centreon CLAPI
 ===============================
 
-**Nagios Reader to Centreon CLAPI** is a free and open source project to analyse
+**Nagios Reader to Centreon CLAPI** is a free and open source project to analyze
 Nagios CFG configuration files and to transform monitoring configuration to
 Centreon CLAPI command in order to import configuration into Centreon web
 interface.
@@ -11,14 +11,21 @@ Prerequisites
 =============
 
 First of all you need a Centreon server installed and ready to use. Please see the
-documentation :ref:`to install a Centreon server<firststepsces3>` based on Centreon.
+documentation :ref:`to install a Centreon server<installisoel7>` based on Centreon.
 
 Installation
 ============
 This script uses the Perl-Nagios-Object library to read CFG files. To install
-it please follow this steps on your Nagios(R) server::
+it please follow this steps on your Nagios(R) server
+
+CentOS::
 
   $ yum install perl-Module-Build
+
+Debian::
+
+  $ apt-get install libmodule-build-perl
+
   $ cd /tmp
   $ wget http://search.cpan.org/CPAN/authors/id/D/DU/DUNCS/Nagios-Object-0.21.20.tar.gz
   $ tar xzf Nagios-Object-0.21.20.tar.gz
@@ -28,7 +35,7 @@ it please follow this steps on your Nagios(R) server::
   $ ./Build test
   $ ./Build install
 
-Download script from github on your Nagios(R) server::
+Download script from GitHub on your Nagios(R) server::
 
   $ cd /tmp
   $ git clone https://github.com/centreon/nagiosToCentreon.git
@@ -38,7 +45,7 @@ Usage
 =====
 
 On a fresh Centreon server the default poller is named "Central". If you rename it
-or if you want to link this Nagios configuration to a predifined poller you 
+or if you want to link this Nagios configuration to a predefined poller you
 have to change the poller name on line 65::
 
   my $default_poller = "Central";
@@ -50,7 +57,7 @@ To display help use the command::
   #    Copyright (c) 2005-2015 Centreon                #
   #    Bugs to http://github.com/nagiosToCentreon      #
   ######################################################
-  						    
+
   Usage: nagios_reader_to_centreon_clapi.pl
       -V (--version) Show script version
       -h (--help)    Usage help
@@ -64,7 +71,7 @@ Export the file /tmp/centreon_clapi_import_commands.txt on your Centreon server.
 
 Run the following command to import configuration into Centreon on your Centreon server::
 
-  $ /usr/share/centreon/www/modules/centreon-clapi/core/centreon -u admin -p @PASSWORD -i /tmp/centreon_clapi_import_commands.txt
+  $ /usr/share/centreon/bin/centreon -u admin -p @PASSWORD -i /tmp/centreon_clapi_import_commands.txt
 
 .. note::
     Replace **@PASSWORD** by password of **admin** Centreon web user.

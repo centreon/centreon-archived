@@ -124,7 +124,7 @@ Pour installer la nouvelle version de Centreon depuis une Centreon 3.4, lancez l
 
    ::
 
-   # yum update centreon
+   # yum update centreon*
 
 .. warning::
    Si vous rencontrez des problèmes de dépendances avec le package centreon-engine-webservices, merci de le supprimer car il est maintenant obsolète. Lancez la commande suivante :
@@ -220,7 +220,7 @@ Mise à jour de EMS/EPP
    Pas utilisateur de EMS/EPP ? Vous trouverez cependant les Plugins
    Packs Centreon extrêmement utiles pour vous aider à configurer votre
    supervision en quelques minutes. Vous trouverez les informations
-   d'installation dans notre :ref:`documentation en ligne <installation_ppm>`.
+   d'installation dans notre :ref:`documentation en ligne <impconfiguration>`.
 
 
 Si vous utilisez des modules Centreon, vous devrez les mettre à jour

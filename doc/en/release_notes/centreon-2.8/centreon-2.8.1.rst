@@ -37,7 +37,7 @@ Features
 * Add possibility for all Centreon web users to select their home page after connection;
 * Add possibility to define downtimes on hostgroups, servicegroups and multi-hosts;
 * Add an acknowledge expiration time on host and service;
-* Better ergonomy on selectbox for Mac OS and MS Windows users;
+* Better ergonomics on selectbox for Mac OS and MS Windows users;
 * Add possibility to set downtimes on Centreon Poller display module;
 * Add possibility to reduce Centreon Broker input/output configuration;
 * Optimization of SQL table for logs access;
@@ -70,7 +70,7 @@ Known bugs or issues
 * This release is not yet compatible with other commercial products
   from Centreon, like Centreon MBI, Centreon BAM or Centreon Map.
   If your are using any of these products, you are strongly advised
-  **NOT** to update Centreon Web until new releases of the forementioned
+  **NOT** to update Centreon Web until new releases of the fore mentioned
   products are available and specifically mention Centreon Web 2.8
   compatibility ;
 * Centreon Engine performance chart still in RRDTools PNG format ;
@@ -78,4 +78,3 @@ Known bugs or issues
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
 * Issues on SSO Authentication
-

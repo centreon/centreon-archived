@@ -14,7 +14,7 @@ All the images are stored in the folder entitled: **/usr/share/centreon/www/img/
 There are two methods for adding images to this folder:
 
 * Do it manually
-* Use automatic synchronisation: this method has the advantage of being able to import multiple images at the same time.
+* Use automatic synchronization: this method has the advantage of being able to import multiple images at the same time.
 
 Manual addition
 ===============
@@ -33,10 +33,10 @@ The following window is displayed:
 * **Image or archive** field can be used to select the image or the set of images contained in an archive which will be imported
 * **Comments** field can be used to describe the image
 
-Synchronising the images
+Synchronizing the images
 ========================
 
-To synchronise one or more images in the Centreon medias:
+To synchronize one or more images in the Centreon medias:
 
 #. Copy your images in the image folder (the images may be situated in folders)
 #. Make sure that the user who executes your web server has the read rights on these images

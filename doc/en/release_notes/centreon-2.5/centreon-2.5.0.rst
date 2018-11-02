@@ -58,7 +58,7 @@ Centreon has evolved with an easiest way to handle SNMP traps. Some advantages o
 
 * No more ‘snmptt’
 * More advanced configuration in SQL Database
-* Local database (sqlite) on Pollers
+* Local database (SQLite) on Pollers
 
 You have to look on the centreon documentation in order to configure Centreon using this new system. Go in section: User guide > Advanced > SNMP TRAPS 
 

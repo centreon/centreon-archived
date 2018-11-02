@@ -26,7 +26,7 @@ General information
 
 * The **Alias/Login** field defined the login to access the web interface.
 * The **Full Name** field contains the name and first name of the user.
-* The **EMail** and **Pager** fields contain respectively the e-mail address and the telephone number of the user (in the case of a notification by SMS or call for instance).
+* The **Email** and **Pager** fields contain respectively the e-mail address and the telephone number of the user (in the case of a notification by SMS or call for instance).
 * The field **Contact template used** allows us to link the contact to a Model of contact.
 * The **Linked to Contact Groups** list associated the contact to one or more groups of contacts.
 * The **Enable Notifications** field allows us to enable the sending of notifications to the user.

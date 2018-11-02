@@ -29,7 +29,7 @@ Bug fixes
 =========
 
 - #3559 : Fix query with MariaDB / MySQL configure in STRICT_TRANS_TABLES
-- #3554 : Can send acknowledgement with multiline from monitoring page
+- #3554 : Can send acknowledgment with multiline from monitoring page
 - #3397 : Fix display graph with unicode characters in metric name
 - #2362 : Correct value when use index_data inserted by Centreon Broker in configuration
 - #1195 : Display correct number of pollers in status bar

@@ -129,8 +129,12 @@ $tpl = initSmartyTpl($path.'/include/core/login/template/', $tpl);
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. '.$release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
+
 $tpl->assign('keycloakEnabled', $keycloakEnabled);
 $tpl->assign('keycloakMode', $keycloakMode);
+
+$tpl->assign('copyrightYear', date("Y"));
+
 
 // Redirect User
 $redirect = filter_input(

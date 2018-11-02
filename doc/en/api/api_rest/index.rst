@@ -1,9 +1,8 @@
-==========
+========
 API Rest
-==========
+========
 
-
-
+------------
 Introduction
 ------------
 
@@ -12,7 +11,7 @@ If you are not familiar with the JSON API, we recommend you to use the Centreon 
 
 This documentation is available in english only.
 
-
+-----------
 Permissions
 -----------
 
@@ -30,9 +29,9 @@ edit user and on second tab check box **Reach API Realtime**.
 
 If you want both then check **both** checkboxes
 
-
+--------------
 Authentication
-----------------
+--------------
 
 Using POST method and the URL below: ::
 
@@ -60,11 +59,12 @@ The response is a json flow getting back the authentication token  ::
 
 This token will be used later on the other API actions.
 
+--------------------
 Realtime information
-====================
+--------------------
 
 Host Status
------------
+===========
 
 All monitoring information regarding hosts are available in throw the Centreon API.
 
@@ -122,64 +122,64 @@ Field list :
 | Fields                   | Description                              |
 +==========================+==========================================+
 | id                       | host id                                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | name                     | host name                                |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | alias                    | host alias (description of the host)     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | address                  | host address (domain name or ip)         |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | state                    | host state (UP = 0, DOWN = 2, UNREA = 3) |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | state_type               | host state type (SOFT = 0, HARD = 1)     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | output                   | Plugin output - state message            |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | max_check_attempts       | maximum check attempts                   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | check_attempt            | current attempts                         |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_check               | last check time                          |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_state_change        | last time the state change               |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_hard_state_change   | last time the state change in hard type  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | acknowledged             | acknowledged flag                        |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | instance                 | name of the instance who check this host |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | instance_id              | id of the instance who check this host   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | criticality              | criticality fo this host                 |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | passive_checks           | accept passive results                   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | active_checks            | active checks are enabled                |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notify                   | notification is enabled                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | action_url               | shortcut for action URL                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notes_url                | shortcut for note URL                    |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notes                    | note                                     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | icon_image               | icone image for this host                |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | icon_image_alt           | title of the image                       |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | scheduled_downtime_depth | scheduled_downtime_depth                 |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | flapping                 | is the host flapping ?                   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 
 Using GET method and the URL below:  ::
 
   api.domain.tld/centreon/api/index.php?object=centreon_realtime_hosts&action=list&limit=60&viewType=all&sortType=name&order=desc&fields=id,name,alias,address,state,output,next_check
 
 Service Status
---------------
+==============
 
 All monitoring information regarding services are available in throw the Centreon API. With this call, you can also get host informations in the same time that service information. This web service provide the same possibility that the service monitoring view.
 
@@ -221,11 +221,11 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | instance       | instance id filter                         |
 +----------------+--------------------------------------------+
-| search         | search pattern applyed on service          |
+| search         | search pattern applied on service          |
 +----------------+--------------------------------------------+
-| searchHost     | search pattern applyed on host             |
+| searchHost     | search pattern applied on host             |
 +----------------+--------------------------------------------+
-| searchOutput   | search pattern applyed on output           |
+| searchOutput   | search pattern applied on output           |
 +----------------+--------------------------------------------+
 | criticality    | a specific criticity                       |
 +----------------+--------------------------------------------+
@@ -244,87 +244,87 @@ Field list :
 | Fields                   | Description                              |
 +==========================+==========================================+
 | host_id                  | host id                                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_name                | host name                                |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_alias               | host alias (description of the host)     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_address             | host address (domain name or ip)         |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_state               | host state (UP = 0, DOWN = 2, UNREA = 3) |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_state_type          | host state type (SOFT = 0, HARD = 1)     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_output              | Plugin output - state message            |
 +--------------------------+------------------------------------------+
 | host_max_check_attempts  | maximum check attempts for host          |
 +--------------------------+------------------------------------------+
 | host_check_attempt       | current attempts                         |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_last_check          | last check time                          |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_acknowledged        | acknowledged flag                        |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | instance                 | name of the instance who check this host |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | instance_id              | id of the instance who check this host   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_action_url          | shortcut for action URL                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_notes_url           | shortcut for note URL                    |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | host_notes               | note                                     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | description              | service description - service name       |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | display_name             | service display name                     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | service_id               | service id                               |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | state                    | service state                            |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | state_type               | service state type (SOFT = 0, HARD = 1)  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | output                   | service output returned by plugins       |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | perfdata                 | service perfdata returned by plugins     |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | current_attempt          | maximum check attempts for the service   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_update              | last update date for service             |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_state_change        | last time the state change               |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | last_hard_state_change   | last time the state change in hard type  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | next_check               | next check time for service              |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | max_check_attempts       | maximum check attempts for service       |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | action_url               | shortcut for action URL                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notes_url                | shortcut for note URL                    |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notes                    | notes                                    |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | icone_image              | icone image for service                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | passive_checks           | accept passive results                   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | active_checks            | active checks are enabled                |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | acknowledged             | acknowledged flag                        |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | notify                   | notification is enabled                  |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | scheduled_downtime_depth | scheduled_downtime_depth                 |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | flapping                 | is the host flapping ?                   |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | event_handler_enabled    | is the event-handfler enabled            |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 | criticality              | criticality fo this service              |
-+--------------------------+------------------------------------------±
++--------------------------+------------------------------------------+
 
 Example:
 
@@ -332,9 +332,8 @@ Using GET method and the URL below:  ::
 
   api.domain.tld/centreon/api/index.php?action=list&object=centreon_realtime_services&limit=60&viewType=all&sortType=name&order=desc&fields=id,description,host_id,host_name,state,output
 
-
 Submit results
---------------
+==============
 
 You can use the centreon API to submit information to the monitoring engine. All information that you submit will be forwarded to the centreon engine poller that host the configuration.
 
@@ -432,11 +431,12 @@ The response body is a json with the HTTP return code and a message for each sub
    ]
  }
 
+-------------
 Configuration
 -------------
 
 Getting started
----------------
+===============
 
 Most of the actions available (about 95%) in the command line API is available in the rest API.
 
@@ -505,18 +505,18 @@ The response is a json flow listing all hosts and formated as below: ::
 .. Note:: Some actions need the values key ( the option **-v** in Centreon CLAPI ). Depending on the called action, the body can contain **values** key. We will see that in detail later.
 
 API Calls
-----------
+=========
 
 All API calls you can do on objects are described below. Note that you need to be authenticate before each call.
 
 API calls on the Host object are fully-detailed below. For the next objects, only the actions available are listed, so just follow the same approach as for the host object for an API call.
 
 Host
-~~~~
+====
 
 
 List hosts
-##########
+----------
 
 **POST**  ::
 
@@ -574,10 +574,8 @@ List hosts
    }
 
 
-
-
 Add host
-##########
+--------
 
 **POST**  ::
 
@@ -615,7 +613,7 @@ Add host
 
 
 Delete host
-###########
+-----------
 
 **POST**  ::
 
@@ -654,7 +652,7 @@ Delete host
 
 
 Set parameters
-##############
+--------------
 
 **POST**  ::
 
@@ -687,8 +685,6 @@ Available parameters
 ==================================== =================================================================================
 Parameter                            Description
 ==================================== =================================================================================
-geo_coords                           Geo coordinates
-
 2d_coords                            2D coordinates (used by statusmap)
 
 3d_coords                            3D coordinates (used by statusmap)
@@ -787,7 +783,7 @@ timezone                             Timezone
 
 
 Set instance poller
-####################
+-------------------
 
 **POST**  ::
 
@@ -825,7 +821,7 @@ Set instance poller
 
 
 Get macro
-##########
+---------
 
 **POST**  ::
 
@@ -886,7 +882,7 @@ Here is a response example ::
 
 
 Set macro
-#########
+---------
 
 **POST**  ::
 
@@ -914,7 +910,7 @@ Set macro
     "values": "mail-uranus-frontend;MacroName;NewValue"
   }
 
-To edit an existing custom marco, The MacroName used on the body should be defined on the Custom Marco of the choosen host. If the marco doesn't exist, it will be created.
+To edit an existing custom macro, The MacroName used on the body should be defined on the Custom Marco of the chosen host. If the marco doesn't exist, it will be created.
 
 **Response** ::
 
@@ -924,7 +920,7 @@ To edit an existing custom marco, The MacroName used on the body should be defin
 
 
 Delete macro
-#############
+------------
 
 **POST**  ::
 
@@ -952,7 +948,7 @@ Delete macro
     "values": "mail-uranus-frontend;MacroName"
   }
 
-The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the choosen host.
+The MacroName used on the body is the macro to delete. It should be defined on the Custom Marco of the chosen host.
 
 **Response** ::
 
@@ -962,7 +958,7 @@ The MacroName used on the body is the macro to delete. It should be defined on t
 
 
 Get template
-############
+------------
 
 **POST**  ::
 
@@ -1014,7 +1010,7 @@ Here is a response example ::
 
 
 Set template
-############
+------------
 
 
 **POST**  ::
@@ -1053,7 +1049,7 @@ The MyHostTemplate used on the body should exist as a host template. The new tem
 
 
 Add template
-############
+------------
 
 **POST**  ::
 
@@ -1090,7 +1086,7 @@ The MyHostTemplate used on the body should exist as a host template. The new tem
 
 
 Delete template
-###############
+---------------
 
 **POST**  ::
 
@@ -1127,7 +1123,7 @@ The MyHostTemplate used on the body should exist as a host template.
 
 
 Apply template
-##############
+--------------
 
 **POST**  ::
 
@@ -1163,7 +1159,7 @@ Apply template
 
 
 Get parent
-##########
+----------
 
 **POST**  ::
 
@@ -1205,7 +1201,7 @@ Get parent
 
 
 Add parent
-##########
+----------
 
 **POST**  ::
 
@@ -1247,7 +1243,7 @@ To add more than one parent to a host, use the character '|'. Ex:  ::
 The add action add the parent without overwriting he previous configuration.
 
 Set parent
-##########
+----------
 
 **POST**  ::
 
@@ -1290,7 +1286,7 @@ The set action overwrite the previous configuration before setting the new paren
 
 
 Delete parent
-#############
+-------------
 
 **POST**  ::
 
@@ -1332,7 +1328,7 @@ To delete more than one parent, use the character '|'. Ex:  ::
 
 
 Get contact group
-#################
+-----------------
 
 **POST**  ::
 
@@ -1376,7 +1372,7 @@ Get contact group
 
 
 Add contact group
-#################
+-----------------
 
 **POST**  ::
 
@@ -1419,7 +1415,7 @@ The add action add the contact without overwriting he previous configuration.
 
 
 Set contact group
-#################
+-----------------
 
 **POST**  ::
 
@@ -1462,7 +1458,7 @@ To set more than one contactgroup to a host, use the character '|'. Ex:  ::
 The set action overwrite the previous configuration before setting the new contactgroup.
 
 Delete contact group
-####################
+--------------------
 
 **POST**  ::
 
@@ -1503,7 +1499,7 @@ To delete more than one contactgroup, use the character '|'. Ex:  ::
 
 
 Get contact
-###########
+-----------
 
 **POST**  ::
 
@@ -1545,7 +1541,7 @@ Get contact
 
 
 Add contact
-###########
+-----------
 
 **POST**  ::
 
@@ -1588,7 +1584,7 @@ The add action add the contact without overwriting he previous configuration.
 
 
 Set contact
-###########
+-----------
 
 **POST**  ::
 
@@ -1632,7 +1628,7 @@ The set action overwrite the previous configuration before setting the new conta
 
 
 Delete contact
-##############
+--------------
 
 **POST**  ::
 
@@ -1673,7 +1669,7 @@ To delete more than one contact, use the character '|'. Ex:  ::
 
 
 Get hostgroup
-##############
+-------------
 
 **POST**  ::
 
@@ -1718,7 +1714,7 @@ Get hostgroup
  }
 
 Add hostgroup
-#############
+-------------
 
 **POST**  ::
 
@@ -1762,7 +1758,7 @@ The add action add the hostgroup without overwriting he previous configuration.
 
 
 Set hostgroup
-#############
+-------------
 
 **POST**  ::
 
@@ -1806,7 +1802,7 @@ The set action overwrite the previous configuration before setting the new hostg
 
 
 Delete hostgroup
-################
+----------------
 
 **POST**  ::
 
@@ -1846,18 +1842,8 @@ To delete more than one hostgroup, use the character '|'. Ex:  ::
   "values": "mail-uranus-frontend;Linux-Servers|Mail-Postfix-Frontend"
 
 
-Set severity
-############
-
-Coming soon
-
-Unset severity
-##############
-
-Coming soon
-
 Enable
-######
+------
 
 **POST**  ::
 
@@ -1895,7 +1881,7 @@ Enable
 
 
 Disable
-#######
+-------
 
 **POST**  ::
 
@@ -1932,7 +1918,7 @@ Disable
 
 
 ACL
-~~~~~
+===
 
 **Object**
  * ACL
@@ -1944,7 +1930,7 @@ ACL
 
 
 Action ACL
-~~~~~~~~~~
+----------
 
 **Object**
  * ACLACTION
@@ -1960,7 +1946,7 @@ Action ACL
  * revoke
 
 ACL groups
-~~~~~~~~~~
+----------
 
 **Object**
  * ACLGROUP
@@ -1994,7 +1980,7 @@ ACL groups
 
 
 Menu ACL
-~~~~~~~~~
+--------
 
 **Object**
  * ACLMENU
@@ -2011,7 +1997,7 @@ Menu ACL
 
 
 Resource ACL
-~~~~~~~~~~~~
+------------
 
 **Object**
  * ACLRESOURCE
@@ -2027,7 +2013,7 @@ Resource ACL
  * revoke
 
 Centreon Broker
-~~~~~~~~~~~~~~~
+===============
 
 **Object**
  * CENTBROKERCFG
@@ -2046,7 +2032,7 @@ Centreon Broker
 
 
 CGI CFG
-~~~~~~~
+=======
 
 **Object**
  * CGICFG
@@ -2060,7 +2046,7 @@ CGI CFG
 
 
 Commands
-~~~~~~~~
+========
 
 **Object**
  * CMD
@@ -2073,7 +2059,7 @@ Commands
  * setparam
 
 Contacts
-~~~~~~~~
+========
 
 **Object**
  * CONTACT
@@ -2088,7 +2074,7 @@ Contacts
  * disable
 
 Contact templates
-~~~~~~~~~~~~~~~~~~
+-----------------
 
 **Object**
  * CONTACTTPL
@@ -2104,7 +2090,7 @@ Contact templates
 
 
 Contact groups
-~~~~~~~~~~~~~~
+--------------
 
 **Object**
  * CG
@@ -2124,7 +2110,7 @@ Contact groups
 
 
 Dependencies
-~~~~~~~~~~~~~
+============
 
 **Object**
  * DEP
@@ -2143,7 +2129,7 @@ Dependencies
 
 
 Downtimes
-~~~~~~~~~~
+=========
 
 **Object**
  * DOWNTIME
@@ -2162,7 +2148,7 @@ Downtimes
  * sethost, sethostgroup, setservice, setservicegroup
 
 Host template
-~~~~~~~~~~~~~
+=============
 
 **Object**
  * HTPL
@@ -2199,7 +2185,7 @@ APPLYTPL and SETINSTANCE actions on HTPL
  * disable
 
 Host categories
-~~~~~~~~~~~~~~~~
+===============
 
 **Object**
  * HC
@@ -2218,7 +2204,7 @@ Host categories
 
 
 Hostgroups
-~~~~~~~~~~
+==========
 
 **Object**
  * HG
@@ -2237,7 +2223,7 @@ Hostgroups
 
 
 Instances ( Pollers)
-~~~~~~~~~~~~~~~~~~~~~
+====================
 
 **Object**
  * INSTANCE
@@ -2252,7 +2238,7 @@ Instances ( Pollers)
 
 
 Service templates
-~~~~~~~~~~~~~~~~~
+=================
 
 **Object**
  * STPL
@@ -2282,7 +2268,7 @@ Service templates
 
 
 Services
-~~~~~~~~~
+========
 
 **Object**
  * SERVICE
@@ -2314,7 +2300,7 @@ Services
 
 
 Service groups
-~~~~~~~~~~~~~~
+==============
 
 **Object**
  * SG
@@ -2336,7 +2322,7 @@ Service groups
 
 
 Service categories
-~~~~~~~~~~~~~~~~~~~
+==================
 
 **Object**
  * SC
@@ -2359,7 +2345,7 @@ Service categories
  * unsetseverity
 
 Time periods
-~~~~~~~~~~~~
+============
 
 **Object**
  * TIMEPERIOD
@@ -2376,7 +2362,7 @@ Time periods
 
 
 Traps
-~~~~~~~~~~~
+=====
 
 **Object**
  * TRAP
@@ -2394,7 +2380,7 @@ Traps
 
 
 Vendors
-~~~~~~~~
+-------
 
 **Object**
  * VENDOR
@@ -2407,9 +2393,9 @@ Vendors
  * setparam
  * generatetraps
 
-
+-----------
 Code errors
-------------
+-----------
 
 
 

@@ -22,7 +22,7 @@ Once the installation is completed, it is necessary to integrate this remote pol
 * In the **Files** tab:
 
   * Modify **Configuration Name**
-  * Check that ** Linked poller** is the previously created poller
+  * Check that **Linked poller** is the previously created poller
   * Change if necessary the **Timezone / Location**
 
 .. image:: /images/user/configuration/10advanced_configuration/07addengine.png
@@ -31,11 +31,11 @@ Once the installation is completed, it is necessary to integrate this remote pol
 * In the **Data** tab - **Multiple Broker Module** fields check / add the following entries::
 
    /usr/lib64/centreon-engine/externalcmd.so
-   
+
    /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
 
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller_neb.png
-   :align: center 
+   :align: center
 
 Centreon Broker configuration
 =============================
@@ -72,10 +72,10 @@ Centreontrapd Configuration
 
 It is necessary to change the configuration files of Centreontrapd so that the service can question the SQLite database (see the chapter: :ref:`configuration_advanced_snmptrapds`).
 
-Plugins synchronisation
+Plugins synchronization
 =======================
 
-You can synchronise the plugins between your central server and your remote pollers using **rsync** software.
+You can synchronize the plugins between your central server and your remote pollers using **rsync** software.
 
 .. warning::
    Don’t perform this action if your plugins depend on third party libraries that need to have been installed previously.

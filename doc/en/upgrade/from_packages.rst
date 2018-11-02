@@ -113,7 +113,7 @@ In order to update the Centreon monitoring interface, simply run the following c
 
  ::
 
- # yum update centreon
+ # yum update centreon*
 
 .. warning::
    If you encounter dependency problems with centreon-engine-webservices, please remove this RPM that is now deprecated. Run the following line:
@@ -210,7 +210,7 @@ EMS/EPP upgrade
 .. note::
    Not a EMS/EPP user ? You might still find Centreon Plugin Packs very
    useful to configure your monitoring system in minutes. You will find
-   installation guidance in the :ref:`online documentation <installation_ppm>`.
+   installation guidance in the :ref:`online documentation <impconfiguration>`.
 
 
 If you use additional Centreon modules you might need to update them too,
@@ -278,7 +278,7 @@ Known issues
 
 * Dependency issue between Centreon Engine and Centreon Broker because this two components (Centreon Broker 3.0 and Centreon Engine 1.8) are prerequisites for Centreon Web 2.8
 * Update databases global schema issue
-* Scales in peformance graphs display too many steps
+* Scales in performance graphs display too many steps
 * PHP Warning issues when user access to performance graphs menu in Centreon Web
 * When you zoom on a graph the zoom is applied for all graphs
 * You can't cancel zoom

@@ -2,7 +2,7 @@
 Centreon 2.7.4
 ##############
 
-Released April 14,2016  
+Released April 14,2016
 
 The 2.7.4 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.4 follow.
 
@@ -64,7 +64,7 @@ Features and Bug Fixes
 - Fix: Error when saving "Administration > Parameters > Monitoring" page
 - Fix: Zoom in Performance graph
 - Fix: Select contactgroups / contacts in services & hosts configuration was not working
-- Fix: Display only catagories and not severities on form
+- Fix: Display only categories and not severities on form
 - Fix: Scroll bar in "Configuration - Hosts - Host Groups"
 - Fix: Category Relation on host and host template form
 - Fix: Order in More Actions Menu

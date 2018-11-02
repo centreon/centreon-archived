@@ -12,7 +12,7 @@ The distributed architecture with remote DBMS is to have three types of entities
 * One or more remote servers to collect data
 
 In order to have a failover the centreon central server is duplicated.
-This architectur allows to have a local web display only interface of Centreon on each remote server.
+This architecture allows to have a local web display only interface of Centreon on each remote server.
 Users can connect to read-only local web interface of remote servers to access to local monitoring data.
 
 The central Centreon server includes the following items:
