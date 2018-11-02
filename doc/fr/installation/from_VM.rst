@@ -20,12 +20,13 @@ Connexion
 
 La machine est configurée avec des comptes par défaut.
 
-Vous pourrez donc vous connecter à l'interface web avec le compte : **admin/centreon**. Vous pourez aussi vous connecter en SSH avec le compte **root/centreon**
+Vous pourrez donc vous connecter à l'interface web avec le compte : **admin/centreon**.
+Vous pourez aussi vous connecter en SSH avec le compte **root/centreon**.
+Le mot de passe de de l'utilisateur **root** de la base de données n'est pas initialisé.
 
 .. note::
-
-    Pour des raisons de sécurité, il est recommandé de chnager ces deux mots de passe aprés l'installation
-
+    Pour des raisons de sécurité, il est recommandé de changer tous ces mots
+    de passe aprés l'installation
 
 Collecteur
 ----------

@@ -21,10 +21,10 @@ Connection
 The server has default password.
 
 To connect to the web UI use : **admin/centreon**. You can also connect to the server using SSH with the account : **root/centreon**
+The **root** password of the DBMS is not initialized.
 
 .. note::
-
-    For security reasons, we highly recommend you to change this passwords after installation.
+    For security reasons, we highly recommend you to change those passwords after installation.
 
 Poller
 ------
