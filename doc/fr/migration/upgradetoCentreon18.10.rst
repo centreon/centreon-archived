@@ -134,6 +134,19 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
     Il est important d'installer les dépendances nécessaires au fonctionnement
     des sondes de supervision.
 
+.. note::
+    Si vous avez des pollers en centreon engine 1.8.1 que vous comptez migrer plus tard en centreon engine 18.10, attention au dossier des plugins nagios. La ressource $USER1$ ce Centreon 18.10 pointe sur /usr/lib64/nagios/plugins
+    # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
+    # rmdir /usr/lib64/nagios/plugins/
+    # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
+    
+    De cette façon un lien symbolique est créé :
+    # ls -alt /usr/lib64/nagios/
+    lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
+    -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
+    
+    Et vous permet de pousser les configuration de collecteur depuis Centreon 18.10 indifféremment vers un collecteur en 18.10 ou 1.8.1
+
 Mise à jour de la suite Centreon
 ================================
 
