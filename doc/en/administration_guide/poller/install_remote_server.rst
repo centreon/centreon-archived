@@ -40,6 +40,9 @@ This command will enable **Remote Server** mode::
       Limiting Actions...Done
 
       Notifying Master...Success
+      
+      Set 'remote' instance type...Done
+      
       Centreon Remote enabling finished.
 
 Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
