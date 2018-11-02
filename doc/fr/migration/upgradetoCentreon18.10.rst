@@ -67,6 +67,41 @@ suivants : ::
 .. note::
     Remplacez **IP_New_Centreon** par l'adresse IP de votre nouveau serveur Centreon.
 
+.. warning::
+    En cas de migration d'une plate-forme CES 3.4.1, Centreon-web 2.8.26 sous CentOS 6 avec MariaDB 5.X, ne pas synchroniser les dossiers /var/lib/mysql avec RSYNC vers la database Centreon 18.10 en MariaDB 10.1.
+    
+    #. Faire un dump des bases de données sources
+        # mysqldump -u root -p centreon > /tmp/export/centreon.sql
+        # mysqldump -u root -p centreon_storage > /tmp/export/centreon_storage.sql
+      
+    #. Arreter le serveur MariaDB source
+        # service mysql stop
+    
+    #. Transférer les exports vers le nouveau serveur de base de données Centreon 18.10
+        # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
+        # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
+        
+    #. Sur le serveur de base de données Centreon 18.10 supprimer les bases de données vierges et les recréer
+        # mysql -u root -p
+        # drop database centreon;
+        # drop database centreon_storage;
+        # create database centreon;
+        # create database centreon_storage;
+        
+    #. Editer les fichiers de dump (vi, nano, ...) dans /tmp/ et rajouter
+        # use centreon; en haut de centreon.sql
+        # use centreon_storage; en haut de centreon_storage.sql
+    
+    #. Importer les dumps
+        # mysql -u root -p </tmp/centreon.sql
+        # mysql -u root -p </tmp/centreon_storage.sql
+        
+    #. Executer l'upgrade des tables
+        # mysql_upgrade
+        
+    #. Reprendre la procédure de migration
+    
+
 Si le SGBD MySQL/MariaDB est installé sur même serveur que le serveur Centreon,
 exécutez les commandes suivantes :
 
