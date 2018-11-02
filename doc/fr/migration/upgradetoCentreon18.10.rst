@@ -88,13 +88,9 @@ suivants : ::
         # create database centreon;
         # create database centreon_storage;
         
-    #. Editer les fichiers de dump (vi, nano, ...) dans /tmp/ et rajouter
-        # use centreon; en haut de centreon.sql
-        # use centreon_storage; en haut de centreon_storage.sql
-    
     #. Importer les dumps
-        # mysql -u root -p </tmp/centreon.sql
-        # mysql -u root -p </tmp/centreon_storage.sql
+        # mysql -u root centreon -p </tmp/centreon.sql
+        # mysql -u root centreon_storage -p </tmp/centreon_storage.sql
         
     #. Executer l'upgrade des tables
         # mysql_upgrade
