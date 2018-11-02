@@ -28,7 +28,7 @@ This procedure, which only applies to a Centreon 3.4 platform installed on a
 
 .. warning::
     If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
-    please refer to the following :ref:`migration procedure <frompollerdisplay16>`.
+    please refer to the following :ref:`migration procedure <migratefrompollerdisplay>`.
 
 *********
 Migrating
