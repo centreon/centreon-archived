@@ -48,4 +48,4 @@ Perform the command::
 
     # yum install centreon-poller-centreon-engine
 
-Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
+Go to :ref:`SSH Key Exchange chapter to continue<sskkeypoller>`.
