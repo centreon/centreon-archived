@@ -76,6 +76,6 @@ This command will enable **Remote Server** mode::
     **Remote Server**.
 
 .. note::
-    A Centreon Remote Server is a server that is self-administering. Thus, the
-    configuration of the LDAP directory, users and ACLs is specific to this server
+    A Centreon Remote Server is a server that is self-administered. Thus, the
+    configuration of the LDAP directory, users and ACLs are specific to this server
     and must be configured via the **Administration** menu.

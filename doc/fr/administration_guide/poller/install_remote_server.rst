@@ -12,7 +12,7 @@ Central Server.
 A partir de l'ISO Centreon
 --------------------------
 
-Suiez la documentation :ref:`A partir de Centreon ISO el7<installisoel7>` pour
+Suivez la documentation :ref:`A partir de Centreon ISO el7<installisoel7>` pour
 installer un Centreon Central server.
 
 A partir des paquets Centreon

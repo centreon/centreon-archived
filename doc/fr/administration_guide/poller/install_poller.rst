@@ -49,12 +49,12 @@ préalable installer le fichier lié au dépôt. Exécutez la commande suivante
 
 Installation du dépôt Centreon: ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-1.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-1.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-1.el7.centos.noarch.rpm
+    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
 
 Le dépôt est maintenant installé.
 
-Exécutez la command : ::
+Exécutez la commande : ::
 
     # yum install centreon-poller-centreon-engine
 
