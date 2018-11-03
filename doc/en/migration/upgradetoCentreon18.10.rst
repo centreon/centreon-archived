@@ -150,6 +150,9 @@ the **/usr/share/centreon/www/install** directory: ::
     # cd /usr/share/centreon/installDir/
     # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
+.. note::
+    If you use the same IP address or same DNS name between old Centreon webserver and the new one, do a full cache cleanup of your browser to avoid JS issues
+ 
 Go to http://[New_Centreon_IP]/centreon URL and perform the
 upgrade.
 
