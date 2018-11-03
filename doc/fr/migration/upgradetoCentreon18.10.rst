@@ -157,7 +157,7 @@ repértoire **/usr/share/centreon/www/install** : ::
     # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
 .. note::
-    Si vous utilisez la meme adresse IP entre l'ancien serveur web Centreon et le nouveau, videz completement le cache de votre navigateur pour éviter des problemes de scripts JS.
+    Si vous utilisez la meme adresse IP ou le même nom DNS entre l'ancien serveur web Centreon et le nouveau, videz completement le cache de votre navigateur pour éviter des problemes de scripts JS.
 
 Se connecter à l'url http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon et suivre
 les étapes de mise à jour.
