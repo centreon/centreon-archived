@@ -177,16 +177,24 @@ class PartEngine
             $this->createMaxvaluePartition($db, $tableName, $table);
         }
     }
-    
-    private function createDailyPartitions($table)
+
+    /**
+     * Generate query part to build partitions
+     *
+     * @param MysqlTable $table The table to partition
+     * @param bool $createPastPartitions If the past partitions need to be created
+     * @return string The built partitions query
+     */
+    private function createDailyPartitions($table, $createPastPartitions): string
     {
         date_default_timezone_set($table->getTimezone());
         $ltime = localtime();
-        //$current_time = mktime(0, 0, 0, $ltime[4], $ltime[3], $ltime[5]+1900);
 
         $createPart = " PARTITION BY RANGE(".$table->getColumn().") (";
-        $num_days = $table->getRetention();
-        
+
+        // Create past partitions if needed (not needed in fresh install)
+        $num_days = ($createPastPartitions === true) ? $table->getRetention() : 0;
+
         $append = '';
         while ($num_days >= 0) {
             $current_time = mktime(0, 0, 0, $ltime[4]+1, $ltime[3]-$num_days, $ltime[5]+1900);
@@ -204,6 +212,8 @@ class PartEngine
             $num_days--;
             $append = ',';
         }
+
+        // Create future partitions
         $num_days_forward = $table->getRetentionForward();
         $count = 1;
         while ($count <= $num_days_forward) {
@@ -222,16 +232,20 @@ class PartEngine
             $append = ',';
             $count++;
         }
-      
+
         $createPart .= ");";
 
         return $createPart;
     }
-    
+
     /**
      * Create a new table with partitions
+     *
+     * @param MysqlTable $table The table to partition
+     * @param CentreonDB $db The database connection
+     * @param bool $createPastPartitions If the past partitions need to be created
      */
-    public function createParts($table, $db)
+    public function createParts($table, $db, $createPastPartitions): void
     {
         $tableName = $table->getSchema().".".$table->getName();
         if ($table->exists()) {
@@ -240,7 +254,7 @@ class PartEngine
         
         $partition_part = null;
         if ($table->getType() == 'date' && $table->getDuration() == 'daily') {
-            $partition_part = $this->createDailyPartitions($table);
+            $partition_part = $this->createDailyPartitions($table, $createPastPartitions);
         }
         
         if (is_null($partition_part)) {
@@ -381,7 +395,8 @@ class PartEngine
          * creating new table with the initial name
          */
         echo "[".date(DATE_RFC822)."][migrate] Creating parts for new table ".$tableName."\n";
-        $this->createParts($table, $db);
+        // create partitions for past and future
+        $this->createParts($table, $db, true);
         
         // dumping data from existing table
         echo "[".date(DATE_RFC822)."][migrate] Insert data from ".$tableName."_old to new table\n";
