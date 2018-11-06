@@ -12,6 +12,8 @@ When we need more information, we will reply in order to request it. If you do n
 in the next 30 days, the ticket will be automaticaly closed.
 
 Please describe your issue in English.
+
+For issue about Centreon Plugins, please use dedicated Github: https://github.com/centreon/centreon-plugins/issues
 -->
 
 ---------------------------------------------------
