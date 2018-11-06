@@ -62,19 +62,31 @@ Installing a Centreon central server
 
 This chapter describes the installation of a Centreon central server.
 
-Run the command::
-
-  # yum install centreon-base-config-centreon-engine centreon
-
-Installing MySQL on the Centreon central server
------------------------------------------------
-
-This chapter describes the installation of MySQL on a server including Centreon.
+Installing Centreon central server with database
+------------------------------------------------
 
 Run the command::
 
-   # yum install MariaDB-server
-   # systemctl restart mysql
+  # yum install centreon
+  # systemctl restart mysql
+
+Installing Centreon central server without database
+---------------------------------------------------
+
+Run the command::
+
+  # yum install centreon-base-config-centreon-engine
+
+Installing MySQL on the dedicated server
+----------------------------------------
+
+Run the commands::
+
+  # yum install centreon-database
+  # systemctl restart mysql
+
+.. note::
+    **centreon-database** package installs a database server optimized for use with Centreon.
 
 Database management system
 --------------------------
