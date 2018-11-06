@@ -218,6 +218,25 @@ if ($o == "w") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hg);
+
+    //check resources Access of linked object
+    $aclFrom = "";
+    $aclCond = "";
+    if (!$centreon->user->admin) {
+        $aclFrom = ", $aclDbName.centreon_acl acl ";
+        $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
+    }
+    $rq = "SELECT DISTINCT h.host_id, h.host_activate FROM hostgroup_relation hgr, host h " . $aclFrom .
+        " WHERE hostgroup_hg_id = '" . $hg_id . "' AND h.host_id = hgr.host_host_id AND h.host_register = '1' ";
+    $db = $pearDB->query($rq);
+    $total = $db->rowCount();
+    $rq .= $aclCond;
+    $db = $pearDB->query($rq);
+    if (($db->rowCount() != $total) && (!$oreon->user->admin)) {
+        $form->addElement('text', 'msg', _("error"), 'error');
+        $form->freeze();
+    }
+
 } elseif ($o == "a") {
     /*
      * Add a HostGroup information
