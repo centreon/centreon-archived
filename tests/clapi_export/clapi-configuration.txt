@@ -387,7 +387,7 @@ CMD;ADD;check_udp;2;$USER1$/check_udp -H $HOSTADDRESS$ -p $ARG1$
 CMD;setparam;check_udp;enable_shell;0
 CMD;setparam;check_udp;command_activate;1
 CMD;setparam;check_udp;command_locked;0
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State:   $HOSTSTATE$#BR#Since:   $HOSTDURATION$#BR#Info:    $HOSTOUTPUT$#BR#`[ &quot;$NOTIFICATIONCOMMENT$&quot; ] && echo &quot;Comment: $NOTIFICATIONCOMMENT$&quot;`&quot; | @MAILER@ -s &quot;$HOSTNAME$ - `[ &quot;$NOTIFICATIONTYPE$&quot; == &quot;PROBLEM&quot; -o &quot;$NOTIFICATIONTYPE$&quot; == &quot;RECOVERY&quot; ] && echo $HOSTSTATE$ || echo $NOTIFICATIONTYPE$` - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;host-notify-by-email;enable_shell;1
 CMD;setparam;host-notify-by-email;command_activate;1
 CMD;setparam;host-notify-by-email;command_locked;0
@@ -403,7 +403,7 @@ CMD;ADD;process-service-perfdata;3;$USER1$/process-service-perfdata  "$LASTSERVI
 CMD;setparam;process-service-perfdata;enable_shell;0
 CMD;setparam;process-service-perfdata;command_activate;1
 CMD;setparam;process-service-perfdata;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#Service: $SERVICEDESC$#BR#State:   $SERVICESTATE$#BR#Since:   $SERVICEDURATION$#BR#Info:    $SERVICEOUTPUT$#BR#`[ &quot;$NOTIFICATIONCOMMENT$&quot; ] && echo &quot;Comment: $NOTIFICATIONCOMMENT$&quot;`&quot; | @MAILER@ -s &quot;$HOSTNAME$/$SERVICEDESC$ - `[ &quot;$NOTIFICATIONTYPE$&quot; == &quot;PROBLEM&quot; -o &quot;$NOTIFICATIONTYPE$&quot; == &quot;RECOVERY&quot; ] && echo $SERVICESTATE$ || echo $NOTIFICATIONTYPE$` - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;service-notify-by-email;enable_shell;1
 CMD;setparam;service-notify-by-email;command_activate;1
 CMD;setparam;service-notify-by-email;command_locked;0
