@@ -150,7 +150,6 @@ $form->addElement(
     $aTypeAffichageLevel2,
     array('id' => 'typeDisplay2', 'onChange' => "displayingLevel2(this.value);")
 );
-$form->setDefaults(array('typeDisplay2' => 'pb'));
 
 foreach (array('o1', 'o2') as $option) {
     $attrs = array('onchange' => "javascript: setO(this.form.elements['$option'].value); submit();");
