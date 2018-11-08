@@ -87,7 +87,7 @@ sur disque plutôt que d'enregistrer une à une les données issues de la collec
 Installation
 ============
 
-Le processus RRDCacheD est disponible dnas le paquet **rrdtool** déjà installé sur votre serveur Centreon.
+Le processus RRDCacheD est disponible dans le paquet **rrdtool** déjà installé sur votre serveur Centreon.
 
 Configuration
 =============
@@ -123,23 +123,64 @@ Concernant les autres options importantes :
 .. note::
     Ces valeurs doivent être adaptées en fonction du besoin/des contraintes de la plate-forme concernée !
 
+Création du fichier de démarrage du service
+*******************************************
+
+Créer le fichier **/etc/systemd/system/rrdcached.service** et ajouter les lignes
+suivantes : ::
+
+    [Unit]
+    Description=Data caching daemon for rrdtool
+    Documentation=man:rrdcached(1)
+    
+    [Service]
+    # If you enable socket-activable rrdcached.socket,
+    # command line socket declarations will be ignored
+    PIDFile=/var/rrdtool/rrdcached/rrdcached.pid
+    EnvironmentFile=/etc/sysconfig/rrdcached
+    ExecStart=/usr/bin/rrdcached $OPTIONS -p /var/rrdtool/rrdcached/rrdcached.pid
+    User=rrdcached
+    
+    [Install]
+    WantedBy=multi-user.target
+
+Créer le répertoire suivant : ::
+
+    mkdir -p /var/rrdtool
+    useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
+    chmod 775 -R /var/rrdtool
+
 Configuration des groupes
 *************************
 
 Créer les groupes en exécutant les commandes suivantes ::
 
-    # usermod -a -g rrdcached centreon-broker
-    # usermod -a -g rrdcached apache
-    # usermod -a -g centreon rrdcached
-    # usermod -a -g centreon-broker rrdcached
+    # usermod -a -G rrdcached centreon-broker
+    # usermod -a -G rrdcached apache
+    # usermod -a -G centreon rrdcached
+    # usermod -a -G centreon-broker rrdcached
 
-Redémarrer le processus Apache pour prendre en compte les modifications ::
+Redémarrer les processus : ::
 
-    # /etc/init.d/httpd restart
+    # systemctl daemon-reload
+    # systemctl enable rrdcached
+    # systemctl start rrdcached
 
-Démarrer le processus RRDCacheD ::
+Contrôler le statut du processus : ::
 
-    # /etc/init.d/rrdcached start
+    # systemctl status rrdcached
+    ● rrdcached.service - Data caching daemon for rrdtool
+       Loaded: loaded (/etc/systemd/system/rrdcached.service; disabled; vendor preset: disabled)
+       Active: active (running) since ven. 2018-10-26 10:14:08 UTC; 39min ago
+         Docs: man:rrdcached(1)
+     Main PID: 28811 (rrdcached)
+       CGroup: /system.slice/rrdcached.service
+               └─28811 /usr/bin/rrdcached -m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b /var/rrdtool/rrdcached -w 7200 -f 14400 -z 3600 -p /var/rrdtool/rrdcached/rrdcached.pid
+
+    oct. 26 10:14:08 demo-front rrdcached[28811]: starting up
+    oct. 26 10:14:08 demo-front systemd[1]: Started Data caching daemon for rrdtool.
+    oct. 26 10:14:08 demo-front rrdcached[28811]: listening for connections
+    oct. 26 10:14:08 demo-front systemd[1]: Starting Data caching daemon for rrdtool...
 
 Configurer le processus dans l'interface web Centreon
 *****************************************************
