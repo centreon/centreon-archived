@@ -133,6 +133,13 @@ class CentreonRestHttp
         $decodedContent = '';
         if ($result) {
             $decodedContent = json_decode($result, true);
+
+            // if it is not possible to parse json, then result is probably a string
+            if (!is_array($decodedContent) && is_string($result)) {
+                $decodedContent = [
+                    'message' => $result
+                ];
+            }
         }
 
         /* Manage HTTP status code */
@@ -182,7 +189,7 @@ class CentreonRestHttp
         /* Return the content */
         return $decodedContent;
     }
-    
+
     /**
      *
      * @param type $url

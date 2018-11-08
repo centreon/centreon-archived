@@ -4,6 +4,13 @@ namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 
+use CentreonRemote\Domain\Resources\RemoteConfig\ {
+    NagiosServer,
+    CfgNagios,
+    CfgNagiosBrokerModule,
+    BamBrokerCfgInfo
+};
+
 abstract class ServerConnectionConfigurationService
 {
 
@@ -24,16 +31,16 @@ abstract class ServerConnectionConfigurationService
 
     protected $shouldInsertBamBrokers = false;
 
-    protected $brokerID = null;
+    protected $isLinkedToCentralServer = false;
 
-    protected $resourcesPath = '/Domain/Resources/remote_config/';
+    protected $brokerID = null;
 
     public function __construct(CentreonDBAdapter $dbAdapter)
     {
         $this->dbAdapter = $dbAdapter;
     }
 
-    abstract protected function insertConfigCentreonBroker($serverID);
+    abstract protected function insertConfigCentreonBroker(int $serverID): void;
 
     public function setServerIp($ip)
     {
@@ -70,11 +77,6 @@ abstract class ServerConnectionConfigurationService
         return $this->dbAdapter;
     }
 
-    protected function getResource($resourceName): callable
-    {
-        return require_once dirname(dirname(dirname(dirname(__FILE__)))) . "{$this->resourcesPath}{$resourceName}";
-    }
-
     /**
      * @return bool
      *
@@ -96,7 +98,7 @@ abstract class ServerConnectionConfigurationService
 
         $this->insertConfigCentreonBroker($serverID);
 
-        if ($this->shouldInsertBamBrokers && $this->isRemote() === false) {
+        if ($this->shouldInsertBamBrokers && !$this->isRemote()) {
             $this->insertBamBrokers();
         }
 
@@ -107,18 +109,14 @@ abstract class ServerConnectionConfigurationService
 
     protected function insertNagiosServer()
     {
-        $nagiosServerData = $this->getResource('nagios_server.php');
-
-        return $this->insertWithAdapter('nagios_server', $nagiosServerData($this->name, $this->serverIp));
+        return $this->insertWithAdapter('nagios_server', NagiosServer::getConfiguration($this->name, $this->serverIp));
     }
 
     protected function insertConfigNagios($serverID)
     {
-        $configNagiosData = $this->getResource('cfg_nagios.php');
-        $configID = $this->insertWithAdapter('cfg_nagios', $configNagiosData($this->name, $serverID));
+        $configID = $this->insertWithAdapter('cfg_nagios', CfgNagios::getConfiguration($this->name, $serverID));
 
-        $configNagiosBrokerData = $this->getResource('cfg_nagios_broker_module.php');
-        $configBroker = $configNagiosBrokerData($configID, $this->name);
+        $configBroker = CfgNagiosBrokerModule::getConfiguration($configID, $this->name);
 
         $this->insertWithAdapter('cfg_nagios_broker_module', $configBroker[0]);
         $this->insertWithAdapter('cfg_nagios_broker_module', $configBroker[1]);
@@ -159,8 +157,7 @@ abstract class ServerConnectionConfigurationService
             throw new \Exception('Broker ID was not inserted in order to add BAM broker configs to it.');
         }
 
-        $bamBrokerInfoData = $this->getResource('bam_broker_cfg_info.php');
-        $bamBrokerInfoData = $bamBrokerInfoData($conf_centreon['password']);
+        $bamBrokerInfoData = BamBrokerCfgInfo::getConfiguration($conf_centreon['password']);
 
         foreach ($bamBrokerInfoData['monitoring'] as $row) {
             $row['config_id'] = $this->brokerID;
@@ -188,6 +185,11 @@ abstract class ServerConnectionConfigurationService
     public function shouldInsertBamBrokers()
     {
         $this->shouldInsertBamBrokers = true;
+    }
+
+    public function isLinkedToCentralServer()
+    {
+        $this->isLinkedToCentralServer = true;
     }
 
     protected function isRemote(): bool

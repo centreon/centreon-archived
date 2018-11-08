@@ -11,7 +11,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -60,14 +60,13 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postGetTaskStatus()
     {
-        $_POST = json_decode(file_get_contents('php://input'), true);
-        $task_id = (isset($_POST['task_id'])) ? $_POST['task_id'] : null;
-
-        if ($task_id){
-            $result = $this->getDi()['centreon.taskservice']->getStatus($task_id);
+        if (!isset($this->arguments['task_id'])) {
+            throw new \RestBadRequestException('Missing argument task_id');
         }
 
-        return json_encode(['success' => true, 'status'=> $result]);
+        $result = $this->getDi()['centreon.taskservice']->getStatus($this->arguments['task_id']);
+
+        return ['success' => true, 'status' => $result];
     }
 
     /**
@@ -109,16 +108,34 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * @throws \RestBadRequestException
      */
-    public function postGetTaskStatusByParent()
+    public function postGetRemoteTaskStatusByParent()
     {
-        $parent_id = (isset($_POST['parent_id'])) ? $_POST['parent_id'] : null;
-        $result = '';
-
-        if ($parent_id){
-            $result = $this->getDi()['centreon.taskservice']->getStatusByParent($parent_id);
+        if (!isset($this->arguments['server_ip']) ||
+            !isset($this->arguments['centreon_folder']) ||
+            !isset($this->arguments['parent_id'])
+        ) {
+            throw new \RestBadRequestException('Missing arguments');
         }
 
-        return json_encode(['success' => true, 'status'=> $result]);
+        $result = $this->getDi()['centreon.taskservice']
+            ->getRemoteStatusByParent(
+                $this->arguments['parent_id'],
+                $this->arguments['server_ip'],
+                $this->arguments['centreon_folder']
+            );
+
+        return ['success' => true, 'status' => $result];
+    }
+
+    public function postGetTaskStatusByParent()
+    {
+        if (!isset($this->arguments['parent_id'])) {
+            throw new \RestBadRequestException('Missing argument parent_id');
+        }
+
+        $result = $this->getDi()['centreon.taskservice']->getStatusByParent($this->arguments['parent_id']);
+
+        return ['success' => true, 'status' => $result];
     }
 
     /**
@@ -169,40 +186,41 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      */
     public function postAddImportTaskWithParent()
     {
+        if (!isset($this->arguments['parent_id'])) {
+            throw new \RestBadRequestException('Missing parent_id parameter');
+        }
+
         /*
          * make sure only authorized master can create task
          */
-        $authorizedMaster = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->getOneByKey('authorizedMaster');
-        if ($_SERVER['REMOTE_ADDR'] !== $authorizedMaster->getValue()){
-            return json_encode(['success' => true, 'status'=> 'unauthorized']);
+        $authorizedMaster = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)
+            ->getOneByKey('authorizedMaster');
+
+        // if client is behind proxy or firewall, source ip can be updated
+        // then, we try to get HTTP_X_FORWARDED_FOR
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) {
+            $originIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $originIp = $_SERVER['REMOTE_ADDR'];
         }
 
-        $parent_id = (isset($_POST['parent_id'])) ? intval($_POST['parent_id']) : null;
-        $params = (isset($_POST['params'])) ? $_POST['params'] : '';
+        if ($originIp !== $authorizedMaster->getValue()) {
+            throw new \RestUnauthorizedException($originIp . ' is not authorized on this remote server');
+        }
+
+        $parentId = $this->arguments['parent_id'];
+        $params = isset($this->arguments['params']) ? $this->arguments['params'] : '';
 
         // try to unserialize params string to array
         if (!$params = unserialize($params)) {
             $params = [];
         }
 
-        // input data validation
-        try {
-            if (!$parent_id) {
-                throw new Exception('Missing parent_id parameter');
-            }
-        } catch (\Exception $ex) {
-            return json_encode([
-                    'success' => false,
-                    'status' => $ex->getMessage(),
-                ]);
-        }
-
         // add new task
         $result = $this->getDi()['centreon.taskservice']
-            ->addTask(Task::TYPE_IMPORT, $params, $parent_id)
-        ;
+            ->addTask(Task::TYPE_IMPORT, $params, $parentId);
 
-        return json_encode(['success' => true, 'status'=> $result]);
+        return ['success' => true, 'status' => $result];
     }
 
     /**

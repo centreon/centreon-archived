@@ -35,7 +35,40 @@ class CfgCentreonBrokerRepository extends ServiceEntityRepository implements Cfg
         if ($row = $stmt->fetch()) {
             $configId = $row['config_id'];
         } else {
-            throw new NotFoundException('Central broker config id not found');
+            throw new NotFoundException(_('Central broker config id not found'));
+        }
+
+        return $configId;
+    }
+
+    /**
+     * Get config id of poller broker
+     *
+     * @param int pollerId the poller id
+     * @return int the config id of poller broker
+     * @throws NotFoundException
+     */
+    public function findBrokerConfigIdByPollerId(int $pollerId): int
+    {
+        // to find poller broker configuration,
+        // we search a configuration with an input which is listing on port 5669
+        $sql = 'SELECT cb.config_id '
+            . 'FROM cfg_centreonbroker cb, cfg_centreonbroker_info cbi, nagios_server ns '
+            . 'WHERE cb.ns_nagios_server = ns.id '
+            . 'AND cb.config_id = cbi.config_id '
+            . 'AND cb.ns_nagios_server = :poller_id '
+            . 'AND cb.daemon = 1 ' // central broker should be linked to cbd daemon
+            . 'AND cb.config_activate = "1" '
+            . 'AND cbi.config_group = "input" '
+            . 'AND cbi.config_value = "5669"';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($row = $stmt->fetch()) {
+            $configId = $row['config_id'];
+        } else {
+            throw new NotFoundException(_('Poller broker config id not found'));
         }
 
         return $configId;

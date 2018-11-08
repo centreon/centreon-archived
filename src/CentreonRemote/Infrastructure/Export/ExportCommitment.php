@@ -42,8 +42,14 @@ final class ExportCommitment
      * @param string $path
      * @param array $exporters
      */
-    public function __construct(int $remote = null, array $pollers = null, array $meta = null, ExportParserInterface $parser = null, string $path = null, array $exporters = null)
-    {
+    public function __construct(
+        int $remote = null,
+        array $pollers = null,
+        array $meta = null,
+        ExportParserInterface $parser = null,
+        string $path = null,
+        array $exporters = null
+    ) {
         if ($remote && $pollers && !in_array($remote, $pollers)) {
             $pollers[] = $remote;
         }
