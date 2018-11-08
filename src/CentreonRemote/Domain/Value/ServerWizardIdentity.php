@@ -17,7 +17,7 @@ class ServerWizardIdentity
         return !static::requestConfigurationIsRemote();
     }
 
-    public function fetchIfServerInstalledBam($ip, $centreonPath)
+    public function checkBamOnRemoteServer($ip, $centreonPath)
     {
         $centreonPath = trim($centreonPath, '/');
         $url = "{$ip}/{$centreonPath}/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";

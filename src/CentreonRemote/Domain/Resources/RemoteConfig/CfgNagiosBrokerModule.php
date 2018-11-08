@@ -1,0 +1,22 @@
+<?php
+
+namespace CentreonRemote\Domain\Resources\RemoteConfig;
+
+class CfgNagiosBrokerModule
+{
+    public static function getConfiguration ($configID, $pollerName)
+    {
+        $pollerName = strtolower(str_replace(' ', '_', $pollerName));
+
+        return [
+            [
+                'cfg_nagios_id' => $configID,
+                'broker_module' => "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/{$pollerName}-module.xml",
+            ],
+            [
+                'cfg_nagios_id' => $configID,
+                'broker_module' => '/usr/lib64/centreon-engine/externalcmd.so',
+            ],
+        ];
+    }
+}

@@ -42,7 +42,7 @@ class ExportService
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -94,9 +94,7 @@ class ExportService
             $exporter->setCache($this->cache);
             $exporter->export();
 
-            $hasInterface = (new ReflectionClass($exporter))
-                ->implementsInterface($interface)
-            ;
+            $hasInterface = (new ReflectionClass($exporter))->implementsInterface($interface);
 
             if ($hasInterface) {
                 $partials[] = $exporter;

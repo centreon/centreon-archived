@@ -339,11 +339,13 @@ sub startWorker($) {
         $passwordEnc = $1;
     }
 
-    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue >> /var/log/centreon/worker.log";
+    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a processQueue";
     $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
     if ($lerror == -1){
         $self->{logger}->writeLogError("Result : $stdout");
+    } else {
+        $self->{logger}->writeLogDebug("Result : $stdout");
     }
     return undef;
 }
@@ -372,7 +374,7 @@ sub createRemote($) {
         $passwordEnc = $1;
     }
 
-    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a createRemoteTask -v '".$taskId."' >> /var/log/centreon/worker.log";
+    my $cmdexec = "$self->{centreonDir}/bin/centreon -u $username -p $passwordEnc -w -o CentreonWorker -a createRemoteTask -v '" . $taskId . "'";
     $self->{logger}->writeLogDebug("cmd: " . $cmdexec);
     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmdexec, logger => $self->{logger}, timeout => $self->{cmd_timeout});
     if ($lerror == -1){
@@ -674,20 +676,21 @@ sub sendExportFile($){
     my $dest = $server_info->{'ns_ip_address'}.":/var/lib/centreon/remote-data/";
 
     # Send data with rSync
-    $self->{logger}->writeLogInfo("Start: Send export files on poller $id");
+    $self->{logger}->writeLogInfo("Start: Export files on poller $id");
 
     $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
-    ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                          logger => $self->{logger},
-                                                          timeout => 300
-                                                          );
+    ($lerror, $stdout) = centreon::common::misc::backtick(
+        command => $cmd,
+        logger => $self->{logger},
+        timeout => 300
+    );
     if (defined($stdout) && $stdout){
         $self->{logger}->writeLogInfo("Result : $stdout");
     }
 
     $self->createRemote($taskId);
 
-    $self->{logger}->writeLogInfo("End: Send export files on poller $id");
+    $self->{logger}->writeLogInfo("End: Export files on poller $id");
 }
 
 ##################################################
