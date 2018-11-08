@@ -48,12 +48,18 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple['centreon_remote.remote_connection_service'] = function (Container $pimple): RemoteConnectionConfigurationService {
-            $service = new RemoteConnectionConfigurationService($pimple);
+            $service = new RemoteConnectionConfigurationService(
+                $pimple['centreon.db-manager']->getAdapter('configuration_db')
+            );
             return $service;
         };
 
         $pimple['centreon_remote.poller_connection_service'] = function (Container $pimple): PollerConnectionConfigurationService {
-            $service = new PollerConnectionConfigurationService($pimple);
+            $service = new PollerConnectionConfigurationService(
+                $pimple['centreon.db-manager']->getAdapter('configuration_db')
+            );
+            $service->setBrokerRepository($pimple['centreon.broker_repository']);
+            $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
             return $service;
         };
 

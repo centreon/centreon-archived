@@ -9,6 +9,9 @@ use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Domain\Service\BrokerConfigurationService;
+use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
+use Centreon\Domain\Repository\CfgCentreonBrokerInfoRepository;
 use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
@@ -16,7 +19,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
     /**
      * Register Centreon services
-     * 
+     *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
@@ -70,8 +73,35 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             return $service;
         };
+
+        /**
+         * Repositories
+         */
+
+        $pimple['centreon.broker_repository'] = function(Container $container): CfgCentreonBrokerRepository {
+            $service = new CfgCentreonBrokerRepository($container['configuration_db']);
+
+            return $service;
+        };
+
+        $pimple['centreon.broker_info_repository'] = function(Container $container): CfgCentreonBrokerInfoRepository {
+            $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
+
+            return $service;
+        };
+
+        /**
+         * Services
+         */
+
+        $pimple['centreon.broker_configuration_service'] = function(Container $container): BrokerConfigurationService {
+            $service = new BrokerConfigurationService($container['configuration_db']);
+            $service->setBrokerInfoRepository($container['centreon.broker_info_repository']);
+
+            return $service;
+        };
     }
-    
+
     public static function order() : int {
         return 1;
     }
