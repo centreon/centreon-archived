@@ -3,7 +3,6 @@
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
-use Pimple\Container;
 
 abstract class ServerConnectionConfigurationService
 {
@@ -29,10 +28,9 @@ abstract class ServerConnectionConfigurationService
 
     protected $resourcesPath = '/Domain/Resources/remote_config/';
 
-
-    public function __construct(Container $di)
+    public function __construct(CentreonDBAdapter $dbAdapter)
     {
-        $this->dbAdapter = $di['centreon.db-manager']->getAdapter('configuration_db');
+        $this->dbAdapter = $dbAdapter;
     }
 
     abstract protected function insertConfigCentreonBroker($serverID);

@@ -2,8 +2,40 @@
 
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
+use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
+use Centreon\Domain\Service\BrokerConfigurationService;
+
 class PollerConnectionConfigurationService extends ServerConnectionConfigurationService
 {
+    /**
+     * @var CfgCentreonBrokerInterface
+     */
+    private $brokerRepository;
+
+    /**
+     * @var BrokerConfigurationService
+     */
+    private $brokerConfigurationService;
+
+    /**
+     * Set broker repository to manage general broker configuration
+     *
+     * @param CfgCentreonBrokerInterface $cfgCentreonBroker the centreon broker configuration repository
+     */
+    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker)
+    {
+        $this->brokerRepository = $cfgCentreonBroker;
+    }
+
+    /**
+     * Set broker configuration service to broker info configuration
+     *
+     * @param BrokerConfigurationService $brokerConfigurationService the service to manage broker confiration
+     */
+    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService)
+    {
+        $this->brokerConfigurationService = $brokerConfigurationService;
+    }
 
     protected function insertConfigCentreonBroker($serverID)
     {
@@ -21,17 +53,26 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
             $this->insertWithAdapter('cfg_centreonbroker_info', $row);
         }
 
+        // if one peer retention mode is enabled,
+        // we need to add an input in central broker configuration
         if ($this->isOpenBrokerFlow) {
+            // update poller broker module parameters for one peer retention
             $outputHost = '';
             $onePeerRetentionMode = 'yes';
-            $openFlowInputConfig = $this->getResource('input_poller_open_flow.php');
 
-            foreach ($openFlowInputConfig($this->serverIp) as $openFlowRow) {
-                $openFlowRow['config_id'] = $moduleID;
-                $this->insertWithAdapter('cfg_centreonbroker_info', $openFlowRow);
-            }
+            // get template function to generate input flow in central broker configuration
+            $openFlowInputConfig = $this->getResource('central_input_flow_one_peer_retention.php');
+
+            // get central broker config id
+            // we need it to add an input to pull broker data from distant poller
+            $centralBrokerConfigId = $this->brokerRepository->findCentralBrokerConfigId();
+
+            // add broker input configuration on central to get data from poller
+            $brokerInfosEntities = $openFlowInputConfig($this->serverIp);
+            $this->brokerConfigurationService->addFlow($centralBrokerConfigId, 'input', $brokerInfosEntities);
         }
 
+        // add poller module output flow to send data to the central server
         foreach ($configCentreonBrokerInfoData['central-module']['output'] as $row) {
             if ($row['config_key'] == 'host') {
                 $row['config_value'] = $outputHost;

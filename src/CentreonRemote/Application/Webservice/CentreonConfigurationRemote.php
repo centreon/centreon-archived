@@ -211,7 +211,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postLinkCentreonRemoteServer()
     {
         $_POST = json_decode(file_get_contents('php://input'), true);
-        $openBrokerFlow = isset($_POST['open_broker_flow']);
+        $openBrokerFlow = isset($_POST['open_broker_flow']) && $_POST['open_broker_flow'] === true;
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $serverHasBamInstalled = false;
