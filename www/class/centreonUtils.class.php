@@ -313,7 +313,7 @@ class CentreonUtils
     }
 
     /**
-     * Converted a HTML string according to the selected method
+     * Convert an HTML string according to the selected method
      *
      * @param string $stringToEscape String to escape
      * @param int $escapeMethod Escape method (default: ESCAPE_LEGACY_METHOD)
