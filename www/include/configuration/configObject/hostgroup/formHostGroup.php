@@ -233,7 +233,7 @@ if ($o == "w") {
     $rq .= $aclCond;
     $db = $pearDB->query($rq);
     if (($db->rowCount() != $total) && (!$oreon->user->admin)) {
-        $form->addElement('text', 'msg', _("error"), 'error');
+        $form->addElement('text', 'msgacl', _("error"), 'error');
         $form->freeze();
     }
 

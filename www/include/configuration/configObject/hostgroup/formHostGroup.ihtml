@@ -1,5 +1,6 @@
 {$form.javascript}{$javascript}
 <form {$form.attributes}>
+    {if !$form.msgacl }
     <div id="validFormTop">
         {if $o == "a" || $o == "c"}
         <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -7,8 +8,11 @@
         <p class="oreonbutton">{$form.change.html}</p>
         {/if}
     </div>
-    {if $form.msg }
-    <span class="error-msg">{t}you can't edit this hostgroup because you have not access at all of this resources{/t}</span>
+    {/if}
+    {if $form.msgacl }
+    <div style="color: red; text-align: center; font-weight: bold; margin: 4px">
+        {t}you can't edit this hostgroup because you have not access at all of this resources{/t}
+    </div>
     {/if}
     <div id='tab1' class='tab'>
         <table class="formTable table">
@@ -101,6 +105,7 @@
             {/if}
         </table>
     </div>
+    {if !$form.msgacl }
     <div id="validForm">
         {if $o == "a" || $o == "c"}
         <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -108,6 +113,7 @@
         <p class="oreonbutton">{$form.change.html}</p>
         {/if}
     </div>
+    {/if}
     {$form.hidden}
 </form>
 {$helptext}
