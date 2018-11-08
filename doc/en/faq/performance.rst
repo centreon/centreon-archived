@@ -98,7 +98,7 @@ Edit the **/etc/sysconfig/rrdcached** file and complete information::
 
     # Settings for rrdcached
     OPTIONS="-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b   /var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200"
-    RRDC_USER=rrdcach
+    RRDC_USER=rrdcached
 
 .. note::
     The order of setting is pretty important. If **-m 664** is define before **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** option then rights will be incorrect on socket.
@@ -118,25 +118,65 @@ Options are following one:
 +--------+-----------------------------------------------------------------------------------+
 
 .. note::
-    Please modify values with you needs.
+    Please modify values with your needs.
+
+Creating the service startup file
+*********************************
+
+Create the **/etc/systemd/system/rrdcached.service** file and add lines: ::
+
+    [Unit]
+    Description=Data caching daemon for rrdtool
+    Documentation=man:rrdcached(1)
+    
+    [Service]
+    # If you enable socket-activable rrdcached.socket,
+    # command line socket declarations will be ignored
+    PIDFile=/var/rrdtool/rrdcached/rrdcached.pid
+    EnvironmentFile=/etc/sysconfig/rrdcached
+    ExecStart=/usr/bin/rrdcached $OPTIONS -p /var/rrdtool/rrdcached/rrdcached.pid
+    User=rrdcached
+    
+    [Install]
+    WantedBy=multi-user.target
+
+Create the associated directory: ::
+
+    mkdir -p /var/rrdtool
+    useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
+    chmod 775 -R /var/rrdtool
 
 Groups configuration
 ********************
 
 Create groups using commands::
 
-    # usermod -a -g rrdcached centreon-broker
-    # usermod -a -g rrdcached apache
-    # usermod -a -g centreon rrdcached
-    # usermod -a -g centreon-broker rrdcached
+    # usermod -a -G rrdcached centreon-broker
+    # usermod -a -G rrdcached apache
+    # usermod -a -G centreon rrdcached
+    # usermod -a -G centreon-broker rrdcached
 
-Restart Apache process::
+Restart process: ::
 
-    # systemctl restart httpd24-httpd
+    # systemctl daemon-reload
+    # systemctl enable rrdcached
+    # systemctl start rrdcached
 
-Start RRDCacheD process::
+Check the status of the process: ::
 
-    # /etc/init.d/rrdcached start
+    # systemctl status rrdcached
+    ● rrdcached.service - Data caching daemon for rrdtool
+       Loaded: loaded (/etc/systemd/system/rrdcached.service; disabled; vendor preset: disabled)
+       Active: active (running) since ven. 2018-10-26 10:14:08 UTC; 39min ago
+         Docs: man:rrdcached(1)
+     Main PID: 28811 (rrdcached)
+       CGroup: /system.slice/rrdcached.service
+               └─28811 /usr/bin/rrdcached -m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b /var/rrdtool/rrdcached -w 7200 -f 14400 -z 3600 -p /var/rrdtool/rrdcached/rrdcached.pid
+    
+    oct. 26 10:14:08 demo-front rrdcached[28811]: starting up
+    oct. 26 10:14:08 demo-front systemd[1]: Started Data caching daemon for rrdtool.
+    oct. 26 10:14:08 demo-front rrdcached[28811]: listening for connections
+    oct. 26 10:14:08 demo-front systemd[1]: Starting Data caching daemon for rrdtool...
 
 Centreon web configuration
 **************************
