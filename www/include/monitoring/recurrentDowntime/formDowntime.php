@@ -365,8 +365,6 @@ if ($form->validate()) {
                 $valid = true;
             }
         } elseif ($values['o'] == 'c') {
-
-
             $id = $values['dt_id'];
             $activate = $values['downtime_activate']['downtime_activate'];
             $downtime->modify($id, $values['downtime_name'], $values['downtime_description'], $activate);

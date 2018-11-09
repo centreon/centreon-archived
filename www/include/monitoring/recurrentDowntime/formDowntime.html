@@ -53,13 +53,6 @@ function addPeriods() {
     return false;
 }
 
-function disableByAcl() {
-    var inputs = document.getElementsByTagName("INPUT");
-    for (var i = 0; i < inputs.length; i++) {
-        inputs[i].disabled = true;
-    }
-}
-
 function getXhrHost4Svc(){
     if (window.XMLHttpRequest) // Firefox et autres
         var xhrT = new XMLHttpRequest();
