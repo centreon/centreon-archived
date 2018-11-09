@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     if ($hg_id && false === strpos($hgString, "'" . $hg_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
@@ -232,7 +232,7 @@ if ($o == "w") {
     $total = $db->rowCount();
     $rq .= $aclCond;
     $db = $pearDB->query($rq);
-    if (($db->rowCount() != $total) && (!$oreon->user->admin)) {
+    if (($db->rowCount() != $total) && (!$centreon->user->admin)) {
         $form->addElement('text', 'msgacl', _("error"), 'error');
         $form->freeze();
     }
