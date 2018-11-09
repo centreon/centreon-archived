@@ -51,7 +51,7 @@ $host_id = filter_var(
     FILTER_VALIDATE_INT
 );
 
-// If one data are not correctly typed in array, it will be set to false
+// If one data is not correctly typed in array, it will be set to false
 $select = filter_var_array(
     call_user_func(function () {
         if (isset($_GET["select"])) {
