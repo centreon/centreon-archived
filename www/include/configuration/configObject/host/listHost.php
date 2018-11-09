@@ -265,7 +265,7 @@ if ($hostgroup) {
             WHERE $SearchTool $templateWHERE host_register = '1'
             AND h.host_id = ns_host_relation.host_host_id
             AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase $aclCond
-            ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
         );
     } else {
         $DBRESULT = $pearDB->query(
