@@ -11,7 +11,7 @@
     {/if}
     {if $form.msgacl }
     <div style="color: red; text-align: center; font-weight: bold; margin: 4px">
-        {t}you can't edit this hostgroup because you have not access at all of this resources{/t}
+        {t}You can't edit this hostgroup because you don't have access to all his resources{/t}
     </div>
     {/if}
     <div id='tab1' class='tab'>
