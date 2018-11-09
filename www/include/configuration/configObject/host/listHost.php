@@ -253,7 +253,7 @@ if ($hostgroup) {
             WHERE $SearchTool $templateWHERE host_register = '1'
             AND h.host_id = hr.host_host_id
             AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-            ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
         );
     }
 } else {
