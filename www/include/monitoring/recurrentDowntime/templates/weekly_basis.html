@@ -5,7 +5,7 @@ var period_id = {$period_tab};
 <tr class="list_one">
 	<td class="FormRowField">{$days}</td>
 	<td class="FormRowValue">
-	<input type="checkbox" name="periods[{$period_tab}][days][]" value="7" />&nbsp;{$sunday}<br/>
+	<input  type="checkbox" name="periods[{$period_tab}][days][]" value="7" {if $form.msgacl } disabled {/if} />&nbsp;{$sunday}<br/>
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="1" />&nbsp;{$monday}<br/>
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="2" />&nbsp;{$tuesday}<br/>
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="3" />&nbsp;{$wednesday}<br/>
@@ -59,8 +59,14 @@ jQuery(function() {
         });
 
 	}
-
         jQuery(".timepicker").timepicker();
+});
+
+$(document).ready(function () {
+	var validButton = $('#validForm');
+	if (!validButton.length) {
+		$("#tabs_periods :input").prop("disabled", true);
+    }
 });
 </script>
 {/literal}
