@@ -273,7 +273,7 @@ if ($hostgroup) {
             host_alias, host_address, host_activate, host_template_model_htm_id
             FROM host h $templateFROM $aclFrom
             WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase $aclCond
-            ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
         );
     }
 }
