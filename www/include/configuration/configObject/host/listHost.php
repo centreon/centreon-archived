@@ -243,7 +243,7 @@ if ($hostgroup) {
             AND ns_host_relation.nagios_server_id = '$poller'
             AND h.host_id = hr.host_host_id
             AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-            ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
         );
     } else {
         $DBRESULT = $pearDB->query(
