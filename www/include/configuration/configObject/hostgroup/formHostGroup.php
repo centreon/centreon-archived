@@ -212,27 +212,23 @@ if ($o == "w") {
     $form->setDefaults($hg);
     $form->freeze();
 } elseif ($o == "c") {
-    /*
-     * Modify a HostGroup information
-     */
+    //Modify a HostGroup information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($hg);
 
-    //check resources Access of linked object
-    $aclFrom = "";
-    $aclCond = "";
-    if (!$centreon->user->admin) {
-        $aclFrom = ", $aclDbName.centreon_acl acl ";
-        $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
-    }
-    $rq = "SELECT DISTINCT h.host_id, h.host_activate FROM hostgroup_relation hgr, host h " . $aclFrom .
+    //check host resources
+    $hostArray = array();
+    $host = $acl->getHostAclConf(null, 'broker');
+    $accessHost = array_keys($host);
+    $rq = "SELECT DISTINCT h.host_id FROM hostgroup_relation hgr, host h  " .
         " WHERE hostgroup_hg_id = '" . $hg_id . "' AND h.host_id = hgr.host_host_id AND h.host_register = '1' ";
     $db = $pearDB->query($rq);
-    $total = $db->rowCount();
-    $rq .= $aclCond;
-    $db = $pearDB->query($rq);
-    if (($db->rowCount() != $total) && (!$centreon->user->admin)) {
+    while ($row = $db->fetch()) {
+        $hostArray[] = $row['host_id'];
+    }
+    $result = array_diff($hostArray, $accessHost);
+    if (!empty($result) && (!$centreon->user->admin)) {
         $form->addElement('text', 'msgacl', _("error"), 'error');
         $form->freeze();
     }
