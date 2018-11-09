@@ -65,7 +65,7 @@ $select = filter_var_array(
     FILTER_VALIDATE_INT
 );
 
-// If one data are not correctly typed in array, it will be set to false
+// If one data is not correctly typed in array, it will be set to false
 $dupNbr = filter_var_array(
     call_user_func(function () {
         if (isset($_GET["dupNbr"])) {
