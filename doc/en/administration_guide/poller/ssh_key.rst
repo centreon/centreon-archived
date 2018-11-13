@@ -1,8 +1,6 @@
-.. _sskkeypoller:
-
-----------------
+****************
 SSH Key exchange
-----------------
+****************
 
 The communication between a central server and a poller server is done by SSH.
 
@@ -17,5 +15,3 @@ Copy this key on the new server: ::
 
     # su - centreon
     $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
-
-Go to the :ref:`Configure a server in Centreon<wizard_add_poller>`.

@@ -16,7 +16,5 @@ The Centreon distributed architectures are describe into the architecture chapte
 
    install_poller
    install_remote_server
-   ssh_key
-   wizard_add_poller
    pollersstats
    advanced_configuration_broker
