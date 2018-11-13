@@ -4,7 +4,7 @@
 A partir des VMs
 ================
 
-Deux Machines virtuelles pré-configurées sont disponibles sur le site de
+Deux machines virtuelles pré-configurées sont disponibles sur le site de
 `téléchargement de Centreon <https://download.centreon.com/>`_.
 
 Ces machines virtuelles sont disponibles au format OVF (VMware) et OVA (VirtualBox).
