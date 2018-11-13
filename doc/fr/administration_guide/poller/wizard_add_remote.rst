@@ -5,8 +5,6 @@ Configurer un nouveau Remote Server dans Centreon
 Depuis Centreon 18.10, un assistant de configuration est disponible pour ajouter
 un Remote Server à la plate-forme Centreon.
 
-Choisissez le chapitre suivant le type de serveur.
-
 .. note::
     Il est possible d'ajouter un nouveau collecteur :ref:`manuellement<add_manual_poller>`,
     cependant Centreon recommande d'utiliser la procédure suivante.
