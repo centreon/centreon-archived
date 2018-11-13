@@ -63,10 +63,23 @@ This command will enable **Remote Server** mode::
       Limiting Actions...Done
       
       Notifying Master...Success
-     Centreon Remote enabling finished.
 
-6. Go to :ref:`SSH Key Exchange chapter to continue<sskkeypoller>` to perform
-   exchange between your **Remote Server** and all attached **pollers**.
+      Set 'remote' instance type...Done
+
+      Centreon Remote enabling finished.
+
+6. SSH Key exchange:
+
+If you don’t have any private SSH keys on the central server for the Centreon
+user: ::
+
+    # su - centreon
+    $ ssh-keygen -t rsa
+
+Copy this key on the new server: ::
+
+    # su - centreon
+    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
 7. **On the Centreon Central server**, edit all pollers and attach them to the
    **Remote Server** using the selection list.
