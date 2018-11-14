@@ -1,7 +1,7 @@
 Pour démarrer l'ordonnanceur de supervision :
 
-1. Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
-2. Laissez les options par défaut, et cliquez sur **Exporter**
+1. Sur l'interface web, rendez-vous dans le menu **Configuration > Collecteurs**
+2. Laissez les options par défaut, et cliquez sur **Exporter la configuration**
 3. Sélectionnez le collecteur **Central** dans la liste de sélection
 4. Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
 5. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
