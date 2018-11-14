@@ -12,6 +12,10 @@ If you don’t have any private SSH keys on the central server for the
     # su - centreon
     $ ssh-keygen -t rsa
 
+Generate a password for the **centreon** user on the new server: ::
+
+    # passwd centreon
+
 Copy this key on the new server: ::
 
     # su - centreon

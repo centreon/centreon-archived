@@ -12,6 +12,11 @@ l’utilisateur **centreon** : ::
     # su - centreon
     $ ssh-keygen -t rsa
 
+Générez un mot de passe sur le nouveau serveur pour l'utilisateur
+**centreon** : ::
+
+    # passwd centreon
+
 Vous devez copier cette clé sur le nouveau serveur : ::
 
     # su - centreon
