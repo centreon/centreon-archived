@@ -379,7 +379,7 @@ Server et modifiez la variable **Timeout value for Centcore commands** à 60s.
 
 Redémarrez le processus **centcore** via la commande : ::
 
-    # systemctl start centcore
+    # systemctl restart centcore
 
 Purgez la table des tâches d'import : ::
 
