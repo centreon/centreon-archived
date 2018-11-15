@@ -188,7 +188,7 @@ Centreon Central et modifiez la variable **Timeout value for Centcore commands**
 
 Redémarrez le processus **centcore** via la commande : ::
 
-    # systemctl start centcore
+    # systemctl restart centcore
 
 Purgez la table des tâches d’extraction::
 
