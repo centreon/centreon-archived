@@ -102,7 +102,7 @@ Si le statut est **pending**, il semble que le processus **centcore** ne soit
 pas en cours d'exécution sur votre serveur Centreon central.
 
 Si le statut est **inprogress**, il semble que le processus d'extraction des
-données est échoué. Suivez les étapes suivantes pour résoudre le problème
+données ait échoué. Suivez les étapes suivantes pour résoudre le problème
 :ref:`Résolution des problèmes d'extraction des données<exportissue>`.
 
 Si le statut est **completed**, il semble que le problème provienne du processus
