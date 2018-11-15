@@ -125,7 +125,7 @@ Si le statut est **pending**, il semble que le processus **centcore** ne soit
 pas en cours d'exécution sur le Remote Server.
 
 Si le statut est **inprogress**, il semble que le processus d'extraction des
-données est échoué. Suivez les étapes suivantes pour résoudre le problème
+données ait échoué. Suivez les étapes suivantes pour résoudre le problème
 :ref:`Résolution des problèmes d'import des données<importissue>`.
 
 Si le statut est **completed**, la configuration a bien été importée sur votre
