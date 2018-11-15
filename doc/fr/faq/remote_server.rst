@@ -343,7 +343,7 @@ Vérifiez que le répertoire **/etc/centreon** contient les fichiers suivants :
 * instCentPlugins.conf
 * instCentWeb.conf
 
-et que ces fichiers ne soient pas vide, sinon les copier depuis le serveur Centreon
+et que ces fichiers ne sont pas vide, sinon copier les depuis le serveur Centreon
 Central.
 
 Purgez la table des tâches d'import : ::
