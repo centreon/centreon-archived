@@ -274,7 +274,7 @@ Server en exécutant la commande suivante sur le Remote Server : ::
 
 si tel n'est pas le cas, redémarrez le processus **httpd** via la commande : ::
 
-    # systemctl start httpd
+    # systemctl restart httpd
 
 Vérifiez que les paramètres du Remote Server sont complets et corrects en
 exécutant la requête suivant sur le serveur Centreon Central : ::
