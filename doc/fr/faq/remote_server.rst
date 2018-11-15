@@ -240,7 +240,7 @@ l'erreur suivante : ::
     url called: 10.30.2.234/centreon/api/external.php?object=centreon_task_service&action=AddImportTaskWithParent
 
 Vérifiez sur la connexion à l'API du Remote Server est disponible et qu'aucun
-pare-feu ou élément réseau bloque le flux en exécutant la commande suivante
+pare-feu ou élément réseau ne bloque le flux en exécutant la commande suivante
 depuis le serveur Centreon Central : ::
 
     # curl -s -d "username=admin&password=<PASSWORD>" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://<IP Remote Server>/centreon/api/index.php?action=authenticate
