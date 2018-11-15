@@ -399,7 +399,7 @@ Aucune action utilisateur ne semble être prise en compte dans l'interface temps
 Symptôme
 --------
 
-Dans le menu **Monitoring > Status Details**, vous sélectionnez une ressource
+Dans le menu **Monitoring > Status Details**, sélectionnez une ressource
 ainsi qu'une action via la liste déroulante **More actions...** (acquittement,
 re-planifier un contrôle, etc.); celle-ci ne semble pas être prise en compte.
 
