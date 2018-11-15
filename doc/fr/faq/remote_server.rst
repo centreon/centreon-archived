@@ -239,7 +239,7 @@ l'erreur suivante : ::
     [2018:11:14 03:54:12] Worker cycle completed.Curl error while creating parent task: Failed connect to 10.30.2.234:80; Connection refused
     url called: 10.30.2.234/centreon/api/external.php?object=centreon_task_service&action=AddImportTaskWithParent
 
-Vérifiez sur la connexion à l'API du Remote Server est disponible et qu'aucun
+Vérifiez que la connexion à l'API du Remote Server est disponible et qu'aucun
 pare-feu ou élément réseau ne bloque le flux en exécutant la commande suivante
 depuis le serveur Centreon Central : ::
 
