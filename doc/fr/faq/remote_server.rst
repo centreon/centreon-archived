@@ -111,7 +111,7 @@ d'import des données sur le Remote Server.
 L'import des données réalisé par le Remote Server a échoué
 **********************************************************
 
-Vous pouvez de vérifier cela en exécutant la commande suivante sur le
+Vous pouvez vérifier cela en exécutant la commande suivante sur le
 Remote Server : ::
 
     # MariaDB [centreon]> SELECT * FROM task WHERE id = (SELECT MAX(id) FROM task);
