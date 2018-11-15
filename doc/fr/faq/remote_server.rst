@@ -233,7 +233,7 @@ la requête : ::
 
 5. Les paramètres d'accès au Remote Server sont incomplets ou erronés
 
-Le fichier **/var/log/centreon/worker.log** du serveur Centreon Central conteint
+Le fichier **/var/log/centreon/worker.log** du serveur Centreon Central contient
 l'erreur suivante : ::
 
     [2018:11:14 03:54:12] Worker cycle completed.Curl error while creating parent task: Failed connect to 10.30.2.234:80; Connection refused
