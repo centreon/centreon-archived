@@ -82,8 +82,8 @@ Une erreur est survenue durant le processus de synchronisation de la configurati
 entre le serveur Centreon central et le Remote Server. Ce problème peut avoir
 plusieurs origines:
 
-L'extraction des données réalisée par le serveur Centreon central a échouée
-***************************************************************************
+L'extraction des données réalisée par le serveur Centreon central a échoué
+**************************************************************************
 
 Vous pouvez vérifier cela en exécutant la commande suivante sur le
 serveur Centreon central: ::
@@ -343,7 +343,7 @@ Vérifiez que le répertoire **/etc/centreon** contient les fichiers suivants :
 * instCentPlugins.conf
 * instCentWeb.conf
 
-et que ces fichiers ne sont pas vide, sinon copier les depuis le serveur Centreon
+et que ces fichiers ne sont pas vide, sinon copiez les depuis le serveur Centreon
 Central.
 
 Purgez la table des tâches d'import : ::
