@@ -82,7 +82,7 @@ Une fois les modules installés, cliquez sur **Next**.
    :align: center
    :scale: 65%
 
-À cette étape une publicité permet de connaitre les dernières nouveautés
+À cette étape une publicité permet de connaître les dernières nouveautés
 de Centreon. Si votre plate-forme est connectée à Internet vous disposez
 des dernières informations, sinon l’information présente dans cette version
 sera proposée.
@@ -101,8 +101,8 @@ Vous pouvez maintenant vous connecter.
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
-#. Clicuez sur votre profil utilisateur en haut à droite de l'interface
-#. Click sur le bouton **edit profil**
+#. Cliquez sur votre profil utilisateur en haut à droite de l'interface
+#. Click sur le bouton **Edit profil**
 #. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
 #. Cliquez sur **Save**
 

@@ -83,7 +83,7 @@ Vous devez copier cette clé sur le Remote Server : ::
     $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
 7. Sur le serveur **Centreon Central**, dans l'interface web Centreon, éditez
-   tous les collecteurs rattachés au **Remote Server** et lier ceux-ci au
+   tous les collecteurs rattachés au **Remote Server** et liez ceux-ci au
    nouveau Remote Server via la liste de sélection.
 
 .. note::
