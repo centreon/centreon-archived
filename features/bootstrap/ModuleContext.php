@@ -60,7 +60,12 @@ class ModuleContext extends CentreonContext
      */
     public function theModuleIsInstalled()
     {
+        //wait the widget is installed
+        sleep(2);
+
+        // initialize page to manage iframe selection
         $this->page = new ModuleListingPage($this);
+
         $module = $this->page->getEntry($this->moduleName);
         if ($module['actions']['install']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not installed.');

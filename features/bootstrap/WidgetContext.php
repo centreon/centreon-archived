@@ -56,13 +56,14 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsInstalled()
     {
-
-        //wait the iframe
+        //wait the widget is installed
         sleep(2);
+
+        // initialize page to manage iframe selection
+        $this->page = new WidgetListingPage($this);
 
         $this->spin(
             function ($context) {
-                $context->getSession()->getDriver()->switchToIFrame("main-content");
                 $widget = $context->page->getEntry($context->widgetName);
                 return !$widget['actions']['install'];
             },
