@@ -102,7 +102,7 @@ Vous pouvez maintenant vous connecter.
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
 #. Cliquez sur votre profil utilisateur en haut à droite de l'interface
-#. Cliquez sur le bouton **Edit profil**
+#. Cliquez sur le bouton **Edit profile**
 #. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
 #. Cliquez sur **Save**
 
