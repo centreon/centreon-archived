@@ -107,7 +107,7 @@ class Upgrader extends Installer
         $sth->bindParam(':keywords', $this->widgetConfiguration['keywords'], \PDO::PARAM_STR);
         $sth->bindParam(':thumbnail', $this->widgetConfiguration['thumbnail'], \PDO::PARAM_STR);
         $sth->bindParam(':autoRefresh', $this->widgetConfiguration['autoRefresh'], \PDO::PARAM_INT);
-        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
+        $sth->bindParam(':directory', $this->widgetConfiguration['directory'], \PDO::PARAM_STR);
 
         if (!$sth->execute()) {
             throw new \Exception('Cannot upgrade widget "' . $this->widgetName . '".');

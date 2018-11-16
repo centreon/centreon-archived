@@ -88,6 +88,7 @@ class Information
 
         $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
+        $conf['directory'] = $widgetName;
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
 
         return $conf;
@@ -211,7 +212,8 @@ class Information
 
         $installedWidgets = array();
         foreach ($widgets as $widget) {
-            $installedWidgets[$widget['directory']] = $widget;
+            // we use lowercase to avoid problems if directory name have some letters in uppercase
+            $installedWidgets[strtolower($widget['directory'])] = $widget;
         }
 
         return $installedWidgets;
@@ -240,7 +242,8 @@ class Information
                 continue;
             }
 
-            $widgetsConf[$widgetName] = $this->getConfiguration($widgetName);
+            // we use lowercase to avoid problems if directory name have some letters in uppercase
+            $widgetsConf[strtolower($widgetName)] = $this->getConfiguration($widgetName);
         }
 
         return $widgetsConf;
