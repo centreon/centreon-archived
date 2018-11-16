@@ -70,37 +70,37 @@ class Factory
 
     /**
      *
-     * @param string $widgetName
+     * @param string $widgetDirectory
      * @return \CentreonLegacy\Core\Widget\Installer
      */
-    public function newInstaller($widgetName)
+    public function newInstaller($widgetDirectory)
     {
         $informationObj = $this->newInformation();
 
-        return new Installer($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
+        return new Installer($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
     }
 
     /**
      *
-     * @param string $widgetName
+     * @param string $widgetDirectory
      * @return \CentreonLegacy\Core\Widget\Upgrader
      */
-    public function newUpgrader($widgetName)
+    public function newUpgrader($widgetDirectory)
     {
         $informationObj = $this->newInformation();
 
-        return new Upgrader($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
+        return new Upgrader($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
     }
 
     /**
      *
-     * @param string $widgetName
+     * @param string $widgetDirectory
      * @return \CentreonLegacy\Core\Widget\Remover
      */
-    public function newRemover($widgetName)
+    public function newRemover($widgetDirectory)
     {
         $informationObj = $this->newInformation();
 
-        return new Remover($this->dependencyInjector, $informationObj, $widgetName, $this->utils);
+        return new Remover($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
     }
 }

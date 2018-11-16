@@ -75,20 +75,20 @@ class Information
 
     /**
      * Get module configuration from file
-     * @param string $widgetName
+     * @param string $widgetDirectory the widget directory (usually the widget name)
      * @return array
      * @throws \Exception
      */
-    public function getConfiguration($widgetName)
+    public function getConfiguration($widgetDirectory)
     {
-        $widgetPath = $this->utils->buildPath('/widgets/' . $widgetName);
+        $widgetPath = $this->utils->buildPath('/widgets/' . $widgetDirectory);
         if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
-            throw new \Exception('Cannot get configuration file of widget "' . $widgetName . '"');
+            throw new \Exception('Cannot get configuration file of widget "' . $widgetDirectory . '"');
         }
 
         $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
-        $conf['directory'] = $widgetName;
+        $conf['directory'] = $widgetDirectory;
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
 
         return $conf;
@@ -232,18 +232,18 @@ class Information
         $widgets = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
-            $widgetName = $widget->getBasename();
-            if (!empty($search) && !stristr($widgetName, $search)) {
+            $widgetDirectory = $widget->getBasename();
+            if (!empty($search) && !stristr($widgetDirectory, $search)) {
                 continue;
             }
 
-            $widgetPath = $widgetsPath . $widgetName;
+            $widgetPath = $widgetsPath . $widgetDirectory;
             if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
                 continue;
             }
 
             // we use lowercase to avoid problems if directory name have some letters in uppercase
-            $widgetsConf[strtolower($widgetName)] = $this->getConfiguration($widgetName);
+            $widgetsConf[strtolower($widgetDirectory)] = $this->getConfiguration($widgetDirectory);
         }
 
         return $widgetsConf;

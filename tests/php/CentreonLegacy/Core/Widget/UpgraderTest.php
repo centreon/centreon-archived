@@ -47,6 +47,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
             'screenshot' => '',
             'thumbnail' => './widgets/host-monitoring/resources/centreon-logo.png',
             'url' => './widgets/host-monitoring/index.php',
+            'directory' => 'my-widget',
             'preferences' => array(
                 'preference' => array(
                     array(
@@ -185,7 +186,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
-    public function testInstall()
+    public function testUpgrade()
     {
         $query = 'UPDATE widget_models SET ' .
             'title = :title, ' .
