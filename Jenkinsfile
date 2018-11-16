@@ -95,7 +95,7 @@ try {
   }
 
   if (env.BRANCH_NAME == 'master') {
-    stage('Acceptance tests') {
+    /*stage('Acceptance tests') {
       parallel 'centos7': {
         node {
           sh 'setup_centreon_build.sh'
@@ -109,7 +109,7 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Critical tests stage failure.');
       }
-    }
+    }*/
 
     stage('Delivery') {
       node {
