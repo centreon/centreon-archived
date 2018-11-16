@@ -68,10 +68,8 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    const { contentHeight, loading } = this.state
-    const { history } = this.props,
-          { search } = history.location;
-    const params = search || '';
+    const { contentHeight, loading } = this.state;
+    const params = window.location.search.split('?')[1] || '';
     return (
       <>
         {loading &&
@@ -87,7 +85,7 @@ class ModuleRoute extends Component {
           scrolling="yes"
           className={loading ? "hidden" : ""}
           style={{ width: "100%", height: `${contentHeight}px` }}
-          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php?${params}`}
         />
       </>
     );
