@@ -148,9 +148,8 @@ Mettez à jour l'ensemble des composants : ::
 Actions complémentaires
 =======================
 
-Redémarrez les services en exécutant les commandes suivantes : ::
+Redémarrez le service centengine en exécutant la commande suivante : ::
 
-    # systemctl restart cbd
     # systemctl restart centengine
 
 ***************************************
