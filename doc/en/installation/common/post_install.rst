@@ -9,19 +9,19 @@ To start the monitoring engine :
 7. Log in to the ‘root’ user on your server.
 8. Start Centreon Broker ::
 
-     # systemctl cbd start
+     # systemctl start cbd
 
 9. Start Centreon Engine ::
 
-     # systemctl centengine start
+     # systemctl start centengine
 
 10. Start centcore :: 
 
-    # systemctl centcore start
+    # systemctl start centcore
 
 11. Start centreontrapd ::
 
-    # systemctl centreontrapd start
+    # systemctl start centreontrapd
 
 Monitoring is now working. You can begin monitoring your IT system!
 

@@ -100,7 +100,7 @@ You can now log in.
 You can change the default language of the web interface:
 
 #. Click on your profile on the top right of the banner
-#. Click on **Edit profil**
+#. Click on **Edit profile**
 #. Select your language in the **Language* field
 #. Click on **Save**
 

@@ -9,19 +9,19 @@ Pour démarrer l'ordonnanceur de supervision :
 7. Connectez-vous avec l'utilisateur 'root' sur votre serveur
 8. Démarrez le composant Centreon Broker ::
 
-    # systemctl cbd start
+    # systemctl start cbd
 
 9. Démarrez Centreon Engine ::
 
-    # systemctl centengine start
+    # systemctl start centengine
 
 10. Démarrez centcore ::
 
-    # systemctl centcore start
+    # systemctl start centcore
 
 11. Démarrez centreontrapd ::
 
-    # systemctl centreontrapd start
+    # systemctl start centreontrapd
 
 La supervision est maintenant opérationnelle.
 
