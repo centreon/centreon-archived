@@ -142,8 +142,8 @@ Lancer les commandes suivantes sur le serveur Central : ::
 Terminer l'installation
 -----------------------
 
-Avant de démarrer la configuration via l'interface web la commande suivante
-doit être exécutée : ::
+Avant de démarrer la configuration via l'interface web les commandes suivantes
+doivent être exécutées : ::
 
     # systemctl start rh-php71-php-fpm
     # systemctl start httpd
