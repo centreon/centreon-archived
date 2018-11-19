@@ -68,91 +68,248 @@ function testExistence($name = null, $instanceId = null)
     }
 }
 
-function deleteResourceInDB($DBRESULT = array())
+/**
+ * Retrieve the smallest suffix available for this resource name from database
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param string $resourceName Resource name to process
+ * @param string $separator Character used to separate the resource name and suffix
+ * @return int The smallest suffix available for this resource name
+ * @throws Exception
+ */
+function getFirstAvailableSuffixId($resourceName, $separator = '_')
 {
     global $pearDB;
+    /**
+     * To avoid that this colum value will be interpreted
+     * like regular expression in getFirstAvailableSuffixId
+     * function
+     */
+    $resourceName = preg_quote($resourceName);
 
-    foreach ($DBRESULT as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
+    $resourceName = CentreonDB::escape($resourceName);
+    $query = "SELECT CAST(SUBSTRING_INDEX(resource_name,'_',-1) AS INT) AS suffix "
+        . "FROM cfg_resource WHERE resource_name REGEXP '^" . $resourceName. $separator . "[0-9]+$' "
+        . "ORDER BY suffix";
+    $results = $pearDB->query($query);
+    $availableSuffix = array();
+    while ($result = $results->fetchRow()) {
+        $suffix = (int) $result['suffix'];
+        if (!in_array($suffix, $availableSuffix)) {
+            $availableSuffix[] = $suffix;
+        }
     }
+    // Get the biggest suffix found
+    $biggestSuffix = $availableSuffix[count($availableSuffix) - 1];
+    // Get the smaller suffix available
+    $smallestSuffixAvailable = 1;
+    for ($suffix = 1; $suffix <= $biggestSuffix + 1; $suffix++) {
+        if (!in_array($suffix, $availableSuffix)) {
+            $smallestSuffixAvailable = $suffix;
+            break; // We found it, we can go out
+        }
+    }
+    return $smallestSuffixAvailable;
 }
 
-function enableResourceInDB($resource_id = null)
+/**
+ * Delete a list of resource's id
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param int[] $resourceIds
+ * @throws Exception
+ */
+function deleteResourcesInDB($resourceIds = array())
 {
     global $pearDB;
 
-    if (!$resource_id) {
-        exit();
-    }
-    $DBRESULT = $pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
-}
+    $resourceIds = filter_var_array(
+        $resourceIds,
+        FILTER_VALIDATE_INT
+    );
 
-function disableResourceInDB($resource_id = null)
-{
-    global $pearDB;
-    if (!$resource_id) {
+    if(in_array(false, $resourceIds)) {
         return;
     }
-    $DBRESULT = $pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
+
+    foreach (array_keys($resourceIds) as $id) {
+        $pearDB->query(
+            'DELETE FROM cfg_resource WHERE resource_id = ' . ((int) $id)
+        );
+    }
 }
 
-function multipleResourceInDB($DBRESULT = array(), $nbrDup = array())
+/**
+ * Enable a poller resource
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param int $resourceId Id of the resource
+ * @throws Exception
+ */
+function enableResourceInDB($resourceId = null)
 {
     global $pearDB;
 
-    foreach ($DBRESULT as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["resource_id"] = '';
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
-            foreach ($row as $key2 => $value2) {
-                $key2 == "resource_name" ? ($resource_name = $value2 = $value2."_".$i) : null;
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
-            }
-            if (testExistence($resource_name)) {
-                $DBRESULT = $pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
+    if (!is_int($resourceId)) {
+        return;
+    }
+
+    $pearDB->query(
+        'UPDATE cfg_resource SET resource_activate = \'1\' WHERE resource_id = ' . ((int) $resourceId)
+    );
+}
+
+/**
+ * Disable a poller resource
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param int $resourceId Id of the resource
+ * @throws Exception
+ */
+function disableResourceInDB($resourceId = null)
+{
+    global $pearDB;
+    if (!is_int($resourceId)) {
+        return;
+    }
+    $pearDB->query(
+        'UPDATE cfg_resource SET resource_activate = \'0\' WHERE resource_id = '
+        . ((int) $resourceId)
+    );
+}
+
+/**
+ * Duplicate resources
+ *
+ * @param int[] $resourceIds List of resource id to duplicate
+ * @param int[] $nbrDup Number of copy
+ * @throws Exception
+ */
+function duplicateResources($resourceIds = array(), $nbrDup = array())
+{
+    global $pearDB;
+
+    $resourceIds = filter_var_array(
+        $resourceIds,
+        FILTER_VALIDATE_INT
+    );
+    if(in_array(false, $resourceIds)) {
+        return;
+    }
+
+    $nbrDup = filter_var_array(
+        $nbrDup,
+        FILTER_VALIDATE_INT
+    );
+    if(in_array(false, $nbrDup)) {
+        return;
+    }
+
+    foreach (array_keys($resourceIds) as $resourceId) {
+        $results = $pearDB->query(
+            'SELECT * FROM cfg_resource WHERE resource_id = '
+            . ((int) $resourceId) . ' LIMIT 1'
+        );
+        $row = $results->fetchRow();
+        if(count($row)) {
+            $row["resource_id"] = '';
+            for ($i = 1; $i <= $nbrDup[$resourceId]; $i++) {
+                $queryValues = null;
+                $resourceName = null;
+                foreach ($row as $columName => $columValue) {
+                    if($columName === "resource_name") {
+                        $columValue .= '_' . getFirstAvailableSuffixId($columValue);
+                        $resourceName = CentreonDB::escape($columValue);
+                    } else {
+                        $columValue = CentreonDB::escape($columValue);
+                    }
+
+                    if(is_null($queryValues)) {
+                        $queryValues .= ($columValue != null
+                            ? ("'" . $columValue . "'")
+                            : "NULL");
+                    } else {
+                        $queryValues .= ($columValue != null
+                            ? (", '" . $columValue . "'")
+                            : ", NULL");
+                    }
+                }
+
+                if (!is_null($queryValues) && testExistence($resourceName)) {
+                    $pearDB->query(
+                        'INSERT INTO cfg_resource VALUES (' . $queryValues . ')'
+                    );
+                }
             }
         }
     }
 }
 
-function updateResourceInDB($resource_id = null)
+/**
+ * Update a poller resource
+ *
+ * @param int $resourceId Id of the resource
+ * @see updateResource() Update a resource
+ * @see insertInstanceRelations() Create relation between resource and poller
+ * @throws Exception
+ */
+function updateResourceInDB($resourceId = null)
 {
-    if (!$resource_id) {
+    if (!is_int($resourceId)) {
         return;
     }
-    updateResource($resource_id);
-    insertInstanceRelations($resource_id);
+
+    updateResource($resourceId);
+    insertInstanceRelations($resourceId);
 }
 
-function updateResource($resource_id)
+/**
+ * Update a resource
+ *
+ * @global HTML_QuickForm $form
+ * @global CentreonDB $pearDB
+ * @global Centreon $centreon
+ * @param int $resourceId Id of the resource
+ * @throws Exception
+ */
+function updateResource($resourceId)
 {
     global $form, $pearDB, $centreon;
 
-    if (!$resource_id) {
+    if (!is_int($resourceId)) {
         return;
     }
-    $ret = array();
     $ret = $form->getSubmitValues();
-    $rq = "UPDATE cfg_resource ";
-    $rq .= "SET resource_name = '".$pearDB->escape($ret["resource_name"])."', " .
-            "resource_line = '".$pearDB->escape($ret["resource_line"])."', " .
-            "resource_comment= '".$pearDB->escape($ret["resource_comment"])."', " .
-            "resource_activate= '".$ret["resource_activate"]["resource_activate"]."' " .
-            "WHERE resource_id = '".$resource_id."'";
+    $rq = "UPDATE cfg_resource "
+        . "SET resource_name = '" . $pearDB->escape($ret["resource_name"]) . "', "
+        . "resource_line = '" . $pearDB->escape($ret["resource_line"]) . "', "
+        . "resource_comment= '" . $pearDB->escape($ret["resource_comment"]) . "', "
+        . "resource_activate= '" . $ret["resource_activate"]["resource_activate"] . "' "
+        . 'WHERE resource_id = ' . ((int) $resourceId);
     $DBRESULT = $pearDB->query($rq);
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("resource", $resource_id["MAX(resource_id)"], CentreonDB::escape($ret["resource_name"]), "c", $fields);
+    $centreon->CentreonLogAction->insertLog(
+        "resource",
+        $resourceId,
+        CentreonDB::escape($ret["resource_name"]),
+        "c",
+        $fields
+    );
 }
 
+/**
+ * Insert a resource in database
+ *
+ * @return int Id of the new resource
+ * @throws Exception
+ */
 function insertResourceInDB()
 {
-    $resource_id = insertResource();
-    insertInstanceRelations($resource_id);
-    return ($resource_id);
+    $resourceId = insertResource();
+    insertInstanceRelations($resourceId);
+    return $resourceId;
 }
 
 function insertResource($ret = array())
@@ -178,42 +335,88 @@ function insertResource($ret = array())
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("resource", $resource_id["MAX(resource_id)"], CentreonDB::escape($ret["resource_name"]), "a", $fields);
 
-    return ($resource_id["MAX(resource_id)"]);
+    return (int) ($resource_id["MAX(resource_id)"]);
 }
 
+/**
+ * Create relation between resource and poller
+ *
+ * @global HTML_QuickForm $form
+ * @global CentreonDB $pearDB
+ * @param int $resourceId Id of the resource
+ * @param int|null $instanceId Id of the poller
+ * @throws Exception
+ */
 function insertInstanceRelations($resourceId, $instanceId = null)
 {
     global $form, $pearDB;
 
-    $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
-    $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
+    if(!is_int($resourceId)) {
+        return;
+    }
+
+    if(!is_null($instanceId) && !is_int($instanceId)) {
+        return;
+    }
+
+    $pearDB->query(
+        'DELETE FROM cfg_resource_instance_relations WHERE resource_id = ' . $resourceId
+    );
+    $query = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ';
 
     if (!is_null($instanceId)) {
         $instances = array($instanceId);
     } else {
-        $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
-    }
-    $query2 = "";
-    foreach ($instances as $instanceId) {
-        if ($query2 != "") {
-            $query2 .= ", ";
+        $instances = filter_var_array(
+            CentreonUtils::mergeWithInitialValues($form, 'instance_id'),
+            FILTER_VALIDATE_INT
+        );
+        if(in_array(false, $instances)) {
+            return;
         }
-        $query2 .= "(" . $pearDB->escape($resourceId) .", ".$pearDB->escape($instanceId).")";
     }
-    if ($query2) {
-        $pearDB->query($query . $query2);
+    $queryValues = '';
+    foreach ($instances as $instanceId) {
+        if (!empty($queryValues)) {
+            $queryValues .= ', ';
+        }
+        $queryValues .= '(' . $resourceId .", " . $instanceId . ')';
+    }
+    if ($queryValues) {
+        $pearDB->query($query . $queryValues);
     }
 }
 
-function getLinkedPollerList($resource_id)
+/**
+ * Returns all pollers HTML links for a given resource
+ *
+ * @global CentreonDB @pearDB DB connector
+ * @param int $resourceId Id of the resource
+ * @return string Return all pollers HTML links
+ * @throws Exception
+ */
+function getLinkedPollerList($resourceId)
 {
     global $pearDB;
 
-    $str = "";
-    $DBRESULT = $pearDB->query("SELECT ns.name, ns.id FROM cfg_resource_instance_relations nsr, cfg_resource r, nagios_server ns WHERE nsr.resource_id = r.resource_id AND nsr.instance_id = ns.id AND nsr.resource_id = '".$resource_id."'");
-    while ($data = $DBRESULT->fetchRow()) {
-        $str .= "<a href='main.php?p=60901&o=c&server_id=".$data["id"]."'>".$data["name"]."</a> ";
+    $htmlLinks = "";
+
+    if(is_int($resourceId)) {
+        return $htmlLinks;
     }
+
+    $DBRESULT = $pearDB->query(
+        'SELECT ns.name, ns.id '
+        . 'FROM cfg_resource_instance_relations nsr, cfg_resource r, nagios_server ns '
+        . 'WHERE nsr.resource_id = r.resource_id '
+        . 'AND nsr.instance_id = ns.id '
+        . 'AND nsr.resource_id = ' . ((int) $resourceId)
+    );
+
+    while ($data = $DBRESULT->fetchRow()) {
+        $htmlLinks .= "<a href='main.php?p=60901&o=c&server_id=".$data["id"]."'>".$data["name"]."</a> ";
+    }
+
     unset($DBRESULT);
-    return $str;
+    return $htmlLinks;
 }

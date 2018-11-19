@@ -40,103 +40,170 @@ if (!isset($oreon)) {
     exit();
 }
 
-    isset($_GET["resource_id"]) ? $resourceG = $_GET["resource_id"] : $resourceG = null;
-    isset($_POST["resource_id"]) ? $resourceP = $_POST["resource_id"] : $resourceP = null;
-    $resourceG ? $resource_id = $resourceG : $resource_id = $resourceP;
+/*
+ * Pear library
+ */
+require_once "HTML/QuickForm.php";
+require_once 'HTML/QuickForm/advmultiselect.php';
+require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-    isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-    isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-    $cG ? $select = $cG : $select = $cP;
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/configuration/configResources/";
 
-    isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-    isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-    $cG ? $dupNbr = $cG : $dupNbr = $cP;
+/*
+ * PHP functions
+ */
+require_once $path."DB-Func.php";
+require_once "./include/common/common-Func.php";
 
+define('MACRO_ADD', 'a');
+define('MACRO_DELETE', 'd');
+define('MACRO_DISABLE', 'u');
+define('MACRO_DUPLICATE', 'm');
+define('MACRO_ENABLE', 's');
+define('MACRO_MODIFY', 'c');
+define('MACRO_WATCH', 'w');
 
-    /*
-	 * Pear library
-	 */
-    require_once "HTML/QuickForm.php";
-    require_once 'HTML/QuickForm/advmultiselect.php';
-    require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+$action = filter_var(
+    call_user_func(function () {
+        if (isset($_POST['o1'])) {
+            return $_POST['o1'];
+        } elseif (isset($_POST['o2'])) {
+            return $_POST['o2'];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_REGEXP,
+    array(
+        "options" => array("regexp"=>"/^(a|c|d|m|s|u|w)$/")
+    )
+);
+if ($action !== false) {
+    $o = $action;
+}
 
-    /*
-	 * Path to the configuration dir
-	 */
-    $path = "./include/configuration/configResources/";
+// If resource_id is not correctly typed, value will be set to false
+$resource_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET["resource_id"])) {
+            return $_GET["resource_id"];
+        } elseif (isset($_POST["resource_id"])) {
+            return $_POST["resource_id"];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-    /*
-	 * PHP functions
-	 */
-    require_once $path."DB-Func.php";
-    require_once "./include/common/common-Func.php";
+// If one data is not correctly typed in array, it will be set to false
+$select = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["select"])) {
+            return $_GET["select"];
+        } elseif (isset($_POST["select"])) {
+            return $_POST["select"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-    /* Set the real page */
+// If one data is not correctly typed in array, it will be set to false
+$dupNbr = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["dupNbr"])) {
+            return $_GET["dupNbr"];
+        } elseif (isset($_POST["dupNbr"])) {
+            return $_POST["dupNbr"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
+
+/* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
-    $acl = $oreon->user->access;
-    $serverString = $acl->getPollerString();
-    $allowedResourceConf = array();
+$acl = $oreon->user->access;
+$serverString = $acl->getPollerString();
+$allowedResourceConf = array();
 if ($serverString != "''" && !empty($serverString)) {
     $sql = "SELECT resource_id
-                FROM cfg_resource_instance_relations
-                WHERE instance_id IN (".$serverString.")";
-        $res = $pearDB->query($sql);
+            FROM cfg_resource_instance_relations
+            WHERE instance_id IN (" . $serverString . ")";
+    $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedResourceConf[$row['resource_id']] = true;
     }
 }
 
 switch ($o) {
-    case "a":
+    case MACRO_ADD:
         /*
          * Add a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
-    case "w":
+    case MACRO_WATCH:
         /*
          * Watch a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
-    case "c":
+    case MACRO_MODIFY:
         /*
          * Modify a Resource
          */
-        require_once($path."formResources.php");
+        require_once($path . "formResources.php");
         break;
-    case "s":
+    case MACRO_ENABLE:
         /*
          * Activate a Resource
          */
-        enableResourceInDB($resource_id);
-        require_once($path."listResources.php");
+        if ($resource_id !== false) {
+            enableResourceInDB($resource_id);
+        }
+        require_once($path . "listResources.php");
         break;
-    case "u":
+    case MACRO_DISABLE:
         /*
          * Desactivate a Resource
          */
-        disableResourceInDB($resource_id);
-        require_once($path."listResources.php");
+        if ($resource_id !== false) {
+            disableResourceInDB($resource_id);
+        }
+        require_once($path . "listResources.php");
         break;
-    case "m":
+    case MACRO_DUPLICATE:
         /*
          * Duplicate n Resources
          */
-        multipleResourceInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listResources.php");
+        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+            duplicateResources(
+                $select,
+                $dupNbr
+            );
+        }
+        require_once($path . "listResources.php");
         break;
-    case "d":
+    case MACRO_DELETE:
         /*
          * Delete n Resources
          */
-        deleteResourceInDB(isset($select) ? $select : array());
-        require_once($path."listResources.php");
+        if (!in_array(false, $select)) {
+            deleteResourcesInDB($select);
+        }
+        require_once($path . "listResources.php");
         break;
     default:
-        require_once($path."listResources.php");
+        require_once($path . "listResources.php");
         break;
 }
