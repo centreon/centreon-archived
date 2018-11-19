@@ -26,10 +26,6 @@ This procedure, which only applies to a Centreon 3.4 platform installed on a
     on CentOS or Red Hat version 7, refer to the :ref:`update<upgrade>`
     documentation.
 
-.. warning::
-    If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
-    please refer to the following :ref:`migration procedure <frompollerdisplay16>`.
-
 *********
 Migrating
 *********
@@ -37,6 +33,10 @@ Migrating
 .. warning::
     If your Centreon platform has a Centreon redundancy system, please contact
     your `Centreon support <https://support.centreon.com>`_.
+
+.. warning::
+    If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
+    please refer to the following :ref:`migration procedure <migratefrompollerdisplay>`.
 
 Installing the new server
 =========================
@@ -113,7 +113,9 @@ upgrade.
     
     #. Edit /etc/centreon/centreon.conf.php file
     #. Edit /etc/centreon/conf.pm file
-    #. Edit the Centreon Broker central configuration, using Centreon web interface and change the password for **Perfdata generator** and **Broker SQL database** output.
+    #. Edit the Centreon Broker central configuration, using Centreon web
+       interface and change the password for **Perfdata generator** and
+       **Broker SQL database** output.
 
 If the IP of your Centreon server has changed, edit configuration for all the Centreon Broker modules
 on your pollers and change the IP to connect to the Centreon central server

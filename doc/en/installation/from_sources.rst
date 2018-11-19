@@ -14,7 +14,9 @@ CentOS
 Most CentOS users will find easier to install Centreon Web by using
 :ref:`packages provided by Centreon <install_from_packages>`.
 
-CentOS and RHEL environments do not possess as standard on archives all the dependencies necessary for the installation of Centreon. You should add the *RPM Forge* archive
+CentOS and RHEL environments do not possess as standard on archives all the
+dependencies necessary for the installation of Centreon. You should add the
+*RPM Forge* repository.
 
 el7 system:
 
@@ -720,4 +722,5 @@ After saving the file, please don't forget to restart apache server.
 The Mysql database server should be available to complete installation (locally or not). MariaDB is recommended.
 
 After this step you should connect to Centreon to finalize the installation process.
-This step is described :ref:`here <installation_web_ces>`.
+
+.. include:: common/web_install.rst
