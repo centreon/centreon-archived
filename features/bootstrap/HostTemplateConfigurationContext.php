@@ -81,6 +81,7 @@ class HostTemplateConfigurationContext extends CentreonContext
         $this->getSession()->switchToWindow($windows[1]);
 
         // Check properties of the host template.
+        self::$lastUri = 'p=60103&o=c&host_id=2&min=1';
         $this->page = new HostTemplateConfigurationPage($this, false);
         $properties = $this->page->getProperties();
         if ($properties['name'] != 'generic-host') {
