@@ -993,7 +993,7 @@ console.log(_o);
     _on = 1;
 
     // Allows to use the new status when click on the play button
-    if(typeof(_o) == "undefined") {
+    if (typeof(_o) == "undefined") {
         _o = "<?= $o ?>";
     }
     initM(<?php echo $tM?>, "<?php echo $sid?>", _o);

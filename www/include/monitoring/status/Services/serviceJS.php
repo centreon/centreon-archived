@@ -235,7 +235,7 @@ var _criticality_id = 0;
         }
 
         _lock = 0;
-        if(_timeoutID) { // Kill next execution if in queue
+        if (_timeoutID) { // Kill next execution if in queue
             clearTimeout(_timeoutID);
         }
         _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
