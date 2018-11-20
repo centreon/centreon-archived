@@ -89,7 +89,7 @@ class Installer extends Widget
         $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
         $sth->bindParam(':url', $this->widgetConfiguration['url'], \PDO::PARAM_STR);
         $sth->bindParam(':version', $this->widgetConfiguration['version'], \PDO::PARAM_STR);
-        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
+        $sth->bindParam(':directory', $this->widgetConfiguration['directory'], \PDO::PARAM_STR);
         $sth->bindParam(':author', $this->widgetConfiguration['author'], \PDO::PARAM_STR);
         $sth->bindParam(':email', $this->widgetConfiguration['email'], \PDO::PARAM_STR);
         $sth->bindParam(':website', $this->widgetConfiguration['website'], \PDO::PARAM_STR);
