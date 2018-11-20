@@ -32,7 +32,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 if (!isset($centreon)) {
     exit();
 }
@@ -170,7 +169,6 @@ var _criticality_id = 0;
     }
 
     function initM(_time_reload,_sid,_o){
-
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
         construct_HostGroupSelectList('hostgroups_selected');
@@ -201,7 +199,6 @@ var _criticality_id = 0;
             _criticality_id = document.getElementById("critFilter").value;
             viewDebugInfo('service criticality: '+document.getElementById("critFilter").value);
         }
-
         if (_first){
             mainLoop();
             _first = 0;
@@ -213,6 +210,9 @@ var _criticality_id = 0;
     }
 
     function goM(_time_reload,_sid,_o){
+        if (_on == 0) {
+            return;
+        }
         _lock = 1;
         var proc = new Transformation();
 
@@ -223,10 +223,10 @@ var _criticality_id = 0;
             document.getElementById("output_search").value = _output_search;
             _counter += 1;
         }
-        
+
         var statusService = jQuery.trim(jQuery('#statusService').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
-               
+
         proc.setCallback(monitoringCallBack);
         proc.setXml(_addrXML+"?"+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id+'&statusService='+statusService+'&statusFilter='+statusFilter+"&sSetOrderInMemory="+sSetOrderInMemory);
         proc.setXslt(_addrXSL);
@@ -235,7 +235,11 @@ var _criticality_id = 0;
         }
 
         _lock = 0;
+        if(_timeoutID) { // Kill next execution if in queue
+            clearTimeout(_timeoutID);
+        }
         _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+
         _time_live = _time_reload;
         _on = 1;
 
