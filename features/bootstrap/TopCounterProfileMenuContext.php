@@ -10,10 +10,19 @@ class TopCounterProfileMenuContext extends CentreonContext
     public function iClickToEditProfileLink()
     {
         $this->visit('/', false);
+
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.iconmoon.icon-user');
+            },
+            'Home not load.',
+            5
+        );
+
         $this->assertFind('css', '.iconmoon.icon-user')->click();
         $this->spin(
             function ($context) {
-                return $this->getSession()->getPage()->has('css', '.submenu-user-edit');
+                return $context->getSession()->getPage()->has('css', '.submenu-user-edit');
             },
             'Popin not opened',
             20
@@ -26,6 +35,7 @@ class TopCounterProfileMenuContext extends CentreonContext
      */
     public function iSeeMyProfileEditForm()
     {
+        self::$lastUri = 'p=50104';
         $this->spin(
             function ($context) {
                 $context->switchToIframe();

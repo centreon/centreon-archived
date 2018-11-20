@@ -87,6 +87,16 @@ class TopCounterServicesContext extends CentreonContext
     {
         $this->visit('/', false);
         $selector = '#' . $chip;
+        $this->spin(
+            function ($context) use ($selector) {
+                return $context->getSession()->getPage()->has(
+                    'css',
+                    $selector
+                );
+            },
+            'Home not load.',
+            5
+        );
         $this->assertFind('css', $selector)->click();
     }
 
@@ -95,6 +105,7 @@ class TopCounterServicesContext extends CentreonContext
      */
     public function iSeeTheListOfServicesFilteredByStatus($status)
     {
+        self::$lastUri = 'p=20201';
         $this->spin(
             function ($context) {
                 $context->switchToIframe();
