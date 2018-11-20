@@ -46,7 +46,7 @@ class AutologinContext extends CentreonContext
         $page = $this->getSession()->getPage();
         $this->spin(
             function ($context) use ($page) {
-                return $page->has('css', 'a[href="main.get.php?p=1"]');
+                return $page->has('css', 'a[href="main.php?p=1"]');
             }
         );
     }
@@ -61,7 +61,7 @@ class AutologinContext extends CentreonContext
         $page = $this->getSession()->getPage();
         $this->spin(
             function ($context) use ($page) {
-                return $page->has('css', 'a[href="main.get.php?p=60101"]');
+                return $page->has('css', 'a[href="main.php?p=60101"]');
             }
         );
     }
