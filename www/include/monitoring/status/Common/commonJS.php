@@ -985,7 +985,6 @@ var func_displayGenericInfo = function(event) {
 // Monitoring Refresh management Options
 
 function monitoring_play()  {
-console.log(_o);
     document.getElementById('JS_monitoring_play').style.display = 'none';
     document.getElementById('JS_monitoring_pause').style.display = 'block';
     document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
