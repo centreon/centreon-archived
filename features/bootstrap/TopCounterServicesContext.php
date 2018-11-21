@@ -126,6 +126,16 @@ class TopCounterServicesContext extends CentreonContext
     public function iClickOnTheServicesIcon()
     {
         $this->visit('/', false);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has(
+                    'css',
+                    '.wrap-right-services .icon-services'
+                );
+            },
+            'Home not load.',
+            5
+        );
         $this->assertFind('css', '.wrap-right-services .icon-services')->click();
     }
 
