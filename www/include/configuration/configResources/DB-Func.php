@@ -351,11 +351,11 @@ function insertInstanceRelations($resourceId, $instanceId = null)
 {
     global $form, $pearDB;
 
-    if(!is_int($resourceId)) {
+    if (!is_int($resourceId)) {
         return;
     }
 
-    if(!is_null($instanceId) && !is_int($instanceId)) {
+    if (!is_null($instanceId) && !is_int($instanceId)) {
         return;
     }
 
@@ -371,7 +371,7 @@ function insertInstanceRelations($resourceId, $instanceId = null)
             CentreonUtils::mergeWithInitialValues($form, 'instance_id'),
             FILTER_VALIDATE_INT
         );
-        if(in_array(false, $instances)) {
+        if (in_array(false, $instances)) {
             return;
         }
     }
@@ -401,7 +401,7 @@ function getLinkedPollerList($resourceId)
 
     $htmlLinks = "";
 
-    if(is_int($resourceId)) {
+    if (is_int($resourceId)) {
         return $htmlLinks;
     }
 
