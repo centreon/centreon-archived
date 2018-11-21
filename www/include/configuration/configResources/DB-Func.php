@@ -128,7 +128,7 @@ function deleteResourcesInDB($resourceIds = array())
         FILTER_VALIDATE_INT
     );
 
-    if(in_array(false, $resourceIds)) {
+    if (in_array(false, $resourceIds)) {
         return;
     }
 
@@ -193,7 +193,7 @@ function duplicateResources($resourceIds = array(), $nbrDup = array())
         $resourceIds,
         FILTER_VALIDATE_INT
     );
-    if(in_array(false, $resourceIds)) {
+    if (in_array(false, $resourceIds)) {
         return;
     }
 
@@ -201,7 +201,7 @@ function duplicateResources($resourceIds = array(), $nbrDup = array())
         $nbrDup,
         FILTER_VALIDATE_INT
     );
-    if(in_array(false, $nbrDup)) {
+    if (in_array(false, $nbrDup)) {
         return;
     }
 
@@ -211,20 +211,20 @@ function duplicateResources($resourceIds = array(), $nbrDup = array())
             . ((int) $resourceId) . ' LIMIT 1'
         );
         $row = $results->fetchRow();
-        if(count($row)) {
+        if (count($row)) {
             $row["resource_id"] = '';
             for ($i = 1; $i <= $nbrDup[$resourceId]; $i++) {
                 $queryValues = null;
                 $resourceName = null;
                 foreach ($row as $columName => $columValue) {
-                    if($columName === "resource_name") {
+                    if ($columName === "resource_name") {
                         $columValue .= '_' . getFirstAvailableSuffixId($columValue);
                         $resourceName = CentreonDB::escape($columValue);
                     } else {
                         $columValue = CentreonDB::escape($columValue);
                     }
 
-                    if(is_null($queryValues)) {
+                    if (is_null($queryValues)) {
                         $queryValues .= ($columValue != null
                             ? ("'" . $columValue . "'")
                             : "NULL");
