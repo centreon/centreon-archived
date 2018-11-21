@@ -103,6 +103,16 @@ class TopCounterHostsContext extends CentreonContext
     public function iClickOnTheHostsIcon()
     {
         $this->visit('/', false);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has(
+                    'css',
+                    '.wrap-right-hosts .icon-hosts'
+                );
+            },
+            'Home not load.',
+            5
+        );
         $this->assertFind('css', '.wrap-right-hosts .icon-hosts')->click();
     }
 
