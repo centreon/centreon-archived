@@ -151,16 +151,6 @@ if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
     $CHOWN $CENTREON_USER:$CENTREON_GROUP $CENTREON_LOG/nagiosPerfTrace.log
 fi
 
-## Purge
-
-#cp $TMP_DIR/work/cron/centstorage_purge $TMP_DIR/final/cron/centstorage_purge >> $LOG_FILE 2>&1
-#log "INFO" "$(gettext "Install centstorage_purge")"
-#$INSTALL_DIR/cinstall $cinstall_opts \
-#	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-#	$TMP_DIR/final/cron/centstorage_purge \
-#	$INSTALL_DIR_CENTREON/cron/purgeLogs >> $LOG_FILE 2>&1
-#check_result $? "$(gettext "Install centstorage_purge")"
-
 ## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
@@ -179,19 +169,6 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 	$TMP_DIR/final/centstorage.cron \
 	$CRON_D/centstorage >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install CentStorage cron")"
-
-## Install Logrotate
-log "INFO" "$(gettext "Change macros for centstorage.logrotate")"
-${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-    $TMP_DIR/src/logrotate/centstorage > $TMP_DIR/work/centstorage.logrotate
-check_result $? "$(gettext "Change macros for centstorage.logrotate")"
-cp $TMP_DIR/work/centstorage.logrotate $TMP_DIR/final/centstorage.logrotate >> "$LOG_FILE" 2>&1
-
-log "INFO" "$(gettext "Install centstorage.logrotate")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-    -m 644 \
-    $TMP_DIR/final/centstorage.logrotate $LOGROTATE_D/centstorage >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Install Centreon Storage logrotate.d file")"
 
 ###### Post Install
 #################################

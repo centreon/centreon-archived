@@ -160,33 +160,33 @@ Téléchargez la dernière version de Centreon `<https://download.centreon.com/>
 Installation shell
 ==================
 
-Extraire Centreon de l'archive :
+Extraire Centreon de l'archive::
 
- ::
+	tar zxf centreon-18.10.x.tar.gz
 
-	$ tar zxf centreon-2.x.x.tar.gz
+Déplacez-vous dans le répertoire extrait::
 
-Déplacez-vous dans le répertoire extrait :
+  cd centreon-18.10.x
 
-  ::
+Exécutez le script d'installation::
 
-    $ cd centreon-2.x.x
-
-Exécutez le script d'installation :
-
-  ::
-
-    $ ./install.sh -i
+  ./install.sh -i
 
 .. note::
-    Le script d'installation permet une configuration personnalisée, cette procédure vous montrera les meilleurs chemins à utiliser. En outre, les questions rapides Yes/No peuvent être répondues par [y] la plupart du temps.
+
+  Le script d'installation permet une configuration personnalisée, cette procédure vous montrera les meilleurs chemins à utiliser. En outre, les questions rapides Yes/No peuvent être répondues par [y] la plupart du temps.
+
+.. note::
+
+  Si les sources de centreon ont été téléchargées depuis github, exécutez ces commandes :
+  composer install --no-dev --optimize-autoloader
+  npm install
+  npm run build
 
 Contrôle de prérequis
 ---------------------
 
-Si l'étape d'installation des prérequis s'est déroulée avec succès, vous ne devriez
-avoir aucun problème lors de cette étape. Sinon, reprennez la procédure
-d'installation des prérequis :
+Si l'étape d'installation des prérequis s'est déroulée avec succès, vous ne devriez avoir aucun problème lors de cette étape. Sinon, reprennez la procédure d'installation des prérequis :
 
 ::
 

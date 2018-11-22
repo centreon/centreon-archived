@@ -154,11 +154,11 @@ Shell Installation
 
 Extract the Centreon archive::
 
-  tar zxf centreon-web-2.8.x.tar.gz
+  tar zxf centreon-web-18.10.x.tar.gz
 
 Change directory::
 
-  cd centreon-web-2.8.x
+  cd centreon-web-18.10.x
 
 Run the installation script::
 
@@ -166,7 +166,14 @@ Run the installation script::
 
 .. note::
 
- The installation script allows customised configuration; this process will show you the best paths to use. Furthermore quick yes/no questions can be replied to by [y] most of the time.
+  The installation script allows customized configuration; this process will show you the best paths to use. Furthermore quick yes/no questions can be replied to by [y] most of the time.
+
+.. note::
+
+  If centreon sources have been downloaded from github, run those commands :
+  composer install --no-dev --optimize-autoloader
+  npm install
+  npm run build
 
 Prerequisites check
 -------------------

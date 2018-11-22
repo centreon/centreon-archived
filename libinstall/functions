@@ -47,7 +47,7 @@ SETCOLOR_NORMAL="\\033[0;39m"
 ## @Globals	LOG_FILE
 #----
 function echo_info() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}"
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}" 
     echo -e "$1 : $2" >> $LOG_FILE
 }
 
@@ -56,7 +56,7 @@ function echo_info() {
 ## @param	string to trim
 ## @return	string
 #----
-function trim() {
+function trim() {    
     echo "$1" | sed 's/^[ \t]*\(.*\)[ \t]*$/\1/'
 }
 
@@ -69,7 +69,7 @@ function trim() {
 ## @Globals	LOG_FILE
 #----
 function echo_success() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}"
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}" 
     echo -e "$1 : $2" >> $LOG_FILE
 }
 
@@ -216,9 +216,9 @@ function yes_no_default() {
 		read res
 		[ -z "$res" ] && res="$default"
 	done
-	if [ "$res" = "$yes" ] ; then
+	if [ "$res" = "$yes" ] ; then 
 		return 0
-	else
+	else 
 		return 1
 	fi
 }
@@ -232,12 +232,12 @@ function answer() {
 	local var_ref=$3
 	local res=""
 	local first=0
-	while [ -z "$res" ] ; do
+	while [ ! -z "$res" ] ; do
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then
+		if [ -z "$res" ] ; then 
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 	done
@@ -280,7 +280,7 @@ function answer_with_testdir() {
 }
 
 #----
-## print a message, create directory with answer
+## print a message, create directory with answer 
 ## Loop if not a valid directory (slash...)
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
@@ -305,9 +305,9 @@ function answer_with_createdir() {
 		if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
 			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
-		else
+		else 
 			first=1
-			[ -d "$res" ] && break
+			[ -d "$res" ] && break 
 			yes_no_default "$(gettext "Do you want me to create this directory ?") [$res]"
 			if [ $? -eq 0 ] ; then
 				mkdir -p $res
@@ -368,8 +368,8 @@ function answer_with_createfile() {
 }
 
 #----
-## print a message, test if file exists
-## Loop if not a valid file
+## print a message, test if file exists 
+## Loop if not a valid file 
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
 ## @param	global variable to set a result
@@ -382,12 +382,12 @@ function answer_with_testfile() {
 	local res="not_define"
 	local first=0
 	while [ ! -f "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a valid file.")" "$critical"
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a valid file.")" "$critical" 
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then
+		if [ -z "$res" ] ; then 
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 		first=1
@@ -529,7 +529,7 @@ function testfile_clean() {
 	if [ ! -e "$file" ] ; then
 		eval $var=""
 		return 1
-	else
+	else 
 		return 0
 	fi
 }
@@ -651,14 +651,14 @@ function locate_init_d() {
 ## @Globals     CENTREON_PLUGINS, DEFAULT_CENTREON_PLUGINS
 #----
 function locate_centreon_plugins() {
-        testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
-        if [ -z "$CENTREON_PLUGINS" ] ; then
-                answer "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
-                echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
-        fi
-        CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
-        export CENTREON_PLUGINS
-        log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
+    testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
+    if [ -z "$CENTREON_PLUGINS" ] ; then
+        answer "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
+        echo_success "$(gettext "Path" ) $CENTREON_PLUGINS" "$ok"
+    fi
+    CENTREON_PLUGINS=`trim ${CENTREON_PLUGINS%/}`
+    export CENTREON_PLUGINS
+    log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
 }
 
 
@@ -744,39 +744,13 @@ function locate_centreon_etcdir() {
 
 #----
 ## Define where is Centreon bin directory
-## @Globals	CENTREON_BINDIR, DEFAULT_CENTREON_BINDIR
+## CENTREON_BINDIR is the bin directory inside centreon directory
+## @Globals	INSTALL_DIR_CENTREON
 #----
 function locate_centreon_bindir() {
-	if [ -n "$CENTREON_BINDIR" ] ; then
-		dir_test_create "$CENTREON_BINDIR"
-		if [ $? -ne 0 ] ; then
-			CENTREON_BINDIR=""
-		fi
-	fi
-	if [ -z "$CENTREON_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREON_BINDIR"
-		echo_success "$(gettext "Path" ) $CENTREON_BINDIR" "$ok"
-	fi
-	CENTREON_BINDIR=`trim ${CENTREON_BINDIR%/}`
+    CENTREON_BINDIR="$INSTALL_DIR_CENTREON/bin"
 	export CENTREON_BINDIR
 	log "INFO" "CENTREON_BINDIR: $CENTREON_BINDIR"
-}
-
-#----
-## Define where is Centreon data informations directory
-## @Globals	CENTREON_DATADIR, DEFAULT_CENTREON_DATADIR
-#----
-function locate_centreon_datadir() {
-	if [ -z "$CENTREON_DATADIR" ]; then
-		answer_with_createdir "$(gettext "Where is your Centreon data informations directory")" "$DEFAULT_CENTREON_DATADIR" "CENTREON_DATADIR"
-		echo_success "$(gettext "Path" ) $CENTREON_DATADIR" "$ok"
-	elif [ ! -d "$CENTREON_DATADIR" -a "$silent_install" -eq 1 ]; then
-		mkdir -p "$CENTREON_DATADIR"
-		log "INFO" "$(gettext "Create") $CENTREON_DATADIR"
-	fi
-	CENTREON_DATADIR=`trim ${CENTREON_DATADIR%/}`
-	export CENTREON_DATADIR
-	log "INFO" "CENTREON_DATADIR: $CENTREON_DATADIR"
 }
 
 #----
@@ -994,11 +968,11 @@ function locate_sudo() {
 #----
 function locate_rrdtool() {
 	testfile_clean "$BIN_RRDTOOL" "BIN_RRDTOOL"
-	if [ -z "$BIN_RRDTOOL" ] ; then
+	if [ -z "$BIN_RRDTOOL" ] ; then 
 		pathfind_ret "rrdtool" "BIN_RRDTOOL"
-		if [ "$?" -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then 
 			answer_with_testfile "$(gettext "Where is rrdtool")" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
-		else
+		else 
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
 		echo_success "$BIN_RRDTOOL" "$ok"
@@ -1015,11 +989,11 @@ function locate_rrdtool() {
 #----
 function locate_perl() {
 	testfile_clean "$BIN_PERL" "BIN_PERL"
-	if [ -z "$BIN_PERL" ] ; then
+	if [ -z "$BIN_PERL" ] ; then 
 		pathfind_ret "perl" "BIN_PERL"
-		if [ "$?" -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then 
 			answer_with_testfile "$(gettext "Where is perl")" "$DEFAULT_BIN_PERL" "BIN_PERL"
-		else
+		else 
 			BIN_PERL="$BIN_PERL/perl"
 		fi
 		echo_success "$BIN_PERL" "$ok"
@@ -1036,11 +1010,11 @@ function locate_perl() {
 #----
 function locate_mail() {
 	testfile_clean "$BIN_MAIL" "BIN_MAIL"
-	if [ -z "$BIN_MAIL" ] ; then
+	if [ -z "$BIN_MAIL" ] ; then 
 		pathfind_ret "mail" "BIN_MAIL"
-		if [ "$?" -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then 
 			answer_with_testfile "$(gettext "Where is mail binary")" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
-		else
+		else 
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
 		echo_success "$BIN_MAIL" "$ok"
@@ -1058,17 +1032,7 @@ function locate_mail() {
 function locate_php_bin() {
 	testfile_clean "$PHP_BIN" "PHP_BIN"
 	if [ -z "$PHP_BIN" ] ; then
-		php_binaries="php php5"
-		for binary in $php_binaries ; do
-			pathfind_ret "$binary" "PHP_BIN"
-			if [ "$?" -eq 0 ] ; then
-				PHP_BIN="$PHP_BIN/$binary"
-				break
-			fi
-		done
-		if [ -z "$PHP_BIN" ] ; then
-			answer_with_testfile "$(gettext "Where is your php binary ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
-		fi
+		answer_with_testfile "$(gettext "Where is your php binary ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
 		echo_success "$PHP_BIN" "$ok"
 	fi
 	PHP_BIN=`trim ${PHP_BIN%/}`
@@ -1133,24 +1097,47 @@ function locate_logrotate_d() {
 }
 
 #----
-## Define where is composer binary
-## find composer in PATH
-## @Globals	BIN_COMPOSER, DEFAULT_BIN_COMPOSER
+## Check php version which should be greater than the minimum version required
+## @Globals	PHP_BIN, PHP_MIN_VERSION
 #----
-function locate_composer_bin() {
-	testfile_clean "$BIN_COMPOSER" "BIN_COMPOSER"
-	if [ -z "$BIN_COMPOSER" ] ; then
-		pathfind_ret "composer" "BIN_COMPOSER"
-		if [ "$?" -ne 0 ] ; then
-			answer_with_testfile "$(gettext "Where is composer")" "$DEFAULT_BIN_COMPOSER" "BIN_COMPOSER"
-		else
-			BIN_COMPOSER="$BIN_COMPOSER/composer"
-		fi
-		echo_success "$BIN_COMPOSER" "$ok"
-	fi
-	BIN_COMPOSER=`trim ${BIN_COMPOSER%/}`
-	export BIN_COMPOSER
-	log "INFO" "BIN_COMPOSER: $BIN_COMPOSER"
+function check_php_version() {
+    log "INFO" "check php version"
+    local php_version=$($PHP_BIN --version | head -n 1 | cut -d " " -f 2 | cut -c 1,3)
+    if [ "$php_version" -lt "$PHP_MIN_VERSION" ] ; then
+        echo_failure "$(gettext "Minimum PHP version required is : $PHP_MIN_VERSION")" "$fail"
+        return 1
+    else
+        echo_success "$(gettext "check PHP version")" "$ok"
+        return 0
+    fi
+}
+
+#----
+## Check if composer dependencies are installed (vendor directory)
+## @Globals	INSTALL_DIR_CENTREON
+#----
+function check_composer_dependencies() {
+    if [ -d "$BASE_DIR/vendor" ] ; then
+        echo_success "$(gettext "Composer dependencies are installed")" "$ok"
+        return 0
+    else
+        echo_failure "$(gettext "Composer dependencies are not installed")" "$fail"
+        return 1
+    fi
+}
+
+#----
+## Check if composer dependencies are installed (vendor directory)
+## @Globals	INSTALL_DIR_CENTREON
+#----
+function check_frontend_application() {
+    if [ -d "$BASE_DIR/www/template" ] ; then
+        echo_success "$(gettext "Frontend application is built")" "$ok"
+        return 0
+    else
+        echo_failure "$(gettext "Frontend application is not built")" "$fail"
+        return 1
+    fi
 }
 
 #----
@@ -1193,24 +1180,24 @@ function configureApache() {
 	# Generate a apache config in directory
 	prepare_apache_config "$dir_conf"
 
-	if [ "$silent_install" -ne 1 ] ; then
+	if [ "$silent_install" -ne 1 ] ; then 
 		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
 			echo "$(gettext "Finding Apache Centreon configuration file")"
 			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
 			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-                        if [ "$?" -eq 0 ] ; then
+                        if [ "$?" -eq 0 ] ; then 
                             write_config="1"
                             cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
                             echo_info "$(gettext "Backup Centreon Apache configuration completed")"
                         fi
-		else
+		else 
 			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
 			[ "$?" -eq 0 ] && write_config="1"
 		fi
-	else
+	else 
 		write_config="1"
     	fi
-	if [ "$write_config" -eq 1 ] ; then
+	if [ "$write_config" -eq 1 ] ; then 
                 if [ "$upgrade" -eq 1 ] ; then
                     cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
                 else
@@ -1218,9 +1205,9 @@ function configureApache() {
                 fi
 		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
 		echo_success "$(gettext "Configuring Apache")" "$ok"
-		# After finishing the configuration ->
+		# After finishing the configuration -> 
 		# reload apache ! (if admin wants :p)
-		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
+		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then 
 			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
 			[ $? -eq 0 ] && reload_service_apache
 		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
@@ -1255,8 +1242,8 @@ function reload_service_apache() {
 	elif [ -x /usr/local/etc/rc.d/apache2 ]; then
 		service="apache2"
 	else
-		echo_warning "$(gettext "Unable to restart Apache server")" "$warning"
-		log "WARN" "$(gettext "Unable to restart Apache server")"
+		echo_warning "$(gettext "Unable to reload Apache server")" "$warning"
+		log "WARN" "$(gettext "Unable to reload Apache server")"
 	fi
 
 	log "DEBUG" "$(gettext "use") : $service"
@@ -1285,63 +1272,162 @@ function prepare_apache_config() {
 	# if INSTALL_DIR_CENTREON not found, ask:
 	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
 
-
-
-    # Check apache version
-    apache_2_4=$(apachectl -v 2>/dev/null | grep '2\.[4-9]' | wc -l)
-
     # Prepare apache config
-    if [ "$apache_2_4" -gt "0" ] ; then
     ${CAT} << __EOT__ > $directory/centreon.apache.conf
-#
-# Section add by Centreon Install Setup
-#
-
-Alias /centreon ${INSTALL_DIR_CENTREON}/www/
+Alias /centreon $INSTALL_DIR_CENTREON/www/
 
 <LocationMatch ^/centreon/(.*\.php(/.*)?)$>
-  ProxyPassMatch fcgi://127.0.0.1:9000${INSTALL_DIR_CENTREON}/www/\$1
+  ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/www/\$1
 </LocationMatch>
+ProxyTimeout 300
 
-<Directory "${INSTALL_DIR_CENTREON}/www">
+<Directory "$INSTALL_DIR_CENTREON/www">
+    DirectoryIndex index.php
     Options Indexes
     AllowOverride all
     Order allow,deny
     Allow from all
     Require all granted
+    <IfModule mod_php5.c>
+        php_admin_value engine Off
+    </IfModule>
+
+    AddType text/plain hbs
 </Directory>
 
-RedirectMatch ^/$ /centreon/index.php
+RedirectMatch ^/$ /centreon
+
 __EOT__
-    else
-	${CAT} << __EOT__ > $directory/centreon.apache.conf
-#
-# Section add by Centreon Install Setup
-#
-
-Alias /centreon ${INSTALL_DIR_CENTREON}/www/
-
-<LocationMatch ^/centreon/(.*\.php(/.*)?)$>
-  ProxyPassMatch fcgi://127.0.0.1:9000${INSTALL_DIR_CENTREON}/www/\$1
-</LocationMatch>
-
-<Directory "${INSTALL_DIR_CENTREON}/www">
-    Options Indexes
-    AllowOverride all
-    Order allow,deny
-    Allow from all
-    Require all granted
-</Directory>
-
-RedirectMatch ^/$ /centreon/index.php
-__EOT__
-    fi
 
 	if [ -e $directory/centreon.apache.conf ] ; then
 		return 0
 	else
 		log "INFO" "$(gettext "Problem when I generate an apache configuration")"
 		return 1
+	fi
+}
+
+function check_php_fpm_directory()
+{
+	if [ -z "$DIR_PHP_FPM_CONF" ] ; then 
+		if [ -d /etc/php/7.1/fpm/pool.d ]; then
+			DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
+		elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
+			DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
+		else
+			echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
+			answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"
+		fi
+	fi
+	DIR_PHP_FPM_CONF=${DIR_PHP_FPM_CONF%/}
+	export DIR_PHP_FPM_CONF
+	log "INFO" "DIR_PHP_FPM_CONF: $DIR_PHP_FPM_CONF"
+
+	return 0
+}
+
+function configure_php_fpm() {
+    echo -e "\n$line"
+	echo -e "\t$(gettext "Configure PHP FPM service")"
+	echo -e "$line"
+
+	local write_config="0"
+	local dir_conf="$1"
+	# Generate a apache config in directory
+	prepare_php_fpm_config "$dir_conf"
+
+	if [ "$silent_install" -ne 1 ] ; then
+		if [ -e $DIR_PHP_FPM_CONF/centreon.conf ] ; then
+			echo "$(gettext "Finding PHP FPM Centreon configuration file")"
+			echo_success "'$DIR_PHP_FPM_CONF/centreon.conf' :" "$ok"
+			yes_no_default "$(gettext "Do you want to update Centreon PHP FPM sub configuration file ?")"
+            if [ "$?" -eq 0 ] ; then
+                write_config="1"
+                cp -f $DIR_PHP_FPM_CONF/centreon.conf $DIR_PHP_FPM_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
+                echo_info "$(gettext "Backup Centreon PHP FPM configuration completed")"
+            fi
+		else
+			yes_no_default "$(gettext "Do you want to add Centreon PHP FPM sub configuration file ?")"
+			[ "$?" -eq 0 ] && write_config="1"
+		fi
+	else
+		write_config="1"
+    fi
+
+	if [ "$write_config" -eq 1 ] ; then
+        if [ "$upgrade" -eq 1 ] ; then
+            cp -f $dir_conf/centreon.php-fpm.conf $DIR_PHP_FPM_CONF/centreon.conf.new >> $LOG_FILE 2>&1
+        else
+            cp -f $dir_conf/centreon.php-fpm.conf $DIR_PHP_FPM_CONF/centreon.conf >> $LOG_FILE 2>&1
+        fi
+		echo_success "$(gettext "Create") '$DIR_PHP_FPM_CONF/centreon.conf'" "$ok"
+		echo_success "$(gettext "Configuring PHP FPM")" "$ok"
+
+		# Reload php-fpm ?
+		if [ "${PHP_FPM_RELOAD:-0}" -eq 0 ] ; then
+			yes_no_default "$(gettext "Do you want to reload PHP FPM service ?")"
+			[ $? -eq 0 ] && reload_service_php_fpm
+		elif [ "${PHP_FPM_RELOAD:-0}" -eq 1 ] ; then
+			reload_service_php_fpm
+		fi
+	else
+		echo_info "$(gettext "Please configure PHP FPM with this example"):\n $dir_conf/centreon.php-fpm.conf"
+	fi
+}
+
+function prepare_php_fpm_config() {
+	local directory="$1"
+
+	# if INSTALL_DIR_CENTREON not found, ask:
+	[ -z "$INSTALL_DIR_CENTREON" ] && locate_centreon_installdir
+
+    # Prepare apache config
+    ${CAT} << __EOT__ > $directory/centreon.php-fpm.conf
+[centreon]
+user = $WEB_USER
+group = $WEB_GROUP
+listen = 127.0.0.1:9042
+listen.allowed_clients = 127.0.0.1
+pm = ondemand
+pm.max_children = 30
+pm.process_idle_timeout = 10s
+pm.max_requests = 500
+rlimit_files = 4096
+php_admin_value[error_log] = /var/opt/rh/rh-php71/log/php-fpm/centreon-error.log
+php_admin_flag[log_errors] = on
+php_value[session.save_handler] = files
+php_value[session.save_path]    = /var/opt/rh/rh-php71/lib/php/session
+php_value[soap.wsdl_cache_dir]  = /var/opt/rh/rh-php71/lib/php/wsdlcache
+
+__EOT__
+
+    if [ -e $directory/centreon.php-fpm.conf ] ; then
+        return 0
+    else
+        log "INFO" "$(gettext "Problem when I generate an PHP FPM configuration")"
+        return 1
+    fi
+}
+
+function reload_service_php_fpm() {
+    local service_reloaded=0
+	log "INFO" "$(gettext "Reloading PHP FPM...")"
+	if [ -x /bin/systemctl ] ; then
+        local php_fpm_service=$(/bin/systemctl list-units | grep php | grep fpm | cut -f 1 -d " ")
+        if [ ! -z "$php_fpm_service" ] ; then
+            /bin/systemctl reload $php_fpm_service >> $LOG_FILE 2>&1
+            if [ "$?" -eq 0 ] ; then
+                echo_success "$(gettext "Reloading PHP FPM service")" "$ok"
+                service_reloaded=1
+            else
+                echo_failure "$(gettext "Reloading PHP FPM service")" "$fail"
+	        fi
+        fi
+	fi
+
+	if [ "$service_reloaded" -eq 0 ] ; then
+		echo_warning "$(gettext "Unable to reload PHP FPM service")" "$warning"
+		log "WARN" "$(gettext "Unable to reload PHP FPM service")"
 	fi
 }
 
@@ -1398,9 +1484,9 @@ CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd reload
 ## END: CENTREON SUDO
 __EOT__
 
-	if [ -e $directory/centreon.sudo ] ; then
+	if [ -e $directory/centreon.sudo ] ; then 
 		return 0
-	else
+	else 
 		log "INFO" "$(gettext "Problem when I generate a sudo configuration")"
 		return 1
 	fi
@@ -1426,18 +1512,18 @@ function is_suspect_conf_sudo() {
 }
 
 #----
-## Configure Sudo on system
-## Need a directory to store a config
+## Configure Sudo on system 
+## Need a directory to store a config 
 ## Call <@function prepare_sudo_config>
 ## @param	Directory to store a Sudo config (generate)
 ## @Globals	SUDO_FILE, line
 ## @return 0	end
 #----
-function configureSUDO(){
+function configureSUDO() {
 	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Sudo")"
 	echo -e "$line"
-    	local no_force_sudo="0"
+    local no_force_sudo="0"
 	local dir_conf="$1"
 	# Generate a sudo config in directory
 	prepare_sudo_config "$dir_conf"
@@ -1445,7 +1531,7 @@ function configureSUDO(){
 	# Try to detect old configuration
 	sudo=`${GREP} -e "CENTREON SUDO" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
 	if [ $sudo -eq 1 ]; then
-    		echo_info "$(gettext "Your sudo is not configured")"
+    	echo_info "$(gettext "Your sudo is not configured")"
 
 		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
 			no_force_sudo="0"
@@ -1467,7 +1553,7 @@ function configureSUDO(){
 			yes_no_default "$(gettext "Do you want me to reconfigure your sudo ? (WARNING) ")"
 			no_force_sudo="$?"
 		fi
-		if [ $no_force_sudo -eq 0 ] ; then
+		if [ $no_force_sudo -eq 0 ] ; then 
 			clean_sudo $SUDO_FILE 0
 			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
 			echo_success "$(gettext "Configuring Sudo")" "$ok"
@@ -1483,34 +1569,33 @@ function configureSUDO(){
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
 ## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
-## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP,
+## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
 ## @Globals	CENTREON_USER, BIN_MAIL
 #----
-function createConfFile()
-{
+function createConfFile() {
 	echo -e "\n$line"
 	echo -e "\t\t$(gettext "Centreon Post Install")"
 	echo -e "$line"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
-	# Reinit file if exist
+	# Reinit file if exist	
 	touch $INSTALL_DIR_CENTREON_CONF
 	${CAT} << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
-/*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus
- *
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
- *
- * For information : contact@centreon.com
+/* 
+ * Centreon is developped with GPL Licence 2.0 : 
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt 
+ * Developped by : Julien Mathis - Romain Le Merlus  
+ *  
+ * The Software is provided to you AS IS and WITH ALL FAULTS. 
+ * Centreon makes no representation and gives no warranty whatsoever, 
+ * whether express or implied, and without limitation, with regard to the quality, 
+ * any particular or intended purpose of the Software found on the Centreon web site. 
+ * In no event will Centreon be liable for any direct, indirect, punitive, special, 
+ * incidental or consequential damages however they may arise and even if Centreon has 
+ * been previously advised of the possibility of such damages. 
+ *  
+ * For information : contact@centreon.com 
  */
 
 \$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
@@ -1545,7 +1630,7 @@ __EOT__
 	log "INFO" "$(gettext "Change right on") : $INSTALL_DIR_CENTREON_CONF"
 	${CHOWN} $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
-
+	
 }
 
 #----
@@ -1572,7 +1657,6 @@ function createCentreonInstallConf() {
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_BINDIR=$CENTREON_BINDIR
-	CENTREON_DATADIR=$CENTREON_DATADIR
 	CENTREON_GENDIR=$CENTREON_GENDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB
 	CENTREON_GROUP=$CENTREON_GROUP
@@ -1719,7 +1803,7 @@ function createCentPluginsForTrapdInstallConf() {
 #----
 function check_httpd_directory()
 {
-	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
+	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then 
 		if [ -d /etc/apache/conf ]; then
 			DIR_APACHE="/etc/apache/conf"
 			DIR_APACHE_CONF="/etc/apache/conf.d"
@@ -1755,7 +1839,7 @@ function check_httpd_directory()
 			# add for freeBSD 7 with apache2.2
 			DIR_APACHE="/usr/local/etc/apache22"
 			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
-		else
+		else 
 			echo_passed "$(gettext "Apache config directoty not found")" "$critical"
 			answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
 			answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
@@ -1768,7 +1852,7 @@ function check_httpd_directory()
 	log "INFO" "DIR_APACHE: $DIR_APACHE"
 	log "INFO" "DIR_APACHE_CONF: $DIR_APACHE_CONF"
 
-	if [ -z "$APACHE_CONF" ] ; then
+	if [ -z "$APACHE_CONF" ] ; then 
 		if [ -e $DIR_APACHE/apache2.conf ] ; then
 			APACHE_CONF="apache2.conf"
 		elif [ -e $DIR_APACHE/apache.conf ] ; then
@@ -1797,31 +1881,31 @@ function check_user_apache()
 	# init WEB_USER if not define
 	WEB_USER="$WEB_USER"
 
-	if [ -n "$WEB_USER" ] ; then
+	if [ -n "$WEB_USER" ] ; then 
 		echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
 		return 0
 	fi
 	local found=0
-	if [ -e /etc/apache2/envvars ] ; then
+	if [ -e /etc/apache2/envvars ] ; then 
 		log "INFO" "$(gettext "Use envvars file for apache user")"
 		# for Debian system (lenny)
 		WEB_USER=`${CAT} /etc/apache2/envvars |${GREP} "USER" | cut -d= -f2`
-		if [ -z "$WEB_USER" ] ; then
+		if [ -z "$WEB_USER" ] ; then 
 			found=0
-		else
+		else 
 			found=1
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		log "INFO" "$(gettext "Use uid.conf file for apache user")"
 		# for SuSe system
 		WEB_USER=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^User" | cut -d" " -f2`
-		if [ -z "$WEB_USER" ] ; then
+		if [ -z "$WEB_USER" ] ; then 
 			found=0
-		else
+		else 
 			found=1
 		fi
-	fi
-	if [ "$found" -eq 0 ] ; then
+	fi 
+	if [ "$found" -eq 0 ] ; then 
 		WEB_USER=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^User" | cut -d" " -f2`
 		if [ -z "$WEB_USER"  ] ; then
 			local WEB_USER_TEMP=""
@@ -1851,7 +1935,7 @@ function check_group_apache()
 	# init WEB_GROUP if not define
 	WEB_GROUP="$WEB_GROUP"
 
-	if [ -n "$WEB_GROUP" ] ; then
+	if [ -n "$WEB_GROUP" ] ; then 
 		echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
 		return 0
 	fi
@@ -1859,21 +1943,21 @@ function check_group_apache()
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
 		WEB_GROUP=`${CAT} /etc/apache2/envvars |${GREP} "GROUP" |cut -d= -f2`
-		if [ -z "$WEB_GROUP" ] ; then
+		if [ -z "$WEB_GROUP" ] ; then 
 			found=0
-		else
+		else 
 			found=1
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
 		WEB_GROUP=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^Group" | cut -d" " -f2`
-		if [ -z "$WEB_GROUP" ] ; then
+		if [ -z "$WEB_GROUP" ] ; then 
 			found=0
-		else
+		else 
 			found=1
 		fi
 	fi
-	if [ "$found" -eq 0 ] ; then
+	if [ "$found" -eq 0 ] ; then 
 		WEB_GROUP=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^Group" | cut -d" " -f2`
 		if [  -z "$WEB_GROUP"  ] ; then
 			local WEB_GROUP_TMP=""
@@ -1972,7 +2056,7 @@ function check_broker_user()
 #----
 function copyInTempFile()
 {
-	local srclistcp="composer.json bootstrap.php bin cron config logrotate doc GPL_LIB lib snmptrapd www plugins libinstall dbschema src"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www libinstall bootstrap.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
@@ -1987,6 +2071,45 @@ function copyInTempFile()
 		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMP_DIR/src/"
 		cp -Rf $BASE_DIR/$folder $TMP_DIR/src/
 	done
+}
+
+#----
+## use php script to check pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
+function check_pear_module() {
+	local module_list=$1
+	echo -e "$(gettext "Check PEAR modules")"
+	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
+	return "$?"
+}
+
+#----
+## use php script to install missed pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
+function install_pear_module() {
+	local module_list=$1
+	echo -e "$(gettext "Installing PEAR modules")"
+	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
+	return "$?"
+}
+
+#----
+## use php script to upgrade pear module
+## @param	list of pear modules
+## @return	return code of php script
+## @Globals	PHP_BIN, INSTALL_DIR
+#----
+function upgrade_pear_module() {
+	local module_list=$1
+	echo -e "$(gettext "Upgrading PEAR modules")"
+	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
+	return "$?"
 }
 
 #----
@@ -2024,7 +2147,7 @@ function install_init_service() {
 		return 1
 	fi
 	return 0
-}
+} 
 
 #----
 ## Define OS
@@ -2048,7 +2171,7 @@ function find_OS() {
 		fi
 		if [ "$lsb_release" = "Debian" ] || \
 			[ "$lsb_release" = "Ubuntu" ] || \
-			[ -e "/etc/debian_version" ] ; then
+			[ -e "/etc/debian_version" ] ; then 
 			dist_found="DEBIAN"
 			log "INFO" "$(gettext "GNU/Linux Debian Distribution")"
 		elif [ "$lsb_release" = "SUSE LINUX" ] || \
@@ -2090,7 +2213,7 @@ function find_OS() {
 #----
 ## use this function to clean and exit centreon install
 ## This function use <@function purge_centreon_tmp_dir> function.
-## TODO: Need to add fonctionnality
+## TODO: Need to add fonctionnality 
 ##      - delete install file
 ##      - restore inital rigth
 ##      - ...
@@ -2100,7 +2223,7 @@ function clean_and_exit() {
   if [ $trap_sig -eq 0 ] ; then
     echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
     yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
-    if [ $? -eq 1 ] ; then
+    if [ $? -eq 1 ] ; then 
       echo "$(gettext "Continue...")"
       return 1
     fi
@@ -2152,7 +2275,7 @@ function purge_centreon_tmp_dir() {
 		else
 			rc=0
 		fi
-		if [ $rc -eq 0 ] ; then
+		if [ $rc -eq 0 ] ; then 
 			local tmp_base_dir=`dirname $TMP_DIR`
 			local tmp_dir=`basename $TMP_DIR`
 			find $tmp_base_dir -name "$tmp_dir*" -type d \
@@ -2167,7 +2290,7 @@ function purge_centreon_tmp_dir() {
 
 #----
 ## Clean sudoers file
-## Generate a file without Centreon config. Need to have a BEGIN and END flags
+## Generate a file without Centreon config. Need to have a BEGIN and END flags 
 ## file. After that, rewrite sudo file with clean file.
 ## @param	sudo file
 ## @param	0/1 to active a question to clean sudo (not by default)
@@ -2181,9 +2304,9 @@ function clean_sudo() {
     local sudo_clean="/tmp/sudo.clean"
   else
 	  local sudo_clean="$TMP_DIR/sudo.clean"
-  fi
-
-  if ! grep "CENTREON SUDO" $sudo_old &>/dev/null ; then
+  fi  
+  
+  if ! grep "CENTREON SUDO" $sudo_old &>/dev/null ; then 
     return 1
   fi
 
@@ -2194,11 +2317,11 @@ function clean_sudo() {
 	{ if (flag == 0) { print $0; } next; }' > $sudo_clean
 
 	log "INFO" "$(gettext "New sudo file generate in:") $sudo_clean"
-	if [ "$validate" -eq 1 ] ; then
+	if [ "$validate" -eq 1 ] ; then 
 		yes_no_default "$(gettext "Do you want me to clean your sudo files ? (clean centreon config)")"
 		RC="$?"
 	fi
-	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then
+	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then 
 		${CAT} $sudo_clean > $sudo_old 2>$LOG_FILE
 		return 0
 	fi
@@ -2222,7 +2345,7 @@ function find_macros_in_dir() {
 	local var_ref="$5"
 	local file_out_tmp=""
 	file_out_tmp=$(mktemp $TMP_DIR/file_out_tmp.XXXXXX)
-
+	
 	for mac in ${macro//,/ } ; do
 		log "INFO" "$(gettext "Search file for macro") : $mac"
 		( cd $src_dir ;
@@ -2298,111 +2421,4 @@ function check_rrd_right() {
 		${CHOWN} -R ${CENTREON_USER}:${CENTREON_GROUP} "${CENTSTORAGE_RRD}"
 		${CHMOD} -R g+w "${CENTSTORAGE_RRD}"
 	fi
-}
-
-#----
-## Check the minimum version PHP
-## @return 0	Version ok
-## @return 1	Version too old
-## @Globals	PHP_BIN
-#----
-function check_php_version() {
-	local version=$1
-
-	echo -e "$(gettext "Check PHP version")"
-
-	${PHP_BIN} -r "version_compare(phpversion(), getenv('PHP_VERSION'), 'ge') ? exit(0) : exit (1);"
-	if [ $? -ne 0 ]; then
-		echo_failure "$(gettext "The PHP version is too old.") : minimum ${version} | your $(php -r 'echo phpversion();')" "$fail"
-		return 1
-	fi
-	return 0
-}
-
-#----
-## use php script to check pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function check_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Check PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
-	return "$?"
-}
-
-#----
-## use php script to install missed pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function install_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Installing PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
-	return "$?"
-}
-
-#----
-## use php script to upgrade pear module
-## @param	list of pear modules
-## @return	return code of php script
-## @Globals	PHP_BIN, INSTALL_DIR
-#----
-function upgrade_pear_module() {
-	local module_list=$1
-	echo -e "$(gettext "Upgrading PEAR modules")"
-	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
-	return "$?"
-}
-
-
-#----
-## Check is the php modules are installed
-## @return 0	All modules are installed
-## @return 1	Missing modules
-## @Globals	PHP_BIN PHP_MODULES_LIST
-#----
-function check_php_modules() {
-	local return_value=0
-	echo -e "$(gettext "Check PHP modules")"
-	while read module; do
-		if [ -n "${module}" ]; then
-			echo -en "\t${module}\t\t"
-			${PHP_BIN} -m | grep -e "^${module}$" &>/dev/null
-			if [ $? -eq 0 ]; then
-				echo -e "\033[u\033[60G\033[1;32mOK\033[0m"
-			else
-				echo -e "\033[u\033[60G\033[1;31mNOK\033[0m"
-				return_value=1
-			fi
-		fi
-	done < "${INSTALL_VARS_DIR}/${PHP_MODULES_LIST}"
-	return ${return_value}
-}
-
-#----
-## Locate the fpm-php service
-## @return 0 The FPM PHP service found
-## @Globals PHP_FPM_SERVICE
-#----
-function locate_fpm_php_service()  {
-	local valid=1
-	${SERVICE_BINARY} "fpm-php" status &>/dev/null
-	if [ $? -eq 4 ]; then
-		while [ ${valid} -eq 1 ]; do
-			answer "$(gettext "What is the fpm-php service name ?")" "fpm-php" \
-				"PHP_FPM_SERVICE"
-			${SERVICE_BINARY} "${PHP_FPM_SERVICE}" status &>/dev/null
-			if [ $? -ne 4 ]; then
-				valid=0
-			fi
-		done
-	else
-		PHP_FPM_SERVICE="fpm-php"
-	fi
-	echo -e "$(gettext "The fpm-php service") : ${PHP_FPM_SERVICE}"
-	return 0
 }

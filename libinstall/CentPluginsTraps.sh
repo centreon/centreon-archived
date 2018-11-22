@@ -15,7 +15,11 @@ echo -e "$line"
 
 ###### Check disk space
 check_tmp_disk_space
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+if [ "$silent_install" -eq 1 ] ; then
+  [ "$?" -eq 1 ] && purge_centreon_tmp_dir "silent"
+else
+  [ "$?" -eq 1 ] && purge_centreon_tmp_dir
+fi
 
 ## Where is nagios_pluginsdir
 locate_plugindir
