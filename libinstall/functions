@@ -1361,7 +1361,7 @@ function prepare_sudo_config() {
 
     	locate_sudo
 	# Find Monitoring Engine Init Script
-	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+	[ -z "$MONITORINGENGINE_INIT_SCRIPT" ] && answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
@@ -2389,20 +2389,22 @@ function check_php_modules() {
 ## @Globals PHP_FPM_SERVICE
 #----
 function locate_fpm_php_service()  {
-	local valid=1
-	${SERVICE_BINARY} "fpm-php" status &>/dev/null
-	if [ $? -eq 4 ]; then
-		while [ ${valid} -eq 1 ]; do
-			answer "$(gettext "What is the fpm-php service name ?")" "fpm-php" \
-				"PHP_FPM_SERVICE"
-			${SERVICE_BINARY} "${PHP_FPM_SERVICE}" status &>/dev/null
-			if [ $? -ne 4 ]; then
-				valid=0
-			fi
-		done
-	else
-		PHP_FPM_SERVICE="fpm-php"
-	fi
-	echo -e "$(gettext "The fpm-php service") : ${PHP_FPM_SERVICE}"
+	local valid=0
+        if [ -z "${PHP_FPM_SERVICE}" ]; then
+            ${SERVICE_BINARY} "${DEFAULT_PHP_FPM_SERVICE}" status &>/dev/null
+        else
+            ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" status &>/dev/null
+        fi
+        if [ $? -ge 3 ]; then
+                while [ ${valid} -eq 0 ]; do
+                        answer "$(gettext "What is the fpm-php service name ?")" "${DEFAULT_PHP_FPM_SERVICE}" \
+                                "PHP_FPM_SERVICE"
+                        ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" status &>/dev/null
+                        if [ $? -eq 0 ]; then
+                                valid=1
+                        fi
+                done
+        fi
+        echo -e "$(gettext "The fpm-php service") : ${PHP_FPM_SERVICE}"
 	return 0
 }

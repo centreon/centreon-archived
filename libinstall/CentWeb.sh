@@ -18,7 +18,11 @@ echo -e "$line"
 
 ###### check space ton tmp dir
 check_tmp_disk_space
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+if [ "$silent_install" -eq 1 ] ; then
+  [ "$?" -eq 1 ] && purge_centreon_tmp_dir "silent"
+else
+  [ "$?" -eq 1 ] && purge_centreon_tmp_dir
+fi
 
 ###### Require
 #################################
@@ -98,8 +102,10 @@ configureApache "$INSTALL_DIR_CENTREON/examples"
 
 ## Ask for fpm-php service
 locate_fpm_php_service
-yes_no_default "$(gettext "Do you want to restart your FPM-PHP service ?")"
-[ $? -eq 0 ] && ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" restart &>/dev/null
+if [ ! "${PHP_FPM_RELOAD}" ] ; then
+   yes_no_default "$(gettext "Do you want to restart your FPM-PHP service ?")"
+   [ $? -eq 0 ] && ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" restart &>/dev/null
+fi
 
 ## Create temps folder and copy all src into
 copyInTempFile 2>>$LOG_FILE
