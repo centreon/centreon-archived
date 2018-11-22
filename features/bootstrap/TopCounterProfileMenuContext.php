@@ -52,6 +52,13 @@ class TopCounterProfileMenuContext extends CentreonContext
     public function iClickToLogoutLink()
     {
         $this->visit('/', false);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.iconmoon.icon-user');
+            },
+            'Home not load.',
+            5
+        );
         $this->assertFind('css', '.iconmoon.icon-user')->click();
         $this->spin(
             function ($context) {
