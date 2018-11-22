@@ -74,7 +74,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function iHaveReplacedTheDefaultPageConnectionWithAdministrationParameters()
     {
         $this->visit('main.php?p=50104&o=c');
-        $this->selectInList('select[name="default_page"]', '  Administration > Parameters');
+        $this->selectInList('select[name="default_page"]', 'Administration > Parameters > Centreon UI');
         $this->assertFindButton('submitC')->click();
     }
 
@@ -95,7 +95,7 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
     public function iHaveReplacedTheDefaultPageConnectionWithMonitoringStatusDetailsHosts()
     {
         $this->visit('main.php?p=50104&o=c');
-        $this->selectInList('select[name="default_page"]', '  Monitoring > Status Details > Hosts');
+        $this->selectInList('select[name="default_page"]', 'Monitoring > Status Details > Hosts');
         $this->assertFindButton('submitC')->click();
     }
 
@@ -113,12 +113,13 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
      */
     public function theActivePageIsAdministrationParameters()
     {
+        self::$lastUri = 'p=50110';
         $this->spin(
             function ($context) {
                 $context->switchToIframe();
                 return $context->getSession()->getPage()->has('css', 'input[name="oreon_path"]');
             },
-            "The active page is not Administration > Parameters.",
+            "The active page is not Administration > Parameters > Centreon UI.",
             5
         );
     }
@@ -128,13 +129,14 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
      */
     public function theActivePageIsMonitoringStatusDetailsHosts()
     {
+        self::$lastUri = 'p=20202';
         $this->spin(
             function ($context) {
                 $context->switchToIframe();
-                return $context->getSession()->getPage()->has('css', 'input[name="host_search"]');
+                return $context->getSession()->getPage()->has('css', '#host_search');
             },
             "The active page is not Monitoring > Status > Hosts.",
             5
         );
-    }
+   }
 }
