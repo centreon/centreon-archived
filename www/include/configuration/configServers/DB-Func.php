@@ -40,17 +40,17 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 /**
- * Retrieve the next available suffixes for this resource name from database
+ * Retrieve the next available suffixes for this server name from database
  *
  * @global CentreonDB $pearDB DB connector
- * @param string $resourceName Resource name to process
+ * @param string $serverName Server name to process
  * @param int $numberOf Number of suffix requested
- * @param string $separator Character used to separate the resource name and suffix
+ * @param string $separator Character used to separate the server name and suffix
  * @return array Return the next available suffixes
  * @throws Exception
  */
 function getAvailableSuffixIds(
-    string $resourceName,
+    string $serverName,
     int $numberOf,
     string $separator = '_'
 ): array {
@@ -64,12 +64,12 @@ function getAvailableSuffixIds(
      * To avoid that this column value will be interpreted like regular
      * expression in the database query
      */
-    $resourceName = preg_quote($resourceName);
+    $serverName = preg_quote($serverName);
 
     // Get list of suffix already used
-    $resourceName = CentreonDB::escape($resourceName);
+    $serverName = CentreonDB::escape($serverName);
     $query = "SELECT CAST(SUBSTRING_INDEX(name,'_',-1) AS INT) AS suffix "
-        . "FROM nagios_server WHERE name REGEXP '^" . $resourceName . $separator . "[0-9]+$' "
+        . "FROM nagios_server WHERE name REGEXP '^" . $serverName . $separator . "[0-9]+$' "
         . "ORDER BY suffix";
     $results = $pearDB->query($query);
 
@@ -98,10 +98,12 @@ function getAvailableSuffixIds(
 }
 
 /**
- * @param null $name
- * @return bool
+ * Check if the name already exist in database
+ *
+ * @param string $name Name to check
+ * @return bool Return true if the name does not exist in database
  */
-function testExistence($name = null)
+function testExistence($name = null): bool
 {
     global $pearDB, $form;
 
