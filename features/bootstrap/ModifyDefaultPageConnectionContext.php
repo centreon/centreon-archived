@@ -113,6 +113,8 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
      */
     public function theActivePageIsAdministrationParameters()
     {
+        //The lastUri is a static variable used to check if the iFrame was correctly reloaded,
+        //as we don't use the "visit" method, we need to set it directly here
         self::$lastUri = 'p=50110';
         $this->spin(
             function ($context) {
@@ -129,6 +131,8 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
      */
     public function theActivePageIsMonitoringStatusDetailsHosts()
     {
+        //The lastUri is a static variable used to check if the iFrame was correctly reloaded,
+        //as we don't use the "visit" method, we need to set it directly here
         self::$lastUri = 'p=20202';
         $this->spin(
             function ($context) {
@@ -138,5 +142,5 @@ class ModifyDefaultPageConnectionContext extends CentreonContext
             "The active page is not Monitoring > Status > Hosts.",
             5
         );
-   }
+    }
 }
