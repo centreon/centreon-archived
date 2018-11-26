@@ -241,7 +241,7 @@ $aclCond = '';
 if (!$centreon->user->admin) {
     $aclFrom = ", {$aclDbName}.centreon_acl acl";
     $aclCond =
-        ' AND h.host_id = acl.host_id AND acl.service_id IS NULL '
+        ' AND h.host_id = acl.host_id AND acl.service_id = 0 '
         . 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
 }
 
