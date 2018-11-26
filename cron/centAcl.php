@@ -497,7 +497,7 @@ try {
                         foreach ($hgResCache[$res2['acl_res_id']] as $hgId) {
                             if (isset($hostHGRelation[$hgId])) {
                                 foreach ($hostHGRelation[$hgId] as $host_id) {
-                                    if ($hostCache[$host_id]) {
+                                    if (isset($hostCache[$host_id])) {
                                         $Host[$host_id] = $hostCache[$host_id];
                                     } else {
                                         print "Host $host_id unknown !\n";
