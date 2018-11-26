@@ -253,9 +253,23 @@
 <script>
 {literal}
 
+(function($) {
+                $.fn.purgeFrame = function() {
+                    var deferred;
+                    if(this.contentDocument){
+                      $(this.contentDocument).unbind();    
+                      $(this.contentDocument).find('*').unbind();
+                    }
+                    this.contents().empty();
+                        this.remove();
+                        deferred = $.Deferred();
+                        deferred.resolve();
+                    return deferred;
+                };
+            })(jQuery);
 var rotationTimeout;
 var rotationTimer = {/literal}{$rotationTimer}{literal};
-
+window.iframes = [];
 /* Display or hide the information for add a new view */
 function infoEmptyTab() {
   if (jQuery('#tabs .tabs_header > li').length > 0) {
@@ -285,9 +299,6 @@ function addTab(info, init) {
     jQuery('#tabs').tabs("destroy");
     jQuery("#tabs").tabs({
       ajaxOptions: { async: true },
-      select: function(event, ui) {
-        jQuery('.viewBody').empty();
-      },
       selected: -1,
       load: function () {
         toggleEdit(true);
@@ -306,9 +317,6 @@ function deleteTab(viewId) {
   jQuery('#tabs').tabs("destroy");
   jQuery("#tabs").tabs({
     ajaxOptions: { async: true },
-    select: function(event, ui) {
-      jQuery('.viewBody').empty();
-    },
     selected: -1,
     load: function () {
       toggleEdit(true);
@@ -687,10 +695,18 @@ jQuery(function () {
     jQuery('#formAddView input[name="public"]').prop('checked', false);
   });
 
+    jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
+        jQuery("#setDefaultConfirm").centreonPopin({
+            open: true
+        });
+    });
+
   jQuery('.editView').button({ icons : { primary: 'ui-icon-gear'}});
-  jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
-    jQuery("#deleteViewConfirm").centreonPopin("open");
-  });
+    jQuery('.deleteView').button({ icons : { primary: 'ui-icon-trash'}}).on('click', function () {
+        jQuery("#deleteViewConfirm").centreonPopin({
+            open: true
+        });
+    });
 
   jQuery('.shareView').button({ icons : { primary: 'ui-icon-folder-open'}}).on('click', function () {
     /* Get default information for a share view */
@@ -740,9 +756,6 @@ jQuery(function () {
   });
   jQuery('.addWidget').button({ icons : { primary: 'ui-icon-plus'}});
   jQuery('.setRotate').button({ icons : { primary: 'ui-icon-play'}});
-  jQuery('.setDefault').button({ icons : { primary: 'ui-icon-arrowreturnthick-1-w'}}).on('click', function () {
-    jQuery("#setDefaultConfirm").centreonPopin('open');
-  });
 
   jQuery('input[name="create_load[create_load]"]').change(function (){
     if (jQuery(this).val() == 'load'){
@@ -837,6 +850,7 @@ jQuery(function () {
   });
 
   infoEmptyTab();
+  var tabLoops = 0;
 
   /* Load custom views */
   jQuery.ajax({
@@ -852,8 +866,38 @@ jQuery(function () {
           addTab(tab, true);
         });
 
+        var defaultPosition = getTabPos(data.current);
+
         jQuery("#tabs").tabs({
-          active: getTabPos(data.current)
+          active: defaultPosition,
+          beforeLoad: function( event, ui ) {
+            // prevent memory overflow
+            if (tabLoops > 10 && $(event.target).tabs('option', 'active') == defaultPosition) {
+                if(window.parent){
+                  console.log('here')
+                  window.parent.location.reload();
+                }else{
+                  console.log('here2')
+                  window.location.reload();
+                } 
+            }
+          },
+          activate: function( event, ui ) {
+            for(var i=0;i<window.iframes.length;i++){
+	            window.iframes[i].purgeFrame()
+            }
+            window.iframes = [];
+            tabLoops++;
+            columnClass = null;
+            viewId = null;
+            permission = null;
+            ownership = null;
+            idUser = null;
+            deleteView = function(){};
+            deleteWidget = function(){};
+            savePositions = function(){};
+            setDefault = function(){}; 
+          }
         });
         jQuery("#tabs").tabs('rotate', (rotationTimer * 1000), true);
       }
