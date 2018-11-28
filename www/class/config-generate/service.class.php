@@ -149,8 +149,12 @@ class Service extends AbstractService {
             $service_tpl_id = isset($services_tpl[$service_tpl_id]['service_template_model_stm_id']) ? $services_tpl[$service_tpl_id]['service_template_model_stm_id'] : null;
         }
         
-        $this->service_cache[$service_id]['has_tpl_contacts'] = $services_tpl[$service_tpl_top_id]['has_tpl_contacts'];
-        $this->service_cache[$service_id]['has_tpl_contact_groups'] = $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'];
+        $this->service_cache[$service_id]['has_tpl_contacts'] =
+            isset($services_tpl[$service_tpl_top_id]['has_tpl_contacts']) ?
+                $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] : null;
+        $this->service_cache[$service_id]['has_tpl_contact_groups'] =
+            isset($services_tpl[$service_tpl_top_id]['has_tpl_contact_groups']) ?
+                $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] : null;
     }
     
     private function isServiceHasContacts($service_id) {
