@@ -13,7 +13,7 @@ class URIContext extends CentreonContext
     protected $page;
     protected $hostname = 'passiveHost';
     protected $serviceDescription = 'PassiveService';
-    protected $checkOutput = 'https://www.centreon.com/en/';
+    protected $checkOutput = 'https://github.com/centreon';
 
     /**
      * @Given a monitored passive service
@@ -98,10 +98,11 @@ class URIContext extends CentreonContext
         $this->spin(
             function($context) {
                 $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
+                sleep(1);
                 return true;
             },
             'Cannot find link in service output',
-            10
+            15
         );
     }
 
@@ -114,10 +115,11 @@ class URIContext extends CentreonContext
         $this->spin(
             function($context) {
                 $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
+                sleep(1);
                 return true;
             },
             'Cannot find link in service output',
-            10
+            15
         );
     }
 
