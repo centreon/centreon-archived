@@ -70,8 +70,8 @@ class ModuleRoute extends Component {
   render() {
     const { contentHeight, loading } = this.state
     const { history } = this.props,
-          { search } = history.location;
-    const params = search || '';
+          { search, hash } = history.location;
+    const params = (search || '') + (hash || '');
     return (
       <>
         {loading &&
