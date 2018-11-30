@@ -254,19 +254,19 @@
 {literal}
 
 (function($) {
-                $.fn.purgeFrame = function() {
-                    var deferred;
-                    if(this.contentDocument){
-                      $(this.contentDocument).unbind();    
-                      $(this.contentDocument).find('*').unbind();
-                    }
-                    this.contents().empty();
-                        this.remove();
-                        deferred = $.Deferred();
-                        deferred.resolve();
-                    return deferred;
-                };
-            })(jQuery);
+  $.fn.purgeFrame = function() {
+    var deferred;
+    if(this.contentDocument){
+      $(this.contentDocument).unbind();    
+      $(this.contentDocument).find('*').unbind();
+    }
+    this.contents().empty();
+    this.remove();
+    deferred = $.Deferred();
+    deferred.resolve();
+    return deferred;
+  };
+})(jQuery);
 var rotationTimeout;
 var rotationTimer = {/literal}{$rotationTimer}{literal};
 window.iframes = [];
@@ -874,10 +874,8 @@ jQuery(function () {
             // prevent memory overflow
             if (tabLoops > 10 && $(event.target).tabs('option', 'active') == defaultPosition) {
                 if(window.parent){
-                  console.log('here')
                   window.parent.location.reload();
                 }else{
-                  console.log('here2')
                   window.location.reload();
                 } 
             }

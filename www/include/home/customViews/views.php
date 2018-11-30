@@ -267,7 +267,6 @@ try {
                         if (typeof(view) != 'undefined') {
                             var viewId = view.item(0).firstChild.data;
                             jQuery('#tabs').tabs('load', getTabPos(viewId));
-                            //window.top.location = './main.php?p=103&currentView='+viewId;
                         } else if (typeof(error) != 'undefined') {
                             var errorMsg = error.item(0).firstChild.data;
                         }
