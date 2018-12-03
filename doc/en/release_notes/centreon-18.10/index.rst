@@ -7,4 +7,5 @@ Please find here the release notes dedicated to the last 18.10.x version of Cent
 .. toctree::
     :maxdepth: 1
 
+    centreon-18.10.1
     centreon-18.10.0
