@@ -424,6 +424,7 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
+
     // Use "like" instead of "=" to avoid mysql bug on partitioned tables
     $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
         . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
@@ -432,9 +433,9 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         . "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, "
         . "sum(MaintenanceTime) as MAINTENANCE_T "
         . "FROM log_archive_service las "
-        . "WHERE las.host_id LIKE " . $host_id . " "
+        . "WHERE las.host_id = " . $host_id . " "
         . $aclCondition .
-        " AND las.service_id LIKE " . $service_id . " AND `date_start` >= " . $start_date .
+        " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
         " AND date_end <= " . $end_date . " "
         . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "
         . "GROUP BY las.service_id";
