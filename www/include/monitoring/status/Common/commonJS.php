@@ -56,7 +56,7 @@ foreach ($userFeatures as $feature) {
 
 ?>
 // Dynamique
-var _headerId = '<?= ($headerVersion == 1) ? 'header' : 'header-react'?>';
+var _headerId = '<?= ($headerVersion == 1) ? "header" : "header-react"?>';
 var _sid = '<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
 var _search_type_host = '<?php echo $search_type_host?>';
