@@ -7,7 +7,7 @@ Using VM
 Two pre-configured virtual machines are available on 
 `Centreon download <https://download.centreon.com/>`_ web site.
 
-These virtual machines are available in OVF (VMware) and OVA (VirtualBox) format.
+These virtual machines are available in OVA (VMware) and OVF (VirtualBox) format.
 
 ***********************
 Centreon Central server
