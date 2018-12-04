@@ -31,6 +31,11 @@ try {
           failedNewAll: '0'
         ])
         junit 'jest-test-results.xml'
+        if (env.BRANCH_NAME == 'master') {
+          withSonarQubeEnv('SonarQube') {
+            sh './centreon-build/jobs/web/3.4/mon-web-analysis.sh'
+          }
+        }
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
