@@ -136,6 +136,11 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
     public $_pagination;
 
     /**
+     * @var array
+     */
+    public $realOptionsArray;
+
+    /**
      *
      * @param string $elementName
      * @param string $elementLabel
@@ -155,6 +160,7 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
         $this->_defaultSelectedOptions = '';
         $this->_multipleHtml = '';
         $this->_allowClear = true;
+        $this->realOptionsArray = $options;
         parent::__construct($elementName, $elementLabel, $options, $attributes);
         $this->_elementHtmlName = $this->getName();
         $this->_defaultDataset = null;
@@ -221,7 +227,7 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
     public function getElementJs($raw = true, $min = false)
     {
         $jsFile = './include/common/javascript/jquery/plugins/select2/js/';
-        $jsFile2 = './include/common/javascript/centreon/centreon-select2.js';
+        $jsFile2 = './include/common/javascript/centreon/centreon-select2-optgroup.js';
 
         if ($min) {
             $jsFile .= 'select2.min.js';
@@ -334,6 +340,7 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
             ' = jQuery("#' . $this->getName() . '").centreonSelect2({
                     allowClear: ' . $allowClear . ',
                     pageLimit: ' . $this->_pagination . ',
+                    optGroup: true,
                     select2: {
                         ' . $ajaxOption . '
                         ' . $defaultData . '
@@ -355,80 +362,19 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
      */
     public function setFixedDatas()
     {
-        $datas = 'data: [';
-
-        // Set default values
-        $strValues = is_array($this->_values) ? array_map('strval', $this->_values) : array();
-
-        foreach ($this->_options as $option) {
-            if (empty($option["attr"]["value"])) {
-                $option["attr"]["value"] = -1;
-            }
-
-            if (!is_numeric($option["attr"]["value"])) {
-                $option["attr"]["value"] = '"' . $option["attr"]["value"] . '"';
-            }
-
-            $datas .= '{id: ' . $option["attr"]["value"] . ', text: "' . $option['text'] . '"},';
-            if (!empty($strValues) && in_array($option['attr']['value'], $strValues, true)) {
-                $option['attr']['selected'] = 'selected';
-                $this->_defaultSelectedOptions .= "<option" . $this->_getAttrString($option['attr']) . '>' .
-                    $option['text'] . "</option>";
-            }
-        }
-        $datas .= ']';
-
+        $datas = 'data: ';
+        $datas .= json_encode($this->realOptionsArray,1);
         return $datas;
     }
 
     public $_memOptions = array();
 
     /**
-     *
+     * obsolete
      */
     public function setDefaultFixedDatas()
     {
-        global $pearDB;
-
-        if (!is_null($this->_linkedObject)) {
-            require_once _CENTREON_PATH_ . '/www/class/' . $this->_linkedObject . '.class.php';
-            $objectFinalName = ucfirst($this->_linkedObject);
-
-            $myObject = new $objectFinalName($pearDB);
-            try {
-                $finalDataset = $myObject->getObjectForSelect2($this->_defaultDataset, $this->_defaultDatasetOptions);
-            } catch (\Exception $e) {
-                print $e->getMessage();
-                return;
-            }
-
-            foreach ($finalDataset as $dataSet) {
-                $currentOption = '<option selected="selected" value="'
-                    . $dataSet['id'] . '" ';
-                if (isset($dataSet['hide']) && $dataSet['hide'] === true) {
-                    $currentOption .= "hidden";
-                }
-                $currentOption .= '>'
-                    . $dataSet['text'] . "</option>";
-
-                if (!in_array($dataSet['id'], $this->_memOptions)) {
-                    $this->_memOptions[] = $dataSet['id'];
-                    $this->_defaultSelectedOptions .= $currentOption;
-                }
-            }
-        } elseif (!is_null($this->_defaultDataset)) {
-            foreach ($this->_defaultDataset as $elementName => $elementValue) {
-
-                $currentOption = '<option selected="selected" value="'
-                    . $elementValue . '">'
-                    . $elementName . "</option>";
-
-                if (!in_array($elementValue, $this->_memOptions)) {
-                    $this->_memOptions[] = $elementValue;
-                    $this->_defaultSelectedOptions .= $currentOption;
-                }
-            }
-        }
+        return true;
     }
 
     /**
