@@ -161,4 +161,36 @@ SQL;
 
         return $result;
     }
+
+    /**
+     * Get chain of included templates
+     *
+     * @param int $id
+     * @param array $result
+     * @return array
+     */
+    public function getIncludeChainByParant($id, &$result)
+    {
+        $sql = <<<SQL
+SELECT
+    t.timeperiod_include_id AS `id`
+FROM timeperiod_include_relations  AS t
+WHERE t.timeperiod_include_id IS NOT NULL AND t.timeperiod_id = :id
+GROUP BY t.timeperiod_include_id
+SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
+            $isExisting = array_key_exists($row['id'], $result);
+            $result[$row['id']] = $row['id'];
+
+            if (!$isExisting) {
+                $this->getChainByParant($row['id'], $result);
+            }
+        }
+
+        return $result;
+    }
 }

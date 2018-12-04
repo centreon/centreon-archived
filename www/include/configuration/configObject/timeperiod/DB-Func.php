@@ -419,3 +419,63 @@ function getTimeperiodIdByName($name)
     }
     return $id;
 }
+
+/**
+ * Get chain of time periods via template relation
+ *
+ * @global \Pimple\Container $dependencyInjector
+ * @param array $tpIds
+ * @param array $result
+ * @return array
+ */
+function getTimeperiodsFromTemplate(array $tpIds, array $result = null)
+{
+    global $dependencyInjector;
+
+    $db = $dependencyInjector['centreon.db-manager'];
+
+    $result = [];
+
+    foreach ($tpIds as $tpId) {
+        $db
+            ->getRepository(Centreon\Domain\Repository\TimePeriodRepository::class)
+            ->getIncludeChainByParant($tpId, $result)
+        ;
+    }
+
+    return $result;
+}
+
+/**
+ * Validator prevent loops via template
+ *
+ * @global \HTML_QuickFormCustom $form
+ * @param array $value
+ * @return boolean
+ */
+function testTemplateLoop($value)
+{
+    // skip check if template field is empty
+    if (!$value) {
+        return true;
+    }
+
+    global $form;
+
+    $data = $form->getSubmitValues();
+
+    // skip check if timeperiod is new
+    if (!$data['tp_id']) {
+        return true;
+    } elseif (in_array($data['tp_id'], $value)) {
+        // try to skip heavy check of templates
+
+        return false;
+    } elseif (in_array($data['tp_id'], getTimeperiodsFromTemplate($value))) {
+        // get list of all timeperiods related via templates
+
+        return false;
+    }
+
+    return true;
+}
