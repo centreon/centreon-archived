@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -65,11 +65,13 @@ $mnftr_id = -1;
 $initialValues = array();
 $hServices = array();
 
-if (($o == "c" || $o == "w") && $traps_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+if (($o == TRAP_MODIFY || $o == TRAP_WATCH) && is_int($traps_id)) {
+    $DBRESULT = $pearDB->query(
+        'SELECT * FROM traps WHERE traps_id = ' . $traps_id . ' LIMIT 1'
+    );
     # Set base value
     $trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
-            $trap['severity'] = $trap['severity_id'];
+    $trap['severity'] = $trap['severity_id'];
     $DBRESULT->free();
             
     $cdata = CentreonData::getInstance();
@@ -101,11 +103,18 @@ while ($rmnftr = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->free();
 
-$attrsText      = array("size"=>"50");
-$attrsLongText  = array("size"=>"120");
-$attrsTextarea  = array("rows"=>"10", "cols"=>"120");
-$attrsAdvSelect     = array("style" => "width: 270px; height: 100px;");
-$eTemplate  = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+$attrsText = array("size"=>"50");
+$attrsLongText = array("size"=>"120");
+$attrsTextarea = array("rows"=>"10", "cols"=>"120");
+$attrsAdvSelect = array("style" => "width: 270px; height: 100px;");
+$eTemplate  =
+    '<table>
+        <tr>
+            <td><div class="ams">{label_2}</div>{unselected}</td>
+            <td align="center">{add}<br /><br /><br />{remove}</td>
+            <td><div class="ams">{label_3}</div>{selected}</td>
+        </tr>
+    </table>';
 $attrManufacturer= array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list',
@@ -129,25 +138,30 @@ $attrServicetemplates = array(
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+if (isset($trapObj)) {
     $trapObj->setForm($form);
-if ($o == "a") {
+}
+if ($o == TRAP_ADD) {
     $form->addElement('header', 'title', _("Add a Trap definition"));
-} elseif ($o == "c") {
+} elseif ($o == TRAP_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Trap definition"));
-} elseif ($o == "w") {
+} elseif ($o == TRAP_WATCH) {
     $form->addElement('header', 'title', _("View a Trap definition"));
 }
 
 /**
  * Initializes nbOfInitialRows
  */
-$query = "SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '".$traps_id."' ";
-$res = $pearDB->query($query);
-if ($res->numRows()) {
-    $row = $res->fetchRow();
-    $nbOfInitialRows = $row['MAX(tmo_order)'];
-} else {
-    $nbOfInitialRows = 0;
+$nbOfInitialRows = 0;
+if (is_int($traps_id)) {
+    $res = $pearDB->query(
+        'SELECT MAX(tmo_order) FROM traps_matching_properties WHERE trap_id = '
+        . $traps_id
+    );
+    if ($res->numRows()) {
+        $row = $res->fetchRow();
+        $nbOfInitialRows = $row['MAX(tmo_order)'];
+    }
 }
 
 /*
@@ -166,15 +180,32 @@ $form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
  * Generic fields
  */
 $form->addElement('text', 'traps_oid', _("OID"), $attrsText);
-$form->addElement('select', 'traps_status', _("Default Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")), array('id' => 'trapStatus'));
+$form->addElement(
+    'select',
+    'traps_status',
+    _("Default Status"),
+    array(
+        0=>_("Ok"),
+        1=>_("Warning"),
+        2=>_("Critical"),
+        3=>_("Unknown")
+    ),
+    array('id' => 'trapStatus')
+);
 $severities = $severityObj->getList(null, "level", 'ASC', null, null, true);
     $severityArr = array(null=>null);
 foreach ($severities as $severity_id => $severity) {
     $severityArr[$severity_id] = $severity['sc_name'].' ('.$severity['level'].')';
 }
-    $form->addElement('select', 'severity', _("Default Severity"), $severityArr);
-    $form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
-$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment'));
+$form->addElement('select', 'severity', _("Default Severity"), $severityArr);
+$form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
+$form->addElement(
+    'checkbox',
+    'traps_advanced_treatment',
+    _("Advanced matching mode"),
+    null,
+    array('id' => 'traps_advanced_treatment')
+);
 $form->setDefaults(0);
 
 /* *******************************************************************
@@ -321,7 +352,17 @@ $form->addElement(
 
 $form->addElement('textarea', 'traps_customcode', _("Custom code"), $attrsTextarea);
 
-$form->addElement('select', 'traps_advanced_treatment_default', _("Advanced matching behavior"), array(0=>_("If no match, submit default status"), 1=>_("If no match, disable submit"), 2=>_("If match, disable submit")), array('id' => 'traps_advanced_treatment'));
+$form->addElement(
+    'select',
+    'traps_advanced_treatment_default',
+    _("Advanced matching behavior"),
+    array(
+        0=>_("If no match, submit default status"),
+        1=>_("If no match, disable submit"),
+        2=>_("If match, disable submit")
+    ),
+    array('id' => 'traps_advanced_treatment')
+);
     
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
 $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
@@ -381,19 +422,24 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o == "w") {
+if ($o == TRAP_WATCH) {
     # Just watch a Command information
     if ($centreon->user->access->page($p) != 2) {
-        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
+        $form->addElement(
+            "button",
+            "change",
+            _("Modify"),
+            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'")
+        );
     }
     $form->setDefaults($trap);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == TRAP_MODIFY) {
     # Modify a Command information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($trap);
-} elseif ($o == "a") {
+} elseif ($o == TRAP_ADD) {
     # Add a Command information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -404,9 +450,14 @@ if ($form->validate()) {
     $trapObj = new CentreonTraps($pearDB, $centreon, $form);
     $trapParam = $form->getElement('traps_id');
     if ($form->getSubmitValue("submitA")) {
-        $trapParam->setValue($trapObj->insert());
+        $trapParam->setValue(
+            $trapObj->insert($form->getSubmitValues())
+        );
     } elseif ($form->getSubmitValue("submitC")) {
-        $trapObj->update($trapParam->getValue());
+        $trapObj->update(
+            $trapParam->getValue(),
+            $form->getSubmitValues()
+        );
     }
     $o = null;
     $valid = true;

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -40,13 +40,15 @@ if (!isset($centreon)) {
 include_once("./class/centreonUtils.class.php");
 include("./include/common/autoNumLimit.php");
 
-$tabStatus = array(0 => _("OK"), 1 => _("Warning"), 2 => _("Critical"), 3 => _("Unknown"), 4 => _("Pending"));
-
-$searchT = filter_input(
-    INPUT_POST,
-    'searchT',
-    FILTER_SANITIZE_STRING
+$tabStatus = array(
+    0 => _("OK"),
+    1 => _("Warning"),
+    2 => _("Critical"),
+    3 => _("Unknown"),
+    4 => _("Pending")
 );
+
+$searchT = $_POST['searchT'];
 
 $search = '';
 if (isset($searchT)) {
@@ -56,15 +58,15 @@ if (isset($searchT)) {
     $search = $_SESSION['searchT'];
 }
 
-
 $query = "SELECT COUNT(*) "
     . "FROM traps "
-    . "WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'"
-    . "OR manufacturer_id IN (SELECT id 
-                             FROM traps_vendor 
-                             WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             ) ";
+    . "WHERE traps_oid LIKE '%" . CentreonDB::escape($search) . "%' "
+    . "OR traps_name LIKE '%" . CentreonDB::escape($search) . "%' "
+    . "OR manufacturer_id IN (
+        SELECT id 
+        FROM traps_vendor 
+        WHERE alias LIKE '%" . CentreonDB::escape($search) . "%'
+    )";
 $DBRESULT = $pearDB->query($query);
 $tmp = $DBRESULT->fetchRow();
 $rows = $tmp["COUNT(*)"];
@@ -99,15 +101,16 @@ $tpl->assign("headerMenu_options", _("Options"));
 if ($search) {
     $rq = "SELECT *
       FROM traps
-      WHERE traps_oid LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR traps_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-      OR manufacturer_id IN (SELECT id
-                             FROM traps_vendor
-                             WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'
-                             )
-      ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+      WHERE traps_oid LIKE '%" . CentreonDB::escape($search) . "%'
+      OR traps_name LIKE '%" . CentreonDB::escape($search) . "%'
+      OR manufacturer_id IN (
+        SELECT id FROM traps_vendor
+        WHERE alias LIKE '%" . CentreonDB::escape($search) . "%'
+      )
+      ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ', ' . $limit;
 } else {
-    $rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+    $rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT "
+        . $num * $limit . ', ' . $limit;
 }
 
 
@@ -115,42 +118,47 @@ $DBRESULT = $pearDB->query($rq);
 $form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
 /*
- * Different style between each lines
- */
-$style = "one";
-
-/*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
 for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
-    $trap = array_map(array("CentreonUtils", "escapeSecure"), $trap);
-    $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $trap['traps_id'] . "]");
-    $moptions .= "&nbsp;&nbsp;&nbsp;";
-    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $trap['traps_id'] . "]'></input>";
-    $DBRESULT2 = $pearDB->query("select alias from traps_vendor where id='" . $trap['manufacturer_id'] . "' LIMIT 1");
-    $mnftr = $DBRESULT2->fetchRow();
+    $moptions = <<<"OPTIONS"
+&nbsp;&nbsp;&nbsp;<input 
+    onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" 
+    maxlength="3" size="3" value="1" style="margin-bottom:0px;" name='dupNbr[{$trap['traps_id']}]'></input>
+OPTIONS;
+    $DBRESULT2 = $pearDB->query(
+        'SELECT alias FROM traps_vendor WHERE id = '
+        . (int) $trap['manufacturer_id'] . ' LIMIT 1'
+    );
+    $manufacturer = $DBRESULT2->fetchRow();
     $DBRESULT2->free();
+
+    // Manage different styles between each line
+    $style = ($i % 2) ? 'two': 'one';
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => myDecode($trap["traps_name"]),
+        "RowMenu_name" => CentreonUtils::escapeAll($trap["traps_name"]),
         "RowMenu_link" => "?p=" . $p . "&o=c&traps_id=" . $trap['traps_id'],
-        "RowMenu_desc" => myDecode(substr($trap["traps_oid"], 0, 40)),
+        "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
         "RowMenu_status" => $tabStatus[$trap["traps_status"]],
-        "RowMenu_args" => myDecode($trap["traps_args"]),
-        "RowMenu_manufacturer" => myDecode($mnftr["alias"]),
+        "RowMenu_args" => CentreonUtils::escapeAll($trap["traps_args"]),
+        "RowMenu_manufacturer" => $manufacturer["alias"],
         "RowMenu_options" => $moptions
     );
-    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
 /* Different messages we put in the template */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
 ?>

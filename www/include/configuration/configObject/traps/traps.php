@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -37,14 +37,20 @@ if (!isset($centreon)) {
     exit();
 }
 
+define('TRAP_ADD', 'a');
+define('TRAP_DELETE', 'd');
+define('TRAP_DUPLICATE', 'm');
+define('TRAP_MODIFY', 'c');
+define('TRAP_WATCH', 'w');
+
 $inputArguments = array(
-    'traps_id' => FILTER_SANITIZE_STRING,
+    'traps_id' => FILTER_VALIDATE_INT,
     'select' => array(
-        'filter' => FILTER_SANITIZE_STRING,
+        'filter' => FILTER_VALIDATE_INT,
         'flags' => FILTER_REQUIRE_ARRAY
     ),
     'dupNbr' => array(
-        'filter' => FILTER_SANITIZE_STRING,
+        'filter' => FILTER_VALIDATE_INT,
         'flags' => FILTER_REQUIRE_ARRAY
     ),
 );
@@ -95,23 +101,27 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 }
 
 switch ($o) {
-    case "a":
+    case TRAP_ADD:
         require_once($path."formTraps.php");
-        break; #Add a Trap
-    case "w":
+        break;
+    case TRAP_WATCH:
         require_once($path."formTraps.php");
-        break; #Watch a Trap
-    case "c":
+        break;
+    case TRAP_MODIFY:
         require_once($path."formTraps.php");
-        break; #Modify a Trap
-    case "m":
-        $trapObj->duplicate(isset($select) ? $select : array(), $dupNbr);
+        break;
+    case TRAP_DUPLICATE:
+        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+            $trapObj->duplicate($select, $dupNbr);
+        }
         require_once($path."listTraps.php");
-        break; #Duplicate n Traps
-    case "d":
-        $trapObj->delete(isset($select) ? $select : array());
+        break;
+    case TRAP_DELETE:
+        if (!in_array(false, $select)) {
+            $trapObj->delete($select);
+        }
         require_once($path."listTraps.php");
-        break; #Delete n Traps
+        break;
     default:
         require_once($path."listTraps.php");
         break;
