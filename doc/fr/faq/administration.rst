@@ -29,7 +29,9 @@ Il s'agit d'un bug du à certaines version mysql avec les tables partitionées
 (https://bugs.mysql.com/bug.php?id=70588).
 Remplacer les '=' par des LIKE dans les requêtes corrige le problème mais réduit les performances.
 
-Nous vous recommandons de mettre à jour votre SGBD.
+Nous vous recommandons de mettre à jour votre SGBD
+MySQL 5.5.36, 5.6.16, 5.7.4,
+MariaDB  10.0.33, 10.1.29, 10.2.10.
 
 Aucun graphique ne semble être généré, que dois-je contrôler?
 =============================================================

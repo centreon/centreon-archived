@@ -26,7 +26,9 @@ This is a bug from some mysql versions with partitioned tables
 (https://bugs.mysql.com/bug.php?id=70588).
 Replacing '=' by LIKE in queries fixes the problem but reduces performance.
 
-We therefore recommend to update your SGBD.
+We therefore recommend to update your SGBD :
+MySQL 5.5.36, 5.6.16, 5.7.4,
+MariaDB  10.0.33, 10.1.29, 10.2.10.
 
 No graph seems to be generated, what should I look into?
 ========================================================
