@@ -73,9 +73,8 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
         }
 
         $queryTimePeriod = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT tp_id, tp_name FROM timeperiod ' .
-            ($queryWhere ? "WHERE " . join(' AND ', $queryWhere) : '') .
-            ' ' .
-            'ORDER BY tp_name ';
+            ($queryWhere ? 'WHERE ' . join(' AND ', $queryWhere) : '') .
+            ' ORDER BY tp_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
