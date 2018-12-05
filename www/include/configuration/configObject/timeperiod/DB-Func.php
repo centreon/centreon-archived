@@ -437,8 +437,7 @@ function getTimeperiodsFromTemplate(array $tpIds, array $result = null)
     $result = [];
 
     foreach ($tpIds as $tpId) {
-        $db
-            ->getRepository(Centreon\Domain\Repository\TimePeriodRepository::class)
+        $db->getRepository(Centreon\Domain\Repository\TimePeriodRepository::class)
             ->getIncludeChainByParent($tpId, $result);
     }
 
