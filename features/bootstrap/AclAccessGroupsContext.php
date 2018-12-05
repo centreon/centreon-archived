@@ -22,6 +22,10 @@ class AclAccessGroupsContext extends CentreonContext
     protected $accessGroupsName = 'accessGroupsName';
     protected $accessGroupsAlias = 'accessGroupsAlias';
 
+    private $xssButtonName = '<button>XSS_name</button>';
+    private $xssButtonDescription = '<button>XSS_description</button>';
+
+
     /**
      * @When one contact group exists including two non admin contacts
      */
@@ -229,5 +233,107 @@ class AclAccessGroupsContext extends CentreonContext
         if ($object['status'] != 0) {
             throw new Exception($this->accessGroupsName . ' is still enabled');
         }
+    }
+
+    /**
+     * @When I am on the ACL group list page
+     */
+    public function iAmOnTheAclGrouListPage()
+    {
+        new ACLGroupConfigurationListingPage($this);
+    }
+
+    /**
+     * @When I add a ACL group
+     */
+    public function iAddAAclGroup()
+    {
+        $page = new ACLGroupConfigurationPage($this);
+        $page->setProperties(array(
+            'group_name' => $this->xssButtonName,
+            'group_alias' => $this->xssButtonDescription
+        ));
+        $page->save();
+    }
+
+    /**
+     * @When I put XSS script in the 'ACL group' search field
+     */
+    public function iPutXssScriptInTheAclGroupSearchField()
+    {
+        $this->assertFindField('searchACLG')
+            ->setValue("\"><button name=\"xss_aclg\">xss_aclg</button>");
+        $this->assertFindButton('Search')
+            ->click();
+    }
+
+    /**
+     * @Then the HTML is not interpreted in the list page
+     */
+    public function theHtmlIsNotinterpretedInTheListPage()
+    {
+        $page = new ACLGroupConfigurationListingPage($this);
+        $aclGroups = $page->getEntries();
+        foreach($aclGroups as $aclGroup) {
+            if($aclGroup['name'] !== 'ALL') {
+                if($aclGroup['name'] !== $this->xssButtonName) {
+                    throw new \Exception(
+                        'XSS vulnerability detected in the ACL group list page with the name value'
+                    );
+                }
+                if($aclGroup['description'] !== $this->xssButtonDescription) {
+                    throw new \Exception(
+                        'XSS vulnerability detected in the ACL group list page withe the description value'
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * @Then the HTML in ACL group search field is not interpreted
+     */
+    public function theHtmlInAclgSearchFieldIsNotInterpreted()
+    {
+        /**
+         * Wait 5 seconds to check if the button appears.
+         * If it appears => exception otherwise it's ok
+         */
+        $this->simpleSpin(
+            function(AclAccessGroupsContext $context) {
+                $element = $context->getSession()
+                    ->getPage()
+                    ->find('css', 'table.ajaxOption');
+                if(!is_null($element->findButton('xss_aclg'))) {
+                    throw new \Exception(
+                        "XSS vulnerability detected in the 'ACL group' search field"
+                    );
+                }
+            },
+            5
+        );
+    }
+
+    /**
+     * Spin without exception
+     *
+     * @param Closure $closure The function to execute for test the loading.
+     * @param int $wait The timeout in seconds.
+     * @return bool Return true if ok.
+     * @throws Exception
+     */
+    private function simpleSpin(Closure $closure, $wait = 60)
+    {
+        if (!is_callable($closure)) {
+            throw new \Exception('This closure is not callable');
+        }
+        $limit = time() + $wait;
+        while (time() <= $limit) {
+            if (call_user_func($closure, $this)) {
+                return true;
+            }
+            sleep(1);
+        }
+        return false;
     }
 }

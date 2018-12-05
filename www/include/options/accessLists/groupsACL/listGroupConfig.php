@@ -128,7 +128,7 @@ for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $group["acl_group_name"],
         "RowMenu_link" => "?p=".$p."&o=c&acl_group_id=".$group['acl_group_id'],
-        "RowMenu_desc" => myDecode($group["acl_group_alias"]),
+        "RowMenu_desc" => $group["acl_group_alias"],
         "RowMenu_contacts" => $ctNbr["nbr"],
         "RowMenu_contactgroups" => $cgNbr["nbr"],
         "RowMenu_status" => $group["acl_group_activate"] ? _("Enabled") : _("Disabled"),
@@ -180,7 +180,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchACLG', $search);
+$tpl->assign('searchACLG', htmlentities($search));
 
 /*
  * Apply a template definition
