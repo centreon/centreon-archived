@@ -34,7 +34,20 @@ class App extends Component {
   }
 
   goFull = () => {
-    this.setState({ isFullscreenEnabled: true });
+    window['fullscreenParams'] = window.location.search.split('?')[1] || '';
+    setTimeout(()=>{
+      this.setState({ isFullscreenEnabled: true });
+    },200)  
+  }
+
+  removeFullscreenParams = () => {
+    if(history.location.pathname == '/centreon/main.php'){
+      history.push({
+          pathname: '/centreon/main.php',
+          search: window['fullscreenParams']
+        })
+    }
+    delete window['fullscreenParams'];
   }
 
   // get allowed routes
@@ -99,6 +112,7 @@ class App extends Component {
             <div id="fullscreen-wrapper">
               <Fullscreen
                 enabled={this.state.isFullscreenEnabled}
+                onClose={this.removeFullscreenParams}
                 onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}>
                 <div className="full-screenable-node">
                   <div className="main-content">
