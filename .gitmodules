@@ -1,0 +1,3 @@
+[submodule "centreon-react-components"]
+	path = centreon-react-components
+	url = git@github.com:centreon/centreon-react-components.git
