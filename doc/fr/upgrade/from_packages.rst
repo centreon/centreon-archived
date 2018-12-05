@@ -62,9 +62,13 @@ Exécutez la commande suivante : ::
 Mise à jour de la solution Centreon
 ===================================
 
+Mettez à jour le cache de yum : ::
+
+    # yum clean all
+
 Mettez à jour l'ensemble des composants : ::
 
-    # yum update centreon*
+    # yum update centreon\*
 
 .. note::
     Acceptez les nouvelles clés GPG des dépôts si nécessaire.
