@@ -49,7 +49,11 @@ if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
     $o = "c";
 }
 if (($o == "c" || $o == "w") && $vmetric_id) {
-    $p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
+    $p_qy = $pearDB->query(
+        "SELECT *, hidden vhidden FROM virtual_metrics "
+        . "WHERE vmetric_id = '" . $pearDB->escape($vmetric_id) . "' LIMIT 1"
+    );
+
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
     $p_qy->free();
