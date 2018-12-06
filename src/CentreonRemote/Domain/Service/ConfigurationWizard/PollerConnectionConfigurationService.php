@@ -65,7 +65,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
 
         // if one peer retention mode is enabled,
         // we need to add an input in central broker configuration
-        if ($this->isOpenBrokerFlow) {
+        if ($this->onePeerRetention) {
             // update poller broker module parameters for one peer retention
             $outputHost = '';
             $onePeerRetentionMode = 'yes';

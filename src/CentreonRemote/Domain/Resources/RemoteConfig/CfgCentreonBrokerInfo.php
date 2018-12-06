@@ -26,11 +26,11 @@ class CfgCentreonBrokerInfo
      * @todo move it as yml
      *
      * @param string $serverName the poller name
-     * @param string $dbUser the database user
-     * @param string $dbPassword the database password
+     * @param string|null $dbUser the database user
+     * @param string|null $dbPassword the database password
      * @return array the configuration template
      */
-    public static function getConfiguration (string $serverName, string $dbUser, string $dbPassword): array
+    public static function getConfiguration (string $serverName, $dbUser, $dbPassword): array
     {
         $serverName = strtolower(str_replace(' ', '-', $serverName));
 
