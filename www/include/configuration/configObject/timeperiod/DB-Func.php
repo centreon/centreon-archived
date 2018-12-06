@@ -424,11 +424,10 @@ function getTimeperiodIdByName($name)
  * Get chain of time periods via template relation
  *
  * @global \Pimple\Container $dependencyInjector
- * @param array $tpIds
- * @param array $result
+ * @param array $tpIds List of selected time period as IDs
  * @return array
  */
-function getTimeperiodsFromTemplate(array $tpIds, array $result = null)
+function getTimeperiodsFromTemplate(array $tpIds)
 {
     global $dependencyInjector;
 
@@ -447,9 +446,9 @@ function getTimeperiodsFromTemplate(array $tpIds, array $result = null)
 /**
  * Validator prevent loops via template
  *
- * @global \HTML_QuickFormCustom $form
- * @param array $value
- * @return boolean
+ * @global \HTML_QuickFormCustom $form Access to the form object
+ * @param array $value List of selected time period as IDs
+ * @return bool
  */
 function testTemplateLoop($value)
 {

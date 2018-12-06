@@ -49,8 +49,10 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
     }
 
     /**
+     * Get a list of time periods as a source of data for the select2 widget
+     *
+     * @throws RestBadRequestException If some parameter is missing will throw this exception
      * @return array
-     * @throws RestBadRequestException
      */
     public function getList()
     {

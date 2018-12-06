@@ -163,10 +163,10 @@ SQL;
     }
 
     /**
-     * Get chain of included templates
+     * Get an array of all time periods IDs that are related as templates
      *
-     * @param int $id
-     * @param array $result
+     * @param int $id ID of time period
+     * @param array $result This parameter is used forward to data from the recursive method
      * @return array
      */
     public function getIncludeChainByParent($id, &$result)
