@@ -2,9 +2,18 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
 
+/**
+ * Get broker configuration template
+ */
 class LoggerSql
 {
-    public static function getConfiguration()
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @return array the configuration template
+     */
+    public static function getConfiguration(): array
     {
         return [
             [

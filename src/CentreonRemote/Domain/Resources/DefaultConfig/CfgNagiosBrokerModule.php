@@ -1,9 +1,18 @@
 <?php
 namespace CentreonRemote\Domain\Resources\DefaultConfig;
 
+/**
+ * Get broker configuration template
+ */
 class CfgNagiosBrokerModule
 {
-    public static function getConfiguration()
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @return array the configuration template
+     */
+    public static function getConfiguration(): array
     {
         return [
             [

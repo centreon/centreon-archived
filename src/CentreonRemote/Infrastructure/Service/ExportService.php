@@ -115,7 +115,7 @@ class ExportService
 
     /**
      * Import
-     * 
+     *
      * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
@@ -148,7 +148,7 @@ class ExportService
         // cleanup ACL removed data
         $this->_refreshAcl();
 
-        // backup expot directory
+        // remove export directory
         system('rm -rf ' . escapeshellarg($exportPath));
     }
 

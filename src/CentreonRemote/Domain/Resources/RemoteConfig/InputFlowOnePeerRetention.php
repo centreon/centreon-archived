@@ -4,10 +4,20 @@ namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
 use Centreon\Domain\Entity\CfgCentreonBrokerInfo;
 
-// configuration if input flow of central broker to get data from the remote poller
+/**
+ * Configuration if input flow of central broker to get data from the remote poller
+ */
 class InputFlowOnePeerRetention
 {
-    public static function getConfiguration (string $pollerName, string $pollerIP)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param string $pollerName the poller name
+     * @param string $pollerIP the poller ip address
+     * @return CfgCentreonBrokerInfo[] the configuration template
+     */
+    public static function getConfiguration (string $pollerName, string $pollerIP): array
     {
         return [
             new CfgCentreonBrokerInfo('name', "connection-to-${pollerName}"),

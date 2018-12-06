@@ -54,11 +54,12 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * Get Status of task
      *
-     * @return string
+     * @return array
+     * @example ['success' => true, 'status' => 'status of the task']
      *
      * @throws \RestBadRequestException
      */
-    public function postGetTaskStatus()
+    public function postGetTaskStatus(): array
     {
         if (!isset($this->arguments['task_id'])) {
             throw new \RestBadRequestException('Missing argument task_id');
@@ -104,11 +105,12 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * Get Status of task by parent
      *
-     * @return string
+     * @return array
+     * @example ['success' => true, 'status' => 'status of the task']
      *
      * @throws \RestBadRequestException
      */
-    public function postGetRemoteTaskStatusByParent()
+    public function postGetRemoteTaskStatusByParent(): array
     {
         if (!isset($this->arguments['server_ip']) ||
             !isset($this->arguments['centreon_folder']) ||
@@ -127,7 +129,15 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         return ['success' => true, 'status' => $result];
     }
 
-    public function postGetTaskStatusByParent()
+    /**
+     * Find task status by parent id (used on remote server)
+     *
+     * @return array
+     * @example ['success' => true, 'status' => 'status of the task']
+     *
+     * @throws \RestBadRequestException
+     */
+    public function postGetTaskStatusByParent(): array
     {
         if (!isset($this->arguments['parent_id'])) {
             throw new \RestBadRequestException('Missing argument parent_id');
@@ -180,11 +190,12 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * Add new import task with parent ID
      *
-     * @return string
+     * @return array
+     * @example ['success' => true, 'status' => 'status of the task']
      *
      * @throws \RestBadRequestException
      */
-    public function postAddImportTaskWithParent()
+    public function postAddImportTaskWithParent(): array
     {
         if (!isset($this->arguments['parent_id'])) {
             throw new \RestBadRequestException('Missing parent_id parameter');
@@ -217,8 +228,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         }
 
         // add new task
-        $result = $this->getDi()['centreon.taskservice']
-            ->addTask(Task::TYPE_IMPORT, $params, $parentId);
+        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_IMPORT, $params, $parentId);
 
         return ['success' => true, 'status' => $result];
     }
@@ -232,7 +242,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * @return boolean If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal = false)
+    public function authorize($action, $user, $isInternal = false): bool
     {
         return true;
     }

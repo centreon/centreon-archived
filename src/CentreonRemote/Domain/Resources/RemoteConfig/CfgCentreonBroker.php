@@ -2,9 +2,20 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
+/**
+ * Get broker configuration template
+ */
 class CfgCentreonBroker
 {
-    public static function getConfiguration ($serverID, $pollerName)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param int $serverID the poller id
+     * @param string $pollerName the poller name
+     * @return array the configuration template
+     */
+    public static function getConfiguration(int $serverID, string $pollerName): array
     {
         $configName = strtolower(str_replace(' ', '-', $pollerName));
 

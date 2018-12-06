@@ -16,9 +16,21 @@ use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\ {
     OutputModuleMaster
 };
 
+/**
+ * Get broker configuration template
+ */
 class CfgCentreonBrokerInfo
 {
-    public static function getConfiguration ($serverName, $dbUser, $dbPassword)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param string $serverName the poller name
+     * @param string $dbUser the database user
+     * @param string $dbPassword the database password
+     * @return array the configuration template
+     */
+    public static function getConfiguration (string $serverName, string $dbUser, string $dbPassword): array
     {
         $serverName = strtolower(str_replace(' ', '-', $serverName));
 

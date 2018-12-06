@@ -52,7 +52,13 @@ class PollerDefaultsOverwriteService
         return array_merge($data, $dataToMerge);
     }
 
-    public function setNagiosServer(array $data)
+    /**
+     * Get poller information
+     *
+     * @param array $data the poller data
+     * @return array the complete poller data
+     */
+    public function getNagiosServer(array $data): array
     {
         return $this->findPollerAndSetResourceData(
             $data,
@@ -61,7 +67,13 @@ class PollerDefaultsOverwriteService
         );
     }
 
-    public function setCfgNagios(array $data)
+    /**
+     * Get engine information
+     *
+     * @param array $data the engine data
+     * @return array the complete engine data
+     */
+    public function getCfgNagios(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['nagios_server_id'] == $this->pollerID;
@@ -75,7 +87,13 @@ class PollerDefaultsOverwriteService
         );
     }
 
-    public function setCfgNagiosBroker(array $data)
+    /**
+     * Get engine broker module information
+     *
+     * @param array $data the engine broker module data
+     * @return array the complete engine broker module data
+     */
+    public function getCfgNagiosBroker(array $data): array
     {
         // Remove nagios config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {
@@ -87,7 +105,13 @@ class PollerDefaultsOverwriteService
         return array_merge($defaultData, $data);
     }
 
-    public function setCfgCentreonBroker(array $data)
+    /**
+     * Get broker information
+     *
+     * @param array $data the broker data
+     * @return array the complete broker data
+     */
+    public function getCfgCentreonBroker(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['ns_nagios_server'] == $this->pollerID;
@@ -101,7 +125,13 @@ class PollerDefaultsOverwriteService
         );
     }
 
-    public function setCfgCentreonBrokerInfo(array $data)
+    /**
+     * Get broker detailed information
+     *
+     * @param array $data the broker detailed data
+     * @return array the complete broker detailed data
+     */
+    public function getCfgCentreonBrokerInfo(array $data): array
     {
         // Remove broker config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {
@@ -113,7 +143,13 @@ class PollerDefaultsOverwriteService
         return array_merge($defaultData, $data);
     }
 
-    public function setCfgResource(array $data)
+    /**
+     * Get global macro information
+     *
+     * @param array $data the global macro data
+     * @return array the complete global macro data
+     */
+    public function getCfgResource(array $data): array
     {
         // prepare _instance_id for method findPollerAndSetResourceData
         foreach ($data as $key => $val) {

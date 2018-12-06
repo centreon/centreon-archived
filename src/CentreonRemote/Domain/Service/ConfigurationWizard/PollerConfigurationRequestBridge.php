@@ -53,7 +53,13 @@ class PollerConfigurationRequestBridge
         $this->pollers = $this->getPollersToLink($linkedPollers); // set and instantiate linked pollers
     }
 
-    private function getPollersToLink(array $pollers)
+    /**
+     * Get pollers to link a set of poller information
+     *
+     * @param array $pollers the pollers to get list of poller objects
+     * @return PollerServer[] the pollers to link
+     */
+    private function getPollersToLink(array $pollers): array
     {
         if (empty($pollers)) {
             return [];
@@ -89,12 +95,13 @@ class PollerConfigurationRequestBridge
         }
 
         return $data;
-
-        return [];
     }
 
     /**
      * Get poller information from poller id
+     *
+     * @param int $pollerId the poller id to get
+     * @return null|PollerServer
      */
     public function getPollerFromId(int $pollerId): ?PollerServer
     {

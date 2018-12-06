@@ -2,9 +2,20 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
+/**
+ * Get broker configuration template
+ */
 class CfgNagiosBrokerModule
 {
-    public static function getConfiguration ($configID, $pollerName)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param int $configID the broker config id
+     * @param string $pollerName the poller name
+     * @return array the configuration template
+     */
+    public static function getConfiguration (int $configID, string $pollerName): array
     {
         $pollerName = strtolower(str_replace(' ', '_', $pollerName));
 
