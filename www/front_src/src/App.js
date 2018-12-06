@@ -34,18 +34,19 @@ class App extends Component {
   }
 
   goFull = () => {
-    window['fullscreenParams'] = window.location.search.split('?')[1] || '';
-    setTimeout(()=>{
+    const { search, hash } = history.location
+    window['fullscreenParams'] = (search.split('?')[1] || '') + (hash || '')
+    setTimeout(() => {
       this.setState({ isFullscreenEnabled: true });
-    },200)  
+    }, 200)
   }
 
   removeFullscreenParams = () => {
-    if(history.location.pathname == '/centreon/main.php'){
+    if (history.location.pathname == '/centreon/main.php') {
       history.push({
-          pathname: '/centreon/main.php',
-          search: window['fullscreenParams']
-        })
+        pathname: '/centreon/main.php',
+        search: window['fullscreenParams']
+      })
     }
     delete window['fullscreenParams'];
   }
