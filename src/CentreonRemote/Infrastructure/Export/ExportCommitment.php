@@ -34,7 +34,7 @@ final class ExportCommitment
 
     /**
      * Construct
-     * 
+     *
      * @param int $remote
      * @param int[] $pollers
      * @param array $meta

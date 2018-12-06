@@ -10,6 +10,9 @@ use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Centreon\Domain\Entity\Task;
 use Centreon\Domain\Entity\Command;
 
+/**
+ * Manage worker queue with centcore (import/export tasks...)
+ */
 class CentreonWorker implements CentreonClapiServiceInterface
 {
 
@@ -34,17 +37,32 @@ class CentreonWorker implements CentreonClapiServiceInterface
     }
 
     /**
-     * Worker method to process task queue for import/export
-     * @return int
+     * Process task queue for import/export
+     *
+     * @return void
      */
-    public function processQueue()
+    public function processQueue(): void
+    {
+        // check export tasks in database and execute these
+        $this->processExportTasks();
+
+        // check import tasks in database and execute these
+        $this->processImportTasks();
+    }
+
+    /**
+     * Execute export tasks which are store in task table
+     *
+     * @return void
+     */
+    private function processExportTasks(): void
     {
         $datetime = (new \DateTime())->format("Y-m-d H:i:s");
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks() ?? [];
 
         echo "{$datetime} - Checking for pending export tasks: " . count($tasks) . " task(s) found\n";
 
-        foreach ($tasks as $x => $task) {
+        foreach (array_values($tasks) as $task) {
             echo "{$datetime} - Processing task #" . $task->getId() . " ... ";
 
             /*
@@ -58,7 +76,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
             try {
                 $this->getDi()['centreon_remote.export']->export($commitment);
             } catch (\Exception $e) {
-                echo $e->__toString() . "\n";
+                echo $e->getMessage() . "\n";
             }
 
             $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
@@ -74,8 +92,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
             echo "finished.\n";
         }
+    }
 
-
+    /**
+     * Execute import tasks which are store in task table
+     *
+     * @return void
+     */
+    private function processImportTasks(): void
+    {
         $datetime = (new \DateTime())->format("Y-m-d H:i:s");
         $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findImportTasks() ?? [];
 
@@ -92,7 +117,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
             try {
                 $this->getDi()['centreon_remote.export']->import();
             } catch (\Exception $e) {
-                echo $e->__toString() . "\n";
+                echo $e->getMessage() . "\n";
             }
             $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
 
@@ -104,9 +129,13 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
     /**
      * Worker method to create task for import on remote.
+     *
+     * @param int $taskId the task id to create on the remote server
+     * @return void
      */
-    public function createRemoteTask(int $taskId)
+    public function createRemoteTask(int $taskId): void
     {
+        // find task parameters (type, status, params...)
         $task = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findOneById($taskId);
 
         /**
@@ -128,7 +157,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
         } catch (\Exception $e) {
             echo "Error while creating parent task on $url\n";
-            echo $e->getMessage()."\n";
+            echo $e->getMessage() . "\n";
         }
     }
 

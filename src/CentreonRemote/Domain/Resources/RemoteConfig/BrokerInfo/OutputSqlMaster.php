@@ -2,9 +2,20 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
 
+/**
+ * Get broker configuration template
+ */
 class OutputSqlMaster
 {
-    public static function getConfiguration($dbUser, $dbPassword)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param string $dbUser the database user
+     * @param string $dbPassword the database password
+     * @return array the configuration template
+     */
+    public static function getConfiguration(string $dbUser, string $dbPassword): array
     {
         return [
             [

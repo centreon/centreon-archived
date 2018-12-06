@@ -2,9 +2,19 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
+/**
+ * Get broker configuration template
+ */
 class BamBrokerCfgInfo
 {
-    public static function getConfiguration ($dbPassword)
+    /**
+     * Get template configuration
+     * @todo move it as yml
+     *
+     * @param string $dbPassword the centreon database password
+     * @return array the configuration template
+     */
+    public static function getConfiguration(string $dbPassword): array
     {
         return [
             'monitoring' => [

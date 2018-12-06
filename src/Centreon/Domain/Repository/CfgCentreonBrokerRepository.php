@@ -6,6 +6,10 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
+/**
+ * Repository to manage main centreon broker configuration
+ * @todo move management of cfg_centreonbroker_info in another repository
+ */
 class CfgCentreonBrokerRepository extends ServiceEntityRepository implements CfgCentreonBrokerInterface
 {
     /**
@@ -105,7 +109,10 @@ SQL;
         return $result;
     }
 
-    public function truncate()
+    /**
+     * Truncate centreon broker configuration in database (cfg_centreonbroker, cfg_centreonbroker_info)
+     */
+    public function truncate(): void
     {
         $sql = <<<SQL
 TRUNCATE TABLE `cfg_centreonbroker`;

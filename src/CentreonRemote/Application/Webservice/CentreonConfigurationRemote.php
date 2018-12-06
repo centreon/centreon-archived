@@ -88,6 +88,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Get list with connected remotes
      *
      * @return array
+     * @example ['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']
      */
     public function postGetRemotesList(): array
     {
@@ -205,6 +206,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Link centreon remote server
      *
      * @return array
+     * @example ['error' => true, 'message' => 'error message']
+     * @example ['success' => true, 'task_id' => 'task id']
      *
      * @throws \RestBadRequestException
      */

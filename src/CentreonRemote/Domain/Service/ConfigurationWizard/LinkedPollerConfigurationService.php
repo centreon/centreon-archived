@@ -23,7 +23,7 @@ class LinkedPollerConfigurationService
     /** @var \CentreonDB */
     private $db;
 
-    protected $isOpenBrokerFlow = false;
+    protected $onePeerRetention = false;
 
     /**
      * @var CfgCentreonBrokerInterface
@@ -90,9 +90,14 @@ class LinkedPollerConfigurationService
         $this->taskService = $taskService;
     }
 
-    public function setOpenBrokerFlow($openBrokerFlow)
+    /**
+     * Set one peer retention mode
+     *
+     * @param bool $onePeerRetention if one peer retention mode is enabled
+     */
+    public function setOnePeerRetention(bool $onePeerRetention): void
     {
-        $this->isOpenBrokerFlow = $openBrokerFlow;
+        $this->onePeerRetention = $onePeerRetention;
     }
 
     /**
@@ -113,7 +118,7 @@ class LinkedPollerConfigurationService
         foreach ($pollers as $poller) {
 
             // If one peer retention is enabled, add input on remote server to get data from poller
-            if ($this->isOpenBrokerFlow) {
+            if ($this->onePeerRetention) {
                 $this->setBrokerInputOfRemoteServer($remote->getId(), $poller);
             } else { // If one peer retention is disabled, we need to set the host output of the poller
                 $this->setBrokerOutputOfPoller($poller->getId(), $remote);
@@ -177,7 +182,7 @@ class LinkedPollerConfigurationService
      * @param int $pollerId
      * @param PollerServer $remote
      */
-    private function setPollerRelationToRemote($pollerId, PollerServer $remote)
+    private function setPollerRelationToRemote($pollerId, PollerServer $remote): void
     {
         $query = "UPDATE `nagios_server` "
             . "SET `remote_id` = :remote_id "
@@ -188,7 +193,13 @@ class LinkedPollerConfigurationService
         $statement->execute();
     }
 
-    private function triggerExportForOldRemotes($pollerIDs)
+    /**
+     * Export to existing remote servers
+     *
+     * @param int[] $pollerIDs the poller ids to export
+     * @return void
+     */
+    private function triggerExportForOldRemotes(array $pollerIDs): void
     {
         // Get from the database only the pollers that are linked to a remote
         $idBindString = str_repeat('?,', count($pollerIDs));
