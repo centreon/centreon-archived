@@ -31,7 +31,7 @@ try {
           failedNewAll: '0'
         ])
         junit 'jest-test-results.xml'
-        if (env.BRANCH_NAME == 'master') {
+        if (env.BRANCH_NAME == '2.8.x') {
           withSonarQubeEnv('SonarQube') {
             sh './centreon-build/jobs/web/3.4/mon-web-analysis.sh'
           }
