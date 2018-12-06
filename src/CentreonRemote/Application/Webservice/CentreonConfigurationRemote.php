@@ -240,9 +240,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
-        $serverConfigurationService->setOpenBrokerFlow($openBrokerFlow);
+        $serverConfigurationService->setOnePeerRetention($openBrokerFlow);
 
-        $pollerConfigurationService->setOpenBrokerFlow($openBrokerFlow);
+        $pollerConfigurationService->setOnePeerRetention($openBrokerFlow);
 
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
@@ -268,10 +268,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             return ['error' => true, 'message' => $e->getMessage()];
         }
 
+        $taskId = null;
+
         // if it is remote server wizard, create an export task and link pollers to it if needed
         if ($isRemoteConnection) {
-            $taskId = null;
-
             $remoteServer = $pollerConfigurationBridge->getPollerFromId($serverId);
 
             // set basic parameters to export task

@@ -27,7 +27,7 @@ abstract class ServerConnectionConfigurationService
 
     protected $name;
 
-    protected $isOpenBrokerFlow = false;
+    protected $onePeerRetention = false;
 
     protected $shouldInsertBamBrokers = false;
 
@@ -67,9 +67,14 @@ abstract class ServerConnectionConfigurationService
         $this->dbPassword = $password;
     }
 
-    public function setOpenBrokerFlow($openBrokerFlow)
+    /**
+     * Set one peer retention mode
+     *
+     * @param bool $onePeerRetention if one peer retention mode is enabled
+     */
+    public function setOnePeerRetention(bool $onePeerRetention): void
     {
-        $this->isOpenBrokerFlow = $openBrokerFlow;
+        $this->onePeerRetention = $onePeerRetention;
     }
 
     protected function getDbAdapter(): CentreonDBAdapter
