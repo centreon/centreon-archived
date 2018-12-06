@@ -1,6 +1,6 @@
-=======================
+========================
 Using Centreon packages
-=======================
+========================
 
 .. include:: ../../installation/common/install_packages.rst
 
