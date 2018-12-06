@@ -6,28 +6,28 @@ Using Centreon packages
 Installation
 ************
 
-SELinux should be disabled. In order to do this, you have to edit the file
-*/etc/selinux/config* and replace "enforcing" by "disabled"::
+SELinux must be disabled. To do this, edit the file
+**/etc/selinux/config** and replace *enforcing* with *disabled*::
 
     SELINUX=disabled
 
 .. note::
-    After saving the file, please reboot your operating system to apply the
+    After saving the file, reboot your operating system to apply the
     changes.
 
-A quick check of SELinux status::
+Perform a quick check of SELinux status::
 
     $ getenforce
     Disabled
 
-Add firewall rules or disable the firewall by running following commands: ::
+Add firewall rules or disable the firewall by running the following commands: ::
 
     # systemctl stop firewalld
     # systemctl disable firewalld
     # systemctl status firewalld
 
-To install Centreon software from the repository, you should first install
-centreon-release package which will provide the repository file.
+To install Centreon software from the repository, you should first install the
+centreon-release package, which will provide the repository file.
 
 Centreon repository installation::
 
@@ -36,7 +36,7 @@ Centreon repository installation::
 
 The repository is now installed.
 
-Perform the command::
+Run the following command::
 
     # yum install centreon-poller-centreon-engine
 
