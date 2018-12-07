@@ -34,10 +34,6 @@
  *
  */
 
-/**
- * Base class for form elements
- */
-//require_once 'HTML/QuickForm/select.php';
 
 /**
  * Description of select2
