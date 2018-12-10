@@ -365,6 +365,10 @@ if (!$is_admin && !$haveAccess) {
         for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
             $tabCommentHosts[$i] = $data;
             $tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
+            $tabCommentHosts[$i]['comment_data'] = CentreonUtils::escapeSecure(
+                $tabCommentHosts[$i]['comment_data'],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            );
         }
         $DBRESULT->free();
         unset($data);

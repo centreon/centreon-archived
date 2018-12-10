@@ -192,7 +192,11 @@ $DBRESULT = $pearDBO->query($request);
 $rows = $pearDBO->numberRows();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
-    $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
+    $tab_downtime_svc[$i]['comment_data'] = CentreonUtils::escapeSecure(
+        trim($data['comment_data']),
+        CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+    );
+
     $tab_downtime_svc[$i]['scheduled_start_time'] = $centreonGMT->getDate(
         _("Y/m/d H:i"),
         $tab_downtime_svc[$i]["scheduled_start_time"]
