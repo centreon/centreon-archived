@@ -4,9 +4,10 @@
   "description": "centreon web package",
   "scripts": {
     "build": "npm run build:clean && npm run build:sass && npm run build:app && npm run build:post",
+    "build:windows": "npm run build:clean && npm run build:sass && npm run build:app:windows && npm run build:post",
     "build:clean": "rm -rf www/static && rm -rf www/template",
     "build:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src",
-    "build:app": "cd ./www/front_src && PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
+    "build:app:windows": "cd ./www/front_src && cross-env PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
     "build:post": "mv ./www/static ./www/template",
     "watch:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src && npm run build:sass && npm run build:sass -- -w"
   },
