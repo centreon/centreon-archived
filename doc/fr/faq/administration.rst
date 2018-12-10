@@ -25,7 +25,7 @@ des données programmée.
 Mon dashboard sur plusieurs jours est indetermminé, que dois-je contrôler?
 ==========================================================================
 
-Il s'agit d'un bug du à certaines version mysql avec les tables partitionées
+Il s'agit d'un bug du à certaines versions mysql avec les tables partitionées
 (https://bugs.mysql.com/bug.php?id=70588).
 Remplacer les '=' par des LIKE dans les requêtes corrige le problème mais réduit les performances.
 
