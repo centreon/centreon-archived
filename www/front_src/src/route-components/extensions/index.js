@@ -3,6 +3,7 @@ import * as Centreon from '@centreon/react-components'
 
 class ExtensionsRoute extends Component {
   render() {
+    
     return (
       <div>
         <div className="container container-gray">
