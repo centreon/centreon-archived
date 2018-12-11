@@ -52,7 +52,7 @@ function searchUserName($user_name)
         if ($str != "") {
             $str .= ", ";
         }
-        $str .= "'" . $pearDB->escape($row['contact_id']) . "'";
+        $str .= "'" . (int) $row['contact_id'] . "'";
     }
     if ($str == "") {
         $str = "''";
