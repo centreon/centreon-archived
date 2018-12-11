@@ -132,14 +132,14 @@ $centreon->template = $template;
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value='-1'".(($status === -1) ? " selected" : "")."> </option>";
+$statusFilter .= "<option value='1'".(($status === 1) ? " selected" : "").">"._("Enabled")."</option>";
+$statusFilter .= "<option value='0'".(($status === 0) ? " selected" : "").">"._("Disabled")."</option>";
 
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status === 1) {
     $sqlFilterCase = " AND host_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status === 0) {
     $sqlFilterCase = " AND host_activate = '0' ";
 }
 
