@@ -47,99 +47,69 @@ class ExtensionsRoute extends Component {
             </div>
           </Centreon.Wrapper>
         </div>
-        <section className="buttons content-wrapper">
-          <Centreon.Button label={"Update all"} buttonType="regular" color="orange"/>
-          <Centreon.Button label={"Install all"} buttonType="regular" color="green"/>
+        <Centreon.Wrapper>
+          <Centreon.Button label={"Update all"} buttonType="regular" customClass="mr-2" color="orange"/>
+          <Centreon.Button label={"Install all"} buttonType="regular" customClass="mr-2" color="green"/>
           <Centreon.Button label={"Upload licence"} buttonType="regular" color="blue"/>
-        </section>
-        <section className="content-wrapper">
+        </Centreon.Wrapper>
+        <Centreon.Wrapper>
           <Centreon.HorizontalLineContent hrTitle="Modules"/>
-          <Centreon.Card
-            itemBorderColor="orange"
-            itemFooterColor="orange"
-            itemFooterLabel="Some label for the footer"
-          >
-            <Centreon.IconInfo iconName="state" />
-            <div className="custom-title-heading">
-              <Centreon.Title icon="object" label="Test Title" />
-              <Centreon.Subtitle label="Test Subtitle" />
-            </div>
-            <Centreon.Button
-              buttonType="regular"
-              color="orange"
-              label="Button example"
-              iconActionType="update"
-            />
-            <Centreon.ButtonAction buttonActionType="delete" buttonIconType="delete" />
-          </Centreon.Card>
-
-        </section>
-        <section class="content-wrapper">
-          <div class="content-hr">
-            <span class="content-hr-title">Widgets</span>
-          </div>
-
-          <div class="card">
-            <div class="card-items">
-              <div class="container__row">
-                <div class="container__col-md-3 container__col-sm-6 container__col-xs-12">
-                  <div class="card-item card-item-bordered-orange">
-                    <span class="info info-state"></span>
-                    <div class="custom-title-heading">
-                      <h2 class="custom-title">
-                        <span class="custom-title-icon custom-title-icon-puzzle"></span>Plugin pack manager</h2>
-                      <h4 class="custom-subtitle">by Centreon</h4>
-                    </div>
-                    <button class="button button-regular-orange linear">Available 3.1.5<span class="icon-action icon-action-update"></span>
-                    </button>
-                    <span class="card-item-footer card-item-footer-blue">Licence expire 12/08/2018</span>
+          <Centreon.Card>
+            <div className="container__row">
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem
+                  itemBorderColor="orange"
+                  itemFooterColor="red"
+                  itemFooterLabel="Licence expire 12/08/2018">
+                  <Centreon.IconInfo iconName="state"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Engine-status"/>
+                    <Centreon.Subtitle label="by Centreon"/>
                   </div>
-                </div>
-                <div class="container__col-md-3 container__col-sm-6 container__col-xs-12">
-                  <div class="card-item card-item-bordered-green">
-                    <span class="info info-state"></span>
-                    <div class="custom-title-heading">
-                      <h2 class="custom-title">
-                        <span class="custom-title-icon custom-title-icon-puzzle"></span>Engine-status</h2>
-                      <h4 class="custom-subtitle">by Centreon</h4>
-                    </div>
-                    <button class="button button-bordered button-bordered-blue linear">Version 3.1.5</button>
-                    <span class="button-action button-action-delete">
-                      <span class="button-action-icon-delete"></span>
-                    </span>
-                    <span class="card-item-footer card-item-footer-red">Licence expire 12/08/2018</span>
+                  <Centreon.Button
+                    buttonType="regular"
+                    color="orange"
+                    label="Available 3.1.5"
+                    iconActionType="update"/>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem
+                  itemBorderColor="green"
+                  itemFooterColor="orange"
+                  itemFooterLabel="Licence expire 12/08/2018">
+                  <Centreon.IconInfo iconName="state"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Engine-status"/>
+                    <Centreon.Subtitle label="by Centreon"/>
                   </div>
-                </div>
-                <div class="container__col-md-3 container__col-sm-6 container__col-xs-12">
-                  <div class="card-item card-item-bordered-gray">
-                    <div class="custom-title-heading">
-                      <h2 class="custom-title">
-                        <span class="custom-title-icon custom-title-icon-puzzle"></span>Engine-status</h2>
-                      <h4 class="custom-subtitle">by Centreon</h4>
-                    </div>
-                    <button class="button button-regular-green linear">Available 3.1.5<span class="icon-action icon-action-add"></span>
-                    </button>
+                  <Centreon.Button buttonType="bordered" color="blue" label="Available 3.1.5"/>
+                  <Centreon.ButtonAction buttonActionType="delete" buttonIconType="delete"/>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem itemBorderColor="gray">
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Engine-status"/>
+                    <Centreon.Subtitle label="by Centreon"/>
                   </div>
-                </div>
-                <div class="container__col-md-3 container__col-sm-6 container__col-xs-12">
-                  <div class="card-item card-item-bordered-gray">
-                    <span class="info info-state"></span>
-                    <div class="custom-title-heading">
-                      <h2 class="custom-title">
-                        <span class="custom-title-icon custom-title-icon-puzzle"></span>Engine-status</h2>
-                      <h4 class="custom-subtitle">by Centreon</h4>
-                    </div>
-                    <button class="button button-regular-green linear">Available 3.1.5<span class="icon-action icon-action-add"></span>
-                    </button>
+                  <Centreon.Button buttonType="regular" color="green"  label="Available 3.1.5"><Centreon.IconContent iconContentType="add"/></Centreon.Button>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem itemBorderColor="gray">
+                  <Centreon.IconInfo iconName="state"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Engine-status"/>
+                    <Centreon.Subtitle label="by Centreon"/>
                   </div>
-                </div>
+                  <Centreon.Button buttonType="regular" color="green"  label="Available 3.1.5"><Centreon.IconContent iconContentType="add"/></Centreon.Button>
+                </Centreon.CardItem>
               </div>
             </div>
-
-          </div>
-        </section>
+          </Centreon.Card>
+        </Centreon.Wrapper>
       </div>
-
     )
   }
 }
