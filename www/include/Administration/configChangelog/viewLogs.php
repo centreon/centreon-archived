@@ -86,7 +86,7 @@ $contactList = array();
 $DBRES = $pearDB->query("SELECT contact_id, contact_name, contact_alias FROM contact");
 while ($row = $DBRES->fetchRow()) {
     $contactList[$row["contact_id"]] = CentreonUtils::escapeSecure(
-        $row["contact_name"] . " (".$row["contact_alias"].")"
+        $row["contact_name"] . " (" . $row["contact_alias"] . ")"
     );
 }
 
@@ -190,12 +190,12 @@ if (!is_null($otype)) {
         } else {
             $query .= " AND ";
         }
-        $query .= " object_type = '".$pearDB->escape($objects_type_tab[$otype])."' ";
+        $query .= " object_type = '" . $pearDB->escape($objects_type_tab[$otype]) . "' ";
     }
 }
 
 $query .= " ORDER BY action_log_date DESC LIMIT "
-    . (int)($num * $limit) . ", ". (int) $limit;
+    . (int) ($num * $limit) . ", " . (int) $limit;
 
 $DBRESULT = $pearDBO->query($query);
 
