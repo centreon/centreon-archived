@@ -13,7 +13,7 @@ stage('Source') {
       keepAll: true,
       reportDir: 'summary',
       reportFiles: 'index.html',
-      reportName: 'Centreon Build Artifacts'
+      reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
   }
