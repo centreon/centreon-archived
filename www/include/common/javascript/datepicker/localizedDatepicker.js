@@ -91,7 +91,7 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
  */
 function setUserFormat() {
     // Getting the local storage attribute
-    var userLanguage = localStorage.getItem('locale').substring(0, 2);
+    var userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 2) : "en";
     if ("en" != userLanguage &&
         "undefined" != userLanguage
     ) {
@@ -99,7 +99,7 @@ function setUserFormat() {
             .attr('src', './include/common/javascript/datepicker/datepicker-' + userLanguage + '.js')
             .appendTo('body');
         setTimeout(function () {
-            // checking if the localized library was launched
+            // checking if the localized library is available
             if ("undefined" !=  typeof(jQuery.datepicker.regional[userLanguage])) {
                 jQuery.datepicker.setDefaults(jQuery.datepicker.regional[userLanguage]);
             }
