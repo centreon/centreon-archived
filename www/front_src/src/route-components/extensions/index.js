@@ -109,6 +109,63 @@ class ExtensionsRoute extends Component {
             </div>
           </Centreon.Card>
         </Centreon.Wrapper>
+        <Centreon.Wrapper>
+          <Centreon.HorizontalLineContent hrTitle="Widgets"/>
+          <Centreon.Card>
+            <div className="container__row">
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem
+                  itemBorderColor="orange"
+                  itemFooterColor="red"
+                  itemFooterLabel="Licence expire 12/08/2018">
+                  <Centreon.IconInfo iconName="puzzle"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Plugin pack manager"/>
+                    <Centreon.Subtitle label="by Centreon"/>
+                  </div>
+                  <Centreon.Button
+                    buttonType="regular"
+                    color="orange"
+                    label="Available 3.1.5"
+                    iconActionType="update"/>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem
+                  itemBorderColor="green"
+                  itemFooterColor="orange"
+                  itemFooterLabel="Licence expire 12/08/2018">
+                  <Centreon.IconInfo iconName="puzzle"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Plugin pack manager"/>
+                    <Centreon.Subtitle label="by Centreon"/>
+                  </div>
+                  <Centreon.Button buttonType="bordered" color="blue" label="Available 3.1.5"/>
+                  <Centreon.ButtonAction buttonActionType="delete" buttonIconType="delete"/>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem itemBorderColor="gray">
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Plugin pack manager"/>
+                    <Centreon.Subtitle label="by Centreon"/>
+                  </div>
+                  <Centreon.Button buttonType="regular" color="green"  label="Available 3.1.5"><Centreon.IconContent iconContentType="add"/></Centreon.Button>
+                </Centreon.CardItem>
+              </div>
+              <div className="container__col-md-3 container__col-sm-6 container__col-xs-12">
+                <Centreon.CardItem itemBorderColor="gray">
+                  <Centreon.IconInfo iconName="puzzle"/>
+                  <div className="custom-title-heading">
+                    <Centreon.Title icon="object" label="Engine-status"/>
+                    <Centreon.Subtitle label="by Centreon"/>
+                  </div>
+                  <Centreon.Button buttonType="regular" color="green"  label="Available 3.1.5"><Centreon.IconContent iconContentType="add"/></Centreon.Button>
+                </Centreon.CardItem>
+              </div>
+            </div>
+          </Centreon.Card>
+        </Centreon.Wrapper>
       </div>
     )
   }
