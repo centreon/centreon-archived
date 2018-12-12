@@ -463,7 +463,7 @@ function insertContact($ret = array())
 
     isset($ret["contact_lang"]) && $ret["contact_lang"] != null
         ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
+        : $rq .= "browser, ";
     isset($ret["contact_template_id"]) && $ret["contact_template_id"] != null
         ? $rq .= "'" . htmlentities($ret["contact_template_id"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
@@ -627,7 +627,7 @@ function updateContact($contact_id = null, $from_MC = false)
     $rq .= "contact_lang = ";
     isset($ret["contact_lang"]) && $ret["contact_lang"] != null
         ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
+        : $rq .= "browser, ";
     $rq .= "contact_host_notification_options = ";
     isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != null
         ? $rq .= "'" . implode(",", array_keys($ret["contact_hostNotifOpts"])) . "', "
@@ -780,9 +780,11 @@ function updateContact_MC($contact_id = null)
                 $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         }
     }
-    if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $ret['contact_lang']) {
-        $rq .= "contact_lang = '" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', ";
-    }
+    $rq .= "contact_lang = ";
+    isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $ret['contact_lang']
+        ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
+        : $rq .= "browser, ";
+
     if (isset($ret['contact_enable_notifications']['contact_enable_notifications']) &&
         $ret['contact_enable_notifications']['contact_enable_notifications'] != null
     ) {

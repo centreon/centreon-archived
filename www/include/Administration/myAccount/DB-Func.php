@@ -149,7 +149,7 @@ function updateContact($contact_id = null)
     $rq .= "contact_lang = ";
     isset($ret["contact_lang"]) && $ret["contact_lang"] != null
         ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
+        : $rq .= "browser, ";
     $rq .= "contact_email = ";
     isset($ret["contact_email"]) && $ret["contact_email"] != null
         ? $rq .= "'" . htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8") . "', "
