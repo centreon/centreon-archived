@@ -1001,7 +1001,11 @@ function monitoring_play()  {
     document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
     document.getElementById('JS_monitoring_play_gray').style.display = 'block';
     _on = 1;
-    initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
+    // Allows to use the new status when click on the play button
+    if (typeof(_o) == "undefined") {
+        _o = "<?= $o ?>";
+    }
+    initM(<?php echo $tM?>, "<?php echo $sid?>", _o)
 }
 
 function monitoring_pause() {
