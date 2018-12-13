@@ -30,8 +30,8 @@ Les traps peuvent ensuite être reliés à des services passifs via l'onglet **R
 Architecture
 ************
 
-Traitement d'un trap par le serveur central
-===========================================
+Processus de traitement d'un trap par le serveur central
+========================================================
 
 Voici le processus de traitement d'un trap SNMP :
 
@@ -43,8 +43,8 @@ Voici le processus de traitement d'un trap SNMP :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_centreon.png
    :align: center
 
-Traitement d'un trap par un serveur satellite
-=============================================
+Processus de traitement d'un trap par un collecteur
+===================================================
 
 Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
 Cette base de données SQLite est automatiquement générée par le serveur Central. 
@@ -61,6 +61,14 @@ Voici le processus de traitement d'un trap SNMP :
 
 .. note::
     Le processus Centcore à la charge, comme pour l'export de configuration de la supervision, de copier la base SQLite sur le collecteur distant.
+
+Ordre de réalisation des actions par le processus centreontrapd
+===============================================================
+
+Voici l'ordre des actions réalisé par le processus **centreontrapd** :
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/SNMP_Traps_management_general_view.png
+   :align: center
 
 **************************
 Configuration des services
