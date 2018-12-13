@@ -68,10 +68,16 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    const { contentHeight, loading } = this.state
+    const { contentHeight, loading } = this.state;
     const { history } = this.props,
-          { search } = history.location;
-    const params = search || '';
+          { search, hash } = history.location;
+    let params;
+    if (window['fullscreenParams']) {
+      params = '?';
+      params += window['fullscreenParams'] || ''; 
+    } else {
+      params = (search || '') + (hash || '');
+    }
     return (
       <>
         {loading &&

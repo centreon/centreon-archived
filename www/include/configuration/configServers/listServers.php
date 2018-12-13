@@ -159,11 +159,6 @@ include("./include/common/checkPagination.php");
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 /*
- * Different style between each lines
- */
-$style = "one";
-
-/*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
@@ -199,11 +194,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     * Manage flag for changes
     */
     $confChangedMessage = _("N/A");
-    $hasChanged = 0;
-    if ($config["ns_activate"]) {
+    $hasChanged = false;
+    if ($config["ns_activate"] && isset($nagios_restart[$config['id']])) {
         $hasChanged = checkChangeState(
-            $config['id'],
-            (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null)
+            (int) $config['id'],
+            (int) $nagios_restart[$config['id']]
         );
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
@@ -220,56 +215,52 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 
     //Get cfg_id
     $query = "SELECT nagios_id FROM cfg_nagios " .
-        "WHERE nagios_server_id = " . $config["id"] . " AND nagios_activate = '1'";
+        "WHERE nagios_server_id = " . (int) $config["id"] . " AND nagios_activate = '1'";
     $DBRESULT2 = $pearDB->query($query);
-    if ($DBRESULT2->rowCount()) {
-        $cfg_id = $DBRESULT2->fetchRow();
-    } else {
-        $cfg_id = -1;
-    }
+    $cfg_id = $DBRESULT2->rowCount() ? $DBRESULT2->fetchRow() : -1;
 
     $uptime = '-';
     $isRunning = (isset($nagiosInfo[$config['id']]['is_currently_running']) &&
-        $nagiosInfo[$config['id']]['is_currently_running'] == 1) ?
-        _('Yes') :
-        _('No');
-    $version = (isset($nagiosInfo[$config['id']]['version'])) ?
-        $nagiosInfo[$config['id']]['version'] :
-        _('N/A');
+        $nagiosInfo[$config['id']]['is_currently_running'] == 1)
+        ? true
+        : false;
+    $version = (isset($nagiosInfo[$config['id']]['version']))
+        ? $nagiosInfo[$config['id']]['version']
+        : _('N/A');
     $updateTime = (isset($nagiosInfo[$config['id']]['last_alive']) &&
         $nagiosInfo[$config['id']]['last_alive'])
         ? $nagiosInfo[$config['id']]['last_alive']
         : '-';
     $serverType = $config['localhost'] ? _('Central') : _('Distant Poller');
-    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs) ? _('Remote Server') : $serverType;
+    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs)
+        ? _('Remote Server')
+        : $serverType;
 
-    if (
-        isset($nagiosInfo[$config['id']]['is_currently_running']) &&
-        $nagiosInfo[$config['id']]['is_currently_running'] == 1
+    if (isset($nagiosInfo[$config['id']]['is_currently_running'])
+        && $nagiosInfo[$config['id']]['is_currently_running'] == 1
     ) {
         $now = new DateTime;
         $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
         $interval = date_diff($now, $startDate);
-        if (
-            intval($interval->format('%a')) >= 2 
-        ) {
+        if (intval($interval->format('%a')) >= 2) {
             $uptime = $interval->format('%a days');
-        } elseif (
-            intval($interval->format('%a')) == 1
-        ) {
+        } elseif (intval($interval->format('%a')) == 1) {
             $uptime = $interval->format('%a days %i minutes');
-        } elseif (
-            intval($interval->format('%a')) < 1 && intval($interval->format('%h')) >= 1
-        ) {
+        } elseif (intval($interval->format('%a')) < 1 && intval($interval->format('%h')) >= 1) {
             $uptime = $interval->format('%h hours %i minutes');
-        } elseif (
-            intval($interval->format('%h')) < 1
-        ) {
+        } elseif (intval($interval->format('%h')) < 1) {
             $uptime = $interval->format('%i minutes %s seconds');
         } else {
             $uptime = $interval->format('%a days %h hours %i minutes %s seconds');
         }
     }
+
+    $pollerProcessId = $isRunning
+        ? $nagiosInfo[$config["id"]]["process_id"]
+        : "-";
+
+    // Manage different styles between each line
+    $style = ($i % 2) ? "two" : "one";
 
     $elemArr[$i] = [
         'MenuClass'                  => "list_{$style}",
@@ -278,10 +269,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         'RowMenu_ip_address'         => $config['ns_ip_address'],
         'RowMenu_link'               => "main.php?p={$p}&o=c&server_id={$config['id']}",
         'RowMenu_type'               => $serverType,
-        'RowMenu_is_running'         => $isRunning,
+        'RowMenu_is_running'         => $isRunning ? _('Yes') : _('No'),
         'RowMenu_is_runningFlag'     => $nagiosInfo[$config['id']]['is_currently_running'],
         'RowMenu_is_default'         => $config['is_default'] ? _('Yes') : _('No'),
         'RowMenu_hasChanged'         => $confChangedMessage,
+        "RowMenu_pid"                => $pollerProcessId,
         'RowMenu_hasChangedFlag'     => $hasChanged,
         'RowMenu_version'            => $version,
         'RowMenu_uptime'             => $uptime,
@@ -293,14 +285,14 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         'RowMenu_cfg_id'             => ($cfg_id == -1) ? '' : $cfg_id['nagios_id'],
         'RowMenu_options'            => $moptions
     ];
-    $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
 $tpl->assign(
     "notice",
-    _("Only services, servicegroups, hosts and hostgroups are taken in account in order to calculate this status. " .
-        "If you modify a template, it won't tell you the configuration had changed.")
+    _("Only services, servicegroups, hosts and hostgroups are taken in " .
+        "account in order to calculate this status. If you modify a " .
+        "template, it won't tell you the configuration had changed.")
 );
 
 /*

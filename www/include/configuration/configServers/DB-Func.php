@@ -40,10 +40,70 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 /**
- * @param null $name
- * @return bool
+ * Retrieve the next available suffixes for this server name from database
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param string $serverName Server name to process
+ * @param int $numberOf Number of suffix requested
+ * @param string $separator Character used to separate the server name and suffix
+ * @return array Return the next available suffixes
+ * @throws Exception
  */
-function testExistence($name = null)
+function getAvailableSuffixIds(
+    string $serverName,
+    int $numberOf,
+    string $separator = '_'
+): array {
+
+    if ($numberOf < 0) {
+        return [];
+    }
+
+    global $pearDB;
+    /**
+     * To avoid that this column value will be interpreted like regular
+     * expression in the database query
+     */
+    $serverName = preg_quote($serverName);
+
+    // Get list of suffix already used
+    $serverName = CentreonDB::escape($serverName);
+    $query = "SELECT CAST(SUBSTRING_INDEX(name,'_',-1) AS INT) AS suffix "
+        . "FROM nagios_server WHERE name REGEXP '^" . $serverName . $separator . "[0-9]+$' "
+        . "ORDER BY suffix";
+    $results = $pearDB->query($query);
+
+    $notAvailableSuffixes = array();
+
+    while ($result = $results->fetchRow()) {
+        $suffix = (int)$result['suffix'];
+        if (!in_array($suffix, $notAvailableSuffixes)) {
+            $notAvailableSuffixes[] = $suffix;
+        }
+    }
+
+    /**
+     * Search for available suffixes taking into account those found in the database
+     */
+    $nextAvailableSuffixes = [];
+    $counter = 1;
+    while (count($nextAvailableSuffixes) < $numberOf) {
+        if (!in_array($counter, $notAvailableSuffixes)) {
+            $nextAvailableSuffixes[] = $counter;
+        }
+        $counter++;
+    }
+
+    return $nextAvailableSuffixes;
+}
+
+/**
+ * Check if the name already exist in database
+ *
+ * @param string $name Name to check
+ * @return bool Return true if the name does not exist in database
+ */
+function testExistence($name = null): bool
 {
     global $pearDB, $form;
 
@@ -67,71 +127,95 @@ function testExistence($name = null)
 }
 
 /**
- * @param null $id
+ * Enable a server
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @global Centreon $centreon
+ * @param int $id Id of the server
  * @throws Exception
  */
-function enableServerInDB($id = null)
+function enableServerInDB(int $id): void
 {
     global $pearDB, $centreon;
 
-    if (!$id) {
-        return;
-    }
-    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
+    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
     $row = $dbResult->fetchRow();
 
-    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '" . $id . "'");
+    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = " . $id);
     $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "enable");
 
-    $query = "SELECT MIN(`nagios_id`) AS idEngine FROM cfg_nagios WHERE `nagios_server_id` = '" . $id . "'";
+    $query = 'SELECT MIN(`nagios_id`) AS idEngine FROM cfg_nagios WHERE `nagios_server_id` = ' . $id;
     $dbResult = $pearDB->query($query);
     $idEngine = $dbResult->fetchRow();
+
     if ($idEngine['idEngine']) {
         $pearDB->query(
-            "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '" . $id . "'"
+            "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = " . $id
         );
         $pearDB->query(
-            "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '" . $idEngine['idEngine'] . "'"
+            "UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = " . (int) $idEngine['idEngine']
         );
     }
 }
 
 /**
- * @param null $id
+ * Disable a server
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @global Centreon $centreon
+ * @param int $id Id of the server
  * @throws Exception
  */
-function disableServerInDB($id = null)
+function disableServerInDB(int $id): void
 {
     global $pearDB, $centreon;
 
-    if (!$id) {
-        return;
-    }
-
-    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($id) . "' LIMIT 1");
+    $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
     $row = $dbResult->fetchRow();
 
-    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = '" . $id . "'");
+    $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = " . $id);
 
-    $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "disable");
+    $centreon->CentreonLogAction->insertLog(
+        'poller',
+        $id,
+        $row['name'],
+        'disable'
+    );
+
     $pearDB->query(
-        "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '" . $id . "'"
+        "UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = " . $id
     );
 }
 
-function deleteServerInDB($server = array())
+/**
+ * Delete a server
+ *
+ * @param array $serverIds
+ * @global CentreonDB $pearDB DB connector
+ * @global Centreon $centreon
+ */
+function deleteServerInDB(array $serverIds): void
 {
     global $pearDB, $pearDBO, $centreon;
 
-    foreach ($server as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '" . intval($key) . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+    foreach (array_keys($serverIds) as $serverId) {
+        $result = $pearDB->query(
+            "SELECT name FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
+        );
+        $row = $result->fetchRow();
 
-        $pearDB->query("DELETE FROM `nagios_server` WHERE id = '" . $key . "'");
-        $pearDBO->query("UPDATE `instances` SET deleted = '1' WHERE instance_id = '" . $key . "'");
-        deleteCentreonBrokerByPollerId($key);
+        $pearDB->query('DELETE FROM `nagios_server` WHERE id = ' . $serverId);
+        $pearDBO->query(
+            "UPDATE `instances` SET deleted = '1' WHERE instance_id = " . $serverId
+        );
+        deleteCentreonBrokerByPollerId($serverId);
 
-        $centreon->CentreonLogAction->insertLog("poller", $key, $row['name'], "d");
+        $centreon->CentreonLogAction->insertLog(
+            'poller',
+            $serverId,
+            $row['name'],
+            'd'
+        );
     }
 }
 
@@ -139,52 +223,83 @@ function deleteServerInDB($server = array())
  * Delete Centreon Broker configurations
  *
  * @param int $id The Id poller
+ * @global CentreonDB $pearDB DB connector
  */
-function deleteCentreonBrokerByPollerId($id)
+function deleteCentreonBrokerByPollerId(int $id)
 {
-    if (empty($id)) {
-        return;
-    }
-
     global $pearDB;
-    $pearDB->query("DELETE FROM cfg_centreonbroker WHERE ns_nagios_server = " . $id);
+
+    $pearDB->query(
+        'DELETE FROM cfg_centreonbroker WHERE ns_nagios_server = ' . $id
+    );
 }
 
-function multipleServerInDB($server = array(), $nbrDup = array())
+/**
+ * Duplicate server
+ *
+ * @param array $server List of server id to duplicate
+ * @param array $nbrDup Number of duplications per server id
+ * @global CentreonDB $pearDB DB connector
+ * @throws Exception
+ */
+function duplicateServer(array $server, array $nbrDup): void
 {
     global $pearDB;
 
     $obj = new CentreonMainCfg();
 
-    foreach ($server as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '" . $key . "' LIMIT 1");
-        $rowServer = $DBRESULT->fetchRow();
+    foreach (array_keys($server) as $serverId) {
+        $result = $pearDB->query(
+            'SELECT * FROM `nagios_server` WHERE id = ' . (int) $serverId . ' LIMIT 1'
+        );
+        $rowServer = $result->fetchRow();
         $rowServer["id"] = '';
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
-        $DBRESULT->closeCursor();
+        $result->closeCursor();
+        
+        if (!isset($rowServer['name'])) {
+            continue;
+        }
 
-        $rowBks = $obj->getBrokerModules($key);
+        $rowBks = $obj->getBrokerModules($serverId);
 
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
-            foreach ($rowServer as $key2 => $value2) {
-                $key2 == "name" ? ($server_name = $value2 = $value2 . "_" . $i) : null;
-                $val ?
-                    $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") :
-                    $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+        $availableSuffix = getAvailableSuffixIds(
+            $rowServer['name'],
+            $nbrDup[$serverId]
+        );
+
+        foreach ($availableSuffix as $suffix) {
+            $queryValues = null;
+            $serverName = null;
+            foreach ($rowServer as $columnName => $columnValue) {
+                if ($columnName == 'name') {
+                    $columnValue .= "_" . $suffix;
+                    $serverName = $columnValue;
+                }
+
+                if (is_null($queryValues)) {
+                    $queryValues .= $columnValue != null
+                        ? ("'" . $columnValue . "'")
+                        : "NULL";
+                } else {
+                    $queryValues .= $columnValue != null
+                        ? (", '" . $columnValue . "'")
+                        : ", NULL";
+                }
             }
-            if (testExistence($server_name)) {
-                $val ? $rq = "INSERT INTO `nagios_server` VALUES (" . $val . ")" : $rq = null;
-                $DBRESULT = $pearDB->query($rq);
+            if (!is_null($queryValues) && testExistence($serverName)) {
+                if ($queryValues) {
+                    $pearDB->query('INSERT INTO `nagios_server` VALUES (' . $queryValues . ')');
+                }
 
-                $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $server_name . '"';
+                $queryGetId = 'SELECT id FROM nagios_server WHERE name = "' . $serverName . '"';
                 try {
                     $res = $pearDB->query($queryGetId);
                     if ($res->rowCount() > 0) {
                         $row = $res->fetchRow();
-                        $iId = $obj->insertServerInCfgNagios($key, $row['id'], $server_name);
+                        $iId = $obj->insertServerInCfgNagios($serverId, $row['id'], $serverName);
 
                         if (isset($rowBks)) {
                             foreach ($rowBks as $keyBk => $valBk) {
@@ -198,11 +313,11 @@ function multipleServerInDB($server = array(), $nbrDup = array())
 
                         $queryRel = 'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) ' .
                             'SELECT b.resource_id, ' . $row['id'] . ' FROM ' .
-                            'cfg_resource_instance_relations as b WHERE b.instance_id = ' . $key;
+                            'cfg_resource_instance_relations as b WHERE b.instance_id = ' . $serverId;
                         $pearDB->query($queryRel);
                         $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order) ' .
                             'SELECT ' . $row['id'] . ', b.command_id, b.command_order FROM ' .
-                            'poller_command_relations as b WHERE b.poller_id = ' . $key;
+                            'poller_command_relations as b WHERE b.poller_id = ' . $serverId;
                         $pearDB->query($queryCmd);
                     }
                 } catch (\PDOException $e) {
@@ -213,25 +328,21 @@ function multipleServerInDB($server = array(), $nbrDup = array())
     }
 }
 
-function updateServerInDB($id = null)
+/**
+ * Insert a new server
+ *
+ * @param array $data Data of the new server
+ * @return int Id of the new server
+ */
+function insertServerInDB(array $data): int
 {
-    if (!$id) {
-        return;
-    }
-    updateServer($id);
-}
-
-function insertServerInDB()
-{
-    global $form;
-
     $srvObj = new CentreonMainCfg();
 
     $sName = '';
-    $id = insertServer();
-    $ret = $form->getSubmitValues();
-    if (isset($ret['name'])) {
-        $sName = $ret['name'];
+    $id = insertServer($data);
+
+    if (isset($data['name'])) {
+        $sName = $data['name'];
     }
     $iIdNagios = $srvObj->insertServerInCfgNagios(-1, $id, $sName);
 
@@ -239,85 +350,89 @@ function insertServerInDB()
         $srvObj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
     }
     addUserRessource($id);
-    return ($id);
+    return $id;
 }
 
-
-function insertServer($ret = array())
+/**
+ * Create a server in database
+ *
+ * @param array $data Data of the new server
+ * @global CentreonDB $pearDB DB connector
+ * @global Centreon $centreon
+ * @return int Id of the new server
+ */
+function insertServer(array $data): int
 {
-    global $form, $pearDB, $centreon;
+    global $pearDB, $centreon;
 
-    if (!count($ret)) {
-        $ret = $form->getSubmitValues();
-    }
     $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`," .
         " `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
         "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`) ";
     $rq .= "VALUES (";
-    isset($ret["name"]) && $ret["name"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8") . "', "
+    isset($data["name"]) && $data["name"] != null
+        ? $rq .= "'" . htmlentities(trim($data["name"]), ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
-    isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != null
-        ? $rq .= "'" . htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["localhost"]["localhost"]) && $data["localhost"]["localhost"] != null
+        ? $rq .= "'" . htmlentities($data["localhost"]["localhost"], ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null
+        ? $rq .= "'" . htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["ssh_port"]) && $ret["ssh_port"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ssh_port"]) && $data["ssh_port"] != null
+        ? $rq .= "'" . htmlentities(trim($data["ssh_port"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "'22', ";
-    isset($ret["nagios_bin"]) && $ret["nagios_bin"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagios_bin"]) && $data["nagios_bin"] != null
+        ? $rq .= "'" . htmlentities(trim($data["nagios_bin"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagiostats_bin"]) && $data["nagiostats_bin"] != null
+        ? $rq .= "'" . htmlentities(trim($data["nagiostats_bin"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["init_system"]) && $ret["init_system"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["init_system"]) && $data["init_system"] != null
+        ? $rq .= "'" . htmlentities(trim($data["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["init_script"]) && $ret["init_script"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["init_script"]) && $data["init_script"] != null
+        ? $rq .= "'" . htmlentities(trim($data["init_script"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["init_script_centreontrapd"]) && $ret["init_script_centreontrapd"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["init_script_centreontrapd"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["init_script_centreontrapd"]) && $data["init_script_centreontrapd"] != null
+        ? $rq .= "'" . htmlentities(trim($data["init_script_centreontrapd"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["snmp_trapd_path_conf"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["snmp_trapd_path_conf"]) && $data["snmp_trapd_path_conf"] != null
+        ? $rq .= "'" . htmlentities(trim($data["snmp_trapd_path_conf"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagios_perfdata"]) && $data["nagios_perfdata"] != null
+        ? $rq .= "'" . htmlentities(trim($data["nagios_perfdata"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["centreonbroker_cfg_path"]) && $ret["centreonbroker_cfg_path"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["centreonbroker_cfg_path"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["centreonbroker_cfg_path"]) && $data["centreonbroker_cfg_path"] != null
+        ? $rq .= "'" . htmlentities(trim($data["centreonbroker_cfg_path"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["centreonbroker_module_path"]) && $ret["centreonbroker_module_path"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["centreonbroker_module_path"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["centreonbroker_module_path"]) && $data["centreonbroker_module_path"] != null
+        ? $rq .= "'" . htmlentities(trim($data["centreonbroker_module_path"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["centreonconnector_path"]) && $ret["centreonconnector_path"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["centreonconnector_path"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["centreonconnector_path"]) && $data["centreonconnector_path"] != null
+        ? $rq .= "'" . htmlentities(trim($data["centreonconnector_path"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ssh_private_key"]) && $data["ssh_private_key"] != null
+        ? $rq .= "'" . htmlentities(trim($data["ssh_private_key"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["is_default"]["is_default"]) && $ret["is_default"]["is_default"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["is_default"]["is_default"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["is_default"]["is_default"]) && $data["is_default"]["is_default"] != null
+        ? $rq .= "'" . htmlentities(trim($data["is_default"]["is_default"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
-    isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2
-        ? $rq .= "'" . $ret["ns_activate"]["ns_activate"] . "',  "
+    isset($data["ns_activate"]["ns_activate"]) && $data["ns_activate"]["ns_activate"] != 2
+        ? $rq .= "'" . $data["ns_activate"]["ns_activate"] . "',  "
         : $rq .= "NULL, ";
-    isset($ret["centreonbroker_logs_path"]) && $ret["centreonbroker_logs_path"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8") . "', "
+    isset($data["centreonbroker_logs_path"]) && $data["centreonbroker_logs_path"] != null
+        ? $rq .= "'" . htmlentities(trim($data["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL,";
-    isset($ret["remote_id"]) && $ret["remote_id"] != null
-        ? $rq .= "'" . htmlentities(trim($ret["remote_id"]), ENT_QUOTES, "UTF-8") . "' "
+    isset($data["remote_id"]) && $data["remote_id"] != null
+        ? $rq .= "'" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL";
     $rq .= ")";
 
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
-    $poller = $DBRESULT->fetchRow();
-    $DBRESULT->closeCursor();
+    $result = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
+    $poller = $result->fetchRow();
+    $result->closeCursor();
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
@@ -325,23 +440,29 @@ function insertServer($ret = array())
     }
 
     /* Prepare value for changelog */
-    $fields = CentreonLogAction::prepareChanges($ret);
+    $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog(
         "poller",
         isset($poller["MAX(id)"]) ? $poller["MAX(id)"] : null,
-        CentreonDB::escape($ret["name"]),
+        CentreonDB::escape($data["name"]),
         "a",
         $fields
     );
 
-    return ($poller["last_id"]);
+    return (int) $poller["last_id"];
 }
 
-function addUserRessource($serverId)
+/**
+ * @param int $serverId Id of the server
+ * @global CentreonDB $pearDB DB connector
+ * global Centreon $centreon
+ * @return bool Return true if ok
+ */
+function addUserRessource(int $serverId): bool
 {
     global $pearDB, $centreon;
 
-    $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%s, %s)";
+    $queryInsert = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES (%d, %d)";
     $queryGetResources = "SELECT resource_id, resource_name FROM cfg_resource ORDER BY resource_id";
 
     try {
@@ -350,18 +471,22 @@ function addUserRessource($serverId)
         return false;
     }
     $isInsert = array();
-    while ($row = $res->fetchRow()) {
-        if (!in_array($row['resource_name'], $isInsert)) {
-            $isInsert[] = $row['resource_name'];
-            $query = sprintf($queryInsert, $row['resource_id'], $serverId);
+    while ($resource = $res->fetchRow()) {
+        if (!in_array($resource['resource_name'], $isInsert)) {
+            $isInsert[] = $resource['resource_name'];
+            $query = sprintf(
+                $queryInsert,
+                (int) $resource['resource_id'],
+                $serverId
+            );
             $pearDB->query($query);
 
             /* Prepare value for changelog */
-            $fields = CentreonLogAction::prepareChanges($row);
+            $fields = CentreonLogAction::prepareChanges($resource);
             $centreon->CentreonLogAction->insertLog(
                 "resource",
                 $serverId,
-                CentreonDB::escape($row["resource_name"]),
+                CentreonDB::escape($resource["resource_name"]),
                 "a",
                 $fields
             );
@@ -370,104 +495,105 @@ function addUserRessource($serverId)
     return true;
 }
 
-function updateServer($id = null)
+/**
+ * Update a server
+ *
+ * @param int $id Id of the server
+ * @param array $data Data of server
+ * @global CentreonDB $pearDB DB connector
+ * @global Centreon $centreon
+ */
+function updateServer(int $id, $data): void
 {
-    global $form, $pearDB, $centreon;
+    global $pearDB, $centreon;
 
-    if (!$id) {
-        return;
-    }
-
-    $ret = array();
-    $ret = $form->getSubmitValues();
-
-    if ($ret["localhost"]["localhost"] == 1) {
+    if ($data["localhost"]["localhost"] == 1) {
         $pearDB->query("UPDATE `nagios_server` SET `localhost` = '0'");
     }
-    if ($ret["is_default"]["is_default"] == 1) {
+    if ($data["is_default"]["is_default"] == 1) {
         $pearDB->query("UPDATE `nagios_server` SET `is_default` = '0'");
     }
 
     $rq = "UPDATE `nagios_server` SET ";
-    isset($ret["name"]) && $ret["name"] != null
-        ? $rq .= "name = '" . htmlentities($ret["name"], ENT_QUOTES, "UTF-8") . "', "
+    isset($data["name"]) && $data["name"] != null
+        ? $rq .= "name = '" . htmlentities($data["name"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "name = NULL, ";
-    isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != null
-        ? $rq .= "localhost = '" . htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8") . "', "
+    isset($data["localhost"]["localhost"]) && $data["localhost"]["localhost"] != null
+        ? $rq .= "localhost = '" . htmlentities($data["localhost"]["localhost"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "localhost = NULL, ";
-    isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != null
-        ? $rq .= "ns_ip_address = '" . htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null
+        ? $rq .= "ns_ip_address = '" . htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "ns_ip_address = NULL, ";
-    isset($ret["ssh_port"]) && $ret["ssh_port"] != null
-        ? $rq .= "ssh_port = '" . htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ssh_port"]) && $data["ssh_port"] != null
+        ? $rq .= "ssh_port = '" . htmlentities(trim($data["ssh_port"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "ssh_port = '22', ";
-    isset($ret["init_system"]) && $ret["init_system"] != null
-        ? $rq .= "init_system = '" . htmlentities(trim($ret["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["init_system"]) && $data["init_system"] != null
+        ? $rq .= "init_system = '" . htmlentities(trim($data["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "init_system = NULL, ";
-    isset($ret["init_script"]) && $ret["init_script"] != null
-        ? $rq .= "init_script = '" . htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["init_script"]) && $data["init_script"] != null
+        ? $rq .= "init_script = '" . htmlentities(trim($data["init_script"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "init_script = NULL, ";
-    isset($ret["init_script_centreontrapd"]) && $ret["init_script_centreontrapd"] != null
+    isset($data["init_script_centreontrapd"]) && $data["init_script_centreontrapd"] != null
         ? $rq .= "init_script_centreontrapd = '" . htmlentities(
-            trim($ret["init_script_centreontrapd"]),
+            trim($data["init_script_centreontrapd"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "init_script_centreontrapd = NULL, ";
-    isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != null
+    isset($data["snmp_trapd_path_conf"]) && $data["snmp_trapd_path_conf"] != null
         ? $rq .= "snmp_trapd_path_conf = '" . htmlentities(
-            trim($ret["snmp_trapd_path_conf"]),
+            trim($data["snmp_trapd_path_conf"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "snmp_trapd_path_conf = NULL, ";
-    isset($ret["nagios_bin"]) && $ret["nagios_bin"] != null
-        ? $rq .= "nagios_bin = '" . htmlentities(trim($ret["nagios_bin"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagios_bin"]) && $data["nagios_bin"] != null
+        ? $rq .= "nagios_bin = '" . htmlentities(trim($data["nagios_bin"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "nagios_bin = NULL, ";
-    isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != null
-        ? $rq .= "nagiostats_bin = '" . htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagiostats_bin"]) && $data["nagiostats_bin"] != null
+        ? $rq .= "nagiostats_bin = '" . htmlentities(trim($data["nagiostats_bin"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "nagiostats_bin = NULL, ";
-    isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != null
-        ? $rq .= "nagios_perfdata = '" . htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["nagios_perfdata"]) && $data["nagios_perfdata"] != null
+        ? $rq .= "nagios_perfdata = '" . htmlentities(trim($data["nagios_perfdata"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "nagios_perfdata = NULL, ";
-    isset($ret["centreonbroker_cfg_path"]) && $ret["centreonbroker_cfg_path"] != null
+    isset($data["centreonbroker_cfg_path"]) && $data["centreonbroker_cfg_path"] != null
         ? $rq .= "centreonbroker_cfg_path = '" . htmlentities(
-            trim($ret["centreonbroker_cfg_path"]),
+            trim($data["centreonbroker_cfg_path"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonbroker_cfg_path = NULL, ";
-    isset($ret["centreonbroker_module_path"]) && $ret["centreonbroker_module_path"] != null
+    isset($data["centreonbroker_module_path"]) && $data["centreonbroker_module_path"] != null
         ? $rq .= "centreonbroker_module_path = '" . htmlentities(
-            trim($ret["centreonbroker_module_path"]),
+            trim($data["centreonbroker_module_path"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonbroker_module_path = NULL, ";
-    isset($ret["centreonconnector_path"]) && $ret["centreonconnector_path"] != null
+    isset($data["centreonconnector_path"]) && $data["centreonconnector_path"] != null
         ? $rq .= "centreonconnector_path = '" . htmlentities(
-            trim($ret["centreonconnector_path"]),
+            trim($data["centreonconnector_path"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonconnector_path = NULL, ";
-    isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != null
-        ? $rq .= "ssh_private_key = '" . htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["ssh_private_key"]) && $data["ssh_private_key"] != null
+        ? $rq .= "ssh_private_key = '" . htmlentities(trim($data["ssh_private_key"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "ssh_private_key = NULL, ";
-    isset($ret["is_default"]) && $ret["is_default"] != null
-        ? $rq .= "is_default = '" . htmlentities(trim($ret["is_default"]["is_default"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["is_default"]) && $data["is_default"] != null
+        ? $rq .= "is_default = '" . htmlentities(trim($data["is_default"]["is_default"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "is_default = NULL, ";
-    isset($ret["centreonbroker_logs_path"]) && $ret["centreonbroker_logs_path"] != null
+    isset($data["centreonbroker_logs_path"]) && $data["centreonbroker_logs_path"] != null
         ? $rq .= "centreonbroker_logs_path = '" . htmlentities(
-            trim($ret["centreonbroker_logs_path"]),
+            trim($data["centreonbroker_logs_path"]),
             ENT_QUOTES,
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonbroker_logs_path = NULL, ";
-    isset($ret["remote_id"]) && $ret["remote_id"] != null
-        ? $rq .= "remote_id = '" . htmlentities(trim($ret["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
+    isset($data["remote_id"]) && $data["remote_id"] != null
+        ? $rq .= "remote_id = '" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "remote_id = NULL, ";
-    $rq .= "ns_activate = '" . $ret["ns_activate"]["ns_activate"] . "' ";
+    $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "' ";
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);
 
@@ -477,24 +603,25 @@ function updateServer($id = null)
     }
 
     /* Prepare value for changelog */
-    $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("poller", $id, CentreonDB::escape($ret["name"]), "c", $fields);
+    $fields = CentreonLogAction::prepareChanges($data);
+    $centreon->CentreonLogAction->insertLog("poller", $id, CentreonDB::escape($data["name"]), "c", $fields);
 }
 
 /**
+ * Check if a service or an host has been changed for a specific poller.
  *
- * Check if a service or an host has been
- * changed for a specific poller.
- * @param unknown_type $poller_id
- * @param unknown_type $last_restart
- * @return number
+ * @param int $poller_id Id of the poller
+ * @param int $last_restart Timestamp of the last restart
+ * @global CentreonDB $pearDBO DB connector for centreon_storage database
+ * @global array $conf_centreon Database configuration
+ * @return bool Return true if the configuration has changed
  */
-function checkChangeState($poller_id, $last_restart)
+function checkChangeState(int $poller_id, int $last_restart): bool
 {
-    global $pearDB, $pearDBO, $conf_centreon;
+    global $pearDBO, $conf_centreon;
 
     if (!isset($last_restart) || $last_restart == "") {
-        return 0;
+        return false;
     }
 
     $query = "SELECT * FROM log_action WHERE action_log_date > $last_restart " .
@@ -514,8 +641,6 @@ function checkChangeState($poller_id, $last_restart)
         $conf_centreon['db'] . ".hostgroup_relation hr, " . $conf_centreon['db'] . ".ns_host_relation nhr " .
         "WHERE hr.host_host_id = nhr.host_host_id AND nhr.nagios_server_id = '$poller_id'))))";
     $dbResult = $pearDBO->query($query);
-    if ($dbResult->rowCount()) {
-        return 1;
-    }
-    return 0;
+
+    return $dbResult->rowCount() ? true : false;
 }
