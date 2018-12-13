@@ -50,8 +50,7 @@ Run the following command: ::
     # yum install centos-release-scl
 
 Upgrading the Centreon repository
-==================================
-
+=================================
 
 Run the following commands: ::
 
@@ -73,7 +72,7 @@ Upgrade all the components with the following command: ::
     Accept new GPG keys from the repositories as needed.
 
 Additional actions
-=====================
+==================
 
 The PHP timezone should be set. Run the command: ::
 

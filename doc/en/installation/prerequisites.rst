@@ -11,12 +11,12 @@ The Centreon web interface is compatible with the following web browsers:
 
 Your screen resolution must be at least 1280 x 768.
 
-*********
+********
 Software
-*********
+********
 
 Operating Systems
-==================
+=================
 
 Centreon offers an ISO file including CentOS v7 and all the required packages.
 
@@ -67,9 +67,9 @@ The following table describes the software dependencies:
 | zlib     | 1.2.3            |
 +----------+------------------+
 
-******************************
+****************************
 Select the architecture type
-******************************
+****************************
 
 The table below describes requirements for installing Centreon:
 

@@ -1,8 +1,8 @@
 .. _upgrade:
 
-###########
+#########
 Upgrading
-###########
+#########
 
 This chapter describes how to upgrade your Centreon monitoring platform.
 

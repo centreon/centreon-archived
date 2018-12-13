@@ -29,7 +29,7 @@ the form:
     :align: center
 
 .. note::
-    The **Database user name** and **Database password** are the credentials defined
+    The **Database username** and **Database password** are the credentials defined
     during the installation of the Remote Server.
 
 Click on **Next**.

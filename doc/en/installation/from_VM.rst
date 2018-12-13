@@ -14,7 +14,7 @@ Centreon Central server
 ***********************
 
 Importing
-==========
+=========
 
 The first step is to import the OVF File. Go to **File > Deploy OVF Template** and select a file.
 Because the menu selections are actually linked to your specific VMWare configuration, we are unable to provide more information.

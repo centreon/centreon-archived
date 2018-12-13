@@ -1,6 +1,6 @@
-===========================
+==========================
 Installing a Remote Server
-===========================
+==========================
 
 Installing a Remote Server is similar to installing a Centreon.
 Select the method:
