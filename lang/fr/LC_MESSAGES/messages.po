@@ -14690,3 +14690,9 @@ msgstr "Certains collecteurs ne sont pas à jour en base de données; vérifiez 
 
 msgid "Latency detected, check configuration for better optimization"
 msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
+
+msgid "You can't edit this downtime because you don't have access to all of its resources"
+msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+
+msgid "You can't edit this hostgroup because you don't have access to all its resources"
+msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
